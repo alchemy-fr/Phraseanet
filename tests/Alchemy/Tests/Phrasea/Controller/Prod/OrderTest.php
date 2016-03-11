@@ -61,12 +61,11 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
             $triggered = true;
         });
 
-        $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst'      => $this->getRecord1()->getId(),
+        $response = $this->XMLHTTPRequest('POST', '/prod/order/', [
+            'lst' => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
 
-        $response = $this->getClient()->getResponse();
         $this->assertTrue($response->isOk(), 'Invalid response from create order');
         $this->assertTrue($triggered, 'Order create listener not triggered');
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
@@ -83,14 +82,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDisplayOrders()
     {
         $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst'      => $this->getRecord1()->getId(),
+            'lst' => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
-        $client = $this->getClient();
-        $client->request('GET', '/prod/order/', [
+        $response = $this->request('GET', '/prod/order/', [
             'sort' => 'usage'
         ]);
-        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertTrue($response->isOk());
     }
 
     /**
@@ -140,8 +138,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $response = $this->getClient()->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());
@@ -189,9 +186,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
-        $client = $this->getClient();
-        $response = $client->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent());

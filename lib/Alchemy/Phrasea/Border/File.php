@@ -66,7 +66,7 @@ class File
         $this->media = $media;
         $this->collection = $collection;
         $this->attributes = [];
-        $this->originalName = $originalName ? : pathinfo($this->media->getFile()->getPathname(), PATHINFO_BASENAME);
+        $this->originalName = $originalName ?: pathinfo($this->media->getFile()->getPathname(), PATHINFO_BASENAME);
     }
 
     /**
@@ -92,7 +92,7 @@ class File
      */
     public function getUUID($generate = false, $write = false)
     {
-        if ($this->uuid && ! $write) {
+        if ($this->uuid && !$write) {
             return $this->uuid;
         }
 
@@ -104,7 +104,7 @@ class File
             'Canon:ImageUniqueID',
         ];
 
-        if (! $this->uuid) {
+        if (!$this->uuid) {
             $metadatas = $this->media->getMetadatas();
 
             $uuid = null;
@@ -119,7 +119,7 @@ class File
                 }
             }
 
-            if (! $uuid && $generate) {
+            if (!$uuid && $generate) {
                 $uuid = Uuid::uuid4();
             }
 
@@ -152,7 +152,8 @@ class File
      */
     public function getType()
     {
-        switch ($this->media->getType()) {
+        switch ($this->media->getType())
+        {
             case MediaInterface::TYPE_AUDIO:
                 return new Audio();
                 break;
@@ -180,7 +181,7 @@ class File
      */
     public function getSha256()
     {
-        if (! $this->sha256) {
+        if (!$this->sha256) {
             $this->sha256 = $this->media->getHash('sha256');
         }
 
@@ -194,7 +195,7 @@ class File
      */
     public function getMD5()
     {
-        if (! $this->md5) {
+        if (!$this->md5) {
             $this->md5 = $this->media->getHash('md5');
         }
 

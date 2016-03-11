@@ -59,8 +59,8 @@ class BuildMissingSubdefs extends Command
                     $subdefGenerator->generateSubdefs($record, $wanted_subdefs);
 
                     foreach ($wanted_subdefs as $subdef) {
-                        $this->container['monolog']->addInfo("generate " .$subdef . " for record " . $record->getRecordId());
-                        $n ++;
+                        $this->container['monolog']->addInfo("generate " . $subdef . " for record " . $record->getRecordId());
+                        $n++;
                     }
                 }
 

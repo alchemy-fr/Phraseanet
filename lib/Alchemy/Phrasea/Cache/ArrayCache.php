@@ -45,7 +45,7 @@ class ArrayCache extends DoctrineArray implements Cache
      */
     public function get($id)
     {
-        if ( ! $this->contains($id)) {
+        if (!$this->contains($id)) {
             throw new Exception(sprintf('Unable to find key %s', $id));
         }
 

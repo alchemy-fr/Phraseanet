@@ -82,7 +82,7 @@ class Manager
         if (isset($options['namespace']) && is_string($options['namespace'])) {
             $cache->setNamespace($options['namespace']);
         } else {
-            $cache->setNamespace(md5(gethostname().'-'.__DIR__));
+            $cache->setNamespace(md5(gethostname() . '-' . __DIR__));
         }
 
         $this->drivers[$label] = $cache;
@@ -95,17 +95,28 @@ class Manager
         return $cache;
     }
 
+    /**
+     * @param string $name
+     * @param string $label
+     */
     private function register($name, $label)
     {
         $this->registry[$label] = $name;
         $this->save();
     }
 
+    /**
+     * @param string $name
+     * @param string $label
+     */
     private function isAlreadyRegistered($name, $label)
     {
         return isset($this->registry[$label]) && $name === $this->registry[$label];
     }
 
+    /**
+     * @param string $label
+     */
     private function isAlreadyLoaded($label)
     {
         return isset($this->drivers[$label]);
@@ -115,7 +126,7 @@ class Manager
     {
         $date = new \DateTime();
         $data = $this->compiler->compile($this->registry)
-            . "\n// Last Update on ".$date->format(DATE_ISO8601)." \n";
+            . "\n// Last Update on " . $date->format(DATE_ISO8601) . " \n";
 
         file_put_contents($this->file, $data);
     }

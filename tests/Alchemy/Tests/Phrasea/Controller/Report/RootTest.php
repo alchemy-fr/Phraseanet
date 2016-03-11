@@ -34,12 +34,10 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('GET', '/report/dashboard', [
+        $response = $this->XMLHTTPRequest('GET', '/report/dashboard', [
             'dmin' => $this->dmin->format('Y-m-d'),
             'dmax' => $this->dmin->format('Y-m-d'),
         ]);
-
-        $response = self::$DI['client']->getResponse();
 
         $this->assertTrue($response->isOk());
     }

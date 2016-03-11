@@ -52,7 +52,7 @@ class CreateCollection extends Command
                 foreach ($results as $user) {
                     $this->container->getAclForUser($user)->duplicate_right_from_bas($input->getOption('base_id_rights'), $new_collection->get_base_id());
                 }
-                $n+=40;
+                $n += 40;
             }
         }
 
