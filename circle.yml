@@ -19,13 +19,14 @@ dependencies:
   cache_directories:
     - elasticsearch-1.6.0 # relative to the build directory
     - node_modules
+    - ~/.composer
   pre:
     - yes '' | pecl install imagick
     - pecl install json
     - yes '' | pecl install zmq-beta
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
   override:
-    - composer install --prefer-source --no-interaction
+    - composer install --no-progress --no-interaction --optimize-autoloader
   post:
     - npm install
     - if [[ ! -e elasticsearch-1.6.0 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.6.0.tar.gz && tar -xvf elasticsearch-1.6.0.tar.gz && elasticsearch-1.6.0/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0; fi
