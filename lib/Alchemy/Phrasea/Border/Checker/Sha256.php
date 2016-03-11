@@ -33,7 +33,7 @@ class Sha256 extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = ! count($file->getCollection()->get_databox()->getRecordRepository()->findBySha256($file->getSha256()));
+        $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findBySha256($file->getSha256()));
 
         return new Response($boolean, $this);
     }

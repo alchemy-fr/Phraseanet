@@ -44,9 +44,9 @@ class Filename extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        $boolean = !count(\record_adapter::get_records_by_originalname(
-                    $file->getCollection()->get_databox(), $file->getOriginalName(), $this->sensitive, 0, 1
-                ));
+        $boolean = empty(\record_adapter::get_records_by_originalname(
+            $file->getCollection()->get_databox(), $file->getOriginalName(), $this->sensitive, 0, 1
+        ));
 
         return new Response($boolean, $this);
     }
