@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,14 +11,12 @@
 
 namespace Alchemy\Phrasea\Command\Task;
 
-use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Command\TaskManagerCommand;
 use Alchemy\TaskManager\Event\TaskManagerSubscriber\LockFileSubscriber;
-use Monolog\Handler\RotatingFileHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SchedulerRun extends Command
+class SchedulerRun extends TaskManagerCommand
 {
     public function __construct()
     {
@@ -31,27 +29,24 @@ class SchedulerRun extends Command
         switch ($signal) {
             case SIGTERM:
             case SIGINT:
-                $this->container['signal-handler']->unregisterAll();
-                $this->container['task-manager']->stop();
+                $this->getSignalHandler()->unregisterAll();
+                $this->getTaskManager()->stop();
                 break;
         }
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
+        $this->assertTaskManagerIsEnabled();
+        $this->configureLogger(function () {
+            return $this->getTaskManagerLogFileFactory()->forManager();
+        });
 
         declare(ticks=1000);
 
-        if ($this->container['task-manager.logger.configuration']['enabled']) {
-            $file = $this->container['task-manager.log-file.factory']->forManager();
-            $this->container['task-manager.logger']->pushHandler(new RotatingFileHandler($file->getPath(), $this->container['task-manager.logger.configuration']['max-files'], $this->container['task-manager.logger.configuration']['level']));
-        }
+        $this->getSignalHandler()->register([SIGINT, SIGTERM], [$this, 'signalHandler']);
+        $this->getTaskManager()->addSubscriber(new LockFileSubscriber($this->getTaskManagerLogger(), $this->container['tmp.path'].'/locks'));
+        $this->getTaskManager()->start();
 
-        $this->container['signal-handler']->register([SIGINT, SIGTERM], [$this, 'signalHandler']);
-        $this->container['task-manager']->addSubscriber(new LockFileSubscriber($this->container['task-manager.logger'], $this->container['tmp.path'].'/locks'));
-        $this->container['task-manager']->start();
     }
 }

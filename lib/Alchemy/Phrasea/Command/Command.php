@@ -48,19 +48,15 @@ abstract class Command extends SymfoCommand implements CommandInterface
             }
             $handler = new StreamHandler('php://stdout', $level);
 
-            $this->container['monolog'] = $this->container->share(
-                $this->container->extend('monolog', function ($logger) use ($handler) {
-                    $logger->pushHandler($handler);
+            $pushHandler = function (Logger $logger) use ($handler) {
+                return $logger->pushHandler($handler);
+            };
 
-                    return $logger;
-                })
+            $this->container['monolog'] = $this->container->share(
+                $this->container->extend('monolog', $pushHandler)
             );
             $this->container['task-manager.logger'] = $this->container->share(
-                $this->container->extend('task-manager.logger', function ($logger) use ($handler) {
-                    $logger->pushHandler($handler);
-
-                    return $logger;
-                })
+                $this->container->extend('task-manager.logger', $pushHandler)
             );
         }
 
@@ -103,7 +99,7 @@ abstract class Command extends SymfoCommand implements CommandInterface
      *
      * @see self::getContainer()
      *
-     * @return ServiceProvider
+     * @return mixed
      */
     public function getService($name)
     {
@@ -113,7 +109,7 @@ abstract class Command extends SymfoCommand implements CommandInterface
     /**
      * Format a duration in seconds to human readable
      *
-     * @param  type   $seconds the time to format
+     * @param int $seconds the time to format
      * @return string
      */
     public function getFormattedDuration($seconds)
@@ -137,5 +133,13 @@ abstract class Command extends SymfoCommand implements CommandInterface
     public static function create()
     {
         return new static();
+    }
+
+    /**
+     * @return Logger
+     */
+    protected function getTaskManagerLogger()
+    {
+        return $this->container['task-manager.logger'];
     }
 }
