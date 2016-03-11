@@ -485,6 +485,24 @@ abstract class PhraseanetTestCase extends WebTestCase
     }
 
     /**
+     * @param string $method
+     * @param string $uri
+     * @param array $parameters
+     * @param array $server
+     * @param string $content
+     *
+     * @return Response
+     */
+    protected function request($method, $uri, array $parameters = [], array $server = [], $content = null)
+    {
+        $client = $this->getClient();
+
+        $client->request($method, $uri, $parameters, [], $server, $content);
+
+        return $client->getResponse();
+    }
+
+    /**
      * Calls a URI as XMLHTTP request.
      *
      * @param string $method     The request method
@@ -492,11 +510,11 @@ abstract class PhraseanetTestCase extends WebTestCase
      * @param array  $parameters The Request parameters
      * @param string $httpAccept Contents of the Accept header
      *
-     * @return Crawler
+     * @return Response
      */
     protected function XMLHTTPRequest($method, $uri, array $parameters = [], $httpAccept = 'application/json')
     {
-        return self::$DI['client']->request($method, $uri, $parameters, [], [
+        return $this->request($method, $uri, $parameters, [
             'HTTP_ACCEPT'           => $httpAccept,
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);

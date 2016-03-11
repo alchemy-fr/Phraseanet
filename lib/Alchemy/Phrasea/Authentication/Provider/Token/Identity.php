@@ -157,7 +157,7 @@ class Identity
     public function get($property)
     {
         if (!array_key_exists($property, $this->data)) {
-           throw new InvalidArgumentException(sprintf('Property %s does not exist', $property));
+            throw new InvalidArgumentException(sprintf('Property %s does not exist', $property));
         }
 
         return $this->data[$property];
@@ -186,7 +186,7 @@ class Identity
     public function remove($property)
     {
         if (!array_key_exists($property, $this->data)) {
-           throw new InvalidArgumentException(sprintf('Property %s does not exist', $property));
+            throw new InvalidArgumentException(sprintf('Property %s does not exist', $property));
         }
 
         $value = $this->data[$property];

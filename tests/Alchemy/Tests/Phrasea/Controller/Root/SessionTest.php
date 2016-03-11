@@ -19,9 +19,9 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     public function testUpdSessionLogout()
     {
         $this->logout(self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/session/update/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+        $response = $this->XMLHTTPRequest('POST', '/session/update/');
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
         $this->checkSessionReturn($datas);
         $this->assertEquals('disconnected', $datas->status);
     }
@@ -31,11 +31,11 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testUpdSessionChangeUser()
     {
-        $this->XMLHTTPRequest('POST', '/session/update/', [
+        $response = $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => self::$DI['user_alt1']->getId()
         ]);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
         $this->checkSessionReturn($datas);
         $this->assertEquals('disconnected', $datas->status);
     }
@@ -49,13 +49,12 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
 
         /** @var User $user */
         $user = self::$DI['user'];
-        $this->XMLHTTPRequest('POST', '/session/update/', [
+        $response = $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => $user->getId(),
             'module' => 1
         ]);
-        $client = $this->getClient();
-        $this->assertTrue($client->getResponse()->isOk());
-        $data = json_decode($client->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $data = json_decode($response->getContent());
         $this->checkSessionReturn($data);
         $this->assertEquals('ok', $data->status);
     }
@@ -67,12 +66,12 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $this->authenticate(self::$DI['app']);
 
-        $this->XMLHTTPRequest('POST', '/session/update/', [
+        $response = $this->XMLHTTPRequest('POST', '/session/update/', [
             'usr' => self::$DI['user']->getId()
         ]);
 
-        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
-        $datas = json_decode(self::$DI['client']->getResponse()->getContent());
+        $datas = json_decode($response->getContent());
+        $datas = json_decode($response->getContent());
         $this->checkSessionReturn($datas);
         $this->assertEquals('unknown', $datas->status);
     }
@@ -118,8 +117,8 @@ class SessionTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(null));
 
         self::$DI['app']['orm.em'] = $em;
-        $this->XMLHTTPRequest('POST', '/session/delete/1');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOK());
+        $response = $this->XMLHTTPRequest('POST', '/session/delete/1');
+        $this->assertTrue($response->isOK());
     }
 
     public function testDeleteSessionUnauthorized()

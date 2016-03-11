@@ -40,7 +40,7 @@ class SuggestionFinder
         $infos = $token->getIdentity();
 
         if ($infos->has(Identity::PROPERTY_EMAIL)) {
-           return $this->repository->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
+            return $this->repository->findByEmail($infos->get(Identity::PROPERTY_EMAIL));
         }
 
         return null;

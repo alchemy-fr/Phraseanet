@@ -168,10 +168,8 @@ class LazaretController extends Controller
 
                 foreach ($lazaretFile->getAttributes() as $attr) {
                     //Check which ones to keep
-                    if (!!count($attributesToKeep)) {
-                        if (!in_array($attr->getId(), $attributesToKeep)) {
-                            continue;
-                        }
+                    if (!empty($attributesToKeep) && !in_array($attr->getId(), $attributesToKeep)) {
+                        continue;
                     }
 
                     try {

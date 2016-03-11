@@ -77,7 +77,7 @@ class Visa
     {
         foreach ($this->responses as $response) {
 
-            if ( ! $response->isOk()) {
+            if (!$response->isOk()) {
                 return false;
             }
         }

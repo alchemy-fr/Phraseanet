@@ -431,14 +431,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testGetMonitorTaskById()
     {
-        $tasks = self::$DI['app']['repo.tasks']->findAll();
-
-        if (!count($tasks)) {
-            $this->markTestSkipped('no tasks created for the current instance');
-        }
+        $idTask = $this->getTestTaskId();
 
         $this->setToken($this->adminAccessToken);
-        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['PUT', 'DELETE']);
@@ -454,14 +449,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testPostMonitorTaskById()
     {
-        $tasks = self::$DI['app']['repo.tasks']->findAll();
-
-        if (!count($tasks)) {
-            $this->markTestSkipped('no tasks created for the current instance');
-        }
+        $idTask = $this->getTestTaskId();
 
         $this->setToken($this->adminAccessToken);
-        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/';
         $this->evaluateMethodNotAllowedRoute($route, ['PUT', 'DELETE']);
@@ -492,14 +482,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testPostMonitorStartTask()
     {
-        $tasks = self::$DI['app']['repo.tasks']->findAll();
-
-        if (!count($tasks)) {
-            $this->markTestSkipped('no tasks created for the current instance');
-        }
+        $idTask = $this->getTestTaskId();
 
         $this->setToken($this->adminAccessToken);
-        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/start/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
@@ -518,14 +503,9 @@ class ApiJsonTest extends ApiTestCase
 
     public function testPostMonitorStopTask()
     {
-        $tasks = self::$DI['app']['repo.tasks']->findAll();
-
-        if (!count($tasks)) {
-            $this->markTestSkipped('no tasks created for the current instance');
-        }
+        $idTask = $this->getTestTaskId();
 
         $this->setToken($this->adminAccessToken);
-        $idTask = $tasks[0]->getId();
 
         $route = '/api/v1/monitor/task/' . $idTask . '/stop/';
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
@@ -1964,5 +1944,23 @@ class ApiJsonTest extends ApiTestCase
         $this->assertTrue(is_array($response['suggestions']));
         $this->assertTrue(is_array($response['results']));
         $this->assertTrue(is_string($response['query']));
+    }
+
+    /**
+     * @return int
+     */
+    private function getTestTaskId()
+    {
+        $app = $this->getApplication();
+        $tasks = $app['repo.tasks']->findAll();
+
+        if (empty($tasks)) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+
+        /** @var Task $task */
+        $task = array_shift($tasks);
+
+        return $task->getId();
     }
 }

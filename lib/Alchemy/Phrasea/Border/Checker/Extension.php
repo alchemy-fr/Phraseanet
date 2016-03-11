@@ -22,7 +22,7 @@ class Extension extends AbstractChecker
 
     public function __construct(Application $app, array $options)
     {
-        if ( ! isset($options['extensions'])) {
+        if (!isset($options['extensions'])) {
             throw new \InvalidArgumentException('Missing "extensions" options');
         }
 

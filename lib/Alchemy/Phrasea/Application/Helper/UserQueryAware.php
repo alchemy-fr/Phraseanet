@@ -31,7 +31,7 @@ trait UserQueryAware
      */
     public function getUserQueryFactory()
     {
-        if (! is_callable($this->userQueryFactory)) {
+        if (!is_callable($this->userQueryFactory)) {
             throw new \LogicException('User Query factory was not set');
         }
 
@@ -44,7 +44,7 @@ trait UserQueryAware
     public function createUserQuery()
     {
         $userQuery = call_user_func($this->getUserQueryFactory());
-        if (! $userQuery instanceof \User_Query) {
+        if (!$userQuery instanceof \User_Query) {
             throw new \LogicException(sprintf(
                 'User Query factory does not create %s instance, got "%s" instead',
                 \User_Query::class,

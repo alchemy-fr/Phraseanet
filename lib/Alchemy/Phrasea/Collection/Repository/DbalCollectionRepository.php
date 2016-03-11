@@ -78,8 +78,8 @@ class DbalCollectionRepository implements CollectionRepository
         }
 
         $query = self::$selectQuery . ' WHERE coll_id IN (:collectionIds)';
-        $parameters = [ 'collectionIds' => $parameters ];
-        $parameterTypes = [ 'collectionIds' => Connection::PARAM_INT_ARRAY ];
+        $parameters = ['collectionIds' => $parameters];
+        $parameterTypes = ['collectionIds' => Connection::PARAM_INT_ARRAY];
 
         $rows = $this->databoxConnection->fetchAll($query, $parameters, $parameterTypes);
 
@@ -99,7 +99,7 @@ class DbalCollectionRepository implements CollectionRepository
         }
 
         $query = self::$selectQuery . ' WHERE coll_id = :collectionId';
-        $row = $this->databoxConnection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
+        $row = $this->databoxConnection->fetchAssoc($query, [':collectionId' => $reference->getCollectionId()]);
 
         if ($row !== false) {
             return $this->collectionFactory->create($this->databoxId, $reference, $row);
@@ -122,7 +122,7 @@ class DbalCollectionRepository implements CollectionRepository
         }
 
         $query = self::$selectQuery . ' WHERE coll_id = :collectionId';
-        $row = $this->databoxConnection->fetchAssoc($query, [ ':collectionId' => $reference->getCollectionId() ]);
+        $row = $this->databoxConnection->fetchAssoc($query, [':collectionId' => $reference->getCollectionId()]);
 
         if ($row !== false) {
             return $this->collectionFactory->create($this->databoxId, $reference, $row);
