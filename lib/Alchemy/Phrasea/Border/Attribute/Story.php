@@ -31,7 +31,7 @@ class Story implements AttributeInterface
      */
     public function __construct(\record_adapter $story)
     {
-        if ( ! $story->isStory()) {
+        if (!$story->isStory()) {
             throw new \InvalidArgumentException('Unable to fetch a story from string');
         }
 
@@ -87,7 +87,7 @@ class Story implements AttributeInterface
             throw new \InvalidArgumentException('Unable to fetch a story from string');
         }
 
-        if ( ! $story->isStory()) {
+        if (!$story->isStory()) {
             throw new \InvalidArgumentException('Unable to fetch a story from string');
         }
 

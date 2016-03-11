@@ -19,7 +19,7 @@ class RouteLoader
         '/admin/dashboard'             => Providers\Admin\Dashboard::class,
         '/admin/databox'               => Providers\Admin\Databox::class,
         '/admin/databoxes'             => Providers\Admin\Databoxes::class,
-        '/admin/fields'                => Providers\Admin\Fields::class ,
+        '/admin/fields'                => Providers\Admin\Fields::class,
         '/admin/publications'          => Providers\Admin\Feeds::class,
         '/admin/plugins'               => Providers\Admin\Plugins::class,
         '/admin/search-engine'         => Providers\Admin\SearchEngine::class,
@@ -125,7 +125,7 @@ class RouteLoader
                 list($prefix, $providerKey) = $providerDefinition;
             }
 
-            if (! $this->isValidProviderDefinition($app, $prefix, $providerKey)) {
+            if (!$this->isValidProviderDefinition($app, $prefix, $providerKey)) {
                 continue;
             }
 

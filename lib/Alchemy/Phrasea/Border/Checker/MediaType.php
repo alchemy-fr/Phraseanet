@@ -29,7 +29,7 @@ class MediaType extends AbstractChecker
 
     public function __construct(Application $app, array $options)
     {
-        if ( ! isset($options['mediatypes'])) {
+        if (!isset($options['mediatypes'])) {
             throw new \InvalidArgumentException('Missing "mediatypes" options');
         }
 

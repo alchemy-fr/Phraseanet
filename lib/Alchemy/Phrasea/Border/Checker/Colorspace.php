@@ -26,7 +26,7 @@ class Colorspace extends AbstractChecker
 
     public function __construct(Application $app, array $options)
     {
-        if ( ! isset($options['colorspaces'])) {
+        if (!isset($options['colorspaces'])) {
             throw new \InvalidArgumentException('Missing "colorspaces" options');
         }
 
@@ -42,7 +42,8 @@ class Colorspace extends AbstractChecker
             $boolean = true; //bypass color if empty array
         } elseif (method_exists($file->getMedia(), 'getColorSpace')) {
             $colorspace = null;
-            switch ($file->getMedia()->getColorSpace()) {
+            switch ($file->getMedia()->getColorSpace())
+            {
                 case \MediaVorus\Media\Image::COLORSPACE_CMYK:
                     $colorspace = self::COLORSPACE_CMYK;
                     break;

@@ -58,7 +58,7 @@ abstract class AbstractChecker implements CheckerInterface
         $this->databoxes = [];
 
         foreach ($this->toIterator($databoxes) as $databox) {
-            if (! $databox instanceof \databox) {
+            if (!$databox instanceof \databox) {
                 throw new \InvalidArgumentException('Restrict to databoxes only accept databoxes as argument');
             }
             $this->databoxes[] = $databox;
@@ -86,7 +86,7 @@ abstract class AbstractChecker implements CheckerInterface
         $this->collections = [];
 
         foreach ($this->toIterator($collections) as $collection) {
-            if (! $collection instanceof \collection) {
+            if (!$collection instanceof \collection) {
                 throw new \InvalidArgumentException('Restrict to collections only accept collections as argument');
             }
             $this->collections[] = $collection;

@@ -42,7 +42,7 @@ class Linkedin extends AbstractProvider
     /**
      * @param ClientInterface $client
      *
-     * @return Github
+     * @return Linkedin
      */
     public function setGuzzleClient(ClientInterface $client)
     {
