@@ -48,8 +48,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
                     ->getMock();
         });
 
-        $this->XMLHTTPRequest('POST', '/prod/export/ftp/test/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/export/ftp/test/', ['lst' => self::$DI['record_1']->get_serialize_key()]);
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('success', $datas);
         $this->assertTrue($datas['success']);

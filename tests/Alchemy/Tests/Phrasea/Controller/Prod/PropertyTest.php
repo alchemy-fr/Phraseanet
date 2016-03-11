@@ -19,8 +19,13 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDisplayStatusProperty()
     {
-        $this->XMLHTTPRequest('GET', '/prod/records/property/', ['lst' => implode(';', [self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()])]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('GET', '/prod/records/property/', [
+            'lst' => implode(';', [
+                self::$DI['record_no_access']->get_serialize_key(),
+                self::$DI['record_1']->get_serialize_key(),
+                self::$DI['record_4']->get_serialize_key()
+            ])
+        ]);
         $this->assertTrue($response->isOk());
         unset($response);
     }
@@ -40,10 +45,14 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDisplayTypeProperty()
     {
-        $this->XMLHTTPRequest('GET', '/prod/records/property/type/',['lst' => implode(';', [self::$DI['record_no_access']->get_serialize_key(), self::$DI['record_1']->get_serialize_key(), self::$DI['record_4']->get_serialize_key()])]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('GET', '/prod/records/property/type/', [
+            'lst' => implode(';', [
+                self::$DI['record_no_access']->get_serialize_key(),
+                self::$DI['record_1']->get_serialize_key(),
+                self::$DI['record_4']->get_serialize_key()
+            ])
+        ]);
         $this->assertTrue($response->isOk());
-        unset($response);
     }
 
     /**

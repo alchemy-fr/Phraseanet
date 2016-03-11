@@ -36,8 +36,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst'     => $record->get_serialize_key()]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst' => $record->get_serialize_key()]);
         $datas = (array) json_decode($response->getContent());
         $this->assertContains($record->get_serialize_key(), $datas);
         try {
@@ -46,7 +45,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         } catch (\Exception $e) {
 
         }
-        unset($response, $datas, $record);
     }
 
     /**
@@ -56,12 +54,10 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst'     => $record->get_serialize_key()]);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst' => $record->get_serialize_key()]);
         $datas = (array) json_decode($response->getContent());
         $this->assertTrue(count($datas) > 0);
         $record->delete();
-        unset($response, $datas, $record);
     }
 
     /**
@@ -92,13 +88,12 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['orm.em']->persist($element);
         self::$DI['app']['orm.em']->flush();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', [
-            'env'            => 'BASK',
-            'pos'            => 0,
-            'query'          => '',
-            'cont'           => $basket->getId(),
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
+            'env' => 'BASK',
+            'pos' => 0,
+            'query' => '',
+            'cont' => $basket->getId(),
         ]);
-        $response = self::$DI['client']->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
 
@@ -126,14 +121,13 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $options->onCollections($acl->get_granted_base());
         $serializedOptions = $options->serialize();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', [
-            'env'            => 'RESULT',
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
+            'env' => 'RESULT',
             'options_serial' => $serializedOptions,
-            'pos'            => 0,
-            'query'          => ''
+            'pos' => 0,
+            'query' => ''
         ]);
 
-        $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('desc', $data);
@@ -145,8 +139,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('tools', $data);
         $this->assertArrayHasKey('pos', $data);
         $this->assertArrayHasKey('title', $data);
-
-        unset($response, $data);
     }
 
     /**
@@ -157,14 +149,13 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->authenticate(self::$DI['app']);
         self::$DI['record_story_1'];
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', [
-            'env'   => 'REG',
-            'pos'   => 0,
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
+            'env' => 'REG',
+            'pos' => 0,
             'query' => '',
-            'cont'  =>   self::$DI['record_story_1']->get_serialize_key()
+            'cont' => self::$DI['record_story_1']->get_serialize_key()
         ]);
 
-        $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());
         $this->assertObjectHasAttribute('desc', $data);
         $this->assertObjectHasAttribute('html_preview', $data);
@@ -175,8 +166,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('tools', $data);
         $this->assertObjectHasAttribute('pos', $data);
         $this->assertObjectHasAttribute('title', $data);
-
-        unset($response, $data);
     }
 
     /**
@@ -187,14 +176,13 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->authenticate(self::$DI['app']);
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 1);
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', [
-            'env'   => 'BASK',
-            'pos'   => 0,
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
+            'env' => 'BASK',
+            'pos' => 0,
             'query' => '',
-            'cont'  => $basket->getId()
+            'cont' => $basket->getId()
         ]);
 
-        $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());
 
         $this->assertObjectHasAttribute('desc', $data);
@@ -224,14 +212,13 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $feed = self::$DI['app']['orm.em']->find('Phraseanet:Feed', 1);
         $feedEntry = $feed->getEntries()->first();
 
-        $this->XMLHTTPRequest('POST', '/prod/records/', [
-            'env'   => 'FEED',
-            'pos'   => 0,
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/', [
+            'env' => 'FEED',
+            'pos' => 0,
             'query' => '',
-            'cont'  => $feedEntry->getId()
+            'cont' => $feedEntry->getId()
         ]);
 
-        $response = self::$DI['client']->getResponse();
         $data = json_decode($response->getContent());
         $this->assertObjectHasAttribute('desc', $data);
         $this->assertObjectHasAttribute('html_preview', $data);

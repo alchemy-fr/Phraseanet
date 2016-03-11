@@ -34,10 +34,8 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testGetTOUAJAX()
     {
-        $this->XMLHTTPRequest('GET', '/prod/TOU/');
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('GET', '/prod/TOU/');
         $this->assertTrue($response->isOk());
-        unset($response);
     }
 
     /**
@@ -48,8 +46,7 @@ class TOUTest extends \PhraseanetAuthenticatedWebTestCase
         $databoxes = self::$DI['app']->getDataboxes();
         $databox = array_shift($databoxes);
         self::$DI['app']['authentication']->setUser(self::$DI['user_alt2']);
-        $this->XMLHTTPRequest('POST', '/prod/TOU/deny/'.$databox->get_sbas_id() .'/');
-        $response = self::$DI['client']->getResponse();
+        $response = $this->XMLHTTPRequest('POST', '/prod/TOU/deny/' . $databox->get_sbas_id() . '/');
         $this->assertTrue($response->isOk());
         unset($response, $databoxes);
 

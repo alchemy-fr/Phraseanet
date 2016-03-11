@@ -115,10 +115,10 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testDeleteAppError()
     {
-        $this->XMLHTTPRequest('DELETE', '/developers/application/0/');
+        $response = $this->XMLHTTPRequest('DELETE', '/developers/application/0/');
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertFalse($content->success);
     }
 
@@ -134,8 +134,8 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
             'http://phraseanet.com/'
         );
         $id = $oauthApp->getId();
-        $this->XMLHTTPRequest('DELETE', '/developers/application/' . $id . '/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $response = $this->XMLHTTPRequest('DELETE', '/developers/application/' . $id . '/');
+        $this->assertTrue($response->isOk());
 
         $this->assertNull(self::$DI['app']['repo.api-applications']->find($id));
     }
@@ -155,12 +155,12 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRenewAppCallbackError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/callback/', [
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/0/callback/', [
             'callback' => 'my.callback.com'
-            ]);
+        ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertFalse($content->success);
     }
 
@@ -170,9 +170,9 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     public function testRenewAppCallbackError2()
     {
         $oauthApp = self::$DI['oauth2-app-user'];
-        $this->XMLHTTPRequest('POST', '/developers/application/'.$oauthApp->getId().'/callback/');
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/callback/');
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertFalse($content->success);
     }
 
@@ -183,12 +183,12 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/callback/', [
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/callback/', [
             'callback' => 'http://my.callback.com'
         ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertTrue($content->success);
         $oauthApp = self::$DI['app']['repo.api-applications']->find($oauthApp->getId());
         $this->assertEquals('http://my.callback.com', $oauthApp->getRedirectUri());
@@ -209,12 +209,12 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testRenewAccessTokenError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/access_token/', [
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/0/access_token/', [
             'callback' => 'my.callback.com'
         ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertFalse($content->success);
     }
 
@@ -225,10 +225,10 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/access_token/');
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/access_token/');
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertTrue($content->success);
         $this->assertNotNull($content->token);
     }
@@ -248,12 +248,12 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testAuthorizeGrantpasswordError()
     {
-        $this->XMLHTTPRequest('POST', '/developers/application/0/authorize_grant_password/', [
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/0/authorize_grant_password/', [
             'callback' => 'my.callback.com'
-            ]);
+        ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertFalse($content->success);
     }
 
@@ -264,12 +264,12 @@ class DevelopersTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $oauthApp = self::$DI['oauth2-app-user'];
 
-        $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/authorize_grant_password/', [
+        $response = $this->XMLHTTPRequest('POST', '/developers/application/' . $oauthApp->getId() . '/authorize_grant_password/', [
             'grant' => '1'
         ]);
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $content = json_decode(self::$DI['client']->getResponse()->getContent());
+        $this->assertTrue($response->isOk());
+        $content = json_decode($response->getContent());
         $this->assertTrue($content->success);
         $oauthApp = self::$DI['app']['repo.api-applications']->find($oauthApp->getId());
         $this->assertTrue($oauthApp->isPasswordGranted());
