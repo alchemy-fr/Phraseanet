@@ -2,16 +2,33 @@
 
 namespace Alchemy\Tests\Phrasea\TaskManager\Job;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\TaskManager\Job\AbstractJob;
 use Alchemy\Phrasea\TaskManager\Job\EmptyCollectionJob;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Translation\TranslatorInterface;
 
-/**
- * @group functional
- * @group legacy
- */
-class EmptyCollectionJobTest extends JobTestCase
+class EmptyCollectionJobTest extends \PHPUnit_Framework_TestCase
 {
-    protected function getJob()
+    /**
+     * @var ObjectProphecy
+     */
+    private $translator;
+
+    /**
+     * @var EmptyCollectionJob
+     */
+    private $sut;
+
+    protected function setUp()
     {
-        return new EmptyCollectionJob($this->createTranslatorMock());
+        $this->translator = $this->prophesize(TranslatorInterface::class);
+
+        $this->sut = new EmptyCollectionJob($this->translator->reveal());
+    }
+
+    public function testItExtendsAbstractJob()
+    {
+        $this->assertInstanceOf(AbstractJob::class, $this->sut);
     }
 }
