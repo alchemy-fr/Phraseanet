@@ -68,7 +68,7 @@ class ToolsController extends Controller
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
-                    } elseif (isset($databoxSubdefs[$subdefName])) {
+                    } elseif ($databoxSubdefs->hasSubdef($subdefName)) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
                             continue;
                         }
