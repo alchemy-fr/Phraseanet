@@ -1,9 +1,9 @@
 <?php
 
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -59,7 +59,7 @@ class EmptyCollectionJob extends AbstractJob
 
         $settings = simplexml_load_string($task->getSettings());
 
-        $baseId = (string) $settings->base_id;
+        $baseId = (string) $settings->bas_id;
 
         $collection = \collection::getByBaseId($app, $baseId);
         $collection->empty_collection(200);
