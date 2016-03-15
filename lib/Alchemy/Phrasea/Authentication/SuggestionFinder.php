@@ -15,13 +15,13 @@ use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 
 class SuggestionFinder
 {
     private $repository;
 
-    public function __construct(ObjectRepository $repository)
+    public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
     }
