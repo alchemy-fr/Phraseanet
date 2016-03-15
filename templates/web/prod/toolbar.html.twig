@@ -1,42 +1,42 @@
 {% block toolbar %}
     <span class="dropdownButton">
         <div class="btn-group">
-            <button id="selectCase" class="default_action btn btn-inverse">&nbsp;</button>
+            <button id="selectCase" class="default_action btn btn-inverse answer_selector" data-action-name="select-toggle" data-state="default">&nbsp;</button>
             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <a class="answer_selector all_selector">
+                    <a class="answer_selector all_selector" data-action-name="select-all" data-state="default">
                         {{ 'reponses:: selectionner tout' | trans }}
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a class="answer_selector none_selector">
+                    <a class="answer_selector none_selector" data-action-name="unselect-all" data-state="true">
                         {{ 'reponses:: selectionner rien' | trans }}
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a class="answer_selector image_selector">
+                    <a class="answer_selector image_selector" data-action-name="select-type" data-state="default" data-type=".type-image">
                         {{ 'phraseanet::type:: images' | trans }}
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a class="answer_selector document_selector">
+                    <a class="answer_selector document_selector" data-action-name="select-type" data-state="default" data-type=".type-document">
                         {{ 'phraseanet::type:: documents' | trans }}
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a class="answer_selector video_selector">
+                    <a class="answer_selector video_selector" data-action-name="select-type" data-state="default" data-type=".type-video">
                         {{ 'phraseanet::type:: videos' | trans }}
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
-                    <a class="answer_selector audio_selector">
+                    <a class="answer_selector audio_selector" data-action-name="select-type" data-state="default" data-type=".type-audio">
                         {{ 'phraseanet::type:: audios' | trans }}
                     </a>
                 </li>
