@@ -45,8 +45,6 @@ class CLI extends Application
     {
         parent::__construct($environment);
 
-        $app = $this;
-
         $this['session.test'] = true;
 
         $this['console'] = $this->share(function () use ($name, $version) {
