@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,10 +11,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\Model\RecordInterface;
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\ScheduledFetcherDelegate;
@@ -26,10 +21,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrato
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\ThesaurusHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
-use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
@@ -49,11 +42,6 @@ class RecordIndexer
     private $thesaurus;
 
     /**
-     * @var \appbox
-     */
-    private $appbox;
-
-    /**
      * @var array
      */
     private $locales;
@@ -71,7 +59,6 @@ class RecordIndexer
         $this->structure = $structure;
         $this->helper = $helper;
         $this->thesaurus = $thesaurus;
-        $this->appbox = $appbox;
         $this->locales = $locales;
         $this->logger = $logger;
     }
