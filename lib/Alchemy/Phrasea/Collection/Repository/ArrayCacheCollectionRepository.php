@@ -13,7 +13,7 @@ class ArrayCacheCollectionRepository implements CollectionRepository
     private $collectionRepository;
 
     /**
-     * @var \collection[]
+     * @var \collection[]|null
      */
     private $collectionCache = null;
 
