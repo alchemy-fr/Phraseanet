@@ -33,19 +33,16 @@ class Factory
      */
     public static function getFileAttribute(Application $app, $name, $serialized)
     {
-        switch ($name) {
+        switch ($name)
+        {
             case AttributeInterface::NAME_METADATA:
                 return Metadata::loadFromString($app, $serialized);
-                break;
             case AttributeInterface::NAME_STORY:
                 return Story::loadFromString($app, $serialized);
-                break;
             case AttributeInterface::NAME_METAFIELD:
                 return MetaField::loadFromString($app, $serialized);
-                break;
             case AttributeInterface::NAME_STATUS:
                 return Status::loadFromString($app, $serialized);
-                break;
         }
 
         throw new \InvalidArgumentException(sprintf('Unknown attribute %s', $name));

@@ -92,7 +92,7 @@ EOT;
     }
 
     /**
-     * @param $collectionId
+     * @param int $collectionId
      */
     public function setCollectionId($collectionId)
     {
@@ -126,7 +126,7 @@ EOT;
     }
 
     /**
-     * @return \string[]
+     * @return string[]
      */
     public function getLabels()
     {
@@ -134,7 +134,7 @@ EOT;
     }
 
     /**
-     * @param \string[] $labels
+     * @param string[] $labels
      */
     public function setLabels($labels)
     {
@@ -142,7 +142,7 @@ EOT;
     }
 
     /**
-     * @param $lang
+     * @param string $lang
      * @param bool $substitute
      * @return string
      */
@@ -154,14 +154,14 @@ EOT;
 
         if ($substitute) {
             return isset($this->labels[$lang]) ? $this->labels[$lang] : $this->name;
-        } else {
-            return $this->labels[$lang];
         }
+
+        return $this->labels[$lang];
     }
 
     /**
-     * @param $lang
-     * @param $label
+     * @param string $lang
+     * @param string $label
      */
     public function setLabel($lang, $label)
     {
@@ -173,7 +173,7 @@ EOT;
     }
 
     /**
-     * @return \int[]|string|null
+     * @return int[]|string|null
      */
     public function getLogo()
     {
@@ -181,7 +181,7 @@ EOT;
     }
 
     /**
-     * @param \int[]|string $logo
+     * @param int[]|string $logo
      */
     public function setLogo($logo)
     {
