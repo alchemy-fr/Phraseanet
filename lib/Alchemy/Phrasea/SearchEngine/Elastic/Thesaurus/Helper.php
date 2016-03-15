@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,7 +15,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\StringUtils;
 use databox;
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
@@ -32,18 +30,21 @@ class Helper
         $xpath = new DOMXPath($document);
         $nodes = $xpath->query($expression);
         $concepts = [];
+
         foreach ($nodes as $node) {
+            $me_and_parents = array_merge([$node], self::getElementAncestors($node));
+
             $path_segments = [];
-            $me_and_parents = [$node];
-            foreach (self::getElementAncestors($node) as $me_and_parents[]);
-            foreach ($me_and_parents as $node) {
-                if (Navigator::isConcept($node)) {
-                    $path_segments[] = self::conceptPathSegment($node);
-                } else {
+
+            foreach ($me_and_parents as $me_or_parent) {
+                if (!Navigator::isConcept($me_or_parent)) {
                     // Silently skips invalid targeted nodes
                     break;
                 }
+
+                $path_segments[] = self::conceptPathSegment($me_or_parent);
             }
+
             // Concept paths are have databox identifier at root level
             $concepts[] = new Concept(sprintf(
                 '/%d/%s',
@@ -58,7 +59,8 @@ class Helper
     private static function getElementAncestors(DOMElement $element)
     {
         $parents = [];
-        while ($element = $element->parentNode) {
+
+        while (null !== $element = $element->parentNode) {
             $parents[] = $element;
         }
 
