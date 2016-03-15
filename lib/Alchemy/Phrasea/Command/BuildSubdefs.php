@@ -1,9 +1,8 @@
 <?php
-
-/*
+/**
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,19 +13,15 @@ namespace Alchemy\Phrasea\Command;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\SQLParserUtils;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\ProgressBar;
 use media_subdef;
+
 class BuildSubdefs extends Command
 {
-    /**
-     * Constructor
-     */
     public function __construct($name = null)
     {
         parent::__construct($name);
@@ -39,8 +34,6 @@ class BuildSubdefs extends Command
         $this->addOption('min_record', 'min', InputOption::VALUE_OPTIONAL, 'Min record id');
         $this->addOption('with-substitution', 'wsubstit', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records as well');
         $this->addOption('substitution-only', 'substito', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records only');
-
-        return $this;
     }
 
     /**
@@ -70,111 +63,46 @@ class BuildSubdefs extends Command
             return;
         }
 
-        $sqlCount = "SELECT COUNT(DISTINCT(r.record_id)) AS nb_records"
-            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
-            . " WHERE r.type IN (?)";
-
-        $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
-        $params = array($subdefsName, $recordsType);
-
-        if (null !== $min = $input->getOption('min_record')) {
-            $sqlCount .= " AND (r.record_id >= ?)";
-
-            $params[] = (int) $min;
-            $types[] = \PDO::PARAM_INT;
-        }
-
-        if (null !== $max = $input->getOption('max_record')) {
-            $sqlCount .= " AND (r.record_id <= ?)";
-
-            $params[] = (int) $max;
-            $types[] = \PDO::PARAM_INT;
-        }
-
+        $min = $input->getOption('min_record');
+        $max = $input->getOption('max_record');
         $substitutionOnly = $input->getOption('substitution-only');
         $withSubstitution = $input->getOption('with-substitution');
 
-        if (false === $withSubstitution) {
-            if (true === $substitutionOnly) {
-                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 1)";
-            } else  {
-                $sqlCount .= " AND (ISNULL(s.substit) OR s.substit = 0)";
-            }
-        } elseif ($substitutionOnly) {
+        if (false !== $withSubstitution && false !== $substitutionOnly) {
             throw new InvalidArgumentException('Conflict, you can not ask for --substitution-only && --with-substitution parameters at the same time');
         }
 
-        list($sqlCount, $stmtParams) = SQLParserUtils::expandListParameters($sqlCount, $params, $types);
+        list($sql, $params, $types) = $this->generateSQL($subdefsName, $recordsType, $min, $max, $withSubstitution, $substitutionOnly);
 
         $databox = $this->container->findDataboxById($input->getArgument('databox'));
-
-        $output->writeln($sqlCount);
-
         $connection = $databox->get_connection();
-        $stmt = $connection->prepare($sqlCount);
-        $stmt->execute($stmtParams);
-        $row = $stmt->fetch();
-        $totalRecords = $row['nb_records'];
+
+        $sqlCount = sprintf('SELECT COUNT(*) FROM (%s)', $sql);
+        $output->writeln($sqlCount);
+        $totalRecords = (int)$connection->executeQuery($sqlCount, $params, $types)->fetchColumn();
 
         if ($totalRecords === 0) {
             return;
         }
 
-        /** @var HelperSet $helperSet */
-        $helperSet = $this->getHelperSet();
+        $progress = new ProgressBar($output, $totalRecords);
 
-        /** @var ProgressBar $progress */
-        $progress = $helperSet->get('progress');
-
-        $progress->start($output, $totalRecords);
+        $progress->start();
 
         $progress->display();
 
-        $sql = "SELECT DISTINCT(r.record_id)"
-            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
-            . " WHERE r.type IN (?)";
-
-        $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
-        $params = array($subdefsName, $recordsType);
-
-        if ($min) {
-            $sql .= " AND (r.record_id >= ?)";
-
-            $params[] = (int) $min;
-            $types[] = \PDO::PARAM_INT;
-        }
-        if ($max) {
-            $sql .= " AND (r.record_id <= ?)";
-
-            $params[] = (int) $max;
-            $types[] = \PDO::PARAM_INT;
-        }
-
-        if (false === $withSubstitution) {
-            if (true === $substitutionOnly) {
-                $sql .= " AND (ISNULL(s.substit) OR s.substit = 1)";
-            } else  {
-                $sql .= " AND (ISNULL(s.substit) OR s.substit = 0)";
-            }
-        }
-
-        list($sql, $stmtParams) = SQLParserUtils::expandListParameters($sql, $params, $types);
-
-        $connection = $databox->get_connection();
-        $stmt = $connection->prepare($sql);
-        $stmt->execute($stmtParams);
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $connection->executeQuery($sql, $params, $types)->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($rows as $row) {
             $output->write(sprintf(' (#%s)', $row['record_id']));
 
-            $record = new \record_adapter($this->container, $databox->get_sbas_id(), $row['record_id']);
+            $record = $databox->get_record($row['record_id']);
 
-            /** @var media_subdef[] $subdefs */
             $subdefs = array_filter($record->get_subdefs(), function(media_subdef $subdef) use ($subdefsName) {
                 return in_array($subdef->get_name(), $subdefsName);
             });
 
+            /** @var media_subdef $subdef */
             foreach ($subdefs as $subdef) {
                 $subdef->remove_file();
                 if (($withSubstitution && $subdef->is_substituted()) || $substitutionOnly) {
@@ -186,13 +114,49 @@ class BuildSubdefs extends Command
             $subdefGenerator = $this->container['subdef.generator'];
             $subdefGenerator->generateSubdefs($record, $subdefsName);
 
-            $stmt->closeCursor();
-
             $progress->advance();
         }
 
-        unset($rows, $record, $stmt, $connection);
-
         $progress->finish();
+    }
+
+    /**
+     * @param string[] $subdefNames
+     * @param string[] $recordTypes
+     * @param null|int $min
+     * @param null|int $max
+     * @param bool $withSubstitution
+     * @param bool $substitutionOnly
+     * @return array
+     */
+    protected function generateSQL(array $subdefNames, array $recordTypes, $min, $max, $withSubstitution, $substitutionOnly)
+    {
+        $sql = "SELECT DISTINCT(r.record_id) AS record_id"
+            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
+            . " WHERE r.type IN (?)";
+
+        $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
+        $params = array($subdefNames, $recordTypes);
+
+        if (null !== $min) {
+            $sql .= " AND (r.record_id >= ?)";
+
+            $params[] = (int)$min;
+            $types[] = \PDO::PARAM_INT;
+        }
+        if (null !== $max) {
+            $sql .= " AND (r.record_id <= ?)";
+
+            $params[] = (int)$max;
+            $types[] = \PDO::PARAM_INT;
+        }
+
+        if (false === $withSubstitution) {
+            $sql .= " AND (ISNULL(s.substit) OR s.substit = ?)";
+            $params[] = $substitutionOnly ? 1 : 0;
+            $types[] = \PDO::PARAM_INT;
+        }
+
+        return array($sql, $params, $types);
     }
 }
