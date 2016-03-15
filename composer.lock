@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "51c6f036a5c4458c3745218d7a826c16",
-    "content-hash": "8d0505b59a415d5f0c8f62fbf0fcfcb8",
+    "hash": "baf4148980adfb15bed6b72c438da7eb",
+    "content-hash": "5d8ffafd15285984d97c82a1e13a697f",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -595,7 +595,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/cefd59cad3ac9b26243f551e704e7142fca79522",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/2b199e842551a1137640c822f433751a9f402099",
                 "reference": "cefd59cad3ac9b26243f551e704e7142fca79522",
                 "shasum": ""
             },
@@ -864,6 +864,68 @@
                 "transliterator"
             ],
             "time": "2015-09-28 16:26:35"
+        },
+        {
+            "name": "cocur/slugify",
+            "version": "v2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cocur/slugify.git",
+                "reference": "912bf41f940f9a4e38ff1284b1841eaa71911d7f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cocur/slugify/zipball/912bf41f940f9a4e38ff1284b1841eaa71911d7f",
+                "reference": "912bf41f940f9a4e38ff1284b1841eaa71911d7f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "laravel/framework": "~5.1",
+                "latte/latte": "~2.2",
+                "mikey179/vfsstream": "~1.6",
+                "mockery/mockery": "~0.9",
+                "nette/di": "~2.2",
+                "phpunit/phpunit": "~4.8|~5.2",
+                "pimple/pimple": "~1.1",
+                "plumphp/plum": "~0.1",
+                "silex/silex": "~1.3",
+                "symfony/dependency-injection": "~2.4|~3.0",
+                "symfony/http-kernel": "~2.4|~3.0",
+                "twig/twig": "~1.12",
+                "zendframework/zend-modulemanager": "~2.2",
+                "zendframework/zend-servicemanager": "~2.2",
+                "zendframework/zend-view": "~2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cocur\\Slugify\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivo Bathke",
+                    "email": "ivo.bathke@gmail.com"
+                },
+                {
+                    "name": "Florian Eckerstorfer",
+                    "email": "florian@eckerstorfer.co",
+                    "homepage": "https://florian.ec"
+                }
+            ],
+            "description": "Converts a string into a slug.",
+            "keywords": [
+                "slug",
+                "slugify"
+            ],
+            "time": "2016-02-24 21:50:50"
         },
         {
             "name": "dailymotion/sdk",
@@ -7347,7 +7409,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.5"
+        "php": ">=5.5.9",
+        "ext-intl": "*"
     },
     "platform-dev": []
 }

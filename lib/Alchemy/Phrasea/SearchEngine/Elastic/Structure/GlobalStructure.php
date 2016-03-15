@@ -8,17 +8,39 @@ use DomainException;
 
 final class GlobalStructure implements Structure
 {
-    /** @var Field[] */
+    /**
+     * @var Field[]
+     */
     private $fields = array();
-    /** @var Field[] */
+
+    /**
+     * @var Field[]
+     * */
     private $date_fields = array();
-    /** @var Field[] */
+
+    /**
+     * @var Field[]
+     */
     private $thesaurus_fields = array();
-    /** @var Field[] */
+
+    /**
+     * @var Field[]
+     */
     private $private = array();
-    /** @var Field[] */
+
+    /**
+     * @var Field[]
+     */
     private $facets = array();
+
+    /**
+     * @var Flag[]
+     */
     private $flags = array();
+
+    /**
+     * @var Tag[]
+     */
     private $metadata_tags = array();
 
     /**
@@ -40,6 +62,12 @@ final class GlobalStructure implements Structure
         return new self($fields, $flags, MetadataHelper::createTags());
     }
 
+    /**
+     * GlobalStructure constructor.
+     * @param Field[] $fields
+     * @param Flag[] $flags
+     * @param Tag[] $metadata_tags
+     */
     public function __construct(array $fields = [], array $flags = [], array $metadata_tags = [])
     {
         Assertion::allIsInstanceOf($fields, Field::class);
@@ -78,16 +106,25 @@ final class GlobalStructure implements Structure
         }
     }
 
+    /**
+     * @return Field[]
+     */
     public function getAllFields()
     {
         return $this->fields;
     }
 
+    /**
+     * @return Field[]
+     */
     public function getUnrestrictedFields()
     {
         return array_diff_key($this->fields, $this->private);
     }
 
+    /**
+     * @return Field[]
+     */
     public function getPrivateFields()
     {
         return $this->private;
@@ -101,11 +138,17 @@ final class GlobalStructure implements Structure
         return $this->facets;
     }
 
+    /**
+     * @return Field[]
+     */
     public function getThesaurusEnabledFields()
     {
         return $this->thesaurus_fields;
     }
 
+    /**
+     * @return Field[]
+     */
     public function getDateFields()
     {
         return $this->date_fields;
@@ -117,18 +160,22 @@ final class GlobalStructure implements Structure
      */
     public function get($name)
     {
-        return isset($this->fields[$name]) ?
-                     $this->fields[$name] : null;
-    }
-
-    public function typeOf($name)
-    {
-        return isset($this->fields[$name]) ?
-                     $this->fields[$name]->getType() : null;
+        return isset($this->fields[$name]) ? $this->fields[$name] : null;
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @return null|string
+     */
+    public function typeOf($name)
+    {
+        $field = $this->get($name);
+
+        return $field ? $field->getType() : null;
+    }
+
+    /**
+     * @param string $name
      * @return bool
      */
     public function isPrivate($name)
@@ -142,26 +189,39 @@ final class GlobalStructure implements Structure
         throw new DomainException(sprintf('Unknown field "%s".', $name));
     }
 
+    /**
+     * @return Flag[]
+     */
     public function getAllFlags()
     {
         return $this->flags;
     }
 
+    /**
+     * @param string $name
+     * @return Flag|null
+     */
     public function getFlagByName($name)
     {
         return isset($this->flags[$name]) ?
                      $this->flags[$name] : null;
     }
 
+    /**
+     * @return Tag[]
+     */
     public function getMetadataTags()
     {
         return $this->metadata_tags;
     }
 
+    /**
+     * @param string $name
+     * @return Tag|null
+     */
     public function getMetadataTagByName($name)
     {
-        return isset($this->metadata_tags[$name]) ?
-                     $this->metadata_tags[$name] : null;
+        return isset($this->metadata_tags[$name]) ? $this->metadata_tags[$name] : null;
     }
 
     /**
@@ -175,6 +235,7 @@ final class GlobalStructure implements Structure
     public function getCollectionsUsedByPrivateFields()
     {
         $map = [];
+
         foreach ($this->private as $name => $field) {
             $map[$name] = $field->getDependantCollections();
         }
