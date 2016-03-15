@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Http\StaticFile\StaticMode;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
 class PhraseanetExtension extends \Twig_Extension
 {
@@ -44,6 +45,8 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
             new \Twig_SimpleFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
+
+            new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
         );
     }
 
