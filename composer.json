@@ -28,7 +28,7 @@
         }
     ],
     "require":      {
-        "php": ">=5.5",
+        "php": ">=5.5.9",
         "alchemy-fr/tcpdf-clone": "~6.0",
         "alchemy/embed-bundle": "^0.3.2",
         "alchemy/geonames-api-consumer": "~0.1.0",
@@ -42,6 +42,7 @@
         "alchemy/task-manager": "2.0.x-dev@dev",
         "alchemy/zippy": "^0.3.0",
         "beberlei/assert": "^2.3",
+        "cocur/slugify": "^2.0",
         "dailymotion/sdk": "~1.5",
         "data-uri/data-uri": "~0.1.0",
         "dflydev/doctrine-orm-service-provider": "~1.0",
