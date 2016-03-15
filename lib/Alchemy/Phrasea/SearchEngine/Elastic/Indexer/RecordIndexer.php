@@ -54,7 +54,7 @@ class RecordIndexer
         return $_key . '_' . $record_key;
     }
 
-    public function __construct(Structure $structure, RecordHelper $helper, Thesaurus $thesaurus, \appbox $appbox, array $locales, LoggerInterface $logger)
+    public function __construct(Structure $structure, RecordHelper $helper, Thesaurus $thesaurus, array $locales, LoggerInterface $logger)
     {
         $this->structure = $structure;
         $this->helper = $helper;

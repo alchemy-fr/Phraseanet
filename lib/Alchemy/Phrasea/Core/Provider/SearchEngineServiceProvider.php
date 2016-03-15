@@ -105,7 +105,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['search_engine.structure'],
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
-                $app['phraseanet.appbox'],
                 array_keys($app['locales.available']),
                 $logger
             );
