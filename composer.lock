@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dd3da47c4743d8983a81e5a43adba25d",
-    "content-hash": "909254f712a3cd8cdd5868e0d74d0097",
+    "hash": "cf26537ff8480fca942c952933dd7c82",
+    "content-hash": "9ddbc47a8a36e87c0ab8ce91c2ebe2df",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -595,7 +595,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/cefd59cad3ac9b26243f551e704e7142fca79522",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/2b199e842551a1137640c822f433751a9f402099",
                 "reference": "cefd59cad3ac9b26243f551e704e7142fca79522",
                 "shasum": ""
             },
@@ -2874,7 +2874,7 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-alchemy-0.6.2",
+            "version": "0.6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
@@ -3562,22 +3562,22 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.0",
+            "version": "0.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a"
+                "reference": "b82bb891640cb1ce5d5523235047c34c64194514"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/cc279e0dcf22e47322028084dd1145a44a219c1a",
-                "reference": "cc279e0dcf22e47322028084dd1145a44a219c1a",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/b82bb891640cb1ce5d5523235047c34c64194514",
+                "reference": "b82bb891640cb1ce5d5523235047c34c64194514",
                 "shasum": ""
             },
             "require": {
                 "alchemy/ghostscript": "~0.4.0",
                 "alchemy/mediavorus": "^0.4.4",
-                "imagine/imagine": "0.6.x@dev",
+                "imagine/imagine": "^0.6.2",
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
@@ -3599,7 +3599,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3632,7 +3632,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2016-02-17 14:25:54"
+            "time": "2016-03-16 13:11:52"
         },
         {
             "name": "monolog/monolog",
@@ -4751,7 +4751,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c18abc6df90257ddbbe2654a98cc5cc7be804411",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/ce4c36bdc9310ba76fdd167f16978f14ab3b8e42",
                 "reference": "c18abc6df90257ddbbe2654a98cc5cc7be804411",
                 "shasum": ""
             },
@@ -7504,14 +7504,7 @@
             "time": "2015-06-21 13:59:46"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.6.2",
-            "alias_normalized": "0.6.2.0",
-            "version": "dev-alchemy-0.6.2",
-            "package": "imagine/imagine"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/task-manager": 20,

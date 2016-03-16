@@ -59,7 +59,7 @@
         "hoa/dispatcher": "~0.0",
         "hoa/router": "~2.0",
         "igorw/get-in": "~1.0",
-        "imagine/imagine": "dev-alchemy-0.6.2 as 0.6.2",
+        "imagine/imagine": "0.6.x-dev",
         "ircmaxell/random-lib": "~1.0",
         "jms/serializer": "~0.10",
         "jms/translation-bundle": "dev-rebase-2015-10-20",
