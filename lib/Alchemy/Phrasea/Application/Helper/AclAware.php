@@ -14,7 +14,6 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 trait AclAware
 {
-    /** @var ACLProvider */
     private $aclProvider;
 
     /**
@@ -45,17 +44,20 @@ trait AclAware
             return $this->aclProvider;
         }
 
-        if (null === $this->aclProvider && $this instanceof \Pimple && $this->offsetExists('acl')) {
-            $this->aclProvider = function () {
+        $locator = $this->aclProvider;
+
+        if (null === $locator && $this instanceof \Pimple && $this->offsetExists('acl')) {
+            $locator = function () {
                 return $this['acl'];
             };
         }
 
-        if (null === $this->aclProvider) {
+        if (null === $locator) {
             throw new \LogicException(ACLProvider::class . ' instance or locator was not set');
         }
 
-        $instance = call_user_func($this->aclProvider);
+        $instance = $locator();
+
         if (!$instance instanceof ACLProvider) {
             throw new \LogicException(sprintf(
                 'Expects locator to return instance of "%s", got "%s"',

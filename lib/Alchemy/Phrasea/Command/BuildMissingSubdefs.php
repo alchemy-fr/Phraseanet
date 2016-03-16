@@ -18,16 +18,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BuildMissingSubdefs extends Command
 {
-    /**
-     * Constructor
-     */
+    private $generator;
+
     public function __construct($name = null)
     {
         parent::__construct($name);
 
         $this->setDescription('Builds subviews that previously failed to be generated / did not exist when records were added');
-
-        return $this;
     }
 
     /**
@@ -37,48 +34,61 @@ class BuildMissingSubdefs extends Command
     {
         $start = microtime(true);
         $progressBar = new ProgressBar($output);
-        $n = 0;
-
-        /** @var SubdefGenerator $subdefGenerator */
-        $subdefGenerator = $this->container['subdef.generator'];
+        $generatedSubdefs = 0;
 
         foreach ($this->container->getDataboxes() as $databox) {
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0';
-            $stmt = $databox->get_connection()->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            $progressBar->start(count($rs));
+            $result = $databox->get_connection()->executeQuery($sql)->fetchAll(\PDO::FETCH_ASSOC);
+            $progressBar->start(count($result));
 
-            foreach ($rs as $row) {
+            foreach ($result as $row) {
                 $record = $databox->get_record($row['record_id']);
 
-                $wanted_subdefs = $record->get_missing_subdefs();
+                $generatedSubdefs += $this->generateRecordMissingSubdefs($record);
 
-                if (count($wanted_subdefs) > 0) {
-                    $subdefGenerator->generateSubdefs($record, $wanted_subdefs);
-
-                    foreach ($wanted_subdefs as $subdef) {
-                        $this->container['monolog']->addInfo("generate " . $subdef . " for record " . $record->getRecordId());
-                        $n++;
-                    }
-                }
-
-                unset($record);
                 $progressBar->advance();
             }
 
             $progressBar->finish();
         }
 
-        $this->container['monolog']->addInfo($n . " subdefs done");
+        $this->container['monolog']->addInfo($generatedSubdefs . " subdefs done");
         $stop = microtime(true);
         $duration = $stop - $start;
 
-        $this->container['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($n / $duration, 3)));
+        $this->container['monolog']->addInfo(sprintf("process took %s, (%f sd/s.)", $this->getFormattedDuration($duration), round($generatedSubdefs / $duration, 3)));
         $progressBar->finish();
-
-        return;
     }
 
+    /**
+     * Generate subdef generation and return number of subdef
+     * @param \record_adapter $record
+     * @return int
+     */
+    protected function generateRecordMissingSubdefs(\record_adapter $record)
+    {
+        $wanted_subdefs = $record->get_missing_subdefs();
+
+        if (!empty($wanted_subdefs)) {
+            $this->getSubdefGenerator()->generateSubdefs($record, $wanted_subdefs);
+
+            foreach ($wanted_subdefs as $subdef) {
+                $this->container['monolog']->addInfo("generate " . $subdef . " for record " . $record->getRecordId());
+            }
+        }
+
+        return count($wanted_subdefs);
+    }
+
+    /**
+     * @return SubdefGenerator
+     */
+    protected function getSubdefGenerator()
+    {
+        if (null === $this->generator) {
+            $this->generator = $this->container['subdef.generator'];
+        }
+
+        return $this->generator;
+    }
 }

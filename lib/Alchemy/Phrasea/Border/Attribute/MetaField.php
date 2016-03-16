@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Application;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Phraseanet Border MetaField Attribute
@@ -23,13 +22,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MetaField implements AttributeInterface
 {
     /**
-     *
      * @var \databox_field
      */
     protected $databox_field;
 
     /**
-     *
      * @var array
      */
     protected $value;
@@ -44,14 +41,6 @@ class MetaField implements AttributeInterface
     {
         $this->databox_field = $databox_field;
         $this->value = $value;
-    }
-
-    /**
-     * Destructor
-     */
-    public function __destruct()
-    {
-        $this->metadata = $this->databox_field = null;
     }
 
     /**
@@ -101,15 +90,18 @@ class MetaField implements AttributeInterface
      */
     public static function loadFromString(Application $app, $string)
     {
-        if (!$datas = @unserialize($string)) {
+        $data = @unserialize($string);
+
+        if (!is_array($data) || !isset($data['sbas_id']) || !isset($data['id']) || !isset($data['value'])) {
             throw new \InvalidArgumentException('Unable to load metadata from string');
         }
 
         try {
-            return new static($app->findDataboxById($datas['sbas_id'])
-                    ->get_meta_structure()->get_element($datas['id']), $datas['value']);
-        } catch (NotFoundHttpException $e) {
-            throw new \InvalidArgumentException('Field does not exist anymore');
+            $field = $app->findDataboxById($data['sbas_id'])->get_meta_structure()->get_element($data['id']);
+
+            return new static($field, $data['value']);
+        } catch (\Exception $exception) {
+            throw new \InvalidArgumentException('Field does not exist anymore', 0, $exception);
         }
     }
 }

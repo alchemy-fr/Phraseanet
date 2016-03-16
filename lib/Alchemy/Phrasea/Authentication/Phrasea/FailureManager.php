@@ -13,24 +13,35 @@ namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
+use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
-use Doctrine\ORM\EntityRepository;
 use Neutron\ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\Request;
 
 class FailureManager
 {
-    /** @var ReCaptcha */
+    /**
+     * @var ReCaptcha
+     */
     private $captcha;
-    /** @var EntityManager */
+
+    /**
+     * @var EntityManager
+     */
     private $em;
-    /** @var EntityRepository */
+
+    /**
+     * @var AuthFailureRepository
+     */
     private $repository;
-    /** @var integer */
+
+    /**
+     * @var int
+     */
     private $trials;
 
-    public function __construct(EntityRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials)
+    public function __construct(AuthFailureRepository $repo, EntityManager $em, ReCaptcha $captcha, $trials)
     {
         $this->captcha = $captcha;
         $this->em = $em;
@@ -40,9 +51,12 @@ class FailureManager
             throw new InvalidArgumentException('Trials number must be a positive integer');
         }
 
-        $this->trials = $trials;
+        $this->trials = (int)$trials;
     }
 
+    /**
+     * @return int
+     */
     public function getTrials()
     {
         return $this->trials;
@@ -86,36 +100,38 @@ class FailureManager
         $failures = $this->repository->findLockedFailuresMatching($username, $request->getClientIp());
 
         if (0 === count($failures)) {
-            return;
+            return $this;
         }
 
         if ($this->trials < count($failures) && $this->captcha->isSetup()) {
             $response = $this->captcha->bind($request);
 
-            if ($response->isValid()) {
-                foreach ($failures as $failure) {
-                    $failure->setLocked(false);
-                }
-                $this->em->flush();
-            } else {
-                throw new RequireCaptchaException('Too much failure, require captcha');
+            if (!$response->isValid()) {
+                throw new RequireCaptchaException('Too many failures, require captcha');
             }
+
+            foreach ($failures as $failure) {
+                $failure->setLocked(false);
+            }
+
+            $this->em->flush($failures);
         }
 
         return $this;
     }
 
-    /**
-     * Removes failures older than 2 monthes
-     */
     private function removeOldFailures()
     {
         $failures = $this->repository->findOldFailures('-2 months');
 
-        if (0 < count($failures)) {
-            foreach ($failures as $failure) {
-                $this->em->remove($failure);
-            }
+        if (empty($failures)) {
+            return;
         }
+
+        foreach ($failures as $failure) {
+            $this->em->remove($failure);
+        }
+
+        $this->em->flush($failures);
     }
 }

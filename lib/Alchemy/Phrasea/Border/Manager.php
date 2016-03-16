@@ -129,8 +129,6 @@ class Manager
             $callable($element, $visa, $code);
         }
 
-        $visa = null;
-
         return $code;
     }
 

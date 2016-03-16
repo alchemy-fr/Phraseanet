@@ -344,6 +344,11 @@ abstract class PhraseanetTestCase extends WebTestCase
         return $cli;
     }
 
+    /**
+     * @param null|string $path
+     * @param string $environment
+     * @return Application
+     */
     protected function loadApp($path = null, $environment = Application::ENV_TEST)
     {
         if (null !== $path) {

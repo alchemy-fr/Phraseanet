@@ -2,11 +2,26 @@
 
 namespace Alchemy\Tests\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Authentication\AccountCreator;
+use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Authentication\Manager as AuthenticationManager;
+use Alchemy\Phrasea\Authentication\PersistentCookie\Manager as PersistentCookieManager;
+use Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication;
+use Alchemy\Phrasea\Authentication\Phrasea\FailureManager;
+use Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication;
+use Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder;
+use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
+use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
+use Alchemy\Phrasea\Authentication\Provider\Factory;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
+use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider;
-use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Neutron\ReCaptcha\ReCaptcha;
 
 /**
  * @group functional
@@ -19,59 +34,59 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
     {
         return [
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication',
-                'Alchemy\\Phrasea\\Authentication\\Authenticator',
+                Authenticator::class,
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.persistent-manager',
-                'Alchemy\Phrasea\Authentication\PersistentCookie\Manager'
+                PersistentCookieManager::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.suggestion-finder',
-                'Alchemy\Phrasea\Authentication\SuggestionFinder'
+                SuggestionFinder::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.providers.factory',
-                'Alchemy\Phrasea\Authentication\Provider\Factory'
+                Factory::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.providers',
-                'Alchemy\Phrasea\Authentication\ProvidersCollection'
+                ProvidersCollection::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.manager',
-                'Alchemy\Phrasea\Authentication\Manager'
+                AuthenticationManager::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'auth.password-encoder',
-                'Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder'
+                PasswordEncoder::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'auth.old-password-encoder',
-                'Alchemy\Phrasea\Authentication\Phrasea\OldPasswordEncoder'
+                OldPasswordEncoder::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'auth.native.failure-manager',
-                'Alchemy\Phrasea\Authentication\Phrasea\FailureManager'
+                FailureManager::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'auth.native',
-                'Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface'
+                PasswordAuthenticationInterface::class
             ],
             [
-                'Alchemy\Phrasea\Core\Provider\AuthenticationManagerServiceProvider',
+                AuthenticationManagerServiceProvider::class,
                 'authentication.providers.account-creator',
-                'Alchemy\Phrasea\Authentication\AccountCreator'
+                AccountCreator::class
             ],
         ];
     }
@@ -83,9 +98,7 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
         $app['conf']->set(['authentication', 'captcha', 'trials-before-display'], 42);
 
         //$app['orm.em'] = $this->createEntityManagerMock();
-        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['recaptcha'] = $this->createReCaptchaMock();
 
         $manager = $app['auth.native.failure-manager'];
         $this->assertEquals(42, $manager->getTrials());
@@ -93,9 +106,10 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
     public function testFailureAccountCreator()
     {
-        self::$DI['app']->register(new ConfigurationServiceProvider());
-        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
-        self::$DI['app']['authentication.providers.account-creator'];
+        $app = $this->getApplication();
+        $app->register(new ConfigurationServiceProvider());
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => []]);
+        $app['authentication.providers.account-creator'];
     }
 
     public function testAuthNativeWithCaptchaEnabled()
@@ -111,12 +125,12 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
-        $app['repo.auth-failures'] = $this->createEntityRepositoryMock();
-        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
+        $app['repo.auth-failures'] = $this->getMockBuilder(AuthFailureRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $app['recaptcha'] = $this->createReCaptchaMock();
 
-        $this->assertInstanceOf('Alchemy\Phrasea\Authentication\Phrasea\FailureHandledNativeAuthentication', $app['auth.native']);
+        $this->assertInstanceOf(FailureHandledNativeAuthentication::class, $app['auth.native']);
     }
 
     public function testAuthNativeWithCaptchaDisabled()
@@ -131,31 +145,40 @@ class AuthenticationManagerServiceProviderTest extends ServiceProviderTestCase
 
         $app['orm.em'] = $this->createEntityManagerMock();
         $app['repo.users'] = $this->createUserRepositoryMock();
-        $app['recaptcha'] = $this->getMockBuilder('Neutron\ReCaptcha\ReCaptcha')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $app['recaptcha'] = $this->createReCaptchaMock();
 
-        $this->assertInstanceOf('Alchemy\Phrasea\Authentication\Phrasea\NativeAuthentication', $app['auth.native']);
+        $this->assertInstanceOf(NativeAuthentication::class, $app['auth.native']);
     }
 
     public function testAccountCreator()
     {
-        $template1 = $user = self::$DI['app']['manipulator.user']->createTemplate('template1', self::$DI['user']);
-        $template2 = $user = self::$DI['app']['manipulator.user']->createTemplate('template2', self::$DI['user']);
+        $app = $this->getApplication();
+        $template1 = $user = $app['manipulator.user']->createTemplate('template1', self::$DI['user']);
+        $template2 = $user = $app['manipulator.user']->createTemplate('template2', self::$DI['user']);
 
-        self::$DI['app']['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
+        $app['conf']->set(['authentication', 'auto-create'], ['templates' => [$template1->getId(), $template2->getId()]]);
 
-        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function ($u) {
-            return $u->getLogin();
-        }, self::$DI['app']['authentication.providers.account-creator']->getTemplates()));
+        $this->assertEquals([$template1->getLogin(), $template2->getLogin()], array_map(function (User $user) {
+            return $user->getLogin();
+        }, $app['authentication.providers.account-creator']->getTemplates()));
 
-        $this->removeUser(self::$DI['app'], $template1);
-        $this->removeUser(self::$DI['app'], $template2);
+        $this->removeUser($app, $template1);
+        $this->removeUser($app, $template2);
     }
 
     private function createUserRepositoryMock()
     {
         return $this->getMockBuilder(UserRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @return ReCaptcha|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function createReCaptchaMock()
+    {
+        return $this->getMockBuilder(ReCaptcha::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
