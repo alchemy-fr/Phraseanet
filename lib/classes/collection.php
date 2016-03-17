@@ -192,16 +192,17 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
-     * @param  Application $app
-     * @param  databox $databox
-     * @param  int $collectionId
+     * @param Application $app
+     * @param databox|int $databox
+     * @param int $collectionId
      * @return collection
      */
-    public static function getByCollectionId(Application $app, databox $databox, $collectionId)
+    public static function getByCollectionId(Application $app, $databox, $collectionId)
     {
         assert(is_int($collectionId));
+        $databoxId = $databox instanceof databox ? $databox->get_sbas_id() : (int)$databox;
 
-        return self::getAvailableCollection($app, $databox->get_sbas_id(), $collectionId);
+        return self::getAvailableCollection($app, $databoxId, $collectionId);
     }
 
     /**
