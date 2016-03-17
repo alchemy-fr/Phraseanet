@@ -30,6 +30,12 @@ interface CollectionReferenceRepository
     public function find($baseId);
 
     /**
+     * @param int[] $baseIds
+     * @return CollectionReference[]
+     */
+    public function findMany(array $baseIds);
+
+    /**
      * @param int $databoxId
      * @param int $collectionId
      * @return CollectionReference|null

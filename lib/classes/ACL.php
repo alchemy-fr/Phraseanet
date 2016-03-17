@@ -1763,20 +1763,39 @@ class ACL implements cache_cacheableInterface
     /**
      * Returns an array of collections on which the user is 'order master'
      *
-     * @return array
+     * @return collection[]
      */
     public function get_order_master_collections()
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $result = $this->app->getApplicationBox()
+            ->get_connection()
+            ->executeQuery($sql, [':usr_id' => $this->user->getId()])
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
+
+        $baseIds = [];
+
+        foreach ($result as $item) {
+            $baseIds[] = $item['base_id'];
+        }
+
+        $groups = [];
+
+        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($baseIds) as $index => $reference) {
+            $databoxId = $reference->getDataboxId();
+            $group = isset($groups[$databoxId]) ? $groups[$databoxId] : [];
+
+            $group[$reference->getCollectionId()] = $index;
+            $groups[$databoxId] = $group;
+        }
 
         $collections = [];
 
-        foreach ($rs as $row) {
-            $collections[] = \collection::getByBaseId($this->app, $row['base_id']);
+        foreach ($groups as $databoxId => $group) {
+            foreach ($group as $collectionId => $index) {
+                $collections[$index] = \collection::getByCollectionId($this->app, $databoxId, $collectionId);
+            }
         }
 
         return $collections;
