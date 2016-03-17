@@ -1761,11 +1761,11 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     * Returns an array of collections on which the user is 'order master'
+     * Returns base ids on which user is 'order master'
      *
-     * @return collection[]
+     * @return array
      */
-    public function get_order_master_collections()
+    public function getOrderMasterCollectionsBaseIds()
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
         $result = $this->app->getApplicationBox()
@@ -1779,6 +1779,18 @@ class ACL implements cache_cacheableInterface
         foreach ($result as $item) {
             $baseIds[] = $item['base_id'];
         }
+
+        return $baseIds;
+    }
+
+    /**
+     * Returns an array of collections on which the user is 'order master'
+     *
+     * @return collection[]
+     */
+    public function get_order_master_collections()
+    {
+        $baseIds = $this->getOrderMasterCollectionsBaseIds();
 
         $groups = [];
 

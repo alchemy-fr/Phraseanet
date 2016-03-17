@@ -21,14 +21,19 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
 use Alchemy\Phrasea\Order\OrderFiller;
+use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OrderController extends Controller
@@ -155,56 +160,67 @@ class OrderController extends Controller
      */
     public function sendOrder(Request $request, $order_id)
     {
-        $success = false;
+        $elementIds = $request->request->get('elements', []);
+
+        try {
+            Assertion::isArray($elementIds);
+        } catch (\Exception $exception) {
+            throw new BadRequestHttpException('Improper request', $exception);
+        }
+
+        /** @var OrderElement[] $elements */
+        $elements = $this->getOrderElementRepository()->findBy([
+            'id' => $elementIds,
+            'order' => $order_id,
+        ]);
+
+        if (count($elements) !== count($elementIds)) {
+            throw new NotFoundHttpException(sprintf('At least one requested element does not exists or does not belong to order "%s"', $order_id));
+        }
+
         /** @var Order $order */
         if (null === $order = $this->getOrderRepository()->find($order_id)) {
             throw new NotFoundHttpException('Order not found');
         }
 
-        $manager = $this->getEntityManager();
-        $basket = $order->getBasket();
-        if (null === $basket) {
-            $basket = new Basket();
-            $basket->setName($this->app->trans('Commande du %date%', [
-                '%date%' => $order->getCreatedOn()->format('Y-m-d'),
-            ]));
-            $basket->setUser($order->getUser());
-            $basket->setPusher($this->getAuthenticatedUser());
+        $success = false;
 
-            $manager->persist($basket);
-            $manager->flush();
+        $acceptor = $this->getAuthenticatedUser();
+
+        if ($this->app['validator.order']->isGrantedValidation($acceptor, $elements)) {
+            throw new AccessDeniedHttpException('At least one element is in a collection you have no access to.');
         }
 
+        $basket = $this->app['provider.order_basket']->provideBasketForOrderAndUser($order, $acceptor);
+
         $n = 0;
-        $elements = $request->request->get('elements', []);
-        foreach ($order->getElements() as $orderElement) {
-            if (in_array($orderElement->getId(), $elements)) {
-                $sbas_id = \phrasea::sbasFromBas($this->app, $orderElement->getBaseId());
-                $record = new \record_adapter($this->app, $sbas_id, $orderElement->getRecordId());
 
-                $basketElement = new BasketElement();
-                $basketElement->setRecord($record);
-                $basketElement->setBasket($basket);
+        foreach ($elements as $element) {
+            $sbas_id = \phrasea::sbasFromBas($this->app, $element->getBaseId());
+            $record = new \record_adapter($this->app, $sbas_id, $element->getRecordId());
 
-                $orderElement->setOrderMaster($this->getAuthenticatedUser());
-                $orderElement->setDeny(false);
-                $orderElement->getOrder()->setBasket($basket);
+            $basketElement = new BasketElement();
+            $basketElement->setRecord($record);
+            $basketElement->setBasket($basket);
 
-                $basket->addElement($basketElement);
+            $element->setOrderMaster($acceptor);
+            $element->setDeny(false);
+            $element->getOrder()->setBasket($basket);
 
-                $n++;
-                $this->getAclForUser($basket->getUser())->grant_hd_on($record, $this->getAuthenticatedUser(), 'order');
-            }
+            $basket->addElement($basketElement);
+
+            $n++;
+            $this->getAclForUser($basket->getUser())->grant_hd_on($record, $acceptor, 'order');
         }
 
         try {
             if ($n > 0) {
                 $order->setTodo($order->getTodo() - $n);
-                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $this->getAuthenticatedUser(), $n));
+                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $acceptor, $n));
             }
             $success = true;
 
-            // There was a basketElement persist here. Seems useless as all entities are managed.
+            $manager = $this->getEntityManager();
             $manager->persist($basket);
             $manager->persist($order);
             $manager->flush();
@@ -292,5 +308,13 @@ class OrderController extends Controller
     private function getOrderRepository()
     {
         return $this->app['repo.orders'];
+    }
+
+    /**
+     * @return OrderElementRepository
+     */
+    private function getOrderElementRepository()
+    {
+        return $this->app['repo.order-elements'];
     }
 }
