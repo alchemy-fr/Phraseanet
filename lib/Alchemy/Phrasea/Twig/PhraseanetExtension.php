@@ -3,12 +3,12 @@
 namespace Alchemy\Phrasea\Twig;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionHelper;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
-use Assert\Assertion;
 
 class PhraseanetExtension extends \Twig_Extension
 {
@@ -23,7 +23,7 @@ class PhraseanetExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('sort_collections', array($this, 'sortCollections')),
+            new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
         );
     }
 
@@ -305,25 +305,6 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCheckerFromFQCN($checkerFQCN)
     {
         return $this->app['border-manager']->getCheckerFromFQCN($checkerFQCN);
-    }
-
-    /**
-     * @param \collection[] $collections
-     * @return \collection[]
-     */
-    public function sortCollections($collections)
-    {
-        Assertion::allIsInstanceOf($collections, 'collection');
-
-        if ($collections instanceof \Traversable) {
-            $collections = iterator_to_array($collections);
-        }
-
-        usort($collections, function (\collection $left, \collection $right) {
-            return ($left->get_ord() < $right->get_ord()) ? -1 : (($left->get_ord() < $right->get_ord()) ? 1 : 0);
-        });
-
-        return $collections;
     }
 
     public function getName()
