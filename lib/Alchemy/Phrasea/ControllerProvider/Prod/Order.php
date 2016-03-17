@@ -32,7 +32,7 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
         });
 
         $app['validator.order'] = $app->share(function (PhraseaApplication $app) {
-            $orderValidator = new OrderValidator();
+            $orderValidator = new OrderValidator($app['phraseanet.appbox'], $app['repo.collection-references']);
             $orderValidator->setAclProvider($app['acl']);
 
             return $orderValidator;
