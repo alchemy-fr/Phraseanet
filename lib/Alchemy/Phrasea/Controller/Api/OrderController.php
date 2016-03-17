@@ -107,19 +107,9 @@ class OrderController extends Controller
      */
     public function showAction(Request $request, $orderId)
     {
-        try {
-            Assertion::integerish($orderId);
-        } catch (InvalidArgumentException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
-        }
+        $order = $this->findOr404($orderId);
 
         $includes = $request->get('includes', []);
-
-        $order = $this->app['repo.orders']->find((int)$orderId);
-
-        if (!$order instanceof Order) {
-            throw new NotFoundHttpException(sprintf('Order "%d" was not found', (int) $orderId));
-        }
 
         if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
@@ -128,6 +118,22 @@ class OrderController extends Controller
         $resource = new Item($order, $this->getOrderTransformer());
 
         return $this->returnResourceResponse($request, $includes, $resource);
+    }
+
+    public function acceptElementsAction(Request $request, $orderId)
+    {
+        $order = $this->findOr404($orderId);
+        $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_element_collection');
+
+
+        return Result::create($request, [])->createResponse();
+    }
+
+    public function denyElementsAction(Request $request, $orderId)
+    {
+        $order = $this->findOr404($orderId);
+
+        return Result::create($request, [])->createResponse();
     }
 
     /**
@@ -187,5 +193,26 @@ class OrderController extends Controller
         $fractal->parseIncludes($includes);
 
         return Result::create($request, $fractal->createData($resource)->toArray())->createResponse();
+    }
+
+    /**
+     * @param int $orderId
+     * @return Order
+     */
+    private function findOr404($orderId)
+    {
+        try {
+            Assertion::integerish($orderId);
+        } catch (InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        }
+
+        $order = $this->app['repo.orders']->find((int)$orderId);
+
+        if (!$order instanceof Order) {
+            throw new NotFoundHttpException(sprintf('Order "%d" was not found', (int)$orderId));
+        }
+
+        return $order;
     }
 }

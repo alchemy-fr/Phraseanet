@@ -102,7 +102,16 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/orders/', 'controller.api.v2.orders:indexAction')
             ->bind('api_v2_orders_index');
         $controllers->get('/orders/{orderId}', 'controller.api.v2.orders:showAction')
+            ->assert('orderId', '\d+')
             ->bind('api_v2_orders_show');
+
+        $controllers->post('/orders/{orderId}/accept', 'controller.api.v2.orders:acceptElementsAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_accept');
+
+        $controllers->post('/orders/{orderId}/deny', 'controller.api.v2.orders:denyElementsAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_deny');
 
         return $controllers;
     }
