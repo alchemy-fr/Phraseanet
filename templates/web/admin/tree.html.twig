@@ -166,7 +166,7 @@
           </li>
         {% endif %}
 
-        {% for collection in databox.get_collections() %}
+        {% for collection in databox.get_collections()|sort_collections %}
           {% if (collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['canadmin'])|keys
               or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['manage'])|keys
               or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['modify_struct'])|keys) %}

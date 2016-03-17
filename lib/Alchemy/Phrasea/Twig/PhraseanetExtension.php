@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Twig;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\CollectionHelper;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
@@ -22,6 +23,7 @@ class PhraseanetExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
+            new \Twig_SimpleFilter('sort_collections', array(CollectionHelper::class, 'sort')),
         );
     }
 
