@@ -99,12 +99,11 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
-        $client = $this->getClient();
-        $client->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
-        $this->assertTrue($client->getResponse()->isRedirect());
-        $url = parse_url($client->getResponse()->headers->get('location'));
+        $response = $this->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+        $this->assertTrue($response->isRedirect(), 'Could not validate some elements. not a redirect');
+        $url = parse_url($response->headers->get('location'));
         parse_str($url['query']);
-        $this->assertTrue( strpos($url['query'], 'success=1') === 0);
+        $this->assertTrue(strpos($url['query'], 'success=1') === 0, 'Validation of elements is not successful');
     }
 
     public function testSendOrderJson()
