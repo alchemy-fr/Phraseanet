@@ -11,10 +11,12 @@
 namespace Alchemy\Phrasea\Order\Controller;
 
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
@@ -116,20 +118,28 @@ class ApiOrderController extends BaseOrderController
 
     public function acceptElementsAction(Request $request, $orderId)
     {
-        $acceptor = $this->getAuthenticatedUser();
         $elementIds = $this->fetchElementIdsFromRequest($request);
 
-        $this->doAcceptElements($orderId, $elementIds, $acceptor);
+        $elements = $this->doAcceptElements($orderId, $elementIds, $this->getAuthenticatedUser());
 
-        return Result::create($request, [])->createResponse();
+        $resource = new Collection($elements, function (BasketElement $element) {
+            return [
+                'id' => $element->getId(),
+                'created' => $element->getCreated(),
+                'databox_id' => $element->getSbasId(),
+                'record_id' => $element->getRecordId(),
+                'index' => $element->getOrd(),
+            ];
+        });
+
+        return $this->returnResourceResponse($request, [], $resource);
     }
 
     public function denyElementsAction(Request $request, $orderId)
     {
-        $acceptor = $this->getAuthenticatedUser();
         $elementIds = $this->fetchElementIdsFromRequest($request);
 
-        $this->doDenyElements($orderId, $elementIds, $acceptor);
+        $this->doDenyElements($orderId, $elementIds, $this->getAuthenticatedUser());
 
         return Result::create($request, [])->createResponse();
     }
