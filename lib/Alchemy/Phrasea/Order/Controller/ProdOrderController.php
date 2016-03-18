@@ -18,7 +18,6 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Doctrine\Common\Collections\ArrayCollection;
-use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -181,7 +180,7 @@ class ProdOrderController extends BaseOrderController
 
         $elements = $this->doDenyElements($order_id, $elementIds, $acceptor);
 
-        $success=!empty($elements);
+        $success = !empty($elements);
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
