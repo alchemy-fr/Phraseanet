@@ -59,6 +59,7 @@ before_script:
   - "./bin/developer phraseanet:generate-js-fixtures"
 
 script:
+  - "./node_modules/.bin/gulp test"
   - |
     echo "$TEST_SUITE";
     case "$TEST_SUITE" in
