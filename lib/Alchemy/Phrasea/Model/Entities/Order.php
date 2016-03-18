@@ -1,9 +1,8 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,8 +31,8 @@ class Order
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      *
-     * @return User
-     **/
+     * @var User
+     */
     private $user;
 
     /**
@@ -64,6 +63,7 @@ class Order
 
     /**
      * @ORM\OneToOne(targetEntity="Basket", inversedBy="order", cascade={"ALL"})
+     * @var Basket|null
      */
     private $basket;
 
@@ -210,6 +210,14 @@ class Order
     }
 
     /**
+     * @param int $count
+     */
+    public function decrementTodo($count)
+    {
+        $this->todo -= $count;
+    }
+
+    /**
      * Returns the total number of elements.
      *
      * @return integer
@@ -250,7 +258,15 @@ class Order
      */
     public function setBasket(Basket $basket = null)
     {
+        if ($this->basket) {
+            $this->basket->setOrder(null);
+        }
+
         $this->basket = $basket;
+
+        if ($basket) {
+            $basket->setOrder($this);
+        }
 
         return $this;
     }
