@@ -159,11 +159,18 @@ class OrderValidator
             return;
         }
 
+        $decrementCount = 0;
+
         foreach ($elements as $element) {
             $element->setOrderMaster($acceptor);
+            if (null === $element->getDeny()) {
+                ++$decrementCount;
+            }
             $element->setDeny($deny);
         }
 
-        $order->getOrder()->decrementTodo(count($elements));
+        if ($decrementCount) {
+            $order->getOrder()->decrementTodo($decrementCount);
+        }
     }
 }

@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
@@ -23,9 +24,12 @@ use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
 use Alchemy\Phrasea\Order\OrderValidator;
 use Alchemy\Phrasea\Order\PartialOrder;
+use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseOrderController extends Controller
@@ -112,9 +116,14 @@ class BaseOrderController extends Controller
         $order = $this->findOr404($order_id);
 
         $basket = $this->app['provider.order_basket']->provideBasketForOrderAndUser($order, $acceptor);
-        $orderValidator = $this->getOrderValidator();
+
         $partialOrder = new PartialOrder($order, $elements);
+
+        $orderValidator = $this->getOrderValidator();
+
         $basketElements = $orderValidator->createBasketElements($partialOrder);
+        $this->assertRequestedElementsWereNotAlreadyAdded($basket, $basketElements);
+
         $orderValidator->accept($acceptor, $partialOrder);
         $orderValidator->grantHD($basket->getUser(), $basketElements);
 
@@ -166,5 +175,32 @@ class BaseOrderController extends Controller
         }
 
         return $elements;
+    }
+
+    /**
+     * @param Basket $basket
+     * @param BasketElement[] $elements
+     */
+    protected function assertRequestedElementsWereNotAlreadyAdded(Basket $basket, $elements)
+    {
+        if ($basket->getElements()->isEmpty()) {
+            return;
+        }
+
+        $references = new RecordReferenceCollection();
+
+        foreach ($elements as $element) {
+            $reference = RecordReference::createFromDataboxIdAndRecordId($element->getSbasId(), $element->getRecordId());
+
+            $references->addRecordReference($reference);
+        }
+
+        $groups = $references->groupPerDataboxId();
+
+        foreach ($basket->getElements() as $element) {
+            if (isset($groups[$element->getSbasId()][$element->getRecordId()])) {
+                throw new ConflictHttpException('Some records have already been handled');
+            }
+        }
     }
 }
