@@ -23,7 +23,6 @@ gulp.task('watch-css', function(){
 gulp.task('watch-js', function(){
     gulp.start('watch-common-js');
     // gulp.start('watch-oauth-js');
-    gulp.start('watch-prod-js');
     gulp.start('watch-thesaurus-js');
     //gulp.start('watch-uploadFlash');
     gulp.start('watch-lightbox-js');

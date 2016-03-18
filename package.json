@@ -33,6 +33,6 @@
     "postinstall": "./node_modules/.bin/gulp install;"
   },
   "dependencies": {
-    "phraseanet-production-client": "git+https://github.com/lostdalek/Phraseanet-production-client.git#notification"
+    "phraseanet-production-client": "~0.2.0"
   }
 }

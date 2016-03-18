@@ -89,7 +89,7 @@
                                 {{ 'Select a user in the list' | trans }} <br/>
                                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
                                     {{ 'or' | trans }}
-                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder btn btn-mini">{{ 'Add user' | trans }}</a>
+                                    <a href="#" class="push-add-user btn btn-mini">{{ 'Add user' | trans }}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">

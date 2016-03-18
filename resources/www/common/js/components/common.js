@@ -22,10 +22,6 @@ var commonModule = (function ($, p4) {
         $.datepicker.setDefaults({showMonthAfterYear: false});
         $.datepicker.setDefaults($.datepicker.regional[jq_date]);
 
-        $('body').on('click', '.infoDialog', function (event) {
-            _infoDialog($(this));
-        });
-
         var cache = $('#mainMenu .helpcontextmenu');
         $('.context-menu-item', cache).hover(function () {
             $(this).addClass('context-menu-item-hover');
@@ -33,35 +29,13 @@ var commonModule = (function ($, p4) {
             $(this).removeClass('context-menu-item-hover');
         });
 
-        /*$('#help-trigger').contextMenu('#mainMenu .helpcontextmenu', {openEvt: 'click', dropDown: true, theme: 'vista', dropDown: true,
+        $('#help-trigger').contextMenu('#mainMenu .helpcontextmenu', {openEvt: 'click', dropDown: true, theme: 'vista', dropDown: true,
             showTransition: 'slideDown',
             hideTransition: 'hide',
             shadow: false
-        });*/
+        });
     });
 
-
-
-
-    function _infoDialog(el) {
-        $("#DIALOG").attr('title', '')
-            .empty()
-            .append(el.attr('infos'))
-            .dialog({
-
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                width: 600,
-                height: 400,
-                modal: true,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'auto'});
-    }
     function showOverlay(n, appendto, callback, zIndex) {
 
         var div = "OVERLAY";

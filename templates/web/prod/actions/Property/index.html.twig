@@ -16,12 +16,12 @@
         <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
 
         <ul>
-            <li><a href="#property-statut">{{ 'Records Statut' | trans }}</a></li>
+            <li><a href="#property-status">{{ 'Records Statut' | trans }}</a></li>
             {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
             <li><a href="{{ path('display_type_property', { 'lst' : records.serializedList() } ) }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
         </ul>
 
-        <div id='property-statut'>
+        <div id="property-status">
             <p class="header">
                 <h4 style='text-align:center;'>
                     {% if nbReceivedDocuments == 1 %}
@@ -119,64 +119,6 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("#tabs-records-property").tabs({
-               beforeLoad: function( event, ui ) {
-                   ui.ajaxSettings.data = {
-                       lst: $("input[name=original_selection]", $(this)).val()
-                   };
-
-                   // load template only once
-                   if ( ui.tab.data( "loaded" ) ) {
-                        event.preventDefault();
-                        return;
-                   }
-
-                   ui.jqXHR.success(function() {
-                        ui.tab.data( "loaded", true );
-                   });
-
-                   ui.tab.find('span').html("<i>{{ 'Loading'|trans }}...</i>");
-               },
-                load: function(event, ui)
-                {
-                    ui.tab.find('span').empty();
-                }
-            });
-
-            var $dialog = dialogModule.dialog.get(1);
-            var $dialogBox = $dialog.getDomElement();
-
-            $("button.cancel", $dialogBox).bind("click", function(){
-                $dialog.close();
-            });
-
-            $("button.submiter", $dialogBox).bind("click", function(){
-                var $this = $(this);
-                var form = $(this).closest("form");
-                var loader = form.find("form-action-loader");
-
-                $.ajax({
-                    type: form.attr("method"),
-                    url: form.attr("action"),
-                    data: form.serializeArray(),
-                    dataType: 'json',
-                    beforeSend:function(){
-                        $this.attr("disabled", true);
-                        loader.show();
-                    },
-                    success: function(data){
-                        $dialog.close();
-                    },
-                    complete: function(){
-                        $this.attr("disabled", false);
-                        loader.hide();
-                    }
-                });
-            });
-        });
-    </script>
+        <div id="type-status"></div>
+</div>
 {% endif %}
