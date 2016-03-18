@@ -124,21 +124,21 @@ class OrderValidator
      */
     private function getRecordReferenceCollection(PartialOrder $order)
     {
-        $collections = [];
+        $databoxIdMap = [];
 
         foreach ($this->repository->findMany($order->getBaseIds()) as $collectionReference) {
-            $collections[$collectionReference->getBaseId()] = $collectionReference;
+            $databoxIdMap[$collectionReference->getBaseId()] = $collectionReference->getDataboxId();
         }
 
         $references = new RecordReferenceCollection();
 
         foreach ($order->getElements() as $orderElement) {
-            if (!isset($collections[$orderElement->getBaseId()])) {
+            if (!isset($databoxIdMap[$orderElement->getBaseId()])) {
                 throw new \RuntimeException('At least one collection was not found.');
             }
 
             $references->addRecordReference(RecordReference::createFromDataboxIdAndRecordId(
-                $collections[$orderElement->getBaseId()],
+                $databoxIdMap[$orderElement->getBaseId()],
                 $orderElement->getRecordId()
             ));
         }
@@ -164,6 +164,6 @@ class OrderValidator
             $element->setDeny($deny);
         }
 
-        $order->getOrder()->setTodo($order->getOrder()->getTodo() - count($elements));
+        $order->getOrder()->decrementTodo(count($elements));
     }
 }

@@ -43,6 +43,9 @@ class OrderBasketProvider
             $basket->setName($this->translator->trans('Commande du %date%', [
                 '%date%' => $order->getCreatedOn()->format('Y-m-d'),
             ]));
+
+            $order->setBasket($basket);
+
             $basket->setUser($order->getUser());
             $basket->setPusher($acceptor);
 
