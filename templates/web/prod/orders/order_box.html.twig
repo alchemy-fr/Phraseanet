@@ -41,7 +41,7 @@
             <tbody>
                 {% for order in orders %}
                     {% set deadline = app['date-formatter'].getPrettyString(order.getDeadline()) %}
-                    <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                    <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }} data-order-id="{{ order.getId() }}">
                         <td>{{ order.getUser().getDisplayName() }}</td>
                         <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
                         <td>
@@ -71,23 +71,3 @@
         </ul>
     </div>
 </div>
-
-<script type="text/javascript">
-
-$(document).ready(function(){
-	var dialog = dialogModule.dialog.get(1);
-
-    $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
-        e.preventDefault();
-        var url = $(this).attr('href');
-        dialog.load(url);
-    });
-
-    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
-        e.preventDefault();
-        var id = $(this).attr('id').split('_').pop();
-        dialog.load('/prod/order/' + id +'/');
-    }).addClass('clickable');
-});
-
-</script>
