@@ -8,18 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Api;
+namespace Alchemy\Phrasea\Order\Controller;
 
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
+use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Alchemy\Phrasea\Order\OrderValidator;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;
 use Assert\InvalidArgumentException;
@@ -37,7 +42,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OrderController extends Controller
+class ApiOrderController extends Controller
 {
     use DispatcherAware;
     use JsonBodyAware;
@@ -122,8 +127,9 @@ class OrderController extends Controller
 
     public function acceptElementsAction(Request $request, $orderId)
     {
-        $order = $this->findOr404($orderId);
         $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_element_collection');
+        $acceptor = $this->getAuthenticatedUser();
+
 
 
         return Result::create($request, [])->createResponse();
@@ -214,5 +220,55 @@ class OrderController extends Controller
         }
 
         return $order;
+    }
+
+    /**
+     * @param int $orderId
+     * @param array<object> $elementIds
+     * @param User $acceptor
+     * @return OrderElement[]
+     */
+    private function findRequestedElements($orderId, array $elementIds, User $acceptor)
+    {
+        $ids = [];
+
+        foreach ($elementIds as $elementId) {
+            if (!isset($elementId->id)) {
+                throw new BadRequestHttpException('Invalid element id collection given');
+            }
+
+            $ids[] = $elementId->id;
+        }
+
+        $elements = $this->getOrderElementRepository()->findBy([
+            'id' => $ids,
+            'order' => $orderId,
+        ]);
+
+        if (count($elements) !== count($elementIds)) {
+            throw new NotFoundHttpException(sprintf('At least one requested element does not exists or does not belong to order "%s"', $orderId));
+        }
+
+        if (!$this->getOrderValidator()->isGrantedValidation($acceptor, $elements)) {
+            throw new AccessDeniedHttpException('At least one element is in a collection you have no access to.');
+        }
+
+        return $elements;
+    }
+
+    /**
+     * @return OrderElementRepository
+     */
+    private function getOrderElementRepository()
+    {
+        return $this->app['repo.order-elements'];
+    }
+
+    /**
+     * @return OrderValidator
+     */
+    private function getOrderValidator()
+    {
+        return $this->app['validator.order'];
     }
 }

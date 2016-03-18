@@ -12,10 +12,10 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
 use Alchemy\Phrasea\Controller\Api\LazaretController;
-use Alchemy\Phrasea\Controller\Api\OrderController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
+use Alchemy\Phrasea\Order\Controller\ApiOrderController;
 use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
@@ -51,7 +51,7 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
 
         $app['controller.api.v2.orders'] = $app->share(
             function (PhraseaApplication $app) {
-                return (new OrderController($app))
+                return (new ApiOrderController($app))
                     ->setDispatcher($app['dispatcher'])
                     ->setJsonBodyHelper($app['json.body_helper']);
             }
