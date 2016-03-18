@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
 use Alchemy\Phrasea\Core\Event\Acl\AccessPeriodChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseGrantedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseRevokedEvent;
@@ -1776,23 +1777,18 @@ class ACL implements cache_cacheableInterface
     {
         $baseIds = $this->getOrderMasterCollectionsBaseIds();
 
-        $groups = [];
-
-        foreach ($this->app['repo.collection-references']->findHavingOrderMaster($baseIds) as $index => $reference) {
-            $databoxId = $reference->getDataboxId();
-            $group = isset($groups[$databoxId]) ? $groups[$databoxId] : [];
-
-            $group[$reference->getCollectionId()] = $index;
-            $groups[$databoxId] = $group;
-        }
+        $collectionReferences = $this->app['repo.collection-references']->findHavingOrderMaster($baseIds);
+        $groups = new CollectionReferenceCollection($collectionReferences);
 
         $collections = [];
 
-        foreach ($groups as $databoxId => $group) {
+        foreach ($groups->groupByDataboxIdAndCollectionId() as $databoxId => $group) {
             foreach ($group as $collectionId => $index) {
                 $collections[$index] = \collection::getByCollectionId($this->app, $databoxId, $collectionId);
             }
         }
+
+        ksort($collections);
 
         return $collections;
     }
