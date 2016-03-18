@@ -572,7 +572,7 @@
         event.cancelBubble = true;
         if (event.stopPropagation)
             event.stopPropagation();
-        showOverlay('_tooltip', 'body', unfix_tooltip, settings(this).fixableIndex);
+        commonModule.showOverlay('_tooltip', 'body', unfix_tooltip, settings(this).fixableIndex);
         $('#tooltip .tooltip_closer').show().bind('click', unfix_tooltip);
         $.tooltip.blocked = true;
     }
@@ -718,7 +718,7 @@ function unfix_tooltip() {
     $.tooltip.current = null;
     $('#tooltip').hide();
     $('#tooltip .tooltip_closer').hide();
-    hideOverlay('_tooltip');
+    commonModule.hideOverlay('_tooltip');
 }
 
 

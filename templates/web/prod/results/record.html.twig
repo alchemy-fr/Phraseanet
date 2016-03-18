@@ -4,8 +4,11 @@
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
-     class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }}"
-     onDblClick="openPreview('{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
+     class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }} open-preview-action"
+     data-kind="{{ record.story ? 'REG' : 'RESULT' }}"
+     data-position="{{ record.position|default(0) }}"
+     data-id="{{ record.id }}"
+     >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.title(app.locale) }}">
@@ -102,23 +105,21 @@
                                     <div class="context-menu context-menu-theme-vista">
                                         {% if granted_on_collection(record.baseId, 'canputinalbum') and not record.story %}
                                             <div title="" class="context-menu-item">
-                                                <div class="context-menu-item-inner"
-                                                     onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
+                                                <div class="context-menu-item-inner record-add-to-basket-action" data-db-id="{{record.databoxId}}" data-record-id="{{record.recordId}}">
                                                     {{ 'action : ajouter au panier' | trans }}
                                                 </div>
                                             </div>
                                         {% endif %}
                                         {% if granted_on_collection(record.baseId, 'candwnldpreview') or granted_on_collection(record.baseId, 'candwnldhd') %}
                                             <div title="" class="context-menu-item">
-                                                <div class="context-menu-item-inner"
-                                                     onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
+                                                <div class="context-menu-item-inner record-export-action" data-kind="record" data-id="{{record.id}}">
                                                     {{ 'action : exporter' | trans }}
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
-                                            <div class="context-menu-item-inner"
-                                                 onclick="evt_print('{{record.id}}');return(false);">
+                                            <div class="context-menu-item-inner record-print-action"
+                                                 data-kind="record" data-id="{{record.id}}">
                                                 {{ 'action : print' | trans }}
                                             </div>
                                         </div>
@@ -127,8 +128,7 @@
                                         and granted_on_databox(record.databoxId, 'bas_chupub')) %}
                                             {% if record.story is empty %}
                                                 <div title="" class="context-menu-item">
-                                                    <div class="context-menu-item-inner"
-                                                         onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
+                                                    <div class="context-menu-item-inner share-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}">
                                                         {{ 'reponses:: partager' | trans }}
                                                     </div>
                                                 </div>

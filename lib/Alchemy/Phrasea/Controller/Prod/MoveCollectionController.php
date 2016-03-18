@@ -23,15 +23,34 @@ class MoveCollectionController extends Controller
             return $databox->get_sbas_id();
         }, $records->databoxes());
 
+        $message = '';
+        $template = '';
         $collections = $this->getAclForUser()->get_granted_base(['canaddrecord'], $sbas_ids);
 
-        $parameters = [
-            'records'     => $records,
-            'message'     => '',
-            'collections' => $collections,
+        if (count($records->databoxes()) > 1) {
+            $success = false;
+            $message = $this->app->trans('prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble');
+        } elseif (count($records) == 0) {
+            $success = false;
+            $message = $this->app->trans('prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document');
+        } else {
+            // is able to move:
+            $success = true;
+            $parameters = [
+              'records' => $records,
+              'message' => '',
+              'collections' => $collections,
+            ];
+            $template = $this->render('prod/actions/collection_default.html.twig', $parameters);
+        }
+
+        $datas = [
+          'success' => $success,
+          'message' => $message,
+          'template' => $template
         ];
 
-        return $this->render('prod/actions/collection_default.html.twig', $parameters);
+        return $this->app->json($datas);
     }
 
     public function apply(Request $request)

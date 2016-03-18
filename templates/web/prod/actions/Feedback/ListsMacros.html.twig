@@ -97,79 +97,6 @@
     {% endif %}
   </div>
 </div>
-  <script>
-
-  $(document).ready(function(){
-    var $editor = $('#list-editor-search-results');
-
-    $('a.next, a.prev', $editor).bind('click', function(){
-      var page = $(this).attr('value');
-
-      $('input[name="page"]', $form).val(page);
-      $form.trigger('submit');
-
-      return false;
-    });
-
-    var $form = $('#ListManager .editor').find('form[name="list-editor-search"]');
-
-    $('input[name="page"]', $form).val('');
-
-    $('th.sortable', $editor).bind('click', function(){
-
-      var $this = $(this);
-
-      var sort = $('input', $this).val();
-
-      if((sort == $('input[name="srt"]', $form).val())
-        && ($('input[name="ord"]', $form).val() == 'asc'))
-      {
-        var ord = 'desc';
-      }
-      else
-      {
-        var ord = 'asc';
-      }
-
-      $('input[name="srt"]', $form).val(sort);
-      $('input[name="ord"]', $form).val(ord);
-
-      $form.trigger('submit');
-    })
-    .bind('mouseover', function(){$(this).addClass('hover');})
-    .bind('mouseout', function(){$(this).removeClass('hover');});
-
-    $('tbody tr', $editor).bind('click', function(){
-
-      var $this = $(this);
-      var usr_id = $('input[name="usr_id"]', $this).val();
-
-      var counters = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-      if($this.hasClass('selected'))
-      {
-        $this.removeClass('selected');
-        p4.ListManager.getList().removeUser(usr_id);
-
-        counters.each(function(i,el){
-          var n = parseInt($(el).text());
-          $(el).text(n - 1);
-        });
-      }
-      else
-      {
-        $this.addClass('selected');
-        p4.ListManager.getList().addUser(usr_id);
-
-        counters.each(function(i,el){
-          var n = parseInt($(el).text());
-          $(el).text(n + 1);
-        });
-      }
-
-    });
-  });
-  </script>
 
 {% endmacro %}
 
@@ -178,7 +105,7 @@
   <div class="badge">
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
     {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-      <a class="deleter" href="#">
+      <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">
         <img src="/assets/prod/images/Push/close_badge.png">
       </a>
     {% endif %}

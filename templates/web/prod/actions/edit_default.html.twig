@@ -35,7 +35,9 @@
         <div class='titre'>
             {{ record.get_original_name() }}
         </div>
-        <img class="edit_IMGT" id="idEditDiapoImg_{{ i }}" style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;" onclick="edit_clk_editimg(event, {{ i }});" src="{{ thumbnail }}" />
+        <img class="edit_IMGT select-record-action" id="idEditDiapoImg_{{ i }}"
+             style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;"
+             data-index="{{ i }}" src="{{ thumbnail }}" />
         <div style='position:absolute; top:0px; left:0px; height:20px'>
             <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
@@ -55,7 +57,9 @@
                         <td>
                             <div class="context-menu context-menu-theme-vista">
                                 <div title="" class="context-menu-item">
-                                    <div class="context-menu-item-inner" onclick="setRegDefault('{{i}}','{{record.get_record_id()}}');">{{ 'edit: chosiir limage du regroupement' | trans }}</div>
+                                    <div class="context-menu-item-inner set-grouping-image-action"
+                                         data-index="{{i}}"
+                                         data-record-id="{{record.get_record_id()}}">{{ 'edit: chosiir limage du regroupement' | trans }}</div>
                                 </div>
                             </div>
                         </td>
@@ -71,7 +75,7 @@
 {% endmacro %}
 
 {% macro HTML_fieldlist(recordsRequest, fields) %}
-    <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
+    <div class="edit_field edit-status-action" id="EditFieldBox_status">
         {% trans %}prod::editing::fields: status{% endtrans %}
     </div>
     {% set cssfile = '000000' %}
@@ -81,7 +85,9 @@
     {% for field in fields %}
         {% set i = field.get_id() %}
         {% if field.is_readonly() is empty %}
-            <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
+            <div class="edit_field edit-field-action" id="EditFieldBox_{{i}}"
+                 data-id="{{i}}"
+                 data-name="{{field.get_name()}}">
                 <i id="editSGtri_{{i}}" style="visibility:hidden;" class="icon-caret-right"></i>
                 <span class="icon-stack fieldTips" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
                   <i class="icon-circle icon-stack-base"></i>
@@ -113,19 +119,6 @@
 
 {% set actionable = recordsRequest|length %}
 {% set not_actionable = recordsRequest.received|length - actionable %}
-
-<script type="text/javascript">
-
-
-  p4.edit.T_statbits = {{ JSonStatus|raw }};
-  p4.edit.T_fields = {{ JSonFields|raw }};
-
-  p4.edit.T_records = {{ JSonRecords|raw }};
-  p4.edit.T_sgval = {{ JSonSuggValues|raw }};
-  p4.edit.T_id  =  p4.edit.T_pos = {{ JSonIds|raw }};
-  p4.edit.T_mval = [];
-
-</script>
 
 <div id="EDIT_ALL">
 
@@ -169,28 +162,32 @@
                 <div class="edit-zone-title PNB">
                     <table style='position:relative; top:5px; table-layout:fixed; width:100%'>
                         <tr>
-                        <td style='width:30px; text-align:right'>
-                            <input type='button' value='&#9668;' class='btn btn-inverse' onclick="edit_chgFld(event, -1);return(false);" />
-                        </td>
+                            <td style='width:30px; text-align:right'>
+                                <input type='button' value='&#9668;' class='btn btn-inverse field-navigate-action'
+                                       data-direction="backward"/>
+                            </td>
                         <td id="idFieldNameEdit"></td>
                         <td style='width:30px; text-align:left'>
-                            <input type='button' value='&#9658;' class='btn btn-inverse' onclick="edit_chgFld(event, 1);return(false);" />
+                            <input type='button' value='&#9658;' class='btn btn-inverse field-navigate-action'
+                                   data-direction="forward"/>
                         </td>
                         </tr>
                     </table>
                 </div>
                 <div id="EDIT_EDIT" class="PNB">
                     <div id="ZTextMonoValued">
-                        <textarea id="idEditZTextArea" onmousedown="return(edit_mdwn_ta(event));" onmouseup="return(edit_mup_ta(event, this));" onkeyup="return(edit_kup_ta(event, this));" onKeyDown="return(edit_kdwn(event, this));"></textarea>
+                        <textarea id="idEditZTextArea" ></textarea>
                         <div id="idEditDateZone"></div>
                     </div>
                     <div id="ZTextMultiValued">
-                        <form onsubmit="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
+                        <form class="add-multivalued-field-action"
+                              data-input-id="EditTextMultiValued"
+                              style="position:absolute; height:30px; left:2px; right:2px;">
                             <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
                                 <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
                             </div>
                             <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
-                                <img id="EditButAddMultiValued" style="cursor:pointer" src="/assets/common/images/icons/plus16.png"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
+                                <img id="EditButAddMultiValued add-multivalued-field-action" style="cursor:pointer" src="/assets/common/images/icons/plus16.png" />
                             </div>
                         </form>
                         <div id="ZTextMultiValued_values"></div>
@@ -207,7 +204,8 @@
                                 {% for n, stat in status %}
                                     <tr>
                                         <td style="padding-left:10px">
-                                            <span style="cursor:pointer" onclick="edit_clkstatus(event, {{n}}, 0);">
+                                            <span class="toggle-status-field-action" data-state="false" data-bit="{{n}}"
+                                                    style="cursor:pointer" >
                                                 <div id="idCheckboxStatbit0_{{n}}" class="gui_ckbox_0"></div>
                                                 {% if stat['img_off'] %}
                                                     <img src="{{stat['img_off']}}" title="{{stat['label0']}}" style="width:16px;height:16px;vertical-align:bottom" />
@@ -216,7 +214,8 @@
                                             </span>
                                         </td>
                                         <td style="padding-left:20px">
-                                            <span style="cursor:pointer" onclick="edit_clkstatus(event, {{n}}, 1);">
+                                            <span class="toggle-status-field-action" data-state="true" data-bit="{{n}}"
+                                                    style="cursor:pointer" >
                                                 <div id="idCheckboxStatbit1_{{n}}"  class="gui_ckbox_0"></div>
                                                 {% if stat['img_on'] %}
                                                     <img src="{{stat['img_on']}}" title="{{stat['label1']}}" style="width:16px;height:16px;vertical-align:bottom" />
@@ -231,9 +230,9 @@
                     </div>
                 </div>
                 <div id="idDivButtons" class="PNB">
-                    <input id="ok"     type="button" value="{{ 'boutton::remplacer' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'ok');return(false);">
-                    <input id="fusion" type="button" value="{{ 'boutton::ajouter' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'fusion');return(false);">
-                    <input id="cancel" type="button" value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse" onclick="edit_validField(event, 'cancel');return(false);">
+                    <input id="ok"     type="button" value="{{ 'boutton::remplacer' | trans }}" class="btn btn-inverse commit-field-action" data-mode="ok">
+                    <input id="fusion" type="button" value="{{ 'boutton::ajouter' | trans }}" class="btn btn-inverse commit-field-action" data-mode="fusion">
+                    <input id="cancel" type="button" value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse commit-field-action" data-mode="cancel">
                 </div>
                 <div id="idExplain" class="PNB"></div>
             </div>
@@ -252,8 +251,8 @@
                 </ul>
                 {% if thesaurus %}
                     <div id='TH_Ofull'>
-                        <div class='thesaurus' ondblclick='return(edit_dblclickThesaurus(event));' onclick='return(edit_clickThesaurus(event));'>
-                            <p id='TH_T.{{ databox.get_sbas_id() }}.T'>
+                        <div class='thesaurus edit-thesaurus-action'>
+                            <p id='TH_T.{{ databox.get_sbas_id() }}.T' class="thesaurus-db-root">
                                 <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale']) }}</a>
                             </p>
                             <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{{ 'phraseanet::chargement' | trans }}</div>
@@ -297,7 +296,7 @@
                         <tr>
                             <td valign="top">{{ 'prod::editing:remplace: options de remplacement' | trans }}</td>
                             <td>
-                                <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" onchange="changeReplaceMode(this);">
+                                <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" class="toggle-replace-mode-action">
                                 {{ 'prod::editing:remplace::option : utiliser une expression reguliere' | trans }}
                                 {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
                                 {% if app['locale'] == 'de' %}
@@ -351,8 +350,8 @@
     </div>
 
     <div id="buttonEditing">
-        <input type='button' value="{{ 'boutton::valider' | trans }}" class="btn btn-inverse btn-small" onclick="edit_applyMultiDesc(event);" />
-        <input type='button' value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse btn-small" onclick="edit_cancelMultiDesc(event);" />
+        <input type='button' value="{{ 'boutton::valider' | trans }}" class="btn btn-inverse btn-small apply-multi-desc-action" />
+        <input type='button' value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse btn-small cancel-multi-desc-action" />
     </div>
 
     </div>
@@ -372,7 +371,7 @@
         <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
         <input type='button' class='btn btn-inverse'
             value="{{ 'boutton::fermer' | trans }}"
-            onClick="$('#EDITWINDOW').fadeOut();hideOverlay(2);return(false);" />
+            onClick="$('#EDITWINDOW').fadeOut();commonModule.hideOverlay(2);return(false);" />
     </center>
 </div>
 
@@ -400,30 +399,26 @@
 </div>
 
 <script type="text/javascript">
-    {% if multipleDataboxes or recordsRequest|length == 0 %}
-        $('#EDITWINDOW').hide();
-        hideOverlay(2);
-
-        $(function() {
-            // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
-            $( "#dialog-edit-many-sbas:ui-dialog" ).dialog( "destroy" );
-
-            $( "#dialog-edit-many-sbas" ).dialog({
-            modal: true,
-            resizable:false,
-            buttons: {
-                Ok: function() {
-                $( this ).dialog( "close" );
-                }
-            }
-            });
-        });
-    {% else %}
-        {% if not_actionable > 1 %}
-            alert("{{ 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) | e('js') }}");
-        {% elseif not_actionable == 1 %}
-            alert("{{ 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js') }}");
-        {% endif %}
-        startThisEditing({{ databox.get_sbas_id }},{% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},"",'');
+    {%  set notActionableMsg = '' %}
+    {% if not_actionable > 1 %}
+    {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
+    {% elseif not_actionable == 1 %}
+    {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
     {% endif %}
+    var recordEditorConfig = {
+        hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
+        databoxId: {{ databox.get_sbas_id }},
+        mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
+        notActionable: {{ not_actionable }},
+        notActionableMsg: '{{notActionableMsg}}',
+        state: {
+            T_statbits: {{ JSonStatus|raw }},
+            T_fields: {{ JSonFields|raw }},
+            T_records: {{ JSonRecords|raw }},
+            T_sgval: {{ JSonSuggValues|raw }},
+            T_id: {{ JSonIds|raw }},
+            T_pos: {{ JSonIds|raw }},
+            T_mval: []
+        }
+    };
 </script>

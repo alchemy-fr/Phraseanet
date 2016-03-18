@@ -1,3 +1,4 @@
+/*
 (function ($) {
 
     var methods = {
@@ -232,3 +233,4 @@
 
     };
 })(jQuery);
+*/

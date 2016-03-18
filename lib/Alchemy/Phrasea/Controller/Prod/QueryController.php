@@ -97,41 +97,41 @@ class QueryController extends Controller
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini search-navigate-input-action" data-initial-value="' . $i . '" data-total-pages="'.$npages.'"/>';
                             else
-                                $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                                $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                         }
                         if ($npages > 4)
                             $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
-                        $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
+                        $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action" data-page="' . $npages . '" id="last"></a>';
                     } else {
                         $start = $npages - 4;
                         if (($start) > 0){
-                            $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
-                            $string .= "<a id='PREV_PAGE' class='btn btn-primary btn-mini'></a>";
+                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"></a>';
+                            $string .= '<a id="PREV_PAGE" class="btn btn-primary btn-mini"></a>';
                         }else
                             $start = 1;
                         for ($i = ($start); $i <= $npages; $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini search-navigate-input-action" data-initial-value="' . $i . '" data-total-pages="'.$npages.'" />';
                             else
-                                $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                                $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                         }
                         if($page < $npages){
                             $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
                         }
                     }
                 } else {
-                    $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini' id='first'></a>";
+                    $string .= '<a class="btn btn-primary btn-mini btn-mini search-navigate-action" data-page="1" id="first"></a>';
 
                     for ($i = ($page - 2); $i <= ($page + 2); $i++) {
                         if ($i == $page)
-                            $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                            $string .= '<input type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini search-navigate-input-action" data-initial-value="' . $i . '" data-total-pages="'.$npages.'" />';
                         else
-                            $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
+                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                     }
 
-                    $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini' id='last'></a>";
+                    $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action" data-page="' . $npages . '" id="last"></a>';
                 }
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
@@ -152,7 +152,7 @@ class QueryController extends Controller
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
-                . '</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">'
+                . '</div><a href="#" class="infoDialog search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
                 . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;

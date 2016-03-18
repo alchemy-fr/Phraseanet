@@ -1,28 +1,27 @@
 
 {% if (record.is_from_basket is empty) and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'canputinalbum') %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
-       class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}"
-       onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);">
+       class="baskAdder record-add-to-basket-action" data-db-id="{{record.get_sbas_id()}}" data-record-id="{{record.get_record_id()}}" title="{{ 'action : ajouter au panier' | trans }}">
       <img src="/assets/common/images/icons/basket.png" height="16" width="16" class="btn-image">
   </div>
 {% endif %}
 
 {% if record.is_from_basket() %}
     <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
-       class="WorkZoneElementRemover"
+       class="WorkZoneElementRemover record-remove-from-basket-action"
        data-context="reg_train_basket"
-       onclick="remove_from_basket($(this), false);return false;"
+
        href="{{ path('prod_baskets_basket_element_remove', { 'basket' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
         <img src="/assets/common/images/icons/delete.png" height="16" width="16" class="btn-image" title="{{ 'Remove from basket' | trans }}">
     </a>
 {% endif %}
 
-  <div onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+  <div class="print-record-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
       <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image" title="'{{ 'action : print' | trans }}">
   </div>
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldhd') or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
-    <div onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+    <div class="export-record-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
         <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image" title="{{ 'action : exporter' | trans }}">
        {# <img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 

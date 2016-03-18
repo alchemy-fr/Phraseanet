@@ -39,7 +39,7 @@
                                 <td class='uploader-icon'>
                                     <img src='/assets/common/images/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>
                                 </td>
-                                <td class="uploader-info">
+                                <td class="uploader-infmaxFileSizeo">
                                     <p>
                                         {{ 'You are using the HTML5 uploader.' | trans }}
                                         {% if not app['browser'].supportFileAPI() %}
@@ -141,8 +141,11 @@
 {% include "prod/templates/upload.html.twig" %}
 
 <script>
+    var uploaderOptions =  {
+        maxFileSize: {{ maxFileSize }}
+    }
 
-
+/*
 $(document).ready(function () {
 
     var iev=0;
@@ -270,7 +273,7 @@ $(document).ready(function () {
             $(".number-files-to-transmit").html(totalElement);
             $(".transmit-box").show();
 
-            var dialog = p4.Dialog.get(1);
+            var dialog = dialogModule.dialog.get(1);
 
             //reset progressbar for iframe uploads
             if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
@@ -386,7 +389,7 @@ $(document).ready(function () {
                 progressbarAll.width('100%');
                 bitrateBox.empty();
                 $('#uploadBoxRight .progress').removeClass('progress-striped active');
-                var dialog = p4.Dialog.get(1);
+                var dialog = dialogModule.dialog.get(1);
                 //unbind check before close event & disabled button for cancel all download
                 dialog.getDomElement().unbind("dialogbeforeclose");
                 //disabled cancel-all button, if queue is empty and last upload success
@@ -506,7 +509,7 @@ $(document).ready(function () {
             data.context.find('.progress-bar').width('25%');
         }
     });
-});
+});*/
 </script>
 <style>
     .btn.page-lazaret a {

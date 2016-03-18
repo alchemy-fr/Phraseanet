@@ -38,10 +38,6 @@ gulp.task('build-lightbox-js', ['build-lightbox-mobile-js'], function(){
         config.paths.src + 'lightbox/js/jquery.lightbox.js'
     ];
 
-    var lightboxIE6Group = [
-        config.paths.src + 'lightbox/js/jquery.lightbox.ie6.js'
-    ];
-    utils.buildJsGroup(lightboxIE6Group, 'lightboxIe6', 'lightbox/js', debugMode);
     return utils.buildJsGroup(lightboxGroup, 'lightbox', 'lightbox/js', debugMode);
 });
 

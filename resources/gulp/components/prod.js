@@ -63,50 +63,10 @@ gulp.task('build-prod-css', ['build-prod-skin-black', 'build-prod-skin-grey', 'b
         config.paths.src + 'prod/styles/main.scss'
     ], 'prod', 'prod/css/', debugMode);
 });
-gulp.task('build-prod-js', function(){
-    var prodGroup = [
-        config.paths.vendors +  'underscore-amd/underscore.js',
-        config.paths.src + 'vendors/colorpicker/js/colorpicker.js',
-        config.paths.vendors +  'jquery.lazyload/jquery.lazyload.js',
-        config.paths.vendors + 'humane-js/humane.js', // @TODO > extra files
-        config.paths.vendors + 'blueimp-load-image/js/load-image.js', // @TODO > extra files
-        config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',
-        config.paths.vendors + 'jquery-file-upload/js/jquery.fileupload.js',
-        config.paths.vendors + 'geonames-server-jquery-plugin/jquery.geonames.js',
-        config.paths.src + 'prod/js/components/publication.js',
-        config.paths.src + 'prod/js/jquery.form.2.49.js',
-        config.paths.src + 'prod/js/jquery.Selection.js',
-        config.paths.src + 'prod/js/jquery.Edit.js',
-        config.paths.src + 'prod/js/jquery.lists.js',
-        config.paths.src + 'prod/js/jquery.Prod.js',
-        config.paths.src + 'prod/js/jquery.Feedback.js',
-        config.paths.src + 'prod/js/jquery.Results.js',
-        config.paths.src + 'prod/js/jquery.main-prod.js',
-        config.paths.src + 'prod/js/jquery.WorkZone.js',
-        config.paths.src + 'prod/js/jquery.Alerts.js',
-        config.paths.src + 'prod/js/jquery.Upload.js',
-        config.paths.src + 'prod/js/ThumbExtractor.js',
-        config.paths.src + 'prod/js/publicator.js',
-        config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
-        config.paths.src + 'prod/js/jquery.p4.preview.js',
-        config.paths.src + 'prod/js/record.editor.js',
-        config.paths.src + 'prod/js/jquery.color.animation.js',
-        config.paths.src + 'vendors/jquery-image-enhancer/js/jquery.image_enhancer.js',
-        config.paths.vendors + 'jquery-treeview/jquery.treeview.js',
-        config.paths.vendors + 'jquery-treeview/jquery.treeview.async.js',
-        config.paths.vendors + 'fancytree/dist/jquery.fancytree-all.min.js'
-    ];
-    return utils.buildJsGroup(prodGroup, 'prod', 'prod/js', debugMode);
-});
 
 gulp.task('test-prod', function () {
     return gulp.src(config.paths.src + 'prod/js/tests/*.html')
         .pipe(qunit());
-});
-
-gulp.task('watch-prod-js', function() {
-    debugMode = true;
-    return gulp.watch(config.paths.src + 'prod/**/*.js', ['build-prod-js']);
 });
 
 gulp.task('watch-prod-css', function() {
@@ -114,7 +74,7 @@ gulp.task('watch-prod-css', function() {
     return gulp.watch(config.paths.src + 'prod/**/*.scss', ['build-prod-css']);
 });
 
-gulp.task('build-prod', ['copy-prod-images', 'build-prod-css'], function(){
+gulp.task('build-prod', ['copy-prod-images'], function(){
     debugMode = false;
-    return gulp.start('build-prod-js');
+    return gulp.start('build-prod-css');
 });

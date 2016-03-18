@@ -25,11 +25,14 @@
     "tmp": "0.0.23",
     "wrench": "^1.5.8"
   },
-  "engines" : {
-    "node" : ">=0.12"
+  "engines": {
+    "node": ">=5.8"
   },
   "scripts": {
     "build": "./node_modules/.bin/gulp build;",
     "postinstall": "./node_modules/.bin/gulp install;"
+  },
+  "dependencies": {
+    "phraseanet-production-client": "~0.2.0"
   }
 }

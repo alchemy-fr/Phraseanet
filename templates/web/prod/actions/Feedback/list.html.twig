@@ -17,7 +17,10 @@
                 </td>
                 <td style="text-align:right;white-space:nowrap;">
                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                        <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{{ 'Share the list' | trans }}" class="list_sharer">
+                        <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{{ 'Share the list' | trans }}"
+                           class="list_sharer push-list-share-action"
+
+                        data-list-id="{{ list.getId() }}">
                             <img src="/assets/prod/images/Push/list-icon.png" />
                             {{ "Set sharing permission" | trans }}
                         </a>
@@ -25,7 +28,7 @@
                 </td>
                 {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                     <td style="text-align:right;white-space:nowrap;width:150px;">
-                        <button class="deleter btn btn-inverse" data-list-id="{{ list.getId() }}">
+                        <button class="deleter btn btn-inverse listmanager-delete-list-action" data-list-id="{{ list.getId() }}">
                             {{ 'Delete' | trans }}
                         </button>
                     </td>
@@ -159,15 +162,3 @@
         </div>
     {% endif %}
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        p4.ListManager.workOn({{ list.getId() }});
-        $("#ListManager .readonly .badge .deleter").click(function(){
-            var badge = $(this).closest(".badge");
-            var usr_id = badge.find('input[name="id"]').val();
-            p4.ListManager.getList().removeUser(usr_id, function(list, data){
-            badge.remove();
-            });
-        });
-    });
-</script>
