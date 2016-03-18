@@ -9,37 +9,23 @@
  */
 namespace Alchemy\Phrasea\Order\Controller;
 
-use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
-use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\Prod\OrderControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
-use Alchemy\Phrasea\Model\Entities\OrderElement;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
-use Alchemy\Phrasea\Model\Repositories\OrderRepository;
+use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderFiller;
-use Alchemy\Phrasea\Order\OrderValidator;
-use Alchemy\Phrasea\Order\PartialOrder;
-use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ProdOrderController extends Controller
+class ProdOrderController extends BaseOrderController
 {
-    use DispatcherAware;
     use EntityManagerAware;
     use UserQueryAware;
 
@@ -65,7 +51,7 @@ class ProdOrderController extends Controller
 
             $orderUsage = $request->request->get('use', '');
 
-            $order = new OrderEntity();
+            $order = new Order();
             $order->setUser($this->getAuthenticatedUser());
             $order->setDeadline($deadLine);
             $order->setOrderUsage($orderUsage);
@@ -161,36 +147,9 @@ class ProdOrderController extends Controller
         $elementIds = $request->request->get('elements', []);
         $acceptor = $this->getAuthenticatedUser();
 
-        $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
-        $order = $this->findOr404($order_id);
+        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor);
 
-        $basket = $this->app['provider.order_basket']->provideBasketForOrderAndUser($order, $acceptor);
-        $orderValidator = $this->getOrderValidator();
-        $partialOrder = new PartialOrder($order, $elements);
-        $basketElements = $orderValidator->createBasketElements($partialOrder);
-        $orderValidator->accept($acceptor, $partialOrder);
-        $orderValidator->grantHD($basket->getUser(), $basketElements);
-
-        $success = false;
-
-        try {
-            $manager = $this->getEntityManager();
-            if (!empty($basketElements)) {
-                foreach ($basketElements as $element) {
-                    $basket->addElement($element);
-                    $manager->persist($element);
-                }
-
-                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $acceptor, count($basketElements)));
-            }
-            $success = true;
-
-            $manager->persist($basket);
-            $manager->persist($order);
-            $manager->flush();
-        } catch (\Exception $e) {
-            // I don't know why only basket persistence is not checked
-        }
+        $success = !empty($basketElements);
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
@@ -217,27 +176,12 @@ class ProdOrderController extends Controller
      */
     public function denyOrder(Request $request, $order_id)
     {
-        $success = false;
         $elementIds = $request->request->get('elements', []);
         $acceptor = $this->getAuthenticatedUser();
 
-        $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
-        $order = $this->findOr404($order_id);
+        $elements = $this->doDenyElements($order_id, $elementIds, $acceptor);
 
-        $this->getOrderValidator()->deny($acceptor, new PartialOrder($order, $elements));
-
-        try {
-            if (!empty($elements)) {
-                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $acceptor, count($elements)));
-            }
-            $success = true;
-
-            $manager = $this->getEntityManager();
-            $manager->persist($order);
-            $manager->flush();
-        } catch (\Exception $e) {
-
-        }
+        $success=!empty($elements);
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
@@ -255,70 +199,5 @@ class ProdOrderController extends Controller
         ]);
     }
 
-    /**
-     * @return OrderRepository
-     */
-    private function getOrderRepository()
-    {
-        return $this->app['repo.orders'];
-    }
 
-    /**
-     * @return OrderElementRepository
-     */
-    private function getOrderElementRepository()
-    {
-        return $this->app['repo.order-elements'];
-    }
-
-    /**
-     * @param int $orderId
-     * @return OrderEntity
-     */
-    private function findOr404($orderId)
-    {
-        if (null === $order = $this->getOrderRepository()->find($orderId)) {
-            throw new NotFoundHttpException('Order not found');
-        }
-
-        return $order;
-    }
-
-    /**
-     * @param int $orderId
-     * @param array<int> $elementIds
-     * @param User $acceptor
-     * @return OrderElement[]
-     */
-    private function findRequestedElements($orderId, $elementIds, User $acceptor)
-    {
-        try {
-            Assertion::isArray($elementIds);
-        } catch (\Exception $exception) {
-            throw new BadRequestHttpException('Improper request', $exception);
-        }
-
-        $elements = $this->getOrderElementRepository()->findBy([
-            'id' => $elementIds,
-            'order' => $orderId,
-        ]);
-
-        if (count($elements) !== count($elementIds)) {
-            throw new NotFoundHttpException(sprintf('At least one requested element does not exists or does not belong to order "%s"', $orderId));
-        }
-
-        if (!$this->getOrderValidator()->isGrantedValidation($acceptor, $elements)) {
-            throw new AccessDeniedHttpException('At least one element is in a collection you have no access to.');
-        }
-
-        return $elements;
-    }
-
-    /**
-     * @return OrderValidator
-     */
-    private function getOrderValidator()
-    {
-        return $this->app['validator.order'];
-    }
 }
