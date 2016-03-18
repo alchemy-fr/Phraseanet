@@ -183,7 +183,6 @@ class OrderController extends Controller
                     $manager->persist($element);
                 }
 
-                $order->setTodo($order->getTodo() - count($basketElements));
                 $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $acceptor, count($basketElements)));
             }
             $success = true;
