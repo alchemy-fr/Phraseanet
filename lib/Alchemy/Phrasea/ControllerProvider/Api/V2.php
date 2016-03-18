@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
 use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Order\Controller\ApiOrderController;
@@ -53,6 +54,7 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             function (PhraseaApplication $app) {
                 return (new ApiOrderController($app))
                     ->setDispatcher($app['dispatcher'])
+                    ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                     ->setJsonBodyHelper($app['json.body_helper']);
             }
         );

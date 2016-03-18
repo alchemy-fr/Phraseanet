@@ -10,24 +10,16 @@
 
 namespace Alchemy\Phrasea\Order\Controller;
 
-use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Order;
-use Alchemy\Phrasea\Model\Entities\OrderElement;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
-use Alchemy\Phrasea\Order\OrderValidator;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
-use Assert\Assertion;
-use Assert\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
@@ -39,12 +31,9 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ApiOrderController extends Controller
+class ApiOrderController extends BaseOrderController
 {
-    use DispatcherAware;
     use JsonBodyAware;
 
     public function createAction(Request $request)
@@ -127,17 +116,20 @@ class ApiOrderController extends Controller
 
     public function acceptElementsAction(Request $request, $orderId)
     {
-        $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_element_collection');
         $acceptor = $this->getAuthenticatedUser();
+        $elementIds = $this->fetchElementIdsFromRequest($request);
 
-
+        $this->doAcceptElements($orderId, $elementIds, $acceptor);
 
         return Result::create($request, [])->createResponse();
     }
 
     public function denyElementsAction(Request $request, $orderId)
     {
-        $order = $this->findOr404($orderId);
+        $acceptor = $this->getAuthenticatedUser();
+        $elementIds = $this->fetchElementIdsFromRequest($request);
+
+        $this->doDenyElements($orderId, $elementIds, $acceptor);
 
         return Result::create($request, [])->createResponse();
     }
@@ -202,73 +194,19 @@ class ApiOrderController extends Controller
     }
 
     /**
-     * @param int $orderId
-     * @return Order
+     * @param Request $request
+     * @return array
      */
-    private function findOr404($orderId)
+    private function fetchElementIdsFromRequest(Request $request)
     {
-        try {
-            Assertion::integerish($orderId);
-        } catch (InvalidArgumentException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_element_collection');
+
+        $elementIds = [];
+
+        foreach ($data as $elementId) {
+            $elementIds[] = $elementId->id;
         }
 
-        $order = $this->app['repo.orders']->find((int)$orderId);
-
-        if (!$order instanceof Order) {
-            throw new NotFoundHttpException(sprintf('Order "%d" was not found', (int)$orderId));
-        }
-
-        return $order;
-    }
-
-    /**
-     * @param int $orderId
-     * @param array<object> $elementIds
-     * @param User $acceptor
-     * @return OrderElement[]
-     */
-    private function findRequestedElements($orderId, array $elementIds, User $acceptor)
-    {
-        $ids = [];
-
-        foreach ($elementIds as $elementId) {
-            if (!isset($elementId->id)) {
-                throw new BadRequestHttpException('Invalid element id collection given');
-            }
-
-            $ids[] = $elementId->id;
-        }
-
-        $elements = $this->getOrderElementRepository()->findBy([
-            'id' => $ids,
-            'order' => $orderId,
-        ]);
-
-        if (count($elements) !== count($elementIds)) {
-            throw new NotFoundHttpException(sprintf('At least one requested element does not exists or does not belong to order "%s"', $orderId));
-        }
-
-        if (!$this->getOrderValidator()->isGrantedValidation($acceptor, $elements)) {
-            throw new AccessDeniedHttpException('At least one element is in a collection you have no access to.');
-        }
-
-        return $elements;
-    }
-
-    /**
-     * @return OrderElementRepository
-     */
-    private function getOrderElementRepository()
-    {
-        return $this->app['repo.order-elements'];
-    }
-
-    /**
-     * @return OrderValidator
-     */
-    private function getOrderValidator()
-    {
-        return $this->app['validator.order'];
+        return $elementIds;
     }
 }
