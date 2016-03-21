@@ -38,7 +38,7 @@
         "gedmo/doctrine-extensions": "~2.3.0",
         "goodby/csv": "^1.3.0",
         "guzzle/guzzle": "~3.0",
-        "imagine/imagine": "dev-alchemy-0.6.2 as 0.6.2",
+        "imagine/imagine": "^0.6.2@dev",
         "ircmaxell/random-lib": "^1.1",
         "jms/serializer": "~0.10",
         "justinrainbow/json-schema": "~1.3",

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8382f188717e70e4e0150abea9da5fd3",
-    "content-hash": "c7a5fad569e1e9c75ffd2a698b84b742",
+    "hash": "8392df51a56020e48819f0036c781533",
+    "content-hash": "5916e8703d750ba17f6e3a4a1979ddd7",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1549,7 +1549,7 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-alchemy-0.6.2",
+            "version": "0.6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
@@ -4926,14 +4926,7 @@
             "time": "2014-07-25 09:58:17"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.6.2",
-            "alias_normalized": "0.6.2.0",
-            "version": "dev-alchemy-0.6.2",
-            "package": "imagine/imagine"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/rest-bundle": 20,
