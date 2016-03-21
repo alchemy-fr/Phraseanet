@@ -379,7 +379,10 @@ function reloadPreview() {
 function getPrevious() {
     if (p4.preview.mode == 'RESULT') {
         posAsk = parseInt(p4.preview.current.pos) - 1;
-        posAsk = (posAsk < 0) ? ((parseInt(p4.tot) - 1)) : posAsk;
+        if (p4.navigation.page === 1) {
+            // may go to last result
+            posAsk = (posAsk < 0) ? ((parseInt(p4.tot) - 1)) : posAsk;
+        }
         openPreview('RESULT', posAsk, '', false);
     }
     else {
