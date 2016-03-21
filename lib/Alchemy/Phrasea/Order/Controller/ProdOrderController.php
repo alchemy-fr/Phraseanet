@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -7,33 +7,24 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Alchemy\Phrasea\Controller\Prod;
+namespace Alchemy\Phrasea\Order\Controller;
 
-use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
-use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Controller\Prod\OrderControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\Order as OrderEntity;
 use Alchemy\Phrasea\Model\Entities\Order;
-use Alchemy\Phrasea\Model\Repositories\OrderRepository;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Doctrine\Common\Collections\ArrayCollection;
-use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OrderController extends Controller
+class ProdOrderController extends BaseOrderController
 {
-    use DispatcherAware;
     use EntityManagerAware;
     use UserQueryAware;
 
@@ -59,7 +50,7 @@ class OrderController extends Controller
 
             $orderUsage = $request->request->get('use', '');
 
-            $order = new OrderEntity();
+            $order = new Order();
             $order->setUser($this->getAuthenticatedUser());
             $order->setDeadline($deadLine);
             $order->setOrderUsage($orderUsage);
@@ -136,10 +127,7 @@ class OrderController extends Controller
      */
     public function displayOneOrder($order_id)
     {
-        $order = $this->getOrderRepository()->find($order_id);
-        if (null === $order) {
-            throw new NotFoundHttpException('Order not found');
-        }
+        $order = $this->findOr404($order_id);
 
         return $this->render('prod/orders/order_item.html.twig', [
             'order' => $order,
@@ -155,62 +143,12 @@ class OrderController extends Controller
      */
     public function sendOrder(Request $request, $order_id)
     {
-        $success = false;
-        /** @var Order $order */
-        if (null === $order = $this->getOrderRepository()->find($order_id)) {
-            throw new NotFoundHttpException('Order not found');
-        }
+        $elementIds = $request->request->get('elements', []);
+        $acceptor = $this->getAuthenticatedUser();
 
-        $manager = $this->getEntityManager();
-        $basket = $order->getBasket();
-        if (null === $basket) {
-            $basket = new Basket();
-            $basket->setName($this->app->trans('Commande du %date%', [
-                '%date%' => $order->getCreatedOn()->format('Y-m-d'),
-            ]));
-            $basket->setUser($order->getUser());
-            $basket->setPusher($this->getAuthenticatedUser());
+        $basketElements = $this->doAcceptElements($order_id, $elementIds, $acceptor);
 
-            $manager->persist($basket);
-            $manager->flush();
-        }
-
-        $n = 0;
-        $elements = $request->request->get('elements', []);
-        foreach ($order->getElements() as $orderElement) {
-            if (in_array($orderElement->getId(), $elements)) {
-                $sbas_id = \phrasea::sbasFromBas($this->app, $orderElement->getBaseId());
-                $record = new \record_adapter($this->app, $sbas_id, $orderElement->getRecordId());
-
-                $basketElement = new BasketElement();
-                $basketElement->setRecord($record);
-                $basketElement->setBasket($basket);
-
-                $orderElement->setOrderMaster($this->getAuthenticatedUser());
-                $orderElement->setDeny(false);
-                $orderElement->getOrder()->setBasket($basket);
-
-                $basket->addElement($basketElement);
-
-                $n++;
-                $this->getAclForUser($basket->getUser())->grant_hd_on($record, $this->getAuthenticatedUser(), 'order');
-            }
-        }
-
-        try {
-            if ($n > 0) {
-                $order->setTodo($order->getTodo() - $n);
-                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $this->getAuthenticatedUser(), $n));
-            }
-            $success = true;
-
-            // There was a basketElement persist here. Seems useless as all entities are managed.
-            $manager->persist($basket);
-            $manager->persist($order);
-            $manager->flush();
-        } catch (\Exception $e) {
-
-        }
+        $success = !empty($basketElements);
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
@@ -237,38 +175,12 @@ class OrderController extends Controller
      */
     public function denyOrder(Request $request, $order_id)
     {
-        $success = false;
-        /** @var Order $order */
-        $order = $this->getOrderRepository()->find($order_id);
-        if (null === $order) {
-            throw new NotFoundHttpException('Order not found');
-        }
+        $elementIds = $request->request->get('elements', []);
+        $acceptor = $this->getAuthenticatedUser();
 
-        $n = 0;
-        $elements = $request->request->get('elements', []);
-        $manager = $this->getEntityManager();
-        foreach ($order->getElements() as $orderElement) {
-            if (in_array($orderElement->getId(),$elements)) {
-                $orderElement->setOrderMaster($this->getAuthenticatedUser());
-                $orderElement->setDeny(true);
+        $elements = $this->doDenyElements($order_id, $elementIds, $acceptor);
 
-                $manager->persist($orderElement);
-                $n++;
-            }
-        }
-
-        try {
-            if ($n > 0) {
-                $order->setTodo($order->getTodo() - $n);
-                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $this->getAuthenticatedUser(), $n));
-            }
-            $success = true;
-
-            $manager->persist($order);
-            $manager->flush();
-        } catch (\Exception $e) {
-
-        }
+        $success = !empty($elements);
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
@@ -286,11 +198,5 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * @return OrderRepository
-     */
-    private function getOrderRepository()
-    {
-        return $this->app['repo.orders'];
-    }
+
 }

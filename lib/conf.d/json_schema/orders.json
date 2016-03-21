@@ -64,7 +64,7 @@
                 "owner_id",
                 "created",
                 "usage",
-                "records"
+                "elements"
             ]
         },
         "order_element": {
@@ -87,6 +87,23 @@
                 "id",
                 "record_id"
             ]
+        },
+        "order_element_id": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "id"
+            ]
+        },
+        "order_element_collection": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/order_element_id"
+            }
         }
     },
     "type": "object",

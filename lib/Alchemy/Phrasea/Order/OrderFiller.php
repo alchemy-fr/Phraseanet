@@ -34,7 +34,7 @@ class OrderFiller
     }
 
     /**
-     * @param \record_adapter[] $records
+     * @param \record_adapter[]|\Traversable $records
      */
     public function assertAllRecordsHaveOrderMaster($records)
     {
@@ -62,7 +62,7 @@ class OrderFiller
     }
 
     /**
-     * @param \record_adapter[] $records
+     * @param \record_adapter[]|\Traversable $records
      * @param Order $order
      */
     public function fillOrder(Order $order, $records)

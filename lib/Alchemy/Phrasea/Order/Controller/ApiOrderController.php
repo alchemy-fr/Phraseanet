@@ -8,21 +8,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Controller\Api;
+namespace Alchemy\Phrasea\Order\Controller;
 
-use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
-use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
-use Assert\Assertion;
-use Assert\InvalidArgumentException;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
@@ -34,12 +33,9 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OrderController extends Controller
+class ApiOrderController extends BaseOrderController
 {
-    use DispatcherAware;
     use JsonBodyAware;
 
     public function createAction(Request $request)
@@ -107,19 +103,9 @@ class OrderController extends Controller
      */
     public function showAction(Request $request, $orderId)
     {
-        try {
-            Assertion::integerish($orderId);
-        } catch (InvalidArgumentException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
-        }
+        $order = $this->findOr404($orderId);
 
         $includes = $request->get('includes', []);
-
-        $order = $this->app['repo.orders']->find((int)$orderId);
-
-        if (!$order instanceof Order) {
-            throw new NotFoundHttpException(sprintf('Order "%d" was not found', (int) $orderId));
-        }
 
         if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
@@ -128,6 +114,34 @@ class OrderController extends Controller
         $resource = new Item($order, $this->getOrderTransformer());
 
         return $this->returnResourceResponse($request, $includes, $resource);
+    }
+
+    public function acceptElementsAction(Request $request, $orderId)
+    {
+        $elementIds = $this->fetchElementIdsFromRequest($request);
+
+        $elements = $this->doAcceptElements($orderId, $elementIds, $this->getAuthenticatedUser());
+
+        $resource = new Collection($elements, function (BasketElement $element) {
+            return [
+                'id' => $element->getId(),
+                'created' => $element->getCreated(),
+                'databox_id' => $element->getSbasId(),
+                'record_id' => $element->getRecordId(),
+                'index' => $element->getOrd(),
+            ];
+        });
+
+        return $this->returnResourceResponse($request, [], $resource);
+    }
+
+    public function denyElementsAction(Request $request, $orderId)
+    {
+        $elementIds = $this->fetchElementIdsFromRequest($request);
+
+        $this->doDenyElements($orderId, $elementIds, $this->getAuthenticatedUser());
+
+        return Result::create($request, [])->createResponse();
     }
 
     /**
@@ -187,5 +201,22 @@ class OrderController extends Controller
         $fractal->parseIncludes($includes);
 
         return Result::create($request, $fractal->createData($resource)->toArray())->createResponse();
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function fetchElementIdsFromRequest(Request $request)
+    {
+        $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_element_collection');
+
+        $elementIds = [];
+
+        foreach ($data as $elementId) {
+            $elementIds[] = $elementId->id;
+        }
+
+        return $elementIds;
     }
 }

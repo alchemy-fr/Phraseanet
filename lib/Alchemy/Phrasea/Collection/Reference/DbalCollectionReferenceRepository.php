@@ -96,6 +96,25 @@ WHERE base_id = :baseId';
     }
 
     /**
+     * @param array $basesId
+     * @return CollectionReference[]
+     */
+    public function findMany(array $basesId)
+    {
+        if (empty($basesId)) {
+            return [];
+        }
+
+        $rows = $this->connection->fetchAll(
+            self::$selectQuery . ' WHERE base_id IN (:baseIds)',
+            ['baseIds' => $basesId],
+            ['baseIds' => Connection::PARAM_INT_ARRAY]
+        );
+
+        return $this->createManyReferences($rows);
+    }
+
+    /**
      * @param int $databoxId
      * @param int $collectionId
      * @return CollectionReference|null
