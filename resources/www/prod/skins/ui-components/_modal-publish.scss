@@ -1,5 +1,14 @@
 
 #modal_feed {
+  .record_list .ui-state-highlight {
+    width: 112px;
+    height: 118px;
+    position: relative;
+    float: left;
+    background: none;
+    background-color: $darkBackgroundColor;
+    border-color: $mediumBackgroundColor;
+  }
   form {
     .feeds {
       color: $darkerTextColor;

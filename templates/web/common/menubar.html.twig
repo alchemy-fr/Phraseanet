@@ -89,7 +89,7 @@
 
           {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right('order_master') %}
           <li>
-            <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{{ 'Orders manager' | trans }}">
+            <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
               <span>
                 {{ 'Commandes' | trans }}
               </span>
