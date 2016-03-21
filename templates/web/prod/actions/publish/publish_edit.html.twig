@@ -5,18 +5,9 @@
     </div>
 {% endmacro %}
 
-<style type="text/css">
-    .record_list .sortable.ui-sortable-placeholder{
-        width:112px;
-        height:118px;
-        position:relative;
-        float:left;
-    }
-</style>
-
 <div id="modal_feed">
     <div class="row-fluid" style="height:120px">
-        <div class="span12" style="overflow:auto;">
+        <div class="span12 record_list" style="overflow:auto;">
             {% for content in entry.getItems() %}
                 <div class="sortable" style="position:relative;float:left;">
                     {{ _self.format_diapo(content.getRecord(app)) }}
@@ -31,7 +22,7 @@
     <div class="row-fluid">
         <div class="span12">
             <form class="main_form" method="post" action="{{ path('prod_feeds_entry_update', {'id': entry.getId()}) }}">
-                <input type="hidden" name="sorted_lst" value="" />
+                <input type="hidden" name="lst" value="" />
                 <div class="row-fluid">
                     <div class="span6">
                         <h1>{{ 'Editer' | trans }}</h1>
@@ -68,16 +59,3 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#modal_feed .record_list').sortable({
-            stop:function(event, ui){
-                var lst = [];
-                $('#modal_feed .record_list form').each(function(i, el){
-                    lst.push($('input[name="item_id"]', el).val()+'_'+(i+1));
-                });
-                $('#modal_feed form.main_form input[name="sorted_lst"]').val(lst.join(';'));
-            }
-        });
-    });
-</script>
