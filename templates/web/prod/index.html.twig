@@ -702,9 +702,8 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
-    <script type="text/javascript" src="/assets/production/app{% if not app.debug %}.min{% endif %}.js"></script>
-    {#<script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>#}
-    {#<script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>#}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript">
 
 
@@ -762,7 +761,7 @@
                     {% endfor %}
                 ]
             }
-        })
+        });
         // prodApp.appEvents.emit('search.doCheckFilters', true);
 
         $(document).ready(function(){

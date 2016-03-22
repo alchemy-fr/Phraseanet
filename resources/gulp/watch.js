@@ -25,7 +25,6 @@ gulp.task('watch-js', function(){
     // gulp.start('watch-oauth-js');
     gulp.start('watch-thesaurus-js');
     //gulp.start('watch-uploadFlash');
-    gulp.start('watch-lightbox-js');
     gulp.start('watch-admin-js');
     gulp.start('watch-report-js');
     gulp.start('watch-account-js');
