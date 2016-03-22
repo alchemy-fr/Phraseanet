@@ -62,5 +62,11 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'assets/vendors/requirejs/require.min.js,/scripts/apps/login/home/config.js,/scripts/apps/login/home/renewEmail.js'}) }}"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js"></script>
+    <script>
+        authenticateApp.bootstrap({
+            state: 'renewEmail'
+        })
+    </script>
 {% endblock %}
