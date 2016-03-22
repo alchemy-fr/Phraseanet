@@ -5,7 +5,7 @@
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
      class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }}"
-     onDblClick="openPreview('{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
+     onDblClick="openPreview(this, '{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');">
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.title(app.locale) }}">

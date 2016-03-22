@@ -34,12 +34,20 @@ function getNewVideoToken(lst, obj) {
  * @param contId
  * @param reload
  */
-function openPreview(env, pos, contId, reload) {
-
+function openPreview(event, env, pos, contId, reload) {
     if (contId == undefined)
         contId = '';
     var roll = 0;
     var justOpen = false;
+
+    var options_serial = p4.tot_options;
+    var query = p4.tot_query;
+    var navigation = p4.navigation;
+    var navigationContext = '';
+
+    // keep relative position for answer train:
+    var relativePos = pos;
+    var absolutePos = 0;
 
     if (!p4.preview.open) {
         showOverlay();
@@ -66,6 +74,15 @@ function openPreview(env, pos, contId, reload) {
         if (env == 'BASK')
             roll = 1;
 
+        // if comes from story and in workzone
+        if (env == 'REG') {
+            navigationContext = 'storyFromResults';
+            var $source = $(event);
+            if( $source.hasClass('CHIM')) {
+                navigationContext = 'storyFromWorkzone';
+            }
+        }
+
     }
 
     if (reload === true)
@@ -78,21 +95,14 @@ function openPreview(env, pos, contId, reload) {
 
     $('#PREVIEWIMGCONT').empty();
 
-    var options_serial = p4.tot_options;
-    var query = p4.tot_query;
-    var navigation = p4.navigation;
-
-    // keep relative position for answer train:
-    var relativePos = pos;
-    // update real absolute position with pagination:
-    var absolutePos = parseInt(navigation.perPage,10) * (parseInt(navigation.page, 10) - 1) + parseInt(pos,10);
-
-    // if comes from story, work with relative positionning
-    if (env == 'REG') {
-        // @TODO - if event comes from workzone (basket|story),
-        // we can use the relative position in order to display the doubleclicked records
-        // except we can't know the original event in this implementation
+    if (navigationContext === 'storyFromWorkzone') {
+        // if event comes from workzone, set to relative position (CHIM == chutier image)
+        absolutePos = relativePos;
+    } else if (navigationContext === 'storyFromResults') {
         absolutePos = 0;
+    } else {
+        // update real absolute position with pagination for records:
+        absolutePos = parseInt(navigation.perPage, 10) * (parseInt(navigation.page, 10) - 1) + parseInt(pos, 10);
     }
 
     prevAjax = $.ajax({
@@ -361,7 +371,7 @@ function getNext() {
         if (p4.preview.mode == 'RESULT') {
             posAsk = parseInt(p4.preview.current.pos) + 1;
             posAsk = (posAsk >= parseInt(p4.tot) || isNaN(posAsk)) ? 0 : posAsk;
-            openPreview('RESULT', posAsk, '', false);
+            openPreview(false, 'RESULT', posAsk, '', false);
         }
         else {
             if (!$('#PREVIEWCURRENT li.selected').is(':last-child'))
@@ -383,7 +393,7 @@ function getPrevious() {
             // may go to last result
             posAsk = (posAsk < 0) ? ((parseInt(p4.tot) - 1)) : posAsk;
         }
-        openPreview('RESULT', posAsk, '', false);
+        openPreview(false, 'RESULT', posAsk, '', false);
     }
     else {
         if (!$('#PREVIEWCURRENT li.selected').is(':first-child'))
@@ -431,7 +441,7 @@ function setCurrent(current) {
                 var absolutePos = jsopt[1];
                 var relativePos = parseInt(absolutePos, 10) - parseInt(p4.navigation.perPage, 10) * (parseInt(p4.navigation.page, 10) - 1);
                 // keep relative position for answer train:
-                openPreview(jsopt[0], relativePos, jsopt[2],false);
+                openPreview(this, jsopt[0], relativePos, jsopt[2],false);
             });
         });
     }
