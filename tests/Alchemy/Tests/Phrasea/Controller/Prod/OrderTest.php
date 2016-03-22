@@ -16,11 +16,6 @@ use Alchemy\Phrasea\Model\Entities\OrderElement;
  */
 class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 {
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::createOrder
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::connect
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::call
-     */
     public function testCreateOrder()
     {
         $app = $this->getApplication();
@@ -46,9 +41,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($triggered, 'Creation listener should have been triggered');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::createOrder
-     */
     public function testCreateOrderJson()
     {
         $app = $this->getApplication();
@@ -76,9 +68,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($content->success, 'Success attribute of response content should be true');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::displayOrders
-     */
     public function testDisplayOrders()
     {
         $this->XMLHTTPRequest('POST', '/prod/order/', [
@@ -91,9 +80,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::displayOneOrder
-     */
     public function testDisplayOneOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
@@ -102,9 +88,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($client->getResponse()->isOk());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::sendOrder
-     */
     public function testSendOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
@@ -123,9 +106,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(strpos($url['query'], 'success=1') === 0, 'Validation of elements is not successful');
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::sendOrder
-     */
     public function testSendOrderJson()
     {
         $order = $this->createOneOrder('I need this pictures');
@@ -148,9 +128,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('order_id', $content, $response->getContent());
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::denyOrder
-     */
     public function testDenyOrder()
     {
         $order = $this->createOneOrder('I need this pictures');
@@ -171,9 +148,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue( ! ! $var['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Order::denyOrder
-     */
     public function testDenyOrderJson()
     {
         $order = $this->createOneOrder('I need this pictures');

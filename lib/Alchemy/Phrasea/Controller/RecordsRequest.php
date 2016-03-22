@@ -104,7 +104,7 @@ class RecordsRequest extends ArrayCollection
             /** @var \record_adapter $record */
             foreach ($this as $record) {
                 if (! isset($this->collections[$record->getBaseId()])) {
-                    $this->collections[$record->getBaseId()] = $record->getCollection();
+                    $this->collections[$record->getBaseId()] = $record->get_collection();
                 }
             }
 
