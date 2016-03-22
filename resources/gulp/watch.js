@@ -27,7 +27,6 @@ gulp.task('watch-js', function(){
     //gulp.start('watch-uploadFlash');
     gulp.start('watch-admin-js');
     gulp.start('watch-report-js');
-    gulp.start('watch-account-js');
     // gulp.start('watch-permaview');
     gulp.start('watch-setup-js');
     gulp.start('watch-authentication-js');
