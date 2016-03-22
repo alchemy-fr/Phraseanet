@@ -454,8 +454,7 @@ class set_order extends set_abstract
     }
 
     /**
-     *
-     * @param  Array     $elements_ids
+     * @param array     $elements_ids
      * @return set_order
      */
     public function deny_elements(Array $elements_ids)
@@ -464,7 +463,7 @@ class set_order extends set_abstract
 
         $n = 0;
 
-        foreach ($elements_ids as $order_element_id) {
+        foreach ($this->filterAuthorizedElementIds($elements_ids) as $order_element_id) {
             $sql = 'UPDATE order_elements
                 SET deny="1", order_master_id = :order_master_id
                 WHERE order_id = :order_id AND id = :order_element_id
@@ -546,5 +545,14 @@ class set_order extends set_abstract
         }
 
         return $comp < 0 ? -1 : 1;
+    }
+
+    /**
+     * @param array<int> $elements_ids
+     * @return array<int>
+     */
+    private function filterAuthorizedElementIds(array $elements_ids)
+    {
+        return array_intersect($elements_ids, array_keys($this->elements));
     }
 }
