@@ -1,8 +1,15 @@
 <?php
+/**
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Alchemy\Phrasea\Collection\Reference;
 
-use Alchemy\Phrasea\Core\Database\QueryBuilder;
 use Doctrine\DBAL\Connection;
 
 class DbalCollectionReferenceRepository implements CollectionReferenceRepository
@@ -19,17 +26,23 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
         'aliases' => 'alias'
     ];
 
-    private static $selectQuery = 'SELECT base_id AS baseId, sbas_id AS databoxId, server_coll_id AS collectionId,
-                                    ord AS displayIndex, active AS isActive, aliases AS alias
-                              FROM bas';
+    private static $selectQuery = 'SELECT
+ base_id AS baseId,
+ sbas_id AS databoxId,
+ server_coll_id AS collectionId,
+ ord AS displayIndex,
+ active AS isActive,
+ aliases AS alias
+FROM bas';
 
     private static $insertQuery = 'INSERT INTO bas (sbas_id, server_coll_id, ord, active, aliases)
-                                   VALUES (:databoxId, :collectionId,
-                                           (SELECT COALESCE(MAX(b.ord), 0) + 1 AS ord FROM bas b WHERE b.sbas_id = :databoxId),
-                                           :isActive, :alias)';
+VALUES (:databoxId, :collectionId, (SELECT COALESCE(MAX(b.ord), 0) + 1 AS ord FROM bas b WHERE b.sbas_id = :databoxId), :isActive, :alias)';
 
-    private static $updateQuery = 'UPDATE bas SET ord = :displayIndex, active = :isActive, aliases = :alias
-                                   WHERE base_id = :baseId';
+    private static $updateQuery = 'UPDATE bas SET
+ ord = :displayIndex,
+ active = :isActive,
+ aliases = :alias
+WHERE base_id = :baseId';
 
     private static $deleteQuery = 'DELETE FROM bas WHERE base_id = :baseId';
 
@@ -83,6 +96,25 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
     }
 
     /**
+     * @param array $basesId
+     * @return CollectionReference[]
+     */
+    public function findMany(array $basesId)
+    {
+        if (empty($basesId)) {
+            return [];
+        }
+
+        $rows = $this->connection->fetchAll(
+            self::$selectQuery . ' WHERE base_id IN (:baseIds)',
+            ['baseIds' => $basesId],
+            ['baseIds' => Connection::PARAM_INT_ARRAY]
+        );
+
+        return $this->createManyReferences($rows);
+    }
+
+    /**
      * @param int $databoxId
      * @param int $collectionId
      * @return CollectionReference|null
@@ -97,6 +129,29 @@ class DbalCollectionReferenceRepository implements CollectionReferenceRepository
         }
 
         return null;
+    }
+
+    public function findHavingOrderMaster(array $baseIdsSubset = null)
+    {
+        $query = self::$selectQuery
+            . ' WHERE EXISTS(SELECT 1 FROM basusr WHERE basusr.order_master = 1 AND basusr.base_id = bas.base_id)';
+
+        $parameters = [];
+        $types = [];
+
+        if (null !== $baseIdsSubset) {
+            if (empty($baseIdsSubset)) {
+                return [];
+            }
+
+            $query .= ' AND bas.base_id IN (:subset)';
+            $parameters['subset'] = $baseIdsSubset;
+            $types['subset'] = Connection::PARAM_INT_ARRAY;
+        }
+
+        $rows = $this->connection->fetchAll($query, $parameters, $types);
+
+        return $this->createManyReferences($rows);
     }
 
     public function save(CollectionReference $collectionReference)

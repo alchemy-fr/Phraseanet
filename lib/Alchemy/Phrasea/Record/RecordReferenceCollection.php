@@ -15,8 +15,6 @@ use Assert\Assertion;
 
 class RecordReferenceCollection implements \IteratorAggregate
 {
-    private $groups;
-
     /**
      * @param array<int|string,array> $records
      * @return RecordReferenceCollection
@@ -44,13 +42,24 @@ class RecordReferenceCollection implements \IteratorAggregate
     private $references = [];
 
     /**
+     * @var null|array
+     */
+    private $groups;
+
+    /**
      * @param RecordReferenceInterface[] $references
      */
-    public function __construct($references)
+    public function __construct($references = [])
     {
         Assertion::allIsInstanceOf($references, RecordReferenceInterface::class);
 
         $this->references = $references instanceof \Traversable ? iterator_to_array($references) : $references;
+    }
+
+    public function addRecordReference(RecordReferenceInterface $reference)
+    {
+        $this->references[] = $reference;
+        $this->groups = null;
     }
 
     public function getIterator()

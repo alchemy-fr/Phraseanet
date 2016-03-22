@@ -41,12 +41,13 @@ class OrderElement
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="order_master", referencedColumnName="id")
      *
-     * @return User
+     * @var null|User
      **/
     private $orderMaster;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @var bool|null
      */
     private $deny;
 
@@ -89,7 +90,7 @@ class OrderElement
     /**
      * Set deny
      *
-     * @param  boolean      $deny
+     * @param null|bool $deny
      * @return OrderElement
      */
     public function setDeny($deny)
@@ -102,7 +103,7 @@ class OrderElement
     /**
      * Get deny
      *
-     * @return boolean
+     * @return bool|null
      */
     public function getDeny()
     {

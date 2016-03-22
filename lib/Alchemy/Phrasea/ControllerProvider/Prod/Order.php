@@ -13,8 +13,10 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\LazyLocator;
-use Alchemy\Phrasea\Controller\Prod\OrderController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Order\Controller\ProdOrderController;
+use Alchemy\Phrasea\Order\OrderBasketProvider;
+use Alchemy\Phrasea\Order\OrderValidator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -25,8 +27,19 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
 
     public function register(Application $app)
     {
+        $app['provider.order_basket'] = $app->share(function (PhraseaApplication $app) {
+            return new OrderBasketProvider($app['orm.em'], $app['translator']);
+        });
+
+        $app['validator.order'] = $app->share(function (PhraseaApplication $app) {
+            $orderValidator = new OrderValidator($app['phraseanet.appbox'], $app['repo.collection-references']);
+            $orderValidator->setAclProvider($app['acl']);
+
+            return $orderValidator;
+        });
+
         $app['controller.prod.order'] = $app->share(function (PhraseaApplication $app) {
-            return (new OrderController($app))
+            return (new ProdOrderController($app))
                 ->setDispatcher($app['dispatcher'])
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                 ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))

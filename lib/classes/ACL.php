@@ -10,15 +10,12 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\DBAL\DBALException;
-use Alchemy\Phrasea\Model\RecordInterface;
-
-use Alchemy\Phrasea\Core\Event\Acl\AclEvents;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
 use Alchemy\Phrasea\Core\Event\Acl\AccessPeriodChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseGrantedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseRevokedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToSbasGrantedEvent;
+use Alchemy\Phrasea\Core\Event\Acl\AclEvents;
 use Alchemy\Phrasea\Core\Event\Acl\DownloadQuotasOnBaseChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\DownloadQuotasOnBaseRemovedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\DownloadQuotasResetEvent;
@@ -26,6 +23,10 @@ use Alchemy\Phrasea\Core\Event\Acl\MasksOnBaseChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\RightsToBaseChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\RightsToSbasChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\SysadminChangedEvent;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\RecordInterface;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
+use Doctrine\DBAL\DBALException;
 
 
 class ACL implements cache_cacheableInterface
@@ -52,51 +53,40 @@ class ACL implements cache_cacheableInterface
     ];
 
     /**
-     *
-     * @var user
+     * @var User
      */
     protected $user;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $_rights_sbas;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $_rights_bas;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $_rights_records_document;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $_rights_records_preview;
 
     /**
-     *
-     * @var Array
+     * @var array
      */
     protected $_limited;
 
     /**
-     *
-     * @var boolean
+     * @var bool
      */
     protected $is_admin;
 
-    /**
-     *
-     * @var Array
-     */
     protected $_global_rights = [
         'addrecord'          => false,
         'addtoalbum'         => false,
@@ -121,7 +111,6 @@ class ACL implements cache_cacheableInterface
     ];
 
     /**
-     *
      * @var Application
      */
     protected $app;
@@ -140,15 +129,11 @@ class ACL implements cache_cacheableInterface
      *
      * @param User        $user
      * @param Application $app
-     *
-     * @return \ACL
      */
     public function __construct(User $user, Application $app)
     {
         $this->user = $user;
         $this->app = $app;
-
-        return $this;
     }
 
     /**
@@ -164,10 +149,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param  \record_adapter $record
-     * @return boolean
+     * @param RecordReferenceInterface $record
+     * @return bool
      */
-    public function has_hd_grant(RecordInterface $record)
+    public function has_hd_grant(RecordReferenceInterface $record)
     {
 
         $this->load_hd_grant();
@@ -179,7 +164,7 @@ class ACL implements cache_cacheableInterface
         return false;
     }
 
-    public function grant_hd_on(RecordInterface $record, User $pusher, $action)
+    public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)
@@ -203,7 +188,7 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    public function grant_preview_on(RecordInterface $record, User $pusher, $action)
+    public function grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
     {
         $sql = 'REPLACE INTO records_rights
             (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)
@@ -230,10 +215,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if a hd grant has been received for a record
      *
-     * @param  \record_adapter $record
-     * @return boolean
+     * @param RecordReferenceInterface $record
+     * @return bool
      */
-    public function has_preview_grant(RecordInterface $record)
+    public function has_preview_grant(RecordReferenceInterface $record)
     {
         $this->load_hd_grant();
 
@@ -1761,23 +1746,49 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     * Returns an array of collections on which the user is 'order master'
+     * Returns base ids on which user is 'order master'
      *
      * @return array
      */
-    public function get_order_master_collections()
+    public function getOrderMasterCollectionsBaseIds()
     {
         $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->user->getId()]);
-        $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $result = $this->app->getApplicationBox()
+            ->get_connection()
+            ->executeQuery($sql, [':usr_id' => $this->user->getId()])
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
+
+        $baseIds = [];
+
+        foreach ($result as $item) {
+            $baseIds[] = $item['base_id'];
+        }
+
+        return $baseIds;
+    }
+
+    /**
+     * Returns an array of collections on which the user is 'order master'
+     *
+     * @return collection[]
+     */
+    public function get_order_master_collections()
+    {
+        $baseIds = $this->getOrderMasterCollectionsBaseIds();
+
+        $collectionReferences = $this->app['repo.collection-references']->findHavingOrderMaster($baseIds);
+        $groups = new CollectionReferenceCollection($collectionReferences);
 
         $collections = [];
 
-        foreach ($rs as $row) {
-            $collections[] = \collection::getByBaseId($this->app, $row['base_id']);
+        foreach ($groups->groupByDataboxIdAndCollectionId() as $databoxId => $group) {
+            foreach ($group as $collectionId => $index) {
+                $collections[$index] = \collection::getByCollectionId($this->app, $databoxId, $collectionId);
+            }
         }
+
+        ksort($collections);
 
         return $collections;
     }

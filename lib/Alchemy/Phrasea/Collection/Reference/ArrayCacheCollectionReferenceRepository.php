@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Alchemy\Phrasea\Collection\Reference;
 
@@ -65,6 +73,25 @@ class ArrayCacheCollectionReferenceRepository implements CollectionReferenceRepo
     }
 
     /**
+     * @param array $baseIds
+     * @return CollectionReference[]
+     */
+    public function findMany(array $baseIds)
+    {
+        $references = $this->findAll();
+
+        $requested = [];
+
+        foreach ($baseIds as $baseId) {
+            if (isset($references[$baseId])) {
+                $requested[] = $references[$baseId];
+            }
+        }
+
+        return $requested;
+    }
+
+    /**
      * @param int $databoxId
      * @param int $collectionId
      * @return CollectionReference|null
@@ -80,6 +107,15 @@ class ArrayCacheCollectionReferenceRepository implements CollectionReferenceRepo
         }
 
         return null;
+    }
+
+    /**
+     * @param array|null $baseIdsSubset
+     * @return CollectionReference[]
+     */
+    public function findHavingOrderMaster(array $baseIdsSubset = null)
+    {
+        return $this->repository->findHavingOrderMaster($baseIdsSubset);
     }
 
     /**
