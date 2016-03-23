@@ -57,7 +57,7 @@ class DownloadTest extends \PhraseanetAuthenticatedWebTestCase
 
         //has_right_on_base return true
         $stubbedACL->expects($this->any())
-            ->method('has_right_on_bas')
+            ->method('has_right_on_base')
             ->will($this->returnValue(false));
 
         //has_access_to_subdef return true
