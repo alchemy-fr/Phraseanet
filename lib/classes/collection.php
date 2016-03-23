@@ -568,7 +568,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
      */
     public function get_pub_wm()
     {
-        return $this->collectionVO->getName();
+        return $this->collectionVO->getPublicWatermark();
     }
 
     /**
