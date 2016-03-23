@@ -796,9 +796,6 @@ abstract class PhraseanetTestCase extends WebTestCase
     {
         $mock = $this->getMock(SearchEngineInterface::class);
         $mock->expects($this->any())
-            ->method('createSubscriber')
-            ->will($this->returnValue($this->getMock('Symfony\Component\EventDispatcher\EventSubscriberInterface')));
-        $mock->expects($this->any())
             ->method('getStatus')
             ->will($this->returnValue([]));
 

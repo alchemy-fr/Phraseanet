@@ -759,12 +759,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    public function testCreateSubscriber()
-    {
-        $classname = self::$searchEngineClass;
-        //$this->assertInstanceOf('Symfony\Component\EventDispatcher\EventSubscriberInterface', $classname::createSubscriber(self::$DI['app']));
-    }
-
     abstract public function initialize();
 
     abstract public function testAutocomplete();
