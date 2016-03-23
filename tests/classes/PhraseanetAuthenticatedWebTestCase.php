@@ -66,7 +66,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             'is_admin' => $returnBool,
             'give_access_to_sbas' => $returnSelf,
             'update_rights_to_sbas' => $returnSelf,
-            'update_rights_to_bas' => $returnSelf,
+            'update_rights_to_base' => $returnSelf,
             'has_right_on_base' => $returnBool,
             'has_right_on_sbas' => $returnBool,
             'has_access_to_sbas' => $returnBool,
