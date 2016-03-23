@@ -68,7 +68,7 @@ class ApiOrderController extends BaseOrderController
     public function indexAction(Request $request)
     {
         $page = max((int) $request->get('page', '1'), 1);
-        $perPage = min(max((int)$request->get('per_page', '10'), 10), 100);
+        $perPage = min(max((int)$request->get('per_page', '10'), 1), 100);
         $includes = $request->get('includes', []);
 
         $routeGenerator = function ($page) use ($perPage) {
@@ -90,6 +90,7 @@ class ApiOrderController extends BaseOrderController
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
         $pager->setCurrentPage($page);
+        $pager->setMaxPerPage($perPage);
         $paginator = new PagerfantaPaginatorAdapter($pager, $routeGenerator);
         $resource->setPaginator($paginator);
 
