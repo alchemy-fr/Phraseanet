@@ -8,7 +8,6 @@ var utils = require('./utils.js');
 gulp.task('watch-css', function(){
     gulp.start('watch-common-css');
     gulp.start('watch-oauth-css');
-    gulp.start('watch-prod-css');
     gulp.start('watch-thesaurus-css');
     //gulp.start('watch-uploadFlash');
     gulp.start('watch-lightbox-css');

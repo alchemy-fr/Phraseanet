@@ -66,13 +66,9 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
+    {% if not app.debug %}<link type="text/css" rel="stylesheet" href="/assets/production/production.css">{% endif %}
     <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/skins/{{ cssfile  }}/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
-        /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
-            background-color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection-disabled', '333333')}}};
-        }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
@@ -786,6 +782,20 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
+
+    <script>
+        function setCss(color) {
+            $("#skinCss").attr("href","/assets/production/css/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
+            $.post("{{ path('save_pref') }}", {
+                prop: "css",
+                value: color,
+                t: Math.random()
+            }, function(data){
+                return;
+            });
+        }
+
+    </script>
 
     <script type="text/javascript" id="bitly_loader"></script>
 {% endblock %}
