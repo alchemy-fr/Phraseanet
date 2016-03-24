@@ -83,5 +83,9 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/bind.js'}) }}"></script>
+    <script>
+        authenticateApp.bootstrap({
+            state: 'login'
+        });
+    </script>
 {% endblock %}
