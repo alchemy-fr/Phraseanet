@@ -106,7 +106,6 @@
 
             {% if list['complete'] is not defined %} {# Zip not done #}
                 $.post("{{ path('execute_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}", function(data){
-                    var data = $.parseJSON(data);
                     if(data.success) {
                         $('form[name=download]').submit();
                     }

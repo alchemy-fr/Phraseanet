@@ -13,6 +13,10 @@
 
 
 {% block javascript %}
+    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
     {% include "common/templates.html.twig" %}
     <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}

@@ -487,20 +487,6 @@
                         <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                     </div>
                 </div>
-                <script type="text/javascript">
-                    $(document).ready(function(){
-                        $('#ftp_form_selector').bind('change',function(){
-                        $('#ftp .ftp_form').hide();
-                        $('#ftp .ftp_form_'+$(this).val()).show();
-                            $('.ftp_folder_check', dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
-                                if($(this).prop('checked'))
-                                    $(this).next().prop('disabled',false);
-                                else
-                                    $(this).next().prop('disabled',true);
-                            });
-                        }).trigger('change');
-                    });
-                </script>
              </div>
         {% endif %}
     </div>
@@ -510,6 +496,7 @@
         var exportConfig = {
             isGuest: false,
             maxDownload: {{max_download}},
+            haveFtp: {% if download.get_total_ftp() > 0 %}true{% else %}false{% endif %},
             msg: {
                 termOfUseTitle: '{{ "Terms of Use" | trans }}',
                 termOfUseAgree: '{{ 'You must agree to the Terms of Use to continue.' | trans }}',
