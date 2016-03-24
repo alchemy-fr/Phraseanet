@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Application;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -46,13 +47,14 @@ class RecordsRequest extends ArrayCollection
 
         if (self::FLATTEN_NO !== $flatten) {
             $to_remove = [];
+            /** @var record_adapter $record */
             foreach ($this as $key => $record) {
                 if ($record->isStory()) {
                     if (self::FLATTEN_YES === $flatten) {
                         $to_remove[] = $key;
                     }
-                    foreach ($record->get_children() as $child) {
-                        $this->set($child->get_serialize_key(), $child);
+                    foreach ($record->getChildren() as $child) {
+                        $this->set($child->getId(), $child);
                     }
                 }
             }
