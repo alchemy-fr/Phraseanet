@@ -176,6 +176,8 @@
     </div>
     {% endif %}
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
+{% endblock %}
+{% block bodyJavascript %}
   <script type="text/javascript">
     {% if basket.getValidation() %}
     var lightboxApp = lightboxApplication.bootstrap({
