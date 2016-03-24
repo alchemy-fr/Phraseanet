@@ -498,18 +498,18 @@
             maxDownload: {{max_download}},
             haveFtp: {% if download.get_total_ftp() > 0 %}true{% else %}false{% endif %},
             msg: {
-                termOfUseTitle: '{{ "Terms of Use" | trans }}',
-                termOfUseAgree: '{{ 'You must agree to the Terms of Use to continue.' | trans }}',
-                requiredFields: '{{ 'Certains champs sont obligatoires, veuillez les remplir' | trans }}',
-                missingSubdef: '{{ 'Vous devez selectionner un type de sous definitions' | trans }}',
-                fileTooLarge: '{% trans with {'%max_download%' : max_download} %}You can not directly download more than %max_download% Mo ; time to package all documents is too long{% endtrans %}',
-                fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans }}',
-                fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans }}',
-                success: '{{ "Success" | trans }}',
-                warning: '{{ "Warning !" | trans }}'
+                termOfUseTitle: '{{ "Terms of Use" | trans | e('js') }}',
+                termOfUseAgree: '{{ 'You must agree to the Terms of Use to continue.' | trans | e('js') }}',
+                requiredFields: '{{ 'Certains champs sont obligatoires, veuillez les remplir' | trans | e('js') }}',
+                missingSubdef: '{{ 'Vous devez selectionner un type de sous definitions' | trans | e('js') }}',
+                fileTooLarge: '{{ 'You can not directly download more than %max_download% Mo ; time to package all documents is too long'|trans({'%max_download%' : max_download})|e('js') }}',
+                fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans | e('js') }}',
+                fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans | e('js') }}',
+                success: '{{ "Success" | trans | e('js') }}',
+                warning: '{{ "Warning !" | trans | e('js') }}'
             },
             user: {
-                email: '{{app.getAuthenticatedUser().getEmail()}}'
+                email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
             }
         };
     </script>
