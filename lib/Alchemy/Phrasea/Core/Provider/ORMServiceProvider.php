@@ -39,7 +39,8 @@ class ORMServiceProvider implements ServiceProviderInterface
         $app['db.dsn'] = $app->protect(function (array $params) use ($app) {
             $params = $app['db.info']($params);
 
-            switch ($params['driver']) {
+            switch ($params['driver'])
+            {
                 case 'pdo_mysql':
                     return sprintf('%s://%s:%s@%s:%s/%s',
                         $params['driver'],
@@ -295,7 +296,8 @@ class ORMServiceProvider implements ServiceProviderInterface
                     $config->addEntityNamespace($entity['alias'], $entity['namespace']);
                 }
 
-                switch ($entity['type']) {
+                switch ($entity['type'])
+                {
                     case 'annotation':
                         $useSimpleAnnotationReader =
                             isset($entity['use_simple_annotation_reader'])
@@ -368,7 +370,8 @@ class ORMServiceProvider implements ServiceProviderInterface
                 $info['charset'] = 'utf8';
             }
 
-            switch ($info['driver']) {
+            switch ($info['driver'])
+            {
                 case 'pdo_mysql':
                     foreach (array('user', 'password', 'host', 'dbname', 'port') as $param) {
                         if (!array_key_exists($param, $info)) {
