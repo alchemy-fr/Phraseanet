@@ -239,12 +239,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             }
         });
 
-        $app['dbal.config.register.loggers'] = $app->protect(function(Configuration $config) use ($app) {
-            if ($app->getEnvironment() === PhraseaApplication::ENV_DEV) {
-                $config->setSQLLogger($app['orm.query.logger']);
-            }
-        });
-
         $app['orm.annotation.register'] = $app->protect(function($key) use($app) {
             $driver = new AnnotationDriver($app['orm.annotation.reader'], array(
                 $app['root.path'].'/vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass',
@@ -493,13 +487,6 @@ class ORMServiceProvider implements ServiceProviderInterface
             $logger->pushHandler($app['orm.monolog.handler']);
 
             return $logger;
-        });
-
-        /**
-         * Doctrine query logger
-         */
-        $app['orm.query.logger'] = $app->share(function () {
-            return new DebugStack();
         });
 
         /**

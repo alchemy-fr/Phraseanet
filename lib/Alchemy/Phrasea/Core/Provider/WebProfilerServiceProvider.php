@@ -2,11 +2,13 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\CacheStatisticsSubscriber;
 use Alchemy\Phrasea\Core\Profiler\CacheDataCollector;
 use Alchemy\Phrasea\Core\Profiler\TraceableCache;
+use Alchemy\Phrasea\Utilities\LazyArrayAccess;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\LoggerChain;
 use Silex\Application;
@@ -47,19 +49,33 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
                 return $templates;
             }));
 
-            $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
-                $collectors['ajax'] = function () {
+            $app['data_collectors'] = $app->share($app->extend('data_collectors', function (array $collectors, $app) {
+                $collectors['ajax'] = $app->share(function () {
                     return new AjaxDataCollector();
-                };
+                });
 
                 return $collectors;
             }));
         }
 
+        $app['dbal.config.register.loggers'] = $app->protect(function(Configuration $config, $name) use ($app) {
+            $debugLogger = new DebugStack();
+
+            $loggerChain = new LoggerChain();
+            $loggerChain->addLogger($debugLogger);
+            $loggerChain->addLogger($app['data_collectors.doctrine.logger']);
+
+            $app['data_collectors.doctrine']->addLogger($name, $debugLogger);
+
+            $config->setSQLLogger($loggerChain);
+        });
+
+        $app['data_collectors.doctrine.logger'] = $app->share(function ($app) {
+            return new DbalLogger($app['logger'], $app['stopwatch']);
+        });
+
         $app['data_collectors.doctrine'] = $app->share(function ($app) {
-            /** @var Connection $db */
-            $db = $app['db'];
-            return new DoctrineDataCollector($db);
+            return new DoctrineDataCollector(new LazyArrayAccess(new LazyLocator($app, 'dbs')));
         });
 
         $app['cache'] = $app->share($app->extend('cache', function (Cache $cache, $app) {
@@ -75,24 +91,9 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             return new CacheStatisticsSubscriber($app['cache']);
         });
 
-        $app['data_collectors'] = $app->share($app->extend('data_collectors', function ($collectors) use ($app) {
+        $app['data_collectors'] = $app->share($app->extend('data_collectors', function (array $collectors, $app) {
             $collectors['db'] = $app->share(function ($app) {
-                /** @var DoctrineDataCollector $collector */
-                $collector = $app['data_collectors.doctrine'];
-
-                $loggerChain = new LoggerChain();
-                $logger = new DebugStack();
-
-                $loggerChain->addLogger($logger);
-                $loggerChain->addLogger(new DbalLogger($app['logger'], $app['stopwatch']));
-
-                /** @var Connection $db */
-                $db = $app['db'];
-                $db->getConfiguration()->setSQLLogger($loggerChain);
-
-                $collector->addLogger($logger);
-
-                return $collector;
+                return $app['data_collectors.doctrine'];
             });
 
             $collectors['cache'] = $app->share(function ($app) {
