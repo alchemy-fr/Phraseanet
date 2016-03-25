@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -11,7 +11,6 @@
 namespace Alchemy\Phrasea\Order\Controller;
 
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
-use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\OrderEvent;

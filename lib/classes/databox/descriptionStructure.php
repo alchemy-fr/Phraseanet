@@ -19,7 +19,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /**
      * Cache array for the get element by name function
      *
-     * @var array
+     * @var array<string,int>
      */
     protected $cache_name_id = [];
 
