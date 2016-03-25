@@ -58,7 +58,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface
             }));
         }
 
-        $app['dbal.config.register.loggers'] = $app->protect(function(Configuration $config, $name) use ($app) {
+        $app['dbal.config.register.loggers'] = $app->protect(function (Configuration $config, $name) use ($app) {
             $debugLogger = new DebugStack();
 
             $loggerChain = new LoggerChain();

@@ -37,13 +37,13 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     private function setupDBAL(PhraseaApplication $app)
     {
         $app['dbs.config'] = $app->share($app->extend('dbs.config', function ($configs, $app) {
-            if (! isset($app['dbal.config.register.loggers'])) {
+            if (!isset($app['dbal.config.register.loggers'])) {
                 return $configs;
             }
 
             $loggerRegisterCallable = $app['dbal.config.register.loggers'];
 
-            foreach($configs->keys() as $service) {
+            foreach ($configs->keys() as $service) {
                 $loggerRegisterCallable($configs[$service], $service);
             }
 
@@ -67,7 +67,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     {
         // Override "orm.cache.configurer" service provided for benefiting
         // of "phraseanet.cache-service"
-        $app['orm.cache.configurer'] = $app->protect(function($name, Configuration $config, $options) use ($app)  {
+        $app['orm.cache.configurer'] = $app->protect(function ($name, Configuration $config, $options) use ($app)  {
             /** @var Manager $service */
             $service = $app['phraseanet.cache-service'];
 
@@ -85,7 +85,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             );
         });
 
-        $app['orm.proxies_dir'] = $app['root.path'].'/resources/proxies';
+        $app['orm.proxies_dir'] = $app['root.path'] . '/resources/proxies';
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 
