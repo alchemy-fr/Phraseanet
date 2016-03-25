@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Alchemy\Phrasea\Core\MetaProvider;
 
@@ -6,6 +14,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
+use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
 use Gedmo\DoctrineExtensions as GedmoExtension;
@@ -28,12 +37,14 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     private function setupDBAL(PhraseaApplication $app)
     {
         $app['dbs.config'] = $app->share($app->extend('dbs.config', function ($configs, $app) {
-            if (! $app->isDebug()) {
+            if (!isset($app['dbal.config.register.loggers'])) {
                 return $configs;
             }
 
-            foreach($configs->keys() as $service) {
-                $app['dbal.config.register.loggers']($configs[$service]);
+            $loggerRegisterCallable = $app['dbal.config.register.loggers'];
+
+            foreach ($configs->keys() as $service) {
+                $loggerRegisterCallable($configs[$service], $service);
             }
 
             return $configs;
@@ -56,7 +67,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     {
         // Override "orm.cache.configurer" service provided for benefiting
         // of "phraseanet.cache-service"
-        $app['orm.cache.configurer'] = $app->protect(function($name, Configuration $config, $options) use ($app)  {
+        $app['orm.cache.configurer'] = $app->protect(function ($name, Configuration $config, $options) use ($app)  {
             /** @var Manager $service */
             $service = $app['phraseanet.cache-service'];
 
@@ -74,7 +85,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
             );
         });
 
-        $app['orm.proxies_dir'] = $app['root.path'].'/resources/proxies';
+        $app['orm.proxies_dir'] = $app['root.path'] . '/resources/proxies';
         $app['orm.auto_generate_proxies'] = $app['debug'];
         $app['orm.proxies_namespace'] = 'Alchemy\Phrasea\Model\Proxies';
 

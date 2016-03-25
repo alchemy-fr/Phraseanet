@@ -1,9 +1,8 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,22 +15,19 @@ use Doctrine\DBAL\DriverManager;
 
 class ConnectionPoolManager
 {
-    /** @var Connection[] */
+    /**
+     * @var Connection[]
+     */
     private $connections = [];
-
-    public function __construct()
-    {
-    }
 
     public function __destruct()
     {
         $this->closeAll();
-        $this->connections = [];
     }
 
     public function closeAll()
     {
-        foreach ($this->connections as $key => $conn) {
+        foreach ($this->connections as $conn) {
             $conn->close();
         }
     }
@@ -87,5 +83,10 @@ class ConnectionPoolManager
         }
 
         return $this->connections[$key] = DriverManager::getConnection($params);
+    }
+
+    public function all()
+    {
+        return $this->connections;
     }
 }
