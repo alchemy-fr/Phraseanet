@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -14,17 +13,12 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-class caption_record implements caption_interface, cache_cacheableInterface
+class caption_record implements cache_cacheableInterface
 {
     /**
      * @var array
      */
     protected $fields;
-
-    /**
-     * @var int
-     */
-    protected $sbas_id;
 
     /**
      * @var record_adapter
@@ -44,7 +38,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
     public function __construct(Application $app, \record_adapter $record, databox $databox)
     {
         $this->app = $app;
-        $this->sbas_id = $record->getDataboxId();
         $this->record = $record;
         $this->databox = $databox;
     }
@@ -81,13 +74,11 @@ FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
 WHERE m.record_id = :record_id
 ORDER BY s.sorter ASC
 SQL;
-            $stmt = $this->databox->get_connection()->prepare($sql);
-            $stmt->execute([':record_id' => $this->record->getRecordId()]);
-            $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            if ($fields) {
-                $this->set_data_to_cache($fields);
-            }
+            $fields = $this->databox->get_connection()
+                ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
+                ->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->set_data_to_cache($fields);
         }
 
         $rec_fields = array();
