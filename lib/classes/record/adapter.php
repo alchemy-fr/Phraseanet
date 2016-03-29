@@ -21,10 +21,6 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
-use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
-use Alchemy\Phrasea\Media\FloatTechnicalData;
-use Alchemy\Phrasea\Media\IntegerTechnicalData;
-use Alchemy\Phrasea\Media\StringTechnicalData;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -1375,8 +1371,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $ftodel = [];
         foreach ($this->get_subdefs() as $subdef) {
-            if (!$subdef->is_physically_present())
+            if (!$subdef->is_physically_present()) {
                 continue;
+            }
 
             if ($subdef->get_name() === 'thumbnail') {
                 $this->app['phraseanet.thumb-symlinker']->unlink($subdef->getRealPath());
@@ -1384,11 +1381,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $ftodel[] = $subdef->getRealPath();
             $watermark = $subdef->getWatermarkRealPath();
-            if (file_exists($watermark))
+            if (file_exists($watermark)) {
                 $ftodel[] = $watermark;
+            }
             $stamp = $subdef->getStampRealPath();
-            if (file_exists($stamp))
+            if (file_exists($stamp)) {
                 $ftodel[] = $stamp;
+            }
         }
 
         $origcoll = $this->collection_id;
@@ -1518,16 +1517,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function delete_data_from_cache($option = null)
     {
-        switch ($option) {
+        switch ($option)
+        {
             case self::CACHE_STATUS:
                 $this->status = null;
                 break;
             case self::CACHE_SUBDEFS:
                 $this->subdefs = null;
                 break;
-            default:
-                break;
         }
+
         $databox = $this->getDatabox();
 
         $databox->delete_data_from_cache($this->get_cache_key($option));
@@ -1558,7 +1557,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @todo de meme avec stories
-     * @return Array
+     * @return \Alchemy\Phrasea\Model\Entities\Basket[]
      */
     public function get_container_baskets(EntityManager $em, User $user)
     {
