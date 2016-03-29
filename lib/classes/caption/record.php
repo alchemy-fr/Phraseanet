@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -50,7 +51,10 @@ class caption_record implements cache_cacheableInterface
         return $serializer->toArray($this, $includeBusinessFields);
     }
 
-    public function get_record()
+    /**
+     * @return RecordReferenceInterface
+     */
+    public function getRecordReference()
     {
         return $this->record;
     }
