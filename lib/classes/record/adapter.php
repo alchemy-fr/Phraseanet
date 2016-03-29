@@ -870,7 +870,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve);
             $titles = [];
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {

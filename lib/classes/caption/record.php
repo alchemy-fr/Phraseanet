@@ -216,15 +216,12 @@ SQL;
     }
 
     /**
-     *
-     * @param string                $highlight
-     * @param array                 $grep_fields
-     * @param SearchEngineInterface $searchEngine
-     * @param Boolean               $includeBusiness
-     *
+     * @param string $highlight
+     * @param array $grep_fields
+     * @param bool $includeBusiness
      * @return array
      */
-    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null)
+    public function get_highlight_fields($highlight = '', array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 
