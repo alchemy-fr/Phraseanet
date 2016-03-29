@@ -246,24 +246,6 @@ SQL;
             ];
         }
 
-        if ($searchEngine instanceof SearchEngineInterface) {
-            $ret = $searchEngine->excerpt($highlight, $fields, $this->record, $options);
-
-            // sets highlighted value from search engine, highlighted values will now
-            // be surrounded by [[em]][[/em]] tags
-            if ($ret) {
-                foreach ($fields as $key => $value) {
-                    if (!isset($ret[$key])) {
-                        continue;
-                    }
-
-                    foreach ($ret[$key] as $metaId => $newValue) {
-                        $fields[$key]['values'][$metaId]['value'] = $newValue;
-                    }
-                }
-            }
-        }
-
         return $fields;
     }
 
