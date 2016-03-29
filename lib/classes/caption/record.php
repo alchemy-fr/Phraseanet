@@ -75,10 +75,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
         try {
             $fields = $this->get_data_from_cache();
         } catch (\Exception $e) {
-            $sql = "SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId"
-                . " FROM metadatas m, metadatas_structure s"
-                . " WHERE m.record_id = :record_id AND s.id = m.meta_struct_id"
-                . " ORDER BY s.sorter ASC";
+            $sql = <<<'SQL'
+SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId
+FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
+WHERE m.record_id = :record_id
+ORDER BY s.sorter ASC
+SQL;
             $stmt = $this->databox->get_connection()->prepare($sql);
             $stmt->execute([':record_id' => $this->record->getRecordId()]);
             $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
