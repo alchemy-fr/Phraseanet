@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -28,7 +28,7 @@ class RecordReferenceCollection implements \IteratorAggregate
         foreach ($records as $index => $record) {
             if (isset($record['id'])) {
                 $references[$index] = RecordReference::createFromRecordReference($record['id']);
-            } elseif (isset($record['databox_id']) && isset($record['record_id'])) {
+            } elseif (isset($record['databox_id'], $record['record_id'])) {
                 $references[$index] = RecordReference::createFromDataboxIdAndRecordId($record['databox_id'], $record['record_id']);
             }
         }
@@ -117,6 +117,6 @@ class RecordReferenceCollection implements \IteratorAggregate
 
         ksort($records);
 
-        return array_values($records);
+        return $records;
     }
 }

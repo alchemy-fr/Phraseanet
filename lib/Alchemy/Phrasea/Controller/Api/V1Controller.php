@@ -1068,7 +1068,11 @@ class V1Controller extends Controller
         /** @var SearchEngineResult $search_result */
         $references = new RecordReferenceCollection($search_result->getResults());
 
-        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
+        $technicalData = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
+
+        foreach ($references->toRecords($this->getApplicationBox()) as $index => $record) {
+            $record->setTechnicalDataSet($technicalData[$index]);
+
             if ($record->isStory()) {
                 $ret['results']['stories'][] = $this->listStory($request, $record);
             } else {

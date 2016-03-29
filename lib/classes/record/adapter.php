@@ -92,7 +92,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $created;
     /** @var string */
     private $original_name;
-    /** @var TechnicalDataSet */
+    /** @var TechnicalDataSet|null */
     private $technical_data;
     /** @var string */
     private $uuid;
@@ -727,13 +727,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_technical_infos($data = '')
     {
-        if (!$this->technical_data && !$this->mapTechnicalDataFromCache()) {
-            $this->technical_data = [];
-            $rs = $this->fetchTechnicalDataFromDb();
+        if (null === $this->technical_data) {
+            $sets = $this->app['service.technical_data']->fetchRecordsTechnicalData([$this]);
 
-            $this->mapTechnicalDataFromDb($rs);
-
-            $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
+            $this->setTechnicalDataSet(reset($sets));
         }
 
         if ($data) {
@@ -745,6 +742,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $this->technical_data;
+    }
+
+    /**
+     * @param TechnicalDataSet $dataSet
+     * @internal
+     */
+    public function setTechnicalDataSet(TechnicalDataSet $dataSet)
+    {
+        $this->technical_data = $dataSet;
     }
 
     /**
@@ -1860,58 +1866,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->original_name = $row['originalName'];
         $this->sha256 = $row['sha256'];
         $this->mime = $row['mime'];
-    }
-
-    /**
-     * @return bool
-     */
-    private function mapTechnicalDataFromCache()
-    {
-        try {
-            $technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
-        } catch (Exception $e) {
-            $technical_data = false;
-        }
-
-        if (false === $technical_data) {
-            return false;
-        }
-
-        $this->technical_data = $technical_data;
-
-        return true;
-    }
-
-    /**
-     * @return false|array
-     */
-    private function fetchTechnicalDataFromDb()
-    {
-        $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
-
-        return $this->getDataboxConnection()
-            ->fetchAll($sql, ['record_id' => $this->getRecordId()]);
-    }
-
-    /**
-     * @param array $rows
-     */
-    private function mapTechnicalDataFromDb(array $rows)
-    {
-        $this->technical_data = new ArrayTechnicalDataSet();
-
-        foreach ($rows as $row) {
-            switch (true) {
-                case ctype_digit($row['value']):
-                    $this->technical_data[] = new IntegerTechnicalData($row['name'], $row['value']);
-                    break;
-                case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
-                    $this->technical_data[] = new FloatTechnicalData($row['name'], $row['value']);
-                    break;
-                default:
-                    $this->technical_data[] = new StringTechnicalData($row['name'], $row['value']);
-            }
-        }
     }
 
     /**

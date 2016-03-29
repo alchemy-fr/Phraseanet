@@ -11,22 +11,20 @@ namespace Alchemy\Phrasea\Media;
 
 use Assert\Assertion;
 
-final class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
+class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSet
 {
     /** @var TechnicalData[] */
-    private $data;
+    private $data = [];
 
     /**
      * @param TechnicalData[] $data
      */
     public function __construct($data = [])
     {
-        Assertion::allIsInstanceOf($data, TechnicalData::class);
-
-        $this->data = [];
+        Assertion::isTraversable($data);
 
         foreach ($data as $technicalData) {
-            $this->data[$technicalData->getName()] = $technicalData;
+            $this[] = $technicalData;
         }
     }
 
@@ -41,7 +39,7 @@ final class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSe
             $offset = $offset->getName();
         }
 
-        return isset($this->data[$offset]) || array_key_exists($offset, $this->data);
+        return isset($this->data[$offset]);
     }
 
     public function offsetGet($offset)
@@ -50,7 +48,7 @@ final class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSe
     }
 
     /**
-     * @param string $offset
+     * @param null|string $offset
      * @param TechnicalData $value
      */
     public function offsetSet($offset, $value)
@@ -58,6 +56,7 @@ final class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSe
         Assertion::isInstanceOf($value, TechnicalData::class);
 
         $name = $value->getName();
+
         if (null !== $offset) {
             Assertion::eq($name, $offset);
         }
@@ -82,6 +81,7 @@ final class ArrayTechnicalDataSet implements \IteratorAggregate, TechnicalDataSe
     public function getValues()
     {
         $values = [];
+
         foreach ($this->data as $key => $value) {
             $values[$key] = $value->getValue();
         }
