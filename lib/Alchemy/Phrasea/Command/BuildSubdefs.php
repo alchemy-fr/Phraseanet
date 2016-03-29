@@ -77,7 +77,7 @@ class BuildSubdefs extends Command
         $databox = $this->container->findDataboxById($input->getArgument('databox'));
         $connection = $databox->get_connection();
 
-        $sqlCount = sprintf('SELECT COUNT(*) FROM (%s)', $sql);
+        $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
         $output->writeln($sqlCount);
         $totalRecords = (int)$connection->executeQuery($sqlCount, $params, $types)->fetchColumn();
 
