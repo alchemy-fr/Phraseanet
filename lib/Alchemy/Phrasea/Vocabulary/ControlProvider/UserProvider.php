@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -13,7 +12,6 @@ namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Vocabulary\Term;
 
 class UserProvider implements ControlProviderInterface
@@ -35,8 +33,7 @@ class UserProvider implements ControlProviderInterface
     }
 
     /**
-     *
-     * @return type
+     * @return string
      */
     public function getName()
     {
@@ -44,12 +41,12 @@ class UserProvider implements ControlProviderInterface
     }
 
     /**
-     * @param  string                                       $query
-     * @param  User                                         $for_user
-     * @param  \databox                                     $on_databox
+     * @param  string $query
+     * @param  User $for_user
+     * @param  \databox $on_databox
      * @return Term[]
      */
-    public function find($query, User $for_user,\databox $on_databox = null)
+    public function find($query, User $for_user, \databox $on_databox = null)
     {
         $user_query = $this->app['phraseanet.user-query'];
 
@@ -65,27 +62,26 @@ class UserProvider implements ControlProviderInterface
 
         return array_map(function (User $user) {
             return new Term($user->getDisplayName(), '', $this, $user->getId());
-        }, $users);
+        }, $users->toArray());
     }
 
     /**
-     *
      * @param  mixed   $id
-     * @return boolean
+     * @return bool
      */
     public function validate($id)
     {
-        return (Boolean) $this->app['repo.users']->find($id);
+        return (bool)$this->fetchUser($id);
     }
 
     /**
-     *
-     * @param  mixed  $id
+     * @param  mixed $id
      * @return string
+     * @throws \Exception
      */
     public function getValue($id)
     {
-        $user = $this->app['repo.users']->find($id);
+        $user = $this->fetchUser($id);
 
         if (null === $user) {
             throw new \Exception('User unknown');
@@ -95,11 +91,19 @@ class UserProvider implements ControlProviderInterface
     }
 
     /**
-     *
      * @param  mixed  $id
      * @return string
      */
     public function getResource($id)
+    {
+        return $this->fetchUser($id);
+    }
+
+    /**
+     * @param $id
+     * @return null|User
+     */
+    private function fetchUser($id)
     {
         return $this->app['repo.users']->find($id);
     }
