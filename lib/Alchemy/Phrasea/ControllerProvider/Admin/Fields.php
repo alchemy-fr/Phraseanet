@@ -28,7 +28,7 @@ class Fields implements ControllerProviderInterface, ServiceProviderInterface
         $app['vocabularies'] = $app->share(function (PhraseaApplication $app) {
             $vocabularies = new \Pimple();
 
-            $vocabularies['User'] = $vocabularies->share(function () use ($app) {
+            $vocabularies['user'] = $vocabularies->share(function () use ($app) {
                 return new UserProvider($app);
             });
 

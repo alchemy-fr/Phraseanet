@@ -129,7 +129,7 @@ class FieldsController extends Controller
     {
         $vocabularies = $this->getVocabularies();
 
-        $vocabulary = $vocabularies[$type];
+        $vocabulary = $vocabularies[strtolower($type)];
 
         Assertion::isInstanceOf($vocabulary, ControlProviderInterface::class);
 

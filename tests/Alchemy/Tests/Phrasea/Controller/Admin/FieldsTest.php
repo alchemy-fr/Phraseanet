@@ -181,7 +181,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $body[count($body) - 1]['readonly'] = true;
         $body[count($body) - 1]['required'] = false;
 
-        $response = $this->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], json_encode($body));
+        $response = $this->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], json_encode($body));
 
         $this->assertEquals("application/json", $response->headers->get("content-type"));
 
@@ -230,7 +230,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'vocabulary-restricted' => true,
         ]);
 
-        $response = $this->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], $body);
+        $response = $this->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], $body);
 
         $this->assertEquals("application/json", $response->headers->get("content-type"));
 
