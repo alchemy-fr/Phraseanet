@@ -10,8 +10,11 @@
 
 namespace Alchemy\Phrasea\Command;
 
+use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Media\SubdefGenerator;
+use databox_subdef;
+use databox_subdefsStructure;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,12 +31,13 @@ class BuildSubdefs extends Command
 
         $this->setDescription('Build subviews for given subview names and record types');
         $this->addArgument('databox', InputArgument::REQUIRED, 'The databox id');
-        $this->addArgument('type', InputArgument::REQUIRED, 'Type(s) of document(s) to rebuild ex. "image,video"');
-        $this->addArgument('subdefs', InputArgument::REQUIRED, 'Name(s) of sub-definition(s) to re-build, ex. "thumbnail,preview"');
+        $this->addArgument('type', InputArgument::REQUIRED, 'Type(s) of document(s) to rebuild ex. "image,video", or "ALL"');
+        $this->addArgument('subdefs', InputArgument::REQUIRED, 'Name(s) of sub-definition(s) to re-build, ex. "thumbnail,preview", or "ALL"');
         $this->addOption('min_record', 'min', InputOption::VALUE_OPTIONAL, 'Min record id');
         $this->addOption('max_record', 'max', InputOption::VALUE_OPTIONAL, 'Max record id');
         $this->addOption('with-substitution', 'wsubstit', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records as well');
         $this->addOption('substitution-only', 'substito', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records only');
+        $this->addOption('dry', '', InputOption::VALUE_NONE, 'dry run, list but do nothing');
     }
 
     /**
@@ -43,127 +47,153 @@ class BuildSubdefs extends Command
     {
         $availableTypes = array('document', 'audio', 'video', 'image', 'flash', 'map');
 
-        $typesOption =  $input->getArgument('type');
-
-        $recordsType = explode(',', $typesOption);
-        $recordsType = array_filter($recordsType, function($type) use($availableTypes) {
-            return in_array($type, $availableTypes);
-        });
-
-        if (count($recordsType) === 0) {
-            $output->write(sprintf('Invalid records type provided %s', implode(', ', $availableTypes)));
-            return;
-        }
-
-        $subdefsOption = $input->getArgument('subdefs');
-        $subdefsName = explode(',', $subdefsOption);
-
-        if (count($subdefsOption) === 0) {
-            $output->write('No subdef options provided');
-            return;
-        }
-
         $min = $input->getOption('min_record');
         $max = $input->getOption('max_record');
-        $substitutionOnly = $input->getOption('substitution-only');
-        $withSubstitution = $input->getOption('with-substitution');
+        $substitutionOnly = $input->getOption('substitution-only') ? true : false;
+        $withSubstitution = $input->getOption('with-substitution') ? true : false;
+        $dry = $input->getOption('dry') ? true : false;
 
-        if (false !== $withSubstitution && false !== $substitutionOnly) {
-            throw new InvalidArgumentException('Conflict, you can not ask for --substitution-only && --with-substitution parameters at the same time');
+        if ($withSubstitution && $substitutionOnly) {
+            throw new InvalidArgumentException('--substitution-only and --with-substitution are mutually exclusive');
         }
-
-        list($sql, $params, $types) = $this->generateSQL($subdefsName, $recordsType, $min, $max, $withSubstitution, $substitutionOnly);
 
         $databox = $this->container->findDataboxById($input->getArgument('databox'));
         $connection = $databox->get_connection();
 
+        $subdefsNameByType = [];
+
+        $typesOption =  $input->getArgument('type');
+        $typesArray = explode(',', $typesOption);
+
+        $subdefsOption = $input->getArgument('subdefs');
+        $subdefsArray = explode(',', $subdefsOption);
+
+        /** @var SubdefGroup $sg */
+        foreach($databox->get_subdef_structure() as $sg)
+        {
+            if($typesOption == "ALL" || in_array($sg->getName(), $typesArray)) {
+                $subdefsNameByType[$sg->getName()] = [];
+                /** @var databox_subdef $sd */
+                foreach ($sg as $sd) {
+                    if($subdefsOption == "ALL" || in_array($sd->get_name(), $subdefsArray)) {
+                        $subdefsNameByType[$sg->getName()][] = $sd->get_name();
+                    }
+                }
+            }
+        }
+
+        $recordsType = array_keys($subdefsNameByType);
+
+        list($sql, $params, $types) = $this->generateSQL($connection, $recordsType, $min, $max);
+
         $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
         $output->writeln($sqlCount);
+
         $totalRecords = (int)$connection->executeQuery($sqlCount, $params, $types)->fetchColumn();
 
         if ($totalRecords === 0) {
             return;
         }
 
-        $progress = new ProgressBar($output, $totalRecords);
-
-        $progress->start();
-
-        $progress->display();
+        $progress = null;
+        if($output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
+            $progress = new ProgressBar($output, $totalRecords);
+            $progress->start();
+            $progress->display();
+        }
 
         $rows = $connection->executeQuery($sql, $params, $types)->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($rows as $row) {
-            $output->write(sprintf(' (#%s)', $row['record_id']));
+            $type = $row['type'];
+            $output->write(sprintf(' [#%s] (%s)', $row['record_id'], $type));
 
             try {
                 $record = $databox->get_record($row['record_id']);
 
-                $subdefs = array_filter($record->get_subdefs(), function (media_subdef $subdef) use ($subdefsName) {
-                    return in_array($subdef->get_name(), $subdefsName);
-                });
+                $subdefNamesToDo = array_flip($subdefsNameByType[$type]);    // do all subdefs ?
 
                 /** @var media_subdef $subdef */
-                foreach ($subdefs as $subdef) {
-                    $subdef->remove_file();
-                    if (($withSubstitution && $subdef->is_substituted()) || $substitutionOnly) {
+                foreach ($record->get_subdefs() as $subdef) {
+                    if(!in_array($subdef->get_name(), $subdefsNameByType[$type])) {
+                        continue;
+                    }
+                    if($subdef->is_substituted()) {
+                        if(!$withSubstitution && !$substitutionOnly) {
+                            unset($subdefNamesToDo[$subdef->get_name()]);
+                            continue;
+                        }
+                    }
+                    else {
+                        if($substitutionOnly) {
+                            unset($subdefNamesToDo[$subdef->get_name()]);
+                            continue;
+                        }
+                    }
+                    // here an existing subdef must be re-done
+                    if(!$dry) {
+                        $subdef->remove_file();
                         $subdef->set_substituted(false);
                     }
                 }
 
-                /** @var SubdefGenerator $subdefGenerator */
-                $subdefGenerator = $this->container['subdef.generator'];
-                $subdefGenerator->generateSubdefs($record, $subdefsName);
+                $subdefNamesToDo = array_keys($subdefNamesToDo);
+                if(!empty($subdefNamesToDo)) {
+                    if(!$dry) {
+                        /** @var SubdefGenerator $subdefGenerator */
+                        $subdefGenerator = $this->container['subdef.generator'];
+                        $subdefGenerator->generateSubdefs($record, $subdefNamesToDo);
+                    }
+
+                    if($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                        $output->writeln(sprintf(" subdefs[%s] done", join(',', $subdefNamesToDo)));
+                    }
+                }
+                else {
+                    if($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                        $output->writeln(sprintf(" nothing to do"));
+                    }
+                }
             }
             catch(\Exception $e) {
-
+                if($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                    $output->writeln(sprintf("failed"));
+                }
             }
 
-            $progress->advance();
+            if($progress) {
+                $progress->advance();
+            }
         }
 
-        $progress->finish();
+        if($progress) {
+            $progress->finish();
+            $output->writeln("");
+        }
     }
 
     /**
-     * @param string[] $subdefNames
      * @param string[] $recordTypes
      * @param null|int $min
      * @param null|int $max
-     * @param bool $withSubstitution
-     * @param bool $substitutionOnly
      * @return array
      */
-    protected function generateSQL(array $subdefNames, array $recordTypes, $min, $max, $withSubstitution, $substitutionOnly)
+    protected function generateSQL(Connection $connection, array $recordTypes, $min, $max)
     {
-        $sql = <<<'SQL'
-SELECT DISTINCT(r.record_id) AS record_id
-FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))
-WHERE r.type IN (?)
-SQL;
+        $sql = "SELECT record_id, type FROM record WHERE parent_record_id=0";
 
-        $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
-        $params = array($subdefNames, $recordTypes);
+        $types = array_map(function($v) use($connection){return $connection->quote($v);}, $recordTypes);
 
+        if(!empty($types)) {
+            $sql .= ' AND type IN(' . join(',', $types) . ')';
+        }
         if (null !== $min) {
-            $sql .= ' AND (r.record_id >= ?)';
-
-            $params[] = (int)$min;
-            $types[] = \PDO::PARAM_INT;
+            $sql .= ' AND (record_id >= ' . $connection->quote($min) . ')';
         }
         if (null !== $max) {
-            $sql .= ' AND (r.record_id <= ?)';
-
-            $params[] = (int)$max;
-            $types[] = \PDO::PARAM_INT;
+            $sql .= ' AND (record_id <= ' . $connection->quote($max) . ')';
         }
 
-        if (false === $withSubstitution) {
-            $sql .= ' AND (ISNULL(s.substit) OR s.substit = ?)';
-            $params[] = $substitutionOnly ? 1 : 0;
-            $types[] = \PDO::PARAM_INT;
-        }
-
-        return array($sql, $params, $types);
+        return array($sql, [], []);
     }
 }
