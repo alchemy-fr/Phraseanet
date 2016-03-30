@@ -28,10 +28,10 @@ class BuildSubdefs extends Command
 
         $this->setDescription('Build subviews for given subview names and record types');
         $this->addArgument('databox', InputArgument::REQUIRED, 'The databox id');
-        $this->addArgument('type', InputArgument::REQUIRED, 'Types of the document to rebuild');
-        $this->addArgument('subdefs', InputArgument::REQUIRED, 'Names of sub-definition to re-build');
-        $this->addOption('max_record', 'max', InputOption::VALUE_OPTIONAL, 'Max record id');
+        $this->addArgument('type', InputArgument::REQUIRED, 'Type(s) of document(s) to rebuild ex. "image,video"');
+        $this->addArgument('subdefs', InputArgument::REQUIRED, 'Name(s) of sub-definition(s) to re-build, ex. "thumbnail,preview"');
         $this->addOption('min_record', 'min', InputOption::VALUE_OPTIONAL, 'Min record id');
+        $this->addOption('max_record', 'max', InputOption::VALUE_OPTIONAL, 'Max record id');
         $this->addOption('with-substitution', 'wsubstit', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records as well');
         $this->addOption('substitution-only', 'substito', InputOption::VALUE_NONE, 'Regenerate subdefs for substituted records only');
     }
@@ -96,23 +96,28 @@ class BuildSubdefs extends Command
         foreach ($rows as $row) {
             $output->write(sprintf(' (#%s)', $row['record_id']));
 
-            $record = $databox->get_record($row['record_id']);
+            try {
+                $record = $databox->get_record($row['record_id']);
 
-            $subdefs = array_filter($record->get_subdefs(), function(media_subdef $subdef) use ($subdefsName) {
-                return in_array($subdef->get_name(), $subdefsName);
-            });
+                $subdefs = array_filter($record->get_subdefs(), function (media_subdef $subdef) use ($subdefsName) {
+                    return in_array($subdef->get_name(), $subdefsName);
+                });
 
-            /** @var media_subdef $subdef */
-            foreach ($subdefs as $subdef) {
-                $subdef->remove_file();
-                if (($withSubstitution && $subdef->is_substituted()) || $substitutionOnly) {
-                    $subdef->set_substituted(false);
+                /** @var media_subdef $subdef */
+                foreach ($subdefs as $subdef) {
+                    $subdef->remove_file();
+                    if (($withSubstitution && $subdef->is_substituted()) || $substitutionOnly) {
+                        $subdef->set_substituted(false);
+                    }
                 }
-            }
 
-            /** @var SubdefGenerator $subdefGenerator */
-            $subdefGenerator = $this->container['subdef.generator'];
-            $subdefGenerator->generateSubdefs($record, $subdefsName);
+                /** @var SubdefGenerator $subdefGenerator */
+                $subdefGenerator = $this->container['subdef.generator'];
+                $subdefGenerator->generateSubdefs($record, $subdefsName);
+            }
+            catch(\Exception $e) {
+
+            }
 
             $progress->advance();
         }
