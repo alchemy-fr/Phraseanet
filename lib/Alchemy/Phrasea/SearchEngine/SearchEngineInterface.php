@@ -183,17 +183,6 @@ interface SearchEngineInterface
     public function autocomplete($query, SearchEngineOptions $options);
 
     /**
-     * Highlight the fields of a record
-     *
-     * @param type            $query
-     * @param type            $fields
-     * @param \record_adapter $record
-     *
-     * @return array The array of highlighted fields
-     */
-    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null);
-
-    /**
      * Reset the cache of the SE (if applicable)
      *
      * @return SearchEngineInterface

@@ -48,6 +48,7 @@ use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Provider\SecretProvider;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
@@ -1063,18 +1064,22 @@ class V1Controller extends Controller
     {
         list($ret, $search_result) = $this->prepareSearchRequest($request);
 
-        $ret['results'] = ['records' => [], 'stories' => []];
+        $records = [];
+        $stories = [];
 
         /** @var SearchEngineResult $search_result */
-        $references = new RecordReferenceCollection($search_result->getResults());
-
-        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
+        foreach ($search_result->getResults() as $record) {
             if ($record->isStory()) {
-                $ret['results']['stories'][] = $this->listStory($request, $record);
+                $stories[] = $record;
             } else {
-                $ret['results']['records'][] = $this->listRecord($request, $record);
+                $records[] = $record;
             }
         }
+
+        $ret['results'] = [
+            'records' => $this->listRecords($request, $records),
+            'stories' => $this->listStories($request, $stories),
+        ];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -1155,6 +1160,30 @@ class V1Controller extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @return array
+     */
+    public function listRecords(Request $request, $records)
+    {
+        if (!$records instanceof RecordReferenceCollection) {
+            $records = new RecordReferenceCollection($records);
+        }
+
+        $technicalData = $this->app['service.technical_data']->fetchRecordsTechnicalData($records);
+
+        $data = [];
+
+        foreach ($records->toRecords($this->getApplicationBox()) as $index => $record) {
+            $record->setTechnicalDataSet($technicalData[$index]);
+
+            $data[$index] = $this->listRecord($request, $record);
+        }
+
+        return $data;
+    }
+
+    /**
      * Retrieve detailed information about one record
      *
      * @param Request          $request
@@ -1198,6 +1227,27 @@ class V1Controller extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $stories
+     * @return array
+     * @throws \Exception
+     */
+    public function listStories(Request $request, $stories)
+    {
+        if (!$stories instanceof RecordReferenceCollection) {
+            $stories = new RecordReferenceCollection($stories);
+        }
+
+        $data = [];
+
+        foreach ($stories->toRecords($this->getApplicationBox()) as $story) {
+            $data[] = $this->listStory($request, $story);
+        }
+
+        return $data;
+    }
+
+    /**
      * Retrieve detailed information about one story
      *
      * @param Request         $request
@@ -1210,10 +1260,6 @@ class V1Controller extends Controller
         if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
-
-        $records = array_map(function (\record_adapter $record) use ($request) {
-            return $this->listRecord($request, $record);
-        }, array_values($story->getChildren()->get_elements()));
 
         $caption = $story->get_caption();
 
@@ -1256,7 +1302,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $records,
+            'records'       => $this->listRecords($request, $story->getChildren()->get_elements()),
         ];
     }
 

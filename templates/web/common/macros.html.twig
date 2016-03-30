@@ -103,7 +103,7 @@
 {% endmacro %}
 
 {% macro format_caption(record, highlight, search_engine, include_business, bounceable, technical_data) %}
-    {% for field in record.get_caption().get_highlight_fields(highlight, null, search_engine, include_business) %}
+    {% for field in record.get_caption().get_highlight_fields(highlight, null, include_business) %}
         {% set extra_classes = ['pair'] %}
         {% if loop.index is odd %}
             {% set extra_classes = ['impair'] %}

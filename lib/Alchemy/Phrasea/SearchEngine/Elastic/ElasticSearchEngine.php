@@ -372,16 +372,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
-    {
-        //@todo implements
-
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function resetCache()
     {
     }

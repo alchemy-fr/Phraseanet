@@ -67,7 +67,7 @@ class DatabaseMetaProvider implements ServiceProviderInterface
     {
         // Override "orm.cache.configurer" service provided for benefiting
         // of "phraseanet.cache-service"
-        $app['orm.cache.configurer'] = $app->protect(function ($name, Configuration $config, $options) use ($app)  {
+        $app['orm.cache.configurer'] = $app->protect(function ($name, Configuration $config, $options) use ($app) {
             /** @var Manager $service */
             $service = $app['phraseanet.cache-service'];
 

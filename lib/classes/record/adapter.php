@@ -21,10 +21,6 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
-use Alchemy\Phrasea\Media\ArrayTechnicalDataSet;
-use Alchemy\Phrasea\Media\FloatTechnicalData;
-use Alchemy\Phrasea\Media\IntegerTechnicalData;
-use Alchemy\Phrasea\Media\StringTechnicalData;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -92,7 +88,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $created;
     /** @var string */
     private $original_name;
-    /** @var TechnicalDataSet */
+    /** @var TechnicalDataSet|null */
     private $technical_data;
     /** @var string */
     private $uuid;
@@ -727,13 +723,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_technical_infos($data = '')
     {
-        if (!$this->technical_data && !$this->mapTechnicalDataFromCache()) {
-            $this->technical_data = [];
-            $rs = $this->fetchTechnicalDataFromDb();
+        if (null === $this->technical_data) {
+            $sets = $this->app['service.technical_data']->fetchRecordsTechnicalData([$this]);
 
-            $this->mapTechnicalDataFromDb($rs);
-
-            $this->set_data_to_cache($this->technical_data, self::CACHE_TECHNICAL_DATA);
+            $this->setTechnicalDataSet(reset($sets));
         }
 
         if ($data) {
@@ -748,11 +741,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @param TechnicalDataSet $dataSet
+     * @internal
+     */
+    public function setTechnicalDataSet(TechnicalDataSet $dataSet)
+    {
+        $this->technical_data = $dataSet;
+    }
+
+    /**
      * @return caption_record
      */
     public function get_caption()
     {
-        return new caption_record($this->app, $this, $this->getDatabox());
+        return new caption_record($this->app, $this);
     }
 
     public function getCaption(array $fields = null)
@@ -868,7 +870,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve);
             $titles = [];
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {
@@ -1369,8 +1371,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $ftodel = [];
         foreach ($this->get_subdefs() as $subdef) {
-            if (!$subdef->is_physically_present())
+            if (!$subdef->is_physically_present()) {
                 continue;
+            }
 
             if ($subdef->get_name() === 'thumbnail') {
                 $this->app['phraseanet.thumb-symlinker']->unlink($subdef->getRealPath());
@@ -1378,11 +1381,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             $ftodel[] = $subdef->getRealPath();
             $watermark = $subdef->getWatermarkRealPath();
-            if (file_exists($watermark))
+            if (file_exists($watermark)) {
                 $ftodel[] = $watermark;
+            }
             $stamp = $subdef->getStampRealPath();
-            if (file_exists($stamp))
+            if (file_exists($stamp)) {
                 $ftodel[] = $stamp;
+            }
         }
 
         $origcoll = $this->collection_id;
@@ -1512,16 +1517,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function delete_data_from_cache($option = null)
     {
-        switch ($option) {
+        switch ($option)
+        {
             case self::CACHE_STATUS:
                 $this->status = null;
                 break;
             case self::CACHE_SUBDEFS:
                 $this->subdefs = null;
                 break;
-            default:
-                break;
         }
+
         $databox = $this->getDatabox();
 
         $databox->delete_data_from_cache($this->get_cache_key($option));
@@ -1552,7 +1557,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @todo de meme avec stories
-     * @return Array
+     * @return \Alchemy\Phrasea\Model\Entities\Basket[]
      */
     public function get_container_baskets(EntityManager $em, User $user)
     {
@@ -1860,58 +1865,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->original_name = $row['originalName'];
         $this->sha256 = $row['sha256'];
         $this->mime = $row['mime'];
-    }
-
-    /**
-     * @return bool
-     */
-    private function mapTechnicalDataFromCache()
-    {
-        try {
-            $technical_data = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATA);
-        } catch (Exception $e) {
-            $technical_data = false;
-        }
-
-        if (false === $technical_data) {
-            return false;
-        }
-
-        $this->technical_data = $technical_data;
-
-        return true;
-    }
-
-    /**
-     * @return false|array
-     */
-    private function fetchTechnicalDataFromDb()
-    {
-        $sql = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
-
-        return $this->getDataboxConnection()
-            ->fetchAll($sql, ['record_id' => $this->getRecordId()]);
-    }
-
-    /**
-     * @param array $rows
-     */
-    private function mapTechnicalDataFromDb(array $rows)
-    {
-        $this->technical_data = new ArrayTechnicalDataSet();
-
-        foreach ($rows as $row) {
-            switch (true) {
-                case ctype_digit($row['value']):
-                    $this->technical_data[] = new IntegerTechnicalData($row['name'], $row['value']);
-                    break;
-                case preg_match('/[0-9]?\.[0-9]+/', $row['value']):
-                    $this->technical_data[] = new FloatTechnicalData($row['name'], $row['value']);
-                    break;
-                default:
-                    $this->technical_data[] = new StringTechnicalData($row['name'], $row['value']);
-            }
-        }
     }
 
     /**

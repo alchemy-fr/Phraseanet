@@ -711,54 +711,6 @@ abstract class SearchEngineAbstractTest extends \PhraseanetAuthenticatedTestCase
         $this->assertEquals(1, $results->getTotal());
     }
 
-    public function testExcerptFromSimpleQuery()
-    {
-        $record = self::$DI['record_2'];
-        $query_string = 'boomboklot' . $record->get_record_id() . 'excerptSimpleQuery';
-
-        $this->editRecord($query_string, $record);
-
-        self::$searchEngine->addRecord($record);
-        $this->updateIndex();
-
-        self::$searchEngine->resetCache();
-        $results = self::$searchEngine->query($query_string, 0, 1, $this->options);
-        $fields = [];
-        $foundRecord = $results->getResults()->first();
-
-        $this->assertInstanceOf('\record_adapter', $foundRecord);
-
-        foreach ($foundRecord->get_caption()->get_fields() as $field) {
-            foreach ($field->get_values() as $metaId => $v) {
-                $values[$metaId] = [
-                    'value' => $v->getValue(),
-                    'from_thesaurus' => false,
-                    'qjs' => null,
-                ];
-            }
-
-            $fields[$field->get_name()] = [
-                'values' => $values,
-                'separator' => ';',
-            ];
-        }
-
-        $found = false;
-        $highlightedValues = self::$searchEngine->excerpt($query_string, $fields, $foundRecord);
-        foreach ($highlightedValues as $fieldValues) {
-            foreach ($fieldValues as $metaId => $field) {
-                if (strpos($field, '[[em]]') !== false && strpos($field, '[[/em]]') !== false) {
-                    $found = true;
-                    break 2;
-                }
-            }
-        }
-
-        if (!$found && count($highlightedValues) > 0) {
-            $this->fail('Unable to build the excerpt');
-        }
-    }
-
     abstract public function initialize();
 
     abstract public function testAutocomplete();

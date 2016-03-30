@@ -1,9 +1,8 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2014 Alchemy
+ * (c) 2005-2016 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +10,8 @@
 
 namespace Alchemy\Phrasea\Model\Serializer;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Media\TechnicalDataService;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
 
 class CaptionSerializer extends AbstractSerializer
@@ -19,21 +20,46 @@ class CaptionSerializer extends AbstractSerializer
     const SERIALIZE_YAML = 'yaml';
     const SERIALIZE_JSON = 'json';
 
+    /**
+     * @var TechnicalDataService|callable
+     */
+    private $technicalDataService;
+
+    /**
+     * @param callable|TechnicalDataService $technicalDataService
+     * @throws \InvalidArgumentException
+     */
+    public function __construct($technicalDataService)
+    {
+        if (!$technicalDataService instanceof TechnicalDataService && !is_callable($technicalDataService)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Expects a callable or %s, got %s',
+                TechnicalDataService::class,
+                is_object($technicalDataService) ? get_class($technicalDataService) : gettype($technicalDataService)
+            ));
+        }
+
+        $this->technicalDataService = $technicalDataService;
+    }
+
+    /**
+     * @param \caption_record $caption
+     * @param string $format
+     * @param bool $includeBusinessFields
+     * @return string
+     * @throws \Exception
+     */
     public function serialize(\caption_record $caption, $format, $includeBusinessFields = false)
     {
         switch ($format) {
             case self::SERIALIZE_XML:
-                return $this->serializeXML($caption, (Boolean) $includeBusinessFields);
-                break;
+                return $this->serializeXML($caption, (bool) $includeBusinessFields);
             case self::SERIALIZE_YAML:
-                return $this->serializeYAML($caption, (Boolean) $includeBusinessFields);
-                break;
+                return $this->serializeYAML($caption, (bool) $includeBusinessFields);
             case self::SERIALIZE_JSON:
-                return $this->serializeJSON($caption, (Boolean) $includeBusinessFields);
-                break;
+                return $this->serializeJSON($caption, (bool) $includeBusinessFields);
             default:
                 throw new \Exception(sprintf('Unknown format %s', $format));
-                break;
         }
     }
 
@@ -47,6 +73,11 @@ class CaptionSerializer extends AbstractSerializer
         return \p4string::jsonencode($this->toArray($caption, $includeBusinessFields));
     }
 
+    /**
+     * @param \caption_record $caption
+     * @param bool $includeBusinessFields
+     * @return array
+     */
     public function toArray(\caption_record $caption, $includeBusinessFields)
     {
         $buffer = [];
@@ -77,7 +108,7 @@ class CaptionSerializer extends AbstractSerializer
         $dom_doc->standalone = true;
 
         $record = $dom_doc->createElement('record');
-        $record->setAttribute('record_id', $caption->get_record()->getRecordId());
+        $record->setAttribute('record_id', $caption->getRecordReference()->getRecordId());
         $dom_doc->appendChild($record);
         $description = $dom_doc->createElement('description');
         $record->appendChild($description);
@@ -96,7 +127,8 @@ class CaptionSerializer extends AbstractSerializer
 
         $doc = $dom_doc->createElement('doc');
 
-        $tc_datas = $caption->get_record()->get_technical_infos()->getValues();
+        $technicalData = $this->getTechnicalDataService()->fetchRecordsTechnicalData([$caption->getRecordReference()]);
+        $tc_datas = $technicalData[0]->getValues();
 
         foreach ($tc_datas as $key => $data) {
             $doc->setAttribute($key, $data);
@@ -105,5 +137,28 @@ class CaptionSerializer extends AbstractSerializer
         $record->appendChild($doc);
 
         return $dom_doc->saveXML();
+    }
+
+    /**
+     * @return TechnicalDataService
+     * @throws \UnexpectedValueException
+     */
+    private function getTechnicalDataService()
+    {
+        if (!$this->technicalDataService instanceof TechnicalDataService) {
+            $instance = call_user_func($this->technicalDataService);
+
+            if (!$instance instanceof TechnicalDataService) {
+                throw new \UnexpectedValueException(sprintf(
+                    'Expected a %s instance, got %s.',
+                    TechnicalDataService::class,
+                    is_object($instance) ? get_class($instance) : gettype($instance)
+                ));
+            }
+
+            $this->technicalDataService = $instance;
+        }
+
+        return $this->technicalDataService;
     }
 }

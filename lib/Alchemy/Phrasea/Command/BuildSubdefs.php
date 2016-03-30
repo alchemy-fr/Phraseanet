@@ -77,7 +77,7 @@ class BuildSubdefs extends Command
         $databox = $this->container->findDataboxById($input->getArgument('databox'));
         $connection = $databox->get_connection();
 
-        $sqlCount = sprintf('SELECT COUNT(*) FROM (%s)', $sql);
+        $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
         $output->writeln($sqlCount);
         $totalRecords = (int)$connection->executeQuery($sqlCount, $params, $types)->fetchColumn();
 
@@ -131,28 +131,30 @@ class BuildSubdefs extends Command
      */
     protected function generateSQL(array $subdefNames, array $recordTypes, $min, $max, $withSubstitution, $substitutionOnly)
     {
-        $sql = "SELECT DISTINCT(r.record_id) AS record_id"
-            . " FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))"
-            . " WHERE r.type IN (?)";
+        $sql = <<<'SQL'
+SELECT DISTINCT(r.record_id) AS record_id
+FROM record r LEFT JOIN subdef s ON (r.record_id = s.record_id AND s.name IN (?))
+WHERE r.type IN (?)
+SQL;
 
         $types = array(Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY);
         $params = array($subdefNames, $recordTypes);
 
         if (null !== $min) {
-            $sql .= " AND (r.record_id >= ?)";
+            $sql .= ' AND (r.record_id >= ?)';
 
             $params[] = (int)$min;
             $types[] = \PDO::PARAM_INT;
         }
         if (null !== $max) {
-            $sql .= " AND (r.record_id <= ?)";
+            $sql .= ' AND (r.record_id <= ?)';
 
             $params[] = (int)$max;
             $types[] = \PDO::PARAM_INT;
         }
 
         if (false === $withSubstitution) {
-            $sql .= " AND (ISNULL(s.substit) OR s.substit = ?)";
+            $sql .= ' AND (ISNULL(s.substit) OR s.substit = ?)';
             $params[] = $substitutionOnly ? 1 : 0;
             $types[] = \PDO::PARAM_INT;
         }

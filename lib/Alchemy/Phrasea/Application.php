@@ -80,6 +80,7 @@ use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
+use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
@@ -190,6 +191,7 @@ class Application extends SilexApplication
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
+        $this->register(new TechnicalDataServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
 
