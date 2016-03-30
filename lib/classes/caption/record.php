@@ -61,6 +61,8 @@ class caption_record implements cache_cacheableInterface
             return $this->fields;
         }
 
+        $databox = $this->getDatabox();
+
         try {
             $fields = $this->get_data_from_cache();
         } catch (\Exception $e) {
@@ -70,7 +72,7 @@ FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
 WHERE m.record_id = :record_id
 ORDER BY s.sorter ASC
 SQL;
-            $fields = $this->getDatabox()->get_connection()
+            $fields = $databox->get_connection()
                 ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
                 ->fetchAll(PDO::FETCH_ASSOC);
 
@@ -80,7 +82,8 @@ SQL;
         $rec_fields = array();
 
         if ($fields) {
-            $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
+            $databox_descriptionStructure = $databox->get_meta_structure();
+            $record = $databox->get_record($this->record->getRecordId());
 
             // first group values by field
             $caption_fields = [];
@@ -102,7 +105,7 @@ SQL;
                 $cfv = new caption_Field_Value(
                     $this->app,
                     $caption_fields[$structure_id]['db_field'],
-                    $this->record,
+                    $record,
                     $row['meta_id'],
                     caption_Field_Value::DONT_RETRIEVE_VALUES   // ask caption_Field_Value "no n+1 sql"
                 );
@@ -121,7 +124,7 @@ SQL;
                 $cf = new caption_field(
                     $this->app,
                     $caption_field['db_field'],
-                    $this->record,
+                    $record,
                     caption_field::DONT_RETRIEVE_VALUES     // ask caption_field "no n+1 sql"
                 );
 
