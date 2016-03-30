@@ -423,19 +423,17 @@ class caption_Field_Value implements cache_cacheableInterface
     }
 
     /**
-     *
      * @param  string $word
-     * @return array
+     * @return string[]
      */
     protected function splitTermAndContext($word)
     {
         $term = trim($word);
-        $context = "";
-        if (($po = strpos($term, "(")) !== false) {
-            if (($pc = strpos($term, ")", $po)) !== false) {
-                $context = trim(substr($term, $po + 1, $pc - $po - 1));
-                $term = trim(substr($term, 0, $po));
-            }
+        $context = '';
+
+        if (($po = strpos($term, '(')) !== false && ($pc = strpos($term, ')', $po)) !== false) {
+            $context = trim(substr($term, $po + 1, $pc - $po - 1));
+            $term = trim(substr($term, 0, $po));
         }
 
         return [$term, $context];

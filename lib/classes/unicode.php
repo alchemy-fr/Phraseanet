@@ -1541,17 +1541,7 @@ class unicode
         ]
     ];
 
-    protected $endCharacters_utf8 = "\t\r\n !\"#\$%&'()+,-./:;<=>@[\]^_`{|}~£§¨°";
-
-    public function get_indexer_bad_chars()
-    {
-        return $this->endCharacters_utf8;
-    }
-
-    public function has_indexer_bad_char($string)
-    {
-        return mb_strpos($this->endCharacters_utf8, $string);
-    }
+    protected $endCharacters_utf8 = "\t\r\n !\"#\$%&'()+,-./:;<=>@[\\]^_`{|}~£§¨°";
 
     /**
      * Converts a string
