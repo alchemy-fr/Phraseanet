@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Model\Serializer;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Media\TechnicalDataService;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
 

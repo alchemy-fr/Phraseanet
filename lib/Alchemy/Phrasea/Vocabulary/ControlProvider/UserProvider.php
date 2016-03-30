@@ -44,11 +44,10 @@ class UserProvider implements ControlProviderInterface
     }
 
     /**
-     *
      * @param  string                                       $query
      * @param  User                                         $for_user
      * @param  \databox                                     $on_databox
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return Term[]
      */
     public function find($query, User $for_user,\databox $on_databox = null)
     {
@@ -64,15 +63,9 @@ class UserProvider implements ControlProviderInterface
                 ->limit(0, 50)
                 ->execute()->get_results();
 
-        $results = new ArrayCollection();
-
-        foreach ($users as $user) {
-            $results->add(
-                new Term($user->getDisplayName(), '', $this, $user->getId())
-            );
-        }
-
-        return $results;
+        return array_map(function (User $user) {
+            return new Term($user->getDisplayName(), '', $this, $user->getId());
+        }, $users);
     }
 
     /**

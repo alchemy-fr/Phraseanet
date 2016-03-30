@@ -231,7 +231,7 @@ class EditController extends Controller
     }
 
     public function searchVocabularyAction(Request $request, $vocabulary) {
-        $datas = ['success' => false, 'message' => '', 'results' => []];
+        $data = ['success' => false, 'message' => '', 'results' => []];
 
         $sbas_id = (int) $request->query->get('sbas_id');
 
@@ -243,9 +243,9 @@ class EditController extends Controller
             $VC = VocabularyController::get($this->app, $vocabulary);
             $databox = $this->findDataboxById($sbas_id);
         } catch (\Exception $e) {
-            $datas['message'] = $this->app->trans('Vocabulary not found');
+            $data['message'] = $this->app->trans('Vocabulary not found');
 
-            return $this->app->json($datas);
+            return $this->app->json($data);
         }
 
         $query = $request->query->get('query');
@@ -254,19 +254,18 @@ class EditController extends Controller
 
         $list = [];
 
-        foreach ($results as $Term) {
-            /* @var \Alchemy\Phrasea\Vocabulary\Term $Term */
+        foreach ($results as $term) {
             $list[] = [
-                'id'      => $Term->getId(),
-                'context' => $Term->getContext(),
-                'value'   => $Term->getValue(),
+                'id'      => $term->getId(),
+                'context' => $term->getContext(),
+                'value'   => $term->getValue(),
             ];
         }
 
-        $datas['success'] = true;
-        $datas['results'] = $list;
+        $data['success'] = true;
+        $data['results'] = $list;
 
-        return $this->app->json($datas);
+        return $this->app->json($data);
     }
 
     public function applyAction(Request $request) {
