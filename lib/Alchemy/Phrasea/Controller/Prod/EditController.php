@@ -20,7 +20,6 @@ use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
-use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -240,7 +239,7 @@ class EditController extends Controller
                 throw new \Exception('Invalid sbas_id');
             }
 
-            $VC = VocabularyController::get($this->app, $vocabulary);
+            $vocabularyProvider = $this->app['vocabularies'][$vocabulary];
             $databox = $this->findDataboxById($sbas_id);
         } catch (\Exception $e) {
             $data['message'] = $this->app->trans('Vocabulary not found');
@@ -250,7 +249,7 @@ class EditController extends Controller
 
         $query = $request->query->get('query');
 
-        $results = $VC->find($query, $this->getAuthenticatedUser(), $databox);
+        $results = $vocabularyProvider->find($query, $this->getAuthenticatedUser(), $databox);
 
         $list = [];
 

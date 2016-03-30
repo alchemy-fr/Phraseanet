@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -15,7 +14,6 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Metadata\TagFactory;
-use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use Doctrine\DBAL\Connection;
@@ -1012,7 +1010,7 @@ class databox_field implements cache_cacheableInterface
         }
 
         try {
-            $this->Vocabulary = Vocabulary\Controller::get($this->app, $this->VocabularyType);
+            $this->Vocabulary = $this->app['vocabularies'][$this->VocabularyType];
         } catch (\InvalidArgumentException $e) {
             // Could not find Vocabulary
         }

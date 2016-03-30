@@ -12,8 +12,8 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Metadata\TagProvider;
-use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -96,24 +96,57 @@ class FieldsController extends Controller
 
     public function listVocabularies()
     {
-        $vocabularies = VocabularyController::getAvailable($this->app);
+        return $this->app->json(array_map(
+            [$this, 'getVocabularyAsArray'],
+            $this->fetchVocabularies()
+        ));
+    }
 
-        return $this->app->json(array_map(function (ControlProviderInterface $vocabulary) {
-            return [
-                'type' => $vocabulary->getType(),
-                'name' => $vocabulary->getName(),
-            ];
-        }, $vocabularies));
+    /**
+     * @return ControlProviderInterface[]
+     */
+    private function fetchVocabularies()
+    {
+        $vocabularies = $this->getVocabularies();
+
+        $instances = array_map(
+            function ($type) use ($vocabularies) {
+                return $vocabularies[$type];
+            },
+            $vocabularies->keys()
+        );
+
+        Assertion::allIsInstanceOf($instances, ControlProviderInterface::class);
+
+        return $instances;
+    }
+
+    /**
+     * @param string $type
+     * @return ControlProviderInterface
+     */
+    private function fetchVocabulary($type)
+    {
+        $vocabularies = $this->getVocabularies();
+
+        $vocabulary = $vocabularies[$type];
+
+        Assertion::isInstanceOf($vocabulary, ControlProviderInterface::class);
+
+        return $vocabulary;
+    }
+
+    private function getVocabularyAsArray(ControlProviderInterface $vocabulary)
+    {
+        return [
+            'type' => $vocabulary->getType(),
+            'name' => $vocabulary->getName(),
+        ];
     }
 
     public function getVocabulary($type)
     {
-        $vocabulary = VocabularyController::get($this->app, $type);
-
-        return $this->app->json([
-            'type' => $vocabulary->getType(),
-            'name' => $vocabulary->getName(),
-        ]);
+        return $this->app->json($this->getVocabularyAsArray($this->fetchVocabulary($type)));
     }
 
     public function searchTag(Request $request)
@@ -293,11 +326,11 @@ class FieldsController extends Controller
         }
 
         try {
-            $vocabulary = VocabularyController::get($this->app, $data['vocabulary-type']);
+            $vocabulary = $this->fetchVocabulary($data['vocabulary-type']);
             $field->setVocabularyControl($vocabulary);
             $field->setVocabularyRestricted($data['vocabulary-restricted']);
         } catch (\InvalidArgumentException $e) {
-
+            // Invalid vocabulary requested
         }
 
         if ('' !== $dcesElement = (string) $data['dces-element']) {
@@ -346,5 +379,13 @@ class FieldsController extends Controller
         }
 
         return $data;
+    }
+
+    /**
+     * @return ControlProviderInterface[]|\Pimple
+     */
+    private function getVocabularies()
+    {
+        return $this->app['vocabularies'];
     }
 }
