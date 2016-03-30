@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\Vocabulary;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
-use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\Connection;
 use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -78,9 +78,24 @@ class databox_field implements cache_cacheableInterface
         'Type'        => 'databox_Field_DCES_Type',
     ];
 
+    /**
+     * @var databox_Field_DCESAbstract|null
+     */
     protected $dces_element;
+
+    /**
+     * @var ControlProviderInterface|null
+     */
     protected $Vocabulary;
+
+    /**
+     * @var string|null
+     */
     protected $VocabularyType;
+
+    /**
+     * @var bool
+     */
     protected $VocabularyRestriction = false;
     protected $on_error = false;
     protected $original_src;
@@ -504,7 +519,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return databox_Field_DCESAbstract
      */
     public function get_dces_element()
@@ -514,29 +528,25 @@ class databox_field implements cache_cacheableInterface
 
     public function set_dces_element(databox_Field_DCESAbstract $DCES_element = null)
     {
-        $connbas = $this->get_connection();
-
+        $connection = $this->get_connection();
 
         if (null !== $DCES_element) {
-            $sql = 'UPDATE metadatas_structure
-               SET dces_element = null WHERE dces_element = :dces_element';
-
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute([
-                ':dces_element' => $DCES_element->get_label()
-            ]);
-            $stmt->closeCursor();
+            $connection->executeUpdate(
+                'UPDATE metadatas_structure SET dces_element = null WHERE dces_element = :dces_element',
+                [
+                    'dces_element' => $DCES_element->get_label(),
+                ]
+            );
         }
 
-        $sql = 'UPDATE metadatas_structure
-              SET dces_element = :dces_element WHERE id = :id';
+        $connection->executeUpdate(
+            'UPDATE metadatas_structure SET dces_element = :dces_element WHERE id = :id',
+            [
+                'dces_element' => $DCES_element ? $DCES_element->get_label() : null,
+                'id' => $this->id,
+            ]
+        );
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([
-            ':dces_element' => $DCES_element ? $DCES_element->get_label() : null
-            , ':id'           => $this->id
-        ]);
-        $stmt->closeCursor();
         $this->dces_element = $DCES_element;
 
         $this->delete_data_from_cache();
@@ -934,12 +944,12 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     *
      * @return array
      */
     public function __sleep()
     {
         $vars = [];
+
         foreach ($this as $key => $value) {
             if (in_array($key, ['databox', 'app', 'Vocabulary']))
                 continue;
@@ -997,10 +1007,14 @@ class databox_field implements cache_cacheableInterface
 
     private function loadVocabulary()
     {
+        if ($this->VocabularyType === '') {
+            return;
+        }
+
         try {
             $this->Vocabulary = Vocabulary\Controller::get($this->app, $this->VocabularyType);
         } catch (\InvalidArgumentException $e) {
-
+            // Could not find Vocabulary
         }
     }
 

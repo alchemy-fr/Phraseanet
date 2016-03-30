@@ -754,7 +754,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_caption()
     {
-        return new caption_record($this->app, $this, $this->getDatabox());
+        return new caption_record($this->app, $this);
     }
 
     public function getCaption(array $fields = null)

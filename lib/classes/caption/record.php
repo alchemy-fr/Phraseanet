@@ -11,8 +11,6 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 class caption_record implements cache_cacheableInterface
 {
@@ -22,25 +20,19 @@ class caption_record implements cache_cacheableInterface
     protected $fields;
 
     /**
-     * @var record_adapter
+     * @var RecordReferenceInterface
      */
     protected $record;
-    protected $databox;
-    protected $app;
 
     /**
-     *
-     * @param Application      $app
-     * @param record_adapter $record
-     * @param databox          $databox
-     *
-     * @return caption_record
+     * @var Application
      */
-    public function __construct(Application $app, \record_adapter $record, databox $databox)
+    protected $app;
+
+    public function __construct(Application $app, RecordReferenceInterface $record)
     {
         $this->app = $app;
         $this->record = $record;
-        $this->databox = $databox;
     }
 
     public function toArray($includeBusinessFields)
@@ -78,7 +70,7 @@ FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
 WHERE m.record_id = :record_id
 ORDER BY s.sorter ASC
 SQL;
-            $fields = $this->databox->get_connection()
+            $fields = $this->getDatabox()->get_connection()
                 ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
                 ->fetchAll(PDO::FETCH_ASSOC);
 
@@ -88,7 +80,7 @@ SQL;
         $rec_fields = array();
 
         if ($fields) {
-            $databox_descriptionStructure = $this->databox->get_meta_structure();
+            $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
 
             // first group values by field
             $caption_fields = [];
@@ -156,7 +148,7 @@ SQL;
         $fields = [];
 
         foreach ($this->retrieve_fields() as $meta_struct_id => $field) {
-            if ($grep_fields && ! in_array($field->get_name(), $grep_fields)) {
+            if ($grep_fields && ! in_array($field->get_name(), $grep_fields, true)) {
                 continue;
             }
 
@@ -198,15 +190,14 @@ SQL;
     }
 
     /**
-     *
      * @param  string $label
-     * @return caption_field
+     * @return caption_field|null
      */
     public function get_dc_field($label)
     {
         $fields = $this->retrieve_fields();
 
-        if (null !== $field = $this->databox->get_meta_structure()->get_dces_field($label)) {
+        if (null !== $field = $this->getDatabox()->get_meta_structure()->get_dces_field($label)) {
             if (isset($fields[$field->get_id()])) {
                 return $fields[$field->get_id()];
             }
@@ -265,7 +256,7 @@ SQL;
      */
     public function get_data_from_cache($option = null)
     {
-        return $this->record->getDatabox()->get_data_from_cache($this->get_cache_key($option));
+        return $this->getDatabox()->get_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -278,7 +269,7 @@ SQL;
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->record->getDatabox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->getDatabox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
@@ -291,6 +282,14 @@ SQL;
     {
         $this->fields = null;
 
-        return $this->record->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
+        return $this->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * @return databox
+     */
+    private function getDatabox()
+    {
+        return $this->app->findDataboxById($this->record->getDataboxId());
     }
 }
