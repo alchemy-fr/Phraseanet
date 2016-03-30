@@ -236,6 +236,32 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
+     * delete this subdef
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function delete()
+    {
+        $subdef_id = $this->subdef_id;
+        $this->remove_file();
+
+        $connbas = $this->record->getDatabox()->get_connection();
+
+        $sql = "DELETE FROM subdef WHERE subdef_id = :subdef_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(['subdef_id'=>$subdef_id]);
+        $stmt->closeCursor();
+
+        $sql = "DELETE FROM permalinks WHERE subdef_id = :subdef_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(['subdef_id'=>$subdef_id]);
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
+        $this->record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+    }
+
+    /**
      * Find a substitution file for a subdef
      *
      * @return \media_subdef
