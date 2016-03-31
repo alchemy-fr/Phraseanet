@@ -108,7 +108,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->fetchVocabulary($vocabularyType, $vocabularyId);
 
         if ($this->vocabularyType) {
-            if (! $this->databox_field->getVocabularyControl()) {
+            if (!$this->databox_field->getVocabularyControl()) {
                 // Vocabulary Control has been deactivated
                 $this->removeVocabulary();
             } elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->vocabularyType->getType()) {
@@ -293,7 +293,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $connection = $databox_field->get_connection();
 
         // Check consistency
-        if (! $databox_field->is_multi()) {
+        if (!$databox_field->is_multi()) {
             try {
                 $field = $record->get_caption()->get_field($databox_field->get_name());
                 $values = $field->get_values();
@@ -301,7 +301,7 @@ class caption_Field_Value implements cache_cacheableInterface
                 // Field was not found, so no values found either
                 $values = [];
             }
-            if (! empty($values)) {
+            if (!empty($values)) {
                 /** @var caption_Field_Value $caption_field_value */
                 $caption_field_value = reset($values);
                 $caption_field_value->set_value($value);
@@ -343,7 +343,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $tbranch = $this->databox_field->get_tbranch();
 
-        if (! $tbranch || ! $XPATH_thesaurus) {
+        if (!$tbranch || !$XPATH_thesaurus) {
             return $value;
         }
 
@@ -384,7 +384,7 @@ class caption_Field_Value implements cache_cacheableInterface
             list($term, $context) = $this->splitTermAndContext(str_replace(["[[em]]", "[[/em]]"], ["", ""], $value));
             // a value has been found in thesaurus, update value & set the query to bounce to the value
             $this->value = $bestnode->getAttribute('v');
-            $this->qjs = $term . ($context ? '['.$context.']' : '');
+            $this->qjs = $term . ($context ? '[' . $context . ']' : '');
             $this->isThesaurusValue = true;
         } else {
             $this->isThesaurusValue = false;
