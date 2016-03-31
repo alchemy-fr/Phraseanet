@@ -264,8 +264,13 @@ class caption_Field_Value implements cache_cacheableInterface
 
         // Check consistency
         if (! $databox_field->is_multi()) {
-            $field = $record->get_caption()->get_field($databox_field->get_name());
-            $values = $field->get_values();
+            try {
+                $field = $record->get_caption()->get_field($databox_field->get_name());
+                $values = $field->get_values();
+            } catch (Exception $exception) {
+                // Field was not found, so no values found either
+                $values = [];
+            }
             if (! empty($values)) {
                 $caption_field_value = array_pop($values);
                 /* @var \caption_Field_Value $caption_field_value  */
