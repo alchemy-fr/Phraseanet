@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -36,7 +35,6 @@ interface ControlProviderInterface
 
     /**
      * @return string     returns the value corresponding to an id
-     * @throws \Exception if the $id is invalid
      */
     public function getValue($id);
 
