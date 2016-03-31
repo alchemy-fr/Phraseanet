@@ -301,9 +301,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $caption_field_value = new self($app, $databox_field, $record, $meta_id, self::DONT_RETRIEVE_VALUES);
         $caption_field_value->injectValues($data['value'], $data['VocabularyType'], $data['VocabularyId']);
 
-        $record->get_caption()->delete_data_from_cache();
         $databox_field->delete_data_from_cache();
-
         $caption_field_value->delete_data_from_cache();
 
         return $caption_field_value;
@@ -448,12 +446,7 @@ class caption_Field_Value implements cache_cacheableInterface
     {
         $this->value = $this->vocabularyId = $this->vocabularyType = null;
         $this->record->delete_data_from_cache(record_adapter::CACHE_TITLE);
-
-        try {
-            $this->record->get_caption()->get_field($this->databox_field->get_name())->delete_data_from_cache();
-        } catch (\Exception $e) {
-
-        }
+        $this->record->get_caption()->delete_data_from_cache();
 
         unset(self::$localCache[$this->get_cache_key($option)]);
     }
