@@ -154,7 +154,9 @@ class EditController extends Controller
                 ];
 
                 $elements[$indice]['statbits'] = [];
+                $elements[$indice]['editableStatus'] = false;
                 if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), 'chgstatus')) {
+                    $elements[$indice]['editableStatus'] = true;
                     foreach ($status as $n => $s) {
                         $tmp_val = substr(strrev($record->get_status()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';

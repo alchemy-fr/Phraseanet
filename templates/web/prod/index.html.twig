@@ -725,6 +725,7 @@
                 userId: {{app.getAuthenticatedUser().getId()}}
             },
             initialState: "{{ initialAppState }}",
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}',
             thesaurusConfig: {
                 replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
                 replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
