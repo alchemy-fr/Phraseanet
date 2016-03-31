@@ -390,7 +390,7 @@ class caption_Field_Value implements cache_cacheableInterface
             $this->isThesaurusValue = false;
         }
 
-        return $this;
+        return $this->value;
     }
 
     /**
