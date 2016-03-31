@@ -29,12 +29,12 @@ class caption_Field_Value implements cache_cacheableInterface
     protected $value;
 
     /**
-     * @var ControlProviderInterface
+     * @var ControlProviderInterface|null
      */
     protected $vocabularyType;
 
     /**
-     * @var int
+     * @var mixed
      */
     protected $vocabularyId;
 
@@ -210,6 +210,10 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function removeVocabulary()
     {
         $this->getConnection()->executeUpdate(
@@ -225,6 +229,12 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @param ControlProviderInterface $vocabulary
+     * @param mixed $vocab_id
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function setVocab(ControlProviderInterface $vocabulary, $vocab_id)
     {
         $this->getConnection()->executeUpdate(
@@ -241,6 +251,26 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @param ControlProviderInterface|null $vocabulary
+     * @param mixed|null $vocabularyId
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function changeVocabulary(ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    {
+        if (isset($vocabulary, $vocabularyId)) {
+            return $this->setVocab($vocabulary, $vocabularyId);
+        }
+
+        return $this->removeVocabulary();
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function set_value($value)
     {
         $this->value = $value;
@@ -272,15 +302,10 @@ class caption_Field_Value implements cache_cacheableInterface
                 $values = [];
             }
             if (! empty($values)) {
-                $caption_field_value = array_pop($values);
-                /* @var \caption_Field_Value $caption_field_value  */
+                /** @var caption_Field_Value $caption_field_value */
+                $caption_field_value = reset($values);
                 $caption_field_value->set_value($value);
-
-                if (! $vocabulary || ! $vocabularyId) {
-                    $caption_field_value->removeVocabulary();
-                } else {
-                    $caption_field_value->setVocab($vocabulary, $vocabularyId);
-                }
+                $caption_field_value->changeVocabulary($vocabulary, $vocabularyId);
 
                 return $caption_field_value;
             }
@@ -462,8 +487,8 @@ class caption_Field_Value implements cache_cacheableInterface
     }
 
     /**
-     * @param $vocabularyType
-     * @param $vocabularyId
+     * @param string $vocabularyType
+     * @param mixed $vocabularyId
      */
     private function fetchVocabulary($vocabularyType, $vocabularyId)
     {
