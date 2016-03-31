@@ -11,10 +11,8 @@
 namespace Alchemy\Phrasea\Command;
 
 use Alchemy\Phrasea\Databox\SubdefGroup;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use databox_subdef;
-use databox_subdefsStructure;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
