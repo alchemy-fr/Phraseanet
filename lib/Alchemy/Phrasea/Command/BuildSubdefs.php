@@ -42,6 +42,9 @@ class BuildSubdefs extends Command
     var $recmax;
     var $substitutedOnly;
     var $withSubstituted;
+    var $missingOnly;
+    var $garbageCollect;
+
     var $subdefsNameByType;
 
     /** @var  int */
@@ -57,13 +60,15 @@ class BuildSubdefs extends Command
         parent::__construct($name);
 
         $this->setDescription('Build subviews for given subview names and record types');
-        $this->addArgument('databox',               InputArgument::REQUIRED,                                 'The id (or dbname or viewname) of the databox');
+        $this->addOption('databox',           null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
         $this->addOption('record_type',       null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to (re)build ex. "image,video", dafault=ALL');
         $this->addOption('name',              null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
         $this->addOption('min_record',        null, InputOption::VALUE_OPTIONAL,                             'Min record id');
         $this->addOption('max_record',        null, InputOption::VALUE_OPTIONAL,                             'Max record id');
         $this->addOption('with_substituted',  null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records as well');
         $this->addOption('substituted_only',  null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records only');
+        $this->addOption('missing_only',      null, InputOption::VALUE_NONE,                                 'Regenerate only missing subdefs');
+        $this->addOption('garbage_collect',   null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
         $this->addOption('partition',         null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
         $this->addOption('dry',               null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
     }
@@ -114,16 +119,22 @@ class BuildSubdefs extends Command
 
         // find the databox / collection by id or by name
         $this->databox = null;
-        $d = trim($input->getArgument('databox'));
-        foreach ($this->container->getDataboxes() as $db) {
-            if ($db->get_sbas_id() == (int)$d || $db->get_viewname() == $d || $db->get_dbname() == $d) {
-                $this->databox = $db;
-                $this->connection = $db->get_connection();
-                break;
+        if(($d = $input->getOption('databox')) !== null) {
+            $d = trim($d);
+            foreach ($this->container->getDataboxes() as $db) {
+                if ($db->get_sbas_id() == (int)$d || $db->get_viewname() == $d || $db->get_dbname() == $d) {
+                    $this->databox = $db;
+                    $this->connection = $db->get_connection();
+                    break;
+                }
+            }
+            if ($this->databox == null) {
+                $output->writeln(sprintf("<error>Unknown databox \"%s\"</error>", $input->getOption('databox')));
+                $this->argsOK = false;
             }
         }
-        if ($this->databox == null) {
-            $output->writeln(sprintf("<error>Unknown databox \"%s\"</error>", $input->getArgument('databox')));
+        else {
+            $output->writeln(sprintf("<error>Missing mandatory options --databox</error>"));
             $this->argsOK = false;
         }
 
@@ -133,8 +144,17 @@ class BuildSubdefs extends Command
         $this->recmax          = $input->getOption('max_record');
         $this->substitutedOnly = $input->getOption('substituted_only') ? true : false;
         $this->withSubstituted = $input->getOption('with_substituted') ? true : false;
+        $this->missingOnly     = $input->getOption('missing_only') ? true : false;
+        $this->garbageCollect  = $input->getOption('garbage_collect') ? true : false;
+        $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
+        $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
+
         if ($this->withSubstituted && $this->substitutedOnly) {
             $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
+            $this->argsOK = false;
+        }
+        if($this->garbageCollect && !empty($names)) {
+            $output->writeln("<error>--garbage_collect and --name are mutually exclusive<error>");
             $this->argsOK = false;
         }
 
@@ -142,8 +162,6 @@ class BuildSubdefs extends Command
         $this->subdefsNameByType = [];
 
         if($this->databox !== null) {
-            $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
-            $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
 
             /** @var SubdefGroup $sg */
             foreach ($this->databox->get_subdef_structure() as $sg) {
@@ -222,18 +240,33 @@ class BuildSubdefs extends Command
 
                 /** @var media_subdef $subdef */
                 foreach ($record->get_subdefs() as $subdef) {
-                    if(!in_array($subdef->get_name(), $this->subdefsNameByType[$type])) {
+                    $name = $subdef->get_name();
+                    if($name == "document") {
+                        continue;
+                    }
+                    if(!in_array($name, $this->subdefsNameByType[$type])) {
+                        // this existing subdef is unknown in structure
+                        if($this->garbageCollect) {
+                            if(!$this->dry) {
+                                $subdef->delete();
+                            }
+                            $this->verbose(sprintf(" \"%s\" deleted,", $name));
+                        }
+                        continue;
+                    }
+                    if($this->missingOnly) {
+                        unset($subdefNamesToDo[$name]);
                         continue;
                     }
                     if($subdef->is_substituted()) {
                         if(!$this->withSubstituted && !$this->substitutedOnly) {
-                            unset($subdefNamesToDo[$subdef->get_name()]);
+                            unset($subdefNamesToDo[$name]);
                             continue;
                         }
                     }
                     else {
                         if($this->substitutedOnly) {
-                            unset($subdefNamesToDo[$subdef->get_name()]);
+                            unset($subdefNamesToDo[$name]);
                             continue;
                         }
                     }
@@ -252,10 +285,10 @@ class BuildSubdefs extends Command
                         $subdefGenerator->generateSubdefs($record, $subdefNamesToDo);
                     }
 
-                    $this->verbose(sprintf(" subdefs[%s] done\n", join(',', $subdefNamesToDo)));
+                    $this->verbose(sprintf(" subdefs[%s] built\n", join(',', $subdefNamesToDo)));
                 }
                 else {
-                    $this->verbose(" nothing to do\n");
+                    $this->verbose(" nothing to build\n");
                 }
             }
             catch(\Exception $e) {

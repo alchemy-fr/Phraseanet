@@ -691,7 +691,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $rs = $this->getDataboxConnection()->fetchAll(
-            'SELECT name FROM subdef s LEFT JOIN record r ON s.record_id = r.record_id WHERE r.record_id = :record_id',
+            'SELECT name FROM subdef WHERE record_id = :record_id',
             ['record_id' => $this->getRecordId()]
         );
 
