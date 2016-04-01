@@ -224,9 +224,14 @@ SQL;
             foreach ($field->get_values() as $metaId => $v) {
                 $values[$metaId] = [
                     'value' => $v->getValue(),
-                    'from_thesaurus' => $highlight ? $v->isThesaurusValue() : false,
-                    'qjs' => $v->getQjs(),
+                    'from_thesaurus' => false,
+                    'qjs' => null,
                  ];
+                if ($highlight) {
+                    $v->highlight_thesaurus();
+                    $values[$metaId]['from_thesaurus'] = $v->isThesaurusValue();
+                    $values[$metaId]['qjs'] = $v->getQjs();
+                }
             }
             $fields[$field->get_name()] = [
                 'values'    => $values,

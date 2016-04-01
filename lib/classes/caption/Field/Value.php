@@ -11,30 +11,46 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Utilities\StringHelper;
-use Alchemy\Phrasea\Vocabulary;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 
 class caption_Field_Value implements cache_cacheableInterface
 {
     const RETRIEVE_VALUES = true;
     const DONT_RETRIEVE_VALUES = false;
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $id;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $value;
 
-    /** @var \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface */
-    protected $VocabularyType;
+    /**
+     * @var ControlProviderInterface|null
+     */
+    protected $vocabularyType;
 
-    /** @var int */
-    protected $VocabularyId;
+    /**
+     * @var mixed
+     */
+    protected $vocabularyId;
 
-    /** @var databox_field */
+    /**
+     * @var databox_field
+     */
     protected $databox_field;
 
-    /** @var record_adapter */
+    /**
+     * @var record_adapter
+     */
     protected $record;
+
+    /**
+     * @var Application
+     */
     protected $app;
 
     /**
@@ -45,21 +61,20 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     protected $qjs;
 
-    /*
+    /**
      * Tells whether the value is matched against a thesaurus value.
+     * @var bool
      */
     protected $isThesaurusValue;
 
     protected static $localCache = [];
 
     /**
-     *
-     * @param  Application          $app
-     * @param  databox_field        $databox_field
-     * @param  record_adapter       $record
-     * @param  mixed                $id
-     * @param  bool                 $retrieveValues
-     * @return \caption_Field_Value
+     * @param  Application $app
+     * @param  databox_field $databox_field
+     * @param  record_adapter $record
+     * @param  mixed $id
+     * @param  bool $retrieveValues
      */
     public function __construct(Application $app, databox_field $databox_field, record_adapter $record, $id, $retrieveValues = self::RETRIEVE_VALUES)
     {
@@ -68,107 +83,94 @@ class caption_Field_Value implements cache_cacheableInterface
         $this->record = $record;
         $this->app = $app;
 
-        if($retrieveValues == self::RETRIEVE_VALUES) {
+        if ($retrieveValues === self::RETRIEVE_VALUES) {
             $this->retrieveValues();
         }
     }
 
+    /**
+     * @return string
+     */
     public function getQjs()
     {
         return $this->qjs;
     }
 
-    public function injectValues($value, $VocabularyType, $VocabularyId)
+    /**
+     * @param string $value
+     * @param string $vocabularyType
+     * @param string $vocabularyId
+     */
+    public function injectValues($value, $vocabularyType, $vocabularyId)
     {
         $this->value = StringHelper::crlfNormalize($value);
 
-        try {
-            $this->VocabularyType = $VocabularyType ? Vocabulary\Controller::get($this->app, $VocabularyType) : null;
-            $this->VocabularyId = $VocabularyId;
-        } catch (\InvalidArgumentException $e) {
+        $this->fetchVocabulary($vocabularyType, $vocabularyId);
 
-        }
-
-        if ($this->VocabularyType) {
-            /**
-             * Vocabulary Control has been deactivated
-             */
-            if ( ! $this->databox_field->getVocabularyControl()) {
+        if ($this->vocabularyType) {
+            if (!$this->databox_field->getVocabularyControl()) {
+                // Vocabulary Control has been deactivated
                 $this->removeVocabulary();
-            }
-            /**
-             * Vocabulary Control has changed
-             */
-            elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType()) {
+            } elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->vocabularyType->getType()) {
+                // Vocabulary Control has changed
                 $this->removeVocabulary();
-            }
-            /**
-             * Current Id is not available anymore
-             */
-            elseif ( ! $this->VocabularyType->validate($this->VocabularyId)) {
+            } elseif (!$this->vocabularyType->validate($this->vocabularyId)) {
+                // Current Id is not available anymore
                 $this->removeVocabulary();
-            }
-            /**
-             * String equivalence has changed
-             */
-            elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value) {
-                $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
+            } elseif ($this->vocabularyType->getValue($this->vocabularyId) !== $this->value) {
+                // String equivalence has changed
+                $this->set_value($this->vocabularyType->getValue($this->vocabularyId));
             }
         }
-
-        $datas = [
-            'value'          => $this->value,
-            'vocabularyId'   => $this->VocabularyId,
-            'vocabularyType' => $this->VocabularyType ? $this->VocabularyType->getType() : null,
-        ];
-
-        $this->set_data_to_cache($datas);
     }
 
     protected function retrieveValues()
     {
         try {
-            $datas = $this->get_data_from_cache();
-
-            $this->value = $datas['value'];
-            $this->VocabularyType = $datas['vocabularyType'] ? Vocabulary\Controller::get($this->app, $datas['vocabularyType']) : null;
-            $this->VocabularyId = $datas['vocabularyId'];
-
-            return $this;
+            $data = $this->get_data_from_cache();
+            $cacheRefreshNeeded = false;
         } catch (\Exception $e) {
+            $data = $this->databox_field->get_databox()->get_connection()
+                ->fetchAssoc(
+                    'SELECT value, VocabularyType as vocabularyType, VocabularyId as vocabularyId FROM metadatas WHERE id = :id',
+                    [':id' => $this->id]
+                );
 
+            if (!is_array($data)) {
+                $data = [
+                    'value' => null,
+                    'vocabularyId' => null,
+                    'vocabularyType' => null,
+                ];
+            }
+
+            $cacheRefreshNeeded = true;
         }
 
-        $connbas = $this->databox_field->get_databox()->get_connection();
+        $this->injectValues($data['value'], $data['vocabularyType'], $data['vocabularyId']);
 
-        $sql = 'SELECT record_id, value, VocabularyType, VocabularyId FROM metadatas WHERE id = :id';
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if($row) {
-            $this->injectValues($row['value'], $row['VocabularyType'], $row['VocabularyId']);
-        }
-        else {
-            $this->injectValues(null, null, null);
+        if ($cacheRefreshNeeded) {
+            $this->set_data_to_cache([
+                'value'          => $this->value,
+                'vocabularyId'   => $this->vocabularyId,
+                'vocabularyType' => $this->vocabularyType ? $this->vocabularyType->getType() : null,
+            ]);
         }
 
         return $this;
     }
 
     /**
-     * @return Vocabulary\ControlProvider\ControlProviderInterface
+     * @return ControlProviderInterface|null
      */
     public function getVocabularyType()
     {
-        return $this->VocabularyType;
+        return $this->vocabularyType;
     }
 
     public function getVocabularyId()
     {
-        return $this->VocabularyId;
+        return $this->vocabularyId;
     }
 
     public function getId()
@@ -183,7 +185,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
     public function getResource()
     {
-        return $this->VocabularyType ? $this->VocabularyType->getResource($this->VocabularyId) : null;
+        return $this->vocabularyType ? $this->vocabularyType->getResource($this->vocabularyId) : null;
     }
 
     public function getDatabox_field()
@@ -198,12 +200,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
     public function delete()
     {
-        $connbas = $this->databox_field->get_connection();
-
-        $sql = 'DELETE FROM metadatas WHERE id = :id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute([':id' => $this->id]);
-        $stmt->closeCursor();
+        $this->getConnection()->delete('metadatas', ['id' => $this->id]);
 
         $this->delete_data_from_cache();
         $this->databox_field->delete_data_from_cache();
@@ -213,144 +210,129 @@ class caption_Field_Value implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function removeVocabulary()
     {
-        $connbas = $this->databox_field->get_connection();
+        $this->getConnection()->executeUpdate(
+            'UPDATE metadatas SET VocabularyType = NULL, VocabularyId = NULL WHERE id = :meta_id',
+            ['meta_id' => $this->getId()]
+        );
 
-        $params = [
-            ':VocabType'    => null
-            , ':VocabularyId' => null
-            , ':meta_id'      => $this->getId()
-        ];
-
-        $sql_up = 'UPDATE metadatas'
-              . ' SET VocabularyType = :VocabType, VocabularyId = :VocabularyId'
-              . ' WHERE id = :meta_id';
-        $stmt_up = $connbas->prepare($sql_up);
-        $stmt_up->execute($params);
-        $stmt_up->closeCursor();
-
-        $this->VocabularyId = $this->VocabularyType = null;
+        $this->vocabularyId = null;
+        $this->vocabularyType = null;
 
         $this->delete_data_from_cache();
 
         return $this;
     }
 
-    public function setVocab(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary, $vocab_id)
+    /**
+     * @param ControlProviderInterface $vocabulary
+     * @param mixed $vocab_id
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function setVocab(ControlProviderInterface $vocabulary, $vocab_id)
     {
-        $connbas = $this->databox_field->get_connection();
-
-        $params = [
-            ':VocabType'    => $vocabulary->getType()
-            , ':VocabularyId' => $vocab_id
-            , ':meta_id'      => $this->getId()
-        ];
-
-        $sql_up = 'UPDATE metadatas'
-              . ' SET VocabularyType = :VocabType, VocabularyId = :VocabularyId'
-              . ' WHERE id = :meta_id';
-        $stmt_up = $connbas->prepare($sql_up);
-        $stmt_up->execute($params);
-        $stmt_up->closeCursor();
+        $this->getConnection()->executeUpdate(
+            'UPDATE metadatas SET VocabularyType = :VocabType, VocabularyId = :VocabularyId WHERE id = :meta_id',
+            [
+                'VocabType'    => $vocabulary->getType(),
+                'VocabularyId' => $vocab_id,
+                'meta_id' => $this->getId(),
+            ]
+        );
 
         $this->set_value($vocabulary->getValue($vocab_id));
 
         return $this;
     }
 
+    /**
+     * @param ControlProviderInterface|null $vocabulary
+     * @param mixed|null $vocabularyId
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function changeVocabulary(ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+    {
+        if (isset($vocabulary, $vocabularyId)) {
+            return $this->setVocab($vocabulary, $vocabularyId);
+        }
+
+        return $this->removeVocabulary();
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function set_value($value)
     {
         $this->value = $value;
 
-        $connbas = $this->databox_field->get_connection();
-
-        $params = [
-            ':meta_id' => $this->id
-            , ':value'   => $value
-        ];
-
-        $sql_up = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
-        $stmt_up = $connbas->prepare($sql_up);
-        $stmt_up->execute($params);
-        $stmt_up->closeCursor();
+        $this->getConnection()->executeUpdate(
+            'UPDATE metadatas SET value = :value WHERE id = :meta_id',
+            [
+                'meta_id' => $this->id,
+                'value' => $value,
+            ]
+        );
 
         $this->delete_data_from_cache();
 
-        $this->update_cache_value($value);
-
         return $this;
     }
 
-    /**
-     *
-     * @param  array         $value
-     * @return caption_field
-     */
-    public function update_cache_value($value)
+    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, ControlProviderInterface $vocabulary = null, $vocabularyId = null)
     {
-        $this->record->get_caption()->delete_data_from_cache();
+        $connection = $databox_field->get_connection();
 
-        return $this;
-    }
-
-    public static function create(Application $app, databox_field $databox_field, \record_adapter $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
-    {
-        $connbas = $databox_field->get_connection();
-
-        /**
-         * Check consistency
-         */
-        if ( ! $databox_field->is_multi()) {
+        // Check consistency
+        if (!$databox_field->is_multi()) {
             try {
                 $field = $record->get_caption()->get_field($databox_field->get_name());
                 $values = $field->get_values();
-                $caption_field_value = array_pop($values);
-                /* @var $value \caption_Field_Value */
+            } catch (Exception $exception) {
+                // Field was not found, so no values found either
+                $values = [];
+            }
+            if (!empty($values)) {
+                /** @var caption_Field_Value $caption_field_value */
+                $caption_field_value = reset($values);
                 $caption_field_value->set_value($value);
-
-                if (! $vocabulary || ! $vocabularyId) {
-                    $caption_field_value->removeVocabulary();
-                } else {
-                    $caption_field_value->setVocab($vocabulary, $vocabularyId);
-                }
+                $caption_field_value->changeVocabulary($vocabulary, $vocabularyId);
 
                 return $caption_field_value;
-            } catch (\Exception $e) {
-
             }
         }
 
-        $sql_ins = 'INSERT INTO metadatas (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)'
-                . ' VALUES (null, :record_id, :field, :value, :VocabType, :VocabId)';
-
-        $params = [
-            ':record_id' => $record->getRecordId(),
-            ':field'     => $databox_field->get_id(),
-            ':value'     => $value,
-            ':VocabType' => $vocabulary ? $vocabulary->getType() : null,
-            ':VocabId'   => $vocabulary ? $vocabularyId : null,
+        $data = [
+            'record_id' => $record->getRecordId(),
+            'meta_struct_id' => $databox_field->get_id(),
+            'value' => $value,
+            'VocabularyType' => $vocabulary ? $vocabulary->getType() : null,
+            'VocabularyId' => $vocabulary ? $vocabularyId : null,
         ];
 
-        $stmt_ins = $connbas->prepare($sql_ins);
-        $stmt_ins->execute($params);
+        $connection->insert('metadatas', $data);
 
-        $stmt_ins->closeCursor();
-        $meta_id = $connbas->lastInsertId();
+        $meta_id = $connection->lastInsertId();
 
-        $caption_field_value = new self($app, $databox_field, $record, $meta_id);
-        $caption_field_value->update_cache_value($value);
+        $caption_field_value = new self($app, $databox_field, $record, $meta_id, self::DONT_RETRIEVE_VALUES);
+        $caption_field_value->injectValues($data['value'], $data['VocabularyType'], $data['VocabularyId']);
 
-        $record->get_caption()->delete_data_from_cache();
         $databox_field->delete_data_from_cache();
-
         $caption_field_value->delete_data_from_cache();
 
         return $caption_field_value;
     }
 
     /**
-     *
      * @return string
      */
     public function highlight_thesaurus()
@@ -361,7 +343,7 @@ class caption_Field_Value implements cache_cacheableInterface
 
         $tbranch = $this->databox_field->get_tbranch();
 
-        if (! $tbranch || ! $XPATH_thesaurus) {
+        if (!$tbranch || !$XPATH_thesaurus) {
             return $value;
         }
 
@@ -390,8 +372,9 @@ class caption_Field_Value implements cache_cacheableInterface
             $note = 0;
             $note += ($node->getAttribute("lng") == $this->app['locale']) ? 4 : 0;
             $note += ($node->getAttribute("w") == $term_noacc) ? 2 : 0;
-            if($context_noacc != "")
+            if ($context_noacc != "") {
                 $note += ($node->getAttribute("k") == $context_noacc) ? 1 : 0;
+            }
             if ($note > $bestnote) {
                 $bestnode = $node;
             }
@@ -401,22 +384,22 @@ class caption_Field_Value implements cache_cacheableInterface
             list($term, $context) = $this->splitTermAndContext(str_replace(["[[em]]", "[[/em]]"], ["", ""], $value));
             // a value has been found in thesaurus, update value & set the query to bounce to the value
             $this->value = $bestnode->getAttribute('v');
-            $this->qjs = $term . ($context ? '['.$context.']' : '');
+            $this->qjs = $term . ($context ? '[' . $context . ']' : '');
             $this->isThesaurusValue = true;
         } else {
             $this->isThesaurusValue = false;
         }
 
-        return $this;
+        return $this->value;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isThesaurusValue()
     {
         if (null === $this->isThesaurusValue) {
-            $this->highlight_thesaurus();
+            throw new LogicException('Value was not checked against thesaurus yet. Call hightlight_thesaurus() first');
         }
 
         return $this->isThesaurusValue;
@@ -486,14 +469,9 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function delete_data_from_cache($option = null)
     {
-        $this->value = $this->VocabularyId = $this->VocabularyType = null;
+        $this->value = $this->vocabularyId = $this->vocabularyType = null;
         $this->record->delete_data_from_cache(record_adapter::CACHE_TITLE);
-
-        try {
-            $this->record->get_caption()->get_field($this->databox_field->get_name())->delete_data_from_cache();
-        } catch (\Exception $e) {
-
-        }
+        $this->record->get_caption()->delete_data_from_cache();
 
         unset(self::$localCache[$this->get_cache_key($option)]);
     }
@@ -506,5 +484,27 @@ class caption_Field_Value implements cache_cacheableInterface
     public static function purge()
     {
         self::$localCache = [];
+    }
+
+    /**
+     * @param string $vocabularyType
+     * @param mixed $vocabularyId
+     */
+    private function fetchVocabulary($vocabularyType, $vocabularyId)
+    {
+        try {
+            $this->vocabularyType = $vocabularyType ? $this->app['vocabularies'][strtolower($vocabularyType)] : null;
+            $this->vocabularyId = $vocabularyId;
+        } catch (\InvalidArgumentException $e) {
+            // Invalid or unknown Vocabulary
+        }
+    }
+
+    /**
+     * @return \Doctrine\DBAL\Connection
+     */
+    private function getConnection()
+    {
+        return $this->databox_field->get_connection();
     }
 }

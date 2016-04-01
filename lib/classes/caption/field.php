@@ -40,8 +40,6 @@ class caption_field implements cache_cacheableInterface
      * @param databox_field  $databox_field
      * @param record_adapter $record
      * @param bool           $retrieveValues
-     *
-     * @return caption_field
      */
     public function __construct(Application $app, databox_field $databox_field, \record_adapter $record, $retrieveValues = self::RETRIEVE_VALUES)
     {
@@ -62,8 +60,6 @@ class caption_field implements cache_cacheableInterface
                 }
             }
         }
-
-        return $this;
     }
 
     /**
@@ -147,27 +143,27 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @param  array  $values
-     * @param  string $separator
+     * @param caption_Field_Value[] $values
+     * @param string $separator
+     * @param bool $highlight
      * @return string
      */
-    protected static function serialize_value(Array $values, $separator, $highlight = false)
+    protected function serialize_value(array $values, $separator, $highlight = false)
     {
-        if (strlen($separator) > 1)
+        if (strlen($separator) > 1) {
             $separator = $separator[0];
+        }
 
-        if (trim($separator) === '')
+        if (trim($separator) === '') {
             $separator = ' ';
-        else
+        } else {
             $separator = ' ' . $separator . ' ';
+        }
 
         $array_values = [];
 
         foreach ($values as $value) {
-            if ($highlight)
-                $array_values[] = $value->highlight_thesaurus();
-            else
-                $array_values[] = $value->getValue();
+            $array_values[] = $highlight ? $value->highlight_thesaurus() : $value->getValue();
         }
 
         return implode($separator, $array_values);
@@ -191,10 +187,10 @@ class caption_field implements cache_cacheableInterface
     }
 
     /**
-     * @param String  $custom_separator
-     * @param Boolean $highlightTheso
+     * @param string|bool $custom_separator
+     * @param bool $highlight
      *
-     * @return mixed
+     * @return string
      */
     public function get_serialized_values($custom_separator = false, $highlight = false)
     {
@@ -205,12 +201,12 @@ class caption_field implements cache_cacheableInterface
         if ($this->is_multi()) {
             $separator = $custom_separator !== false ? $custom_separator : $this->databox_field->get_separator();
 
-            return self::serialize_value($this->values, $separator, $highlight);
+            return $this->serialize_value($this->values, $separator, $highlight);
         }
 
+        /** @var caption_Field_Value $value */
         $value = current($this->values);
 
-            /* @var $value Caption_Field_Value */
         if ($highlight) {
             return $value->highlight_thesaurus();
         }
@@ -258,7 +254,6 @@ class caption_field implements cache_cacheableInterface
      */
     public static function get_multi_values($serialized_value, $separator)
     {
-        $values = [];
         if (strlen($separator) == 1) {
             $values = explode($separator, $serialized_value);
         } else {
@@ -360,8 +355,7 @@ class caption_field implements cache_cacheableInterface
                     $caption_field->delete();
                     $record->set_metadatas([]);
 
-                    unset($caption_field);
-                    unset($record);
+                    unset($caption_field, $record);
                 } catch (\Exception $e) {
 
                 }
@@ -389,6 +383,7 @@ class caption_field implements cache_cacheableInterface
      *
      * @param  string $option
      * @return mixed
+     * @throws Exception
      */
     public function get_data_from_cache($option = null)
     {
