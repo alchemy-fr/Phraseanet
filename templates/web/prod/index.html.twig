@@ -213,8 +213,7 @@
                             </div>
                         </div>
 
-
-                        <div class="controls controls-row adv_options" style="display:none;">
+                        <div id="advancedSearchForm" class="controls controls-row adv_options" style="display:none;">
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
@@ -232,7 +231,7 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
                                             <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="prodApp.appEvents.emit('search.doResetSearch');" />
+                                                <input class="btn btn-inverse search-reset-action" type="button" value="{{ 'Re-initialiser' | trans }}" />
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">

@@ -33,6 +33,6 @@
     "postinstall": "./node_modules/.bin/gulp install;"
   },
   "dependencies": {
-    "phraseanet-production-client": "~0.10.0"
+    "phraseanet-production-client": "~0.11.0"
   }
 }
