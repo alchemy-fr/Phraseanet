@@ -16,12 +16,24 @@ class LinkedinTest extends ProviderTestCase
     {
         $state = md5(mt_rand());
 
+        // test cases
+        $data = [];
+
+        $data[] = [$this->getProvider(), $this->getRequestMock()];
+
+        // Second test
         $request = $this->getRequestMock();
         $this->addQueryParameter($request, ['state' => $state]);
 
-        $provider1 = $this->getProvider();
-        $provider1->setGuzzleClient($this->getGuzzleMock(401));
-        $provider1->getSession()->set('linkedin.provider.state', $state);
+        $provider = $this->getProvider();
+        $provider->setGuzzleClient($this->getGuzzleMock(401));
+        $provider->getSession()->set('linkedin.provider.state', $state);
+
+        $data[] = [$provider, $request];
+
+        // Third test
+        $request = $this->getRequestMock();
+        $this->addQueryParameter($request, ['state' => $state]);
 
         $mock = $this->getMock('Guzzle\Http\ClientInterface');
 
@@ -67,15 +79,13 @@ class LinkedinTest extends ProviderTestCase
             ->method('post')
             ->will($this->returnValue($requestPost));
 
-        $provider2 = $this->getProvider();
-        $provider2->setGuzzleClient($mock);
-        $provider2->getSession()->set('linkedin.provider.state', $state);
+        $provider = $this->getProvider();
+        $provider->setGuzzleClient($mock);
+        $provider->getSession()->set('linkedin.provider.state', $state);
 
-        return [
-            [$this->getProvider(), $this->getRequestMock()],
-            [$provider1, $request],
-            [$provider2, $request],
-        ];
+        $data[] = [$provider, $request];
+
+        return $data;
     }
 
     public function getProviderForLogout()
