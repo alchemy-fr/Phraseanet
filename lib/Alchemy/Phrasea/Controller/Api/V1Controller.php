@@ -47,7 +47,6 @@ use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\Provider\SecretProvider;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
@@ -63,7 +62,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Doctrine\ORM\EntityManager;
-use Firebase\JWT\JWT;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -1004,35 +1002,9 @@ class V1Controller extends Controller
             'substituted' => $media->is_substituted(),
             'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
             'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
-            'url' => $this->generateSubDefinitionUrl($issuer, $media, $urlTTL),
+            'url' => $this->app['media_accessor.subdef_url_generator']->generate($issuer, $media, $urlTTL),
             'url_ttl' => $urlTTL,
         ];
-    }
-
-    /**
-     * @param User          $issuer
-     * @param \media_subdef $subdef
-     * @param int           $url_ttl
-     * @return string
-     */
-    private function generateSubDefinitionUrl(User $issuer, \media_subdef $subdef, $url_ttl)
-    {
-        $payload = [
-            'iat'  => time(),
-            'iss'  => $issuer->getId(),
-            'sdef' => [$subdef->get_sbas_id(), $subdef->get_record_id(), $subdef->get_name()],
-        ];
-        if ($url_ttl >= 0) {
-            $payload['exp'] = $payload['iat'] + $url_ttl;
-        }
-
-        /** @var SecretProvider $provider */
-        $provider = $this->app['provider.secrets'];
-        $secret = $provider->getSecretForUser($issuer);
-
-        return $this->app->url('media_accessor', [
-            'token' => JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
-        ]);
     }
 
     private function listPermalink(\media_Permalink_Adapter $permalink)
