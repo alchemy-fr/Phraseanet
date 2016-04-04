@@ -215,7 +215,7 @@ class BuildSubdefs extends Command
 
         // warning about changing jeton when not working on all subdefs
         if(!empty($names) && ($this->resetSubdefFlag || $this->setWritemetaFlag)) {
-            $output->writeln("warning : changing record status bit but working on a subset of subdefs.");
+            $output->writeln("warning : changing record flag(s) but working on a subset of subdefs.");
         }
         
         return $argsOK;
