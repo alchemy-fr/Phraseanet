@@ -244,10 +244,10 @@
                     {% if thesaurus %}
                         <li><a href="#TH_Ofull">{{ 'phraseanet:: thesaurus' | trans }}</a></li>
                     {% endif %}
-                    <li><a href="#TH_Oclipboard">{{ 'phraseanet:: presse-papier' | trans }}</a></li>
                     <li><a href="#TH_Opreview">{{ 'phraseanet:: preview' | trans }}</a></li>
                     <li><a href="#TH_Oreplace">{{ 'prod::editing: rechercher-remplacer' | trans }}</a></li>
                     <li><a href="#TH_Opresets">{{ 'prod::editing: modeles de fiches' | trans }}</a></li>
+                    <li><a href="#TH_Oclipboard">{{ 'phraseanet:: presse-papier' | trans }}</a></li>
                 </ul>
                 {% if thesaurus %}
                     <div id='TH_Ofull'>
@@ -296,7 +296,7 @@
                         <tr>
                             <td valign="top">{{ 'prod::editing:remplace: options de remplacement' | trans }}</td>
                             <td>
-                                <input type="checkbox" class="checkbox" id="EditSROptionRX" value="regexp" class="toggle-replace-mode-action">
+                                <input type="checkbox" id="EditSROptionRX" value="regexp" class="checkbox record-editor-toggle-replace-mode-action">
                                 {{ 'prod::editing:remplace::option : utiliser une expression reguliere' | trans }}
                                 {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
                                 {% if app['locale'] == 'de' %}
@@ -333,7 +333,7 @@
                         <tr>
                             <td colspan="2" align="center">
                             <br />
-                            <input type="button" class='btn btn-inverse' value="{{ 'boutton::valider' | trans }}" onclick="replace(); return(false);" />
+                            <input type="button" class="btn btn-inverse record-editor-searchReplace-action" value="{{ 'boutton::valider' | trans }}"/>
                             <br />
                             </td>
                         </tr>
@@ -371,7 +371,7 @@
         <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
         <input type='button' class='btn btn-inverse'
             value="{{ 'boutton::fermer' | trans }}"
-            onClick="$('#EDITWINDOW').fadeOut();commonModule.hideOverlay(2);return(false);" />
+            onClick="$('#EDITWINDOW').fadeOut();return(false);" />
     </center>
 </div>
 

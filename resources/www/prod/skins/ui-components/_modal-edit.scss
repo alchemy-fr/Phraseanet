@@ -482,18 +482,27 @@ div.thesaurus {
       top: 0px;
       left: 10px;
       right: 10px;
-      margin-top: 21px;
+      margin-top: 0px;
       border-top: 1px solid $workzoneTabTopBorder;
       border-radius: 0;
-      height: 43px;
+      height: 32px;
       border-bottom: 1px solid $workzoneTabBorderBottom;
     }
     .ui-tabs-panel {
       position: absolute;
-      top: 56px;
+      top: 32px;
       left: 0;
       bottom: 0;
       right: 0;
+    }
+  }
+  #geonameTabContainer {
+    ul.geoname-results {
+      list-style-type: none;
+      margin: 10px;
+      .geoname-add-action {
+        cursor: pointer;
+      }
     }
   }
 }
