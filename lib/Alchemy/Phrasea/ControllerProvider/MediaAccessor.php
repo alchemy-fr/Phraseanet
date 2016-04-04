@@ -35,7 +35,9 @@ class MediaAccessor implements ServiceProviderInterface, ControllerProviderInter
         });
 
         $app['media_accessor.subdef_url_generator'] = $app->share(function (Application $app) {
-            return new MediaSubDefinitionUrlGenerator($app['url_generator'], $app['provider.secrets']);
+            $defaultTTL = (int)$app['conf']->get(['registry', 'general', 'default-subdef-url-ttl'], 0);
+
+            return new MediaSubDefinitionUrlGenerator($app['url_generator'], $app['provider.secrets'], $defaultTTL);
         });
 
 

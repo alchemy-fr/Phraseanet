@@ -27,10 +27,18 @@ class MediaSubDefinitionUrlGenerator
      */
     private $secretProvider;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, SecretProvider $secretProvider)
+    /**
+     * @var int
+     */
+    private $defaultTTL;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator, SecretProvider $secretProvider, $defaultTTL = 0)
     {
+        Assertion::integer($defaultTTL);
+
         $this->urlGenerator = $urlGenerator;
         $this->secretProvider = $secretProvider;
+        $this->defaultTTL = (int)$defaultTTL;
     }
 
     /**
@@ -39,15 +47,17 @@ class MediaSubDefinitionUrlGenerator
      * @param int $url_ttl
      * @return string
      */
-    public function generate(User $issuer, \media_subdef $subdef, $url_ttl)
+    public function generate(User $issuer, \media_subdef $subdef, $url_ttl = null)
     {
+        $url_ttl = $url_ttl ?: $this->defaultTTL;
+
         $payload = [
             'iat'  => time(),
             'iss'  => $issuer->getId(),
             'sdef' => [$subdef->get_sbas_id(), $subdef->get_record_id(), $subdef->get_name()],
         ];
 
-        if ($url_ttl >= 0) {
+        if ($url_ttl > 0) {
             $payload['exp'] = $payload['iat'] + $url_ttl;
         }
 
@@ -64,9 +74,10 @@ class MediaSubDefinitionUrlGenerator
      * @param int $url_ttl
      * @return string[]
      */
-    public function generateMany(User $issuer, $subdefs, $url_ttl)
+    public function generateMany(User $issuer, $subdefs, $url_ttl = null)
     {
         Assertion::allIsInstanceOf($subdefs, \media_subdef::class);
+        $url_ttl = $url_ttl ?: $this->defaultTTL;
 
         $payloads = [];
 
@@ -76,7 +87,7 @@ class MediaSubDefinitionUrlGenerator
             'sdef' => null,
         ];
 
-        if ($url_ttl >= 0) {
+        if ($url_ttl > 0) {
             $payload['exp'] = $payload['iat'] + $url_ttl;
         }
 

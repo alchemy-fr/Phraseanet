@@ -190,15 +190,26 @@ class ApiOrderController extends BaseOrderController
     }
 
     /**
-     * @param Request $request
      * @param string|array $includes
+     * @return Manager
+     */
+    private function parseIncludes($includes)
+    {
+        $fractal = new Manager();
+        $fractal->parseIncludes($includes);
+
+        return $fractal;
+    }
+
+    /**
+     * @param Request $request
+     * @param string|array|Manager $includes
      * @param ResourceInterface $resource
      * @return Response
      */
     private function returnResourceResponse(Request $request, $includes, ResourceInterface $resource)
     {
-        $fractal = new Manager();
-        $fractal->parseIncludes($includes);
+        $fractal = $includes instanceof Manager ? $includes : $this->parseIncludes($includes);
 
         return Result::create($request, $fractal->createData($resource)->toArray())->createResponse();
     }
