@@ -42,6 +42,14 @@ class MediaSubDefinitionUrlGenerator
     }
 
     /**
+     * @return int
+     */
+    public function getDefaultTTL()
+    {
+        return $this->defaultTTL;
+    }
+
+    /**
      * @param User $issuer
      * @param \media_subdef $subdef
      * @param int $url_ttl

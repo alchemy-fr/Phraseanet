@@ -68,7 +68,7 @@ class ApiOrderController extends BaseOrderController
     {
         $page = max((int) $request->get('page', '1'), 1);
         $perPage = min(max((int)$request->get('per_page', '10'), 1), 100);
-        $includes = $request->get('includes', []);
+        $fractal = $this->parseIncludes($request->get('includes', []));
 
         $routeGenerator = function ($page) use ($perPage) {
             return $this->app->path('api_v2_orders_index', [
@@ -77,13 +77,17 @@ class ApiOrderController extends BaseOrderController
             ]);
         };
 
-
         $builder = $this->app['repo.orders']->createQueryBuilder('o');
         $builder
             ->where($builder->expr()->eq('o.user', $this->getAuthenticatedUser()->getId()))
-            ->setFirstResult(($page - 1) * $perPage)
-            ->setMaxResults($perPage)
         ;
+
+        if (in_array('elements', $fractal->getRequestedIncludes(), false)) {
+            $builder
+                ->addSelect('e')
+                ->leftJoin('o.elements', 'e')
+            ;
+        }
 
         $resource = new Collection($builder->getQuery()->getResult(), $this->getOrderTransformer());
 
@@ -93,7 +97,7 @@ class ApiOrderController extends BaseOrderController
         $paginator = new PagerfantaPaginatorAdapter($pager, $routeGenerator);
         $resource->setPaginator($paginator);
 
-        return $this->returnResourceResponse($request, $includes, $resource);
+        return $this->returnResourceResponse($request, $fractal, $resource);
     }
 
     /**
@@ -196,7 +200,8 @@ class ApiOrderController extends BaseOrderController
     private function parseIncludes($includes)
     {
         $fractal = new Manager();
-        $fractal->parseIncludes($includes);
+
+        $fractal->parseIncludes($includes ?: []);
 
         return $fractal;
     }
