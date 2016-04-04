@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Order;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\Order;
 use League\Fractal\TransformerAbstract;
 
@@ -37,6 +36,7 @@ class OrderTransformer extends TransformerAbstract
             'owner_id' => (int)$order->getUser()->getId(),
             'created' => $order->getCreatedOn()->format(DATE_ATOM),
             'usage' => $order->getOrderUsage(),
+            'status' => 0 === $order->getTodo() ? 'finished' : 'pending'
         ];
 
         if ($order->getDeadline()) {
