@@ -38,7 +38,7 @@ class ContentNegotiationSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $priorities = array('text/html', 'application/vnd.phraseanet.record-extended+json', 'application/json');
+        $priorities = array('text/html', 'application/vnd.phraseanet.record-extended+json', 'application/json', 'text/css');
         $format = $this->app['negotiator']->getBest($event->getRequest()->headers->get('accept', '*/*'), $priorities);
 
         if (null === $format) {
