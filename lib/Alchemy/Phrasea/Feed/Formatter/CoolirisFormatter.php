@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,8 +53,6 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
      */
     public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $updated_on = $feed->getUpdatedOn();
-
         $doc = new \DOMDocument('1.0', 'UTF-8');
         $doc->formatOutput = true;
         $doc->standalone = true;
@@ -89,8 +88,7 @@ class CoolirisFormatter extends FeedFormatterAbstract implements FeedFormatterIn
             $this->addTag($doc, $channel, 'managingEditor', $this->managingEditor);
         if (isset($this->webMaster))
             $this->addTag($doc, $channel, 'webMaster', $this->webMaster);
-        if ($updated_on instanceof DateTime) {
-            $updated_on = $updated_on->format(DATE_RFC2822);
+        if (null !== $updated_on = NullableDateTime::format($feed->getUpdatedOn(), DATE_RFC2822)) {
             $this->addTag($doc, $channel, 'pubDate', $updated_on);
         }
         if (isset($this->lastBuildDate) && $this->lastBuildDate instanceof DateTime) {

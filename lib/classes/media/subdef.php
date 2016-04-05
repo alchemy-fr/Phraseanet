@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
@@ -206,8 +207,8 @@ SQL;
             'physically_present' => $this->is_physically_present,
             'is_substituted' => $this->is_substituted,
             'subdef_id' => $this->subdef_id,
-            'updated_on' => $this->modification_date ? $this->modification_date->format(DATE_ATOM) : '',
-            'created_on' => $this->creation_date ? $this->creation_date->format(DATE_ATOM) : '',
+            'updated_on' => NullableDateTime::format($this->modification_date),
+            'created_on' => NullableDateTime::format($this->creation_date),
             'etag' => $this->etag,
             'url' => (string)$this->url,
         ];

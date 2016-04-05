@@ -94,8 +94,8 @@ class ApiOrderController extends BaseOrderController
         $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
         $pager->setCurrentPage($page);
         $pager->setMaxPerPage($perPage);
-        $paginator = new PagerfantaPaginatorAdapter($pager, $routeGenerator);
-        $resource->setPaginator($paginator);
+
+        $resource->setPaginator(new PagerfantaPaginatorAdapter($pager, $routeGenerator));
 
         return $this->returnResourceResponse($request, $fractal, $resource);
     }

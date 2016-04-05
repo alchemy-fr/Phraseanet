@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Core\Event\Acl\SysadminChangedEvent;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\DBAL\DBALException;
 
 
@@ -1706,10 +1707,10 @@ class ACL implements cache_cacheableInterface
         }
 
         $params = [
-            ':usr_id'      => $this->user->getId()
-            , ':base_id'     => $base_id
-            , 'limited_from' => ($limit_from ? $limit_from->format(DATE_ISO8601) : null)
-            , 'limited_to'   => ($limit_to ? $limit_to->format(DATE_ISO8601) : null)
+            ':usr_id' => $this->user->getId(),
+            ':base_id' => $base_id,
+            'limited_from' => NullableDateTime::format($limit_from, DATE_ISO8601),
+            'limited_to' => NullableDateTime::format($limit_to, DATE_ISO8601),
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
