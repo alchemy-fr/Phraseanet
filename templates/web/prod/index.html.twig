@@ -82,6 +82,85 @@
 {% endblock %}
 
 {% block javascript %}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
+        {% set initialAppState = 'publication' %}
+        {% endif %}
+
+        window.prodApp = ProductionApplication.bootstrap({
+            lang: "{{ app.locale }}",
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}',
+            notify: {
+                url: "{{ path('list_notifications') }}",
+                moduleId: 1,
+                userId: {{app.getAuthenticatedUser().getId()}}
+            },
+            initialState: "{{ initialAppState }}",
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}',
+            thesaurusConfig: {
+                replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
+                replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
+                acceptMsg: '{{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}',
+                deleteMsg: '{{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}',
+                candidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' | trans }}',
+                candidateManyMsg: '{{ 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' | trans }}',
+                acceptCandidateUniqueMsg: '{{ 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' | trans }}',
+                acceptCandidateManyMsg: '{{ "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" | trans }}',
+                replaceCandidateUniqueMsg: '{{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}',
+                replaceCandidateManyMsg: '{{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}',
+                deleteCandidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' | trans }}',
+                deleteCandidateManyMsg: '{{ 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' | trans }}',
+                loadingMsg: '{{ 'prod::thesaurusTab:tree:loading' | trans }}',
+                searchMsg: '{{ 'boutton::chercher' | trans }}',
+                acceptSpecificTermMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' | trans }}',
+                acceptSynonymeMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme synonyme' | trans }}',
+                replaceWithMsg: '{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
+                removeActionMsg: '{{ 'boutton::supprimer' | trans }}',
+                sbas: {{thesau_json_sbas|raw}},
+                bas2sbas: {{thesau_json_bas2sbas|raw}},
+                availableDatabases: [
+                        {% for base in search_datas['bases'] %}{% if base['thesaurus'] %}{
+                        id: {{base['sbas_id']}}
+                    }{% if not loop.last %},{% endif %}{% endif %}{% endfor %}
+                ],
+                languagesCount: {{ thesau_languages|length }},
+                langContextMenu: [
+                    {% for lng_code, lng in thesau_languages %}
+                    {
+                        label:'{% trans with {'%lng_code%' : lng_code} %}prod::thesaurusTab:cmenu:Accepter en %lng_code%{% endtrans %}',
+                        lngCode: '{{lng_code}}',
+                    },
+                    {% endfor %}
+                ]
+            }
+        });
+        // prodApp.appEvents.emit('search.doCheckFilters', true);
+
+        $(document).ready(function(){
+            prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+
+        });
+
+        function setCss(color) {
+            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
+            $.post("{{ path('save_pref') }}", {
+                prop: "css",
+                value: color,
+                t: Math.random()
+            }, function(data){
+                return;
+            });
+        }
+
+    </script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
@@ -701,85 +780,6 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
 
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript">
 
-
-        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-        {% set initialAppState = 'default' %}
-        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-        {% set initialAppState = 'default' %}
-        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
-        {% set initialAppState = 'publication' %}
-        {% endif %}
-
-        var prodApp = ProductionApplication.bootstrap({
-            lang: "{{ app.locale }}",
-            baseUrl: '{{ app['request'].getUriForPath('/') }}',
-            basePath: '{{ app.request.basePath|e('js') }}',
-            notify: {
-                url: "{{ path('list_notifications') }}",
-                moduleId: 1,
-                userId: {{app.getAuthenticatedUser().getId()}}
-            },
-            initialState: "{{ initialAppState }}",
-            geonameServerUrl: '{{ app['geonames.server-uri'] }}',
-            thesaurusConfig: {
-                replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
-                replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
-                acceptMsg: '{{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}',
-                deleteMsg: '{{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}',
-                candidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' | trans }}',
-                candidateManyMsg: '{{ 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' | trans }}',
-                acceptCandidateUniqueMsg: '{{ 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' | trans }}',
-                acceptCandidateManyMsg: '{{ "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" | trans }}',
-                replaceCandidateUniqueMsg: '{{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}',
-                replaceCandidateManyMsg: '{{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}',
-                deleteCandidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' | trans }}',
-                deleteCandidateManyMsg: '{{ 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' | trans }}',
-                loadingMsg: '{{ 'prod::thesaurusTab:tree:loading' | trans }}',
-                searchMsg: '{{ 'boutton::chercher' | trans }}',
-                acceptSpecificTermMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' | trans }}',
-                acceptSynonymeMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme synonyme' | trans }}',
-                replaceWithMsg: '{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
-                removeActionMsg: '{{ 'boutton::supprimer' | trans }}',
-                sbas: {{thesau_json_sbas|raw}},
-                bas2sbas: {{thesau_json_bas2sbas|raw}},
-                availableDatabases: [
-                        {% for base in search_datas['bases'] %}{% if base['thesaurus'] %}{
-                        id: {{base['sbas_id']}}
-                    }{% if not loop.last %},{% endif %}{% endif %}{% endfor %}
-                ],
-                languagesCount: {{ thesau_languages|length }},
-                langContextMenu: [
-                    {% for lng_code, lng in thesau_languages %}
-                    {
-                        label:'{% trans with {'%lng_code%' : lng_code} %}prod::thesaurusTab:cmenu:Accepter en %lng_code%{% endtrans %}',
-                        lngCode: '{{lng_code}}',
-                    },
-                    {% endfor %}
-                ]
-            }
-        });
-        // prodApp.appEvents.emit('search.doCheckFilters', true);
-
-        $(document).ready(function(){
-            prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
-
-        });
-
-        function setCss(color) {
-            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
-            $.post("{{ path('save_pref') }}", {
-                prop: "css",
-                value: color,
-                t: Math.random()
-            }, function(data){
-                return;
-            });
-        }
-
-    </script>
     <script type="text/javascript" id="bitly_loader"></script>
 {% endblock %}
