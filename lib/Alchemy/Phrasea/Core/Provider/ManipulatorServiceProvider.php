@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
@@ -21,6 +22,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthRefreshTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
+use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
@@ -116,9 +118,14 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         $app['manipulator.basket'] = $app->share(function (Application $app) {
             return new BasketManipulator($app, $app['repo.baskets'], $app['orm.em']);
         });
+
+        $app['manipulator.lazaret'] = $app->share(function (Application $app) {
+            return new LazaretManipulator($app, $app['repo.lazaret-files'], $app['filesystem'], $app['orm.em']);
+        });
     }
 
     public function boot(SilexApplication $app)
     {
+        // no-op
     }
 }
