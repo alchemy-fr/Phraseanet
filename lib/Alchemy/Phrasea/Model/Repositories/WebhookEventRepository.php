@@ -21,6 +21,9 @@ use Doctrine\ORM\EntityRepository;
  */
 class WebhookEventRepository extends EntityRepository
 {
+    /**
+     * @deprecated This method can overflow available memory when there is a large number of unprocessed events
+     */
     public function findUnprocessedEvents()
     {
         $qb = $this->createQueryBuilder('e');
@@ -28,5 +31,13 @@ class WebhookEventRepository extends EntityRepository
         $qb->where($qb->expr()->eq('e.processed', $qb->expr()->literal(false)));
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getUnprocessedEventIterator()
+    {
+        $queryBuilder = $this->createQueryBuilder('e')
+            ->where('e.processed = 0');
+
+        return $queryBuilder->getQuery()->iterate();
     }
 }
