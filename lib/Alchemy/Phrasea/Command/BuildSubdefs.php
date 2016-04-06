@@ -179,14 +179,13 @@ class BuildSubdefs extends Command
 
         if($this->databox !== null) {
 
-            /** @var SubdefGroup $sg */
-            foreach ($this->databox->get_subdef_structure() as $sg) {
-                if (empty($types) || in_array($sg->getName(), $types)) {
-                    $this->subdefsNameByType[$sg->getName()] = [];
+            foreach ($this->databox->get_subdef_structure() as $sgname=>$sg) {
+                if (empty($types) || in_array($sgname, $types)) {
+                    $this->subdefsNameByType[$sgname] = [];
                     /** @var databox_subdef $sd */
                     foreach ($sg as $sd) {
                         if (empty($names) || in_array($sd->get_name(), $names)) {
-                            $this->subdefsNameByType[$sg->getName()][] = $sd->get_name();
+                            $this->subdefsNameByType[$sgname][] = $sd->get_name();
                         }
                     }
                 }
