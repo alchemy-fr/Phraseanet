@@ -30,6 +30,14 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => 'ElasticSearch index name',
                 'constraints' => new NotBlank(),
             ])
+            ->add('esSettingsDropIndexButton', 'button', [
+                'label' => "Drop index",
+                'attr' => ['data-id' => "esSettingsDropIndexButton"]
+            ])
+            ->add('esSettingsCreateIndexButton', 'button', [
+                'label' => "Create index",
+                'attr' => ['data-id' => "esSettingsCreateIndexButton"]
+            ])
             ->add('shards', 'integer', [
                 'label' => 'Number of shards',
                 'constraints' => new Range(['min' => 1]),
