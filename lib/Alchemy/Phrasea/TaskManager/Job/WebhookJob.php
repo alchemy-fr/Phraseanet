@@ -123,7 +123,8 @@ class WebhookJob extends AbstractJob
         /** @var EventProcessorFactory $eventFactory */
         $eventFactory = $app['webhook.processor_factory'];
 
-        foreach ($app['repo.webhook-event']->getUnprocessedEventIterator() as $event) {
+        foreach ($app['repo.webhook-event']->getUnprocessedEventIterator() as $row) {
+            $event = $row[0];
             // set event as processed
             $app['manipulator.webhook-event']->processed($event);
 
