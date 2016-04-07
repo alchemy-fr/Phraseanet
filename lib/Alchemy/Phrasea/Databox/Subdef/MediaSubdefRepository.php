@@ -43,6 +43,18 @@ class MediaSubdefRepository
     }
 
     /**
+     * @param int $recordId
+     * @param string $name
+     * @return \media_subdef|null
+     */
+    public function findOneByRecordIdAndName($recordId, $name)
+    {
+        $subdefs = $this->repository->findByRecordIdsAndNames([$recordId], [$name]);
+
+        return $subdefs ? reset($this->hydrateAll($subdefs)) : null;
+    }
+
+    /**
      * @param int[] $recordIds
      * @param string[] $names
      * @return \media_subdef[]
@@ -56,6 +68,23 @@ class MediaSubdefRepository
         $data = $this->repository->findByRecordIdsAndNames($recordIds, $names);
 
         return $this->hydrateAll($data);
+    }
+
+    /**
+     * @param \media_subdef|\media_subdef[] $subdefs
+     */
+    public function save($subdefs)
+    {
+        if (!is_array($subdefs) || !$subdefs instanceof \Traversable) {
+            $subdefs = [$subdefs];
+        } elseif ($subdefs instanceof \Traversable) {
+            $subdefs = iterator_to_array($subdefs);
+        }
+        Assertion::allIsInstanceOf($subdefs, \media_subdef::class);
+
+        $data = array_map([$this->hydrator, 'extract'], $subdefs);
+
+        $this->repository->save($data);
     }
 
     public function clear()

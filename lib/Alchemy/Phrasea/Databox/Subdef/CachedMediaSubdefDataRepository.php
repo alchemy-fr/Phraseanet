@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Databox\Subdef;
 
-use Alchemy\Phrasea\Cache\MultiGetPutAdapter;
+use Alchemy\Phrasea\Cache\MultiAdapter;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\MultiGetCache;
 use Doctrine\Common\Cache\MultiPutCache;
@@ -47,7 +47,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         $this->decorated = $decorated;
         $this->cache = $cache instanceof MultiGetCache && $cache instanceof MultiPutCache
             ? $cache
-            : new MultiGetPutAdapter($cache);
+            : new MultiAdapter($cache);
         $this->baseKey = $baseKey;
     }
 
@@ -118,13 +118,10 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $this->decorated->save($data);
 
-        $toSave = [];
+        $keys = array_map([$this, 'getCacheKey'], $data);
 
-        foreach ($data as $item) {
-            $toSave[$this->getCacheKey($item)] = $item;
-        }
-
-        $this->cache->saveMultiple($toSave, $this->lifeTime);
+        // all saved keys are now stalled. decorated repository could modify values on store (update time for example)
+        array_walk($keys, [$this->cache, 'delete']);
     }
 
     private function getCacheKey(array $data)

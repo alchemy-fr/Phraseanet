@@ -202,16 +202,17 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             return new CollectionRepositoryRegistry($app, $repositoryFactory, $app['repo.collection-references']);
         });
 
+        $app['provider.factory.media_subdef'] = $app->protect(function ($databoxId) use ($app) {
+            return function (array $data) use ($app, $databoxId) {
+                $recordReference = RecordReference::createFromDataboxIdAndRecordId($databoxId, $data['record_id']);
+
+                return new \media_subdef($app, $recordReference, $data['name'], false, $data);
+            };
+        });
+
         $app['provider.repo.media_subdef'] = $app->share(function (PhraseaApplication $app) {
             $connectionProvider = new DataboxConnectionProvider($app['phraseanet.appbox']);
-
-            $factoryProvider = function ($databoxId) use ($app) {
-                return function (array $data) use ($app, $databoxId) {
-                    $recordReference = RecordReference::createFromDataboxIdAndRecordId($databoxId, $data['record_id']);
-
-                    return new \media_subdef($app, $recordReference, $data['name'], false, $data);
-                };
-            };
+            $factoryProvider = $app['provider.factory.media_subdef'];
 
             $repositoryFactory = new MediaSubdefRepositoryFactory($connectionProvider, $app['cache'], $factoryProvider);
 

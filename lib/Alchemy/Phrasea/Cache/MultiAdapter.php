@@ -14,7 +14,7 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\MultiGetCache;
 use Doctrine\Common\Cache\MultiPutCache;
 
-class MultiGetPutAdapter implements Cache, MultiGetCache, MultiPutCache
+class MultiAdapter implements Cache, MultiGetCache, MultiPutCache
 {
     /**
      * @var Cache

@@ -10,9 +10,11 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
+use Assert\Assertion;
 use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
@@ -20,6 +22,16 @@ use MediaVorus\MediaVorus;
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
+    /**
+     * @param Application $app
+     * @param int $databoxId
+     * @return MediaSubdefRepository
+     */
+    private static function getMediaSubdefRepository(Application $app, $databoxId)
+    {
+        return $app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
+    }
+
     /** @var Application */
     protected $app;
 
@@ -672,36 +684,35 @@ SQL;
         $newname = $media->getFile()->getFilename();
 
         $params = [
-            ':record_id'  => $record->getRecordId(),
-            ':name'       => $name,
-            ':path'       => $path,
-            ':file'       => $newname,
-            ':width'      => 0,
-            ':height'     => 0,
-            ':mime'       => $media->getFile()->getMimeType(),
-            ':size'       => $media->getFile()->getSize(),
-            ':dispatched' => 1,
+            'record_id'  => $record->getRecordId(),
+            'name'       => $name,
+            'path'       => $path,
+            'file'       => $newname,
+            'width'      => 0,
+            'height'     => 0,
+            'mime'       => $media->getFile()->getMimeType(),
+            'size'       => $media->getFile()->getSize(),
         ];
 
         if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
-            $params[':width'] = $media->getWidth();
+            $params['width'] = $media->getWidth();
         }
         if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
-            $params[':height'] = $media->getHeight();
+            $params['height'] = $media->getHeight();
         }
 
-        $sql = <<<'SQL'
-INSERT INTO subdef (record_id, name, path, file, width, height, mime, size, dispatched, created_on, updated_on)
-VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :dispatched, NOW(), NOW())
-ON DUPLICATE KEY UPDATE
-path = VALUES(path), file = VALUES(file), width = VALUES(width) , height = VALUES(height), mime = VALUES(mime),
-size = VALUES(size), dispatched = VALUES(dispatched), updated_on = NOW()
-SQL;
+        $factoryProvider = $app['provider.factory.media_subdef'];
+        $factory = $factoryProvider($record->getDataboxId());
 
-        $connection->executeUpdate($sql, $params);
+        $subdef = $factory($params);
+        Assertion::isInstanceOf($subdef, \media_subdef::class);
 
-        $subdef = new self($app, $record, $name);
-        $subdef->delete_data_from_cache();
+        /** @var MediaSubdefRepository $repository */
+        $repository = $app['provider.repo.media_subdef']->getRepositoryForDatabox($record->getDataboxId());
+        $repository->save($subdef);
+
+        // Refresh from Database.
+        $subdef = $repository->findOneByRecordIdAndName($record->getRecordId(), $name);
 
         $permalink = $subdef->get_permalink();
 
