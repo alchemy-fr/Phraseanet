@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
@@ -104,17 +105,25 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_LIGHTVALUE = 'LightValue';
 
     /**
-     * @param  Application    $app
-     * @param  record_adapter $record
-     * @param  string         $name
-     * @param  bool           $substitute
+     * @param Application $app
+     * @param RecordReferenceInterface $record
+     * @param string $name
+     * @param bool $substitute
+     * @param array|null $data
      */
-    public function __construct(Application $app, record_adapter $record, $name, $substitute = false)
+    public function __construct(Application $app, RecordReferenceInterface $record, $name, $substitute = false, array $data = null)
     {
         $this->app = $app;
         $this->name = $name;
-        $this->record = $record;
-        $this->load($substitute);
+        $this->record = $record instanceof record_adapter
+            ? $record
+            : $app->findDataboxById($record->getDataboxId())->get_record($record->getId());
+
+        if (null !== $data) {
+            $this->loadFromArray($data);
+        } else {
+            $this->load($substitute);
+        }
 
         parent::__construct($this->width, $this->height, $this->generateUrl());
     }
@@ -176,6 +185,24 @@ SQL;
 
     private function loadFromArray(array $data)
     {
+        if (!$data) {
+            $data = [
+                'mime' => 'unknown',
+                'width' => 0,
+                'height' => 0,
+                'size' => 0,
+                'etag' => null,
+                'path' => '',
+                'file' => '',
+                'physically_present' => false,
+                'is_substituted' => false,
+                'subdef_id' => null,
+                'updated_on' => null,
+                'created_on' => null,
+                'url' => null,
+            ];
+        }
+
         $this->mime = $data['mime'];
         $this->width = $data['width'];
         $this->height = $data['height'];

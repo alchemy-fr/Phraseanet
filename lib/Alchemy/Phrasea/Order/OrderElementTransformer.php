@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Order;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use League\Fractal\ParamBag;
@@ -109,19 +110,8 @@ class OrderElementTransformer extends TransformerAbstract
             }
         }
 
-        $subdefs = [];
-
-        foreach ($subdefNames as $subdefName) {
-            if ($record->has_subdef($subdefName)) {
-                try {
-                    $subdefs[$subdefName] = new \media_subdef($this->app, $record, $subdefName);
-                } catch (\Exception_Media_SubdefNotFound $exception) {
-                    // ignore missing subdef
-                }
-            }
-        }
-
-        return $subdefs;
+        return $this->getMediaSubDefRepository($databox->get_sbas_id())
+            ->findByRecordIdsAndNames([$element->getRecordId()], $subdefNames);
     }
 
     /**
@@ -130,5 +120,13 @@ class OrderElementTransformer extends TransformerAbstract
     private function getSubdefUrlGenerator()
     {
         return $this->app['media_accessor.subdef_url_generator'];
+    }
+
+    /**
+     * @return MediaSubdefRepository
+     */
+    private function getMediaSubDefRepository($databoxId)
+    {
+        return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
     }
 }

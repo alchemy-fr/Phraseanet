@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
@@ -571,7 +572,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function has_subdef($name)
     {
-        return in_array($name, $this->get_available_subdefs());
+        return in_array($name, $this->get_available_subdefs(), false);
     }
 
     /**
@@ -586,17 +587,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this->subdefs[$name];
         }
 
-        if (!in_array($name, $this->get_available_subdefs())) {
+        if (!in_array($name, $this->get_available_subdefs(), false)) {
             throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
-        if (!$this->subdefs) {
-            $this->subdefs = [];
-        }
+        $subdefs = $this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()], [$name]);
 
-        $substitute = ($name !== 'document');
-
-        return $this->subdefs[$name] = new media_subdef($this->app, $this, $name, $substitute);
+        return $subdefs ? reset($subdefs) : new media_subdef($this->app, $this, $name, ($name !== 'document'));
     }
 
     /**
@@ -614,7 +611,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         if (isset($availableSubdefs['document'])) {
 
-            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mimes);
+            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mimes, false);
             $devices_ok = !$devices || array_intersect($availableSubdefs['document']->getDevices(), (array) $devices);
 
             if ($mime_ok && $devices_ok) {
@@ -663,13 +660,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_subdefs()
     {
-        if (!$this->subdefs) {
-            $this->subdefs = [];
+        if (null !== $this->subdefs) {
+            return $this->subdefs;
         }
 
-        $subdefs = $this->get_available_subdefs();
-        foreach ($subdefs as $name) {
-            $this->get_subdef($name);
+        $this->subdefs = [];
+
+        foreach ($this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()]) as $subdef) {
+            $this->subdefs[$subdef->get_name()] = $subdef;
+        }
+
+        foreach (['preview', 'thumbnail'] as $name) {
+            if (!$this->subdefs[$name]) {
+                $this->subdefs[$name] = new media_subdef($this->app, $this, $name, true, []);
+            }
         }
 
         return $this->subdefs;
@@ -680,6 +684,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     protected function get_available_subdefs()
     {
+        if (null !== $this->subdefs) {
+            return array_keys($this->subdefs);
+        }
+
         try {
             $data = $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (\Exception $e) {
@@ -690,18 +698,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $data;
         }
 
-        $rs = $this->getDataboxConnection()->fetchAll(
-            'SELECT name FROM subdef WHERE record_id = :record_id',
-            ['record_id' => $this->getRecordId()]
-        );
+        $subdefs = array_keys($this->get_subdefs());
 
-        $subdefs = ['preview', 'thumbnail'];
-
-        foreach ($rs as $row) {
-            $subdefs[] = $row['name'];
-        }
-
-        $subdefs = array_unique($subdefs);
         $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
 
         return $subdefs;
@@ -1877,5 +1875,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $this->connection;
+    }
+
+    /**
+     * @return MediaSubdefRepository
+     */
+    private function getMediaSubdefRepository()
+    {
+        return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($this->getDataboxId());
     }
 }
