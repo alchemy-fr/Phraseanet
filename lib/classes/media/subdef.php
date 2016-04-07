@@ -214,21 +214,29 @@ SQL;
             ];
         }
 
+        $normalizer = function ($field, callable $then, callable $else = null) use ($data) {
+            if (isset($data[$field]) || array_key_exists($field, $data)) {
+                return $then($data[$field]);
+            }
+
+            return $else ? $else() : null;
+        };
+
         $this->mime = $data['mime'];
         $this->width = (int)$data['width'];
         $this->height = (int)$data['height'];
         $this->size = (int)$data['size'];
-        $this->etag = isset($data['etag']) ? $data['etag'] : null;
+        $this->etag = $normalizer('etag', 'strval');
         $this->path = p4string::addEndSlash($data['path']);
         $this->file = $data['file'];
         $this->is_physically_present = (bool)$data['physically_present'];
         $this->is_substituted = (bool)$data['is_substituted'];
-        $this->subdef_id = isset($data['subdef_id']) || array_key_exists('subdef_id', $data) ? (int)$data['subdef_id'] : null;
-        $this->modification_date = isset($data['updated_on']) ? new DateTime($data['updated_on']) : null;
-        $this->creation_date = isset($data['created_on']) ? new DateTime($data['created_on']) : null;
-        $this->url = isset($data['url']) ? Url::factory((string)$data['url']) : $this->generateUrl();
+        $this->subdef_id = $normalizer('subdef_id', 'intval');
+        $this->modification_date = $normalizer('updated_on', 'date_create');
+        $this->creation_date = $normalizer('created_on', 'date_create');
+        $this->url = $normalizer('url', [Url::class, 'factory'], [$this, 'generateUrl']);
 
-        if ($this->is_physically_present && !file_exists($this->getRealPath())) {
+        if (!$this->isStillAccessible()) {
             $this->markPhysicallyUnavailable();
         }
     }
@@ -820,5 +828,13 @@ SQL;
     private function getDataboxConnection()
     {
         return $this->record->getDatabox()->get_connection();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isStillAccessible()
+    {
+        return $this->is_physically_present && file_exists($this->getRealPath());
     }
 }
