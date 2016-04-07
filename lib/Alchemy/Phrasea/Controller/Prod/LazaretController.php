@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
+use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -112,10 +113,6 @@ class LazaretController extends Controller
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        //Optional parameter
-        $keepAttributes = !!$request->request->get('keep_attributes', false);
-        $attributesToKeep = $request->request->get('attributes', []);
-
         //Mandatory parameter
         if (null === $request->request->get('bas_id')) {
             $ret['message'] = $this->app->trans('You must give a destination collection');
@@ -123,104 +120,14 @@ class LazaretController extends Controller
             return $this->app->json($ret);
         }
 
-        /* @var LazaretFile $lazaretFile */
-        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
+        //Optional parameter
+        $keepAttributes = !!$request->request->get('keep_attributes', false);
+        $attributesToKeep = $request->request->get('attributes', []);
 
-        if (null === $lazaretFile) {
-            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
+        /** @var LazaretManipulator $lazaretManipulator */
+        $lazaretManipulator = $this->app['manipulator.lazaret'];
 
-            return $this->app->json($ret);
-        }
-
-        $path = $this->app['tmp.lazaret.path'];
-        $lazaretFileName = $path .'/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
-
-        try {
-            $borderFile = Border\File::buildFromPathfile(
-                $lazaretFileName,
-                $lazaretFile->getCollection($this->app),
-                $this->app,
-                $lazaretFile->getOriginalName()
-            );
-
-
-            //Post record creation
-            /** @var \record_adapter $record */
-            $record = null;
-            $callBack = function ($element) use (&$record) {
-                $record = $element;
-            };
-
-            //Force creation record
-            $this->getBorderManager()->process(
-                $lazaretFile->getSession(),
-                $borderFile,
-                $callBack,
-                Border\Manager::FORCE_RECORD
-            );
-
-            if ($keepAttributes) {
-                //add attribute
-
-                $metaFields = new Border\MetaFieldsBag();
-                $metadataBag = new Border\MetadataBag();
-
-                foreach ($lazaretFile->getAttributes() as $attr) {
-                    //Check which ones to keep
-                    if (!empty($attributesToKeep) && !in_array($attr->getId(), $attributesToKeep)) {
-                        continue;
-                    }
-
-                    try {
-                        $attribute = Border\Attribute\Factory::getFileAttribute($this->app, $attr->getName(), $attr->getValue());
-                    } catch (\InvalidArgumentException $e) {
-                        continue;
-                    }
-
-                    switch ($attribute->getName()) {
-                        case AttributeInterface::NAME_METADATA:
-                            /** @var Metadata $value */
-                            $value = $attribute->getValue();
-                            $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
-                            break;
-                        case AttributeInterface::NAME_STORY:
-                            /** @var \record_adapter $value */
-                            $value = $attribute->getValue();
-                            $value->appendChild($record);
-                            break;
-                        case AttributeInterface::NAME_STATUS:
-                            $record->set_binary_status($attribute->getValue());
-                            break;
-                        case AttributeInterface::NAME_METAFIELD:
-                            /** @var Border\Attribute\MetaField $attribute */
-                            $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
-                            break;
-                    }
-                }
-
-                $data = $metadataBag->toMetadataArray($record->get_databox()->get_meta_structure());
-                $record->set_metadatas($data);
-
-                $fields = $metaFields->toMetadataArray($record->get_databox()->get_meta_structure());
-                $record->set_metadatas($fields);
-            }
-
-            //Delete lazaret file
-            $manager = $this->getEntityManager();
-            $manager->remove($lazaretFile);
-            $manager->flush();
-
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-            $ret['message'] = $this->app->trans('An error occured');
-        }
-
-        try {
-            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
-        } catch (IOException $e) {
-
-        }
+        $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
         return $this->app->json($ret);
     }
@@ -234,43 +141,12 @@ class LazaretController extends Controller
      */
     public function denyElement($file_id)
     {
-        $ret = ['success' => false, 'message' => '', 'result'  => []];
+        /** @var LazaretManipulator $lazaretManipulator */
+        $lazaretManipulator = $this->app['manipulator.lazaret'];
 
-        /** @var LazaretFile $lazaretFile */
-        $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
-        if (null === $lazaretFile) {
-            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
-
-            return $this->app->json($ret);
-        }
-
-        try {
-            $this->denyLazaretFile($lazaretFile);
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-            // No-op
-        }
+        $ret = $lazaretManipulator->deny($file_id);
 
         return $this->app->json($ret);
-    }
-
-    protected function denyLazaretFile(LazaretFile $lazaretFile)
-    {
-        $path = $this->app['tmp.lazaret.path'];
-        $lazaretFileName = $path .'/'.$lazaretFile->getFilename();
-        $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
-
-        $manager = $this->getEntityManager();
-        $manager->remove($lazaretFile);
-        $manager->flush();
-
-        try {
-            $this->getFilesystem()->remove([$lazaretFileName, $lazaretThumbFileName]);
-        } catch (IOException $e) {
-
-        }
-
-        return $this;
     }
 
     /**
@@ -282,17 +158,6 @@ class LazaretController extends Controller
      */
     public function emptyLazaret(Request $request)
     {
-        $ret = array(
-            'success' => false,
-            'message' => '',
-            'result'  => array(
-                'tobedone'  => 0,
-                'done'      => 0,
-                'todo'      => 0,
-                'max'       => '',
-            )
-        );
-
         $maxTodo = -1;  // all
         if($request->get('max') !== null) {
             $maxTodo = (int)($request->get('max'));
@@ -300,39 +165,11 @@ class LazaretController extends Controller
         if( $maxTodo <= 0) {
             $maxTodo = -1;      // all
         }
-        $ret['result']['max'] = $maxTodo;
 
-        $repo = $this->getLazaretFileRepository();
+        /** @var LazaretManipulator $lazaretManipulator */
+        $lazaretManipulator = $this->app['manipulator.lazaret'];
 
-        $ret['result']['tobedone'] = $repo->createQueryBuilder('id')
-            ->select('COUNT(id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        if($maxTodo == -1) {
-            // all
-            $lazaretFiles = $repo->findAll();
-        } else {
-            // limit maxTodo
-            $lazaretFiles = $repo->findBy(array(), null, $maxTodo);
-        }
-
-
-        $manager = $this->getEntityManager();
-        $manager->beginTransaction();
-
-        try {
-            foreach ($lazaretFiles as $lazaretFile) {
-                $this->denyLazaretFile($lazaretFile);
-                $ret['result']['done']++;
-            }
-            $manager->commit();
-            $ret['success'] = true;
-        } catch (\Exception $e) {
-            $manager->rollback();
-            $ret['message'] = $this->app->trans('An error occured');
-        }
-        $ret['result']['todo'] = $ret['result']['tobedone'] - $ret['result']['done'];
+        $ret = $lazaretManipulator->clear($maxTodo);
 
         return $this->app->json($ret);
     }
