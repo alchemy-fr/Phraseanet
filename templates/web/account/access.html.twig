@@ -152,9 +152,7 @@
                         </td>
                     </tr>
                 {% endif %}
-            {%  endfor %}
 
-            {% for sbasId, baseInfo in inscriptions %}
                 {% if attribute(baseInfo["config"]["cgu"], app['locale']) is defined %}
                     {% set TOU = attribute(baseInfo["config"]["cgu"], app['locale']) %}
                     <tr>
@@ -164,7 +162,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']  }}</blockquote></td>
+                        <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']|raw  }}</blockquote></td>
                     </tr>
                 {% endif %}
                 {% for collInfo in baseInfo["config"]["collections"] if (collInfo['registration'] is none and collInfo['can-register']) %}
