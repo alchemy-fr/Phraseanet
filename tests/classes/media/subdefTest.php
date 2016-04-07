@@ -35,7 +35,7 @@ class media_subdefTest extends \PhraseanetTestCase
             $app['subdef.generator']->generateSubdefs(self::$recordonbleu);
 
             foreach (self::$recordonbleu->get_subdefs() as $subdef) {
-                if ($subdef->get_name() == 'document') {
+                if (!in_array($subdef->get_name(), ['thumbnail', 'preview'], true)) {
                     continue;
                 }
 
