@@ -67,6 +67,11 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         $this->lifeTime = (int)$lifeTime;
     }
 
+    /**
+     * @param int[] $recordIds
+     * @param string[]|null $names
+     * @return array
+     */
     public function findByRecordIdsAndNames(array $recordIds, array $names = null)
     {
         // Can not cache when names are not known
@@ -132,7 +137,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     /**
      * @param int[] $recordIds
      * @param string[] $names
-     * @return array[]
+     * @return string[]
      */
     private function generateCacheKeys(array $recordIds, array $names)
     {

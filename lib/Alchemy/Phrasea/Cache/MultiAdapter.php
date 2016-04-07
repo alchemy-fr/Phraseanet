@@ -10,18 +10,18 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\Cache as DoctrineCache;
 use Doctrine\Common\Cache\MultiGetCache;
 use Doctrine\Common\Cache\MultiPutCache;
 
-class MultiAdapter implements Cache, MultiGetCache, MultiPutCache
+class MultiAdapter implements DoctrineCache, MultiGetCache, MultiPutCache
 {
     /**
-     * @var Cache
+     * @var DoctrineCache
      */
     private $cache;
 
-    public function __construct(Cache $cache)
+    public function __construct(DoctrineCache $cache)
     {
         $this->cache = $cache;
     }
@@ -73,7 +73,7 @@ class MultiAdapter implements Cache, MultiGetCache, MultiPutCache
     public function saveMultiple(array $keysAndValues, $lifetime = 0)
     {
         if ($this->cache instanceof MultiPutCache) {
-            $this->cache->saveMultiple($keysAndValues, $lifetime);
+            return $this->cache->saveMultiple($keysAndValues, $lifetime);
         }
 
         foreach ($keysAndValues as $key => $value) {

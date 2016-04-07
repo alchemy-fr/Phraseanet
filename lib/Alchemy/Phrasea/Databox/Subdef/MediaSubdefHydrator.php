@@ -24,11 +24,11 @@ class MediaSubdefHydrator implements Hydrator
     {
         Assertion::isInstanceOf($instance, \media_subdef::class);
 
-        $closure = function (array $data) {
+        $closure = \Closure::bind(function (array $data) {
             $this->loadFromArray($data);
-        };
+        }, $instance, \media_subdef::class);
 
-        $closure->call($instance, $data);
+        $closure($data);
     }
 
     /**
@@ -40,10 +40,10 @@ class MediaSubdefHydrator implements Hydrator
     {
         Assertion::isInstanceOf($instance, \media_subdef::class);
 
-        $closure = function () {
+        $closure = \Closure::bind(function () {
             return $this->toArray();
-        };
+        }, $instance, \media_subdef::class);
 
-        return $closure->call($instance);
+        return $closure();
     }
 }
