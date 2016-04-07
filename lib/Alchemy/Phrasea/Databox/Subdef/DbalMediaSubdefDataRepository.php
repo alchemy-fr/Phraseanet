@@ -133,39 +133,19 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         $sql = <<<'SQL'
 INSERT INTO subdef (record_id, name, path, file, width, height, mime, size, substit, etag, created_on, updated_on, dispatched)
-VALUES (:recordId, :name, :path, :file, :width, :height, :mime, :size, :substit, :etag, NOW(), NOW(), 1)
+VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :substit, :etag, NOW(), NOW(), 1)
 SQL;
         $statement = $this->connection->prepare($sql);
 
         foreach ($toInsert as $index => $partition) {
             try {
-                $statement->execute($this->getParametersFromArray($partition));
+                $statement->execute($this->phpToSql($partition));
             } catch (DriverException $exception) {
                 $updateNeeded[$index] = $partition;
             }
         }
 
         return $updateNeeded;
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    private function getParametersFromArray(array $data)
-    {
-        return [
-            'recordId' => $data['record_id'],
-            'name' => $data['name'],
-            'path' => $data['path'],
-            'file' => $data['file'],
-            'width' => $data['width'],
-            'height' => $data['height'],
-            'mime' => $data['mime'],
-            'size' => $data['size'],
-            'substit' => $data['substit'],
-            'etag' => $data['etag'],
-        ];
     }
 
     /**
@@ -182,12 +162,12 @@ SQL;
 UPDATE subdef
 SET path = :path, file = :file, width = :width, height = :height, mime = :mime,
  size = :size, substit = :substit, etag = :etag, updated_on = NOW()
-WHERE record_id = :recordId AND name = :name
+WHERE record_id = :record_id AND name = :name
 SQL;
         $statement = $this->connection->prepare($sql);
 
         foreach ($toUpdate as $index => $partition) {
-            $statement->execute($this->getParametersFromArray($partition));
+            $statement->execute($this->phpToSql($partition));
         }
     }
 
@@ -197,6 +177,26 @@ SQL;
 SELECT subdef_id, record_id, name, path, file, width, height, mime, size, substit, etag, created_on, updated_on
 FROM subdef
 SQL;
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function phpToSql(array $data)
+    {
+        return [
+            'record_id' => $data['record_id'],
+            'name' => $data['name'],
+            'path' => $data['path'],
+            'file' => $data['file'],
+            'width' => $data['width'],
+            'height' => $data['height'],
+            'mime' => $data['mime'],
+            'size' => $data['size'],
+            'substit' => $data['is_substituted'],
+            'etag' => $data['etag'],
+        ];
     }
 
     private function sqlToPhp(array $data)
