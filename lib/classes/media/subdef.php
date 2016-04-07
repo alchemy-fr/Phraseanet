@@ -204,15 +204,15 @@ SQL;
         }
 
         $this->mime = $data['mime'];
-        $this->width = $data['width'];
-        $this->height = $data['height'];
-        $this->size = $data['size'];
+        $this->width = (int)$data['width'];
+        $this->height = (int)$data['height'];
+        $this->size = (int)$data['size'];
         $this->etag = $data['etag'];
         $this->path = $data['path'];
         $this->file = $data['file'];
-        $this->is_physically_present = $data['physically_present'];
-        $this->is_substituted = $data['is_substituted'];
-        $this->subdef_id = $data['subdef_id'];
+        $this->is_physically_present = (bool)$data['physically_present'];
+        $this->is_substituted = (bool)$data['is_substituted'];
+        $this->subdef_id = $data['subdef_id'] === null ? null : (bool)$data['subdef_id'];
         $this->modification_date = isset($data['updated_on']) ? new DateTime($data['updated_on']) : null;
         $this->creation_date = isset($data['created_on']) ? new DateTime($data['created_on']) : null;
         $this->url = isset($data['url']) ? Url::factory((string)$data['url']) : $this->generateUrl();

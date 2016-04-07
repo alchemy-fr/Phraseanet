@@ -671,7 +671,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         foreach (['preview', 'thumbnail'] as $name) {
-            if (!$this->subdefs[$name]) {
+            if (!isset($this->subdefs[$name])) {
                 $this->subdefs[$name] = new media_subdef($this->app, $this, $name, true, []);
             }
         }
@@ -1267,12 +1267,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $connection = $this->getDataboxConnection();
-        $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $connection->executeUpdate('DELETE FROM technical_datas WHERE record_id = :record_id', [
+            ':record_id' => $this->getRecordId(),
+        ]);
 
         $sqlValues = [];
+
         foreach ($document->readTechnicalDatas($mediavorus) as $name => $value) {
             if (is_null($value)) {
                 continue;
@@ -1283,21 +1283,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     $value = 0;
                 }
             }
-            $sqlValues[] = join(',', array(
-                'null',
-                $connection->quote($this->getRecordId()),
-                $connection->quote($name),
-                $connection->quote($value),
-            ));
+            $sqlValues[] = [$this->getRecordId(), $name, $value];
         }
-        $sql = "INSERT INTO technical_datas (id, record_id, name, value)"
-            . " VALUES (" . join('),(', $sqlValues) . ")";
-        ;
-        $stmt = $connection->prepare($sql);
 
-        $stmt->execute();
-
-        $stmt->closeCursor();
+        if ($sqlValues) {
+            $connection->transactional(function (Connection $connection) use ($sqlValues) {
+                $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?)');
+                array_walk($sqlValues, [$statement, 'execute']);
+            });
+        }
 
         $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
 

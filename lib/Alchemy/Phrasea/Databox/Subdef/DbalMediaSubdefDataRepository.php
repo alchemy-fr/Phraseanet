@@ -47,7 +47,7 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
             $types['names'] = Connection::PARAM_STR_ARRAY;
         }
 
-        return $this->connection->fetchAll($sql, $params, $types);
+        return array_map([$this, 'sqlToPhp'], $this->connection->fetchAll($sql, $params, $types));
     }
 
     /**
@@ -197,5 +197,25 @@ SQL;
 SELECT subdef_id, record_id, name, path, file, width, height, mime, size, substit, etag, created_on, updated_on
 FROM subdef
 SQL;
+    }
+
+    private function sqlToPhp(array $data)
+    {
+        return [
+            'subdef_id' => (int)$data['subdef_id'],
+            'record_id' => (int)$data['record_id'],
+            'name' => $data['name'],
+            'path' => $data['path'],
+            'file' => $data['file'],
+            'width' => (int)$data['width'],
+            'height' => (int)$data['height'],
+            'mime' => $data['mime'],
+            'size' => (int)$data['size'],
+            'is_substituted' => (bool)$data['substit'],
+            'etag' => $data['etag'],
+            'created_on' => $data['created_on'],
+            'updated_on' => $data['updated_on'],
+            'physically_present' => true,
+        ];
     }
 }

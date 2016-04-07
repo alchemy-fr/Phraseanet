@@ -143,7 +143,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
 
         foreach ($recordIds as $recordId) {
             foreach ($names as $name) {
-                $cacheKeys = [
+                $cacheKeys[] = [
                     'record_id' => $recordId,
                     'name' => $name,
                 ];
