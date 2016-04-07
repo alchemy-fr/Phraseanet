@@ -123,6 +123,7 @@ class RootController extends Controller
             'feeds'                => $feeds,
             'aggregate'            => $aggregate,
             'GV_google_api'        => $conf->get(['registry', 'webservices', 'google-charts-enabled']),
+            'geocodingProviders'    => json_encode($conf->get(['geocoding-providers'])),
             'search_status'        => \databox_status::getSearchStatus($this->app),
             'thesau_js_list'       => $thjslist,
             'thesau_json_sbas'     => json_encode($sbas),

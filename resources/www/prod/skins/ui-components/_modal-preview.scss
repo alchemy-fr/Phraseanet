@@ -17,10 +17,10 @@
 }
 
 #PREVIEWBOX #PREVIEWTITLE_COLLNAME {
-  display:none;
+  display: none;
 }
 
-.PREVIEW_PIC,.PREVIEW_HD {
+.PREVIEW_PIC, .PREVIEW_HD {
   position: absolute;
 }
 
@@ -35,6 +35,10 @@
 #PREVIEWIMGDESC .descBoxes {
   top: 30px;
   overflow: auto;
+}
+
+#PREVIEWIMGDESC.PNB10 {
+  bottom: 0;
 }
 
 #PREVIEWIMGDESCINNER span.fieldName {
@@ -129,8 +133,7 @@
   overflow-y: hidden;
 }
 
-#PREVIEWCURRENTCONT::-webkit-scrollbar-track
-{
+#PREVIEWCURRENTCONT::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: #262626;
 }
@@ -145,7 +148,6 @@
   width: 3px;
   background-color: #595959;
 }
-
 
 #PREVIEWCURRENTCONT ul {
   position: relative;
@@ -194,7 +196,6 @@
   top: auto;
 }
 
-
 #PREVIEWTOOL img, #PREVIEWTOOL span {
   float: left;
 }
@@ -206,7 +207,7 @@
   z-index: 97;
 }
 
-.prevTrainCurrent .doc_infos img,.diapo .doc_infos img {
+.prevTrainCurrent .doc_infos img, .diapo .doc_infos img {
   vertical-align: middle;
 }
 
@@ -214,9 +215,17 @@
   background-color: darken($darkerBackgroundColor, 10);
   color: $darkerTextColor;
 }
+
 #PREVIEWIMGCONT {
   .documentTips {
     width: 100%;
     height: 100%;
   }
+}
+
+#PREVIEWRIGHT {
+  top: 7px;
+  left: 60%;
+  overflow: hidden;
+  bottom: 10px;
 }

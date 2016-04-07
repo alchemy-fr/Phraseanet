@@ -80,6 +80,12 @@ class RecordController extends Controller
             $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
         }
 
+        $recordCaptions = [];
+        foreach ($record->get_caption()->get_fields(null, true) as $field) {
+            // get field's values
+            $recordCaptions[$field->get_name()] = $field->get_serialized_values();
+        }
+
         return $this->app->json([
             "desc"          => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -87,6 +93,7 @@ class RecordController extends Controller
                 'searchEngine'  => $searchEngine,
                 'searchOptions' => $options,
             ]),
+            "recordCaptions"=> $recordCaptions,
             "html_preview"  => $this->render('common/preview.html.twig', [
                 'record'        => $record
             ]),

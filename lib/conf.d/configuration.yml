@@ -211,3 +211,7 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+geocoding-providers:
+  -
+    name: 'mapBox'
+    public-key: ''

@@ -308,7 +308,7 @@
   overflow-x: auto;
   overflow-y: scroll;
 }
-#idFrameE {
+#EDITWINDOW {
   .ui-datepicker-inline {
     background-color: $darkerBackgroundColor;
     background-repeat: repeat-x;
@@ -413,13 +413,13 @@ div.thesaurus {
   }
 }
 
-#idFrameE #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
+#EDITWINDOW #TH_Ofull, #idFrameTH #TH_Oprop, #idFrameTH #TH_Oclip {
   margin: 0;
   padding: 0;
   width: 100%;
 }
 
-#idFrameE {
+#EDITWINDOW {
   div.searchZone {
     position: absolute;
     top: 0px;
@@ -502,6 +502,9 @@ div.thesaurus {
       margin: 10px;
       .geoname-add-action {
         cursor: pointer;
+      }
+      .ui-state-highlight {
+        color: #2e7db2;
       }
     }
   }

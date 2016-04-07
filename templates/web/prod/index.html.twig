@@ -105,6 +105,7 @@
             },
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',
+            geocodingProviders: {{ geocodingProviders|raw }},
             thesaurusConfig: {
                 replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
                 replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
@@ -702,7 +703,7 @@
                 <div class="gui_vsplitter gui_vsplitter2" style="left:60%;">
 
                 </div>
-                <div id="PREVIEWRIGHT" class="preview_col PNB" style="top:7px;left:60%;overflow:hidden;">
+                <div id="PREVIEWRIGHT" class="preview_col PNB">
                     <div id="PREVIEWIMGDESC" class="PNB10">
                         <ul class="PNB" style="height:30px;bottom:auto;">
                             <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
