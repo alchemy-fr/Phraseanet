@@ -61,14 +61,14 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
             return 0;
         }
 
-        $statement = $this->connection->prepare('DELETE FROM subdef WHERE record_id = :recordId AND name = :name');
+        $statement = $this->connection->prepare('DELETE FROM subdef WHERE record_id = :record_id AND name = :name');
 
         $this->connection->beginTransaction();
 
         try {
             $deleted = array_reduce($subdefIds, function ($carry, $data) use ($statement) {
                 $carry += $statement->execute([
-                    'recordId' => $data['record_id'],
+                    'record_id' => $data['record_id'],
                     'name' => $data['name'],
                 ]);
 

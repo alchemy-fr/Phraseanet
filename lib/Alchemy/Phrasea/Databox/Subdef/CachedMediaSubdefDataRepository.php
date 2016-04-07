@@ -126,7 +126,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
 
     private function getCacheKey(array $data)
     {
-        return $this->baseKey . json_encode([$data['record_id'], $data['name']]);
+        return $this->baseKey . 'media_subdef=' . json_encode([$data['record_id'], $data['name']]);
     }
 
     /**

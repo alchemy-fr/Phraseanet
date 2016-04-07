@@ -51,7 +51,13 @@ class MediaSubdefRepository
     {
         $subdefs = $this->repository->findByRecordIdsAndNames([$recordId], [$name]);
 
-        return $subdefs ? reset($this->hydrateAll($subdefs)) : null;
+        if (!$subdefs) {
+            return null;
+        }
+
+        $instances = $this->hydrateAll($subdefs);
+
+        return reset($instances);
     }
 
     /**

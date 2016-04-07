@@ -591,7 +591,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
-        $subdefs = $this->getMediaSubdefRepository()->findOneByRecordIdsAndNames($this->getRecordId(), $name);
+        $subdefs = $this->getMediaSubdefRepository()->findOneByRecordIdAndName($this->getRecordId(), $name);
 
         return $subdefs ?: new media_subdef($this->app, $this, $name, ($name !== 'document'));
     }

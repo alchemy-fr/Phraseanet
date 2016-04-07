@@ -129,7 +129,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->name = $name;
         $this->record = $record instanceof record_adapter
             ? $record
-            : $app->findDataboxById($record->getDataboxId())->get_record($record->getId());
+            : $app->findDataboxById($record->getDataboxId())->get_record($record->getRecordId());
 
         if (null !== $data) {
             $this->loadFromArray($data);
@@ -165,8 +165,8 @@ WHERE name = :name AND record_id = :record_id
 SQL;
 
         $row = $this->getDataboxConnection()->fetchAssoc($sql, [
-            ':record_id' => $this->record->getRecordId(),
-            ':name'      => $this->name
+            'record_id' => $this->record->getRecordId(),
+            'name'      => $this->name
         ]);
 
         if ($row) {
@@ -203,7 +203,6 @@ SQL;
                 'width' => 0,
                 'height' => 0,
                 'size' => 0,
-                'etag' => null,
                 'path' => '',
                 'file' => '',
                 'physically_present' => false,
@@ -219,12 +218,12 @@ SQL;
         $this->width = (int)$data['width'];
         $this->height = (int)$data['height'];
         $this->size = (int)$data['size'];
-        $this->etag = $data['etag'];
-        $this->path = $data['path'];
+        $this->etag = isset($data['etag']) ? $data['etag'] : null;
+        $this->path = p4string::addEndSlash($data['path']);
         $this->file = $data['file'];
         $this->is_physically_present = (bool)$data['physically_present'];
         $this->is_substituted = (bool)$data['is_substituted'];
-        $this->subdef_id = $data['subdef_id'] === null ? null : (bool)$data['subdef_id'];
+        $this->subdef_id = isset($data['subdef_id']) || array_key_exists('subdef_id', $data) ? (int)$data['subdef_id'] : null;
         $this->modification_date = isset($data['updated_on']) ? new DateTime($data['updated_on']) : null;
         $this->creation_date = isset($data['created_on']) ? new DateTime($data['created_on']) : null;
         $this->url = isset($data['url']) ? Url::factory((string)$data['url']) : $this->generateUrl();
@@ -237,6 +236,8 @@ SQL;
     private function toArray()
     {
         return [
+            'record_id' => $this->get_record_id(),
+            'name' => $this->get_name(),
             'width' => $this->width,
             'size' => $this->size,
             'height' => $this->height,
@@ -675,23 +676,22 @@ SQL;
         return $datas;
     }
 
-    public static function create(Application $app, \record_adapter $record, $name, MediaInterface $media)
+    public static function create(Application $app, RecordReferenceInterface $record, $name, MediaInterface $media)
     {
-        $databox = $record->getDatabox();
-        $connection = $databox->get_connection();
-
         $path = $media->getFile()->getPath();
         $newname = $media->getFile()->getFilename();
 
         $params = [
-            'record_id'  => $record->getRecordId(),
-            'name'       => $name,
-            'path'       => $path,
-            'file'       => $newname,
-            'width'      => 0,
-            'height'     => 0,
-            'mime'       => $media->getFile()->getMimeType(),
-            'size'       => $media->getFile()->getSize(),
+            'record_id' => $record->getRecordId(),
+            'name' => $name,
+            'path' => $path,
+            'file' => $newname,
+            'width' => 0,
+            'height' => 0,
+            'mime' => $media->getFile()->getMimeType(),
+            'size' => $media->getFile()->getSize(),
+            'physically_present' => true,
+            'is_substituted' => false,
         ];
 
         if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
@@ -707,8 +707,7 @@ SQL;
         $subdef = $factory($params);
         Assertion::isInstanceOf($subdef, \media_subdef::class);
 
-        /** @var MediaSubdefRepository $repository */
-        $repository = $app['provider.repo.media_subdef']->getRepositoryForDatabox($record->getDataboxId());
+        $repository = self::getMediaSubdefRepository($app, $record->getDataboxId());
         $repository->save($subdef);
 
         // Refresh from Database.
