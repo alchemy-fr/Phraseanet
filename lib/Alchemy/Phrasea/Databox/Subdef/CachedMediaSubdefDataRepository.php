@@ -74,9 +74,9 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      */
     public function findByRecordIdsAndNames(array $recordIds, array $names = null)
     {
-        // Can not cache when names are not known
-        if (null !== $names) {
-            $keys = $this->generateCacheKeys($recordIds, $names);
+        $keys = $this->generateCacheKeys($recordIds, $names);
+
+        if ($keys) {
             $data = $this->cache->fetchMultiple($keys);
 
             if (count($keys) === count($data)) {
@@ -84,17 +84,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
             }
         }
 
-        $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
-
-        $data = isset($keys) ? array_fill_keys($keys, null) : [];
-
-        foreach ($retrieved as $item) {
-            $data[$this->getCacheKey($item)] = $item;
-        }
-
-        $this->cache->saveMultiple($data, $this->lifeTime);
-
-        return $this->filterNonNull($data);
+        return $this->fetchAndSave($recordIds, $names, $keys);
     }
 
     /**
@@ -136,11 +126,15 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
 
     /**
      * @param int[] $recordIds
-     * @param string[] $names
+     * @param string[]|null $names
      * @return string[]
      */
-    private function generateCacheKeys(array $recordIds, array $names)
+    private function generateCacheKeys(array $recordIds, array $names = null)
     {
+        if (null === $names) {
+            return [];
+        }
+
         $cacheKeys = [];
 
         foreach ($recordIds as $recordId) {
@@ -153,5 +147,26 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         }
 
         return array_map([$this, 'getCacheKey'], $cacheKeys);
+    }
+
+    /**
+     * @param array $recordIds
+     * @param array|null $names
+     * @param array $keys Known keys supposed to be fetched
+     * @return array
+     */
+    private function fetchAndSave(array $recordIds, array $names = null, array $keys = [])
+    {
+        $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
+
+        $data = array_fill_keys($keys, null);
+
+        foreach ($retrieved as $item) {
+            $data[$this->getCacheKey($item)] = $item;
+        }
+
+        $this->cache->saveMultiple($data, $this->lifeTime);
+
+        return $this->filterNonNull($data);
     }
 }

@@ -129,19 +129,15 @@ class DbalMediaSubdefDataRepository implements MediaSubdefDataRepository
             return [];
         }
 
+        $statement = $this->connection->prepare($this->getInsertSql());
+
         $updateNeeded = [];
 
-        $sql = <<<'SQL'
-INSERT INTO subdef (record_id, name, path, file, width, height, mime, size, substit, etag, created_on, updated_on, dispatched)
-VALUES (:record_id, :name, :path, :file, :width, :height, :mime, :size, :substit, :etag, NOW(), NOW(), 1)
-SQL;
-        $statement = $this->connection->prepare($sql);
-
-        foreach ($toInsert as $index => $partition) {
+        foreach ($toInsert as $index => $data) {
             try {
-                $statement->execute($this->phpToSql($partition));
+                $statement->execute($this->phpToSql($data));
             } catch (DriverException $exception) {
-                $updateNeeded[$index] = $partition;
+                $updateNeeded[$index] = $data;
             }
         }
 
@@ -158,16 +154,10 @@ SQL;
             return;
         }
 
-        $sql = <<<'SQL'
-UPDATE subdef
-SET path = :path, file = :file, width = :width, height = :height, mime = :mime,
- size = :size, substit = :substit, etag = :etag, updated_on = NOW()
-WHERE record_id = :record_id AND name = :name
-SQL;
-        $statement = $this->connection->prepare($sql);
+        $statement = $this->connection->prepare($this->getUpdateSql());
 
-        foreach ($toUpdate as $index => $partition) {
-            $statement->execute($this->phpToSql($partition));
+        foreach ($toUpdate as $data) {
+            $statement->execute($this->phpToSql($data));
         }
     }
 
@@ -217,5 +207,74 @@ SQL;
             'updated_on' => $data['updated_on'],
             'physically_present' => true,
         ];
+    }
+
+    /**
+     * @return string
+     */
+    private function getInsertSql()
+    {
+        static $sql;
+
+        if (null !== $sql) {
+            return $sql;
+        }
+
+        $values = [
+            'record_id' => ':record_id',
+            'name' => ':name',
+            'path' => ':path',
+            'file' => ':file',
+            'width' => ':width',
+            'height' => ':height',
+            'mime' => ':mime',
+            'size' => ':size',
+            'substit' => ':substit',
+            'etag' => ':etag',
+            'created_on' => 'NOW()',
+            'updated_on' => 'NOW()',
+            'dispatched' => '1',
+        ];
+
+        $sql = sprintf(
+            'INSERT INTO subdef (%s) VALUES (%s)',
+            implode(', ', array_keys($values)),
+            implode(', ', array_values($values))
+        );
+
+        return $sql;
+    }
+
+    /**
+     * @return string
+     */
+    private function getUpdateSql()
+    {
+        static $sql;
+
+        if (null !== $sql) {
+            return $sql;
+        }
+
+        $values = [
+            'path = :path',
+            'file = :file',
+            'width = :width',
+            'height = :height',
+            'mime = :mime',
+            'size = :size',
+            'substit = :substit',
+            'etag = :etag',
+            'updated_on = NOW()',
+        ];
+
+        $where = [
+            'record_id = :record_id',
+            'name = :name',
+        ];
+
+        $sql = sprintf('UPDATE subdef SET %s WHERE %s', implode(', ', $values), implode(' AND ', $where));
+
+        return $sql;
     }
 }

@@ -747,17 +747,15 @@ SQL;
             return $this->url;
         }
 
-        // serve thumbnails using static file service
-        if ($this->get_name() === 'thumbnail') {
-            if (null !== $url = $this->app['phraseanet.static-file']->getUrl($this->getRealPath())) {
-                $url->getQuery()->offsetSet('etag', $this->getEtag());
+        $generators = [
+            [$this , 'tryGetThumbnailUrl'],
+            [$this , 'tryGetVideoUrl'],
+        ];
 
-                return $url;
-            }
-        }
-        
-        if ($this->app['phraseanet.h264-factory']->isH264Enabled() && in_array($this->mime, ['video/mp4'], false)) {
-            if (null !== $url = $this->app['phraseanet.h264']->getUrl($this->getRealPath())) {
+        foreach ($generators as $generator) {
+            $url = $generator();
+
+            if ($url instanceof Url) {
                 return $url;
             }
         }
@@ -836,5 +834,37 @@ SQL;
     private function isStillAccessible()
     {
         return $this->is_physically_present && file_exists($this->getRealPath());
+    }
+
+    /**
+     * @return Url|null
+     */
+    protected function tryGetThumbnailUrl()
+    {
+        if ('thumbnail' !== $this->get_name()) {
+            return null;
+        }
+
+        $url = $this->app['phraseanet.static-file']->getUrl($this->getRealPath());
+
+        if (null === $url) {
+            return null;
+        }
+
+        $url->getQuery()->offsetSet('etag', $this->getEtag());
+
+        return $url;
+    }
+
+    /**
+     * @return Url|null
+     */
+    protected function tryGetVideoUrl()
+    {
+        if ($this->mime !== 'video/mp4' || !$this->app['phraseanet.h264-factory']->isH264Enabled()) {
+            return null;
+        }
+
+        return $this->app['phraseanet.h264']->getUrl($this->getRealPath());
     }
 }

@@ -57,15 +57,14 @@ class MultiAdapter implements DoctrineCache, MultiGetCache, MultiPutCache
             return $this->cache->fetchMultiple($keys);
         }
 
-        $data = [];
-
-        foreach ($keys as $key) {
+        // Pass data by reference to avoid copies of whole array on key add.
+        $data = array_reduce($keys, function (array &$data, $key) {
             $value = $this->fetch($key);
 
             if (false !== $value || true === $this->contains($key)) {
                 $data[$key] = $value;
             }
-        }
+        }, []);
 
         return $data;
     }
