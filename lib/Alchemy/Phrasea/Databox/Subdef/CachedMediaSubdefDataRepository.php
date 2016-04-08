@@ -150,9 +150,9 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     }
 
     /**
-     * @param array $recordIds
-     * @param array|null $names
-     * @param array $keys Known keys supposed to be fetched
+     * @param int[] $recordIds
+     * @param string[]|null $names
+     * @param string[] $keys Known keys supposed to be fetched
      * @return array
      */
     private function fetchAndSave(array $recordIds, array $names = null, array $keys = [])
