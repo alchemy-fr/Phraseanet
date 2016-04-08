@@ -25,11 +25,48 @@ class RecordReferenceCollection implements \IteratorAggregate
 
         $references = [];
 
-        foreach ($records as $index => $record) {
+        foreach ($records as $record) {
             if (isset($record['id'])) {
-                $references[$index] = RecordReference::createFromRecordReference($record['id']);
+                $references[] = RecordReference::createFromRecordReference($record['id']);
             } elseif (isset($record['databox_id'], $record['record_id'])) {
-                $references[$index] = RecordReference::createFromDataboxIdAndRecordId($record['databox_id'], $record['record_id']);
+                $references[] = RecordReference::createFromDataboxIdAndRecordId($record['databox_id'], $record['record_id']);
+            }
+        }
+
+        return new self($references);
+    }
+
+    /**
+     * Append all RecordReferences extracted via call to extractor on each element
+     *
+     * @param array|\Traversable $list List of elements to process
+     * @param callable $extractor Extracts data from each element or return null if unavailable
+     * @param callable $creator Creates Reference from extracted data. no-op when null
+     * @return RecordReferenceCollection
+     */
+    public static function fromListExtractor($list, callable $extractor, callable $creator = null)
+    {
+        Assertion::isTraversable($list);
+
+        $references = [];
+
+        if (null === $creator) {
+            $creator = function ($data) {
+                return $data;
+            };
+        }
+
+        foreach ($list as $item) {
+            $data = $extractor($item);
+
+            if (null === $data) {
+                continue;
+            }
+
+            $reference = $creator($data);
+
+            if ($reference instanceof RecordReferenceInterface) {
+                $references[] = $reference;
             }
         }
 
@@ -53,13 +90,22 @@ class RecordReferenceCollection implements \IteratorAggregate
     {
         Assertion::allIsInstanceOf($references, RecordReferenceInterface::class);
 
-        $this->references = $references instanceof \Traversable ? iterator_to_array($references) : $references;
+        $this->references = $references instanceof \Traversable ? iterator_to_array($references, false) : array_values($references);
     }
 
-    public function addRecordReference(RecordReferenceInterface $reference)
+    public function add(RecordReferenceInterface $reference)
     {
         $this->references[] = $reference;
         $this->groups = null;
+    }
+
+    /**
+     * @param int $databoxId
+     * @param int $recordId
+     */
+    public function addRecordReference($databoxId, $recordId)
+    {
+        $this->add(RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId));
     }
 
     public function getIterator()

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -20,16 +20,13 @@ use Alchemy\Phrasea\Collection\Reference\ArrayCacheCollectionReferenceRepository
 use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Alchemy\Phrasea\Databox\ArrayCacheDataboxRepository;
 use Alchemy\Phrasea\Databox\CachingDataboxRepositoryDecorator;
-use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxFactory;
 use Alchemy\Phrasea\Databox\DbalDataboxRepository;
 use Alchemy\Phrasea\Databox\Field\DataboxFieldFactory;
 use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
-use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepositoryFactory;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
-use Alchemy\Phrasea\Record\RecordReference;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -200,23 +197,6 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
             $repositoryFactory = new ArrayCachedCollectionRepositoryFactory($repositoryFactory);
 
             return new CollectionRepositoryRegistry($app, $repositoryFactory, $app['repo.collection-references']);
-        });
-
-        $app['provider.factory.media_subdef'] = $app->protect(function ($databoxId) use ($app) {
-            return function (array $data) use ($app, $databoxId) {
-                $recordReference = RecordReference::createFromDataboxIdAndRecordId($databoxId, $data['record_id']);
-
-                return new \media_subdef($app, $recordReference, $data['name'], false, $data);
-            };
-        });
-
-        $app['provider.repo.media_subdef'] = $app->share(function (PhraseaApplication $app) {
-            $connectionProvider = new DataboxConnectionProvider($app['phraseanet.appbox']);
-            $factoryProvider = $app['provider.factory.media_subdef'];
-
-            $repositoryFactory = new MediaSubdefRepositoryFactory($connectionProvider, $app['cache'], $factoryProvider);
-
-            return new DataboxBoundRepositoryProvider($repositoryFactory);
         });
     }
 

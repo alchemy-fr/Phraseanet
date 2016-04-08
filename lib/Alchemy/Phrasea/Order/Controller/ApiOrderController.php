@@ -17,10 +17,13 @@ use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
@@ -89,7 +92,13 @@ class ApiOrderController extends BaseOrderController
             ;
         }
 
-        $resource = new Collection($builder->getQuery()->getResult(), $this->getOrderTransformer());
+        $collection = $builder->getQuery()->getResult();
+
+        if (in_array('elements.resource_links', $fractal->getRequestedIncludes(), false)) {
+            $this->fetchResourceLinksData($collection);
+        }
+
+        $resource = new Collection($collection, $this->getOrderTransformer());
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
         $pager->setCurrentPage($page);
@@ -234,5 +243,63 @@ class ApiOrderController extends BaseOrderController
         }
 
         return $elementIds;
+    }
+
+    /**
+     * @param Order[] $orders
+     */
+    private function fetchResourceLinksData(array $orders)
+    {
+        $elements = $this->gatherElements($orders);
+
+        $baseIds = array_keys(array_reduce($elements, function (array &$baseIds, OrderElement $element) {
+            $baseIds[$element->getBaseId()] = true;
+        }, []));
+
+        $collectionToDataboxMap = [];
+
+        foreach ($this->app['repo.collection-references']->findMany($baseIds) as $collectionReference) {
+            $collectionToDataboxMap[$collectionReference->getBaseId()] = $collectionReference->getDataboxId();
+        }
+
+        $records = RecordReferenceCollection::fromListExtractor(
+            $elements,
+            function (OrderElement $element) use ($collectionToDataboxMap) {
+                return isset($collectionToDataboxMap[$element->getBaseId()])
+                    ? [$collectionToDataboxMap[$element->getBaseId()], $element->getRecordId()]
+                    : null;
+            },
+            function (array $data) {
+                list ($databoxId, $recordId) = $data;
+
+                return RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId);
+            }
+        );
+
+        // Load all records
+        $records->toRecords($this->getApplicationBox());
+
+        // Load all subdefs
+        $subdefs = $this->app['service.media_subdef']->findSubdefsFromRecordReferenceCollection($records);
+        \media_Permalink_Adapter::getMany($this->app, $subdefs);
+    }
+
+    /**
+     * @param Order[] $orders
+     * @return OrderElement[]
+     */
+    private function gatherElements(array $orders)
+    {
+        Assertion::allIsInstanceOf($orders, Order::class);
+
+        $elements = [];
+
+        foreach ($orders as $order) {
+            foreach ($order->getElements() as $element) {
+                $elements[] = $element;
+            }
+        }
+
+        return $elements;
     }
 }
