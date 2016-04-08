@@ -296,8 +296,13 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             }, $media_subdefs);
 
             $data = self::fetchData($databox, $subdefIds);
-            self::createMany($app, $databox, array_diff_key($media_subdefs, $data));
-            $data = array_replace($data, self::fetchData($databox, array_diff_key($subdefIds, $data)));
+
+            $missing = array_diff_key($media_subdefs, $data);
+
+            if ($missing) {
+                self::createMany($app, $databox, $missing);
+                $data = array_replace($data, self::fetchData($databox, array_diff_key($subdefIds, $data)));
+            }
 
             foreach ($media_subdefs as $index => $subdef) {
                 if (!isset($data[$index])) {
@@ -350,15 +355,11 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         );
 
         foreach ($dbalData as $item) {
-            $foundIndexes = [];
+            $itemSubdefId = $item['subdef_id'];
 
-            $databox->set_data_to_cache($item, self::generateCacheKey($item['subdef_id']));
+            $databox->set_data_to_cache($item, self::generateCacheKey($itemSubdefId));
 
-            foreach ($missing as $index => $subdefId) {
-                if ($subdefId === $item['subdef_id']) {
-                    $foundIndexes[] = $index;
-                }
-            }
+            $foundIndexes = array_keys(array_intersect($missing, [$itemSubdefId]));
 
             foreach ($foundIndexes as $foundIndex) {
                 $found[$foundIndex] = $item;
@@ -492,7 +493,7 @@ SQL;
     protected static function getSelectSql()
     {
         return <<<'SQL'
-SELECT p.id, p.token, p.activated AS is_activated, p.created_on, p.last_modified, p.label
+SELECT p.id, p.subdef_id, p.token, p.activated AS is_activated, p.created_on, p.last_modified, p.label
 FROM permalinks p
 WHERE p.subdef_id IN (:subdef_id)
 SQL;

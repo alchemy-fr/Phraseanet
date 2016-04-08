@@ -254,6 +254,8 @@ class ApiOrderController extends BaseOrderController
 
         $baseIds = array_keys(array_reduce($elements, function (array &$baseIds, OrderElement $element) {
             $baseIds[$element->getBaseId()] = true;
+
+            return $baseIds;
         }, []));
 
         $collectionToDataboxMap = [];

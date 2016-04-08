@@ -64,6 +64,8 @@ class MultiAdapter implements DoctrineCache, MultiGetCache, MultiPutCache
             if (false !== $value || true === $this->contains($key)) {
                 $data[$key] = $value;
             }
+
+            return $data;
         }, []);
 
         return $data;
