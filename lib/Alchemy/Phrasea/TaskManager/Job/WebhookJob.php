@@ -102,6 +102,7 @@ class WebhookJob extends AbstractJob
                     $retry = true;
                     if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
                         $delivery = $app['repo.webhook-delivery']->find($deliverId);
+
                         if ($response->isSuccessful()) {
                             $app['manipulator.webhook-delivery']->deliverySuccess($delivery);
 
@@ -114,17 +115,16 @@ class WebhookJob extends AbstractJob
                         }
 
                         return $retry;
-                    }},
-                    true,
-                    new CurlBackoffStrategy()
-                )
+                    }
+                }, true, new CurlBackoffStrategy())
             )
         ));
 
         /** @var EventProcessorFactory $eventFactory */
         $eventFactory = $app['webhook.processor_factory'];
 
-        foreach ($app['repo.webhook-event']->findUnprocessedEvents() as $event) {
+        foreach ($app['repo.webhook-event']->getUnprocessedEventIterator() as $row) {
+            $event = $row[0];
             // set event as processed
             $app['manipulator.webhook-event']->processed($event);
 

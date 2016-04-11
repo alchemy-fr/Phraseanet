@@ -14,7 +14,6 @@ use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 class LazaretController extends Controller
 {
     /**
