@@ -163,8 +163,9 @@ class BasketElementRepository extends EntityRepository
     public function findByRecords(array $records, $basketId = null)
     {
         $perDataboxLookup = [];
+
         foreach ($records as $record) {
-            if (!isset($record['databox_id']) || !isset($record['record_id'])) {
+            if (!isset($record['databox_id'], $record['record_id'])) {
                 throw new \LogicException('Each record should have a databox_id AND record_id key');
             }
 
@@ -177,7 +178,7 @@ class BasketElementRepository extends EntityRepository
             $perDataboxLookup[$databoxId][] = $recordId;
         }
 
-        if (empty($perDataboxLookup)) {
+        if (!$perDataboxLookup) {
             return [];
         }
 
@@ -186,8 +187,8 @@ class BasketElementRepository extends EntityRepository
         $parameters = new ArrayCollection();
 
         if ($basketId) {
-            $builder->where('e.basket_id = :basket_id');
-            $parameters->add(new Parameter('basket_id', $basketId));
+            $builder->where('e.basket = :basket_id');
+            $parameters->add(new Parameter('basket_id', $basketId, \PDO::PARAM_INT));
         }
 
         $parameterGroup = 1;
