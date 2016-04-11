@@ -18,9 +18,13 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
+use Alchemy\Phrasea\Order\OrderElementViewModel;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Alchemy\Phrasea\Order\OrderViewModel;
+use Alchemy\Phrasea\Order\SubdefViewModel;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;
@@ -92,11 +96,8 @@ class ApiOrderController extends BaseOrderController
             ;
         }
 
-        $collection = $builder->getQuery()->getResult();
-
-        if (in_array('elements.resource_links', $fractal->getRequestedIncludes(), false)) {
-            $this->fetchResourceLinksData($collection);
-        }
+        $collection = $this->buildOrderViewModels($builder->getQuery()->getResult());
+        $this->fillViewModels($collection, $fractal->getRequestedIncludes());
 
         $resource = new Collection($collection, $this->getOrderTransformer());
 
@@ -118,15 +119,21 @@ class ApiOrderController extends BaseOrderController
     {
         $order = $this->findOr404($orderId);
 
-        $includes = $request->get('includes', []);
+        $fractal = $this->parseIncludes($request->get('includes', []));
 
         if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
         }
 
-        $resource = new Item($order, $this->getOrderTransformer());
+        $model = $this->buildOrderViewModel($order);
 
-        return $this->returnResourceResponse($request, $includes, $resource);
+        $resource = new Item($model, $this->getOrderTransformer());
+
+        if (in_array('elements.resource_links', $fractal->getRequestedIncludes(), false)) {
+            $this->fillViewModels([$resource]);
+        }
+
+        return $this->returnResourceResponse($request, $fractal, $resource);
     }
 
     public function acceptElementsAction(Request $request, $orderId)
@@ -199,7 +206,7 @@ class ApiOrderController extends BaseOrderController
      */
     private function getOrderTransformer()
     {
-        return new OrderTransformer(new OrderElementTransformer($this->app));
+        return new OrderTransformer(new OrderElementTransformer($this->app['media_accessor.subdef_url_generator']));
     }
 
     /**
@@ -246,26 +253,34 @@ class ApiOrderController extends BaseOrderController
     }
 
     /**
-     * @param Order[] $orders
+     * @param OrderViewModel[] $models
+     * @param array $includes
+     * @return void
      */
-    private function fetchResourceLinksData(array $orders)
+    private function fillViewModels(array $models, array $includes)
     {
-        $elements = $this->gatherElements($orders);
-
-        $baseIds = array_keys(array_reduce($elements, function (array &$baseIds, OrderElement $element) {
-            $baseIds[$element->getBaseId()] = true;
-
-            return $baseIds;
-        }, []));
-
-        $collectionToDataboxMap = [];
-
-        foreach ($this->app['repo.collection-references']->findMany($baseIds) as $collectionReference) {
-            $collectionToDataboxMap[$collectionReference->getBaseId()] = $collectionReference->getDataboxId();
+        if (!in_array('elements', $includes, true)) {
+            return;
         }
 
+        $elements = $this->gatherElements($models);
+
+        $allElements = $elements ? call_user_func_array('array_merge', $elements) : [];
+        $allElements = array_combine(
+            array_map(function (OrderElement $element) {
+                return $element->getId();
+            }, $allElements),
+            $allElements
+        );
+
+        if (!$allElements) {
+            return;
+        }
+
+        $collectionToDataboxMap = $this->mapBaseIdToDataboxId($allElements);
+
         $records = RecordReferenceCollection::fromListExtractor(
-            $elements,
+            $allElements,
             function (OrderElement $element) use ($collectionToDataboxMap) {
                 return isset($collectionToDataboxMap[$element->getBaseId()])
                     ? [$collectionToDataboxMap[$element->getBaseId()], $element->getRecordId()]
@@ -278,30 +293,129 @@ class ApiOrderController extends BaseOrderController
             }
         );
 
+        $this->createOrderElementViewModels($models, $elements, $records);
+
+        if (!in_array('elements.resource_links', $includes, true)) {
+            return;
+        }
+
         // Load all records
         $records->toRecords($this->getApplicationBox());
 
         // Load all subdefs
         $subdefs = $this->app['service.media_subdef']->findSubdefsFromRecordReferenceCollection($records);
-        \media_Permalink_Adapter::getMany($this->app, $subdefs);
+        $links = \media_Permalink_Adapter::getMany($this->app, $subdefs);
+
+        $orderableViews = [];
+
+        $views = array_map(null, $subdefs, $links);
+
+        foreach ($views as $view) {
+            /**
+             * @var \media_subdef $subdef
+             * @var \media_Permalink_Adapter $link
+             */
+            list ($subdef, $link) = $view;
+
+            $databoxId = $subdef->get_sbas_id();
+            $recordId = $subdef->get_record_id();
+
+            if (!isset($orderableViews[$databoxId][$recordId])) {
+                $orderableViews[$databoxId][$recordId] = [];
+            }
+
+            $orderableViews[$databoxId][$recordId][] = new SubdefViewModel($subdef, $link);
+        }
+
+        foreach ($models as $model) {
+            foreach ($model->getElements() as $element) {
+                $databoxId = $collectionToDataboxMap[$element->getElement()->getBaseId()];
+                $recordId = $element->getElement()->getRecordId();
+
+                if (isset($orderableViews[$databoxId][$recordId])) {
+                    $element->setOrderableMediaSubdefs($orderableViews[$databoxId][$recordId]);
+                }
+            }
+        }
     }
 
     /**
      * @param Order[] $orders
-     * @return OrderElement[]
+     * @return OrderViewModel[]
      */
-    private function gatherElements(array $orders)
+    private function buildOrderViewModels(array $orders)
     {
         Assertion::allIsInstanceOf($orders, Order::class);
 
+        return array_map(function (Order $order) {
+            return new OrderViewModel($order);
+        }, $orders);
+    }
+
+    private function buildOrderViewModel(Order $order)
+    {
+        return new OrderViewModel($order);
+    }
+
+    /**
+     * @param OrderViewModel[] $models
+     * @return OrderElement[][]
+     */
+    private function gatherElements(array $models)
+    {
+        Assertion::allIsInstanceOf($models, OrderViewModel::class);
+
         $elements = [];
 
-        foreach ($orders as $order) {
-            foreach ($order->getElements() as $element) {
-                $elements[] = $element;
-            }
+        foreach ($models as $index => $model) {
+            $elements[$index] = $model->getOrder()->getElements()->toArray();
         }
 
         return $elements;
+    }
+
+    /**
+     * @param OrderElement[] $elements
+     * @return array
+     */
+    private function mapBaseIdToDataboxId(array $elements)
+    {
+        $baseIds = array_keys(array_reduce($elements, function (array &$baseIds, OrderElement $element) {
+            $baseIds[$element->getBaseId()] = true;
+
+            return $baseIds;
+        }, []));
+
+        $collectionToDataboxMap = [];
+
+        foreach ($this->app['repo.collection-references']->findMany($baseIds) as $collectionReference) {
+            $collectionToDataboxMap[$collectionReference->getBaseId()] = $collectionReference->getDataboxId();
+        }
+
+        return $collectionToDataboxMap;
+    }
+
+    /**
+     * @param OrderViewModel[] $orderViewModels
+     * @param OrderElement[][] $elements
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @return void
+     */
+    private function createOrderElementViewModels(array $orderViewModels, $elements, $records)
+    {
+        $user = $this->getAuthenticatedUser();
+
+        foreach ($orderViewModels as $index => $model) {
+            $models = [];
+
+            /** @var OrderElement $element */
+            foreach ($elements[$index] as $elementIndex => $element) {
+                if (isset($records[$element->getId()])) {
+                    $models[$elementIndex] = new OrderElementViewModel($element, $records[$element->getId()], $user);
+                }
+            }
+
+            $model->setViewElements($models);
+        }
     }
 }

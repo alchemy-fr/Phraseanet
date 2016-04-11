@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Record;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Assert\Assertion;
 
-class RecordReferenceCollection implements \IteratorAggregate
+class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess
 {
     /**
      * @param array<int|string,array> $records
@@ -25,11 +25,11 @@ class RecordReferenceCollection implements \IteratorAggregate
 
         $references = [];
 
-        foreach ($records as $record) {
+        foreach ($records as $index => $record) {
             if (isset($record['id'])) {
-                $references[] = RecordReference::createFromRecordReference($record['id']);
+                $references[$index] = RecordReference::createFromRecordReference($record['id']);
             } elseif (isset($record['databox_id'], $record['record_id'])) {
-                $references[] = RecordReference::createFromDataboxIdAndRecordId($record['databox_id'], $record['record_id']);
+                $references[$index] = RecordReference::createFromDataboxIdAndRecordId($record['databox_id'], $record['record_id']);
             }
         }
 
@@ -56,7 +56,7 @@ class RecordReferenceCollection implements \IteratorAggregate
             };
         }
 
-        foreach ($list as $item) {
+        foreach ($list as $index => $item) {
             $data = $extractor($item);
 
             if (null === $data) {
@@ -66,7 +66,7 @@ class RecordReferenceCollection implements \IteratorAggregate
             $reference = $creator($data);
 
             if ($reference instanceof RecordReferenceInterface) {
-                $references[] = $reference;
+                $references[$index] = $reference;
             }
         }
 
@@ -90,22 +90,35 @@ class RecordReferenceCollection implements \IteratorAggregate
     {
         Assertion::allIsInstanceOf($references, RecordReferenceInterface::class);
 
-        $this->references = $references instanceof \Traversable ? iterator_to_array($references, false) : array_values($references);
+        $this->references = $references instanceof \Traversable ? iterator_to_array($references, true) : $references;
     }
 
-    public function add(RecordReferenceInterface $reference)
+    /**
+     * @param RecordReferenceInterface $reference
+     * @param null|string|int $index
+     */
+    public function add(RecordReferenceInterface $reference, $index = null)
     {
-        $this->references[] = $reference;
         $this->groups = null;
+
+        if (null === $index) {
+            $this->references[] = $reference;
+
+            return;
+        }
+
+        $this->references[$index] = $reference;
     }
 
     /**
      * @param int $databoxId
      * @param int $recordId
+     * @param null|string|int $index
+     * @return void
      */
-    public function addRecordReference($databoxId, $recordId)
+    public function addRecordReference($databoxId, $recordId, $index = null)
     {
-        $this->add(RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId));
+        $this->add(RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId), $index);
     }
 
     public function getIterator()
@@ -161,8 +174,48 @@ class RecordReferenceCollection implements \IteratorAggregate
             }
         }
 
-        ksort($records);
+        $indexes = array_flip(array_keys($this->references));
+
+        uksort($records, function ($keyA, $keyB) use ($indexes) {
+            $indexA = $indexes[$keyA];
+            $indexB = $indexes[$keyB];
+
+            if ($indexA < $indexB) {
+                return -1;
+            } elseif ($indexA > $indexB) {
+                return 1;
+            }
+
+            return 0;
+        });
 
         return $records;
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->references[$offset]);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return RecordReferenceInterface
+     */
+    public function offsetGet($offset)
+    {
+        return $this->references[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        Assertion::isInstanceOf($value, RecordReferenceInterface::class);
+
+        $this->add($value, $offset);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->references[$offset]);
+        $this->groups = null;
     }
 }

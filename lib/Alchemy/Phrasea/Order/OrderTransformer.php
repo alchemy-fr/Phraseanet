@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Order;
 
-use Alchemy\Phrasea\Model\Entities\Order;
 use League\Fractal\TransformerAbstract;
 
 class OrderTransformer extends TransformerAbstract
@@ -29,8 +28,10 @@ class OrderTransformer extends TransformerAbstract
         $this->elementTransformer = $elementTransformer;
     }
 
-    public function transform(Order $order)
+    public function transform(OrderViewModel $view)
     {
+        $order = $view->getOrder();
+
         $data = [
             'id' => (int)$order->getId(),
             'owner_id' => (int)$order->getUser()->getId(),
@@ -46,7 +47,7 @@ class OrderTransformer extends TransformerAbstract
         return $data;
     }
 
-    public function includeElements(Order $order)
+    public function includeElements(OrderViewModel $order)
     {
         $elements = $order->getElements();
 

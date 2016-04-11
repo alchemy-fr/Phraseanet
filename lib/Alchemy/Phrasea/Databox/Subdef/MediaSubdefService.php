@@ -90,7 +90,7 @@ class MediaSubdefService
         foreach ($records->groupPerDataboxId() as $databoxId => $indexes) {
             $subdefs = $this->getRepositoryForDatabox($databoxId)->findByRecordIdsAndNames(array_keys($indexes));
 
-            $carry = $process($carry, $subdefs, $indexes);
+            $carry = $process($carry, $subdefs, $indexes, $databoxId);
         }
 
         return $carry;
