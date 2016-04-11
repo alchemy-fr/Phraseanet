@@ -304,27 +304,19 @@ class ApiOrderController extends BaseOrderController
 
         // Load all subdefs
         $subdefs = $this->app['service.media_subdef']->findSubdefsFromRecordReferenceCollection($records);
-        $links = \media_Permalink_Adapter::getMany($this->app, $subdefs);
+        \media_Permalink_Adapter::getMany($this->app, $subdefs);
 
-        $orderableViews = [];
+        $orderableSubdefs = [];
 
-        $views = array_map(null, $subdefs, $links);
-
-        foreach ($views as $view) {
-            /**
-             * @var \media_subdef $subdef
-             * @var \media_Permalink_Adapter $link
-             */
-            list ($subdef, $link) = $view;
-
+        foreach ($subdefs as $subdef) {
             $databoxId = $subdef->get_sbas_id();
             $recordId = $subdef->get_record_id();
 
-            if (!isset($orderableViews[$databoxId][$recordId])) {
-                $orderableViews[$databoxId][$recordId] = [];
+            if (!isset($orderableSubdefs[$databoxId][$recordId])) {
+                $orderableSubdefs[$databoxId][$recordId] = [];
             }
 
-            $orderableViews[$databoxId][$recordId][] = new SubdefViewModel($subdef, $link);
+            $orderableSubdefs[$databoxId][$recordId][] = $subdef;
         }
 
         foreach ($models as $model) {
@@ -332,8 +324,8 @@ class ApiOrderController extends BaseOrderController
                 $databoxId = $collectionToDataboxMap[$element->getElement()->getBaseId()];
                 $recordId = $element->getElement()->getRecordId();
 
-                if (isset($orderableViews[$databoxId][$recordId])) {
-                    $element->setOrderableMediaSubdefs($orderableViews[$databoxId][$recordId]);
+                if (isset($orderableSubdefs[$databoxId][$recordId])) {
+                    $element->setOrderableMediaSubdefs($orderableSubdefs[$databoxId][$recordId]);
                 }
             }
         }

@@ -66,11 +66,11 @@ class OrderElementViewModel
     }
 
     /**
-     * @param SubdefViewModel[] $subdefs
+     * @param \media_subdef[] $subdefs
      */
     public function setOrderableMediaSubdefs($subdefs)
     {
-        Assertion::allIsInstanceOf($subdefs, SubdefViewModel::class);
+        Assertion::allIsInstanceOf($subdefs, \media_subdef::class);
 
         $this->subdefs = $subdefs instanceof \Traversable ? iterator_to_array($subdefs) : $subdefs;
     }
