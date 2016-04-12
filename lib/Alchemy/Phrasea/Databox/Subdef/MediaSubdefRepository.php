@@ -67,7 +67,7 @@ class MediaSubdefRepository
      */
     public function findByRecordIdsAndNames(array $recordIds, array $names = null)
     {
-        if (! $recordIds) {
+        if (!$recordIds) {
             return [];
         }
 

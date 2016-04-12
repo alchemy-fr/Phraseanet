@@ -24,7 +24,6 @@ use Alchemy\Phrasea\Order\OrderElementViewModel;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
 use Alchemy\Phrasea\Order\OrderViewModel;
-use Alchemy\Phrasea\Order\SubdefViewModel;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;

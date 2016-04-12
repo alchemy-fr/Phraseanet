@@ -165,7 +165,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
         $this->databox->get_connection()->executeUpdate(
             'UPDATE permalinks SET activated = :activated, last_modified = NOW() WHERE id = :id',
-            [ 'activated' => $this->is_activated, 'id' => $this->get_id()]
+            ['activated' => $this->is_activated, 'id' => $this->get_id()]
         );
 
         $this->delete_data_from_cache();

@@ -188,7 +188,7 @@ SQL;
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
 
-        if (! $row) {
+        if (!$row) {
             $this->markPhysicallyUnavailable();
         }
 
@@ -396,6 +396,9 @@ SQL;
         return $this->etag;
     }
 
+    /**
+     * @param string|null $etag
+     */
     public function setEtag($etag)
     {
         $this->etag = $etag;
@@ -408,6 +411,9 @@ SQL;
         return $this;
     }
 
+    /**
+     * @param boolean $substit
+     */
     public function set_substituted($substit)
     {
         $this->is_substituted = !!$substit;
@@ -586,7 +592,7 @@ SQL;
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
-        if ( ! $this->is_physically_present()) {
+        if (!$this->is_physically_present()) {
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
 
@@ -632,7 +638,7 @@ SQL;
      */
     public function readTechnicalDatas(MediaVorus $mediavorus)
     {
-        if ( ! $this->is_physically_present()) {
+        if (!$this->is_physically_present()) {
             return [];
         }
 
@@ -748,8 +754,8 @@ SQL;
         }
 
         $generators = [
-            [$this , 'tryGetThumbnailUrl'],
-            [$this , 'tryGetVideoUrl'],
+            [$this, 'tryGetThumbnailUrl'],
+            [$this, 'tryGetVideoUrl'],
         ];
 
         foreach ($generators as $generator) {

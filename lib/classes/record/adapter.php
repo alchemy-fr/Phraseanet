@@ -107,7 +107,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $this->app = $app;
         $this->reference = RecordReference::createFromDataboxIdAndRecordId($sbas_id, $record_id);
-        $this->number = (int) $number;
+        $this->number = (int)$number;
 
         if ($load) {
             $this->load();
@@ -198,7 +198,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setNumber($number)
     {
-        $this->number = (int) $number;
+        $this->number = (int)$number;
 
         return $this;
     }
@@ -611,15 +611,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         if (isset($availableSubdefs['document'])) {
 
-            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mimes, false);
-            $devices_ok = !$devices || array_intersect($availableSubdefs['document']->getDevices(), (array) $devices);
+            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array)$mimes, false);
+            $devices_ok = !$devices || array_intersect($availableSubdefs['document']->getDevices(), (array)$devices);
 
             if ($mime_ok && $devices_ok) {
                 $subdefs['document'] = $availableSubdefs['document'];
             }
         }
 
-        $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
+        $searchDevices = array_merge((array)$devices, (array)databox_subdef::DEVICE_ALL);
 
         $type = $this->isStory() ? 'image' : $this->getType();
 
@@ -645,7 +645,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
             }
 
-            if ($mimes && !in_array($subdef->get_mime(), (array) $mimes)) {
+            if ($mimes && !in_array($subdef->get_mime(), (array)$mimes)) {
                 continue;
             }
 
@@ -769,7 +769,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $collection = [];
 
         foreach ($fields as $field) {
-            $values = array_map(function(caption_Field_Value $fieldValue) {
+            $values = array_map(function (caption_Field_Value $fieldValue) {
                 return $fieldValue->getValue();
             }, $field->get_values());
 
@@ -1078,16 +1078,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $record = $this;
-        $wanted_subdefs = array_map(function(databox_subdef $subDef) {
+        $wanted_subdefs = array_map(function (databox_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter(iterator_to_array($subDefDefinitions), function(databox_subdef $subDef) use ($record) {
+        }, array_filter(iterator_to_array($subDefDefinitions), function (databox_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 
 
-        $missing_subdefs = array_map(function(media_subdef $subDef) {
+        $missing_subdefs = array_map(function (media_subdef $subDef) {
             return $subDef->get_name();
-        }, array_filter($this->get_subdefs(), function(media_subdef $subdef) {
+        }, array_filter($this->get_subdefs(), function (media_subdef $subdef) {
             return !$subdef->is_physically_present();
         }));
 
@@ -1569,8 +1569,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
-        $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
-        $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $offset_start = (int)($offset_start < 0 ? 0 : $offset_start);
+        $how_many = (int)(($how_many > 20 || $how_many < 1) ? 10 : $how_many);
 
         $sql = sprintf(
             'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
