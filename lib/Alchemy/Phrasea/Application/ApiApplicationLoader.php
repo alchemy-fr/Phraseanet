@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiApplicationLoader extends BaseApplicationLoader
 {
-    protected function prePluginRegister(Application $app)
+    protected function doPrePluginServiceRegistration(Application $app)
     {
         $app->register(new OAuth2());
         $app->register(new V1());
@@ -37,7 +37,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->register(new JsonSchemaServiceProvider());
     }
 
-    protected function exceptionHandlerRegister(Application $app)
+    protected function createExceptionHandler(Application $app)
     {
         return new ApiExceptionHandlerSubscriber($app['monolog']);
     }

@@ -20,10 +20,12 @@ abstract class BaseApplicationLoader
     {
         $app = $this->createApplication($environment, $forceDebug);
 
-        $this->prePluginRegister($app);
+        $this->doPrePluginServiceRegistration($app);
         $app->loadPlugins();
 
-        $app['exception_handler'] = $app->share([$this, 'exceptionHandlerRegister']);
+        $app['exception_handler'] = $app->share(function (Application $app) {
+            return $this->createExceptionHandler($app);
+        });
 
         $app['monolog'] = $app->share($app->extend('monolog', function (Logger $monolog) {
             $monolog->pushProcessor(new WebProcessor());
@@ -53,10 +55,18 @@ abstract class BaseApplicationLoader
         return $app;
     }
 
-    abstract protected function prePluginRegister(Application $app);
+    abstract protected function doPrePluginServiceRegistration(Application $app);
 
-    abstract protected function exceptionHandlerRegister(Application $app);
+    /**
+     * @param Application $app
+     * @return EventSubscriberInterface
+     */
+    abstract protected function createExceptionHandler(Application $app);
 
+    /**
+     * @param Application $app
+     * @return void
+     */
     abstract protected function bindRoutes(Application $app);
 
     /**
