@@ -159,17 +159,17 @@ class OrderViewBuilder
 
 
     /**
-     * @param OrderView[] $elements
+     * @param OrderView[] $orderViews
      * @return OrderElement[][]
      */
-    private function gatherElements(array $elements)
+    private function gatherElements(array $orderViews)
     {
-        Assertion::allIsInstanceOf($elements, OrderView::class);
+        Assertion::allIsInstanceOf($orderViews, OrderView::class);
 
         $elements = [];
 
-        foreach ($elements as $index => $model) {
-            $elements[$index] = $model->getOrder()->getElements()->toArray();
+        foreach ($orderViews as $index => $orderView) {
+            $elements[$index] = $orderView->getOrder()->getElements()->toArray();
         }
 
         return $elements;
