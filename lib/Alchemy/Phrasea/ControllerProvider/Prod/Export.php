@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\ExportController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -44,7 +45,9 @@ class Export implements ControllerProviderInterface, ServiceProviderInterface
      */
     public function connect(Application $app)
     {
-        $controllers = $this->createAuthenticatedCollection($app);
+        $controllers = $this->createCollection($app);
+        $controllers->before(new OAuthListener(['exit_not_present' => false]));
+        $this->getFirewall($app)->addMandatoryAuthentication($controllers);
 
         $controllers->post('/multi-export/', 'controller.prod.export:displayMultiExport')
             ->bind('export_multi_export');
