@@ -13,14 +13,15 @@ namespace Alchemy\Phrasea\Order;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Assert\Assertion;
 
-class OrderViewModel
+class OrderView
 {
     /**
      * @var Order
      */
     private $order;
+
     /**
-     * @var OrderElementViewModel[]
+     * @var OrderElementView[]
      */
     private $viewElements = [];
 
@@ -33,11 +34,11 @@ class OrderViewModel
     }
 
     /**
-     * @param $viewElements
+     * @param OrderElementView[] $viewElements
      */
     public function setViewElements($viewElements)
     {
-        Assertion::allIsInstanceOf($viewElements, OrderElementViewModel::class);
+        Assertion::allIsInstanceOf($viewElements, OrderElementView::class);
 
         $this->viewElements = $viewElements instanceof \Traversable ? iterator_to_array($viewElements) : $viewElements;
     }
@@ -51,7 +52,7 @@ class OrderViewModel
     }
 
     /**
-     * @return OrderElementViewModel[]
+     * @return OrderElementView[]
      */
     public function getElements()
     {

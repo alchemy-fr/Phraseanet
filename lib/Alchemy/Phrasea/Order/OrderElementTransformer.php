@@ -31,7 +31,7 @@ class OrderElementTransformer extends TransformerAbstract
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function transform(OrderElementViewModel $model)
+    public function transform(OrderElementView $model)
     {
         $element = $model->getElement();
         $record = $model->getRecordReference();
@@ -54,7 +54,7 @@ class OrderElementTransformer extends TransformerAbstract
         return $data;
     }
 
-    public function includeResourceLinks(OrderElementViewModel $model, ParamBag $params = null)
+    public function includeResourceLinks(OrderElementView $model, ParamBag $params = null)
     {
         $ttl = null;
 

@@ -28,7 +28,7 @@ class OrderTransformer extends TransformerAbstract
         $this->elementTransformer = $elementTransformer;
     }
 
-    public function transform(OrderViewModel $view)
+    public function transform(OrderView $view)
     {
         $order = $view->getOrder();
 
@@ -47,7 +47,7 @@ class OrderTransformer extends TransformerAbstract
         return $data;
     }
 
-    public function includeElements(OrderViewModel $order)
+    public function includeElements(OrderView $order)
     {
         $elements = $order->getElements();
 

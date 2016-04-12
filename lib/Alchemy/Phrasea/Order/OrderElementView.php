@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Assert\Assertion;
 
-class OrderElementViewModel
+class OrderElementView
 {
     /**
      * @var OrderElement
@@ -39,6 +39,7 @@ class OrderElementViewModel
 
     /**
      * OrderElementViewModel constructor.
+     *
      * @param OrderElement $element
      * @param RecordReferenceInterface $record
      * @param User $user
@@ -50,16 +51,25 @@ class OrderElementViewModel
         $this->user = $user;
     }
 
+    /**
+     * @return OrderElement
+     */
     public function getElement()
     {
         return $this->element;
     }
 
+    /**
+     * @return RecordReferenceInterface
+     */
     public function getRecordReference()
     {
         return $this->record;
     }
 
+    /**
+     * @return User
+     */
     public function getAuthenticatedUser()
     {
         return $this->user;
@@ -75,6 +85,9 @@ class OrderElementViewModel
         $this->subdefs = $subdefs instanceof \Traversable ? iterator_to_array($subdefs) : $subdefs;
     }
 
+    /**
+     * @return \media_subdef[]
+     */
     public function getOrderableMediaSubdefs()
     {
         return $this->subdefs;
