@@ -125,12 +125,9 @@ class ApiOrderController extends BaseOrderController
         }
 
         $model = $this->buildOrderViewModel($order);
+        $this->fillViewModels([$model], $fractal->getRequestedIncludes());
 
         $resource = new Item($model, $this->getOrderTransformer());
-
-        if (in_array('elements.resource_links', $fractal->getRequestedIncludes(), false)) {
-            $this->fillViewModels([$resource]);
-        }
 
         return $this->returnResourceResponse($request, $fractal, $resource);
     }
