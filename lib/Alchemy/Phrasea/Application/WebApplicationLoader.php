@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\JsonRequestSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Middleware\SetupMiddlewareProvider;
 
-class WebBaseApplicationLoader extends BaseApplicationLoader
+class WebApplicationLoader extends BaseApplicationLoader
 {
     protected function doPrePluginServiceRegistration(Application $app)
     {

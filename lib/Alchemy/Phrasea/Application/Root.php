@@ -10,7 +10,7 @@
 
 use Alchemy\Phrasea\Application;
 
-return (new Application\WebBaseApplicationLoader())->buildApplication(
+return (new Application\WebApplicationLoader())->buildApplication(
     isset($environment) ? $environment : Application::ENV_PROD,
     isset($forceDebug) ? $forceDebug : false
 );
