@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -11,7 +10,7 @@
 
 use Alchemy\Phrasea\Application;
 
-return (new Application\ApplicationLoader())->buildWebApplication(
+return (new Application\WebBaseApplicationLoader())->buildApplication(
     isset($environment) ? $environment : Application::ENV_PROD,
     isset($forceDebug) ? $forceDebug : false
 );
