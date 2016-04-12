@@ -19,12 +19,12 @@ use Alchemy\Phrasea\Core\Middleware\SetupMiddlewareProvider;
 
 class WebBaseApplicationLoader extends BaseApplicationLoader
 {
-    protected function prePluginRegister(Application $app)
+    protected function doPrePluginServiceRegistration(Application $app)
     {
         $app->register(new SetupMiddlewareProvider());
     }
 
-    protected function exceptionHandlerRegister(Application $app)
+    protected function createExceptionHandler(Application $app)
     {
         return new PhraseaExceptionHandlerSubscriber($app['phraseanet.exception_handler']);
     }
