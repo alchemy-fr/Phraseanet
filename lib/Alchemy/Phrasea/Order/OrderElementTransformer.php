@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Order;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use League\Fractal\ParamBag;
 use League\Fractal\TransformerAbstract;
@@ -58,19 +57,18 @@ class OrderElementTransformer extends TransformerAbstract
     {
         $ttl = null;
 
-        if ($params) {
-            $usedParams = array_keys(iterator_to_array($params));
+        $parameterArray = $this->extractParamBagValues($params);
+        $usedParams = array_keys(array_filter($parameterArray));
 
-            if (array_diff($usedParams, $this->validParams)) {
-                throw new \RuntimeException(sprintf(
-                    'Invalid param(s): "%s". Valid param(s): "%s"',
-                    implode(', ', $usedParams),
-                    implode(', ', $this->validParams)
-                ));
-            }
-
-            list ($ttl) = $params->get('ttl');
+        if (array_diff($usedParams, $this->validParams)) {
+            throw new \RuntimeException(sprintf(
+                'Invalid param(s): "%s". Valid param(s): "%s"',
+                implode(', ', $usedParams),
+                implode(', ', $this->validParams)
+            ));
         }
+
+        list ($ttl) = $parameterArray['ttl'];
 
         if (null === $ttl) {
             $ttl = $this->urlGenerator->getDefaultTTL();
@@ -86,5 +84,22 @@ class OrderElementTransformer extends TransformerAbstract
                 'url_ttl' => $ttl,
             ];
         });
+    }
+
+    /**
+     * @param ParamBag|null $params
+     * @return array
+     */
+    private function extractParamBagValues(ParamBag $params = null)
+    {
+        $array = array_fill_keys($this->validParams, null);
+
+        if ($params) {
+            array_walk($array, function (&$value, $key) use ($params) {
+                $value = $params[$key];
+            });
+        }
+
+        return $array;
     }
 }
