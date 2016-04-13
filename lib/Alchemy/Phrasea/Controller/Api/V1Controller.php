@@ -1545,7 +1545,7 @@ class V1Controller extends Controller
 
         $status = $request->get('status');
 
-        $datas = strrev($record->get_status());
+        $datas = strrev($record->getStatus());
 
         if (!is_array($status)) {
             return $this->getBadRequestAction($request);

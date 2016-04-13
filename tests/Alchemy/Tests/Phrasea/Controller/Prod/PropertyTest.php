@@ -119,8 +119,8 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $record = new \record_adapter(self::$DI['app'], $record->getDataboxId(), $record->getRecordId());
         $story = new \record_adapter(self::$DI['app'], $story->getDataboxId(), $story->getRecordId());
 
-        $recordStatus = strrev($record->get_status());
-        $storyStatus = strrev($story->get_status());
+        $recordStatus = strrev($record->getStatus());
+        $storyStatus = strrev($story->getStatus());
 
         $this->assertEquals(1, substr($recordStatus, 6, 1));
         $this->assertEquals(1, substr($recordStatus, 8, 1));
@@ -131,7 +131,7 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, substr($storyStatus, 11, 1));
 
         foreach ($story->getChildren() as $child) {
-            $childStatus = strrev($child->get_status());
+            $childStatus = strrev($child->getStatus());
             $this->assertEquals(1, substr($childStatus, 6, 1));
             $this->assertEquals(1, substr($childStatus, 8, 1));
             $this->assertEquals(1, substr($childStatus, 11, 1));

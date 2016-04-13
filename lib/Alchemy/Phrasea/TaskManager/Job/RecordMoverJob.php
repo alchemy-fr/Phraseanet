@@ -91,7 +91,7 @@ class RecordMoverJob extends AbstractJob
 
                 // change sb ?
                 if (array_key_exists('sb', $row)) {
-                    $status = str_split($rec->get_status());
+                    $status = str_split($rec->getStatus());
                     foreach (str_split(strrev($row['sb'])) as $bit => $val) {
                         if ($val == '0' || $val == '1') {
                             $status[31 - $bit] = $val;

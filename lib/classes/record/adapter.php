@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -38,7 +38,6 @@ use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
-
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -1108,18 +1107,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    /**
-     * @param  string $status
-     * @return record_adapter
-     * @deprecated use {@link self::setStatus()} instead
-     */
-    public function set_binary_status($status)
-    {
-        $this->setStatus($status);
-
-        return $this;
-    }
-
     private function dispatch($eventName, RecordEvent $event)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
@@ -1793,9 +1780,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setStatus($status)
     {
-        $connection = $this->getDataboxConnection();
-
-        $connection->executeUpdate(
+        $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
         );
@@ -1805,10 +1790,18 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
     }
 
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->get_status();
+    }
+
     /** {@inheritdoc} */
     public function getStatusBitField()
     {
-        return bindec($this->get_status());
+        return bindec($this->getStatus());
     }
 
     /** {@inheritdoc} */

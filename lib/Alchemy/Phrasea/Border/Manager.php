@@ -314,7 +314,7 @@ class Manager
                     break;
                 case AttributeInterface::NAME_STATUS:
                     /** @var StatusAttr $attribute */
-                    $element->setStatus(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
+                    $element->setStatus(decbin(bindec($element->getStatus()) | bindec($attribute->getValue())));
 
                     break;
                 case AttributeInterface::NAME_STORY:
