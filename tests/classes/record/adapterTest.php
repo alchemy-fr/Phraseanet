@@ -474,7 +474,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         }
 
         $record_1 = $this->getRecord1();
-        $record_1->set_binary_status($status);
+        $record_1->setStatus($status);
 
         $this->assertEquals($status, $record_1->get_status());
     }
@@ -539,7 +539,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
     {
         $record_1 = $this->getRecord1();
         $record = new \record_adapter($this->getApplication(), $record_1->getDataboxId(), $record_1->getRecordId());
-        $record->set_binary_status('1001001001010101');
+        $record->setStatus('1001001001010101');
         $this->assertSame('00000000000000001001001001010101', $record->get_status());
     }
 }

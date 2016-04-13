@@ -196,7 +196,7 @@ class PropertyController extends Controller
                 $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
             }
 
-            $record->set_binary_status(strrev($newStatus));
+            $record->setStatus(strrev($newStatus));
 
             return [
                 'current_status' => $currentStatus,

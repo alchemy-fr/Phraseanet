@@ -1564,7 +1564,7 @@ class V1Controller extends Controller
             $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
         }
 
-        $record->set_binary_status(strrev($datas));
+        $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));

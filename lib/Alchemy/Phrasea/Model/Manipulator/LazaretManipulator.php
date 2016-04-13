@@ -194,7 +194,7 @@ class LazaretManipulator
                             $value->appendChild($record);
                             break;
                         case AttributeInterface::NAME_STATUS:
-                            $record->set_binary_status($attribute->getValue());
+                            $record->setStatus($attribute->getValue());
                             break;
                         case AttributeInterface::NAME_METAFIELD:
                             /** @var Border\Attribute\MetaField $attribute */

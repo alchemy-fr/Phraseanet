@@ -1109,21 +1109,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param  string         $status
+     * @param  string $status
      * @return record_adapter
+     * @deprecated use {@link self::setStatus()} instead
      */
     public function set_binary_status($status)
     {
-        $connection = $this->getDataboxConnection();
-
-        $connection->executeUpdate(
-            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id= :record_id',
-            ['status' => bindec($status), 'record_id' => $this->getRecordId()]
-        );
-
-        $this->delete_data_from_cache(self::CACHE_STATUS);
-
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
+        $this->setStatus($status);
 
         return $this;
     }
@@ -1795,11 +1787,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->reference->getId();
     }
 
+    /**
+     * @param string $status
+     * @return void
+     */
     public function setStatus($status)
     {
-        $this->set_binary_status($status);
+        $connection = $this->getDataboxConnection();
+
+        $connection->executeUpdate(
+            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
+            ['status' => bindec($status), 'record_id' => $this->getRecordId()]
+        );
 
         $this->delete_data_from_cache(self::CACHE_STATUS);
+
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
     }
 
     /** {@inheritdoc} */

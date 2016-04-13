@@ -98,7 +98,7 @@ class RecordMoverJob extends AbstractJob
                         }
                     }
                     $status = implode('', $status);
-                    $rec->set_binary_status($status);
+                    $rec->setStatus($status);
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }

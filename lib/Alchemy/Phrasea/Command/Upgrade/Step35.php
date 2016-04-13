@@ -84,7 +84,7 @@ class Step35 implements DatasUpgraderInterface
                     }
 
                     try {
-                        $record->set_binary_status($row['status']);
+                        $record->setStatus($row['status']);
                     } catch (\Exception $e) {
                         $this->app['monolog']->addError(sprintf("Error while upgrading status for record %d on databox %d : %s", $record->getRecordId(), $record->getDataboxId(), $e->getMessage()));
                     }

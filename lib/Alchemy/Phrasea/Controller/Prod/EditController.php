@@ -361,7 +361,7 @@ class EditController extends Controller
                     $newstat = \databox_status::operation_or($newstat, $mask_or);
                 }
 
-                $record->set_binary_status($newstat);
+                $record->setStatus($newstat);
             }
 
             $record
