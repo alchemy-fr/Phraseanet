@@ -140,6 +140,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->created = $record->getCreated();
         $this->base_id = $record->getBaseId();
         $this->collection_id = $record->getCollectionId();
+        $this->status = $record->getStatus();
     }
 
     /**
