@@ -55,8 +55,6 @@ class OrderElementTransformer extends TransformerAbstract
 
     public function includeResourceLinks(OrderElementView $model, ParamBag $params = null)
     {
-        $ttl = null;
-
         $parameterArray = $this->extractParamBagValues($params);
         $usedParams = array_keys(array_filter($parameterArray));
 
@@ -74,13 +72,18 @@ class OrderElementTransformer extends TransformerAbstract
             $ttl = $this->urlGenerator->getDefaultTTL();
         }
 
-        $urls = $this->urlGenerator->generateMany($model->getAuthenticatedUser(), $model->getOrderableMediaSubdefs(), $ttl);
-        $urls = array_map(null, array_keys($urls), array_values($urls));
+        $subdefs = $model->getOrderableMediaSubdefs();
+        $urls = $this->urlGenerator->generateMany($model->getAuthenticatedUser(), $subdefs, $ttl);
 
-        return $this->collection($urls, function (array $data) use ($ttl) {
+        $data = array_map(null, $subdefs, $urls);
+
+        return $this->collection($data, function (array $data) use ($ttl) {
+            /** @var \media_subdef $subdef */
+            list($subdef, $url) = $data;
+
             return [
-                'name' => $data[0],
-                'url' => $data[1],
+                'name' => $subdef->get_name(),
+                'url' => $url,
                 'url_ttl' => $ttl,
             ];
         });
