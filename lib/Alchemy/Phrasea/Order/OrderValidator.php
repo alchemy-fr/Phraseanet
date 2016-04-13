@@ -137,7 +137,7 @@ class OrderValidator
                 throw new \RuntimeException('At least one collection was not found.');
             }
 
-            $references->addRecordReference(RecordReference::createFromDataboxIdAndRecordId(
+            $references->add(RecordReference::createFromDataboxIdAndRecordId(
                 $databoxIdMap[$orderElement->getBaseId()],
                 $orderElement->getRecordId()
             ));

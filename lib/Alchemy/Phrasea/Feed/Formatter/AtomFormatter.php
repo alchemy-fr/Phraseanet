@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Symfony\Component\HttpFoundation\Response;
 
 class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterface
@@ -48,8 +49,6 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
      */
     public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $updated_on = $feed->getUpdatedOn();
-
         $document = new \DOMDocument('1.0', 'UTF-8');
         $document->formatOutput = true;
         $document->standalone = true;
@@ -59,8 +58,7 @@ class AtomFormatter extends FeedFormatterAbstract implements FeedFormatterInterf
         $root->setAttribute('xmlns:media', 'http://search.yahoo.com/mrss/');
 
         $this->addTag($document, $root, 'title', $feed->getTitle());
-        if ($updated_on instanceof \DateTime) {
-            $updated_on = $updated_on->format(DATE_ATOM);
+        if (null !== $updated_on = NullableDateTime::format($feed->getUpdatedOn())) {
             $this->addTag($document, $root, 'updated', $updated_on);
         }
 

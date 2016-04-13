@@ -61,6 +61,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -138,10 +139,10 @@ class V1Controller extends Controller
             'pid'            => $data['process-id'],
             'jobId'          => $task->getJobId(),
             'period'         => $task->getPeriod(),
-            'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'updated'        => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null,
-            'created'        => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null,
+            'last_exec_time' => NullableDateTime::format($task->getLastExecution()),
+            'last_execution' => NullableDateTime::format($task->getLastExecution()),
+            'updated'        => NullableDateTime::format($task->getUpdated()),
+            'created'        => NullableDateTime::format($task->getCreated()),
             'auto_start'     => $task->getStatus() === Task::STATUS_STARTED,
             'crashed'        => $task->getCrashed(),
         ];
@@ -709,9 +710,9 @@ class V1Controller extends Controller
             'position'        => $user->getActivity() ?: null,
             'company'         => $user->getCompany() ?: null,
             'geoname_id'      => $user->getGeonameId() ?: null,
-            'last_connection' => $user->getLastConnection() ? $user->getLastConnection()->format(DATE_ATOM) : null,
-            'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
-            'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
+            'last_connection' => NullableDateTime::format($user->getLastConnection()),
+            'created_on'      => NullableDateTime::format($user->getCreated()),
+            'updated_on'      => NullableDateTime::format($user->getUpdated()),
             'locale'          => $user->getLocale() ?: null,
         ];
     }
@@ -1466,11 +1467,7 @@ class V1Controller extends Controller
                 ];
             }, iterator_to_array($basket->getValidation()->getParticipants()));
 
-            $expires_on_atom = $basket->getValidation()->getExpires();
-
-            if ($expires_on_atom instanceof \DateTime) {
-                $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
-            }
+            $expires_on_atom = NullableDateTime::format($basket->getValidation()->getExpires());
 
             $ret = array_merge([
                 'validation_users'          => $users,

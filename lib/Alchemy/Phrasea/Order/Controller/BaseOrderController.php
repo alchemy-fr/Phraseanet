@@ -189,10 +189,12 @@ class BaseOrderController extends Controller
 
         $references = new RecordReferenceCollection();
 
-        foreach ($elements as $element) {
-            $reference = RecordReference::createFromDataboxIdAndRecordId($element->getSbasId(), $element->getRecordId());
+        $basket->getElements()->forAll(function (BasketElement $element) use ($references) {
+            $references->addRecordReference($element->getSbasId(), $element->getRecordId());
+        });
 
-            $references->addRecordReference($reference);
+        foreach ($elements as $element) {
+            $references->addRecordReference($element->getSbasId(), $element->getRecordId());
         }
 
         $groups = $references->groupPerDataboxId();

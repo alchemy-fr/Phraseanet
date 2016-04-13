@@ -34,21 +34,23 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('get')
             ->will($this->returnValue($acl));
 
-        self::$DI['app']['acl'] = $aclProvider;
+        $app = $this->getApplication();
+        $app['acl'] = $aclProvider;
 
-        $path = self::$DI['app']['url_generator']->generate('datafile', [
-            'sbas_id' => self::$DI['record_1']->get_sbas_id(),
-            'record_id' => self::$DI['record_1']->get_record_id(),
+        $record1 = $this->getRecord1();
+
+        $path = $app['url_generator']->generate('datafile', [
+            'sbas_id' => $record1->getDataboxId(),
+            'record_id' => $record1->getRecordId(),
             'subdef' => $subdef,
         ]);
 
-        self::$DI['client']->request('GET', $path);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->request('GET', $path);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('inline', explode(';', $response->headers->get('content-disposition'))[0]);
-        $this->assertEquals(self::$DI['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
-        $this->assertEquals(self::$DI['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
+        $this->assertEquals($record1->get_preview()->get_mime(), $response->headers->get('content-type'));
+        $this->assertEquals($record1->get_preview()->get_size(), $response->headers->get('content-length'));
     }
 
     public function testDatafilesNonExistentSubdef()

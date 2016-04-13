@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Feed\Link\FeedLink;
 use Alchemy\Phrasea\Feed\Link\LinkGeneratorCollection;
 use Alchemy\Phrasea\Feed\RSS\FeedRSSImage;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
@@ -51,8 +52,6 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
      */
     public function format(FeedInterface $feed, $page, User $user = null, $generator = 'Phraseanet', Application $app = null)
     {
-        $updated_on = $feed->getUpdatedOn();
-
         $next = $prev = null;
 
         if ($feed->hasPage($page + 1, self::PAGE_SIZE)) {
@@ -104,11 +103,10 @@ class RssFormatter extends FeedFormatterAbstract implements FeedFormatterInterfa
             $this->addTag($doc, $channel, 'managingEditor', $this->managingEditor);
         if (isset($this->webMaster))
             $this->addTag($doc, $channel, 'webMaster', $this->webMaster);
-        if ($updated_on instanceof \DateTime) {
-            $updated_on = $updated_on->format(DATE_RFC2822);
+        if (null !== $updated_on = NullableDateTime::format($feed->getUpdatedOn(), DATE_RFC2822)) {
             $this->addTag($doc, $channel, 'pubDate', $updated_on);
         }
-        if (isset($this->lastBuildDate) && $this->lastBuildDate instanceof DateTime) {
+        if (isset($this->lastBuildDate) && $this->lastBuildDate instanceof \DateTime) {
             $last_build = $this->lastBuildDate->format(DATE_RFC2822);
             $this->addTag($doc, $channel, 'lastBuildDate', $last_build);
         }

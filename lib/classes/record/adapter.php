@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
@@ -106,7 +107,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $this->app = $app;
         $this->reference = RecordReference::createFromDataboxIdAndRecordId($sbas_id, $record_id);
-        $this->number = (int) $number;
+        $this->number = (int)$number;
 
         if ($load) {
             $this->load();
@@ -197,7 +198,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setNumber($number)
     {
-        $this->number = (int) $number;
+        $this->number = (int)$number;
 
         return $this;
     }
@@ -571,7 +572,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function has_subdef($name)
     {
-        return in_array($name, $this->get_available_subdefs());
+        return in_array($name, $this->get_available_subdefs(), false);
     }
 
     /**
@@ -586,17 +587,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this->subdefs[$name];
         }
 
-        if (!in_array($name, $this->get_available_subdefs())) {
+        if (!in_array($name, $this->get_available_subdefs(), false)) {
             throw new Exception_Media_SubdefNotFound(sprintf("subdef `%s` not found", $name));
         }
 
-        if (!$this->subdefs) {
-            $this->subdefs = [];
-        }
+        $subdefs = $this->getMediaSubdefRepository()->findOneByRecordIdAndName($this->getRecordId(), $name);
 
-        $substitute = ($name !== 'document');
-
-        return $this->subdefs[$name] = new media_subdef($this->app, $this, $name, $substitute);
+        return $subdefs ?: new media_subdef($this->app, $this, $name, ($name !== 'document'));
     }
 
     /**
@@ -614,15 +611,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         if (isset($availableSubdefs['document'])) {
 
-            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mimes);
-            $devices_ok = !$devices || array_intersect($availableSubdefs['document']->getDevices(), (array) $devices);
+            $mime_ok = !$mimes || in_array($availableSubdefs['document']->get_mime(), (array)$mimes, false);
+            $devices_ok = !$devices || array_intersect($availableSubdefs['document']->getDevices(), (array)$devices);
 
             if ($mime_ok && $devices_ok) {
                 $subdefs['document'] = $availableSubdefs['document'];
             }
         }
 
-        $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
+        $searchDevices = array_merge((array)$devices, (array)databox_subdef::DEVICE_ALL);
 
         $type = $this->isStory() ? 'image' : $this->getType();
 
@@ -648,7 +645,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 continue;
             }
 
-            if ($mimes && !in_array($subdef->get_mime(), (array) $mimes)) {
+            if ($mimes && !in_array($subdef->get_mime(), (array)$mimes)) {
                 continue;
             }
 
@@ -663,13 +660,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_subdefs()
     {
-        if (!$this->subdefs) {
-            $this->subdefs = [];
+        if (null !== $this->subdefs) {
+            return $this->subdefs;
         }
 
-        $subdefs = $this->get_available_subdefs();
-        foreach ($subdefs as $name) {
-            $this->get_subdef($name);
+        $this->subdefs = [];
+
+        foreach ($this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()]) as $subdef) {
+            $this->subdefs[$subdef->get_name()] = $subdef;
+        }
+
+        foreach (['preview', 'thumbnail'] as $name) {
+            if (!isset($this->subdefs[$name])) {
+                $this->subdefs[$name] = new media_subdef($this->app, $this, $name, true, []);
+            }
         }
 
         return $this->subdefs;
@@ -680,6 +684,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     protected function get_available_subdefs()
     {
+        if (null !== $this->subdefs) {
+            return array_keys($this->subdefs);
+        }
+
         try {
             $data = $this->get_data_from_cache(self::CACHE_SUBDEFS);
         } catch (\Exception $e) {
@@ -690,18 +698,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $data;
         }
 
-        $rs = $this->getDataboxConnection()->fetchAll(
-            'SELECT name FROM subdef WHERE record_id = :record_id',
-            ['record_id' => $this->getRecordId()]
-        );
+        $subdefs = array_keys($this->get_subdefs());
 
-        $subdefs = ['preview', 'thumbnail'];
-
-        foreach ($rs as $row) {
-            $subdefs[] = $row['name'];
-        }
-
-        $subdefs = array_unique($subdefs);
         $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
 
         return $subdefs;
@@ -771,7 +769,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $collection = [];
 
         foreach ($fields as $field) {
-            $values = array_map(function(caption_Field_Value $fieldValue) {
+            $values = array_map(function (caption_Field_Value $fieldValue) {
                 return $fieldValue->getValue();
             }, $field->get_values());
 
@@ -1080,16 +1078,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $record = $this;
-        $wanted_subdefs = array_map(function(databox_subdef $subDef) {
+        $wanted_subdefs = array_map(function (databox_subdef $subDef) {
            return  $subDef->get_name();
-        }, array_filter(iterator_to_array($subDefDefinitions), function(databox_subdef $subDef) use ($record) {
+        }, array_filter(iterator_to_array($subDefDefinitions), function (databox_subdef $subDef) use ($record) {
             return !$record->has_subdef($subDef->get_name());
         }));
 
 
-        $missing_subdefs = array_map(function(media_subdef $subDef) {
+        $missing_subdefs = array_map(function (media_subdef $subDef) {
             return $subDef->get_name();
-        }, array_filter($this->get_subdefs(), function(media_subdef $subdef) {
+        }, array_filter($this->get_subdefs(), function (media_subdef $subdef) {
             return !$subdef->is_physically_present();
         }));
 
@@ -1269,12 +1267,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $connection = $this->getDataboxConnection();
-        $sql = 'DELETE FROM technical_datas WHERE record_id = :record_id';
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
+        $connection->executeUpdate('DELETE FROM technical_datas WHERE record_id = :record_id', [
+            ':record_id' => $this->getRecordId(),
+        ]);
 
         $sqlValues = [];
+
         foreach ($document->readTechnicalDatas($mediavorus) as $name => $value) {
             if (is_null($value)) {
                 continue;
@@ -1285,21 +1283,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     $value = 0;
                 }
             }
-            $sqlValues[] = join(',', array(
-                'null',
-                $connection->quote($this->getRecordId()),
-                $connection->quote($name),
-                $connection->quote($value),
-            ));
+            $sqlValues[] = [$this->getRecordId(), $name, $value];
         }
-        $sql = "INSERT INTO technical_datas (id, record_id, name, value)"
-            . " VALUES (" . join('),(', $sqlValues) . ")";
-        ;
-        $stmt = $connection->prepare($sql);
 
-        $stmt->execute();
-
-        $stmt->closeCursor();
+        if ($sqlValues) {
+            $connection->transactional(function (Connection $connection) use ($sqlValues) {
+                $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?)');
+                array_walk($sqlValues, [$statement, 'execute']);
+            });
+        }
 
         $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
 
@@ -1577,8 +1569,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
-        $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
-        $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $offset_start = (int)($offset_start < 0 ? 0 : $offset_start);
+        $how_many = (int)(($how_many > 20 || $how_many < 1) ? 10 : $how_many);
 
         $sql = sprintf(
             'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',
@@ -1877,5 +1869,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $this->connection;
+    }
+
+    /**
+     * @return MediaSubdefRepository
+     */
+    private function getMediaSubdefRepository()
+    {
+        return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($this->getDataboxId());
     }
 }

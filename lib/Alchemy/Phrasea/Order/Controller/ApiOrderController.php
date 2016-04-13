@@ -17,10 +17,17 @@ use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\OrderElement;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
+use Alchemy\Phrasea\Order\OrderElementView;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
+use Alchemy\Phrasea\Order\OrderView;
+use Alchemy\Phrasea\Order\OrderViewBuilder;
+use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
@@ -68,7 +75,7 @@ class ApiOrderController extends BaseOrderController
     {
         $page = max((int) $request->get('page', '1'), 1);
         $perPage = min(max((int)$request->get('per_page', '10'), 1), 100);
-        $fractal = $this->parseIncludes($request->get('includes', []));
+        $fractal = $this->buildFractalManager($request->get('includes', []));
 
         $routeGenerator = function ($page) use ($perPage) {
             return $this->app->path('api_v2_orders_index', [
@@ -89,13 +96,18 @@ class ApiOrderController extends BaseOrderController
             ;
         }
 
-        $resource = new Collection($builder->getQuery()->getResult(), $this->getOrderTransformer());
+        $collection = $this->getViewBuilder()->buildViews(
+            $builder->getQuery()->getResult(),
+            $fractal->getRequestedIncludes()
+        );
+
+        $resource = new Collection($collection, $this->getOrderTransformer());
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($builder, false));
         $pager->setCurrentPage($page);
         $pager->setMaxPerPage($perPage);
-        $paginator = new PagerfantaPaginatorAdapter($pager, $routeGenerator);
-        $resource->setPaginator($paginator);
+
+        $resource->setPaginator(new PagerfantaPaginatorAdapter($pager, $routeGenerator));
 
         return $this->returnResourceResponse($request, $fractal, $resource);
     }
@@ -109,15 +121,16 @@ class ApiOrderController extends BaseOrderController
     {
         $order = $this->findOr404($orderId);
 
-        $includes = $request->get('includes', []);
+        $fractal = $this->buildFractalManager($request->get('includes', []));
 
         if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
         }
 
-        $resource = new Item($order, $this->getOrderTransformer());
+        $model = $this->getViewBuilder()->buildView($order, $fractal->getRequestedIncludes());
+        $resource = new Item($model, $this->getOrderTransformer());
 
-        return $this->returnResourceResponse($request, $includes, $resource);
+        return $this->returnResourceResponse($request, $fractal, $resource);
     }
 
     public function acceptElementsAction(Request $request, $orderId)
@@ -190,14 +203,14 @@ class ApiOrderController extends BaseOrderController
      */
     private function getOrderTransformer()
     {
-        return new OrderTransformer(new OrderElementTransformer($this->app));
+        return new OrderTransformer(new OrderElementTransformer($this->app['media_accessor.subdef_url_generator']));
     }
 
     /**
      * @param string|array $includes
      * @return Manager
      */
-    private function parseIncludes($includes)
+    private function buildFractalManager($includes)
     {
         $fractal = new Manager();
 
@@ -214,7 +227,7 @@ class ApiOrderController extends BaseOrderController
      */
     private function returnResourceResponse(Request $request, $includes, ResourceInterface $resource)
     {
-        $fractal = $includes instanceof Manager ? $includes : $this->parseIncludes($includes);
+        $fractal = $includes instanceof Manager ? $includes : $this->buildFractalManager($includes);
 
         return Result::create($request, $fractal->createData($resource)->toArray())->createResponse();
     }
@@ -234,5 +247,14 @@ class ApiOrderController extends BaseOrderController
         }
 
         return $elementIds;
+    }
+
+    private function getViewBuilder()
+    {
+        return new OrderViewBuilder(
+            $this->app,
+            $this->getApplicationBox(),
+            $this->app['service.media_subdef']
+        );
     }
 }

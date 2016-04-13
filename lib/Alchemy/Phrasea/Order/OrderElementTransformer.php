@@ -10,9 +10,7 @@
 
 namespace Alchemy\Phrasea\Order;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
-use Alchemy\Phrasea\Model\Entities\OrderElement;
 use League\Fractal\ParamBag;
 use League\Fractal\TransformerAbstract;
 
@@ -23,22 +21,25 @@ class OrderElementTransformer extends TransformerAbstract
     private $validParams = ['ttl'];
 
     /**
-     * @var Application
+     * @var MediaSubDefinitionUrlGenerator
      */
-    private $app;
+    private $urlGenerator;
 
-    public function __construct(Application $app)
+    public function __construct(MediaSubDefinitionUrlGenerator $urlGenerator)
     {
-        $this->app = $app;
+        $this->urlGenerator = $urlGenerator;
     }
 
-    public function transform(OrderElement $element)
+    public function transform(OrderElementView $model)
     {
+        $element = $model->getElement();
+        $record = $model->getRecordReference();
+
         $data = [
             'id' => $element->getId(),
             'record' => [
-                'databox_id' => $element->getSbasId($this->app),
-                'record_id' => $element->getRecordId(),
+                'databox_id' => $record->getDataboxId(),
+                'record_id' => $record->getRecordId(),
             ],
         ];
 
@@ -52,83 +53,56 @@ class OrderElementTransformer extends TransformerAbstract
         return $data;
     }
 
-    public function includeResourceLinks(OrderElement $element, ParamBag $params = null)
+    public function includeResourceLinks(OrderElementView $model, ParamBag $params = null)
     {
-        $ttl = null;
+        $parameterArray = $this->extractParamBagValues($params);
+        $usedParams = array_keys(array_filter($parameterArray));
 
-        if ($params) {
-            $usedParams = array_keys(iterator_to_array($params));
-
-            if (array_diff($usedParams, $this->validParams)) {
-                throw new \RuntimeException(sprintf(
-                    'Invalid param(s): "%s". Valid param(s): "%s"',
-                    implode(', ', $usedParams),
-                    implode(', ', $this->validParams)
-                ));
-            }
-
-            list ($ttl) = $params->get('ttl');
+        if (array_diff($usedParams, $this->validParams)) {
+            throw new \RuntimeException(sprintf(
+                'Invalid param(s): "%s". Valid param(s): "%s"',
+                implode(', ', $usedParams),
+                implode(', ', $this->validParams)
+            ));
         }
 
-        $generator = $this->getSubdefUrlGenerator();
+        list ($ttl) = $parameterArray['ttl'];
 
         if (null === $ttl) {
-            $ttl = $generator->getDefaultTTL();
+            $ttl = $this->urlGenerator->getDefaultTTL();
         }
 
-        $urls = $generator->generateMany($this->app->getAuthenticatedUser(), $this->findOrderableMediaSubdef($element), $ttl);
-        $urls = array_map(null, array_keys($urls), array_values($urls));
+        $subdefs = $model->getOrderableMediaSubdefs();
+        $urls = $this->urlGenerator->generateMany($model->getAuthenticatedUser(), $subdefs, $ttl);
 
-        return $this->collection($urls, function (array $data) use ($ttl) {
+        $data = array_map(null, $subdefs, $urls);
+
+        return $this->collection($data, function (array $data) use ($ttl) {
+            /** @var \media_subdef $subdef */
+            list($subdef, $url) = $data;
+
             return [
-                'name' => $data[0],
-                'url' => $data[1],
+                'name' => $subdef->get_name(),
+                'url' => $url,
                 'url_ttl' => $ttl,
             ];
         });
     }
 
     /**
-     * @param OrderElement $element
-     * @return \media_subdef[]
+     * @param ParamBag|null $params
+     * @return array
      */
-    private function findOrderableMediaSubdef(OrderElement $element)
+    private function extractParamBagValues(ParamBag $params = null)
     {
-        if (false !== $element->getDeny()) {
-            return [];
+        $array = array_fill_keys($this->validParams, null);
+
+        if ($params) {
+            array_walk($array, function (&$value, $key) use ($params) {
+                $value = $params[$key];
+            });
         }
 
-        $databox = $this->app->findDataboxById($element->getSbasId($this->app));
-        $record = $databox->get_record($element->getRecordId());
-
-        $subdefNames = [];
-
-        foreach ($databox->get_subdef_structure()->getSubdefGroup($record->getType()) as $databoxSubdef) {
-            if ($databoxSubdef->isOrderable()) {
-                $subdefNames[] = $databoxSubdef->get_name();
-            }
-        }
-
-        $subdefs = [];
-
-        foreach ($subdefNames as $subdefName) {
-            if ($record->has_subdef($subdefName)) {
-                try {
-                    $subdefs[$subdefName] = new \media_subdef($this->app, $record, $subdefName);
-                } catch (\Exception_Media_SubdefNotFound $exception) {
-                    // ignore missing subdef
-                }
-            }
-        }
-
-        return $subdefs;
-    }
-
-    /**
-     * @return MediaSubDefinitionUrlGenerator
-     */
-    private function getSubdefUrlGenerator()
-    {
-        return $this->app['media_accessor.subdef_url_generator'];
+        return $array;
     }
 }

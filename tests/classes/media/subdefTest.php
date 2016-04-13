@@ -28,13 +28,14 @@ class media_subdefTest extends \PhraseanetTestCase
         parent::setUp();
 
         if (null === self::$recordonbleu) {
-            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
+            $app = $this->getApplication();
+            $file = new File($app, $app['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
 
-            self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
-            self::$DI['app']['subdef.generator']->generateSubdefs(self::$recordonbleu);
+            self::$recordonbleu = record_adapter::createFromFile($file, $app);
+            $app['subdef.generator']->generateSubdefs(self::$recordonbleu);
 
             foreach (self::$recordonbleu->get_subdefs() as $subdef) {
-                if ($subdef->get_name() == 'document') {
+                if (!in_array($subdef->get_name(), ['thumbnail', 'preview'], true)) {
                     continue;
                 }
 
