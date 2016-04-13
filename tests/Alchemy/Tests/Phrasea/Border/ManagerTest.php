@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\Attribute\Story;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 
 /**
  * @group functional
@@ -144,13 +145,15 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
         $records = [];
 
         $postProcessRecord = function ($record) use (&$records) {
-                $records[] = $record;
-            };
+            $records[] = $record;
+        };
 
-        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
+        $app = $this->getApplication();
+        $collection = $this->getCollection();
+        $file = File::buildFromPathfile(self::$file1, $collection, $app);
         $first = $odd = false;
         $tofetch = [];
-        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
+        foreach ($collection->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
             }
@@ -196,7 +199,7 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             $odd = !$odd;
         }
 
-        $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
+        $story = \record_adapter::createStory($app, $collection);
         $file->addAttribute(new Story($story));
 
         $status = '';
@@ -208,17 +211,19 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             }
         }
 
-        $file->addAttribute(new Status(self::$DI['app'], strrev($status)));
+        $file->addAttribute(new Status($app, strrev($status)));
 
-        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $app['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_RECORD));
 
+        /** @var \record_adapter $record */
         $record = current($records);
+        $this->assertInstanceOf(\record_adapter::class, $record);
 
         $found = false;
 
         foreach ($record->get_grouping_parents()->get_elements() as $parent_story) {
-            if ($parent_story->get_serialize_key() === $story->getId()) {
+            if ($parent_story->getId() === $story->getId()) {
                 $found = true;
             }
         }
@@ -227,18 +232,19 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             $this->fail('Unable to find story in parents');
         }
 
-        $status = strrev($record->get_status());
+        $status = strrev($record->getStatus());
 
         $this->assertEquals(32, strlen($status));
         $this->assertEquals('1', substr($status, 4, 1));
         $this->assertEquals('1', substr($status, 8, 1));
 
         foreach ($tofetch as $name => $values) {
-
             $found = [];
+
             foreach ($record->get_caption()->get_field($name)->get_values() as $value) {
                 $found[] = $value->getValue();
             }
+
             $this->assertEquals($values, $found);
         }
 
@@ -261,10 +267,12 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 $lazaret = $element;
             };
 
-        $file = File::buildFromPathfile(self::$file1, self::$DI['collection'], self::$DI['app']);
+        $app = $this->getApplication();
+        $collection = $this->getCollection();
+        $file = File::buildFromPathfile(self::$file1, $collection, $app);
         $odd = false;
         $tofetchMeta = $tofetchField = [];
-        foreach (self::$DI['collection']->get_databox()->get_meta_structure() as $databox_field) {
+        foreach ($collection->get_databox()->get_meta_structure() as $databox_field) {
             if ($databox_field->is_readonly()) {
                 continue;
             }
@@ -300,14 +308,16 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             $odd = !$odd;
         }
 
-        $file->addAttribute(new Story(self::$DI['record_story_1']));
+        $story = $this->getRecordStory1();
+        $file->addAttribute(new Story($story));
 
         $status = '1';
+
         foreach (range(1, 31) as $i) {
             $status .= '0';
         }
 
-        $file->addAttribute(new Status(self::$DI['app'], $status));
+        $file->addAttribute(new Status($app, $status));
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcessRecord, Manager::FORCE_LAZARET));
 
@@ -315,12 +325,13 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
 
         $foundMeta = $foundField = [];
 
-        /* @var $lazaret \Alchemy\Phrasea\Model\Entities\LazaretFile */
+        /** @var LazaretFile $lazaret */
         foreach ($lazaret->getAttributes() as $attr) {
-            $attribute = Factory::getFileAttribute(self::$DI['app'], $attr->getName(), $attr->getValue());
+            $attribute = Factory::getFileAttribute($app, $attr->getName(), $attr->getValue());
 
             if ($attribute->getName() == AttributeInterface::NAME_STORY) {
-                if ($attribute->getValue()->get_serialize_key() == self::$DI['record_story_1']->get_serialize_key()) {
+                /** @var Story $attribute */
+                if ($attribute->getValue()->getId() == $story->getId()) {
                     $story_found = true;
                 }
             } elseif ($attribute->getName() == AttributeInterface::NAME_METADATA) {
