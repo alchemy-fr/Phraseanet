@@ -19,9 +19,7 @@ class Environment
     public function __construct($name, $debug)
     {
         $this->name = (string) $name;
-        $this->debug = ((bool) $debug) || ! in_array($name, [
-            Application::ENV_PROD, Application::ENV_TEST
-        ]);
+        $this->debug = ((bool) $debug) || $name === Application::ENV_DEV;
     }
 
     /**

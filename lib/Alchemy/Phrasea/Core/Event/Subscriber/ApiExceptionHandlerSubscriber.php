@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -62,7 +61,7 @@ class ApiExceptionHandlerSubscriber implements EventSubscriberInterface
         } elseif ($e instanceof NotFoundHttpException) {
             $code = 404;
         } elseif ($e instanceof HttpExceptionInterface) {
-            if (in_array($e->getStatusCode(), [400, 401, 403, 404, 405, 406, 422, 503])) {
+            if (in_array($e->getStatusCode(), [400, 401, 403, 404, 405, 406, 422, 503], false)) {
                 $code = $e->getStatusCode();
             } else {
                 $code = 500;
