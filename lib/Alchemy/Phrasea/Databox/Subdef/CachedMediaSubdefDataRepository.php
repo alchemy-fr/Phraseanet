@@ -113,9 +113,15 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $this->decorated->save($data);
 
-        $keys = array_map([$this, 'dataToKey'], $data);
-
         // all saved keys are now stalled. decorated repository could modify values on store (update time for example)
+        $recordIds = [];
+
+        foreach ($data as $item) {
+            $recordIds[] = $item['record_id'];
+        }
+
+        $keys = array_merge(array_map([$this, 'dataToKey'], $data), $this->generateAllCacheKeys($recordIds));
+
         array_walk($keys, [$this->cache, 'delete']);
     }
 
@@ -160,6 +166,8 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      */
     private function generateAllCacheKeys(array $recordIds)
     {
+        $recordIds = array_unique($recordIds);
+
         return array_map([$this, 'getCacheKey'], $recordIds, array_fill(0, count($recordIds), null));
     }
 
