@@ -158,7 +158,7 @@ class EditController extends Controller
                 if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), 'chgstatus')) {
                     $elements[$indice]['editableStatus'] = true;
                     foreach ($status as $n => $s) {
-                        $tmp_val = substr(strrev($record->get_status()), $n, 1);
+                        $tmp_val = substr(strrev($record->getStatus()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
                         $elements[$indice]['statbits'][$n]['dirty'] = false;
                     }
@@ -347,7 +347,7 @@ class EditController extends Controller
                 $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
             }
 
-            $newstat = $record->get_status();
+            $newstat = $record->getStatus();
             $statbits = ltrim($statbits, 'x');
             if (!in_array($statbits, ['', 'null'])) {
                 $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
@@ -361,7 +361,7 @@ class EditController extends Controller
                     $newstat = \databox_status::operation_or($newstat, $mask_or);
                 }
 
-                $record->set_binary_status($newstat);
+                $record->setStatus($newstat);
             }
 
             $record

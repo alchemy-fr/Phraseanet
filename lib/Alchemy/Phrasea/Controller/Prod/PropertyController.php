@@ -189,14 +189,14 @@ class PropertyController extends Controller
 
         if (isset($postStatus[$sbasId]) && is_array($postStatus[$sbasId])) {
             $postStatus = $postStatus[$sbasId];
-            $currentStatus = strrev($record->get_status());
+            $currentStatus = strrev($record->getStatus());
 
             $newStatus = '';
             foreach (range(0, 31) as $i) {
                 $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
             }
 
-            $record->set_binary_status(strrev($newStatus));
+            $record->setStatus(strrev($newStatus));
 
             return [
                 'current_status' => $currentStatus,

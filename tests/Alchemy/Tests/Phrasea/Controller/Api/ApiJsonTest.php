@@ -1234,13 +1234,15 @@ class ApiJsonTest extends ApiTestCase
 
     public function testRecordsSetStatus()
     {
-        self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
+        $app = $this->getApplication();
+        $app['phraseanet.SE'] = $this->createSearchEngineMock();
         $this->setToken($this->userAccessToken);
 
-        $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/setstatus/';
+        $record1 = $this->getRecord1();
+        $route = '/api/v1/records/' . $record1->getDataboxId() . '/' . $record1->getRecordId() . '/setstatus/';
 
-        $record_status = strrev(self::$DI['record_1']->get_status());
-        $statusStructure = self::$DI['record_1']->getStatusStructure();
+        $record_status = strrev($record1->getStatus());
+        $statusStructure = $record1->getStatusStructure();
 
         $tochange = [];
         foreach ($statusStructure as $n => $datas) {
@@ -1248,20 +1250,18 @@ class ApiJsonTest extends ApiTestCase
         }
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
 
-        /**
-         * Get fresh record_1
-         */
-        $testRecord = new \record_adapter(self::$DI['app'], self::$DI['record_1']->get_sbas_id(), self::$DI['record_1']->get_record_id());
+        // Get fresh record_1
+        $testRecord = new \record_adapter($app, $record1->getDataboxId(), $record1->getRecordId());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $this->evaluateRecordsStatusResponse($testRecord, $content);
 
-        $record_status = strrev($testRecord->get_status());
+        $record_status = strrev($testRecord->getStatus());
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
@@ -1270,25 +1270,23 @@ class ApiJsonTest extends ApiTestCase
             $tochange[$n] = $value == '0' ? '1' : '0';
         }
 
-        self::$DI['client']->request('POST', $route, $this->getParameters(['status' => $tochange]), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
 
-        /**
-         * Get fresh record_1
-         */
-        $testRecord = new \record_adapter(self::$DI['app'], $testRecord->getDataboxId(), $testRecord->getRecordId());
+        // Get fresh record_1
+        $testRecord = new \record_adapter($app, $testRecord->getDataboxId(), $testRecord->getRecordId());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $this->evaluateRecordsStatusResponse($testRecord, $content);
 
-        $record_status = strrev($testRecord->get_status());
+        $record_status = strrev($testRecord->getStatus());
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
-        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
+        $record1->setStatus(str_repeat('0', 32));
     }
 
     public function testMoveRecordToCollection()

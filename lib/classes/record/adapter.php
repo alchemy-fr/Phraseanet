@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -39,7 +39,6 @@ use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
-
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
     const CACHE_ORIGINAL_NAME = 'originalname';
@@ -49,7 +48,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     const CACHE_SHA256 = 'sha256';
     const CACHE_SUBDEFS = 'subdefs';
     const CACHE_GROUPING = 'grouping';
-    const CACHE_STATUS = 'status';
 
     /**
      * @param Application $app
@@ -79,6 +77,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $collection_id;
     private $mime;
     private $number;
+
+    /**
+     * @var string
+     */
     private $status;
     private $subdefs;
     private $type;
@@ -138,6 +140,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->created = $record->getCreated();
         $this->base_id = $record->getBaseId();
         $this->collection_id = $record->getCollectionId();
+        $this->status = $record->getStatus();
     }
 
     /**
@@ -523,51 +526,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getSha256()
     {
         return $this->sha256;
-    }
-
-    /**
-     * @return string
-     */
-    public function get_status()
-    {
-        if (!$this->status) {
-            $this->status = $this->retrieve_status();
-        }
-
-        return $this->status;
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function retrieve_status()
-    {
-        try {
-            $data = $this->get_data_from_cache(self::CACHE_STATUS);
-        } catch (Exception $e) {
-            $data = false;
-        }
-
-        if (false !== $data) {
-            return $data;
-        }
-
-        $status = $this->getDataboxConnection()->fetchColumn(
-            'SELECT BIN(status) as status FROM record WHERE record_id = :record_id',
-            [':record_id' => $this->getRecordId()]
-        );
-
-        if (false === $status) {
-            throw new Exception('status not found');
-        }
-
-        $status = str_pad($status, 32, '0', STR_PAD_LEFT);
-
-        $this->set_data_to_cache($status, self::CACHE_STATUS);
-
-        return $status;
     }
 
     public function has_subdef($name)
@@ -1108,26 +1066,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    /**
-     * @param  string         $status
-     * @return record_adapter
-     */
-    public function set_binary_status($status)
-    {
-        $connection = $this->getDataboxConnection();
-
-        $connection->executeUpdate(
-            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id= :record_id',
-            ['status' => bindec($status), 'record_id' => $this->getRecordId()]
-        );
-
-        $this->delete_data_from_cache(self::CACHE_STATUS);
-
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
-
-        return $this;
-    }
-
     private function dispatch($eventName, RecordEvent $event)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
@@ -1511,9 +1449,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         switch ($option)
         {
-            case self::CACHE_STATUS:
-                $this->status = null;
-                break;
             case self::CACHE_SUBDEFS:
                 $this->subdefs = null;
                 break;
@@ -1795,17 +1730,36 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->reference->getId();
     }
 
+    /**
+     * @param string $status
+     * @return void
+     */
     public function setStatus($status)
     {
-        $this->set_binary_status($status);
+        $this->getDataboxConnection()->executeUpdate(
+            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
+            ['status' => bindec($status), 'record_id' => $this->getRecordId()]
+        );
 
-        $this->delete_data_from_cache(self::CACHE_STATUS);
+        $this->status = str_pad($status, 32, '0', STR_PAD_LEFT);
+        // modification date is now unknown, delete from cache to reload on another record
+        $this->delete_data_from_cache();
+
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /** {@inheritdoc} */
     public function getStatusBitField()
     {
-        return bindec($this->get_status());
+        return bindec($this->getStatus());
     }
 
     /** {@inheritdoc} */
@@ -1832,6 +1786,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             'created'       => $this->created->format(DATE_ISO8601),
             'base_id'       => $this->base_id,
             'collection_id' => $this->collection_id,
+            'status' => $this->status,
         ];
 
         $this->set_data_to_cache($data);
@@ -1857,6 +1812,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->original_name = $row['originalName'];
         $this->sha256 = $row['sha256'];
         $this->mime = $row['mime'];
+        $this->status = str_pad($row['status'], 32, '0', STR_PAD_LEFT);
     }
 
     /**

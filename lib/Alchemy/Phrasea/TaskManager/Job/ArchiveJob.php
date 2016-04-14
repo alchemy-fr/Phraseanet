@@ -1011,7 +1011,7 @@ class ArchiveJob extends AbstractJob
             $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
         }
 
-        $story->set_binary_status(\databox_status::operation_or($stat0, $stat1));
+        $story->setStatus(\databox_status::operation_or($stat0, $stat1));
         $story->rebuild_subdefs();
 
         unset($media);

@@ -125,7 +125,8 @@ class LegacyRecordRepository implements RecordRepository
                 $connection->quoteIdentifier('type'),
                 'originalname AS originalName',
                 'sha256',
-                'mime'
+                'mime',
+                'LPAD(BIN(status), 32, \'0\') as status'
             )
             ->from('record', 'r');
     }

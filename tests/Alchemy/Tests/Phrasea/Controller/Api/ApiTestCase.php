@@ -696,7 +696,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $statusStructure = $record->getDatabox()->getStatusStructure();
 
-        $r_status = strrev($record->get_status());
+        $r_status = strrev($record->getStatus());
         $this->assertArrayHasKey('status', $content['response']);
         $this->assertEquals(count((array) $content['response']['status']), count($statusStructure->toArray()));
         foreach ($content['response']['status'] as $status) {
