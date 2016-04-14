@@ -411,6 +411,7 @@
         mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
         notActionable: {{ not_actionable }},
         notActionableMsg: '{{notActionableMsg}}',
+        diapoSize: {{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') }},
         state: {
             T_statbits: {{ JSonStatus|raw }},
             T_fields: {{ JSonFields|raw }},

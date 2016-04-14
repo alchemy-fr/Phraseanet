@@ -17,13 +17,13 @@ class LanguageController
     /** @var TranslatorInterface */
     private $translator;
     private $serverName;
-    
+
     public function __construct(TranslatorInterface $translator, $serverName)
     {
         $this->translator = $translator;
         $this->serverName = $serverName;
     }
-    
+
     public function getTranslationsAction()
     {
         $translator = $this->translator;
@@ -111,6 +111,11 @@ class LanguageController
             'toolbox'                 => $translator->trans('Tool box'),
             'print'                   => $translator->trans('Print'),
             'attention'               => $translator->trans('Attention !'),
+            'mapMarkerEdit' => $translator->trans('Edit position'),
+            'mapMarkerAdd' => $translator->trans('Add a position'),
+            'mapMarkerMoveLabel' => $translator->trans('Drag and drop the pin to move position'),
+            'mapMarkerEditCancel' => $translator->trans('Cancel'),
+            'mapMarkerEditSubmit' => $translator->trans('Submit'),
         ]);
     }
 }
