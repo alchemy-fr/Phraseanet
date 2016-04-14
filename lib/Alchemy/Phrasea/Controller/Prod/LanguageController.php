@@ -111,11 +111,11 @@ class LanguageController
             'toolbox'                 => $translator->trans('Tool box'),
             'print'                   => $translator->trans('Print'),
             'attention'               => $translator->trans('Attention !'),
-            'mapMarkerEdit' => $translator->trans('Edit position'),
-            'mapMarkerAdd' => $translator->trans('Add a position'),
-            'mapMarkerMoveLabel' => $translator->trans('Drag and drop the pin to move position'),
-            'mapMarkerEditCancel' => $translator->trans('Cancel'),
-            'mapMarkerEditSubmit' => $translator->trans('Submit'),
+            'mapMarkerEdit'           => $translator->trans('Edit position'),
+            'mapMarkerAdd'            => $translator->trans('Add a position'),
+            'mapMarkerMoveLabel'      => $translator->trans('Drag and drop the pin to move position'),
+            'mapMarkerEditCancel'     => $translator->trans('Cancel'),
+            'mapMarkerEditSubmit'     => $translator->trans('Submit'),
         ]);
     }
 }
