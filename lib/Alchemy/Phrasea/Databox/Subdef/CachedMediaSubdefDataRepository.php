@@ -181,21 +181,11 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
 
-        if (null === $names) {
-            $extra = array_fill_keys($this->generateAllCacheKeys($recordIds), []);
+        $data = $this->normalizeRetrievedData($retrieved, $keys);
 
-            foreach ($retrieved as $item) {
-                $extra[$this->getCacheKey($item['record_id'])][] = $this->getCacheKey($item['record_id'], $item['name']);
-            }
-        }
+        $toCache = null === $names ? $this->appendCacheExtraData($data, $retrieved, $recordIds) : $data;
 
-        $data = array_fill_keys($keys, null);
-
-        foreach ($retrieved as $item) {
-            $data[$this->dataToKey($item)] = $item;
-        }
-
-        $this->cache->saveMultiple(isset($extra) ? array_merge($data, $extra) : $data, $this->lifeTime);
+        $this->cache->saveMultiple($toCache, $this->lifeTime);
 
         return $this->filterNonNull($data);
     }
@@ -217,5 +207,38 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
         $data = $this->cache->fetchMultiple($keys);
 
         return count($keys) === count($data) ? call_user_func_array('array_merge', $data) : [];
+    }
+
+    /**
+     * @param array $retrieved
+     * @param array $keys
+     * @return array
+     */
+    private function normalizeRetrievedData(array $retrieved, array $keys)
+    {
+        $data = array_fill_keys($keys, null);
+
+        foreach ($retrieved as $item) {
+            $data[$this->dataToKey($item)] = $item;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @param array $retrieved
+     * @param array $recordIds
+     * @return array
+     */
+    private function appendCacheExtraData(array $data, array $retrieved, array $recordIds)
+    {
+        $extra = array_fill_keys($this->generateAllCacheKeys($recordIds), []);
+
+        foreach ($retrieved as $item) {
+            $extra[$this->getCacheKey($item['record_id'])][] = $this->getCacheKey($item['record_id'], $item['name']);
+        }
+
+        return array_merge($data, $extra);
     }
 }
