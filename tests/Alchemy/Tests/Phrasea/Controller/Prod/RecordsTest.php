@@ -18,9 +18,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::whatCanIDelete
-     */
     public function testWhatCanIDelete()
     {
         self::$DI['client']->request('POST', '/prod/records/delete/what/', ['lst'     => self::$DI['record_1']->get_serialize_key()]);
@@ -29,9 +26,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::doDeleteRecords
-     */
     public function testDoDeleteRecords()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
@@ -47,9 +41,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::renewUrl
-     */
     public function testRenewUrl()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
@@ -60,9 +51,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $record->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailNotAjax()
     {
         self::$DI['client']->request('POST', '/prod/records/');
@@ -108,9 +96,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailResult()
     {
         $app = $this->mockElasticsearchResult(self::$DI['record_1']);
@@ -141,9 +126,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailREG()
     {
         $this->authenticate(self::$DI['app']);
@@ -168,9 +150,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
@@ -198,9 +177,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailFeed()
     {
         $this->authenticate(self::$DI['app']);

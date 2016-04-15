@@ -903,11 +903,14 @@ class ApiJsonTest extends ApiTestCase
             ->method('getSuggestions')
             ->will($this->returnValue(new ArrayCollection()));
 
-        self::$DI['app']['phraseanet.SE'] = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $app = $this->getApplication();
+        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
+        $app['phraseanet.SE'] = $mock;
 
-        self::$DI['app']['phraseanet.SE']->expects($this->once())
+            $mock
+            ->expects($this->once())
             ->method('query')
-            ->with('koala', 0, 10)
+            ->withAnyParameters()
             ->will($this->returnValue(
                 $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
                     ->disableOriginalConstructor()
