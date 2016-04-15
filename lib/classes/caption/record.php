@@ -193,6 +193,21 @@ SQL;
     }
 
     /**
+     * @return caption_field[]
+     */
+    public function getDCFields()
+    {
+        $databoxDcesFieldIds = array_map(function (databox_field $databox_field) {
+            return $databox_field->get_id();
+        }, $this->getDatabox()->get_meta_structure()->getDcesFields());
+
+        return array_intersect_key(
+            $this->retrieve_fields(),
+            array_fill_keys($databoxDcesFieldIds, null)
+        );
+    }
+
+    /**
      * @param  string $label
      * @return caption_field|null
      */

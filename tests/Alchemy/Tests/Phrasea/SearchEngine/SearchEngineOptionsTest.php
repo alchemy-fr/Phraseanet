@@ -39,7 +39,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         $options->setMinDate(\DateTime::createFromFormat(DATE_ATOM, $min_date->format(DATE_ATOM)));
         $options->setMaxDate(\DateTime::createFromFormat(DATE_ATOM, $max_date->format(DATE_ATOM)));
         $options->setFirstResult(3);
-        $options->setMaxPerPage(42);
+        $options->setMaxResults(42);
 
         $serialized = $options->serialize();
 

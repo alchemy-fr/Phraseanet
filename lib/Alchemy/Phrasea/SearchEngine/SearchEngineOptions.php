@@ -50,7 +50,7 @@ class SearchEngineOptions
         'sort_by',
         'sort_ord',
         'business_fields',
-        'max_per_page',
+        'max_results',
         'first_result',
     ];
 
@@ -113,7 +113,7 @@ class SearchEngineOptions
                 $options->allowBusinessFieldsOn($collectionNormalizer($value));
             },
             'first_result' => 'setFirstResult',
-            'max_per_page' => 'setMaxPerPage',
+            'max_results' => 'setResults',
         ];
 
         return $methods;
@@ -149,7 +149,7 @@ class SearchEngineOptions
     /**
      * @var int
      */
-    private $max_per_page = 10;
+    private $max_results = 10;
 
     /**
      * @var int
@@ -710,16 +710,16 @@ class SearchEngineOptions
         return $options;
     }
 
-    public function setMaxPerPage($max_per_page)
+    public function setMaxResults($max_results)
     {
-        Assertion::greaterOrEqualThan($max_per_page, 0);
+        Assertion::greaterOrEqualThan($max_results, 0);
 
-        $this->max_per_page = (int)$max_per_page;
+        $this->max_results = (int)$max_results;
     }
 
-    public function getMaxPerPage()
+    public function getMaxResults()
     {
-        return $this->max_per_page;
+        return $this->max_results;
     }
 
     /**

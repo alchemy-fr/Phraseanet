@@ -89,8 +89,13 @@ class record_preview extends record_adapter
                 if (null === $search_engine) {
                     throw new \LogicException('Search Engine should be provided');
                 }
+                if (!$options) {
+                    $options = new SearchEngineOptions();
+                }
+                $options->setFirstResult($pos);
+                $options->setMaxResults(1);
 
-                $results = $search_engine->query($query, (int) ($pos), 1, $options);
+                $results = $search_engine->query($query, $options);
 
                 if ($results->getResults()->isEmpty()) {
                     throw new Exception('Record introuvable');
@@ -187,9 +192,11 @@ class record_preview extends record_adapter
 
         switch ($this->env) {
             case 'RESULT':
-                $perPage = 56;
-                $index = ($this->pos - 3) < 0 ? 0 : ($this->pos - 3);
-                $results = $this->searchEngine->query($this->query, $index, $perPage, $this->options);
+                $options = $this->options ?: new SearchEngineOptions();
+                $options->setFirstResult(($this->pos - 3) < 0 ? 0 : ($this->pos - 3));
+                $options->setMaxResults(56);
+
+                $results = $this->searchEngine->query($this->query, $options);
 
                 $this->train = $results->getResults()->toArray();
                 break;
