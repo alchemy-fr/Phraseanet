@@ -56,7 +56,7 @@ class SearchEngineOptions
 
     /**
      * @param Application $app
-     * @return array
+     * @return callable[]
      */
     private static function getHydrateMethods(Application $app)
     {
@@ -84,10 +84,16 @@ class SearchEngineOptions
             return $collections;
         };
 
-        $methods = [
-            'record_type' => 'setRecordType',
-            'search_type' => 'setSearchType',
-            'status' => 'setStatus',
+        $optionSetter = function ($setter) {
+            return function ($value, SearchEngineOptions $options) use ($setter) {
+                $options->{$setter}($value);
+            };
+        };
+
+        return [
+            'record_type' => $optionSetter('setRecordType'),
+            'search_type' => $optionSetter('setSearchType'),
+            'status' => $optionSetter('setStatus'),
             'date_min' => function ($value, SearchEngineOptions $options) {
                 $options->setMinDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
             },
@@ -99,7 +105,7 @@ class SearchEngineOptions
                     $options->setLocale($value);
                 }
             },
-            'stemming' => 'setStemming',
+            'stemming' => $optionSetter('setStemming'),
             'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
                 $options->setDateFields($fieldNormalizer($value));
             },
@@ -112,11 +118,9 @@ class SearchEngineOptions
             'business_fields' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
                 $options->allowBusinessFieldsOn($collectionNormalizer($value));
             },
-            'first_result' => 'setFirstResult',
-            'max_results' => 'setResults',
+            'first_result' => $optionSetter('setFirstResult'),
+            'max_results' => $optionSetter('setMaxResults'),
         ];
-
-        return $methods;
     }
 
     /** @var string */
@@ -548,17 +552,13 @@ class SearchEngineOptions
                 throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
             }
 
-            $callable = $methods[$key];
-
-            if (is_string($callable) && method_exists($options, $callable)) {
-                $callable = [$options, $callable];
-            }
-
             if ($value instanceof \stdClass) {
                 $value = (array)$value;
             }
 
-            $callable($value);
+            $callable = $methods[$key];
+
+            $callable($value, $options);
         }
 
         if ($sort_by) {
