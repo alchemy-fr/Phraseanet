@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
+use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -47,8 +49,75 @@ class SearchEngineOptions
         'stemming',
         'sort_by',
         'sort_ord',
-        'business_fields'
+        'business_fields',
+        'max_per_page',
+        'first_result',
     ];
+
+    /**
+     * @param Application $app
+     * @return array
+     */
+    private static function getHydrateMethods(Application $app)
+    {
+        $fieldNormalizer = function ($value) use ($app) {
+            return array_map(function ($serialized) use ($app) {
+                $data = explode('_', $serialized, 2);
+
+                return $app->findDataboxById($data[0])->get_meta_structure()->get_element($data[1]);
+            }, $value);
+        };
+
+        $collectionNormalizer = function ($value) use ($app) {
+            $references = new CollectionReferenceCollection($app['repo.collection-references']->findMany($value));
+
+            $collections = [];
+
+            foreach ($references->groupByDataboxIdAndCollectionId() as $databoxId => $indexes) {
+                $repository = $app['repo.collections-registry']->getRepositoryByDatabox($databoxId);
+
+                foreach ($indexes as $collectionId => $index) {
+                    $collections[] = $repository->find($collectionId);
+                }
+            }
+
+            return $collections;
+        };
+
+        $methods = [
+            'record_type' => 'setRecordType',
+            'search_type' => 'setSearchType',
+            'status' => 'setStatus',
+            'date_min' => function ($value, SearchEngineOptions $options) {
+                $options->setMinDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
+            },
+            'date_max' => function ($value, SearchEngineOptions $options) {
+                $options->setMaxDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
+            },
+            'i18n' => function ($value, SearchEngineOptions $options) {
+                if ($value) {
+                    $options->setLocale($value);
+                }
+            },
+            'stemming' => 'setStemming',
+            'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
+                $options->setDateFields($fieldNormalizer($value));
+            },
+            'fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
+                $options->setFields($fieldNormalizer($value));
+            },
+            'collections' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
+                $options->onCollections($collectionNormalizer($value));
+            },
+            'business_fields' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
+                $options->allowBusinessFieldsOn($collectionNormalizer($value));
+            },
+            'first_result' => 'setFirstResult',
+            'max_per_page' => 'setMaxPerPage',
+        ];
+
+        return $methods;
+    }
 
     /** @var string */
     protected $record_type;
@@ -76,6 +145,16 @@ class SearchEngineOptions
     /** @var string */
     protected $sort_ord = self::SORT_MODE_DESC;
     protected $business_fields = [];
+
+    /**
+     * @var int
+     */
+    private $max_per_page = 10;
+
+    /**
+     * @var int
+     */
+    private $first_result = 0;
 
     /**
      * Defines locale code to use for query
@@ -452,86 +531,34 @@ class SearchEngineOptions
         $options = new static();
         $options->disallowBusinessFields();
 
-        $sort_by = $sort_ord = null;
+        $methods = self::getHydrateMethods($app);
+
+        $sort_by = null;
+        $methods['sort_by'] = function ($value) use (&$sort_by) {
+            $sort_by = $value;
+        };
+
+        $sort_ord = null;
+        $methods['sort_ord'] = function ($value) use (&$sort_ord) {
+            $sort_ord = $value;
+        };
 
         foreach ($serialized as $key => $value) {
-
-            switch (true) {
-                case is_null($value):
-                    $value = null;
-                    break;
-                case in_array($key, ['date_min', 'date_max']):
-                    $value = \DateTime::createFromFormat(DATE_ATOM, $value);
-                    break;
-                case $value instanceof \stdClass:
-                    $tmpvalue = (array) $value;
-                    $value = [];
-
-                    foreach ($tmpvalue as $k => $data) {
-                        $k = ctype_digit($k) ? (int) $k : $k;
-                        $value[$k] = $data;
-                    }
-                    break;
-                case in_array($key, ['date_fields', 'fields']):
-                    $value = array_map(function ($serialized) use ($app) {
-                        $data = explode('_', $serialized);
-
-                        return $app->findDataboxById($data[0])->get_meta_structure()->get_element($data[1]);
-                    }, $value);
-                    break;
-                case in_array($key, ['collections', 'business_fields']):
-                    $value = array_map(function ($base_id) use ($app) {
-                                return \collection::getByBaseId($app, $base_id);
-                            }, $value);
-                    break;
+            if (!isset($methods[$key])) {
+                throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
             }
 
-            switch ($key) {
-                case 'record_type':
-                    $options->setRecordType($value);
-                    break;
-                case 'search_type':
-                    $options->setSearchType($value);
-                    break;
-                case 'status':
-                    $options->setStatus($value);
-                    break;
-                case 'date_min':
-                    $options->setMinDate($value);
-                    break;
-                case 'date_max':
-                    $options->setMaxDate($value);
-                    break;
-                case 'i18n':
-                    if ($value) {
-                        $options->setLocale($value);
-                    }
-                    break;
-                case 'stemming':
-                    $options->setStemming($value);
-                    break;
-                case 'sort_by':
-                    $sort_by = $value;
-                    break;
-                case 'sort_ord':
-                    $sort_ord = $value;
-                    break;
-                case 'date_fields':
-                    $options->setDateFields($value);
-                    break;
-                case 'fields':
-                    $options->setFields($value);
-                    break;
-                case 'collections':
-                    $options->onCollections($value);
-                    break;
-                case 'business_fields':
-                    $options->allowBusinessFieldsOn($value);
-                    break;
-                default:
-                    throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
-                    break;
+            $callable = $methods[$key];
+
+            if (is_string($callable) && method_exists($options, $callable)) {
+                $callable = [$options, $callable];
             }
+
+            if ($value instanceof \stdClass) {
+                $value = (array)$value;
+            }
+
+            $callable($value);
         }
 
         if ($sort_by) {
@@ -681,5 +708,36 @@ class SearchEngineOptions
         $options->setStemming((Boolean) $request->get('stemme'));
 
         return $options;
+    }
+
+    public function setMaxPerPage($max_per_page)
+    {
+        Assertion::greaterOrEqualThan($max_per_page, 0);
+
+        $this->max_per_page = (int)$max_per_page;
+    }
+
+    public function getMaxPerPage()
+    {
+        return $this->max_per_page;
+    }
+
+    /**
+     * @param int $first_result
+     * @return void
+     */
+    public function setFirstResult($first_result)
+    {
+        Assertion::greaterOrEqualThan($first_result, 0);
+
+        $this->first_result = (int)$first_result;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFirstResult()
+    {
+        return $this->first_result;
     }
 }
