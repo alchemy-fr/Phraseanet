@@ -74,7 +74,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      */
     public function findByRecordIdsAndNames(array $recordIds, array $names = null)
     {
-        $keys = $this->generateCacheKeys($recordIds, $names);
+        $keys = $this->computeKeys($recordIds, $names);
 
         if ($keys) {
             $data = $this->cache->fetchMultiple($keys);
@@ -102,7 +102,7 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $deleted = $this->decorated->delete($subdefIds);
 
-        $keys = array_map([$this, 'getCacheKey'], $subdefIds);
+        $keys = array_map([$this, 'dataToKey'], $subdefIds);
 
         $this->cache->saveMultiple(array_fill_keys($keys, null), $this->lifeTime);
 
@@ -113,40 +113,62 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $this->decorated->save($data);
 
-        $keys = array_map([$this, 'getCacheKey'], $data);
-
         // all saved keys are now stalled. decorated repository could modify values on store (update time for example)
+        $recordIds = [];
+
+        foreach ($data as $item) {
+            $recordIds[] = $item['record_id'];
+        }
+
+        $keys = array_merge(array_map([$this, 'dataToKey'], $data), $this->generateAllCacheKeys($recordIds));
+
         array_walk($keys, [$this->cache, 'delete']);
     }
 
-    private function getCacheKey(array $data)
+    /**
+     * @param array $data
+     * @return string
+     */
+    private function dataToKey(array $data)
     {
-        return $this->baseKey . 'media_subdef=' . json_encode([$data['record_id'], $data['name']]);
+        return $this->getCacheKey($data['record_id'], $data['name']);
+    }
+
+    /**
+     * @param int $recordId
+     * @param string|null $name
+     * @return string
+     */
+    private function getCacheKey($recordId, $name = null)
+    {
+        return $this->baseKey . 'media_subdef' . json_encode([(int)$recordId, $name]);
     }
 
     /**
      * @param int[] $recordIds
-     * @param string[]|null $names
+     * @param string[] $names
      * @return string[]
      */
-    private function generateCacheKeys(array $recordIds, array $names = null)
+    private function generateCacheKeys(array $recordIds, array $names)
     {
-        if (null === $names) {
-            return [];
-        }
+        $namesCount = count($names);
 
-        $cacheKeys = [];
+        $keys = array_map(function ($recordId) use ($namesCount, $names) {
+            return array_map([$this, 'getCacheKey'], array_fill(0, $namesCount, $recordId), $names);
+        }, $recordIds);
 
-        foreach ($recordIds as $recordId) {
-            foreach ($names as $name) {
-                $cacheKeys[] = [
-                    'record_id' => $recordId,
-                    'name' => $name,
-                ];
-            }
-        }
+        return $keys ? call_user_func_array('array_merge', $keys) : [];
+    }
 
-        return array_map([$this, 'getCacheKey'], $cacheKeys);
+    /**
+     * @param int[] $recordIds
+     * @return string[]
+     */
+    private function generateAllCacheKeys(array $recordIds)
+    {
+        $recordIds = array_unique($recordIds);
+
+        return array_map([$this, 'getCacheKey'], $recordIds, array_fill(0, count($recordIds), null));
     }
 
     /**
@@ -159,14 +181,64 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
     {
         $retrieved = $this->decorated->findByRecordIdsAndNames($recordIds, $names);
 
+        $data = $this->normalizeRetrievedData($retrieved, $keys);
+
+        $toCache = null === $names ? $this->appendCacheExtraData($data, $retrieved, $recordIds) : $data;
+
+        $this->cache->saveMultiple($toCache, $this->lifeTime);
+
+        return $this->filterNonNull($data);
+    }
+
+    /**
+     * @param int[] $recordIds
+     * @param string[]|null $names
+     * @return string[]
+     */
+    private function computeKeys(array $recordIds, array $names = null)
+    {
+        if (!$recordIds) {
+            return [];
+        } elseif (null !== $names) {
+            return $this->generateCacheKeys($recordIds, $names);
+        }
+
+        $keys = $this->generateAllCacheKeys($recordIds);
+        $data = $this->cache->fetchMultiple($keys);
+
+        return count($keys) === count($data) ? call_user_func_array('array_merge', $data) : [];
+    }
+
+    /**
+     * @param array $retrieved
+     * @param array $keys
+     * @return array
+     */
+    private function normalizeRetrievedData(array $retrieved, array $keys)
+    {
         $data = array_fill_keys($keys, null);
 
         foreach ($retrieved as $item) {
-            $data[$this->getCacheKey($item)] = $item;
+            $data[$this->dataToKey($item)] = $item;
         }
 
-        $this->cache->saveMultiple($data, $this->lifeTime);
+        return $data;
+    }
 
-        return $this->filterNonNull($data);
+    /**
+     * @param array $data
+     * @param array $retrieved
+     * @param array $recordIds
+     * @return array
+     */
+    private function appendCacheExtraData(array $data, array $retrieved, array $recordIds)
+    {
+        $extra = array_fill_keys($this->generateAllCacheKeys($recordIds), []);
+
+        foreach ($retrieved as $item) {
+            $extra[$this->getCacheKey($item['record_id'])][] = $this->getCacheKey($item['record_id'], $item['name']);
+        }
+
+        return array_merge($data, $extra);
     }
 }

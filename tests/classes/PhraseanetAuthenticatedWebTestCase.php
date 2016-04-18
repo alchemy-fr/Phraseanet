@@ -221,7 +221,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         );
 
         $searchEngine = $this->prophesize(SearchEngineInterface::class);
-        $searchEngine->query('', 0, Argument::any(), Argument::any())
+        $searchEngine->query('', Argument::any())
             ->willReturn($result);
 
         $app['search_engine'] = $searchEngine->reveal();

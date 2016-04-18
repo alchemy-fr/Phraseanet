@@ -76,7 +76,7 @@ interface SearchEngineInterface
 
     /**
      *
-     * @return an array of self::GEM_TYPE_* indexed types
+     * @return array an array of self::GEM_TYPE_* indexed types
      */
     public function getAvailableTypes();
 
@@ -162,15 +162,12 @@ interface SearchEngineInterface
     public function updateFeedEntry(FeedEntry $entry);
 
     /**
-     *
      * @param string              $query
-     * @param integer             $offset
-     * @param integer             $perPage
      * @param SearchEngineOptions $options
      *
      * @return SearchEngineResult
      */
-    public function query($query, $offset, $perPage, SearchEngineOptions $options = null);
+    public function query($query, SearchEngineOptions $options = null);
 
     /**
      * Return an array of suggestions corresponding to the last word of the

@@ -115,6 +115,16 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
+     * @return databox_field[]
+     */
+    public function getDcesFields()
+    {
+        return array_filter($this->elements, function (databox_field $field) {
+            return null !== $field->get_dces_element();
+        });
+    }
+
+    /**
      * @param string $label
      * @return databox_field|null
      */
