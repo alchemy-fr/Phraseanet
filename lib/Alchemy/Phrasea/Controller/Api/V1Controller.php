@@ -32,6 +32,7 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
+use Alchemy\Phrasea\Fractal\ArraySerializer;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -54,15 +55,24 @@ use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Alchemy\Phrasea\Search\RecordTransformer;
+use Alchemy\Phrasea\Search\RecordView;
+use Alchemy\Phrasea\Search\SearchResultView;
+use Alchemy\Phrasea\Search\StoryTransformer;
+use Alchemy\Phrasea\Search\StoryView;
+use Alchemy\Phrasea\Search\SubdefTransformer;
+use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
+use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
+use Alchemy\Phrasea\Search\V1SearchResultTransformer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
+use League\Fractal\Resource\Item;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -1035,24 +1045,18 @@ class V1Controller extends Controller
      */
     public function searchAction(Request $request)
     {
-        list($ret, $search_result) = $this->prepareSearchRequest($request);
+        $fractal = new \League\Fractal\Manager();
+        $fractal->setSerializer(new ArraySerializer());
+        $fractal->parseIncludes($this->resolveSearchIncludes($request));
 
-        $records = [];
-        $stories = [];
+        $searchView = $this->buildSearchView($this->doSearch($request));
 
-        /** @var SearchEngineResult $search_result */
-        foreach ($search_result->getResults() as $record) {
-            if ($record->isStory()) {
-                $stories[] = $record;
-            } else {
-                $records[] = $record;
-            }
-        }
+        $recordTransformer = new RecordTransformer();
+        $storyTransformer = new StoryTransformer(new SubdefTransformer(), $recordTransformer);
+        $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
+        $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
 
-        $ret['results'] = [
-            'records' => $this->listRecords($request, $records),
-            'stories' => $this->listStories($request, $stories),
-        ];
+        $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -1068,33 +1072,141 @@ class V1Controller extends Controller
      */
     public function searchRecordsAction(Request $request)
     {
-        list($ret, $search_result) = $this->prepareSearchRequest($request);
+        $fractal = new \League\Fractal\Manager();
+        $fractal->setSerializer(new ArraySerializer());
+        $fractal->parseIncludes($this->resolveSearchRecordsIncludes($request));
 
-        /** @var SearchEngineResult $search_result */
-        foreach ($search_result->getResults() as $es_record) {
-            try {
-                $record = new \record_adapter($this->app, $es_record->getDataboxId(), $es_record->getRecordId());
-            } catch (\Exception $e) {
-                continue;
-            }
+        $searchView = $this->buildSearchRecordsView($this->doSearch($request));
 
-            $ret['results'][] = $this->listRecord($request, $record);
-        }
+        $searchTransformer = new V1SearchRecordsResultTransformer(new RecordTransformer());
+
+        $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 
         return Result::create($request, $ret)->createResponse();
     }
 
-    private function prepareSearchRequest(Request $request)
+    /**
+     * @param SearchEngineResult $result
+     * @return SearchResultView
+     */
+    private function buildSearchView(SearchEngineResult $result)
+    {
+
+        $references = new RecordReferenceCollection($result->getResults());
+
+        $records = [];
+        $stories = [];
+
+        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
+            if ($record->isStory()) {
+                $stories[] = $record;
+            } else {
+                $records[] = $record;
+            }
+        }
+
+        $resultView = new SearchResultView($result);
+
+        if ($stories) {
+            $storyViews = [];
+
+            foreach ($stories as $story) {
+                $storyViews[] = new StoryView($story);
+            }
+
+            $resultView->setStories($storyViews);
+        }
+
+        if ($records) {
+            $recordViews = [];
+
+            foreach ($records as $record) {
+                $recordViews[] = new RecordView($record);
+            }
+
+            $resultView->setRecords($recordViews);
+        }
+
+        return $resultView;
+    }
+
+    /**
+     * @param SearchEngineResult $result
+     * @return SearchResultView
+     */
+    private function buildSearchRecordsView(SearchEngineResult $result)
+    {
+        $references = new RecordReferenceCollection($result->getResults());
+
+        $recordViews = [];
+
+        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
+            $recordViews[] = new RecordView($record);
+        }
+
+        $resultView = new SearchResultView($result);
+        $resultView->setRecords($recordViews);
+
+        return $resultView;
+    }
+
+    /**
+     * Returns requested includes
+     *
+     * @param Request $request
+     * @return string[]
+     */
+    private function resolveSearchIncludes(Request $request)
+    {
+        if (!$request->attributes->get('_extended', false)) {
+            return [];
+        }
+
+        return [
+            'results.stories.records.subdefs',
+            'results.stories.records.metadata',
+            'results.stories.records.caption',
+            'results.stories.records.status',
+            'results.records.subdefs',
+            'results.records.metadata',
+            'results.records.caption',
+            'results.records.status',
+        ];
+    }
+
+    /**
+     * Returns requested includes
+     *
+     * @param Request $request
+     * @return string[]
+     */
+    private function resolveSearchRecordsIncludes(Request $request)
+    {
+        if (!$request->attributes->get('_extended', false)) {
+            return [];
+        }
+
+        return [
+            'results.subdefs',
+            'results.metadata',
+            'results.caption',
+            'results.status',
+        ];
+    }
+
+    /**
+     * @param Request $request
+     * @return SearchEngineResult
+     */
+    private function doSearch(Request $request)
     {
         $options = SearchEngineOptions::fromRequest($this->app, $request);
+        $options->setFirstResult((int)($request->get('offset_start') ?: 0));
+        $options->setMaxResults((int)$request->get('per_page') ?: 10);
 
-        $options->setFirstResult((int) ($request->get('offset_start') ?: 0));
-        $options->setMaxResults((int) $request->get('per_page') ?: 10);
-
-        $query = (string) $request->get('query');
         $this->getSearchEngine()->resetCache();
 
-        $search_result = $this->getSearchEngine()->query($query, $options);
+        $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQuery());
 
@@ -1111,25 +1223,7 @@ class V1Controller extends Controller
 
         $this->getSearchEngine()->clearCache();
 
-        $ret = [
-            'offset_start' => $options->getFirstResult(),
-            'per_page' => $options->getMaxResults(),
-            'available_results' => $search_result->getAvailable(),
-            'total_results' => $search_result->getTotal(),
-            'error' => (string)$search_result->getError(),
-            'warning' => (string)$search_result->getWarning(),
-            'query_time' => $search_result->getDuration(),
-            'search_indexes' => $search_result->getIndexes(),
-            'suggestions' => array_map(
-                function (SearchEngineSuggestion $suggestion) {
-                    return $suggestion->toArray();
-                }, $search_result->getSuggestions()->toArray()),
-            'facets' => $search_result->getFacets(),
-            'results' => [],
-            'query' => $search_result->getQuery(),
-        ];
-
-        return [$ret, $search_result];
+        return $search_result;
     }
 
     /**

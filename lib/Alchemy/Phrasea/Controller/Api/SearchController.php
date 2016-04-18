@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Fractal\ArraySerializer;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Search\SearchResultView;
 use Alchemy\Phrasea\Search\V2SearchTransformer;
@@ -20,7 +21,6 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
-use League\Fractal\Serializer\ArraySerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
