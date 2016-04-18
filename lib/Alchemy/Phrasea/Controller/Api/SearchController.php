@@ -12,10 +12,15 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Search\SearchResultView;
+use Alchemy\Phrasea\Search\V2SearchTransformer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\ArraySerializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,25 +33,21 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request)
     {
-        list($ret, $search_result) = $this->searchAndFormatEngineResult($request);
+        $fractal = new Manager();
+        $fractal->setSerializer(new ArraySerializer());
+        $fractal->parseIncludes([]);
 
-        /** @var SearchEngineResult $search_result */
-        $ret['search_type'] = $search_result->getOptions()->getSearchType();
-        $ret['results'] = [];
-
-        foreach ($search_result->getResults() as $record) {
-            $ret['results'][] = [
-                'databox_id' => $record->getDataboxId(),
-                'record_id' => $record->getRecordId(),
-                'collection_id' => $record->getCollectionId(),
-                'version' => $record->getUpdated()->getTimestamp(),
-            ];
-        }
+        $searchView = new SearchResultView($this->doSearch($request));
+        $ret = $fractal->createData(new Item($searchView, new V2SearchTransformer()))->toArray();
 
         return Result::create($request, $ret)->createResponse();
     }
 
-    private function searchAndFormatEngineResult(Request $request)
+    /**
+     * @param Request $request
+     * @return SearchEngineResult
+     */
+    private function doSearch(Request $request)
     {
         $options = SearchEngineOptions::fromRequest($this->app, $request);
         $options->setFirstResult($request->get('offset_start') ?: 0);
@@ -55,9 +56,9 @@ class SearchController extends Controller
         $query = (string) $request->get('query');
         $this->getSearchEngine()->resetCache();
 
-        $search_result = $this->getSearchEngine()->query($query, $options);
+        $result = $this->getSearchEngine()->query($query, $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getQuery());
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
@@ -67,25 +68,12 @@ class SearchController extends Controller
             }));
 
             $this->getSearchEngineLogger()
-                ->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
+                ->log($databox, $result->getQuery(), $result->getTotal(), $colls);
         }
 
         $this->getSearchEngine()->clearCache();
 
-        $ret = [
-            'offset_start' => $options->getFirstResult(),
-            'per_page' => $options->getMaxResults(),
-            'available_results' => $search_result->getAvailable(),
-            'total_results' => $search_result->getTotal(),
-            'error' => (string)$search_result->getError(),
-            'warning' => (string)$search_result->getWarning(),
-            'query_time' => $search_result->getDuration(),
-            'search_indexes' => $search_result->getIndexes(),
-            'facets' => $search_result->getFacets(),
-            'results' => [],
-        ];
-
-        return [$ret, $search_result];
+        return $result;
     }
 
     /**
