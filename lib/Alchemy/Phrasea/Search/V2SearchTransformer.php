@@ -15,6 +15,9 @@ use League\Fractal\TransformerAbstract;
 
 class V2SearchTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = ['results'];
+    protected $defaultIncludes = ['results'];
+
     public function transform(SearchResultView $searchView)
     {
         return [
@@ -28,27 +31,18 @@ class V2SearchTransformer extends TransformerAbstract
             'search_indexes' => $searchView->getResult()->getIndexes(),
             'facets' => $searchView->getResult()->getFacets(),
             'search_type' => $searchView->getResult()->getOptions()->getSearchType(),
-            'results' => $this->listResults($searchView->getResult()->getResults()),
         ];
     }
 
-    /**
-     * @param RecordInterface[] $results
-     * @return array
-     */
-    public function listResults($results)
+    public function includeResults(SearchResultView $searchView)
     {
-        $data = [];
-
-        foreach ($results as $record) {
-            $data[] = [
+        return $this->collection($searchView->getResult()->getResults(), function (RecordInterface $record) {
+            return [
                 'databox_id' => $record->getDataboxId(),
                 'record_id' => $record->getRecordId(),
                 'collection_id' => $record->getCollectionId(),
                 'version' => $record->getUpdated()->getTimestamp(),
             ];
-        }
-
-        return $data;
+        });
     }
 }
