@@ -106,8 +106,8 @@ class RecordController extends Controller
             ]),
             "pos"           => $record->getNumber(),
             "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
-            "collection_name" => $record->get_collection()->get_name(),
-            "collection_logo" => $record->get_collection()->getLogo($record->get_base_id(), $this->app),
+            "collection_name" => $record->getCollection()->get_name(),
+            "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);
     }
 
@@ -119,7 +119,8 @@ class RecordController extends Controller
      */
     public function doDeleteRecords(Request $request)
     {
-        $records = RecordsRequest::fromRequest($this->app, $request, !!$request->request->get('del_children'), [
+        $flatten = (bool)($request->request->get('del_children')) ? RecordsRequest::FLATTEN_YES_PRESERVE_STORIES : RecordsRequest::FLATTEN_NO;
+        $records = RecordsRequest::fromRequest($this->app, $request, $flatten, [
             'candeleterecord'
         ]);
 
@@ -135,7 +136,7 @@ class RecordController extends Controller
 
                 foreach ($basketElements as $element) {
                     $manager->remove($element);
-                    $deleted[] = $element->getRecord($this->app)->get_serialize_key();
+                    $deleted[] = $element->getRecord($this->app)->getId();
                 }
 
                 $attachedStories = $StoryWZRepository->findByRecord($this->app, $record);
@@ -144,7 +145,7 @@ class RecordController extends Controller
                     $manager->remove($attachedStory);
                 }
 
-                $deleted[] = $record->get_serialize_key();
+                $deleted[] = $record->getId();
                 $record->delete();
             } catch (\Exception $e) {
 
@@ -186,7 +187,7 @@ class RecordController extends Controller
 
         $renewed = [];
         foreach ($records as $record) {
-            $renewed[$record->get_serialize_key()] = (string) $record->get_preview()->renew_url();
+            $renewed[$record->getId()] = (string) $record->get_preview()->renew_url();
         };
 
         return $this->app->json($renewed);

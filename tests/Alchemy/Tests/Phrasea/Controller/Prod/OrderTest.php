@@ -29,7 +29,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         });
         $client = $this->getClient();
         $client->request('POST', '/prod/order/', [
-            'lst'      => $this->getRecord1()->get_serialize_key(),
+            'lst'      => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
 
@@ -54,7 +54,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         });
 
         $response = $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst' => $this->getRecord1()->get_serialize_key(),
+            'lst' => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
 
@@ -71,7 +71,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDisplayOrders()
     {
         $this->XMLHTTPRequest('POST', '/prod/order/', [
-            'lst' => $this->getRecord1()->get_serialize_key(),
+            'lst' => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
         $response = $this->request('GET', '/prod/order/', [

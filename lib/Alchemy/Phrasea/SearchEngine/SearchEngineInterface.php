@@ -76,7 +76,7 @@ interface SearchEngineInterface
 
     /**
      *
-     * @return an array of self::GEM_TYPE_* indexed types
+     * @return array an array of self::GEM_TYPE_* indexed types
      */
     public function getAvailableTypes();
 
@@ -162,15 +162,12 @@ interface SearchEngineInterface
     public function updateFeedEntry(FeedEntry $entry);
 
     /**
-     *
      * @param string              $query
-     * @param integer             $offset
-     * @param integer             $perPage
      * @param SearchEngineOptions $options
      *
      * @return SearchEngineResult
      */
-    public function query($query, $offset, $perPage, SearchEngineOptions $options = null);
+    public function query($query, SearchEngineOptions $options = null);
 
     /**
      * Return an array of suggestions corresponding to the last word of the
@@ -181,17 +178,6 @@ interface SearchEngineInterface
      * @return ArrayCollection A collection of SearchEngineSuggestion
      */
     public function autocomplete($query, SearchEngineOptions $options);
-
-    /**
-     * Highlight the fields of a record
-     *
-     * @param type            $query
-     * @param type            $fields
-     * @param \record_adapter $record
-     *
-     * @return array The array of highlighted fields
-     */
-    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null);
 
     /**
      * Reset the cache of the SE (if applicable)

@@ -12,12 +12,8 @@ namespace Alchemy\Phrasea\Collection;
 
 use Assert\Assertion;
 
-class CollectionHelper
+final class CollectionHelper
 {
-    private function __construct()
-    {
-    }
-
     /**
      * @param \collection[] $collections
      * @return \collection[]
@@ -31,7 +27,11 @@ class CollectionHelper
         }
 
         usort($collections, function (\collection $left, \collection $right) {
-            return ($left->get_ord() < $right->get_ord()) ? -1 : (($left->get_ord() < $right->get_ord()) ? 1 : 0);
+            if ($left->get_ord() === $right->get_ord()) {
+                return 0;
+            }
+
+            return $left->get_ord() < $right->get_ord() ? -1 : 1;
         });
 
         return $collections;

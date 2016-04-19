@@ -81,8 +81,8 @@ class FeedController extends Controller
         foreach ($publishing as $record) {
             $item = new FeedItem();
             $item->setEntry($entry)
-                ->setRecordId($record->get_record_id())
-                ->setSbasId($record->get_sbas_id());
+                ->setRecordId($record->getRecordId())
+                ->setSbasId($record->getDataboxId());
             $entry->addItem($item);
             $manager->persist($item);
         }

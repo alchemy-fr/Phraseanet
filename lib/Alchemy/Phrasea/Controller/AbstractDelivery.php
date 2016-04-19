@@ -62,7 +62,7 @@ abstract class AbstractDelivery
     private function logView(\record_adapter $record, Request $request)
     {
         try {
-            $logger = $this->getDataboxLogger($record->get_databox());
+            $logger = $this->getDataboxLogger($record->getDatabox());
             $log_id = $logger->get_id();
             $record->log_view(
                 $log_id,

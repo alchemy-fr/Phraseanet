@@ -99,8 +99,8 @@ class StoryWZRepository extends EntityRepository
     {
         $story = $this->findOneBy([
             'user'    => $user->getId(),
-            'sbas_id'   => $Story->get_sbas_id(),
-            'record_id' => $Story->get_record_id(),
+            'sbas_id'   => $Story->getDataboxId(),
+            'record_id' => $Story->getRecordId(),
         ]);
 
         if ($story) {
@@ -129,8 +129,8 @@ class StoryWZRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([
-            'sbas_id' => $Story->get_sbas_id(),
-            'record_id' => $Story->get_record_id(),
+            'sbas_id' => $Story->getDataboxId(),
+            'record_id' => $Story->getRecordId(),
         ]);
 
         /** @var StoryWZ[] $stories */

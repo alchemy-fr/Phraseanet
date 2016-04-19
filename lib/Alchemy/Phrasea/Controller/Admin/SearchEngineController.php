@@ -38,7 +38,26 @@ class SearchEngineController extends Controller
 
         return $this->render('admin/search-engine/elastic-search.html.twig', [
             'form' => $form->createView(),
+            'indexer' => $this->app['elasticsearch.indexer']
         ]);
+    }
+
+    public function dropIndexAction(Request $request)
+    {
+        $indexer = $this->app['elasticsearch.indexer'];
+        if ($indexer->indexExists()) {
+            $indexer->deleteIndex();
+        }
+        return $this->app->redirectPath('admin_searchengine_form');
+    }
+
+    public function createIndexAction(Request $request)
+    {
+        $indexer = $this->app['elasticsearch.indexer'];
+        if (!$indexer->indexExists()) {
+            $indexer->createIndex();
+        }
+        return $this->app->redirectPath('admin_searchengine_form');
     }
 
     /**

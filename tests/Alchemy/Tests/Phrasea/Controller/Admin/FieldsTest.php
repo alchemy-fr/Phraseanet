@@ -3,8 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
 use PHPExiftool\Driver\Tag\IPTC\ObjectName;
-use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
-use Symfony\Component\HttpKernel\Client;
 
 /**
  * @group functional
@@ -16,18 +14,17 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     public function testRoot()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
+        $databoxes = $this->getApplication()->getDataboxes();
         $databox = array_shift($databoxes);
 
-        self::$DI['client']->request("GET", "/admin/fields/" . $databox->get_sbas_id());
+        $response = $this->request("GET", "/admin/fields/" . $databox->get_sbas_id());
 
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        $this->assertTrue($response->isOk());
     }
 
     public function testLanguage()
     {
-        self::$DI['client']->request("GET", "/admin/fields/language.json");
-        $response = self::$DI['client']->getResponse();
+        $response = $this->request("GET", "/admin/fields/language.json");
 
         $this->assertTrue($response->isOk());
         $this->assertEquals("application/json", $response->headers->get("content-type"));
@@ -37,9 +34,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $tag = new ObjectName();
 
-        self::$DI['client']->request("GET", "/admin/fields/tags/".$tag->getTagname());
-
-        $response = self::$DI['client']->getResponse();
+        $response = $this->request("GET", "/admin/fields/tags/".$tag->getTagname());
 
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $data = json_decode($response->getContent(), true);
@@ -52,13 +47,11 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testListDcFields()
     {
-        self::$DI['client']->request("GET", "/admin/fields/dc-fields");
+        $response = $this->request("GET", "/admin/fields/dc-fields");
 
-        $response = self::$DI['client']->getResponse()->getContent();
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
         $this->assertInternalType('array', $data);
 
         foreach ($data as $dc) {
@@ -72,49 +65,40 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testListVocabularies()
     {
-        self::$DI['client']->request("GET", "/admin/fields/vocabularies");
+        $response = $this->request("GET", "/admin/fields/vocabularies");
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertInternalType('array', $data);
 
         foreach ($data as $vocabulary) {
             $this->assertArrayHasKey('type', $vocabulary);
             $this->assertArrayHasKey('name', $vocabulary);
-
-            $voc = VocabularyController::get(self::$DI['app'], $vocabulary['type']);
-            $this->assertInstanceOf('Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface', $voc);
         }
     }
 
     public function testGetVocabulary()
     {
-        self::$DI['client']->request("GET", "/admin/fields/vocabularies/user");
+        $response = $this->request("GET", "/admin/fields/vocabularies/user");
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertArrayHasKey('type', $data);
         $this->assertEquals('User', $data['type']);
         $this->assertArrayHasKey('name', $data);
-
-        $voc = VocabularyController::get(self::$DI['app'], $data['type']);
-        $this->assertInstanceOf('Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider', $voc);
     }
 
     public function testSearchTag()
     {
-        self::$DI['client']->request("GET", "/admin/fields/tags/search?term=xmp-exif");
+        $response = $this->request("GET", "/admin/fields/tags/search?term=xmp-exif");
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertGreaterThan(90, count($data));
 
@@ -128,7 +112,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testUpdateFields()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
+        $databoxes = $this->getApplication()->getDataboxes();
         $databox = array_shift($databoxes);
         $fieldObjects = [];
         // create two fields
@@ -170,7 +154,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         ]];
 
         foreach ($fields as $fieldData) {
-            $field = \databox_field::create(self::$DI['app'], $databox, $fieldData['name'], $fieldData['multi']);
+            $field = \databox_field::create($this->getApplication(), $databox, $fieldData['name'], $fieldData['multi']);
             $field
                 ->set_thumbtitle($fieldData['thumbtitle'])
                 ->set_tag(\databox_field::loadClassFromTagName($fieldData['tag']))
@@ -197,13 +181,11 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $body[count($body) - 1]['readonly'] = true;
         $body[count($body) - 1]['required'] = false;
 
-        self::$DI['client']->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], json_encode($body));
+        $response = $this->request("PUT", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], json_encode($body));
 
-        $response = self::$DI['client']->getResponse()->getContent();
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
-
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertTrue(is_array($data));
 
@@ -248,14 +230,11 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'vocabulary-restricted' => true,
         ]);
 
-        /** @var Client $client */
-        $client = self::$DI['client'];
-        $client->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], [], $body);
+        $response = $this->request("POST", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()), [], [], $body);
 
-        $response = $client->getResponse()->getContent();
-        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertTrue(is_array($data));
 
@@ -271,15 +250,14 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testListField()
     {
-        $databoxes = self::$DI['app']->getDataboxes();
+        $databoxes = $this->getApplication()->getDataboxes();
         $databox = array_shift($databoxes);
 
-        self::$DI['client']->request("GET", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()));
+        $response = $this->request("GET", sprintf("/admin/fields/%d/fields", $databox->get_sbas_id()));
 
-        $response = self::$DI['client']->getResponse()->getContent();
-        $this->assertEquals("application/json", self::$DI['client']->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $data = json_decode($response, true);
+        $data = json_decode($response->getContent(), true);
 
         $this->assertInternalType('array', $data);
 
@@ -297,13 +275,11 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $data = $field->toArray();
 
-        $client = $this->getClient();
-        $client->request("GET", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()));
+        $response = $this->request("GET", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()));
 
-        $response = $client->getResponse()->getContent();
-        $this->assertEquals("application/json", $client->getResponse()->headers->get("content-type"));
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
 
-        $this->assertEquals($data, json_decode($response, true));
+        $this->assertEquals($data, json_decode($response->getContent(), true));
 
         $field->delete();
     }
@@ -320,11 +296,9 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        $client = $this->getClient();
-        $client->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
+        $response = $this->request("PUT", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], json_encode($data));
 
-        $response = $client->getResponse()->getContent();
-        $this->assertEquals($data, json_decode($response, true));
+        $this->assertEquals($data, json_decode($response->getContent(), true));
 
         $field->delete();
     }
@@ -342,13 +316,10 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $data['business'] = true;
         $data['vocabulary-type'] = 'User';
 
-        /** @var Client $client */
-        $client = self::$DI['client'];
-        $client->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], [], json_encode($data));
+        $response = $this->request("DELETE", sprintf("/admin/fields/%d/fields/%d", $databox->get_sbas_id(), $field->get_id()), [], [], json_encode($data));
 
-        $response = $client->getResponse()->getContent();
-        $this->assertEquals('', $response);
-        $this->assertEquals(204, $client->getResponse()->getStatusCode());
+        $this->assertEquals('', $response->getContent());
+        $this->assertEquals(204, $response->getStatusCode());
 
         try {
             $databox->get_meta_structure()->get_element($fieldId);

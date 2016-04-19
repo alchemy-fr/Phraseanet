@@ -73,6 +73,7 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Filesystem\FilesystemServiceProvider;
 use Alchemy\Phrasea\Filesystem\ApplicationPathServiceGenerator;
@@ -80,6 +81,7 @@ use Alchemy\Phrasea\Form\Extension\HelpTypeExtension;
 use Alchemy\Phrasea\Media\DatafilesResolver;
 use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
+use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
@@ -190,6 +192,8 @@ class Application extends SilexApplication
         $this->register(new NotificationDelivererServiceProvider());
         $this->register(new RepositoriesServiceProvider());
         $this->register(new ManipulatorServiceProvider());
+        $this->register(new TechnicalDataServiceProvider());
+        $this->register(new MediaSubdefServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
 

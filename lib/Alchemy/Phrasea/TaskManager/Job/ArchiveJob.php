@@ -872,7 +872,7 @@ class ArchiveJob extends AbstractJob
                     $story = $this->createStory($app, $collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName, $stat0, $stat1);
                 }
 
-                $rid = $story->get_record_id();
+                $rid = $story->getRecordId();
 
                 $this->log('debug', sprintf('story %s created', $rid));
 
@@ -1011,7 +1011,7 @@ class ArchiveJob extends AbstractJob
             $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
         }
 
-        $story->set_binary_status(\databox_status::operation_or($stat0, $stat1));
+        $story->setStatus(\databox_status::operation_or($stat0, $stat1));
         $story->rebuild_subdefs();
 
         unset($media);

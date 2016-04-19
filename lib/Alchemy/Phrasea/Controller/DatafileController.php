@@ -68,7 +68,7 @@ class DatafileController extends AbstractDelivery
 
             $stamp = false;
             $watermark = !$this->acl->get($this->authentication->getUser())
-                ->has_right_on_base($record->get_base_id(), 'nowatermark');
+                ->has_right_on_base($record->getBaseId(), 'nowatermark');
 
             if ($watermark && !$all_access) {
                 $subdef_class = null;

@@ -13,10 +13,6 @@ use Prophecy\Argument;
  */
 class QueryTest extends \PhraseanetAuthenticatedWebTestCase
 {
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Query::query
-     */
     public function testQuery()
     {
         $route = '/prod/query/';
@@ -46,9 +42,6 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertInternalType('array', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Query::queryAnswerTrain
-     */
     public function testQueryAnswerTrain()
     {
         $app = $this->mockElasticsearchResult(self::$DI['record_2']);
@@ -58,13 +51,11 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $options->onCollections($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
         $serializedOptions = $options->serialize();
 
-        $client = $this->getClient();
-        $client->request('POST', '/prod/query/answer-train/', [
+        $response = $this->request('POST', '/prod/query/answer-train/', [
             'options_serial' => $serializedOptions,
             'pos'            => 0,
             'query'          => ''
             ]);
-        $response = $client->getResponse();
         $this->assertTrue($response->isOk());
         $datas = (array) json_decode($response->getContent());
         $this->assertArrayHasKey('current', $datas);

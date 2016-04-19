@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 
 class Bridge_Element
 {
@@ -383,9 +384,9 @@ class Bridge_Element
             SET uploaded_on = :uploaded_on, updated_on = :update WHERE id = :id';
 
         $params = [
-            ':uploaded_on' => $this->uploaded_on ? $this->uploaded_on->format(DATE_ISO8601) : null
-            , ':id'          => $this->id
-            , ':update'      => $this->updated_on->format(DATE_ISO8601)
+            ':uploaded_on' => NullableDateTime::format($this->uploaded_on, DATE_ISO8601),
+            ':id' => $this->id,
+            ':update' => $this->updated_on->format(DATE_ISO8601),
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
@@ -448,13 +449,13 @@ class Bridge_Element
               ,:datas , :status, NOW(), NOW())';
 
         $params = [
-            ':account_id' => $account->get_id()
-            , ':sbas_id'    => $record->get_sbas_id()
-            , ':record_id'  => $record->get_record_id()
-            , ':status'     => $status
-            , ':title'      => $title
-            , ':type'       => $type
-            , ':datas'      => serialize($datas)
+            ':account_id' => $account->get_id(),
+            ':sbas_id' => $record->getDataboxId(),
+            ':record_id' => $record->getRecordId(),
+            ':status' => $status,
+            ':title' => $title,
+            ':type' => $type,
+            ':datas' => serialize($datas),
         ];
 
         $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);

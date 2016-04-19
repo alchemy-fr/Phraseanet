@@ -87,17 +87,17 @@ class PropertyController extends Controller
 
         foreach ($records as $record) {
             //perform logic
-            $sbasId = $record->get_databox()->get_sbas_id();
+            $sbasId = $record->getDataboxId();
 
             if (!isset($recordsType[$sbasId])) {
                 $recordsType[$sbasId] = [];
             }
 
-            if (!isset($recordsType[$sbasId][$record->get_type()])) {
-                $recordsType[$sbasId][$record->get_type()] = [];
+            if (!isset($recordsType[$sbasId][$record->getType()])) {
+                $recordsType[$sbasId][$record->getType()] = [];
             }
 
-            $recordsType[$sbasId][$record->get_type()][] = $record;
+            $recordsType[$sbasId][$record->getType()][] = $record;
         }
 
         return new Response($this->render('prod/actions/Property/type.html.twig', [
@@ -120,18 +120,18 @@ class PropertyController extends Controller
         $postStatus = (array) $request->request->get('status');
 
         foreach ($records as $record) {
-            $sbasId = $record->get_databox()->get_sbas_id();
+            $sbasId = $record->getDataboxId();
 
             //update record
             if (null !== $updatedStatus = $this->updateRecordStatus($record, $postStatus)) {
-                $updated[$record->get_serialize_key()] = $updatedStatus;
+                $updated[$record->getId()] = $updatedStatus;
             }
 
             //update children if current record is a story
             if (isset($applyStatusToChildren[$sbasId]) && $record->isStory()) {
-                foreach ($record->get_children() as $child) {
+                foreach ($record->getChildren() as $child) {
                     if (null !== $updatedStatus = $this->updateRecordStatus($child, $postStatus)) {
-                        $updated[$record->get_serialize_key()] = $updatedStatus;
+                        $updated[$record->getId()] = $updatedStatus;
                     }
                 }
             }
@@ -156,17 +156,17 @@ class PropertyController extends Controller
 
         foreach ($records as $record) {
             try {
-                $recordType = !empty($forceType) ? $forceType : (isset($typeLst[$record->get_serialize_key()]) ? $typeLst[$record->get_serialize_key()] : null);
-                $mimeType = isset($mimeLst[$record->get_serialize_key()]) ? $mimeLst[$record->get_serialize_key()] : null;
+                $recordType = !empty($forceType) ? $forceType : (isset($typeLst[$record->getId()]) ? $typeLst[$record->getId()] : null);
+                $mimeType = isset($mimeLst[$record->getId()]) ? $mimeLst[$record->getId()] : null;
 
                 if ($recordType) {
-                    $record->set_type($recordType);
-                    $updated[$record->get_serialize_key()]['record_type'] = $recordType;
+                    $record->setType($recordType);
+                    $updated[$record->getId()]['record_type'] = $recordType;
                 }
 
                 if ($mimeType) {
-                    $record->set_mime($mimeType);
-                    $updated[$record->get_serialize_key()]['mime_type'] = $mimeType;
+                    $record->setMimeType($mimeType);
+                    $updated[$record->getId()]['mime_type'] = $mimeType;
                 }
             } catch (\Exception $e) {
 
@@ -185,18 +185,18 @@ class PropertyController extends Controller
      */
     private function updateRecordStatus(\record_adapter $record, array $postStatus)
     {
-        $sbasId = $record->get_databox()->get_sbas_id();
+        $sbasId = $record->getDataboxId();
 
         if (isset($postStatus[$sbasId]) && is_array($postStatus[$sbasId])) {
             $postStatus = $postStatus[$sbasId];
-            $currentStatus = strrev($record->get_status());
+            $currentStatus = strrev($record->getStatus());
 
             $newStatus = '';
             foreach (range(0, 31) as $i) {
                 $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
             }
 
-            $record->set_binary_status(strrev($newStatus));
+            $record->setStatus(strrev($newStatus));
 
             return [
                 'current_status' => $currentStatus,

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -12,6 +11,7 @@
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Vocabulary\Term;
 
 interface ControlProviderInterface
 {
@@ -35,7 +35,6 @@ interface ControlProviderInterface
 
     /**
      * @return string     returns the value corresponding to an id
-     * @throws \Exception if the $id is invalid
      */
     public function getValue($id);
 
@@ -52,7 +51,7 @@ interface ControlProviderInterface
      * @param User     $for_user   The user doing the query
      * @param \databox $on_databox The databox where vocabulary should be requested
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Term[]
      */
     public function find($query, User $for_user, \databox $on_databox);
 }

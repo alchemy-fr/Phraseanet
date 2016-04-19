@@ -196,3 +196,18 @@ crossdomain:
     -
       domain: '*.cooliris.com'
       secure: 'false'
+embed_bundle:
+    video:
+        player: videojs
+        autoplay: false
+        coverSubdef: thumbnail
+        available-speeds:
+            - 1
+            - 1.5
+            - 3
+    audio:
+        player: videojs
+        autoplay: false
+    document:
+        player: flexpaper
+        enable-pdfjs: true

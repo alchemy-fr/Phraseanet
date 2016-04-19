@@ -121,7 +121,7 @@ abstract class set_abstract implements IteratorAggregate
      */
     public function add_element(\record_adapter $record)
     {
-        $this->elements[$record->get_serialize_key()] = $record;
+        $this->elements[$record->getId()] = $record;
 
         return $this;
     }
@@ -132,7 +132,7 @@ abstract class set_abstract implements IteratorAggregate
      */
     public function remove_element(\record_adapter $record)
     {
-        $key = $record->get_serialize_key();
+        $key = $record->getId();
         if (isset($this->elements[$key]))
             unset($this->elements[$key]);
 
@@ -146,7 +146,7 @@ abstract class set_abstract implements IteratorAggregate
     {
         $basrec = [];
         foreach ($this->elements as $record) {
-            $basrec[] = $record->get_serialize_key();
+            $basrec[] = $record->getId();
         }
 
         return implode(';', $basrec);

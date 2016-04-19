@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Vocabulary\ControlProvider;
 
 use Alchemy\Phrasea\Vocabulary\ControlProvider\UserProvider;
-use Doctrine\ORM\EntityManager;
 
 /**
  * @group functional
@@ -63,22 +62,22 @@ class UserProviderTest extends \PhraseanetTestCase
 
         $results = $this->object->find('BABE', $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
+        $this->assertInternalType('array', $results);
 
         $results = $this->object->find($user->getEmail(), $user, self::$DI['collection']->get_databox());
 
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
+        $this->assertInternalType('array', $results);
+        $this->assertGreaterThan(0, count($results), 'There should be more users matching');
 
         $results = $this->object->find($user->getFirstName(), $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
+        $this->assertInternalType('array', $results);
+        $this->assertGreaterThan(0, count($results), 'There should be more users matching');
 
         $results = $this->object->find($user->getLastName(), $user,  self::$DI['collection']->get_databox());
 
-        $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-        $this->assertTrue($results->count() > 0);
+        $this->assertInternalType('array', $results);
+        $this->assertGreaterThan(0, count($results), 'There should be more users matching');
         self::$DI['app']['manipulator.user']->delete($user);
     }
 

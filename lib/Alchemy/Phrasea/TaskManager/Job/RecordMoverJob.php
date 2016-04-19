@@ -91,14 +91,14 @@ class RecordMoverJob extends AbstractJob
 
                 // change sb ?
                 if (array_key_exists('sb', $row)) {
-                    $status = str_split($rec->get_status());
+                    $status = str_split($rec->getStatus());
                     foreach (str_split(strrev($row['sb'])) as $bit => $val) {
                         if ($val == '0' || $val == '1') {
                             $status[31 - $bit] = $val;
                         }
                     }
                     $status = implode('', $status);
-                    $rec->set_binary_status($status);
+                    $rec->setStatus($status);
                     if ($logsql) {
                         $this->log('debug', sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                     }
@@ -108,16 +108,16 @@ class RecordMoverJob extends AbstractJob
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->isStory()) {
                     /** @var record_adapter $child */
-                    foreach ($rec->get_children() as $child) {
+                    foreach ($rec->getChildren() as $child) {
                         $child->delete();
                         if ($logsql) {
-                            $this->log('debug', sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->get_record_id()));
+                            $this->log('debug', sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->getRecordId()));
                         }
                     }
                 }
                 $rec->delete();
                 if ($logsql) {
-                    $this->log('debug', sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->get_record_id()));
+                    $this->log('debug', sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->getRecordId()));
                 }
                 break;
         }

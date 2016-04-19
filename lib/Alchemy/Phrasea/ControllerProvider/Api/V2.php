@@ -13,8 +13,10 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
 use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
+use Alchemy\Phrasea\Order\Controller\ApiOrderController;
 use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
@@ -46,6 +48,15 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $app['controller.api.v2.search'] = $app->share(
             function (PhraseaApplication $app) {
                 return new SearchController($app);
+            }
+        );
+
+        $app['controller.api.v2.orders'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new ApiOrderController($app))
+                    ->setDispatcher($app['dispatcher'])
+                    ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                    ->setJsonBodyHelper($app['json.body_helper']);
             }
         );
     }
@@ -88,6 +99,22 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
             ->bind('api_v2_quarantine_item_add');
         $this->addQuarantineMiddleware($controller);
+
+        $controllers->post('/orders/', 'controller.api.v2.orders:createAction')
+            ->bind('api_v2_orders_create');
+        $controllers->get('/orders/', 'controller.api.v2.orders:indexAction')
+            ->bind('api_v2_orders_index');
+        $controllers->get('/orders/{orderId}', 'controller.api.v2.orders:showAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_show');
+
+        $controllers->post('/orders/{orderId}/accept', 'controller.api.v2.orders:acceptElementsAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_accept');
+
+        $controllers->post('/orders/{orderId}/deny', 'controller.api.v2.orders:denyElementsAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_deny');
 
         return $controllers;
     }

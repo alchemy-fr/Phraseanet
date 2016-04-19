@@ -259,7 +259,7 @@ class FeedEntry
     /**
      * Get items
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return FeedItem[]|\Doctrine\Common\Collections\Collection
      */
     public function getItems()
     {

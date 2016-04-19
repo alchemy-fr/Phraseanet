@@ -138,8 +138,8 @@ class BasketElement
 
     public function setRecord(\record_adapter $record)
     {
-        $this->setRecordId($record->get_record_id());
-        $this->setSbasId($record->get_sbas_id());
+        $this->setRecordId($record->getRecordId());
+        $this->setSbasId($record->getDataboxId());
     }
 
     /**

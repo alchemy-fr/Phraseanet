@@ -34,21 +34,23 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('get')
             ->will($this->returnValue($acl));
 
-        self::$DI['app']['acl'] = $aclProvider;
+        $app = $this->getApplication();
+        $app['acl'] = $aclProvider;
 
-        $path = self::$DI['app']['url_generator']->generate('datafile', [
-            'sbas_id' => self::$DI['record_1']->get_sbas_id(),
-            'record_id' => self::$DI['record_1']->get_record_id(),
+        $record1 = $this->getRecord1();
+
+        $path = $app['url_generator']->generate('datafile', [
+            'sbas_id' => $record1->getDataboxId(),
+            'record_id' => $record1->getRecordId(),
             'subdef' => $subdef,
         ]);
 
-        self::$DI['client']->request('GET', $path);
-        $response = self::$DI['client']->getResponse();
+        $response = $this->request('GET', $path);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('inline', explode(';', $response->headers->get('content-disposition'))[0]);
-        $this->assertEquals(self::$DI['record_1']->get_preview()->get_mime(), $response->headers->get('content-type'));
-        $this->assertEquals(self::$DI['record_1']->get_preview()->get_size(), $response->headers->get('content-length'));
+        $this->assertEquals($record1->get_preview()->get_mime(), $response->headers->get('content-type'));
+        $this->assertEquals($record1->get_preview()->get_size(), $response->headers->get('content-length'));
     }
 
     public function testDatafilesNonExistentSubdef()
@@ -255,8 +257,8 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['subdef.substituer']->substitute($story, $name, $media);
 
         $path = self::$DI['app']['url_generator']->generate('datafile', [
-            'sbas_id' =>  $story->get_sbas_id(),
-            'record_id' => $story->get_record_id(),
+            'sbas_id' =>  $story->getDataboxId(),
+            'record_id' => $story->getRecordId(),
             'subdef' => $name,
         ]);
 
@@ -334,13 +336,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         // Ensure permalink is created
         \media_Permalink_Adapter::getPermalink(
             self::$DI['app'],
-            $record->get_databox(),
+            $record->getDatabox(),
             $record->get_subdef('preview')
         );
 
         $path = self::$DI['app']['url_generator']->generate('permalinks_permaview', [
-            'sbas_id' => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
+            'sbas_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
             'subdef' => 'preview',
         ]);
 

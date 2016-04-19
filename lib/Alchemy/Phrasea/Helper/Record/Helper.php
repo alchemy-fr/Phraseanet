@@ -284,7 +284,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     public function get_serialize_list()
     {
         if ($this->is_single_grouping()) {
-            return $this->get_grouping_head()->get_serialize_key();
+            return $this->get_grouping_head()->getId();
         } else {
             return $this->selection->serialize_list();
         }

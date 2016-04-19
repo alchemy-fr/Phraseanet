@@ -36,6 +36,7 @@ class Mapping
     const TYPE_LONG    = 'long';
     const TYPE_SHORT   = 'short';
     const TYPE_BYTE    = 'byte';
+    const TYPE_IP      = 'ip';
     // Compound types
     const TYPE_OBJECT  = 'object';
 
@@ -49,6 +50,7 @@ class Mapping
         self::TYPE_LONG,
         self::TYPE_SHORT,
         self::TYPE_BYTE,
+        self::TYPE_IP,
     );
 
     public function add($name, $type)

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -13,15 +12,17 @@ use Assert\Assertion;
 
 class databox_descriptionStructure implements IteratorAggregate, Countable
 {
-    /** @var databox_field[] */
+    /**
+     * @var databox_field[]
+     */
     protected $elements = [];
 
     /**
      * Cache array for the get element by name function
      *
-     * @var array
+     * @var array<string,int>|null
      */
-    protected $cache_name_id = [];
+    protected $cache_name_id;
 
     /**
      * @param databox_field[] $fields
@@ -51,6 +52,10 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     {
         $this->elements[$field->get_id()] = $field;
 
+        if (null !== $this->cache_name_id) {
+            $this->cache_name_id[$field->get_name()] = $field->get_id();
+        }
+
         return $this;
     }
 
@@ -60,8 +65,9 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      */
     public function remove_element(databox_field $field)
     {
-        if (isset($this->elements[$field->get_id()]))
-            unset($this->elements[$field->get_id()]);
+        if (isset($this->elements[$field->get_id()])) {
+            unset($this->elements[$field->get_id()], $this->cache_name_id[$field->get_name()]);
+        }
 
         return $this;
     }
@@ -75,14 +81,14 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     *
-     * @param  int           $id
+     * @param int $id
      * @return databox_field
      */
     public function get_element($id)
     {
-        if ( ! isset($this->elements[$id]))
+        if (!isset($this->elements[$id])) {
             throw new Exception_Databox_FieldNotFound ();
+        }
 
         return $this->elements[$id];
     }
@@ -93,23 +99,35 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      */
     public function get_element_by_name($name)
     {
-        $name = databox_field::generateName($name);
+        if (null === $this->cache_name_id) {
+            $this->cache_name_id = [];
 
-        if (isset($this->cache_name_id[$name])) {
-            return $this->elements[$this->cache_name_id[$name]];
-        }
-
-        foreach ($this->elements as $id => $meta) {
-            if ($meta->get_name() === $name) {
-                $this->cache_name_id[$name] = $id;
-
-                return $meta;
+            foreach ($this->elements as $id => $meta) {
+                $this->cache_name_id[$meta->get_name()] = $id;
             }
         }
 
-        return null;
+        $name = databox_field::generateName($name);
+
+        return isset($this->cache_name_id[$name])
+            ? $this->elements[$this->cache_name_id[$name]]
+            : null;
     }
 
+    /**
+     * @return databox_field[]
+     */
+    public function getDcesFields()
+    {
+        return array_filter($this->elements, function (databox_field $field) {
+            return null !== $field->get_dces_element();
+        });
+    }
+
+    /**
+     * @param string $label
+     * @return databox_field|null
+     */
     public function get_dces_field($label)
     {
         foreach ($this->elements as $field) {
@@ -125,13 +143,16 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     /**
      * @param  string  $id
-     * @return boolean
+     * @return bool
      */
     public function isset_element($id)
     {
         return isset($this->elements[$id]);
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return array_map(function (databox_field $element) {

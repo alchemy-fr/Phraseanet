@@ -18,9 +18,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 {
     protected $client;
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::whatCanIDelete
-     */
     public function testWhatCanIDelete()
     {
         self::$DI['client']->request('POST', '/prod/records/delete/what/', ['lst'     => self::$DI['record_1']->get_serialize_key()]);
@@ -29,40 +26,31 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::doDeleteRecords
-     */
     public function testDoDeleteRecords()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $response = $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst' => $record->get_serialize_key()]);
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/delete/', ['lst' => $record->getId()]);
         $datas = (array) json_decode($response->getContent());
-        $this->assertContains($record->get_serialize_key(), $datas);
+        $this->assertContains($record->getId(), $datas);
         try {
-            new \record_adapter(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id());
+            new \record_adapter(self::$DI['app'], $record->getDataboxId(), $record->getRecordId());
             $this->fail('Record not deleted');
         } catch (\Exception $e) {
 
         }
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::renewUrl
-     */
     public function testRenewUrl()
     {
         $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/cestlafete.jpg'), self::$DI['collection']);
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
-        $response = $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst' => $record->get_serialize_key()]);
+        $response = $this->XMLHTTPRequest('POST', '/prod/records/renew-url/', ['lst' => $record->getId()]);
         $datas = (array) json_decode($response->getContent());
         $this->assertTrue(count($datas) > 0);
         $record->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailNotAjax()
     {
         self::$DI['client']->request('POST', '/prod/records/');
@@ -108,9 +96,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailResult()
     {
         $app = $this->mockElasticsearchResult(self::$DI['record_1']);
@@ -141,9 +126,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailREG()
     {
         $this->authenticate(self::$DI['app']);
@@ -168,9 +150,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertObjectHasAttribute('title', $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailBasket()
     {
         $this->authenticate(self::$DI['app']);
@@ -198,9 +177,6 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         unset($response, $data);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Records::getRecord
-     */
     public function testGetRecordDetailFeed()
     {
         $this->authenticate(self::$DI['app']);

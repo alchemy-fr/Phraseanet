@@ -102,12 +102,12 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         self::$DI['app']['acl'] = $aclProvider;
 
         self::$DI['client']->request('POST', '/prod/records/property/status/', [
-            'apply_to_children' => [$story->get_sbas_id() => true],
+            'apply_to_children' => [$story->getDataboxId() => true],
             'status'                                   => [
-                $record->get_sbas_id() => [6     => true, 8     => true, 11    => true]
+                $record->getDataboxId() => [6     => true, 8     => true, 11    => true]
             ],
             'lst' => implode(';', [
-                $record->get_serialize_key(),$story->get_serialize_key()
+                $record->getId(),$story->getId()
             ])
         ]);
         $response = self::$DI['client']->getResponse();
@@ -116,11 +116,11 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($datas['success']);
         $this->assertArrayHasKey('updated', $datas);
 
-        $record = new \record_adapter(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id());
-        $story = new \record_adapter(self::$DI['app'], $story->get_sbas_id(), $story->get_record_id());
+        $record = new \record_adapter(self::$DI['app'], $record->getDataboxId(), $record->getRecordId());
+        $story = new \record_adapter(self::$DI['app'], $story->getDataboxId(), $story->getRecordId());
 
-        $recordStatus = strrev($record->get_status());
-        $storyStatus = strrev($story->get_status());
+        $recordStatus = strrev($record->getStatus());
+        $storyStatus = strrev($story->getStatus());
 
         $this->assertEquals(1, substr($recordStatus, 6, 1));
         $this->assertEquals(1, substr($recordStatus, 8, 1));
@@ -130,8 +130,8 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals(1, substr($storyStatus, 8, 1));
         $this->assertEquals(1, substr($storyStatus, 11, 1));
 
-        foreach ($story->get_children() as $child) {
-            $childStatus = strrev($child->get_status());
+        foreach ($story->getChildren() as $child) {
+            $childStatus = strrev($child->getStatus());
             $this->assertEquals(1, substr($childStatus, 6, 1));
             $this->assertEquals(1, substr($childStatus, 8, 1));
             $this->assertEquals(1, substr($childStatus, 11, 1));
@@ -155,11 +155,11 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/prod/records/property/type/',  [
             'lst' => implode(';', [
-                $record->get_serialize_key(), $record2->get_serialize_key()
+                $record->getId(), $record2->getId()
             ]),
             'types' => [
-                $record->get_serialize_key() => 'document',
-                $record2->get_serialize_key() => 'flash',
+                $record->getId() => 'document',
+                $record2->getId() => 'flash',
             ]
         ]);
         $response = self::$DI['client']->getResponse();
@@ -168,11 +168,11 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($datas['success']);
         $this->assertArrayHasKey('updated', $datas);
 
-        $record = new \record_adapter(self::$DI['app'], $record->get_sbas_id(), $record->get_record_id());
-        $record2 = new \record_adapter(self::$DI['app'], $record2->get_sbas_id(), $record2->get_record_id());
+        $record = new \record_adapter(self::$DI['app'], $record->getDataboxId(), $record->getRecordId());
+        $record2 = new \record_adapter(self::$DI['app'], $record2->getDataboxId(), $record2->getRecordId());
 
-        $this->assertEquals('document', $record->get_type());
-        $this->assertEquals('flash', $record2->get_type());
+        $this->assertEquals('document', $record->getType());
+        $this->assertEquals('flash', $record2->getType());
 
         $record->delete();
         $record2->delete();

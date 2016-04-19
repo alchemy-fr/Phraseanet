@@ -43,8 +43,6 @@ class QueryController extends Controller
 
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
-        $form = $options->serialize();
-
         $perPage = (int) $this->getSettings()->getUserSetting($this->getAuthenticatedUser(), 'images_per_page');
 
         $page = (int) $request->request->get('pag');
@@ -56,13 +54,15 @@ class QueryController extends Controller
             $page = 1;
         }
 
+        $options->setFirstResult(($page - 1) * $perPage);
+        $options->setMaxResults($perPage);
+
         $user = $this->getAuthenticatedUser();
         $userManipulator = $this->getUserManipulator();
         $userManipulator->logQuery($user, $query);
 
         try {
-            /** @var SearchEngineResult $result */
-            $result = $engine->query($query, (($page - 1) * $perPage), $perPage, $options);
+            $result = $engine->query($query, $options);
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
                 $userManipulator->setUserSetting($user, 'start_page_query', $query);
@@ -216,7 +216,7 @@ class QueryController extends Controller
             $json['total_answers'] = (int) $result->getAvailable();
             $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
             $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
-            $json['form'] = $form;
+            $json['form'] = $options->serialize();
         }
         catch(\Exception $e) {
             // we'd like a message from the parser so get all the exceptions messages

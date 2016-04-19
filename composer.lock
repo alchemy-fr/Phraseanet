@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "baf4148980adfb15bed6b72c438da7eb",
-    "content-hash": "5d8ffafd15285984d97c82a1e13a697f",
+    "hash": "8db2333764b17b4b04f474a6b9fc2c49",
+    "content-hash": "2961cef34c7a94f9afb11b859781cb65",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -1137,33 +1137,33 @@
         },
         {
             "name": "doctrine/cache",
-            "version": "v1.5.1",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e"
+                "reference": "f8af318d14bdb0eff0336795b428b547bd39ccb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
-                "reference": "2b9cec5a5e722010cbebc91713d4c11eaa064d5e",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/f8af318d14bdb0eff0336795b428b547bd39ccb6",
+                "reference": "f8af318d14bdb0eff0336795b428b547bd39ccb6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "php": "~5.5|~7.0"
             },
             "conflict": {
                 "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7",
+                "phpunit/phpunit": "~4.8|~5.0",
                 "predis/predis": "~1.0",
                 "satooshi/php-coveralls": "~0.6"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev"
                 }
             },
             "autoload": {
@@ -1203,7 +1203,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2015-11-02 18:35:48"
+            "time": "2015-12-31 16:37:02"
         },
         {
             "name": "doctrine/collections",
@@ -2930,7 +2930,7 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "dev-alchemy-0.6.2",
+            "version": "0.6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Imagine.git",
@@ -4744,7 +4744,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/dcdeb1d923b981a55f0a4ce6c2ceac14cb8476f8",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/438196c8f66647073bcaf99908b543bda7ffd6d4",
                 "reference": "c18abc6df90257ddbbe2654a98cc5cc7be804411",
                 "shasum": ""
             },
@@ -5221,22 +5221,28 @@
         },
         {
             "name": "sorien/silex-dbal-profiler",
-            "version": "1.0.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sorien/silex-dbal-profiler.git",
-                "reference": "8cbbef7a8fae53381d9005163070485471089908"
+                "reference": "4d3f642144e96685270f7ffb1648a081d0c5eb7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sorien/silex-dbal-profiler/zipball/8cbbef7a8fae53381d9005163070485471089908",
-                "reference": "8cbbef7a8fae53381d9005163070485471089908",
+                "url": "https://api.github.com/repos/Sorien/silex-dbal-profiler/zipball/4d3f642144e96685270f7ffb1648a081d0c5eb7e",
+                "reference": "4d3f642144e96685270f7ffb1648a081d0c5eb7e",
                 "shasum": ""
             },
-            "require-dev": {
-                "silex/silex": "~1.0"
+            "require": {
+                "silex/silex": "~1.0",
+                "silex/web-profiler": "~1.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Sorien": "src"
@@ -5259,7 +5265,7 @@
                 "profiler",
                 "silex"
             ],
-            "time": "2014-02-26 10:01:20"
+            "time": "2015-03-12 09:26:42"
         },
         {
             "name": "sorien/silex-pimple-dumper",
@@ -7389,14 +7395,7 @@
             "time": "2015-06-21 13:59:46"
         }
     ],
-    "aliases": [
-        {
-            "alias": "0.6.2",
-            "alias_normalized": "0.6.2.0",
-            "version": "dev-alchemy-0.6.2",
-            "package": "imagine/imagine"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "alchemy/task-manager": 20,

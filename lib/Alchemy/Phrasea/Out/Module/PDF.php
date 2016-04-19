@@ -166,7 +166,7 @@ class PDF
 
             $fimg = $subdef->getRealPath();
 
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
                 $fimg = \recordutils_image::watermark($this->app, $subdef);
             }
@@ -258,7 +258,7 @@ class PDF
 
             $y = $this->pdf->GetY();
 
-            $t = \phrasea::bas_labels($rec->get_base_id(), $this->app);
+            $t = \phrasea::bas_labels($rec->getBaseId(), $this->app);
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
             $this->pdf->SetFillColor(220, 220, 220);
             $this->pdf->SetLeftMargin($lmargin);
@@ -339,10 +339,10 @@ class PDF
             $RIGHT_TEXT = "";
             $RIGHT_IMG = NULL;
 
-            $LEFT__IMG = $this->app['root.path'] . "/config/minilogos/logopdf_" . $rec->get_sbas_id() . ".jpg";
+            $LEFT__IMG = $this->app['root.path'] . "/config/minilogos/logopdf_" . $rec->getDataboxId() . ".jpg";
 
             if (!is_file($LEFT__IMG)) {
-                $databox = $rec->get_databox();
+                $databox = $rec->getDatabox();
                 $str = $databox->get_sxml_structure();
                 $vn = (string) ($str->pdfPrintLogo);
                 if (($vn * 1) == 1) {
@@ -350,7 +350,7 @@ class PDF
                 }
             }
 
-            $collection = \collection::getByBaseId($this->app, $rec->get_base_id());
+            $collection = \collection::getByBaseId($this->app, $rec->getBaseId());
 
             $vn = "";
             if (false !== $str = simplexml_load_string($collection->get_prefs())) {
@@ -358,9 +358,9 @@ class PDF
             }
 
             if ($vn == "" || $vn == "1") {
-                $RIGHT_TEXT = \phrasea::bas_labels($rec->get_base_id(), $this->app);
+                $RIGHT_TEXT = \phrasea::bas_labels($rec->getBaseId(), $this->app);
             } elseif ($vn == "2") {
-                $RIGHT_IMG = $this->app['root.path'] . "/config/minilogos/" . $rec->get_base_id();
+                $RIGHT_IMG = $this->app['root.path'] . "/config/minilogos/" . $rec->getBaseId();
             }
 
             $xtmp = $this->pdf->GetX();
@@ -438,7 +438,7 @@ class PDF
 
             $f = $subdef->getRealPath();
 
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->get_base_id(), "nowatermark")
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), "nowatermark")
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($this->app, $subdef);
 
