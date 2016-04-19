@@ -61,6 +61,7 @@ use Alchemy\Phrasea\Search\SearchResultView;
 use Alchemy\Phrasea\Search\StoryTransformer;
 use Alchemy\Phrasea\Search\StoryView;
 use Alchemy\Phrasea\Search\SubdefTransformer;
+use Alchemy\Phrasea\Search\TechnicalDataTransformer;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchResultTransformer;
@@ -1051,8 +1052,9 @@ class V1Controller extends Controller
 
         $searchView = $this->buildSearchView($this->doSearch($request));
 
-        $recordTransformer = new RecordTransformer();
-        $storyTransformer = new StoryTransformer(new SubdefTransformer(), $recordTransformer);
+        $subdefTransformer = new SubdefTransformer();
+        $recordTransformer = new RecordTransformer($subdefTransformer, new TechnicalDataTransformer());
+        $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
         $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
 
@@ -1078,7 +1080,8 @@ class V1Controller extends Controller
 
         $searchView = $this->buildSearchRecordsView($this->doSearch($request));
 
-        $searchTransformer = new V1SearchRecordsResultTransformer(new RecordTransformer());
+        $recordTransformer = new RecordTransformer(new SubdefTransformer(), new TechnicalDataTransformer());
+        $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 

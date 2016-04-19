@@ -55,7 +55,9 @@ class RecordTransformer extends TransformerAbstract
 
     public function includeThumbnail(RecordView $recordView)
     {
-        return $this->item($recordView->getSubdef('thumbnail'), $this->subdefTransformer);
+        $thumbnailView = $recordView->getSubdef('thumbnail');
+
+        return $thumbnailView ? $this->item($thumbnailView, $this->subdefTransformer) : null;
     }
 
     public function includeTechnicalInformations(RecordView $recordView)
@@ -70,12 +72,13 @@ class RecordTransformer extends TransformerAbstract
 
     public function includeMetadata(RecordView $recordView)
     {
-        $ret = [];
+        $fieldData = [];
+        $values = [];
 
-        foreach ($recordView->getCaption()->getCaption()->get_fields() as $field) {
+        foreach ($recordView->getCaption()->getFields() as $field) {
             $databox_field = $field->get_databox_field();
 
-            $fieldData = [
+            $fieldData[$field->get_meta_struct_id()] = [
                 'meta_structure_id' => $field->get_meta_struct_id(),
                 'name' => $field->get_name(),
                 'labels' => [
@@ -86,24 +89,52 @@ class RecordTransformer extends TransformerAbstract
                 ],
             ];
 
-            foreach ($field->get_values() as $value) {
-                $data = [
-                    'meta_id' => $value->getId(),
-                    'value' => $value->getValue(),
-                ];
-
-                $ret[] = array_replace($fieldData, $data);
-            }
+            $values[] = $field->get_values();
         }
 
-        return $this->collection($recordView->getCaption(), )
+        if ($values) {
+            $values = call_user_func_array('array_merge', $values);
+        }
+
+        return $this->collection($values, function (\caption_Field_Value $value) use ($fieldData) {
+            $data = $fieldData[$value->getDatabox_field()->get_id()];
+
+            $data['meta_id'] = $value->getId();
+            $data['value'] = $value->getValue();
+
+            return $data;
+        });
     }
 
     public function includeStatus(RecordView $recordView)
     {
+        $data = [];
+
+        $bitMask = $recordView->getRecord()->getStatusBitField();
+
+        foreach ($recordView->getRecord()->getDatabox()->getStatusStructure() as $bit => $status) {
+            $data[] = [
+                'bit' => $bit,
+                'mask' => $bitMask,
+            ];
+        }
+
+        return $this->collection($data, function (array $bitData) {
+            return [
+                'bit' => $bitData['bit'],
+                'state' => \databox_status::bitIsSet($bitData['mask'], $bitData['bit']),
+            ];
+        });
     }
 
     public function includeCaption(RecordView $recordView)
     {
+        return $this->collection($recordView->getCaption()->getFields(), function (\caption_field $field) {
+            return [
+                'meta_structure_id' => $field->get_meta_struct_id(),
+                'name' => $field->get_name(),
+                'value' => $field->get_serialized_values(';'),
+            ];
+        });
     }
 }
