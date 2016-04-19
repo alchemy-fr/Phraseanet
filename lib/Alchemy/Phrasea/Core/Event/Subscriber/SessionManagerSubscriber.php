@@ -103,7 +103,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
 
         $now = new \DateTime();
 
-        if ($idle > 0 && $now->getTimestamp() > $session->getUpdated() + $idle) {
+        if ($idle > 0 && $now->getTimestamp() > $session->getUpdated()->getTimestamp() + $idle) {
             // we must disconnect due to idle time
             $this->app->getAuthenticator()->closeAccount();
             $this->setDisconnectResponse($event);
@@ -170,7 +170,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return null;
         }
 
-        $moduleName = strtolower($pathInfo[1]);
+        $moduleName = strtolower($parts[1]);
 
         if (!isset(self::$modulesIds[$moduleName])) {
             return null;
