@@ -70,7 +70,8 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ($request->query->has('LOG')
+        if ($request->request->has('oauth_token')
+            || $request->query->has('LOG')
             || null === $moduleId = $this->getModuleId($request->getPathInfo())
         ) {
             return;
