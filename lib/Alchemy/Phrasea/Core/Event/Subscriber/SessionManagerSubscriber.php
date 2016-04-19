@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -12,6 +11,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -24,6 +24,15 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class SessionManagerSubscriber implements EventSubscriberInterface
 {
     private $app;
+
+    private static $modulesIds = [
+        'prod' => 1,
+        'client' => 2,
+        'admin' => 3,
+        'thesaurus' => 5,
+        'report' => 10,
+        'lightbox' => 6,
+    ];
 
     public function __construct(Application $app)
     {
@@ -46,13 +55,10 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($this->isFlashUploadRequest($event->getRequest())) {
-            if (null !== $sessionId = $event->getRequest()->request->get('php_session_id')) {
+        $request = $event->getRequest();
 
-                $request = $event->getRequest();
-                $request->cookies->set($this->app['session']->getName(), $sessionId);
-
-            }
+        if ($this->isFlashUploadRequest($request) && null !== $sessionId = $request->request->get('php_session_id')) {
+            $request->cookies->set($this->app['session']->getName(), $sessionId);
         }
     }
 
@@ -62,41 +68,19 @@ class SessionManagerSubscriber implements EventSubscriberInterface
      */
     public function checkSessionActivity(GetResponseEvent $event)
     {
-        $modulesIds = [
-            "prod"      => 1,
-            "client"    => 2,
-            "admin"     => 3,
-            "thesaurus" => 5,
-            "report"    => 10,
-            "lightbox"  => 6,
-        ];
-
         $request = $event->getRequest();
 
-        $pathInfo = array_filter(explode('/', $request->getPathInfo()));
-
-        if (count($pathInfo) < 1) {
-            return;
-        }
-        $moduleName = strtolower($pathInfo[1]);
-
-        if (!array_key_exists($moduleName, $modulesIds) ) {
-            return;
-        }
-        // this route is polled by js in admin/databox to refresh infos (progress bar...)
-        if (preg_match("#^/admin/databox/[0-9]+/informations/documents/#", $request->getPathInfo()) == 1) {
-            return;
-        }
-        // this route is polled by js in admin/tasks to refresh tasks status
-        if ($request->getPathInfo() == "/admin/task-manager/tasks/" && $request->getContentType() == 'json') {
+        if ($request->query->has('LOG')
+            || null === $moduleId = $this->getModuleId($request->getPathInfo())
+        ) {
             return;
         }
 
-        if ($this->isFlashUploadRequest($request)) {
+        if ($this->isAdminJsPolledRoute($moduleId, $request)) {
             return;
         }
 
-        if ($request->query->has('LOG')) {
+        if ($moduleId === self::$modulesIds['prod'] && $this->isFlashUploadRequest($request)) {
             return;
         }
 
@@ -107,45 +91,37 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        /** @var Session $session */
         $session = $this->app['repo.sessions']->find($this->app['session']->get('session_id'));
 
         $idle = 0;
-        if (isset($this->app["phraseanet.configuration"]["session"]["idle"])) {
-            $idle = (int) ($this->app["phraseanet.configuration"]["session"]["idle"]);
+
+        if (isset($this->app['phraseanet.configuration']['session']['idle'])) {
+            $idle = (int)$this->app['phraseanet.configuration']['session']['idle'];
         }
+
         $now = new \DateTime();
-        $dt = $now->getTimestamp() - $session->getUpdated()->getTimestamp();
-        if ($idle > 0 && $dt > $idle) {
+
+        if ($idle > 0 && $now->getTimestamp() > $session->getUpdated() + $idle) {
             // we must disconnect due to idle time
             $this->app->getAuthenticator()->closeAccount();
             $this->setDisconnectResponse($event);
 
             return;
         }
-        $moduleId = $modulesIds[$moduleName];
-
-        $session->setUpdated(new \DateTime());
 
         $entityManager = $this->app['orm.em'];
 
-        if (!$session->hasModuleId($moduleId)) {
-            $module = new SessionModule();
-            $module->setModuleId($moduleId);
-            $module->setSession($session);
-            $session->addModule($module);
+        $module = $this->addOrUpdateSessionModule($session, $moduleId, $now);
 
-            $entityManager->persist($module);
-        } else {
-            $entityManager->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
-        }
+        $entityManager->persist($module);
         $entityManager->persist($session);
         $entityManager->flush();
     }
 
     private function isFlashUploadRequest(Request $request)
     {
-        return false !== stripos($request->server->get('HTTP_USER_AGENT'), 'flash')
-        && $request->getRequestUri() === '/prod/upload/';
+        return false !== stripos($request->server->get('HTTP_USER_AGENT'), 'flash') && $request->getRequestUri() === '/prod/upload/';
     }
 
     /**
@@ -153,20 +129,97 @@ class SessionManagerSubscriber implements EventSubscriberInterface
      */
     private function setDisconnectResponse(GetResponseEvent $event)
     {
-        if ($event->getRequest()->isXmlHttpRequest()) {
-            $response = new Response("End-Session", 403, ['X-Phraseanet-End-Session' => '1']);
+        $request = $event->getRequest();
 
-            $event->setResponse($response);
-
-            return;
-        }
-
-        $redirectUrl = $this->app["url_generator"]->generate("homepage", [
-            "redirect" => '..' . $event->getRequest()->getPathInfo(),
-        ]);
-
-        $response = new RedirectResponse($redirectUrl, 302, ['X-Phraseanet-End-Session' => '1']);
+        $response = $request->isXmlHttpRequest() ? $this->getXmlHttpResponse() : $this->getRedirectResponse($request);
 
         $event->setResponse($response);
+    }
+
+    /**
+     * @return Response
+     */
+    private function getXmlHttpResponse()
+    {
+        return new Response("End-Session", 403, ['X-Phraseanet-End-Session' => '1']);
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    private function getRedirectResponse(Request $request)
+    {
+        $redirectUrl = $this->app['url_generator']->generate('homepage', [
+            'redirect' => '..' . $request->getPathInfo(),
+        ]);
+
+        return new RedirectResponse($redirectUrl, 302, ['X-Phraseanet-End-Session' => '1']);
+    }
+
+    /**
+     * @param string $pathInfo
+     * @return int|null
+     */
+    private function getModuleId($pathInfo)
+    {
+        $parts = array_filter(explode('/', $pathInfo));
+
+        if (count($parts) < 1) {
+            return null;
+        }
+
+        $moduleName = strtolower($pathInfo[1]);
+
+        if (!isset(self::$modulesIds[$moduleName])) {
+            return null;
+        }
+
+        return self::$modulesIds[$moduleName];
+    }
+
+    /**
+     * @param int $moduleId
+     * @param Request $request
+     * @return bool
+     */
+    private function isAdminJsPolledRoute($moduleId, Request $request)
+    {
+        if ($moduleId !== self::$modulesIds['admin']) {
+            return false;
+        }
+
+        $pathInfo = $request->getPathInfo();
+
+        if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentType() === 'json') {
+            return true;
+        }
+
+        return preg_match('#^/admin/databox/\d+/informations/documents/#', $pathInfo) === 1;
+    }
+
+    /**
+     * @param Session $session
+     * @param int $moduleId
+     * @param \DateTime $now
+     * @return SessionModule
+     */
+    private function addOrUpdateSessionModule(Session $session, $moduleId, \DateTime $now)
+    {
+        $session->setUpdated($now);
+
+        if (null !== $module = $session->getModuleById($moduleId)) {
+            return $module->setUpdated($now);
+        }
+
+        $module = new SessionModule();
+
+        $module->setCreated($now);
+        $module->setModuleId($moduleId);
+        $module->setSession($session);
+
+        $session->addModule($module);
+
+        return $module;
     }
 }
