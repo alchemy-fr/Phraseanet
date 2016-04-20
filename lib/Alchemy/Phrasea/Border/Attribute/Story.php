@@ -69,7 +69,7 @@ class Story implements AttributeInterface
      */
     public function asString()
     {
-        return $this->story->get_serialize_key();
+        return $this->story->getId();
     }
 
     /**

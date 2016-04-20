@@ -28,13 +28,14 @@ class media_subdefTest extends \PhraseanetTestCase
         parent::setUp();
 
         if (null === self::$recordonbleu) {
-            $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
+            $app = $this->getApplication();
+            $file = new File($app, $app['mediavorus']->guess(__DIR__ . "/../../files/iphone_pic.jpg"), self::$DI['collection']);
 
-            self::$recordonbleu = record_adapter::createFromFile($file, self::$DI['app']);
-            self::$DI['app']['subdef.generator']->generateSubdefs(self::$recordonbleu);
+            self::$recordonbleu = record_adapter::createFromFile($file, $app);
+            $app['subdef.generator']->generateSubdefs(self::$recordonbleu);
 
             foreach (self::$recordonbleu->get_subdefs() as $subdef) {
-                if ($subdef->get_name() == 'document') {
+                if (!in_array($subdef->get_name(), ['thumbnail', 'preview'], true)) {
                     continue;
                 }
 
@@ -80,10 +81,10 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_record()
     {
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectNotPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectNotPresent->get_record()->get_sbas_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectPresent->get_record()->get_sbas_id());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectNotPresent->get_record()->getDataboxId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
     /**
@@ -111,8 +112,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_record_id()
     {
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectNotPresent->get_record()->get_record_id());
-        $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectPresent->get_record()->get_record_id());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectNotPresent->get_record()->getRecordId());
+        $this->assertEquals(self::$recordonbleu->getRecordId(), self::$objectPresent->get_record()->getRecordId());
     }
 
     /**
@@ -140,8 +141,8 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testGet_sbas_id()
     {
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectNotPresent->get_record()->get_sbas_id());
-        $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectPresent->get_record()->get_sbas_id());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectNotPresent->get_record()->getDataboxId());
+        $this->assertEquals(self::$recordonbleu->getDataboxId(), self::$objectPresent->get_record()->getDataboxId());
     }
 
     /**

@@ -68,7 +68,7 @@ class ToolsController extends Controller
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
-                    } elseif (isset($databoxSubdefs[$subdefName])) {
+                    } elseif ($databoxSubdefs->hasSubdef($subdefName)) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
                             continue;
                         }
@@ -202,7 +202,7 @@ class ToolsController extends Controller
                     $record->insertTechnicalDatas($this->getMediaVorus());
                     $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
 
-                    $this->getDataboxLogger($record->get_databox())
+                    $this->getDataboxLogger($record->getDatabox())
                         ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
 
                     if ((int) $request->request->get('ccfilename') === 1) {
@@ -259,7 +259,7 @@ class ToolsController extends Controller
             $media = $this->app->getMediaFromUri($tempoFile);
 
             $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
-            $this->getDataboxLogger($record->get_databox())
+            $this->getDataboxLogger($record->getDatabox())
                 ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
             unlink($tempoFile);
@@ -415,7 +415,7 @@ class ToolsController extends Controller
     {
         $dataUri = Parser::parse($subDefDataUri);
 
-        $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+        $name = sprintf('extractor_thumb_%s', $record->getId());
         $fileName = sprintf('%s/%s.png', sys_get_temp_dir(), $name);
 
         file_put_contents($fileName, $dataUri->getData());
@@ -423,7 +423,7 @@ class ToolsController extends Controller
         $media = $this->app->getMediaFromUri($fileName);
 
         $this->getSubDefinitionSubstituer()->substitute($record, $subDefName, $media);
-        $this->getDataboxLogger($record->get_databox())
+        $this->getDataboxLogger($record->getDatabox())
           ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 
         unset($media);

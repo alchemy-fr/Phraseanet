@@ -269,8 +269,8 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => $this->getCollection()->get_sbas_id(),
             'collection'    => $this->getCollection()->get_coll_id(),
-            'sbasid'        => $this->getRecord1()->get_sbas_id(),
-            'rid'           => $this->getRecord1()->get_record_id(),
+            'sbasid'        => $this->getRecord1()->getDataboxId(),
+            'rid'           => $this->getRecord1()->getRecordId(),
         ]);
 
         $response = $this->client->getResponse();
@@ -285,8 +285,8 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => $this->getCollection()->get_sbas_id(),
             'collection'    => $this->getCollection()->get_coll_id(),
-            'sbasid'        => $this->getRecord1()->get_sbas_id(),
-            'rid'           => $this->getRecord1()->get_record_id(),
+            'sbasid'        => $this->getRecord1()->getDataboxId(),
+            'rid'           => $this->getRecord1()->getRecordId(),
             'from'          => 'TOOL'
         ]);
 
@@ -302,8 +302,8 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => $this->getCollection()->get_sbas_id(),
             'collection'    => $this->getCollection()->get_coll_id(),
-            'sbasid'        => $this->getRecord1()->get_sbas_id(),
-            'rid'           => $this->getRecord1()->get_record_id(),
+            'sbasid'        => $this->getRecord1()->getDataboxId(),
+            'rid'           => $this->getRecord1()->getRecordId(),
             'from'          => 'DASH'
         ]);
 
@@ -319,8 +319,8 @@ class InformationsTest extends \PhraseanetAuthenticatedWebTestCase
             'dmax'          => $this->dmax->format('Y-m-d H:i:s'),
             'sbasid'        => $this->getCollection()->get_sbas_id(),
             'collection'    => $this->getCollection()->get_coll_id(),
-            'sbasid'        => $this->getRecord1()->get_sbas_id(),
-            'rid'           => $this->getRecord1()->get_record_id(),
+            'sbasid'        => $this->getRecord1()->getDataboxId(),
+            'rid'           => $this->getRecord1()->getRecordId(),
             'user'          => $this->getUser()->getId()
         ]);
 

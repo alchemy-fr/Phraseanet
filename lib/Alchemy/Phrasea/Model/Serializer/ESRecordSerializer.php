@@ -50,7 +50,7 @@ class ESRecordSerializer extends AbstractSerializer
         }
 
         $i = 0;
-        foreach (preg_split('//', strrev($record->get_status()), -1, PREG_SPLIT_NO_EMPTY) as $val) {
+        foreach (preg_split('//', strrev($record->getStatus()), -1, PREG_SPLIT_NO_EMPTY) as $val) {
             $status['status-'.$i] = (int) $val;
             $i++;
         }

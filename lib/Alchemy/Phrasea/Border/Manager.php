@@ -278,7 +278,7 @@ class Manager
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
-                    new TfRecordid(), new MonoValue($element->get_record_id())
+                    new TfRecordid(), new MonoValue($element->getRecordId())
                 )
             )
         );
@@ -314,7 +314,7 @@ class Manager
                     break;
                 case AttributeInterface::NAME_STATUS:
                     /** @var StatusAttr $attribute */
-                    $element->set_binary_status(decbin(bindec($element->get_status()) | bindec($attribute->getValue())));
+                    $element->setStatus(decbin(bindec($element->getStatus()) | bindec($attribute->getValue())));
 
                     break;
                 case AttributeInterface::NAME_STORY:

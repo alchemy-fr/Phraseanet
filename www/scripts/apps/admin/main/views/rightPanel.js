@@ -73,11 +73,11 @@ define([
             event.preventDefault();
             var $this = this;
             var link = $(event.currentTarget);
-            var url = link.attr('action') || 'GET';
+            var url = link.attr('action');
 
             if(url) {
                 $.ajax({
-                    type: link.attr('method'),
+                    type: link.attr('method') || 'GET',
                     url: url,
                     data: link.serializeArray(),
                     success: function (data) {

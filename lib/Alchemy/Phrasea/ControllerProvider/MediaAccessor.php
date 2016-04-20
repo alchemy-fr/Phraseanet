@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\Phrasea\Controller\MediaAccessorController;
+use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Model\Entities\Secret;
 use Alchemy\Phrasea\Model\Provider\DefaultSecretProvider;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,13 @@ class MediaAccessor implements ServiceProviderInterface, ControllerProviderInter
         $app['provider.secrets'] = $app->share(function (Application $app) {
             return new DefaultSecretProvider($app['repo.secrets'], $app['random.medium']);
         });
+
+        $app['media_accessor.subdef_url_generator'] = $app->share(function (Application $app) {
+            $defaultTTL = (int)$app['conf']->get(['registry', 'general', 'default-subdef-url-ttl'], 0);
+
+            return new MediaSubDefinitionUrlGenerator($app['url_generator'], $app['provider.secrets'], $defaultTTL);
+        });
+
 
         $app['controller.media_accessor'] = $app->share(function (Application $app) {
             return (new MediaAccessorController($app))

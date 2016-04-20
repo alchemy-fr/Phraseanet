@@ -212,6 +212,9 @@ class Configuration implements ConfigurationInterface
     private function writeCacheConfig($content)
     {
         $this->dumpFile($this->compiled, $content, 0600);
+        if(function_exists("opcache_invalidate")) {
+            opcache_invalidate($this->compiled);
+        }
     }
 
     private function isConfigFresh()

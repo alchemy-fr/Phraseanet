@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Controller;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Application;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -46,13 +47,14 @@ class RecordsRequest extends ArrayCollection
 
         if (self::FLATTEN_NO !== $flatten) {
             $to_remove = [];
+            /** @var record_adapter $record */
             foreach ($this as $key => $record) {
                 if ($record->isStory()) {
                     if (self::FLATTEN_YES === $flatten) {
                         $to_remove[] = $key;
                     }
-                    foreach ($record->get_children() as $child) {
-                        $this->set($child->get_serialize_key(), $child);
+                    foreach ($record->getChildren() as $child) {
+                        $this->set($child->getId(), $child);
                     }
                 }
             }
@@ -180,7 +182,7 @@ class RecordsRequest extends ArrayCollection
     public function serializedList()
     {
         if ($this->isSingleStory()) {
-            return $this->singleStory()->get_serialize_key();
+            return $this->singleStory()->getId();
         }
 
         $basrec = [];
@@ -211,7 +213,7 @@ class RecordsRequest extends ArrayCollection
             $app['acl.basket']->hasAccess($basket, $app->getAuthenticatedUser());
 
             foreach ($basket->getElements() as $basket_element) {
-                $received[$basket_element->getRecord($app)->get_serialize_key()] = $basket_element->getRecord($app);
+                $received[$basket_element->getRecord($app)->getId()] = $basket_element->getRecord($app);
             }
         } elseif ($request->get('story')) {
             $repository = $app['repo.story-wz'];
@@ -230,7 +232,7 @@ class RecordsRequest extends ArrayCollection
                 }
                 try {
                     $record = new \record_adapter($app, (int) $basrec[0], (int) $basrec[1]);
-                    $received[$record->get_serialize_key()] = $record;
+                    $received[$record->getId()] = $record;
                     unset($record);
                 } catch (NotFoundHttpException $e) {
                     continue;

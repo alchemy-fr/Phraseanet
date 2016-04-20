@@ -47,7 +47,7 @@ use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
-use Alchemy\Phrasea\Model\Provider\SecretProvider;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
@@ -61,8 +61,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
+use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-use Firebase\JWT\JWT;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -139,10 +139,10 @@ class V1Controller extends Controller
             'pid'            => $data['process-id'],
             'jobId'          => $task->getJobId(),
             'period'         => $task->getPeriod(),
-            'last_exec_time' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'last_execution' => $task->getLastExecution() ? $task->getLastExecution()->format(DATE_ATOM) : null,
-            'updated'        => $task->getUpdated() ? $task->getUpdated()->format(DATE_ATOM) : null,
-            'created'        => $task->getCreated() ? $task->getCreated()->format(DATE_ATOM) : null,
+            'last_exec_time' => NullableDateTime::format($task->getLastExecution()),
+            'last_execution' => NullableDateTime::format($task->getLastExecution()),
+            'updated'        => NullableDateTime::format($task->getUpdated()),
+            'created'        => NullableDateTime::format($task->getCreated()),
             'auto_start'     => $task->getStatus() === Task::STATUS_STARTED,
             'crashed'        => $task->getCrashed(),
         ];
@@ -710,9 +710,9 @@ class V1Controller extends Controller
             'position'        => $user->getActivity() ?: null,
             'company'         => $user->getCompany() ?: null,
             'geoname_id'      => $user->getGeonameId() ?: null,
-            'last_connection' => $user->getLastConnection() ? $user->getLastConnection()->format(DATE_ATOM) : null,
-            'created_on'      => $user->getCreated() ? $user->getCreated()->format(DATE_ATOM) : null,
-            'updated_on'      => $user->getUpdated() ? $user->getUpdated()->format(DATE_ATOM) : null,
+            'last_connection' => NullableDateTime::format($user->getLastConnection()),
+            'created_on'      => NullableDateTime::format($user->getCreated()),
+            'updated_on'      => NullableDateTime::format($user->getUpdated()),
             'locale'          => $user->getLocale() ?: null,
         ];
     }
@@ -1003,35 +1003,9 @@ class V1Controller extends Controller
             'substituted' => $media->is_substituted(),
             'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
             'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
-            'url' => $this->generateSubDefinitionUrl($issuer, $media, $urlTTL),
+            'url' => $this->app['media_accessor.subdef_url_generator']->generate($issuer, $media, $urlTTL),
             'url_ttl' => $urlTTL,
         ];
-    }
-
-    /**
-     * @param User          $issuer
-     * @param \media_subdef $subdef
-     * @param int           $url_ttl
-     * @return string
-     */
-    private function generateSubDefinitionUrl(User $issuer, \media_subdef $subdef, $url_ttl)
-    {
-        $payload = [
-            'iat'  => time(),
-            'iss'  => $issuer->getId(),
-            'sdef' => [$subdef->get_sbas_id(), $subdef->get_record_id(), $subdef->get_name()],
-        ];
-        if ($url_ttl >= 0) {
-            $payload['exp'] = $payload['iat'] + $url_ttl;
-        }
-
-        /** @var SecretProvider $provider */
-        $provider = $this->app['provider.secrets'];
-        $secret = $provider->getSecretForUser($issuer);
-
-        return $this->app->url('media_accessor', [
-            'token' => JWT::encode($payload, $secret->getToken(), 'HS256', $secret->getId()),
-        ]);
     }
 
     private function listPermalink(\media_Permalink_Adapter $permalink)
@@ -1063,18 +1037,22 @@ class V1Controller extends Controller
     {
         list($ret, $search_result) = $this->prepareSearchRequest($request);
 
-        $ret['results'] = ['records' => [], 'stories' => []];
+        $records = [];
+        $stories = [];
 
         /** @var SearchEngineResult $search_result */
-        $references = new RecordReferenceCollection($search_result->getResults());
-
-        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
+        foreach ($search_result->getResults() as $record) {
             if ($record->isStory()) {
-                $ret['results']['stories'][] = $this->listStory($request, $record);
+                $stories[] = $record;
             } else {
-                $ret['results']['records'][] = $this->listRecord($request, $record);
+                $records[] = $record;
             }
         }
+
+        $ret['results'] = [
+            'records' => $this->listRecords($request, $records),
+            'stories' => $this->listStories($request, $stories),
+        ];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -1110,13 +1088,13 @@ class V1Controller extends Controller
     {
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
-        $offsetStart = (int) ($request->get('offset_start') ?: 0);
-        $perPage = (int) $request->get('per_page') ?: 10;
+        $options->setFirstResult((int) ($request->get('offset_start') ?: 0));
+        $options->setMaxResults((int) $request->get('per_page') ?: 10);
 
         $query = (string) $request->get('query');
         $this->getSearchEngine()->resetCache();
 
-        $search_result = $this->getSearchEngine()->query($query, $offsetStart, $perPage, $options);
+        $search_result = $this->getSearchEngine()->query($query, $options);
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQuery());
 
@@ -1134,8 +1112,8 @@ class V1Controller extends Controller
         $this->getSearchEngine()->clearCache();
 
         $ret = [
-            'offset_start' => $offsetStart,
-            'per_page' => $perPage,
+            'offset_start' => $options->getFirstResult(),
+            'per_page' => $options->getMaxResults(),
             'available_results' => $search_result->getAvailable(),
             'total_results' => $search_result->getTotal(),
             'error' => (string)$search_result->getError(),
@@ -1152,6 +1130,30 @@ class V1Controller extends Controller
         ];
 
         return [$ret, $search_result];
+    }
+
+    /**
+     * @param Request $request
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @return array
+     */
+    public function listRecords(Request $request, $records)
+    {
+        if (!$records instanceof RecordReferenceCollection) {
+            $records = new RecordReferenceCollection($records);
+        }
+
+        $technicalData = $this->app['service.technical_data']->fetchRecordsTechnicalData($records);
+
+        $data = [];
+
+        foreach ($records->toRecords($this->getApplicationBox()) as $index => $record) {
+            $record->setTechnicalDataSet($technicalData[$index]);
+
+            $data[$index] = $this->listRecord($request, $record);
+        }
+
+        return $data;
     }
 
     /**
@@ -1198,6 +1200,27 @@ class V1Controller extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $stories
+     * @return array
+     * @throws \Exception
+     */
+    public function listStories(Request $request, $stories)
+    {
+        if (!$stories instanceof RecordReferenceCollection) {
+            $stories = new RecordReferenceCollection($stories);
+        }
+
+        $data = [];
+
+        foreach ($stories->toRecords($this->getApplicationBox()) as $story) {
+            $data[] = $this->listStory($request, $story);
+        }
+
+        return $data;
+    }
+
+    /**
      * Retrieve detailed information about one story
      *
      * @param Request         $request
@@ -1210,10 +1233,6 @@ class V1Controller extends Controller
         if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
-
-        $records = array_map(function (\record_adapter $record) use ($request) {
-            return $this->listRecord($request, $record);
-        }, array_values($story->get_children()->get_elements()));
 
         $caption = $story->get_caption();
 
@@ -1256,7 +1275,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $records,
+            'records'       => $this->listRecords($request, $story->getChildren()->get_elements()),
         ];
     }
 
@@ -1448,11 +1467,7 @@ class V1Controller extends Controller
                 ];
             }, iterator_to_array($basket->getValidation()->getParticipants()));
 
-            $expires_on_atom = $basket->getValidation()->getExpires();
-
-            if ($expires_on_atom instanceof \DateTime) {
-                $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
-            }
+            $expires_on_atom = NullableDateTime::format($basket->getValidation()->getExpires());
 
             $ret = array_merge([
                 'validation_users'          => $users,
@@ -1530,7 +1545,7 @@ class V1Controller extends Controller
 
         $status = $request->get('status');
 
-        $datas = strrev($record->get_status());
+        $datas = strrev($record->getStatus());
 
         if (!is_array($status)) {
             return $this->getBadRequestAction($request);
@@ -1549,7 +1564,7 @@ class V1Controller extends Controller
             $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
         }
 
-        $record->set_binary_status(strrev($datas));
+        $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
@@ -2170,7 +2185,7 @@ class V1Controller extends Controller
             $story->removeChild($record);
         }
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
@@ -2232,7 +2247,7 @@ class V1Controller extends Controller
 
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
-        return $record->get_serialize_key();
+        return $record->getId();
     }
 
     public function getCurrentUserAction(Request $request)

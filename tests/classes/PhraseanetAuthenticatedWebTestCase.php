@@ -66,7 +66,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             'is_admin' => $returnBool,
             'give_access_to_sbas' => $returnSelf,
             'update_rights_to_sbas' => $returnSelf,
-            'update_rights_to_bas' => $returnSelf,
+            'update_rights_to_base' => $returnSelf,
             'has_right_on_base' => $returnBool,
             'has_right_on_sbas' => $returnBool,
             'has_access_to_sbas' => $returnBool,
@@ -202,8 +202,8 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $app = $this->getApplication();
 
         $elasticsearchRecord = new ElasticsearchRecord();
-        $elasticsearchRecord->setDataboxId($record->get_sbas_id());
-        $elasticsearchRecord->setRecordId($record->get_record_id());
+        $elasticsearchRecord->setDataboxId($record->getDataboxId());
+        $elasticsearchRecord->setRecordId($record->getRecordId());
 
         $result = new SearchEngineResult(
             new SearchEngineOptions(),
@@ -221,10 +221,8 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         );
 
         $searchEngine = $this->prophesize(SearchEngineInterface::class);
-        $searchEngine->query('', 0, Argument::any(), Argument::any())
+        $searchEngine->query('', Argument::any())
             ->willReturn($result);
-        $searchEngine->excerpt(Argument::any(), Argument::any(), Argument::any(), Argument::any())
-            ->willReturn([]);
 
         $app['search_engine'] = $searchEngine->reveal();
         return $app;

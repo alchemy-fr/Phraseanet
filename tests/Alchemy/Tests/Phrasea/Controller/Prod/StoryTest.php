@@ -100,7 +100,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->getDataboxId(), $story->getRecordId());
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
@@ -115,7 +115,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $this->assertEquals(2, $story->get_children()->get_count());
+        $this->assertEquals(2, $story->getChildren()->get_count());
         $story->delete();
     }
 
@@ -123,7 +123,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $story = \record_adapter::createStory(self::$DI['app'], self::$DI['collection']);
 
-        $route = sprintf("/prod/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
+        $route = sprintf("/prod/story/%s/%s/addElements/", $story->getDataboxId(), $story->getRecordId());
 
         $records = [
             self::$DI['record_1']->get_serialize_key(),
@@ -140,7 +140,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals(2, $story->get_children()->get_count());
+        $this->assertEquals(2, $story->getChildren()->get_count());
         $story->delete();
     }
 
@@ -157,16 +157,16 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
             $story->appendChild($record);
         }
 
-        $totalRecords = $story->get_children()->get_count();
+        $totalRecords = $story->getChildren()->get_count();
         $n = 0;
         foreach ($records as $record) {
             /* @var $record \record_adapter */
             $route = sprintf(
-                "/prod/story/%s/%s/delete/%s/%s/"
-                , $story->get_sbas_id()
-                , $story->get_record_id()
-                , $record->get_sbas_id()
-                , $record->get_record_id()
+                "/prod/story/%s/%s/delete/%s/%s/",
+                $story->getDataboxId(),
+                $story->getRecordId(),
+                $record->getDataboxId(),
+                $record->getRecordId()
             );
 
             if (($n % 2) === 0) {
@@ -188,7 +188,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
                 $this->assertTrue($data['success']);
             }
             $n ++;
-            $this->assertEquals($totalRecords - $n, $story->get_children()->get_count());
+            $this->assertEquals($totalRecords - $n, $story->getChildren()->get_count());
         }
         $story->delete();
     }

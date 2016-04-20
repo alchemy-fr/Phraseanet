@@ -29,22 +29,30 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertTrue($this->object->has_status_access_to_record(self::$DI['record_1']));
     }
 
-    public function testHasAccesToRecordStatus()
+    public function testHasAccessToRecordStatus()
     {
-        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
-        $this->object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '10000', '10000', '0', '0');
-        self::$DI['record_1']->set_binary_status('10000');
-        $this->assertFalse($this->object->has_status_access_to_record(self::$DI['record_1']));
-        self::$DI['record_1']->set_binary_status('00000');
-        $this->assertTrue($this->object->has_status_access_to_record(self::$DI['record_1']));
-        $this->object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '10000', '10000', '10000', '10000');
-        $this->assertFalse($this->object->has_status_access_to_record(self::$DI['record_1']));
-        self::$DI['record_1']->set_binary_status('10000');
-        $this->assertTrue($this->object->has_status_access_to_record(self::$DI['record_1']));
-        $this->object->set_masks_on_base(self::$DI['record_1']->get_base_id(), '0', '0', '0', '0');
-        $this->assertTrue($this->object->has_status_access_to_record(self::$DI['record_1']));
-        self::$DI['record_1']->set_binary_status(str_repeat('0', 32));
-        $this->assertTrue($this->object->has_status_access_to_record(self::$DI['record_1']));
+        $record1 = $this->getRecord1();
+
+        $record1->setStatus(str_repeat('0', 32));
+        $this->object->set_masks_on_base($record1->getBaseId(), '10000', '10000', '0', '0');
+
+        $record1->setStatus('10000');
+        $this->assertFalse($this->object->has_status_access_to_record($record1));
+
+        $record1->setStatus('00000');
+        $this->assertTrue($this->object->has_status_access_to_record($record1));
+
+        $this->object->set_masks_on_base($record1->getBaseId(), '10000', '10000', '10000', '10000');
+        $this->assertFalse($this->object->has_status_access_to_record($record1));
+
+        $record1->setStatus('10000');
+        $this->assertTrue($this->object->has_status_access_to_record($record1));
+
+        $this->object->set_masks_on_base($record1->getBaseId(), '0', '0', '0', '0');
+        $this->assertTrue($this->object->has_status_access_to_record($record1));
+
+        $record1->setStatus(str_repeat('0', 32));
+        $this->assertTrue($this->object->has_status_access_to_record($record1));
     }
 
     public function testHasAccesToRecordFailsOnBase()

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -49,14 +49,13 @@ class SearchController extends Controller
     private function searchAndFormatEngineResult(Request $request)
     {
         $options = SearchEngineOptions::fromRequest($this->app, $request);
-
-        $offsetStart = (int) ($request->get('offset_start') ?: 0);
-        $perPage = (int) $request->get('per_page') ?: 10;
+        $options->setFirstResult($request->get('offset_start') ?: 0);
+        $options->setMaxResults($request->get('per_page') ?: 10);
 
         $query = (string) $request->get('query');
         $this->getSearchEngine()->resetCache();
 
-        $search_result = $this->getSearchEngine()->query($query, $offsetStart, $perPage, $options);
+        $search_result = $this->getSearchEngine()->query($query, $options);
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQuery());
 
@@ -74,8 +73,8 @@ class SearchController extends Controller
         $this->getSearchEngine()->clearCache();
 
         $ret = [
-            'offset_start' => $offsetStart,
-            'per_page' => $perPage,
+            'offset_start' => $options->getFirstResult(),
+            'per_page' => $options->getMaxResults(),
             'available_results' => $search_result->getAvailable(),
             'total_results' => $search_result->getTotal(),
             'error' => (string)$search_result->getError(),

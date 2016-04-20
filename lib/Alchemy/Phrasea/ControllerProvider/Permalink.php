@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\PermalinkController;
+use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -69,6 +70,7 @@ class Permalink implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('permalinks_permaview_old');
 
         $controllers->get('/v1/{sbas_id}/{record_id}/{subdef}/{label}', 'controller.permalink:deliverPermalink')
+            ->before(new OAuthListener(['exit_not_present' => false]))
             ->bind('permalinks_permalink');
 
         $controllers->match('/v1/{sbas_id}/{record_id}/{subdef}/{label}', 'controller.permalink:getOptionsResponse')

@@ -26,8 +26,8 @@ class BridgeSubscriber extends AbstractNotificationSubscriber
             'usr_id'     => $user->getId(),
             'reason'     => $event->getReason(),
             'account_id' => $account->get_id(),
-            'sbas_id'    => $event->getElement()->get_record()->get_sbas_id(),
-            'record_id'  => $event->getElement()->get_record()->get_record_id(),
+            'sbas_id'    => $event->getElement()->get_record()->getDataboxId(),
+            'record_id'  => $event->getElement()->get_record()->getRecordId(),
         ];
 
         $datas = json_encode($params);

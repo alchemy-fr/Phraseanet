@@ -516,7 +516,7 @@ class module_report_nav extends module_report
             'photo'     =>
             "<img style='width:" . $x->get_width() . "px;height:" . $x->get_height() . "px;'
                         src='" . (string) $x->get_url() . "'>"
-            , 'record_id' => $record->get_record_id()
+            , 'record_id' => $record->getRecordId()
             , 'date'      => $this->app['date-formatter']->getPrettyString($document->get_creation_date())
             , 'type'      => $document->get_mime()
             , 'titre'     => $record->get_title()

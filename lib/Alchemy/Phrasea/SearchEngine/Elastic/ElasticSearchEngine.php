@@ -268,7 +268,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($string, $offset, $perPage, SearchEngineOptions $options = null)
+    public function query($string, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
@@ -282,13 +282,15 @@ class ElasticSearchEngine implements SearchEngineInterface
         // ask ES to return field _version (incremental version number of document)
         $params['body']['version'] = true;
 
-        $params['body']['from'] = $offset;
-        $params['body']['size'] = $perPage;
+        $params['body']['from'] = $options->getFirstResult();
+        $params['body']['size'] = $options->getMaxResults();
         if($this->options->getHighlight()) {
             $params['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
-        if ($aggs = $this->getAggregationQueryParams($options)) {
+        $aggs = $this->getAggregationQueryParams($options);
+
+        if ($aggs) {
             $params['body']['aggs'] = $aggs;
         }
 
@@ -314,7 +316,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results,   // ArrayCollection of results
             json_encode($query),
             $res['took'],   // duration
-            $offset,        // offset start
+            $options->getFirstResult(),
             $res['hits']['total'],  // available
             $res['hits']['total'],  // total
             null,   // error
@@ -367,16 +369,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function autocomplete($query, SearchEngineOptions $options)
     {
         throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function excerpt($query, $fields, \record_adapter $record, SearchEngineOptions $options = null)
-    {
-        //@todo implements
-
-        return array();
     }
 
     /**

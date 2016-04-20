@@ -20,7 +20,7 @@ use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
-use Alchemy\Phrasea\Vocabulary\Controller as VocabularyController;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -146,17 +146,17 @@ class EditController extends Controller
             foreach ($records as $record) {
                 $indice = $record->getNumber();
                 $elements[$indice] = [
-                    'bid'         => $record->get_base_id(),
-                    'rid'         => $record->get_record_id(),
+                    'bid'         => $record->getBaseId(),
+                    'rid'         => $record->getRecordId(),
                     'sselcont_id' => null,
                     '_selected'   => false,
                     'fields'      => $databox_fields,
                 ];
 
                 $elements[$indice]['statbits'] = [];
-                if ($this->getAclForUser()->has_right_on_base($record->get_base_id(), 'chgstatus')) {
+                if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), 'chgstatus')) {
                     foreach ($status as $n => $s) {
-                        $tmp_val = substr(strrev($record->get_status()), $n, 1);
+                        $tmp_val = substr(strrev($record->getStatus()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
                         $elements[$indice]['statbits'][$n]['dirty'] = false;
                     }
@@ -209,7 +209,7 @@ class EditController extends Controller
                     ['record' => $record]
                 );
 
-                $elements[$indice]['type'] = $record->get_type();
+                $elements[$indice]['type'] = $record->getType();
             }
         }
 
@@ -231,7 +231,7 @@ class EditController extends Controller
     }
 
     public function searchVocabularyAction(Request $request, $vocabulary) {
-        $datas = ['success' => false, 'message' => '', 'results' => []];
+        $data = ['success' => false, 'message' => '', 'results' => []];
 
         $sbas_id = (int) $request->query->get('sbas_id');
 
@@ -240,33 +240,33 @@ class EditController extends Controller
                 throw new \Exception('Invalid sbas_id');
             }
 
-            $VC = VocabularyController::get($this->app, $vocabulary);
+            /** @var ControlProviderInterface $vocabularyProvider */
+            $vocabularyProvider = $this->app['vocabularies'][strtolower($vocabulary)];
             $databox = $this->findDataboxById($sbas_id);
         } catch (\Exception $e) {
-            $datas['message'] = $this->app->trans('Vocabulary not found');
+            $data['message'] = $this->app->trans('Vocabulary not found');
 
-            return $this->app->json($datas);
+            return $this->app->json($data);
         }
 
         $query = $request->query->get('query');
 
-        $results = $VC->find($query, $this->getAuthenticatedUser(), $databox);
+        $results = $vocabularyProvider->find($query, $this->getAuthenticatedUser(), $databox);
 
         $list = [];
 
-        foreach ($results as $Term) {
-            /* @var \Alchemy\Phrasea\Vocabulary\Term $Term */
+        foreach ($results as $term) {
             $list[] = [
-                'id'      => $Term->getId(),
-                'context' => $Term->getContext(),
-                'value'   => $Term->getValue(),
+                'id'      => $term->getId(),
+                'context' => $term->getContext(),
+                'value'   => $term->getValue(),
             ];
         }
 
-        $datas['success'] = true;
-        $datas['results'] = $list;
+        $data['success'] = true;
+        $data['results'] = $list;
 
-        return $this->app->json($datas);
+        return $this->app->json($data);
     }
 
     public function applyAction(Request $request) {
@@ -287,7 +287,7 @@ class EditController extends Controller
             try {
                 $reg_record = $records->singleStory();
 
-                $newsubdef_reg = new \record_adapter($this->app, $reg_record->get_sbas_id(), $request->request->get('newrepresent'));
+                $newsubdef_reg = new \record_adapter($this->app, $reg_record->getDataboxId(), $request->request->get('newrepresent'));
 
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                     if (!in_array($name, ['thumbnail', 'preview'])) {
@@ -300,7 +300,7 @@ class EditController extends Controller
                     $media = $this->app->getMediaFromUri($value->getRealPath());
                     $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
                     $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
-                    $this->getDataboxLogger($reg_record->get_databox())->log(
+                    $this->getDataboxLogger($reg_record->getDatabox())->log(
                         $reg_record,
                         \Session_Logger::EVENT_SUBSTITUTE,
                         $name == 'document' ? 'HD' : $name,
@@ -325,7 +325,7 @@ class EditController extends Controller
                 continue;
             }
 
-            $key = $record->get_serialize_key();
+            $key = $record->getId();
 
             if (!array_key_exists($key, $elements)) {
                 continue;
@@ -345,7 +345,7 @@ class EditController extends Controller
                 $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
             }
 
-            $newstat = $record->get_status();
+            $newstat = $record->getStatus();
             $statbits = ltrim($statbits, 'x');
             if (!in_array($statbits, ['', 'null'])) {
                 $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
@@ -359,13 +359,13 @@ class EditController extends Controller
                     $newstat = \databox_status::operation_or($newstat, $mask_or);
                 }
 
-                $record->set_binary_status($newstat);
+                $record->setStatus($newstat);
             }
 
             $record
                 ->write_metas()
-                ->get_collection()
-                ->reset_stamp($record->get_record_id());
+                ->getCollection()
+                ->reset_stamp($record->getRecordId());
 
             if ($statbits != '') {
                 $this->getDataboxLogger($databox)

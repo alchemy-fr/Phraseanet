@@ -466,7 +466,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     public function acceptable_records()
     {
         return function (record_adapter $record) {
-                return $record->get_type() === 'video';
+                return $record->getType() === 'video';
             };
     }
 
@@ -568,7 +568,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function upload(record_adapter $record, array $options = [])
     {
-        switch ($record->get_type()) {
+        switch ($record->getType()) {
             case self::ELEMENT_TYPE_VIDEO :
                 $url_file = $this->_api->sendFile($record->get_hd_file()->getRealPath(), $this->oauth_token);
                 $options = array_merge(['url'  => $url_file], $options);
@@ -793,7 +793,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     {
         $errors = $this->check_record_constraints($record);
         $check = function ($field) use (&$errors, $datas, $record) {
-                $key = $record->get_serialize_key();
+                $key = $record->getId();
                 $required = ! ! $field["required"];
                 $name = $field["name"];
                 $length = (int) $field["length"];
@@ -850,7 +850,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
      */
     public function get_upload_datas(Request $request, record_adapter $record)
     {
-        $key = $record->get_serialize_key();
+        $key = $record->getId();
         $datas = [
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),

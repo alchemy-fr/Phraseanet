@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -10,11 +9,10 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
-class caption_record implements caption_interface, cache_cacheableInterface
+class caption_record implements cache_cacheableInterface
 {
     /**
      * @var array
@@ -22,31 +20,19 @@ class caption_record implements caption_interface, cache_cacheableInterface
     protected $fields;
 
     /**
-     * @var int
-     */
-    protected $sbas_id;
-
-    /**
-     * @var record_adapter
+     * @var RecordReferenceInterface
      */
     protected $record;
-    protected $databox;
-    protected $app;
 
     /**
-     *
-     * @param Application      $app
-     * @param record_adapter $record
-     * @param databox          $databox
-     *
-     * @return caption_record
+     * @var Application
      */
-    public function __construct(Application $app, \record_adapter $record, databox $databox)
+    protected $app;
+
+    public function __construct(Application $app, RecordReferenceInterface $record)
     {
         $this->app = $app;
-        $this->sbas_id = $record->getDataboxId();
         $this->record = $record;
-        $this->databox = $databox;
     }
 
     public function toArray($includeBusinessFields)
@@ -57,7 +43,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
         return $serializer->toArray($this, $includeBusinessFields);
     }
 
-    public function get_record()
+    /**
+     * @return RecordReferenceInterface
+     */
+    public function getRecordReference()
     {
         return $this->record;
     }
@@ -72,26 +61,29 @@ class caption_record implements caption_interface, cache_cacheableInterface
             return $this->fields;
         }
 
+        $databox = $this->getDatabox();
+
         try {
             $fields = $this->get_data_from_cache();
         } catch (\Exception $e) {
-            $sql = "SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId"
-                . " FROM metadatas m, metadatas_structure s"
-                . " WHERE m.record_id = :record_id AND s.id = m.meta_struct_id"
-                . " ORDER BY s.sorter ASC";
-            $stmt = $this->databox->get_connection()->prepare($sql);
-            $stmt->execute([':record_id' => $this->record->getRecordId()]);
-            $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            if ($fields) {
-                $this->set_data_to_cache($fields);
-            }
+            $sql = <<<'SQL'
+SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId
+FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
+WHERE m.record_id = :record_id
+ORDER BY s.sorter ASC
+SQL;
+            $fields = $databox->get_connection()
+                ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
+                ->fetchAll(PDO::FETCH_ASSOC);
+
+            $this->set_data_to_cache($fields);
         }
 
         $rec_fields = array();
 
         if ($fields) {
-            $databox_descriptionStructure = $this->databox->get_meta_structure();
+            $databox_descriptionStructure = $databox->get_meta_structure();
+            $record = $databox->get_record($this->record->getRecordId());
 
             // first group values by field
             $caption_fields = [];
@@ -113,7 +105,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 $cfv = new caption_Field_Value(
                     $this->app,
                     $caption_fields[$structure_id]['db_field'],
-                    $this->record,
+                    $record,
                     $row['meta_id'],
                     caption_Field_Value::DONT_RETRIEVE_VALUES   // ask caption_Field_Value "no n+1 sql"
                 );
@@ -132,7 +124,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 $cf = new caption_field(
                     $this->app,
                     $caption_field['db_field'],
-                    $this->record,
+                    $record,
                     caption_field::DONT_RETRIEVE_VALUES     // ask caption_field "no n+1 sql"
                 );
 
@@ -159,7 +151,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
         $fields = [];
 
         foreach ($this->retrieve_fields() as $meta_struct_id => $field) {
-            if ($grep_fields && ! in_array($field->get_name(), $grep_fields)) {
+            if ($grep_fields && ! in_array($field->get_name(), $grep_fields, true)) {
                 continue;
             }
 
@@ -201,15 +193,29 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     *
+     * @return caption_field[]
+     */
+    public function getDCFields()
+    {
+        $databoxDcesFieldIds = array_map(function (databox_field $databox_field) {
+            return $databox_field->get_id();
+        }, $this->getDatabox()->get_meta_structure()->getDcesFields());
+
+        return array_intersect_key(
+            $this->retrieve_fields(),
+            array_fill_keys($databoxDcesFieldIds, null)
+        );
+    }
+
+    /**
      * @param  string $label
-     * @return caption_field
+     * @return caption_field|null
      */
     public function get_dc_field($label)
     {
         $fields = $this->retrieve_fields();
 
-        if (null !== $field = $this->databox->get_meta_structure()->get_dces_field($label)) {
+        if (null !== $field = $this->getDatabox()->get_meta_structure()->get_dces_field($label)) {
             if (isset($fields[$field->get_id()])) {
                 return $fields[$field->get_id()];
             }
@@ -219,15 +225,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
 
     /**
-     *
-     * @param string                $highlight
-     * @param array                 $grep_fields
-     * @param SearchEngineInterface $searchEngine
-     * @param Boolean               $includeBusiness
-     *
+     * @param string $highlight
+     * @param array $grep_fields
+     * @param bool $includeBusiness
      * @return array
      */
-    public function get_highlight_fields($highlight = '', Array $grep_fields = null, SearchEngineInterface $searchEngine = null, $includeBusiness = false, SearchEngineOptions $options = null)
+    public function get_highlight_fields($highlight = '', array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 
@@ -236,9 +239,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
             foreach ($field->get_values() as $metaId => $v) {
                 $values[$metaId] = [
                     'value' => $v->getValue(),
-                    'from_thesaurus' => $highlight ? $v->isThesaurusValue() : false,
-                    'qjs' => $v->getQjs(),
+                    'from_thesaurus' => false,
+                    'qjs' => null,
                  ];
+                if ($highlight) {
+                    $v->highlight_thesaurus();
+                    $values[$metaId]['from_thesaurus'] = $v->isThesaurusValue();
+                    $values[$metaId]['qjs'] = $v->getQjs();
+                }
             }
             $fields[$field->get_name()] = [
                 'values'    => $values,
@@ -247,24 +255,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
                 'separator' => $field->get_databox_field()->get_separator(),
                 'sbas_id'   => $field->get_databox_field()->get_databox()->get_sbas_id()
             ];
-        }
-
-        if ($searchEngine instanceof SearchEngineInterface) {
-            $ret = $searchEngine->excerpt($highlight, $fields, $this->record, $options);
-
-            // sets highlighted value from search engine, highlighted values will now
-            // be surrounded by [[em]][[/em]] tags
-            if ($ret) {
-                foreach ($fields as $key => $value) {
-                    if (!isset($ret[$key])) {
-                        continue;
-                    }
-
-                    foreach ($ret[$key] as $metaId => $newValue) {
-                        $fields[$key]['values'][$metaId]['value'] = $newValue;
-                    }
-                }
-            }
         }
 
         return $fields;
@@ -278,7 +268,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_cache_key($option = null)
     {
-        return 'caption_' . $this->record->get_serialize_key() . ($option ? '_' . $option : '');
+        return 'caption_' . $this->record->getId() . ($option ? '_' . $option : '');
     }
 
     /**
@@ -289,7 +279,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function get_data_from_cache($option = null)
     {
-        return $this->record->getDatabox()->get_data_from_cache($this->get_cache_key($option));
+        return $this->getDatabox()->get_data_from_cache($this->get_cache_key($option));
     }
 
     /**
@@ -302,7 +292,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->record->getDatabox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->getDatabox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
@@ -315,6 +305,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
     {
         $this->fields = null;
 
-        return $this->record->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
+        return $this->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    /**
+     * @return databox
+     */
+    private function getDatabox()
+    {
+        return $this->app->findDataboxById($this->record->getDataboxId());
     }
 }

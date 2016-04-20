@@ -70,8 +70,8 @@ class MoveCollectionController extends Controller
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     /** @var \record_adapter $child */
-                    foreach ($record->get_children() as $child) {
-                        if ($this->getAclForUser()->has_right_on_base($child->get_base_id(), 'candeleterecord')) {
+                    foreach ($record->getChildren() as $child) {
+                        if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), 'candeleterecord')) {
                             $child->move_to_collection($collection, $this->getApplicationBox());
                         }
                     }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -11,28 +10,27 @@
 
 namespace Alchemy\Phrasea\Vocabulary;
 
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Assert\Assertion;
+
 class Term
 {
     /**
-     *
      * @var string
      */
     protected $value;
 
     /**
-     *
      * @var string
      */
     protected $context;
 
     /**
-     *
      * @var ControlProviderInterface
      */
     protected $type;
 
     /**
-     *
      * @var mixed
      */
     protected $id;
@@ -44,23 +42,15 @@ class Term
      * @param string                   $context A string defining the context of the Term
      * @param ControlProviderInterface $type    A Vocabulary Controller
      * @param mixed                    $id      The id of the term in the Vocabulary Controller
-     *
-     * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\Term
-     * @throws Exception
      */
-    public function __construct($value, $context = null, ControlProvider\ControlProviderInterface $type = null, $id = null)
+    public function __construct($value, $context = null, ControlProviderInterface $type = null, $id = null)
     {
-
-        if ( ! assert(is_scalar($value))) {
-            throw new \Exception('A Term value should be scalar');
-        }
+        Assertion::string($value, 'A Term value should be a string');
 
         $this->value = $value;
         $this->context = $context;
         $this->type = $type;
         $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -84,7 +74,6 @@ class Term
     }
 
     /**
-     *
      * @return ControlProviderInterface
      */
     public function getType()
@@ -93,7 +82,6 @@ class Term
     }
 
     /**
-     *
      * @return mixed
      */
     public function getId()
