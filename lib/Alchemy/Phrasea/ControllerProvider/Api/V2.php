@@ -86,6 +86,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('api_v2_basket_records_reorder');
         $this->addBasketMiddleware($app, $controller);
 
+        $controllers->match('/search/', 'controller.api.v2.search:searchAction');
+
         $controllers->delete('/quarantine/', 'controller.api.v2.lazaret:quarantineItemEmptyAction')
             ->bind('api_v2_quarantine_empty');
 
@@ -96,8 +98,6 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controller = $controllers->post('/quarantine/item/{lazaret_id}/add/', 'controller.api.v2.lazaret:quarantineItemAddAction')
             ->bind('api_v2_quarantine_item_add');
         $this->addQuarantineMiddleware($controller);
-
-        $controllers->match('/search/', 'controller.api.v2.search:searchAction');
 
         $controllers->post('/orders/', 'controller.api.v2.orders:createAction')
             ->bind('api_v2_orders_create');
