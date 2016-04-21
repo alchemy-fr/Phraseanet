@@ -1275,7 +1275,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, $story->getChildren()->get_elements()),
+            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
         ];
     }
 
