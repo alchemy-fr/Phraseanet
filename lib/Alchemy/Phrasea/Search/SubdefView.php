@@ -10,12 +10,29 @@
 
 namespace Alchemy\Phrasea\Search;
 
+use Assert\Assertion;
+
 class SubdefView
 {
     /**
      * @var \media_subdef
      */
     private $subdef;
+
+    /**
+     * @var PermalinkView
+     */
+    private $permalinkView;
+
+    /**
+     * @var string
+     */
+    private $url;
+
+    /**
+     * @var int
+     */
+    private $urlTTL;
 
     public function __construct(\media_subdef $subdef)
     {
@@ -28,5 +45,55 @@ class SubdefView
     public function getSubdef()
     {
         return $this->subdef;
+    }
+
+    /**
+     * @param PermalinkView $permalinkView
+     */
+    public function setPermalinkView($permalinkView)
+    {
+        $this->permalinkView = $permalinkView;
+    }
+
+    /**
+     * @return PermalinkView
+     */
+    public function getPermalinkView()
+    {
+        return $this->permalinkView;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = (string)$url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param null|int $urlTTL
+     */
+    public function setUrlTTL($urlTTL)
+    {
+        Assertion::nullOrIntegerish($urlTTL);
+
+        $this->urlTTL = null === $urlTTL ? null : (int)$urlTTL;
+    }
+
+    /**
+     * @return null|int
+     */
+    public function getUrlTTL()
+    {
+        return $this->urlTTL;
     }
 }

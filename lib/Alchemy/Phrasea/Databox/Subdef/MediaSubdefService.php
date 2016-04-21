@@ -30,9 +30,10 @@ class MediaSubdefService
      * Returns all available subdefs grouped by each record reference and by its name
      *
      * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @param null|array $names
      * @return \media_subdef[][]
      */
-    public function findSubdefsByRecordReferenceFromCollection($records)
+    public function findSubdefsByRecordReferenceFromCollection($records, array $names = null)
     {
         $subdefs = $this->reduceRecordReferenceCollection(
             $records,
@@ -43,20 +44,28 @@ class MediaSubdefService
 
                     $carry[$index][$subdef->get_name()] = $subdef;
                 }
+
+                return $carry;
             },
-            array_fill_keys(array_keys(iterator_to_array($records)), [])
+            array_fill_keys(array_keys($records instanceof \Traversable ? iterator_to_array($records) : $records), []),
+            $names
         );
 
-        ksort($subdefs);
+        $reordered = [];
 
-        return $subdefs;
+        foreach ($records as $index => $record) {
+            $reordered[$index] = $subdefs[$index];
+        }
+
+        return $reordered;
     }
 
     /**
      * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @param null|string[] $names
      * @return \media_subdef[]
      */
-    public function findSubdefsFromRecordReferenceCollection($records)
+    public function findSubdefsFromRecordReferenceCollection($records, array $names = null)
     {
         $groups = $this->reduceRecordReferenceCollection(
             $records,
@@ -65,7 +74,8 @@ class MediaSubdefService
 
                 return $carry;
             },
-            []
+            [],
+            $names
         );
 
         if ($groups) {
@@ -79,16 +89,18 @@ class MediaSubdefService
      * @param RecordReferenceInterface[]|RecordReferenceCollection $records
      * @param callable $process
      * @param mixed $initialValue
+     * @param null|string[] $names
      * @return mixed
      */
-    private function reduceRecordReferenceCollection($records, callable $process, $initialValue)
+    private function reduceRecordReferenceCollection($records, callable $process, $initialValue, array $names = null)
     {
         $records = $this->normalizeRecordCollection($records);
 
         $carry = $initialValue;
 
         foreach ($records->groupPerDataboxId() as $databoxId => $indexes) {
-            $subdefs = $this->getRepositoryForDatabox($databoxId)->findByRecordIdsAndNames(array_keys($indexes));
+            $subdefs = $this->getRepositoryForDatabox($databoxId)
+                ->findByRecordIdsAndNames(array_keys($indexes), $names);
 
             $carry = $process($carry, $subdefs, $indexes, $databoxId);
         }

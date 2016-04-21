@@ -45,8 +45,12 @@ class TechnicalDataService
             }
         }
 
-        ksort($sets);
+        $reorder = [];
 
-        return $sets;
+        foreach ($references as $index => $reference) {
+            $reorder[$index] = isset($sets[$index]) ? $sets[$index] : new RecordTechnicalDataSet($reference->getRecordId());
+        }
+
+        return $reorder;
     }
 }

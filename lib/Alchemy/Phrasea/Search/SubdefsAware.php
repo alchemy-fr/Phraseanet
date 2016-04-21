@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * This file is part of Phraseanet
  *
  * (c) 2005-2016 Alchemy
@@ -17,7 +17,7 @@ trait SubdefsAware
     /**
      * @var SubdefView[]
      */
-    private $subdefs;
+    private $subdefs = [];
 
     /**
      * @param SubdefView[] $subdefs
@@ -39,7 +39,11 @@ trait SubdefsAware
      */
     public function getSubdef($name)
     {
-        return $this->subdefs[$name];
+        if (isset($this->subdefs[$name])) {
+            return $this->subdefs[$name];
+        }
+
+        throw new \OutOfBoundsException(sprintf('There are no subdef named "%s"', $name));
     }
 
     /**
