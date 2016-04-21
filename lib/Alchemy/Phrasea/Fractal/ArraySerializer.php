@@ -19,12 +19,12 @@ class ArraySerializer extends SerializerAbstract
 {
     public function collection($resourceKey, array $data)
     {
-        return $data;
+        return array_values(array_filter($data));
     }
 
     public function item($resourceKey, array $data)
     {
-        return $data;
+        return $data ?: null;
     }
 
     public function includedData(ResourceInterface $resource, array $data)

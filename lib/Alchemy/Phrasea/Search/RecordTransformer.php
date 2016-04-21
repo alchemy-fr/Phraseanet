@@ -55,9 +55,7 @@ class RecordTransformer extends TransformerAbstract
 
     public function includeThumbnail(RecordView $recordView)
     {
-        $thumbnailView = $recordView->getSubdef('thumbnail');
-
-        return $thumbnailView ? $this->item($thumbnailView, $this->subdefTransformer) : null;
+        return $this->item($recordView->getSubdef('thumbnail'), $this->subdefTransformer);
     }
 
     public function includeTechnicalInformations(RecordView $recordView)

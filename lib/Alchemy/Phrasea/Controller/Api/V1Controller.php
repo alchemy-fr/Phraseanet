@@ -55,13 +55,17 @@ use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Alchemy\Phrasea\Search\PermalinkTransformer;
+use Alchemy\Phrasea\Search\PermalinkView;
 use Alchemy\Phrasea\Search\RecordTransformer;
 use Alchemy\Phrasea\Search\RecordView;
 use Alchemy\Phrasea\Search\SearchResultView;
 use Alchemy\Phrasea\Search\StoryTransformer;
 use Alchemy\Phrasea\Search\StoryView;
 use Alchemy\Phrasea\Search\SubdefTransformer;
+use Alchemy\Phrasea\Search\SubdefView;
 use Alchemy\Phrasea\Search\TechnicalDataTransformer;
+use Alchemy\Phrasea\Search\TechnicalDataView;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchResultTransformer;
@@ -306,7 +310,7 @@ class V1Controller extends Controller
                         'active'       => $conf->get(['main', 'bridge', 'dailymotion', 'enabled']),
                         'clientId'     => $conf->get(['main', 'bridge', 'dailymotion', 'client_id']),
                         'clientSecret' => $conf->get(['main', 'bridge', 'dailymotion', 'client_secret']),
-                    ]
+                    ],
                 ],
                 'navigator'         => ['active' => $conf->get(['registry', 'api-clients', 'navigator-enabled']),],
                 'office-plugin'     => ['active' => $conf->get(['registry', 'api-clients', 'office-enabled']),],
@@ -388,7 +392,7 @@ class V1Controller extends Controller
                     'validationReminder' => $conf->get(['registry', 'actions', 'validation-reminder-days']),
                     'expirationValue'    => $conf->get(['registry', 'actions', 'validation-expiration-days']),
                 ],
-            ]
+            ],
         ];
     }
 
@@ -455,7 +459,7 @@ class V1Controller extends Controller
     public function getDataboxCollectionsAction(Request $request, $databox_id)
     {
         $ret = [
-            "collections" => $this->listDataboxCollections($this->findDataboxById($databox_id))
+            "collections" => $this->listDataboxCollections($this->findDataboxById($databox_id)),
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -534,7 +538,7 @@ class V1Controller extends Controller
         $ret = [
             "document_metadatas" => $this->listDataboxMetadataFields(
                 $this->findDataboxById($databox_id)->get_meta_structure()
-            )
+            ),
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -751,7 +755,7 @@ class V1Controller extends Controller
                 'databox_id' => $base->get_sbas_id(),
                 'base_id' => $base->get_base_id(),
                 'collection_id' => $base->get_coll_id(),
-                'rights' => $baseGrants
+                'rights' => $baseGrants,
             ];
         }
 
@@ -799,7 +803,7 @@ class V1Controller extends Controller
         $service = $this->getAccountService();
         $command = new UpdatePasswordCommand();
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
 
         $form->handleRequest($request);
@@ -1078,9 +1082,14 @@ class V1Controller extends Controller
         $fractal->setSerializer(new ArraySerializer());
         $fractal->parseIncludes($this->resolveSearchRecordsIncludes($request));
 
-        $searchView = $this->buildSearchRecordsView($this->doSearch($request));
+        $searchView = $this->buildSearchRecordsView(
+            $this->doSearch($request),
+            $fractal->getRequestedIncludes(),
+            $this->resolveSubdefUrlTTL($request)
+        );
 
-        $recordTransformer = new RecordTransformer(new SubdefTransformer(), new TechnicalDataTransformer());
+        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
+        $recordTransformer = new RecordTransformer($subdefTransformer, new TechnicalDataTransformer());
         $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1135,22 +1144,102 @@ class V1Controller extends Controller
 
     /**
      * @param SearchEngineResult $result
+     * @param string[] $includes
+     * @param int $urlTTL
      * @return SearchResultView
      */
-    private function buildSearchRecordsView(SearchEngineResult $result)
+    private function buildSearchRecordsView(SearchEngineResult $result, array $includes, $urlTTL)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
+        $subdefViews = $this->buildSubdefsViews(
+            $references,
+            in_array('results.subdefs', $includes, true) ? null : ['thumbnail'],
+            $urlTTL
+        );
+
+        $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
+        if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
+        }
+
         $recordViews = [];
 
-        foreach ($references->toRecords($this->getApplicationBox()) as $record) {
-            $recordViews[] = new RecordView($record);
+        foreach ($references->toRecords($this->getApplicationBox()) as $index => $record) {
+            $recordView = new RecordView($record);
+            $recordView->setSubdefs($subdefViews[$index]);
+            $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
+
+            $recordViews[] = $recordView;
         }
 
         $resultView = new SearchResultView($result);
         $resultView->setRecords($recordViews);
 
         return $resultView;
+    }
+
+    /**
+     * @param RecordReferenceCollection $references
+     * @param array|null $names
+     * @param int $urlTTL
+     * @return SubdefView[][]
+     */
+    private function buildSubdefsViews(RecordReferenceCollection $references, array $names = null, $urlTTL)
+    {
+        $subdefGroups = $this->app['service.media_subdef']
+            ->findSubdefsByRecordReferenceFromCollection($references, $names);
+
+        $fakeSubdefs = [];
+
+        foreach ($subdefGroups as $index => $subdefGroup) {
+            if (!isset($subdefGroup['thumbnail'])) {
+                $fakeSubdef = new \media_subdef($this->app, $references[$index], 'thumbnail', true, []);
+                $fakeSubdefs[spl_object_hash($fakeSubdef)] = $fakeSubdef;
+
+                $subdefGroups[$index]['thumbnail'] = $fakeSubdef;
+            }
+        }
+
+        $allSubdefs = $this->mergeGroupsIntoOneList($subdefGroups);
+        $allPermalinks = \media_Permalink_Adapter::getMany(
+            $this->app,
+            array_filter($allSubdefs, function (\media_subdef $subdef) use ($fakeSubdefs) {
+                return !isset($fakeSubdefs[spl_object_hash($subdef)]);
+            })
+        );
+        $urls = $this->app['media_accessor.subdef_url_generator']
+            ->generateMany($this->getAuthenticatedUser(), $allSubdefs, $urlTTL);
+
+        $subdefViews = [];
+
+        /** @var \media_subdef $subdef */
+        foreach ($allSubdefs as $index => $subdef) {
+            $subdefView = new SubdefView($subdef);
+
+            if (isset($allPermalinks[$index])) {
+                $subdefView->setPermalinkView(new PermalinkView($allPermalinks[$index]));
+            }
+
+            $subdefView->setUrl($urls[$index]);
+            $subdefView->setUrlTTL($urlTTL);
+
+            $subdefViews[spl_object_hash($subdef)] = $subdefView;
+        }
+
+        $reorderedGroups = [];
+
+        /** @var \media_subdef[] $subdefGroup */
+        foreach ($subdefGroups as $index => $subdefGroup) {
+            $reordered = [];
+
+            foreach ($subdefGroup as $subdef) {
+                $reordered[] = $subdefViews[spl_object_hash($subdef)];
+            }
+
+            $reorderedGroups[$index] = $reordered;
+        }
+
+        return $reorderedGroups;
     }
 
     /**
@@ -1171,9 +1260,9 @@ class V1Controller extends Controller
             'results.stories.records.caption',
             'results.stories.records.status',
             'results.records.subdefs',
-            'results.records.metadata',
-            'results.records.caption',
-            'results.records.status',
+            //'results.records.metadata',
+            //'results.records.caption',
+            //'results.records.status',
         ];
     }
 
@@ -1191,10 +1280,25 @@ class V1Controller extends Controller
 
         return [
             'results.subdefs',
-            'results.metadata',
-            'results.caption',
+            //'results.metadata',
+            //'results.caption',
             'results.status',
         ];
+    }
+
+    /**
+     * @param Request $request
+     * @return int
+     */
+    private function resolveSubdefUrlTTL(Request $request)
+    {
+        $urlTTL = $request->query->get('subdef_url_ttl');
+
+        if (null !== $urlTTL) {
+            return (int)$urlTTL;
+        }
+
+        return $this->getConf()->get(['registry', 'general', 'default-subdef-url-ttl']);
     }
 
     /**
@@ -1495,7 +1599,7 @@ class V1Controller extends Controller
         foreach ($record->getStatusStructure() as $bit => $status) {
             $ret[] = [
                 'bit'   => $bit,
-                'state' => \databox_status::bitIsSet($record->getStatusBitField(), $bit)
+                'state' => \databox_status::bitIsSet($record->getStatusBitField(), $bit),
             ];
         }
 
@@ -1783,7 +1887,7 @@ class V1Controller extends Controller
     {
         $ret = [
             "basket"          => $this->listBasket($basket),
-            "basket_elements" => $this->listBasketContent($request, $basket)
+            "basket_elements" => $this->listBasketContent($request, $basket),
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -2186,7 +2290,7 @@ class V1Controller extends Controller
                 $metadatas[] = array(
                     'meta_struct_id' => $field->get_id(),
                     'meta_id' => null,
-                    'value' => $data->{'title'}
+                    'value' => $data->{'title'},
                 );
                 $thumbtitle_set = true;
             }
@@ -2207,7 +2311,7 @@ class V1Controller extends Controller
                     $metadatas[] = array(
                         'meta_struct_id' => $field->get_id(),
                         'meta_id' => null,
-                        'value' => $value
+                        'value' => $value,
                     );
                 }
             }
@@ -2351,7 +2455,7 @@ class V1Controller extends Controller
     {
         $ret = [
             "user" => $this->listUser($this->getAuthenticatedUser()),
-            "collections" => $this->listUserCollections($this->getAuthenticatedUser())
+            "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
         ];
 
         if (defined('API_SKIP_USER_REGISTRATIONS') && ! constant('API_SKIP_USER_REGISTRATIONS')) {
@@ -2414,7 +2518,7 @@ class V1Controller extends Controller
         $command = new UpdatePasswordCommand();
         /** @var Form $form */
         $form = $this->app->form(new PhraseaRenewPasswordForm(), $command, [
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ]);
 
         $form->submit($data);
@@ -2453,7 +2557,7 @@ class V1Controller extends Controller
 
         return Result::create($request, [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ])->createResponse();
     }
 
@@ -2710,5 +2814,23 @@ class V1Controller extends Controller
         }
 
         return $caption;
+    }
+
+    /**
+     * @param array $groups
+     * @return array|mixed
+     */
+    private function mergeGroupsIntoOneList(array $groups)
+    {
+        // Strips keys from the internal array
+        array_walk($groups, function (array &$group) {
+            $group = array_values($group);
+        });
+
+        if ($groups) {
+            return call_user_func_array('array_merge', $groups);
+        }
+
+        return [];
     }
 }
