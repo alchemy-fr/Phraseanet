@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -12,16 +11,16 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class CookiesDisablerSubscriber implements EventSubscriberInterface
 {
-    private static $NOSESSION_ROUTES = '/^((\/api\/v1)|(\/api\/?$)|(\/permalink))/';
+    private static $NOSESSION_ROUTES = '/^((\/api\/v\d+)|(\/api\/?$)|(\/permalink))/';
     private $app;
     private $sessionCookieEnabled = true;
 
@@ -58,12 +57,9 @@ class CookiesDisablerSubscriber implements EventSubscriberInterface
 
         $response = $event->getResponse();
 
-        foreach ($response->headers->getCookies(ResponseHeaderBag::COOKIES_ARRAY) as $cookie_domains) {
-            foreach ($cookie_domains as $cookie_paths) {
-                foreach ($cookie_paths as $cookie) {
-                    $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-                }
-            }
+        /** @var Cookie $cookie */
+        foreach ($response->headers->getCookies() as $cookie) {
+            $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
         }
     }
 }
