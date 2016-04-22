@@ -308,6 +308,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->width = 256;
         $this->height = 256;
         $this->file = $this->getSubstituteFilename();
+        $this->etag = null;
 
         $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
         $this->url = Url::factory('/assets/common/images/icons/substitution/' . $this->file);
