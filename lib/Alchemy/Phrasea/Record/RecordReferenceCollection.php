@@ -10,10 +10,11 @@
 
 namespace Alchemy\Phrasea\Record;
 
+use Alchemy\Phrasea\Databox\DataboxGroupable;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Assert\Assertion;
 
-class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess
+class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Countable, DataboxGroupable, PerDataboxRecordId
 {
     /**
      * @param array<int|string,array> $records
@@ -192,13 +193,17 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess
         return $records;
     }
 
+    /**
+     * @param int|string $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return isset($this->references[$offset]);
     }
 
     /**
-     * @param mixed $offset
+     * @param int|string $offset
      * @return RecordReferenceInterface
      */
     public function offsetGet($offset)
@@ -206,6 +211,10 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess
         return $this->references[$offset];
     }
 
+    /**
+     * @param int|string $offset
+     * @param RecordReferenceInterface $value
+     */
     public function offsetSet($offset, $value)
     {
         Assertion::isInstanceOf($value, RecordReferenceInterface::class);
@@ -213,9 +222,69 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess
         $this->add($value, $offset);
     }
 
+    /**
+     * @param int|string $offset
+     * @return void
+     */
     public function offsetUnset($offset)
     {
         unset($this->references[$offset]);
         $this->groups = null;
+    }
+
+    /**
+     * @return RecordReferenceInterface[][]
+     */
+    public function groupByDatabox()
+    {
+        $this->reorderGroups();
+
+        return $this->groups;
+    }
+
+    public function reorderGroups()
+    {
+        if ($this->groups) {
+            return;
+        }
+
+        $groups = [];
+
+        foreach ($this->references as $index => $reference) {
+            if (!isset($groups[$reference->getDataboxId()])) {
+                $groups[$reference->getDataboxId()] = [];
+            }
+
+            $groups[$reference->getDataboxId()][$index] = $reference;
+        }
+
+        $this->groups = $groups;
+    }
+
+    /**
+     * @param int $databoxId
+     * @return RecordReferenceInterface[]
+     */
+    public function getDataboxGroup($databoxId)
+    {
+        $this->reorderGroups();
+
+        return isset($this->groups[$databoxId]) ? $this->groups[$databoxId] : [];
+    }
+
+    public function getDataboxRecordIds($databoxId)
+    {
+        $recordsIds = [];
+
+        foreach ($this->getDataboxGroup($databoxId) as $references) {
+            $recordsIds[$references->getRecordId()] = true;
+        }
+
+        return array_keys($recordsIds);
+    }
+
+    public function count()
+    {
+        return count($this->references);
     }
 }
