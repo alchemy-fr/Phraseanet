@@ -158,39 +158,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return;
         }
 
-        $sql = <<<'SQL'
-SELECT subdef_id, name, file, width, height, mime, path, size, substit, created_on, updated_on, etag
-FROM subdef
-WHERE name = :name AND record_id = :record_id
-SQL;
+        $data = self::getMediaSubdefRepository($this->app, $this->record->getDataboxId())
+            ->findOneByRecordIdAndName($this->record->getRecordId(), $this->name);
 
-        $row = $this->getDataboxConnection()->fetchAssoc($sql, [
-            'record_id' => $this->record->getRecordId(),
-            'name'      => $this->name
-        ]);
-
-        if ($row) {
-            $this->loadFromArray([
-                'width' => (int)$row['width'],
-                'size' => (int)$row['size'],
-                'height' => (int)$row['height'],
-                'mime' => $row['mime'],
-                'file' => $row['file'],
-                'path' => p4string::addEndSlash($row['path']),
-                'physically_present' => true,
-                'is_substituted' => (bool)$row['substit'],
-                'subdef_id' => (int)$row['subdef_id'],
-                'updated_on' => $row['updated_on'],
-                'created_on' => $row['created_on'],
-                'etag' => $row['etag'] ?: null,
-            ]);
+        if ($data) {
+            $this->loadFromArray($data->toArray());
         } elseif ($substitute === false) {
             throw new Exception_Media_SubdefNotFound($this->name . ' not found');
         }
 
-        if (!$row) {
-            $this->markPhysicallyUnavailable();
-        }
+        $this->loadFromArray([]);
 
         $this->set_data_to_cache($this->toArray());
     }
@@ -293,21 +270,16 @@ SQL;
      */
     public function delete()
     {
-        $subdef_id = $this->subdef_id;
         $this->remove_file();
 
         $connection = $this->getDataboxConnection();
 
         $connection->executeUpdate(
-            'DELETE FROM subdef WHERE subdef_id = :subdef_id',
-            ['subdef_id' => $subdef_id]
-        );
-
-        $connection->executeUpdate(
             'DELETE FROM permalinks WHERE subdef_id = :subdef_id',
-            ['subdef_id'=>$subdef_id]
+            ['subdef_id' => $this->subdef_id]
         );
 
+        self::getMediaSubdefRepository($this->app, $this->record->getDataboxId())->delete($this);
         $this->delete_data_from_cache();
         $this->record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
     }
@@ -336,6 +308,7 @@ SQL;
         $this->width = 256;
         $this->height = 256;
         $this->file = $this->getSubstituteFilename();
+        $this->etag = null;
 
         $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
         $this->url = Url::factory('/assets/common/images/icons/substitution/' . $this->file);
@@ -403,12 +376,7 @@ SQL;
     {
         $this->etag = $etag;
 
-        $this->getDataboxConnection()->executeUpdate(
-            'UPDATE subdef SET etag = :etag WHERE subdef_id = :subdef_id',
-            [':subdef_id' => $this->subdef_id, ':etag' => $etag]
-        );
-
-        return $this;
+        return $this->save();
     }
 
     /**
@@ -418,17 +386,7 @@ SQL;
     {
         $this->is_substituted = !!$substit;
 
-        $this->getDataboxConnection()->executeUpdate(
-            'UPDATE subdef SET substit = :substit, updated_on=NOW() WHERE subdef_id = :subdef_id',
-            [
-                ':subdef_id' => $this->subdef_id,
-                ':substit' => $this->is_substituted
-            ]
-        );
-
-        $this->delete_data_from_cache();
-
-        return $this;
+        return $this->save();
     }
 
     /**
@@ -607,27 +565,10 @@ SQL;
 
         $media = $mediavorus->guess($this->getRealPath());
 
-        $sql = <<<'SQL'
-UPDATE subdef SET height = :height , width = :width, updated_on = NOW()
-WHERE record_id = :record_id AND name = :name
-SQL;
-
-        $this->getDataboxConnection()->executeUpdate(
-            $sql,
-            [
-                ':width' => $media->getWidth(),
-                ':height' => $media->getHeight(),
-                ':record_id' => $this->get_record_id(),
-                ':name' => $this->get_name(),
-            ]
-        );
-
         $this->width = $media->getWidth();
         $this->height = $media->getHeight();
 
-        $this->delete_data_from_cache();
-
-        return $this;
+        return $this->save();
     }
 
     /**
@@ -796,7 +737,6 @@ SQL;
 
     public function delete_data_from_cache($option = null)
     {
-        $this->setEtag(null);
         $databox = $this->get_record()->getDatabox();
 
         $databox->delete_data_from_cache($this->get_cache_key($option));
@@ -872,5 +812,15 @@ SQL;
         }
 
         return $this->app['phraseanet.h264']->getUrl($this->getRealPath());
+    }
+
+    /**
+     * @return $this
+     */
+    private function save()
+    {
+        self::getMediaSubdefRepository($this->app, $this->record->getDataboxId())->save($this);
+
+        return $this;
     }
 }
