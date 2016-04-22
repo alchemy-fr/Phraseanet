@@ -44,11 +44,9 @@ class DatafileController extends AbstractDelivery
 
         if ($subdef != 'thumbnail') {
             $all_access = false;
-            $subdefStruct = $databox->get_subdef_structure();
-
-            if ($subdefStruct->getSubdefGroup($record->get_type())) {
-                foreach ($subdefStruct->getSubdefGroup($record->get_type()) as $subdefObj) {
-                    /** @var \databox_subdef $subdefObj */
+            $subdefGroup = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+            if ($subdefGroup) {
+                foreach ($subdefGroup as $subdefObj) {
                     if ($subdefObj->get_name() == $subdef) {
                         if ($subdefObj->get_class() == 'thumbnail') {
                             $all_access = true;
@@ -75,7 +73,7 @@ class DatafileController extends AbstractDelivery
                 try {
                     $subdef_class = $databox
                         ->get_subdef_structure()
-                        ->get_subdef($record->get_type(), $subdef)
+                        ->get_subdef($record->getType(), $subdef)
                         ->get_class();
                 } catch (\Exception_Databox_SubdefNotFound $e) {
 

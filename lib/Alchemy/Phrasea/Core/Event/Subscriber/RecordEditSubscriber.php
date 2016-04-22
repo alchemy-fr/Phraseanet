@@ -26,7 +26,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
         return array(
             PhraseaEvents::RECORD_EDIT => 'onEdit',
             PhraseaEvents::RECORD_UPLOAD => 'onEdit',
-            RecordEvents::ROTATE => 'onRotate',
+            RecordEvents::ROTATE => 'onRecordChange',
         );
     }
 
