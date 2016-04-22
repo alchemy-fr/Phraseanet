@@ -37,6 +37,12 @@ var p4 = p4 || {};
                 }
 
                 activeBaskets();
+                $('a.story_unfix').on('click', function () {
+                    unfix($(this).attr('href'));
+
+                    return false;
+                });
+
                 $('.basketTips').tooltip({
                     delay: 200
                 });
@@ -530,12 +536,6 @@ var p4 = p4 || {};
 
     $(document).ready(function () {
         activeBaskets();
-
-        $('a.story_unfix').on('click', function () {
-            unfix($(this).attr('href'));
-
-            return false;
-        });
 
         p4.WorkZone = {
             'Selection': new Selectable($('#baskets'), {selector: '.CHIM'}),
