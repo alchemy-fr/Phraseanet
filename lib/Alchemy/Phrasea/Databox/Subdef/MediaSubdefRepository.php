@@ -81,16 +81,24 @@ class MediaSubdefRepository
      */
     public function save($subdefs)
     {
-        if (!is_array($subdefs) || !$subdefs instanceof \Traversable) {
-            $subdefs = [$subdefs];
-        } elseif ($subdefs instanceof \Traversable) {
-            $subdefs = iterator_to_array($subdefs);
-        }
-        Assertion::allIsInstanceOf($subdefs, \media_subdef::class);
-
-        $data = array_map([$this->hydrator, 'extract'], $subdefs);
+        $data = array_map([$this->hydrator, 'extract'], $this->normalizeToArray($subdefs));
 
         $this->repository->save($data);
+    }
+
+    /**
+     * @param \media_subdef|\media_subdef[] $subdefs
+     */
+    public function delete($subdefs)
+    {
+        $subdefIds = array_map(function (\media_subdef $subdef) {
+            return [
+                'record_id' => $subdef->get_record_id(),
+                'name' => $subdef->get_name(),
+            ];
+        }, $this->normalizeToArray($subdefs));
+
+        $this->repository->delete($subdefIds);
     }
 
     public function clear()
@@ -134,5 +142,21 @@ class MediaSubdefRepository
         }
 
         return $instances;
+    }
+
+    /**
+     * @param \media_subdef|\media_subdef[] $subdefs
+     * @return array
+     */
+    private function normalizeToArray($subdefs)
+    {
+        if (!is_array($subdefs) || !$subdefs instanceof \Traversable) {
+            $subdefs = [$subdefs];
+        } elseif ($subdefs instanceof \Traversable) {
+            $subdefs = iterator_to_array($subdefs);
+        }
+        Assertion::allIsInstanceOf($subdefs, \media_subdef::class);
+
+        return $subdefs;
     }
 }
