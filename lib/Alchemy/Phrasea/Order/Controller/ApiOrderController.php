@@ -66,7 +66,8 @@ class ApiOrderController extends BaseOrderController
 
         $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderEvent($order));
 
-        $resource = new Item($order, $this->getOrderTransformer());
+        $view = $this->getViewBuilder()->buildView($order, []);
+        $resource = new Item($view, $this->getOrderTransformer());
 
         return $this->returnResourceResponse($request, ['elements'], $resource);
     }
