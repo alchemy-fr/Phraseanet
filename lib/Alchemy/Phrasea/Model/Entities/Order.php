@@ -20,12 +20,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Order
 {
+
+    const NOTIFY_MAIL = 'mail';
+
+    const NOTIFY_WEBHOOK = 'webhook';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
-   private $id;
+    private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -66,6 +71,11 @@ class Order
      * @var Basket|null
      */
     private $basket;
+
+    /**
+     * @ORM\Column(type="string", length=32, name="notification_method")
+     */
+    private $notificationMethod = 'email';
 
     /**
      * Constructor
@@ -279,5 +289,27 @@ class Order
     public function getBasket()
     {
         return $this->basket;
+    }
+
+    /**
+     * @return string The name of the notification method that will be used to handle this order's status change
+     * notifications.
+     */
+    public function getNotificationMethod()
+    {
+        return $this->notificationMethod;
+    }
+
+    /**
+     * @param string $methodName Sets the name of the notification method to handle this order's status change
+     * notifications.
+     */
+    public function setNotificationMethod($methodName)
+    {
+        if (trim($methodName) == '') {
+            $methodName = self::NOTIFY_MAIL;
+        }
+
+        $this->notificationMethod = $methodName;
     }
 }
