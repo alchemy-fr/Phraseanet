@@ -83,6 +83,9 @@ use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Order\ValidationNotifier\MailNotifier;
+use Alchemy\Phrasea\Order\ValidationNotifier\WebhookNotifier;
+use Alchemy\Phrasea\Order\ValidationNotifierRegistry;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
@@ -696,6 +699,15 @@ class Application extends SilexApplication
 
     private function setupEventDispatcher()
     {
+        $this['events.order_subscriber'] = $this->share(function (Application $app) {
+            $notifierRegistry = new ValidationNotifierRegistry();
+
+            $notifierRegistry->registerNotifier('mail', new MailNotifier($app, $app['notification.deliverer']));
+            $notifierRegistry->registerNotifier('webhook', new WebhookNotifier());
+
+            return new OrderSubscriber($notifierRegistry);
+        });
+
         $this['dispatcher'] = $this->share(
             $this->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addSubscriber(new PhraseaInstallSubscriber($app));
@@ -703,7 +715,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));
                 $dispatcher->addSubscriber(new BridgeSubscriber($app));
                 $dispatcher->addSubscriber(new ExportSubscriber($app));
-                $dispatcher->addSubscriber(new OrderSubscriber($app));
+                $dispatcher->addSubscriber($app['events.order_subscriber']);
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
