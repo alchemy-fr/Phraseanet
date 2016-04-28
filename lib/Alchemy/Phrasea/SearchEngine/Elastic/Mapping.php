@@ -106,7 +106,7 @@ class Mapping
                 unset($field['index_analyzer'], $field['search_analyzer']);
                 break;
             case 'indexing':
-                $field['index_analyzer'] = $analyzer;
+                $field['analyzer'] = $analyzer;
                 break;
             case 'searching':
                 $field['search_analyzer'] = $analyzer;

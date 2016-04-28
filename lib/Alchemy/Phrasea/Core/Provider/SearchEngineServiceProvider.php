@@ -29,7 +29,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
-use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
 use Hoa\File;
 use Monolog\Handler\ErrorLogHandler;
@@ -153,7 +153,13 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $clientParams['logging'] = true;
             }
 
-            return new Client($clientParams);
+            $clientBuilder = ClientBuilder::create()
+                ->setHosts($clientParams['hosts']);
+            if(array_key_exists('logObject', $clientParams)) {
+                $clientBuilder->setLogger($clientParams['logObject']);
+            }
+
+            return $clientBuilder->build();
         });
 
         $app['elasticsearch.options'] = $app->share(function($app) {
