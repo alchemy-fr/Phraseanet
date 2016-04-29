@@ -26,6 +26,11 @@ class WebhookEvent
     const RECORD_SUBDEFS_CREATED = 'record.subdefs.created';
     const RECORD_SUBDEF_TYPE = 'record.subdef';
 
+    const ORDER_TYPE = 'order';
+    const ORDER_CREATED = 'order.created';
+    const ORDER_DELIVERED = 'order.delivered';
+    const ORDER_DENIED = 'order.denied';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

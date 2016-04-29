@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Order\ValidationNotifier;
 
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Order\OrderDelivery;
 use Alchemy\Phrasea\Order\ValidationNotifier;
 
@@ -20,12 +22,30 @@ class WebhookNotifier implements ValidationNotifier
 {
 
     /**
+     * @var WebhookEventManipulator
+     */
+    private $webhookManipulator;
+
+    /**
+     * @param WebhookEventManipulator $webhookEventManipulator
+     */
+    public function __construct(WebhookEventManipulator $webhookEventManipulator)
+    {
+        $this->webhookManipulator = $webhookEventManipulator;
+    }
+
+    /**
      * @param Order $order
      * @param User $recipient
      */
     public function notifyCreation(Order $order, User $recipient)
     {
-        // TODO: Implement notifyCreation() method.
+        $eventData = [
+            'order_id' => $order->getId(),
+            'user_id' => $recipient->getId(),
+        ];
+
+        $this->webhookManipulator->create(WebhookEvent::ORDER_CREATED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 
     /**
@@ -33,7 +53,13 @@ class WebhookNotifier implements ValidationNotifier
      */
     public function notifyDelivery(OrderDelivery $delivery)
     {
-        // TODO: Implement notifyDelivery() method.
+        $eventData = [
+            'order_id' => $delivery->getOrder()->getId(),
+            'admin_id' => $delivery->getAdmin()->getId(),
+            'quantity' => $delivery->getQuantity()
+        ];
+
+        $this->webhookManipulator->create(WebhookEvent::ORDER_DELIVERED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 
     /**
@@ -41,6 +67,12 @@ class WebhookNotifier implements ValidationNotifier
      */
     public function notifyDenial(OrderDelivery $delivery)
     {
-        // TODO: Implement notifyDenial() method.
+        $eventData = [
+            'order_id' => $delivery->getOrder()->getId(),
+            'admin_id' => $delivery->getAdmin()->getId(),
+            'quantity' => $delivery->getQuantity()
+        ];
+
+        $this->webhookManipulator->create(WebhookEvent::ORDER_DENIED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 }
