@@ -70,7 +70,7 @@
 
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record.subdefs.preview is defined and has_access_subdef(record, 'preview') %}
-                                <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}" class="previewTips">
+                                <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                                   <i class="icon-circle icon-stack-base"></i>
                                   <i class="icon-search icon-light"></i>
                                 </span>
