@@ -31,7 +31,7 @@ class TechnicalDataService
      */
     public function fetchRecordsTechnicalData($references)
     {
-        if (!$references instanceof  RecordReferenceCollection) {
+        if (!$references instanceof RecordReferenceCollection) {
             $references = new RecordReferenceCollection($references);
         }
 
