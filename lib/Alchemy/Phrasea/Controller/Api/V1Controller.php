@@ -1159,6 +1159,7 @@ class V1Controller extends Controller
         );
 
         $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
+
         if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
         }
 
@@ -1280,8 +1281,8 @@ class V1Controller extends Controller
 
         return [
             'results.subdefs',
-            //'results.metadata',
-            //'results.caption',
+            'results.metadata',
+            'results.caption',
             'results.status',
         ];
     }

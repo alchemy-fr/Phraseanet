@@ -73,6 +73,7 @@ use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
+use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefServiceProvider;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Filesystem\FilesystemServiceProvider;
@@ -194,6 +195,7 @@ class Application extends SilexApplication
         $this->register(new ManipulatorServiceProvider());
         $this->register(new TechnicalDataServiceProvider());
         $this->register(new MediaSubdefServiceProvider());
+        $this->register(new CaptionServiceProvider());
         $this->register(new InstallerServiceProvider());
         $this->register(new PhraseaVersionServiceProvider());
 
