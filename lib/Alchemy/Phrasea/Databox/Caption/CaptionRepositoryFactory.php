@@ -43,7 +43,7 @@ class CaptionRepositoryFactory implements DataboxBoundRepositoryFactory
         $connection = $this->connectionProvider->getConnection($databoxId);
 
         $dbalRepository = new DbalCaptionDataRepository($connection);
-        $dataRepository = new CachedCaptionDataRepository($dbalRepository, $this->cache, sprintf('databox%d:', $databoxId));
+        $dataRepository = new CachedCaptionDataRepository($dbalRepository, $this->cache, sprintf('databox[%d]:', $databoxId));
 
         $provider = $this->captionFactoryProvider;
         $factory = $provider($databoxId);

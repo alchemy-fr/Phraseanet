@@ -55,6 +55,7 @@ use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Alchemy\Phrasea\Search\CaptionView;
 use Alchemy\Phrasea\Search\PermalinkTransformer;
 use Alchemy\Phrasea\Search\PermalinkView;
 use Alchemy\Phrasea\Search\RecordTransformer;
@@ -1160,17 +1161,34 @@ class V1Controller extends Controller
 
         $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
 
-        if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
-        }
+        $recordViews = $this->buildRecordViews($references);
 
-        $recordViews = [];
-
-        foreach ($references->toRecords($this->getApplicationBox()) as $index => $record) {
-            $recordView = new RecordView($record);
+        foreach ($recordViews as $index => $recordView) {
             $recordView->setSubdefs($subdefViews[$index]);
             $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
+        }
 
-            $recordViews[] = $recordView;
+        if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
+            $acl = $this->getAclForUser();
+
+            $canSeeBusiness = [];
+
+            foreach ($references->getDataboxIds() as $databoxId) {
+                $canSeeBusiness[$databoxId] = $acl->can_see_business_fields($this->findDataboxById($databoxId));
+            }
+
+            $captions = $this->app['service.caption']->findByReferenceCollection($references);
+
+            foreach ($recordViews as $index => $recordView) {
+                $caption = $captions[$index];
+
+                $captionView = new CaptionView($caption);
+
+                $databoxId = $recordView->getRecord()->getDataboxId();
+                $captionView->setFields($caption->get_fields(null, $canSeeBusiness[$databoxId]));
+
+                $recordView->setCaption($captionView);
+            }
         }
 
         $resultView = new SearchResultView($result);
@@ -1261,9 +1279,9 @@ class V1Controller extends Controller
             'results.stories.records.caption',
             'results.stories.records.status',
             'results.records.subdefs',
-            //'results.records.metadata',
-            //'results.records.caption',
-            //'results.records.status',
+            'results.records.metadata',
+            'results.records.caption',
+            'results.records.status',
         ];
     }
 
@@ -2833,5 +2851,20 @@ class V1Controller extends Controller
         }
 
         return [];
+    }
+
+    /**
+     * @param RecordReferenceCollection $references
+     * @return RecordView[]
+     */
+    private function buildRecordViews(RecordReferenceCollection $references)
+    {
+        $recordViews = [];
+
+        foreach ($references->toRecords($this->getApplicationBox()) as $index => $record) {
+            $recordViews[$index] = new RecordView($record);
+        }
+
+        return $recordViews;
     }
 }

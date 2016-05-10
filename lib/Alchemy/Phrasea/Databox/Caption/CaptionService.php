@@ -33,21 +33,19 @@ class CaptionService
         $groups = [];
 
         foreach ($references->groupPerDataboxId() as $databoxId => $indexes) {
-            $this->getRepositoryForDatabox($databoxId)->findByRecordIds(array_keys($indexes));
+            $captions = $this->getRepositoryForDatabox($databoxId)->findByRecordIds(array_keys($indexes));
+
+            $groups[$databoxId] = array_combine($indexes, $captions);
         }
 
-        if ($groups) {
-            return call_user_func_array('array_merge', $groups);
-        }
-
-        return [];
+        return $this->reorderInstances($references, $groups);
     }
 
     /**
      * @param RecordReferenceInterface[]|RecordReferenceCollection $references
      * @return RecordReferenceCollection
      */
-    public function normalizeReferenceCollection($references)
+    private function normalizeReferenceCollection($references)
     {
         if ($references instanceof RecordReferenceCollection) {
             return $references;
@@ -63,5 +61,21 @@ class CaptionService
     private function getRepositoryForDatabox($databoxId)
     {
         return $this->repositoryProvider->getRepositoryForDatabox($databoxId);
+    }
+
+    /**
+     * @param RecordReferenceCollection $references
+     * @param \caption_record[][] $groups
+     * @return \caption_record[]
+     */
+    private function reorderInstances(RecordReferenceCollection $references, array $groups)
+    {
+        $captions = [];
+
+        foreach ($references as $index => $reference) {
+            $captions[$index] = $groups[$reference->getDataboxId()][$index];
+        }
+
+        return $captions;
     }
 }
