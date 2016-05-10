@@ -1153,6 +1153,8 @@ class V1Controller extends Controller
     {
         $references = new RecordReferenceCollection($result->getResults());
 
+        $recordViews = $this->buildRecordViews($references);
+
         $subdefViews = $this->buildSubdefsViews(
             $references,
             in_array('results.subdefs', $includes, true) ? null : ['thumbnail'],
@@ -1160,8 +1162,6 @@ class V1Controller extends Controller
         );
 
         $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
-
-        $recordViews = $this->buildRecordViews($references);
 
         foreach ($recordViews as $index => $recordView) {
             $recordView->setSubdefs($subdefViews[$index]);
