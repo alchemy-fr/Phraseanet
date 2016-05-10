@@ -77,14 +77,23 @@ class CachedCaptionDataRepository implements CaptionDataRepository
         $data = $this->cache->fetchMultiple($keys);
 
         if (count($data) === count($keys)) {
-            return $data;
+            return array_combine($recordIds, $data);
         }
 
         $data = $this->decorated->findByRecordIds($recordIds);
 
-        $this->cache->saveMultiple(array_combine(array_values($keys), array_values($data)));
+        $this->cache->saveMultiple(array_combine($keys, $data));
 
         return $data;
+    }
+
+    /**
+     * @param int $recordId
+     * @return void
+     */
+    public function invalidate($recordId)
+    {
+        $this->cache->delete($this->computeKey($recordId));
     }
 
     /**
@@ -93,8 +102,15 @@ class CachedCaptionDataRepository implements CaptionDataRepository
      */
     private function computeKeys(array $recordIds)
     {
-        return array_map(function ($recordId) {
-            return $this->baseKey . 'caption' . json_encode([(int)$recordId]);
-        }, $recordIds);
+        return array_map([$this, 'computeKey'], $recordIds);
+    }
+
+    /**
+     * @param int $recordId
+     * @return string
+     */
+    private function computeKey($recordId)
+    {
+        return sprintf('%scaption[%d]', $this->baseKey, $recordId);
     }
 }

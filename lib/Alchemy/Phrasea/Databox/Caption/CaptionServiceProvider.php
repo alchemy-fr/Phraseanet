@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Databox\Caption;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Record\RecordReference;
@@ -21,8 +22,8 @@ class CaptionServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['provider.factory.caption'] = $app->protect(function ($databoxId) use ($app) {
-            return function (array $data) use ($app, $databoxId) {
-                $recordReference = RecordReference::createFromDataboxIdAndRecordId($databoxId, $data['record_id']);
+            return function ($recordId, array $data) use ($app, $databoxId) {
+                $recordReference = RecordReference::createFromDataboxIdAndRecordId($databoxId, $recordId);
 
                 return new \caption_record($app, $recordReference, $data);
             };
@@ -44,6 +45,6 @@ class CaptionServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        // no-op
+        $app['dispatcher']->addSubscriber(new CaptionCacheInvalider(new LazyLocator($app, 'provider.repo.caption')));
     }
 }

@@ -65,10 +65,8 @@ class CaptionRepository
 
         $factory = $this->captionFactory;
 
-        foreach ($data as $item) {
-            Assertion::keyIsset($item, 'record_id');
-
-            $this->idMap[(int)$item['record_id']] = $factory($item);
+        foreach ($data as $recordId => $item) {
+            $this->idMap[(int)$recordId] = $factory($recordId, $item);
         }
     }
 }

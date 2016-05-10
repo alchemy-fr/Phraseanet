@@ -17,7 +17,7 @@ class caption_recordTest extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->object = new caption_record(self::$DI['app'], self::$DI['record_1'], self::$DI['record_1']->get_databox());
+        $this->object = new caption_record(self::$DI['app'], self::$DI['record_1']);
     }
 
     /**
