@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Databox\Caption;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Databox\ClosureDataboxBoundRepositoryFactory;
 use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Record\RecordReference;
@@ -29,13 +30,26 @@ class CaptionServiceProvider implements ServiceProviderInterface
             };
         });
 
+        $app['provider.data_repo.caption'] = $app->share(function (Application $app) {
+            return new DataboxBoundRepositoryProvider(new CaptionDataRepositoryFactory(
+                new DataboxConnectionProvider($app['phraseanet.appbox']),
+                $app['cache']
+            ));
+        });
+
         $app['provider.repo.caption'] = $app->share(function (Application $app) {
-            $connectionProvider = new DataboxConnectionProvider($app['phraseanet.appbox']);
-            $factoryProvider = $app['provider.factory.caption'];
+            return new DataboxBoundRepositoryProvider(
+                new ClosureDataboxBoundRepositoryFactory(function ($databoxId) use ($app) {
+                    /** @var CaptionDataRepository $dataRepository */
+                    $dataRepository = $app['provider.data_repo.caption']->getRepositoryForDatabox($databoxId);
+                    $captionFactoryProvider = $app['provider.factory.caption'];
 
-            $repositoryFactory = new CaptionRepositoryFactory($connectionProvider, $app['cache'], $factoryProvider);
-
-            return new DataboxBoundRepositoryProvider($repositoryFactory);
+                    return new CaptionRepository(
+                        $dataRepository,
+                        $captionFactoryProvider($databoxId)
+                    );
+                })
+            );
         });
 
         $app['service.caption'] = $app->share(function (Application $app) {
@@ -45,6 +59,6 @@ class CaptionServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        $app['dispatcher']->addSubscriber(new CaptionCacheInvalider(new LazyLocator($app, 'provider.repo.caption')));
+        $app['dispatcher']->addSubscriber(new CaptionCacheInvalider(new LazyLocator($app, 'provider.data_repo.caption')));
     }
 }

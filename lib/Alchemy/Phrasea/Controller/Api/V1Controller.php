@@ -1057,7 +1057,7 @@ class V1Controller extends Controller
 
         $searchView = $this->buildSearchView($this->doSearch($request));
 
-        $subdefTransformer = new SubdefTransformer();
+        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $recordTransformer = new RecordTransformer($subdefTransformer, new TechnicalDataTransformer());
         $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
@@ -1269,20 +1269,20 @@ class V1Controller extends Controller
      */
     private function resolveSearchIncludes(Request $request)
     {
-        if (!$request->attributes->get('_extended', false)) {
-            return [];
+        if ($request->attributes->get('_extended', false)) {
+            return [
+                'results.stories.records.subdefs',
+                'results.stories.records.metadata',
+                'results.stories.records.caption',
+                'results.stories.records.status',
+                'results.records.subdefs',
+                'results.records.metadata',
+                'results.records.caption',
+                'results.records.status',
+            ];
         }
 
-        return [
-            'results.stories.records.subdefs',
-            'results.stories.records.metadata',
-            'results.stories.records.caption',
-            'results.stories.records.status',
-            'results.records.subdefs',
-            'results.records.metadata',
-            'results.records.caption',
-            'results.records.status',
-        ];
+        return [];
     }
 
     /**
@@ -1293,16 +1293,16 @@ class V1Controller extends Controller
      */
     private function resolveSearchRecordsIncludes(Request $request)
     {
-        if (!$request->attributes->get('_extended', false)) {
-            return [];
+        if ($request->attributes->get('_extended', false)) {
+            return [
+                'results.subdefs',
+                'results.metadata',
+                'results.caption',
+                'results.status',
+            ];
         }
 
-        return [
-            'results.subdefs',
-            'results.metadata',
-            'results.caption',
-            'results.status',
-        ];
+        return [];
     }
 
     /**
