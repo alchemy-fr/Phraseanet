@@ -10,8 +10,6 @@
 
 namespace Alchemy\Phrasea\Databox\Caption;
 
-use Assert\Assertion;
-
 class CaptionRepository
 {
     /**
