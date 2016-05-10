@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Databox\Caption\CachedCaptionDataRepository;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 
@@ -67,23 +68,9 @@ class caption_record implements cache_cacheableInterface
             return $this->fields;
         }
 
-        try {
-            $fields = $this->get_data_from_cache();
-        } catch (\Exception $e) {
-            $sql = <<<'SQL'
-SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId
-FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
-WHERE m.record_id = :record_id
-ORDER BY s.sorter ASC
-SQL;
-            $fields = $this->getDatabox()->get_connection()
-                ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
-                ->fetchAll(PDO::FETCH_ASSOC);
+        $data = $this->getDataRepository()->findByRecordIds([$this->getRecordReference()->getRecordId()]);
 
-            $this->set_data_to_cache($fields);
-        }
-
-        $this->fields = $this->mapFieldsFromData($fields);
+        $this->fields = $this->mapFieldsFromData(array_shift($data));
 
         return $this->fields;
     }
@@ -253,6 +240,8 @@ SQL;
     {
         $this->fields = null;
 
+        $this->getDataRepository()->invalidate($this->getRecordReference()->getRecordId());
+
         return $this->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
     }
 
@@ -331,5 +320,14 @@ SQL;
         }
 
         return $rec_fields;
+    }
+
+    /**
+     * @return CachedCaptionDataRepository
+     */
+    private function getDataRepository()
+    {
+        return $this->app['provider.data_repo.caption']
+            ->getRepositoryForDatabox($this->getRecordReference()->getDataboxId());
     }
 }
