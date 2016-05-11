@@ -14,10 +14,6 @@ namespace Alchemy\Phrasea\Order;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\User;
 
-/**
- * Interface ValidationNotifier
- * @package Alchemy\Phrasea\Order
- */
 interface ValidationNotifier
 {
     /**
