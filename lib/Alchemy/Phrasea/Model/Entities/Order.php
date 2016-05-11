@@ -75,7 +75,7 @@ class Order
     /**
      * @ORM\Column(type="string", length=32, name="notification_method")
      */
-    private $notificationMethod = 'email';
+    private $notificationMethod;
 
     /**
      * Constructor
@@ -83,6 +83,7 @@ class Order
     public function __construct()
     {
         $this->elements = new ArrayCollection();
+        $this->notificationMethod = self::NOTIFY_MAIL;
     }
 
     /**
@@ -301,8 +302,10 @@ class Order
     }
 
     /**
-     * @param string $methodName Sets the name of the notification method to handle this order's status change
+     * Sets the name of the notification method to handle this order's status change
      * notifications.
+     * @param string $methodName
+     * @return void
      */
     public function setNotificationMethod($methodName)
     {
