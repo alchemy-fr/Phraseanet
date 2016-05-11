@@ -105,7 +105,7 @@
             },
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',
-            geocodingProviders: {{ geocodingProviders|raw }},
+            geocodingProviders: {{ geocodingProviders|json_encode()|raw}},
             thesaurusConfig: {
                 replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
                 replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
@@ -267,9 +267,11 @@
                                 <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                     <img src="/assets/common/images/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                                 </a>
+                                {% if geocodingProviders|length > 0 %}
                                 <a id="geo_query" href="#" class="btn btn-inverse adv_trigger geo-search-action-btn">
                                     <img src="/assets/common/images/icons/map.png" title="{{ 'Geo Search' | trans }}"/>
                                 </a>
+                                {% endif %}
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
                             <div class="control-group">
