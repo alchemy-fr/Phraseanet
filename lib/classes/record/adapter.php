@@ -1579,22 +1579,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ];
         }
 
-        $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute($params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $recordIds = $this->getDataboxConnection()->fetchAll($sql, $params);
 
-        $rs = array_map(function (array $row) {
+        $recordIds = array_map(function (array $row) {
             return $row['record_id'];
-        }, $rs);
+        }, $recordIds);
 
         $recordRepository = $this->getDatabox()->getRecordRepository();
-        $recordRepository->findByRecordIds($rs);
+        $records = $recordRepository->findByRecordIds($recordIds);
 
         $set = new set_selection($this->app);
         $i = 1;
-        foreach ($rs as $row) {
-            $record = $recordRepository->find($row, $i++);
+
+        foreach ($records as $record) {
+            $record->setNumber($i++);
             $set->add_element($record);
         }
 
