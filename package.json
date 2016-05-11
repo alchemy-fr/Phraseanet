@@ -29,10 +29,11 @@
     "node": ">=5.8"
   },
   "scripts": {
+    "dev": "./node_modules/.bin/gulp sync;",
     "build": "./node_modules/.bin/gulp build;",
     "postinstall": "./node_modules/.bin/gulp install;"
   },
   "dependencies": {
-    "phraseanet-production-client": "~0.17.0"
+    "phraseanet-production-client": "~0.17.1"
   }
 }
