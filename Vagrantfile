@@ -211,13 +211,6 @@ Vagrant.configure("2") do |config|
 
             node.vm.provision :shell, :path => "#{base_path}/puphpet/shell/important-notices.sh"
 
-            if File.file?("#{dir}/puphpet/files/dot/ssh/id_rsa")
-                node.ssh.private_key_path = [
-                  "#{dir}/puphpet/files/dot/ssh/id_rsa",
-                  "#{dir}/puphpet/files/dot/ssh/insecure_private_key"
-                ]
-            end
-
             if !data['ssh']['host'].nil?
                 node.ssh.host = "#{data['ssh']['host']}"
             end
