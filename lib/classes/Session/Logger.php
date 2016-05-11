@@ -139,17 +139,6 @@ class Session_Logger
         $log_id = $conn->lastInsertId();
         $stmt->closeCursor();
 
-        $sql = "INSERT INTO log_colls (id, log_id, coll_id) VALUES (null, :log_id, :coll_id)";
-        $stmt = $conn->prepare($sql);
-
-        foreach ($colls as $collId) {
-            $stmt->execute([
-                ':log_id'  => $log_id,
-                ':coll_id' => $collId
-            ]);
-        }
-
-        $stmt->closeCursor();
         unset($stmt, $conn);
 
         return new Session_Logger($databox, $log_id);

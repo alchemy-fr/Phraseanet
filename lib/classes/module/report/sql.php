@@ -10,6 +10,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Doctrine\DBAL\Driver\Connection;
 
 class module_report_sql
 {
