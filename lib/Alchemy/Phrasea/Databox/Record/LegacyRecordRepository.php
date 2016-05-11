@@ -150,10 +150,12 @@ class LegacyRecordRepository implements RecordRepository
         $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
         $records = $this->mapRecordsFromResultSet($data);
 
-        $selections = array_map(function () {
-            return new \set_selection($this->app);
-        }, $storyIds);
-
+        $selections = array_map(
+            function () {
+                return new \set_selection($this->app);
+            },
+            array_flip($storyIds)
+        );
 
         foreach ($records as $index => $child) {
             /** @var \set_selection $selection */
@@ -164,7 +166,9 @@ class LegacyRecordRepository implements RecordRepository
             $selection->add_element($child);
         }
 
-        return $selections;
+        return array_map(function ($storyId) use ($selections) {
+            return $selections[$storyId];
+        }, $storyIds);
     }
 
     public function findParents(array $recordIds, $user = null)
@@ -175,9 +179,12 @@ class LegacyRecordRepository implements RecordRepository
 
         $connection = $this->databox->get_connection();
 
+        $selects = $this->getRecordSelects();
+        array_unshift($selects, 's.rid_child as child_id');
+
         $builder = $connection->createQueryBuilder();
         $builder
-            ->select($this->getRecordSelects())
+            ->select($selects)
             ->from('regroup', 's')
             ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_parent')
             ->where(
@@ -196,19 +203,19 @@ class LegacyRecordRepository implements RecordRepository
 
         $selections = array_map(function () {
             return new \set_selection($this->app);
-        }, $recordIds);
+        }, array_flip($recordIds));
 
 
         foreach ($stories as $index => $child) {
             /** @var \set_selection $selection */
-            $selection = $selections[$data[$index]['record_id']];
-
-            $child->setNumber($selection->get_count() + 1);
+            $selection = $selections[$data[$index]['child_id']];
 
             $selection->add_element($child);
         }
 
-        return $selections;
+        return array_map(function ($recordId) use ($selections) {
+            return $selections[$recordId];
+        }, $recordIds);
     }
 
     /**
