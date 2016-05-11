@@ -119,9 +119,10 @@
 </div>
 
 <script type="text/javascript">
+    $.widget.bridge('uitooltip', $.ui.tooltip);
     $(document).ready(
     function(){
-        $('.usrTips').tooltip({
+        $('.usrTips').uitooltip({
             content: function() {
                 return $( this ).attr( "title" );
             }
