@@ -1549,54 +1549,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        if ($this->app->getAuthenticatedUser()) {
-            $sql = "SELECT record_id\n"
-                . " FROM regroup g\n"
-                . " INNER JOIN\n"
-                . " (record r INNER JOIN collusr c\n"
-                . "   ON site = :site\n"
-                . "    AND usr_id = :usr_id\n"
-                . "    AND c.coll_id = r.coll_id\n"
-                . "    AND ((status ^ mask_xor) & mask_and) = 0\n"
-                . "    AND r.parent_record_id=0\n"
-                . " )\n"
-                . " ON (g.rid_child = r.record_id AND g.rid_parent = :record_id)\n"
-                . " ORDER BY g.ord ASC, dateadd ASC, record_id ASC";
+        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()]);
 
-            $params = [
-                ':site'   => $this->app['conf']->get(['main', 'key']),
-                ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
-                ':record_id' => $this->getRecordId(),
-            ];
-        } else {
-            $sql = "SELECT record_id\n"
-                . " FROM regroup g INNER JOIN record r\n"
-                . "  ON (g.rid_child = r.record_id AND g.rid_parent = :record_id)\n"
-                . " ORDER BY g.ord ASC, dateadd ASC, record_id ASC";
-
-            $params = [
-                ':record_id' => $this->getRecordId(),
-            ];
-        }
-
-        $recordIds = $this->getDataboxConnection()->fetchAll($sql, $params);
-
-        $recordIds = array_map(function (array $row) {
-            return $row['record_id'];
-        }, $recordIds);
-
-        $recordRepository = $this->getDatabox()->getRecordRepository();
-        $records = $recordRepository->findByRecordIds($recordIds);
-
-        $set = new set_selection($this->app);
-        $i = 1;
-
-        foreach ($records as $record) {
-            $record->setNumber($i++);
-            $set->add_element($record);
-        }
-
-        return $set;
+        return reset($selections);
     }
 
     /**
@@ -1604,34 +1559,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $sql = "SELECT r.record_id\n"
-            . " FROM regroup g\n"
-            . " INNER JOIN\n"
-            . " (record r INNER JOIN collusr c\n"
-            . "   ON site = :site\n"
-            . "    AND usr_id = :usr_id\n"
-            . "    AND c.coll_id = r.coll_id\n"
-            . "    AND ((status ^ mask_xor) & mask_and)=0\n"
-            . "    AND r.parent_record_id = 1\n"
-            . " )\n"
-            . " ON (g.rid_parent = r.record_id)\n"
-            . " WHERE rid_child = :record_id";
+        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()]);
 
-        $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute([
-            ':site'      => $this->app['conf']->get(['main', 'key']),
-            ':usr_id'    => $this->app->getAuthenticatedUser()->getId(),
-            ':record_id' => $this->getRecordId(),
-        ]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $set = new set_selection($this->app);
-        foreach ($rs as $row) {
-            $set->add_element(new record_adapter($this->app, $this->getDataboxId(), $row['record_id']));
-        }
-
-        return $set;
+        return reset($selections);
     }
 
     public function hasChild(\record_adapter $record)

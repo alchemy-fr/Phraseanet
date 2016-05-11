@@ -11,19 +11,32 @@ namespace Alchemy\Phrasea\Databox\Record;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Cache\Exception;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class LegacyRecordRepository implements RecordRepository
 {
-    /** @var Application */
+    /**
+     * @var Application
+     */
     private $app;
-    /** @var \databox */
+
+    /**
+     * @var \databox
+     */
     private $databox;
 
-    public function __construct(Application $app, \databox $databox)
+    /**
+     * @var string
+     */
+    private $site;
+
+    public function __construct(Application $app, \databox $databox, $site)
     {
         $this->app = $app;
         $this->databox = $databox;
+        $this->site = $site;
     }
 
     public function find($record_id, $number = null)
@@ -107,28 +120,122 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
+    public function findChildren(array $storyIds, $user = null)
+    {
+        if (!$storyIds) {
+            return [];
+        }
+
+        $connection = $this->databox->get_connection();
+
+        $selects = $this->getRecordSelects();
+        array_unshift($selects, 's.rid_parent as story_id');
+
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->select($selects)
+            ->from('regroup', 's')
+            ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
+            ->where(
+                's.rid_parent IN (:storyIds)',
+                'r.parent_record_id = 0'
+            )
+            ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
+        ;
+
+        if (null !== $user) {
+            $this->addUserFilter($builder, $user);
+        }
+
+        $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
+        $records = $this->mapRecordsFromResultSet($data);
+
+        $selections = array_map(function () {
+            return new \set_selection($this->app);
+        }, $storyIds);
+
+
+        foreach ($records as $index => $child) {
+            /** @var \set_selection $selection */
+            $selection = $selections[$data[$index]['story_id']];
+
+            $child->setNumber($selection->get_count() + 1);
+
+            $selection->add_element($child);
+        }
+
+        return $selections;
+    }
+
+    public function findParents(array $recordIds, $user = null)
+    {
+        if (!$recordIds) {
+            return [];
+        }
+
+        $connection = $this->databox->get_connection();
+
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->select($this->getRecordSelects())
+            ->from('regroup', 's')
+            ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_parent')
+            ->where(
+                's.rid_child IN (:recordIds)',
+                'r.parent_record_id = 1'
+            )
+            ->setParameter('recordIds', $recordIds, Connection::PARAM_INT_ARRAY)
+        ;
+
+        if (null !== $user) {
+            $this->addUserFilter($builder, $user);
+        }
+
+        $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
+        $stories = $this->mapRecordsFromResultSet($data);
+
+        $selections = array_map(function () {
+            return new \set_selection($this->app);
+        }, $recordIds);
+
+
+        foreach ($stories as $index => $child) {
+            /** @var \set_selection $selection */
+            $selection = $selections[$data[$index]['record_id']];
+
+            $child->setNumber($selection->get_count() + 1);
+
+            $selection->add_element($child);
+        }
+
+        return $selections;
+    }
+
     /**
-     * @return \Doctrine\DBAL\Query\QueryBuilder
+     * @return QueryBuilder
      */
     private function createSelectBuilder()
     {
-        $connection = $this->databox->get_connection();
-
-        return $connection->createQueryBuilder()
-            ->select(
-                'coll_id AS collection_id',
-                'record_id',
-                'credate AS created',
-                'uuid',
-                'moddate AS updated',
-                'parent_record_id AS isStory',
-                $connection->quoteIdentifier('type'),
-                'originalname AS originalName',
-                'sha256',
-                'mime',
-                'LPAD(BIN(status), 32, \'0\') as status'
-            )
+        return $this->databox->get_connection()->createQueryBuilder()
+            ->select($this->getRecordSelects())
             ->from('record', 'r');
+    }
+
+    private function getRecordSelects()
+    {
+        return [
+            'r.coll_id AS collection_id',
+            'r.record_id',
+            'r.credate AS created',
+            'r.uuid',
+            'r.moddate AS updated',
+            'r.parent_record_id AS isStory',
+            'r.type',
+            'r.originalname AS originalName',
+            'r.sha256',
+            'r.mime',
+            'LPAD(BIN(r.status), 32, \'0\') as status',
+        ];
     }
 
     /**
@@ -139,8 +246,8 @@ class LegacyRecordRepository implements RecordRepository
     {
         $records = [];
 
-        foreach ($result as $row) {
-            $records[] = $this->mapRecordFromResultRow($row);
+        foreach ($result as $index => $row) {
+            $records[$index] = $this->mapRecordFromResultRow($row);
         }
 
         return $records;
@@ -161,5 +268,30 @@ class LegacyRecordRepository implements RecordRepository
         $record->putInCache();
 
         return $record;
+    }
+
+    /**
+     * @param QueryBuilder $builder
+     * @param int|User $user
+     * @return void
+     */
+    private function addUserFilter(QueryBuilder $builder, $user)
+    {
+        $subBuilder = $builder->getConnection()->createQueryBuilder();
+
+        $subBuilder
+            ->select('1')
+            ->from('collusr', 'c')
+            ->where(
+                'c.usr_id = :userId',
+                'c.site = :site',
+                '((r.status ^ c.mask_xor) & c.mask_and) = 0',
+                'c.coll_id = r.coll_id'
+            );
+
+        $builder
+            ->andWhere(sprintf('EXISTS(%s)', $subBuilder->getSQL()))
+            ->setParameter('userId', $user instanceof User ? $user->getId() : (int)$user)
+            ->setParameter('site', $this->site);
     }
 }
