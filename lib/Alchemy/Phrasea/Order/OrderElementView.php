@@ -77,6 +77,7 @@ class OrderElementView
 
     /**
      * @param \media_subdef[] $subdefs
+     * @return void
      */
     public function setOrderableMediaSubdefs($subdefs)
     {

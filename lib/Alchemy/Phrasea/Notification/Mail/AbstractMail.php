@@ -194,7 +194,7 @@ abstract class AbstractMail implements MailInterface
      * @param EmitterInterface  $emitter
      * @param string            $message
      *
-     * @return MailInterface
+     * @return static
      */
     public static function create(Application $app, ReceiverInterface $receiver, EmitterInterface $emitter = null, $message = null)
     {

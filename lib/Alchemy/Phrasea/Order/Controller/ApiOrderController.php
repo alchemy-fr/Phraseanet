@@ -61,6 +61,7 @@ class ApiOrderController extends BaseOrderController
         $order->setUser($this->getAuthenticatedUser());
         $order->setDeadline(new \DateTime($data->data->deadline, new \DateTimeZone('UTC')));
         $order->setOrderUsage($data->data->usage);
+        $order->setNotificationMethod(Order::NOTIFY_WEBHOOK);
 
         $filler->fillOrder($order, $recordRequest);
 

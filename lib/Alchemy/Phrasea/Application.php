@@ -23,7 +23,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
@@ -238,7 +237,7 @@ class Application extends SilexApplication
         $this->setupEventDispatcher();
 
         $this->register(new WebhookServiceProvider());
-        
+
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */
             $handler =  PhraseaExceptionHandler::register($app['debug']);
@@ -703,7 +702,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));
                 $dispatcher->addSubscriber(new BridgeSubscriber($app));
                 $dispatcher->addSubscriber(new ExportSubscriber($app));
-                $dispatcher->addSubscriber(new OrderSubscriber($app));
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));

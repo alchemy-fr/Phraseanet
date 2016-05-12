@@ -13,33 +13,49 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Order\OrderDelivery;
 
 class OrderDeliveryEvent extends OrderEvent
 {
-    private $admin;
-    private $quantity;
+    /**
+     * @var OrderDelivery
+     */
+    private $orderDelivery;
 
-    public function __construct(Order $order, User $admin, $quantity)
+    /**
+     * @param OrderDelivery $delivery
+     */
+    public function __construct(OrderDelivery $delivery)
     {
-        parent::__construct($order);
-        $this->admin = $admin;
-        $this->quantity = $quantity;
+        parent::__construct($delivery->getOrder());
+
+        $this->orderDelivery = $delivery;
+    }
+
+    /**
+     * @return OrderDelivery
+     */
+    public function getDelivery()
+    {
+        return $this->orderDelivery;
     }
 
     /**
      * @return User
+     * @deprecated Use OrderDeliveryEvent::getDelivery() to retrieve admin user.
      */
     public function getAdmin()
     {
-        return $this->admin;
+        return $this->orderDelivery->getAdmin();
     }
 
     /**
-     * @return mixed
+     * @return int
+     * @deprecated Use OrderDeliveryEvent::getDelivery() to read quantity.
      */
     public function getQuantity()
     {
-        return $this->quantity;
+        return $this->orderDelivery->getQuantity();
     }
 
 }
