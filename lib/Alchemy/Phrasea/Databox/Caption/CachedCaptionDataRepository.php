@@ -102,7 +102,7 @@ class CachedCaptionDataRepository implements CaptionDataRepository
      */
     private function computeKeys(array $recordIds)
     {
-        return array_map([$this, 'computeKey'], $recordIds);
+        return array_map([$this, 'computeKey'], array_unique($recordIds));
     }
 
     /**
