@@ -127,9 +127,9 @@ class SearchEngineOptions
     }
 
     /** @var string */
-    protected $record_type;
+    protected $record_type = self::TYPE_ALL;
 
-    protected $search_type = 0;
+    protected $search_type = self::RECORD_RECORD;
     /** @var \collection[] */
     protected $collections = [];
     /** @var null|\databox[] */
