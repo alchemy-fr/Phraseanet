@@ -168,7 +168,7 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         });
 
         $app['repo.records.factory'] = $app->protect(function (\databox $databox) use ($app) {
-            return new LegacyRecordRepository($app, $databox);
+            return new LegacyRecordRepository($app, $databox, $app['conf']->get(['main', 'key']));
         });
 	
         $app['repo.collection-references'] = $app->share(function (PhraseaApplication $app) {
