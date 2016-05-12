@@ -192,20 +192,23 @@ class BaseOrderController extends Controller
             return;
         }
 
-        $references = new RecordReferenceCollection();
+        $basketReferences = new RecordReferenceCollection();
 
-        $basket->getElements()->forAll(function (BasketElement $element) use ($references) {
-            $references->addRecordReference($element->getSbasId(), $element->getRecordId());
+        $basket->getElements()->forAll(function (BasketElement $element) use ($basketReferences) {
+            $basketReferences->addRecordReference($element->getSbasId(), $element->getRecordId());
         });
 
+        $toAddReferences = new RecordReferenceCollection();
+
         foreach ($elements as $element) {
-            $references->addRecordReference($element->getSbasId(), $element->getRecordId());
+            $toAddReferences->addRecordReference($element->getSbasId(), $element->getRecordId());
         }
 
-        $groups = $references->groupPerDataboxId();
+        foreach ($toAddReferences->getDataboxIds() as $databoxId) {
+            $toAddRecordIds = $toAddReferences->getDataboxRecordIds($databoxId);
+            $basketRecordIds = $basketReferences->getDataboxRecordIds($databoxId);
 
-        foreach ($basket->getElements() as $element) {
-            if (isset($groups[$element->getSbasId()][$element->getRecordId()])) {
+            if (array_intersect($toAddRecordIds, $basketRecordIds)) {
                 throw new ConflictHttpException('Some records have already been handled');
             }
         }
