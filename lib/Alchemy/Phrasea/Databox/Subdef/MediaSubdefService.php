@@ -37,12 +37,23 @@ class MediaSubdefService
     {
         $subdefs = $this->reduceRecordReferenceCollection(
             $records,
-            function (array &$carry, array $subdefs, array $indexes) {
+            function (array &$carry, array $subdefs, array $references) {
+                $subdefsByRecordId = [];
+
                 /** @var \media_subdef $subdef */
                 foreach ($subdefs as $subdef) {
-                    $index = $indexes[$subdef->get_record_id()];
+                    $recordId = $subdef->get_record_id();
 
-                    $carry[$index][$subdef->get_name()] = $subdef;
+                    if (!isset($subdefsByRecordId[$recordId])) {
+                        $subdefsByRecordId[$recordId] = [];
+                    }
+
+                    $subdefsByRecordId[$recordId][$subdef->get_name()] = $subdef;
+                }
+
+                /** @var RecordReferenceInterface $reference */
+                foreach ($references as $index => $reference) {
+                    $carry[$index] = $subdefsByRecordId[$reference->getRecordId()];
                 }
 
                 return $carry;
@@ -98,11 +109,13 @@ class MediaSubdefService
 
         $carry = $initialValue;
 
-        foreach ($records->groupPerDataboxId() as $databoxId => $indexes) {
-            $subdefs = $this->getRepositoryForDatabox($databoxId)
-                ->findByRecordIdsAndNames(array_keys($indexes), $names);
+        foreach ($records->getDataboxIds() as $databoxId) {
+            $recordIds = $records->getDataboxRecordIds($databoxId);
 
-            $carry = $process($carry, $subdefs, $indexes, $databoxId);
+            $subdefs = $this->getRepositoryForDatabox($databoxId)
+                ->findByRecordIdsAndNames($recordIds, $names);
+
+            $carry = $process($carry, $subdefs, $records->getDataboxGroup($databoxId), $databoxId);
         }
 
         return $carry;
