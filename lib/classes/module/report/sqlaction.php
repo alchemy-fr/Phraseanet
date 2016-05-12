@@ -59,14 +59,14 @@ class module_report_sqlaction extends module_report_sql implements module_report
             // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
 
             $customFieldMap = [
-                'log.usrid'     => 'tt.usrid',
-                'log.user'      => 'tt.user',
-                'd.final'       => 'getter',
-                'd.record_id'   => 'tt.record_id',
-                'd.date'        => 'tt.date',
-                'record.mime'   => 'tt.mime',
-                'file'          => 'tt.file',
-                'd.comment'     => 'tt.comment'
+                'log.usrid'          => 'tt.usrid',
+                'log.user'           => 'tt.user',
+                'log_docs.final'     => 'getter',
+                'log_docs.record_id' => 'tt.record_id',
+                'log_docs.date'      => 'tt.date',
+                'record.mime'        => 'tt.mime',
+                'file'               => 'tt.file',
+                'log_docs.comment'   => 'tt.comment'
             ];
 
             $stmt = $this->getConnBas()->prepare($this->sql);
