@@ -21,11 +21,13 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         $app = self::$DI['app'];
         /** @var \collection $collection */
         $collection = self::$DI['collection'];
+        $collections[$collection->get_base_id()] = $collection;
 
         $options = new SearchEngineOptions($app);
-        $options->onCollections([$collection]);
-
-        $options->allowBusinessFieldsOn([$collection]);
+        $options->onCollections($collections);
+        $options->setRecordType(SearchEngineOptions::TYPE_ALL);
+        $options->setSearchType(SearchEngineOptions::RECORD_RECORD);
+        $options->allowBusinessFieldsOn($collections);
 
         foreach ($collection->get_databox()->get_meta_structure() as $field) {
             $options->setFields([$field]);
@@ -35,9 +37,9 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
         $min_date = new \DateTime('-5 days');
         $max_date = new \DateTime('+5 days');
-
         $options->setMinDate(\DateTime::createFromFormat(DATE_ATOM, $min_date->format(DATE_ATOM)));
         $options->setMaxDate(\DateTime::createFromFormat(DATE_ATOM, $max_date->format(DATE_ATOM)));
+
         $options->setFirstResult(3);
         $options->setMaxResults(42);
 
