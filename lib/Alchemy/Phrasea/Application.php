@@ -702,8 +702,8 @@ class Application extends SilexApplication
         $this['events.order_subscriber'] = $this->share(function (Application $app) {
             $notifierRegistry = new ValidationNotifierRegistry();
 
-            $notifierRegistry->registerNotifier('mail', new MailNotifier($app, $app['notification.deliverer']));
-            $notifierRegistry->registerNotifier('webhook', new WebhookNotifier());
+            $notifierRegistry->registerNotifier('mail', new MailNotifier($app));
+            $notifierRegistry->registerNotifier('webhook', new WebhookNotifier($app['manipulator.webhook-event']));
 
             return new OrderSubscriber($notifierRegistry);
         });

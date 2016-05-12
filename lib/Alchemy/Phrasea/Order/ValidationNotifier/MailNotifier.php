@@ -30,16 +30,17 @@ class MailNotifier implements ValidationNotifier
      */
     private $application;
 
-    /**
-     * @var Deliverer
-     */
-    private $deliverer;
-
-
-    public function __construct(Application $application, Deliverer $deliverer)
+    public function __construct(Application $application)
     {
         $this->application = $application;
-        $this->deliverer = $deliverer;
+    }
+
+    /**
+     * @return Deliverer
+     */
+    private function getDeliverer()
+    {
+        return $this->application['notification.deliverer'];
     }
 
     /**
@@ -52,7 +53,7 @@ class MailNotifier implements ValidationNotifier
 
         $mail->setUser($recipient);
 
-        $this->deliverer->deliver($mail);
+        $this->getDeliverer()->deliver($mail);
     }
 
     /**
@@ -79,7 +80,7 @@ class MailNotifier implements ValidationNotifier
         $mail->setBasket($basket);
         $mail->setDeliverer($delivery->getAdmin());
 
-        $this->deliverer->deliver($mail);
+        $this->getDeliverer()->deliver($mail);
     }
 
     /**
@@ -95,6 +96,6 @@ class MailNotifier implements ValidationNotifier
         $mail->setQuantity($delivery->getQuantity());
         $mail->setDeliverer($delivery->getAdmin());
 
-        $this->deliverer->deliver($mail);
+        $this->getDeliverer()->deliver($mail);
     }
 }
