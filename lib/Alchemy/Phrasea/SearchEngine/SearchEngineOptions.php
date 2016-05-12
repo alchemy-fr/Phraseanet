@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
 use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,10 +75,12 @@ class SearchEngineOptions
             $collections = [];
 
             foreach ($references->groupByDataboxIdAndCollectionId() as $databoxId => $indexes) {
+                /** @var CollectionRepository $repository */
                 $repository = $app['repo.collections-registry']->getRepositoryByDatabox($databoxId);
 
                 foreach ($indexes as $collectionId => $index) {
-                    $collections[] = $repository->find($collectionId);
+                    $coll = $repository->find($collectionId);
+                    $collections[$coll->get_base_id()] = $coll;
                 }
             }
 
@@ -124,9 +127,9 @@ class SearchEngineOptions
     }
 
     /** @var string */
-    protected $record_type;
+    protected $record_type = self::TYPE_ALL;
 
-    protected $search_type = 0;
+    protected $search_type =  self::RECORD_RECORD;
     /** @var \collection[] */
     protected $collections = [];
     /** @var null|\databox[] */
