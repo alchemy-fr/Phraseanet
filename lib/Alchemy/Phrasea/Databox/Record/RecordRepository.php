@@ -9,6 +9,8 @@
  */
 namespace Alchemy\Phrasea\Databox\Record;
 
+use Alchemy\Phrasea\Model\Entities\User;
+
 interface RecordRepository
 {
     /**
@@ -35,4 +37,23 @@ interface RecordRepository
      * @return \record_adapter[]
      */
     public function findByRecordIds(array $recordIds);
+
+    /**
+     * Find children of each given storyId reachable for given user
+     *
+     * @param int[] $storyIds
+     * @param null|int|User $user
+     * @return \set_selection[]
+     */
+    public function findChildren(array $storyIds, $user = null);
+
+
+    /**
+     * Find stories containing records
+     *
+     * @param int[] $recordIds
+     * @param null|int|User $user
+     * @return \set_selection[]
+     */
+    public function findParents(array $recordIds, $user = null);
 }
