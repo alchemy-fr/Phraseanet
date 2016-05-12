@@ -128,33 +128,15 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @return array<int,array<int,int>>
-     */
-    public function groupPerDataboxId()
-    {
-        if (null === $this->groups) {
-            $this->groups = [];
-
-            foreach ($this->references as $index => $reference) {
-                $databoxId = $reference->getDataboxId();
-
-                if (!isset($this->groups[$databoxId])) {
-                    $this->groups[$databoxId] = [];
-                }
-
-                $this->groups[$databoxId][$reference->getRecordId()] = $index;
-            }
-        }
-
-        return $this->groups;
-    }
-
-    /**
      * @return array
      */
     public function getDataboxIds()
     {
-        return array_keys($this->groupPerDataboxId());
+        if (null === $this->groups) {
+            $this->reorderGroups();
+        }
+
+        return array_keys($this->groups);
     }
 
     /**
@@ -163,12 +145,11 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function toRecords(\appbox $appbox)
     {
-        $groups = $this->groupPerDataboxId();
-
         $records = [];
 
-        foreach ($groups as $databoxId => $recordIds) {
+        foreach ($this->getDataboxIds() as $databoxId) {
             $databox = $appbox->get_databox($databoxId);
+            $recordIds =  $this->getDataboxRecordIds($databoxId);
 
             foreach ($databox->getRecordRepository()->findByRecordIds(array_keys($recordIds)) as $record) {
                 $records[$recordIds[$record->getRecordId()]] = $record;
@@ -237,14 +218,16 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function groupByDatabox()
     {
-        $this->reorderGroups();
+        if (null === $this->groups) {
+            $this->reorderGroups();
+        }
 
         return $this->groups;
     }
 
     public function reorderGroups()
     {
-        if ($this->groups) {
+        if (null !== $this->groups) {
             return;
         }
 
@@ -267,20 +250,23 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getDataboxGroup($databoxId)
     {
-        $this->reorderGroups();
+        // avoid call to reorderGroups when not needed
+        if (null === $this->groups) {
+            $this->reorderGroups();
+        }
 
         return isset($this->groups[$databoxId]) ? $this->groups[$databoxId] : [];
     }
 
     public function getDataboxRecordIds($databoxId)
     {
-        $recordsIds = [];
+        $indexes = [];
 
-        foreach ($this->getDataboxGroup($databoxId) as $references) {
-            $recordsIds[$references->getRecordId()] = true;
+        foreach ($this->getDataboxGroup($databoxId) as $index => $references) {
+            $indexes[$references->getRecordId()] = $index;
         }
 
-        return array_keys($recordsIds);
+        return array_flip($indexes);
     }
 
     public function count()

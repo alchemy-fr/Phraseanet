@@ -32,10 +32,10 @@ class CaptionService
 
         $groups = [];
 
-        foreach ($references->groupPerDataboxId() as $databoxId => $indexes) {
-            $captions = $this->getRepositoryForDatabox($databoxId)->findByRecordIds(array_keys($indexes));
+        foreach ($references->getDataboxIds() as $databoxId) {
+            $recordIds = $references->getDataboxRecordIds($databoxId);
 
-            $groups[$databoxId] = array_combine($indexes, $captions);
+            $groups[$databoxId] = $this->getRepositoryForDatabox($databoxId)->findByRecordIds($recordIds);
         }
 
         return $this->reorderInstances($references, $groups);
@@ -72,10 +72,25 @@ class CaptionService
     {
         $captions = [];
 
-        foreach ($references as $index => $reference) {
-            $captions[$index] = $groups[$reference->getDataboxId()][$index];
+        foreach ($groups as $databoxId => $group) {
+            $captions[$databoxId] = array_reduce($group, function (array &$carry, \caption_record $caption) {
+                $carry[$caption->getRecordReference()->getRecordId()] = $caption;
+
+                return $carry;
+            }, []);
         }
 
-        return $captions;
+        $instances = [];
+
+        foreach ($references as $index => $reference) {
+            $databoxId = $reference->getDataboxId();
+            $recordId = $reference->getRecordId();
+
+            if (isset($captions[$databoxId][$recordId])) {
+                $instances[$index] = $captions[$databoxId][$recordId];
+            }
+        }
+
+        return $instances;
     }
 }

@@ -37,18 +37,27 @@ class TechnicalDataService
 
         $sets = [];
 
-        foreach ($references->groupPerDataboxId() as $databoxId => $indexes) {
-            foreach ($this->provider->getRepositoryFor($databoxId)->findByRecordIds(array_keys($indexes)) as $set) {
-                $index = $indexes[$set->getRecordId()];
+        foreach ($references->getDataboxIds() as $databoxId) {
+            $recordIds = $references->getDataboxRecordIds($databoxId);
 
-                $sets[$index] = $set;
+            $setPerRecordId = [];
+
+            foreach ($this->provider->getRepositoryFor($databoxId)->findByRecordIds($recordIds) as $set) {
+                $setPerRecordId[$set->getRecordId()] = $set;
             }
+
+            $sets[$databoxId] = $setPerRecordId;
         }
 
         $reorder = [];
 
         foreach ($references as $index => $reference) {
-            $reorder[$index] = isset($sets[$index]) ? $sets[$index] : new RecordTechnicalDataSet($reference->getRecordId());
+            $databoxId = $reference->getDataboxId();
+            $recordId = $reference->getRecordId();
+
+            $reorder[$index] = isset($sets[$databoxId][$recordId])
+                ? $sets[$databoxId][$recordId]
+                : new RecordTechnicalDataSet($recordId);
         }
 
         return $reorder;
