@@ -69,7 +69,7 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                 $this->sql = "SELECT " . $name . ", SUM(1) AS nombre\n"
                             . "FROM (\n"
                             . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $name . "\n"
-                            . "  FROM (log_docs FORCE INDEX(date) INNER JOIN log ON log_docs.log.id = log.id)\n"
+                            . "  FROM (log_docs FORCE INDEX(date) INNER JOIN log ON log_docs.log_id = log.id)\n"
                             . "    LEFT JOIN record ON log_docs.record_id = record.record_id\n";
             }
 

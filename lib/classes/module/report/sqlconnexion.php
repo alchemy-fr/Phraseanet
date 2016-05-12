@@ -57,7 +57,7 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
             $this->sql = "SELECT " . $this->groupby . ", SUM(1) as nb\n"
                     . "FROM (\n"
                     . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "\n"
-                    . "  FROM log FORCE INDES(date)\n"
+                    . "  FROM log FORCE INDEX(date)\n"
                     . "  WHERE (" . $filter['sql'] .")\n"
                     . ") AS tt\n"
                     . "GROUP BY " . $this->groupby. "\n"

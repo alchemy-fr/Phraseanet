@@ -79,10 +79,11 @@ class module_report_sqlaction extends module_report_sql implements module_report
         } else {
             $this->sql = "SELECT " . $this->groupby . ", SUM(1) AS nombre\n"
                         . "FROM (\n"
-                        . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . ", log.usrid, d.final, d.record_id, d.date\n"
-                        . "  FROM (log_docs as d INNER JOIN log ON log.id = d.log_id)\n"
-                        . "    LEFT JOIN record ON record.record_id = d.record_id\n"
-                        . "  WHERE (" . $filter['sql'] . ") AND (d.action = :action)\n"
+                        . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . ",\n"
+                        . "         log.usrid, log_docs.final, log_docs.record_id, log_docs.date\n"
+                        . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
+                        . "    LEFT JOIN record ON record.record_id = log_docs.record_id\n"
+                        . "  WHERE (" . $filter['sql'] . ") AND (log_docs.action = :action)\n"
                         . ") AS tt\n"
                         . "LEFT JOIN subdef AS s ON (s.record_id=tt.record_id)\n"
                         . "WHERE s.name='document'\n"
@@ -108,11 +109,11 @@ class module_report_sqlaction extends module_report_sql implements module_report
         $this->sql = "SELECT DISTINCT(val)\n"
                 . "FROM (\n"
                 . "  SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val\n"
-                . "  FROM (log_docs as d INNER JOIN log ON log.id = d.log_id)\n"
-                . "    LEFT JOIN record ON record.record_id = d.record_id\n"
-                . "    LEFT JOIN subdef as s ON s.record_id=d.record_id AND s.name='document'\n"
+                . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
+                . "    LEFT JOIN record ON record.record_id = log_docs.record_id\n"
+                . "    LEFT JOIN subdef AS s ON s.record_id = log_docs.record_id AND s.name='document'\n"
                 . "  WHERE (" . $filter['sql'] . ")\n"
-                . "    AND d.action = :action\n"
+                . "    AND log_docs.action = :action\n"
                 . ") AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '') . "\n";
 
         // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);

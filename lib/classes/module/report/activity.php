@@ -568,7 +568,7 @@ class module_report_activity extends module_report
         $sql = "SELECT tt.usrid, tt.user, tt.final, tt.record_id, SUM(1) AS nb, SUM(size) AS poid\n"
             . "FROM (\n"
             . "  SELECT DISTINCT(log.id), log.usrid, user, final, log_docs.record_id\n"
-            . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id\n"
+            . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
             . "  WHERE (" . $datefilter['sql'] . ") AND log.site = :site_id\n"
             . "    AND log_docs.action = 'download'\n"
             . ") AS tt\n"
