@@ -197,10 +197,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testTodo()
     {
+        $app = $this->getApplication();
         $order = $this->createOneOrder('I need this pictures');
 
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
-        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
+        $triggered = false;
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_DELIVER, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
@@ -208,8 +211,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         }
         $this->getClient()->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
 
-        $app = $this->getApplication();
+        $this->assertTrue($triggered, 'Order delivered listener not triggered');
+
         $testOrder = $app['orm.em']->getRepository('Phraseanet:Order')->find($order->getId());
+
         $this->assertEquals(0, $testOrder->getTodo());
     }
 
