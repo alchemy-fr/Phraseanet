@@ -20,13 +20,11 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
 
-        $app['notification.deliverer'] = $this->getMockBuilder(Deliverer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
         $triggered = false;
         $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
         });
+
         $client = $this->getClient();
         $client->request('POST', '/prod/order/', [
             'lst'      => $this->getRecord1()->getId(),
@@ -45,9 +43,6 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
 
-        $app['notification.deliverer'] = $this->getMockBuilder(Deliverer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
         $triggered = false;
         $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
             $triggered = true;
@@ -90,37 +85,53 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSendOrder()
     {
+        $app = $this->getApplication();
         $order = $this->createOneOrder('I need this pictures');
 
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
-        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
+        $triggered = false;
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_DELIVER, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
         $response = $this->request('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+
+        $this->assertTrue($triggered, 'Order delivered listener not triggered');
         $this->assertTrue($response->isRedirect(), 'Could not validate some elements. not a redirect');
+
         $url = parse_url($response->headers->get('location'));
         parse_str($url['query']);
+
         $this->assertTrue(strpos($url['query'], 'success=1') === 0, 'Validation of elements is not successful');
     }
 
     public function testSendOrderJson()
     {
+        $app = $this->getApplication();
         $order = $this->createOneOrder('I need this pictures');
 
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered');
-        $this->mockUserNotificationSettings('eventsmanager_notify_orderdeliver');
+        $triggered = false;
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_DELIVER, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $parameters = [];
+
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
+
         $response = $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/send/', ['elements' => $parameters]);
+
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+        $this->assertTrue($triggered, 'Order delivered listener not triggered');
+
         $content = json_decode($response->getContent());
+
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('success', $content, $response->getContent());
         $this->assertTrue( ! ! $content->success, $response->getContent());
@@ -130,10 +141,13 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDenyOrder()
     {
+        $app = $this->getApplication();
         $order = $this->createOneOrder('I need this pictures');
 
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
-        $this->mockUserNotificationSettings('eventsmanager_notify_ordernotdelivered');
+        $triggered = false;
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_DENY, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
@@ -141,7 +155,10 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         }
         $client = $this->getClient();
         $client->request('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
+
         $this->assertTrue($client->getResponse()->isRedirect());
+        $this->assertTrue($triggered, 'Order denied listener not triggered');
+
         $url = parse_url($client->getResponse()->headers->get('location'));
         $var = [];
         parse_str($url['query'], $var);
@@ -150,19 +167,27 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testDenyOrderJson()
     {
+        $app = $this->getApplication();
         $order = $this->createOneOrder('I need this pictures');
 
-        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled');
-        $this->mockUserNotificationSettings('eventsmanager_notify_ordernotdelivered');
+        $triggered = false;
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_DENY, function (Event $event) use (&$triggered) {
+            $triggered = true;
+        });
 
         $parameters = [];
         foreach ($order->getElements() as $element) {
             $parameters[] = $element->getId();
         }
+
         $response = $this->XMLHTTPRequest('POST', '/prod/order/' . $order->getId() . '/deny/', ['elements' => $parameters]);
+
         $this->assertTrue($response->isOk());
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+        $this->assertTrue($triggered, 'Order denied listener not triggered');
+
         $content = json_decode($response->getContent());
+
         $this->assertTrue(is_object($content));
         $this->assertObjectHasAttribute('success', $content, $response->getContent());
         $this->assertTrue( ! ! $content->success, $response->getContent());

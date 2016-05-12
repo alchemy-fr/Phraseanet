@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
+use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\ValidationNotifier\MailNotifier;
 use Alchemy\Phrasea\Order\ValidationNotifier\WebhookNotifier;
 use Alchemy\Phrasea\Order\ValidationNotifierRegistry;
@@ -32,8 +33,8 @@ class OrderServiceProvider implements ServiceProviderInterface
         $this['events.order_subscriber'] = $app->share(function (Application $app) {
             $notifierRegistry = new ValidationNotifierRegistry();
 
-            $notifierRegistry->registerNotifier('mail', new MailNotifier($app));
-            $notifierRegistry->registerNotifier('webhook', new WebhookNotifier($app['manipulator.webhook-event']));
+            $notifierRegistry->registerNotifier(Order::NOTIFY_MAIL, new MailNotifier($app));
+            $notifierRegistry->registerNotifier(Order::NOTIFY_WEBHOOK, new WebhookNotifier($app['manipulator.webhook-event']));
 
             return new OrderSubscriber($notifierRegistry);
         });
