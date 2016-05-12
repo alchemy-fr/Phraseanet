@@ -42,12 +42,16 @@
             <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
         <div style='position:absolute; bottom:0px; left:0px; height:20px' class="bottom actions">
-            <div class="previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}"></div>
+
+            <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
+                <i class="icon-circle icon-stack-base"></i>
+                <i class="icon-search icon-light"></i>
+            </span>
 
             <span class="icon-stack infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
-                  <i class="icon-circle icon-stack-base"></i>
-                  <i class="icon-info icon-light"></i>
-                </span>
+                <i class="icon-circle icon-stack-base"></i>
+                <i class="icon-info icon-light"></i>
+            </span>
         </div>
         <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
             <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger" id="editContextTrigger_{{ record.get_serialize_key() }}">&#9660;</a>

@@ -11,32 +11,6 @@ $answersInfoLabelColor: #949494 !default;
   margin: 0;
 }
 
-// .captionRolloverTips, .previewTips, .infoTips,
-/*
-.baskAdder {
-  background-image: url('#{$iconsPath}zoom.gif');
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 18px;
-  height: 18px;
-  float: right;
-  cursor: pointer;
-}
-
-.captionRolloverTips {
-  background-image: url('#{$iconsPath}mode_list.gif');
-}
-
-.infoTips {
-  background-image: url('#{$iconsPath}info.gif');
-}
-
-.baskAdder {
-  background-image: url('#{$iconsPath}basket.gif');
-}
-*/
-
-
 #answers {
   box-sizing: border-box;
   .status {
