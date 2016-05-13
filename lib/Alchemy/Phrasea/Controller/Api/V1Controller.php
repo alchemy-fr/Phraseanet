@@ -29,10 +29,14 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Databox\DataboxGroupable;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\FeedInterface;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Fractal\ArraySerializer;
+use Alchemy\Phrasea\Fractal\CallbackTransformer;
+use Alchemy\Phrasea\Fractal\IncludeResolver;
+use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -54,6 +58,7 @@ use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
 use Alchemy\Phrasea\Model\Repositories\TaskRepository;
+use Alchemy\Phrasea\Record\RecordCollection;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Alchemy\Phrasea\Search\CaptionView;
 use Alchemy\Phrasea\Search\PermalinkTransformer;
@@ -1051,17 +1056,45 @@ class V1Controller extends Controller
      */
     public function searchAction(Request $request)
     {
+        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
+        $technicalDataTransformer = new TechnicalDataTransformer();
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
+        $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
+        $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
+
+        $transformerResolver = new SearchResultTransformerResolver([
+            '' => $searchTransformer,
+            'results' => $compositeTransformer,
+            'results.stories' => $storyTransformer,
+            'results.stories.thumbnail' => $subdefTransformer,
+            'results.stories.metadatas' => new CallbackTransformer(),
+            'results.stories.records' => $recordTransformer,
+            'results.stories.records.thumbnail' => $subdefTransformer,
+            'results.stories.records.technical_informations' => $technicalDataTransformer,
+            'results.stories.records.subdefs' => $subdefTransformer,
+            'results.stories.records.metadata' => new CallbackTransformer(),
+            'results.stories.records.status' => new CallbackTransformer(),
+            'results.stories.records.caption' => new CallbackTransformer(),
+            'results.records' => $recordTransformer,
+            'results.records.thumbnail' => $subdefTransformer,
+            'results.records.technical_informations' => $technicalDataTransformer,
+            'results.records.subdefs' => $subdefTransformer,
+            'results.records.metadata' => new CallbackTransformer(),
+            'results.records.status' => new CallbackTransformer(),
+            'results.records.caption' => new CallbackTransformer(),
+        ]);
+        $includeResolver = new IncludeResolver($transformerResolver);
+
         $fractal = new \League\Fractal\Manager();
         $fractal->setSerializer(new ArraySerializer());
         $fractal->parseIncludes($this->resolveSearchIncludes($request));
 
-        $searchView = $this->buildSearchView($this->doSearch($request));
-
-        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
-        $recordTransformer = new RecordTransformer($subdefTransformer, new TechnicalDataTransformer());
-        $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
-        $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
-        $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
+        $searchView = $this->buildSearchView(
+            $this->doSearch($request),
+            $includeResolver->resolve($fractal),
+            $this->resolveSubdefUrlTTL($request)
+        );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 
@@ -1100,41 +1133,119 @@ class V1Controller extends Controller
 
     /**
      * @param SearchEngineResult $result
+     * @param string[] $includes
+     * @param int $urlTTL
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL)
     {
-
         $references = new RecordReferenceCollection($result->getResults());
 
-        $records = [];
-        $stories = [];
+        $records = new RecordCollection();
+        $stories = new RecordCollection();
 
         foreach ($references->toRecords($this->getApplicationBox()) as $record) {
             if ($record->isStory()) {
-                $stories[] = $record;
+                $stories[$record->getId()] = $record;
             } else {
-                $records[] = $record;
+                $records[$record->getId()] = $record;
             }
         }
 
         $resultView = new SearchResultView($result);
 
-        if ($stories) {
-            $storyViews = [];
+        if ($stories->count() > 0) {
+            $user = $this->getAuthenticatedUser();
+            $children = [];
 
-            foreach ($stories as $story) {
-                $storyViews[] = new StoryView($story);
+            foreach ($stories->getDataboxIds() as $databoxId) {
+                $storyIds = $stories->getDataboxRecordIds($databoxId);
+
+                $selections = $this->findDataboxById($databoxId)
+                    ->getRecordRepository()
+                    ->findChildren($storyIds, $user);
+                $children[$databoxId] = array_combine($storyIds, $selections);
+            }
+
+            /** @var StoryView[] $storyViews */
+            $storyViews = [];
+            /** @var RecordView[] $childrenViews */
+            $childrenViews = [];
+
+            foreach ($stories as $index => $story) {
+                $storyView = new StoryView($story);
+
+                $selection = $children[$story->getDataboxId()][$story->getRecordId()];
+
+                $childrenView = $this->buildRecordViews($selection);
+
+                foreach ($childrenView as $view) {
+                    $childrenViews[spl_object_hash($view)] = $view;
+                }
+
+                $storyView->setChildren($childrenView);
+
+                $storyViews[$index] = $storyView;
+            }
+
+            if (in_array('results.stories.thumbnail', $includes, true)) {
+                $subdefViews = $this->buildSubdefsViews($stories, ['thumbnail'], $urlTTL);
+
+                foreach ($storyViews as $index => $storyView) {
+                    $storyView->setSubdefs($subdefViews[$index]);
+                }
+            }
+
+            if (in_array('results.stories.metadatas', $includes, true)) {
+                $captions = $this->app['service.caption']->findByReferenceCollection($stories);
+                $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($stories);
+
+                $this->buildCaptionViews($storyViews, $captions, $canSeeBusiness);
+            }
+
+            $allChildren = new RecordCollection();
+            foreach ($childrenViews as $index => $childrenView) {
+                $allChildren[$index] = $childrenView->getRecord();
+            }
+
+            $names = in_array('results.stories.records.subdefs', $includes, true) ? null : ['thumbnail'];
+            $subdefViews = $this->buildSubdefsViews($allChildren, $names, $urlTTL);
+            $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($allChildren);
+
+            $newHashes = [];
+            foreach ($childrenViews as $index => $recordView) {
+                $newHashes[spl_object_hash($recordView)] = $recordView;
+                $recordView->setSubdefs($subdefViews[$index]);
+                $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
+            }
+
+            if (array_intersect($includes, ['results.stories.records.metadata', 'results.stories.records.caption'])) {
+                $captions = $this->app['service.caption']->findByReferenceCollection($allChildren);
+                $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($allChildren);
+
+                $this->buildCaptionViews($childrenViews, $captions, $canSeeBusiness);
             }
 
             $resultView->setStories($storyViews);
         }
 
-        if ($records) {
-            $recordViews = [];
+        if ($records->count() > 0) {
+            $names = in_array('results.records.subdefs', $includes, true) ? null : ['thumbnail'];
+            $recordViews = $this->buildRecordViews($records);
+            $subdefViews = $this->buildSubdefsViews($records, $names, $urlTTL);
 
-            foreach ($records as $record) {
-                $recordViews[] = new RecordView($record);
+            $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($records);
+
+            foreach ($recordViews as $index => $recordView) {
+                $recordView->setSubdefs($subdefViews[$index]);
+                $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
+            }
+
+            if (array_intersect($includes, ['results.records.metadata', 'results.records.caption'])) {
+                $captions = $this->app['service.caption']->findByReferenceCollection($records);
+                $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($records);
+
+                $this->buildCaptionViews($recordViews, $captions, $canSeeBusiness);
             }
 
             $resultView->setRecords($recordViews);
@@ -1153,14 +1264,10 @@ class V1Controller extends Controller
     {
         $references = new RecordReferenceCollection($result->getResults());
 
+        $names = in_array('results.subdefs', $includes, true) ? null : ['thumbnail'];
+
         $recordViews = $this->buildRecordViews($references);
-
-        $subdefViews = $this->buildSubdefsViews(
-            $references,
-            in_array('results.subdefs', $includes, true) ? null : ['thumbnail'],
-            $urlTTL
-        );
-
+        $subdefViews = $this->buildSubdefsViews($references, $names, $urlTTL);
         $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
 
         foreach ($recordViews as $index => $recordView) {
@@ -1169,26 +1276,10 @@ class V1Controller extends Controller
         }
 
         if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
-            $acl = $this->getAclForUser();
-
-            $canSeeBusiness = [];
-
-            foreach ($references->getDataboxIds() as $databoxId) {
-                $canSeeBusiness[$databoxId] = $acl->can_see_business_fields($this->findDataboxById($databoxId));
-            }
-
             $captions = $this->app['service.caption']->findByReferenceCollection($references);
+            $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($references);
 
-            foreach ($recordViews as $index => $recordView) {
-                $caption = $captions[$index];
-
-                $captionView = new CaptionView($caption);
-
-                $databoxId = $recordView->getRecord()->getDataboxId();
-                $captionView->setFields($caption->get_fields(null, $canSeeBusiness[$databoxId]));
-
-                $recordView->setCaption($captionView);
-            }
+            $this->buildCaptionViews($recordViews, $captions, $canSeeBusiness);
         }
 
         $resultView = new SearchResultView($result);
@@ -1198,12 +1289,12 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param RecordReferenceCollection $references
+     * @param RecordReferenceInterface[]|RecordReferenceCollection|DataboxGroupable $references
      * @param array|null $names
      * @param int $urlTTL
      * @return SubdefView[][]
      */
-    private function buildSubdefsViews(RecordReferenceCollection $references, array $names = null, $urlTTL)
+    private function buildSubdefsViews($references, array $names = null, $urlTTL)
     {
         $subdefGroups = $this->app['service.media_subdef']
             ->findSubdefsByRecordReferenceFromCollection($references, $names);
@@ -2854,17 +2945,68 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param RecordReferenceCollection $references
+     * @param RecordReferenceCollection|RecordCollection|\record_adapter[] $references
      * @return RecordView[]
      */
-    private function buildRecordViews(RecordReferenceCollection $references)
+    private function buildRecordViews($references)
     {
+        if ($references instanceof RecordReferenceCollection) {
+            $references = new RecordCollection($references->toRecords($this->getApplicationBox()));
+        } elseif (!$references instanceof RecordCollection) {
+            $references = new RecordCollection($references);
+        }
+
         $recordViews = [];
 
-        foreach ($references->toRecords($this->getApplicationBox()) as $index => $record) {
+        foreach ($references as $index => $record) {
             $recordViews[$index] = new RecordView($record);
         }
 
         return $recordViews;
+    }
+
+    /**
+     * @param RecordReferenceInterface[]|DataboxGroupable $references
+     * @return array<int, bool>
+     */
+    private function retrieveSeeBusinessPerDatabox($references)
+    {
+        if (!$references instanceof DataboxGroupable) {
+            $references = new RecordReferenceCollection($references);
+        }
+
+        $acl = $this->getAclForUser();
+
+        $canSeeBusiness = [];
+
+        foreach ($references->getDataboxIds() as $databoxId) {
+            $canSeeBusiness[$databoxId] = $acl->can_see_business_fields($this->findDataboxById($databoxId));
+        }
+
+        $rights = [];
+
+        foreach ($references as $index => $reference) {
+            $rights[$index] = $canSeeBusiness[$reference->getDataboxId()];
+        }
+
+        return $rights;
+    }
+
+    /**
+     * @param RecordView[] $recordViews
+     * @param \caption_record[] $captions
+     * @param bool[] $canSeeBusiness
+     */
+    private function buildCaptionViews($recordViews, $captions, $canSeeBusiness)
+    {
+        foreach ($recordViews as $index => $recordView) {
+            $caption = $captions[$index];
+
+            $captionView = new CaptionView($caption);
+
+            $captionView->setFields($caption->get_fields(null, isset($canSeeBusiness[$index]) && (bool)$canSeeBusiness[$index]));
+
+            $recordView->setCaption($captionView);
+        }
     }
 }
