@@ -10,6 +10,8 @@
 
 namespace Alchemy\Phrasea\Media;
 
+use Alchemy\Phrasea\Databox\DataboxGroupable;
+use Alchemy\Phrasea\Record\PerDataboxRecordId;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 
@@ -26,12 +28,12 @@ class TechnicalDataService
     }
 
     /**
-     * @param RecordReference[] $references
+     * @param DataboxGroupable|PerDataboxRecordId|RecordReference[] $references
      * @return RecordTechnicalDataSet[]
      */
     public function fetchRecordsTechnicalData($references)
     {
-        if (!$references instanceof RecordReferenceCollection) {
+        if (!($references instanceof DataboxGroupable && $references instanceof PerDataboxRecordId)) {
             $references = new RecordReferenceCollection($references);
         }
 

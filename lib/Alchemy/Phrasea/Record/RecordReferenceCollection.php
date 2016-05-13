@@ -145,33 +145,30 @@ class RecordReferenceCollection implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function toRecords(\appbox $appbox)
     {
-        $records = [];
+        $databoxIds = $this->getDataboxIds();
+        $records = array_fill_keys($databoxIds, []);
 
-        foreach ($this->getDataboxIds() as $databoxId) {
+        foreach ($databoxIds as $databoxId) {
             $databox = $appbox->get_databox($databoxId);
             $recordIds =  $this->getDataboxRecordIds($databoxId);
 
-            foreach ($databox->getRecordRepository()->findByRecordIds(array_keys($recordIds)) as $record) {
-                $records[$recordIds[$record->getRecordId()]] = $record;
+            foreach ($databox->getRecordRepository()->findByRecordIds($recordIds) as $record) {
+                $records[$record->getDataboxId()][$record->getRecordId()] = $record;
             }
         }
 
-        $indexes = array_flip(array_keys($this->references));
+        $sorted = [];
 
-        uksort($records, function ($keyA, $keyB) use ($indexes) {
-            $indexA = $indexes[$keyA];
-            $indexB = $indexes[$keyB];
+        foreach ($this->references as $index => $reference) {
+            $databoxId = $reference->getDataboxId();
+            $recordId = $reference->getRecordId();
 
-            if ($indexA < $indexB) {
-                return -1;
-            } elseif ($indexA > $indexB) {
-                return 1;
+            if (isset($records[$databoxId][$recordId])) {
+                $sorted[$index] = $records[$databoxId][$recordId];
             }
+        }
 
-            return 0;
-        });
-
-        return $records;
+        return $sorted;
     }
 
     /**
