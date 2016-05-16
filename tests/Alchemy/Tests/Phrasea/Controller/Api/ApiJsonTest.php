@@ -841,17 +841,15 @@ class ApiJsonTest extends ApiTestCase
 
         self::$DI['record_story_1'];
 
-        $client = $this->getClient();
-        $client->request(
+        $response = $this->request(
             'POST',
             '/api/v1/search/',
             $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]),
-            [],
             ['HTTP_Accept' => $this->getAcceptMimeType()]
         );
-        $content = $this->unserialize($client->getResponse()->getContent());
+        $content = $this->unserialize($response->getContent());
 
-        $this->evaluateResponse200($client->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
@@ -877,10 +875,10 @@ class ApiJsonTest extends ApiTestCase
     public function testRecordsSearchRoute()
     {
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
