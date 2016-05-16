@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "364406a454e9033151c8a2075ecb240f",
-    "content-hash": "e2785509e5ac412cd184fcb0c3f1bd5f",
+    "hash": "685ed8f8578c211ee14ebc00703ab281",
+    "content-hash": "acd719252dc8e17e752f2e87f571a7b5",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -3653,7 +3653,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bburnichon/fractal.git",
-                "reference": "d84aa1e"
+                "reference": "891856f"
             },
             "require": {
                 "php": ">=5.4"
@@ -3706,7 +3706,7 @@
                 "league",
                 "rest"
             ],
-            "time": "2016-05-16 14:18:29"
+            "time": "2016-05-16 16:41:03"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
