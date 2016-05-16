@@ -23,7 +23,7 @@ class RecordCollection implements \IteratorAggregate, \ArrayAccess, \Countable, 
     /**
      * @var array<int, int|string>
      */
-    private $groups;
+    private $groups = [];
 
     /**
      * @var bool
