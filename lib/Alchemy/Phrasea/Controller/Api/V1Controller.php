@@ -1274,6 +1274,7 @@ class V1Controller extends Controller
     private function buildSearchRecordsView(SearchEngineResult $result, array $includes, $urlTTL)
     {
         $references = new RecordReferenceCollection($result->getResults());
+        $references = new RecordCollection($references->toRecords($this->getApplicationBox()));
 
         $names = in_array('results.subdefs', $includes, true) ? null : ['thumbnail'];
 
@@ -2956,14 +2957,12 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param RecordReferenceCollection|RecordCollection|\record_adapter[] $references
+     * @param RecordCollection|\record_adapter[] $references
      * @return RecordView[]
      */
     private function buildRecordViews($references)
     {
-        if ($references instanceof RecordReferenceCollection) {
-            $references = new RecordCollection($references->toRecords($this->getApplicationBox()));
-        } elseif (!$references instanceof RecordCollection) {
+        if (!$references instanceof RecordCollection) {
             $references = new RecordCollection($references);
         }
 
