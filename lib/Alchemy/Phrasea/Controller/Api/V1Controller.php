@@ -1112,19 +1112,32 @@ class V1Controller extends Controller
      */
     public function searchRecordsAction(Request $request)
     {
+        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
+        $technicalDataTransformer = new TechnicalDataTransformer();
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
+
+        $transformerResolver = new SearchResultTransformerResolver([
+            '' => $searchTransformer,
+            'results' => $recordTransformer,
+            'results.thumbnail' => $subdefTransformer,
+            'results.technical_informations' => $technicalDataTransformer,
+            'results.subdefs' => $subdefTransformer,
+            'results.metadata' => new CallbackTransformer(),
+            'results.status' => new CallbackTransformer(),
+            'results.caption' => new CallbackTransformer(),
+        ]);
+        $includeResolver = new IncludeResolver($transformerResolver);
+
         $fractal = new \League\Fractal\Manager();
         $fractal->setSerializer(new ArraySerializer());
         $fractal->parseIncludes($this->resolveSearchRecordsIncludes($request));
 
         $searchView = $this->buildSearchRecordsView(
             $this->doSearch($request),
-            $fractal->getRequestedIncludes(),
+            $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request)
         );
-
-        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
-        $recordTransformer = new RecordTransformer($subdefTransformer, new TechnicalDataTransformer());
-        $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 
