@@ -43,20 +43,20 @@ class SubdefTransformer extends TransformerAbstract
         $media = $subdefView->getSubdef();
 
         if (!$media->is_physically_present()) {
-            return [];
+            return null;
         }
 
         $acl = $this->aclProvider->get($this->user);
         $record = $media->get_record();
 
         if ($media->get_name() !== 'document' && false === $acl->has_access_to_subdef($record, $media->get_name())) {
-            return [];
+            return null;
         }
         if ($media->get_name() === 'document'
             && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')
             && !$acl->has_hd_grant($record)
         ) {
-            return [];
+            return null;
         }
 
         $permalink = $subdefView->getPermalinkView()

@@ -53,7 +53,9 @@ class MediaSubdefService
 
                 /** @var RecordReferenceInterface $reference */
                 foreach ($references as $index => $reference) {
-                    $carry[$index] = $subdefsByRecordId[$reference->getRecordId()];
+                    if (isset($subdefsByRecordId[$reference->getRecordId()])) {
+                        $carry[$index] = $subdefsByRecordId[$reference->getRecordId()];
+                    };
                 }
 
                 return $carry;
