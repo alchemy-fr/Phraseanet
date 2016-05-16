@@ -24,7 +24,12 @@ class ArraySerializer extends SerializerAbstract
 
     public function item($resourceKey, array $data)
     {
-        return $data ?: null;
+        return $data;
+    }
+
+    public function null($resourceKey)
+    {
+        return null;
     }
 
     public function includedData(ResourceInterface $resource, array $data)

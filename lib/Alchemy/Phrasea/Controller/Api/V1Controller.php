@@ -1212,9 +1212,7 @@ class V1Controller extends Controller
             $subdefViews = $this->buildSubdefsViews($allChildren, $names, $urlTTL);
             $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($allChildren);
 
-            $newHashes = [];
             foreach ($childrenViews as $index => $recordView) {
-                $newHashes[spl_object_hash($recordView)] = $recordView;
                 $recordView->setSubdefs($subdefViews[$index]);
                 $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
             }
