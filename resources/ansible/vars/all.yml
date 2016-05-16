@@ -1,0 +1,62 @@
+---
+server:
+    install: '1'
+    packages:
+        - vim
+        - git
+        - imagemagick
+        - htop
+        - iotop
+        - pkg-config
+        - libzmq3-dev
+        - supervisor
+        - ruby-dev
+        - sqlite3
+        - libsqlite3-dev
+        - memcached
+        - build-essential
+        - libssl-dev
+    timezone: UTC
+    locales:
+        - en_GB.UTF-8
+        - fr_FR.UTF-8
+        - de_DE.UTF-8
+        - nl_NL.UTF-8
+vagrant_local:
+    install: '1'
+    vm:
+        base_box: trusty64
+        memory: '4096'
+        sharedfolder: ./
+        useVagrantCloud: '1'
+        syncType: nfs
+nginx:
+    install: '1'
+    docroot: /vagrant
+mariadb:
+    install: '1'
+    root_password: toor
+    database: ab_master
+    user: phraseanet
+    password: phraseanet
+    dump: ''
+elasticsearch:
+    install: '1'
+    port: '9200'
+    version: '1.7.3'
+    plugins:
+        - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.7.0'}
+php:
+    install: '1'
+    ppa: php5
+    packages: [php5-cli, php5-intl, php5-mcrypt, php5-enchant, php5-gd, php5-imagick, php5-memcache, php5-memcached, php5-curl, php5-mysql, php5-sqlite]
+    pecl_packages:
+        - {name: zmq, package: zmq-beta}
+xdebug:
+    install: '1'
+composer:
+    install: '1'
+
+mailcatcher:
+    install: '1'
+
