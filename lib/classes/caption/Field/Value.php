@@ -337,6 +337,8 @@ class caption_Field_Value implements cache_cacheableInterface
      */
     public function highlight_thesaurus()
     {
+        $this->isThesaurusValue = false;
+
         $value = $this->getValue();
         $databox = $this->databox_field->get_databox();
         $XPATH_thesaurus = $databox->get_xpath_thesaurus();
@@ -386,8 +388,6 @@ class caption_Field_Value implements cache_cacheableInterface
             $this->value = $bestnode->getAttribute('v');
             $this->qjs = $term . ($context ? '[' . $context . ']' : '');
             $this->isThesaurusValue = true;
-        } else {
-            $this->isThesaurusValue = false;
         }
 
         return $this->value;
