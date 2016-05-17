@@ -11,17 +11,13 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\OrderDeliveryEvent;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Notification\Emitter;
-use Alchemy\Phrasea\Notification\Mail\MailInfoNewOrder;
-use Alchemy\Phrasea\Notification\Mail\MailInfoOrderCancelled;
-use Alchemy\Phrasea\Notification\Mail\MailInfoOrderDelivered;
-use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Order\ValidationNotifier\CompositeNotifier;
 use Alchemy\Phrasea\Order\ValidationNotifierRegistry;
 
@@ -33,10 +29,13 @@ class OrderSubscriber extends AbstractNotificationSubscriber
     private $notifierRegistry;
 
     /**
+     * @param Application $application
      * @param ValidationNotifierRegistry $notifierRegistry
      */
-    public function __construct(ValidationNotifierRegistry $notifierRegistry)
+    public function __construct(Application $application, ValidationNotifierRegistry $notifierRegistry)
     {
+        parent::__construct($application);
+
         $this->notifierRegistry = $notifierRegistry;
     }
 
