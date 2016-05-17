@@ -80,6 +80,7 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked con
      */
     public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
         return $strict ?
             $this->findConceptsStrict($term, $lang, $filter)
             :
@@ -97,33 +98,47 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked con
             'strict' => true,
             'lang' => $lang
         ));
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
 
-        $field_suffix = '.strict';
-
-        $field = sprintf('value%s', $field_suffix);
-        $query = array();
-        $query['match'][$field]['query'] = $term->getValue();
-        $query['match'][$field]['operator'] = 'and';
+        $query = [
+            'match' => [
+                'value.strict' => [
+                    'query' => $term->getValue(),
+                    'operator' => 'and',
+                ],
+            ],
+        ];
 
         if ($term->hasContext()) {
-            $value_query = $query;
-            $field = sprintf('context%s', $field_suffix);
-            $context_query = array();
-            $context_query['match'][$field]['query'] = $term->getContext();
-            $context_query['match'][$field]['operator'] = 'and';
-            $query = array();
-            $query['bool']['must'][0] = $value_query;
-            $query['bool']['must'][1] = $context_query;
+            $query = [
+                'bool' => [
+                    'must' => [
+                        0 => $query,
+                        1 => [
+                            'match' => [
+                                'context.strict' => [
+                                    'query' => $term->getContext(),
+                                    'operator' => 'and',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
         } else {
-            $context_filter = array();
-            $context_filter['missing']['field'] = 'context';
+            $context_filter = [
+                'missing' => [
+                    'field' => 'context'
+                ]
+            ];
             $query = self::applyQueryFilter($query, $context_filter);
         }
 
         if ($lang) {
-            $lang_filter = array();
-            $lang_filter['term']['lang'] = $lang;
+            $lang_filter = [
+                'term' => [
+                    'lang' => $lang
+                ]
+            ];
             $query = self::applyQueryFilter($query, $lang_filter);
         }
 
@@ -176,7 +191,7 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FIL
             'strict' => false,
             'lang' => $lang
         ));
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
+
         if($lang) {
             $field_suffix = sprintf('.%s', $lang);
         } else {
