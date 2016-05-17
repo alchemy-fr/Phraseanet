@@ -81,6 +81,7 @@ class Fetcher
         foreach ($this->hydrators as $hydrator) {
             $hydrator->hydrateRecords($records);
         }
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($records, true)), FILE_APPEND);
         foreach ($records as $record) {
             if (!isset($record['id'])) {
                 throw new Exception('No record hydrator set the "id" key.');

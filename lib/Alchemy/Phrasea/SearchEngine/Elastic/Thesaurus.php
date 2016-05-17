@@ -48,7 +48,7 @@ class Thesaurus
     public function findConceptsBulk(array $terms, $lang = null, $filter = null, $strict = false)
     {
         $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
-
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked concepts in bulk for %d terms : %s\n", __FILE__, __LINE__, count($terms), var_export($terms, true)), FILE_APPEND);
         // We use the same filter for all terms when a single one is given
         $filters = is_array($filter)
             ? $filter
@@ -62,7 +62,7 @@ class Thesaurus
         foreach ($terms as $index => $term) {
             $concepts[] = $this->findConcepts($term, $lang, $filters[$index], $strict);
         }
-
+// file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($concepts, true)), FILE_APPEND);
         return $concepts;
     }
 
@@ -80,18 +80,104 @@ class Thesaurus
      */
     public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
+        return $strict ?
+            $this->findConceptsStrict($term, $lang, $filter)
+            :
+            $this->findConceptsFuzzy($term, $lang, $filter)
+            ;
+    }
+
+    private function findConceptsStrict($term, $lang = null, Filter $filter = null)
+    {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
         }
 
         $this->logger->info(sprintf('Searching for term %s', $term), array(
-            'strict' => $strict,
+            'strict' => true,
             'lang' => $lang
         ));
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
 
-        if ($strict) {
-            $field_suffix = '.strict';
-        } elseif ($lang) {
+        $field_suffix = '.strict';
+
+        $field = sprintf('value%s', $field_suffix);
+        $query = array();
+        $query['match'][$field]['query'] = $term->getValue();
+        $query['match'][$field]['operator'] = 'and';
+
+        if ($term->hasContext()) {
+            $value_query = $query;
+            $field = sprintf('context%s', $field_suffix);
+            $context_query = array();
+            $context_query['match'][$field]['query'] = $term->getContext();
+            $context_query['match'][$field]['operator'] = 'and';
+            $query = array();
+            $query['bool']['must'][0] = $value_query;
+            $query['bool']['must'][1] = $context_query;
+        } else {
+            $context_filter = array();
+            $context_filter['missing']['field'] = 'context';
+            $query = self::applyQueryFilter($query, $context_filter);
+        }
+
+        if ($lang) {
+            $lang_filter = array();
+            $lang_filter['term']['lang'] = $lang;
+            $query = self::applyQueryFilter($query, $lang_filter);
+        }
+
+        if ($filter) {
+            $this->logger->debug('Using filter', array('filter' => Filter::dump($filter)));
+            $query = self::applyQueryFilter($query, $filter->getQueryFilter());
+        }
+
+        // Path deduplication
+        $aggs = array();
+        $aggs['dedup']['terms']['field'] = 'path.raw';
+
+        // Search request
+        $params = array();
+        $params['index'] = $this->options->getIndexName();
+        $params['type'] = TermIndexer::TYPE_NAME;
+        $params['body']['query'] = $query;
+        $params['body']['aggs'] = $aggs;
+        // No need to get any hits since we extract data from aggs
+        $params['body']['size'] = 0;
+
+        $this->logger->debug('Sending search', $params['body']);
+        $response = $this->client->search($params);
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FILE__, __LINE__, json_encode($params, JSON_PRETTY_PRINT), var_export($response, true)), FILE_APPEND);
+        // Extract concept paths from response
+        $concepts = array();
+        $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $keys = array();
+        foreach ($buckets as $bucket) {
+            if (isset($bucket['key'])) {
+                $keys[] = $bucket['key'];
+                $concepts[] = new Concept($bucket['key']);
+            }
+        }
+
+        $this->logger->info(sprintf('Found %d matching concepts', count($concepts)),
+            array('concepts' => $keys)
+        );
+
+        return $concepts;
+    }
+
+    private function findConceptsFuzzy($term, $lang = null, Filter $filter = null)
+    {
+        if (!($term instanceof TermInterface)) {
+            $term = new Term($term);
+        }
+
+        $this->logger->info(sprintf('Searching for term %s', $term), array(
+            'strict' => false,
+            'lang' => $lang
+        ));
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
+        if($lang) {
             $field_suffix = sprintf('.%s', $lang);
         } else {
             $field_suffix = '';
@@ -114,10 +200,6 @@ class Thesaurus
             $query = array();
             $query['bool']['must'][0] = $value_query;
             $query['bool']['must'][1] = $context_query;
-        } elseif ($strict) {
-            $context_filter = array();
-            $context_filter['missing']['field'] = 'context';
-            $query = self::applyQueryFilter($query, $context_filter);
         }
 
         if ($lang) {
@@ -151,7 +233,7 @@ class Thesaurus
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
-
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FILE__, __LINE__, json_encode($params, JSON_PRETTY_PRINT), var_export($response, true)), FILE_APPEND);
         // Extract concept paths from response
         $concepts = array();
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);

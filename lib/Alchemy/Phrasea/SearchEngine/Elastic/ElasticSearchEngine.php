@@ -293,7 +293,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($aggs) {
             $params['body']['aggs'] = $aggs;
         }
-
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FILE__, __LINE__, var_export($params, true), json_encode($params, JSON_PRETTY_PRINT)), FILE_APPEND);
         $res = $this->client->search($params);
 
         $results = new ArrayCollection();

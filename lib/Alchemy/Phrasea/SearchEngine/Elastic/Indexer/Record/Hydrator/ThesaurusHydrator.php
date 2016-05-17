@@ -62,6 +62,7 @@ class ThesaurusHydrator implements HydratorInterface
         $filters = array();
         $field_names = array();
         foreach ($fields as $name => $root_concepts) {
+// file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s : %s\n", __FILE__, __LINE__, var_export($name, true), var_export($root_concepts, true)), FILE_APPEND);
             // Loop through all values to prepare bulk query
             $field_values = \igorw\get_in($record, explode('.', $index_fields[$name]));
             if ($field_values !== null) {
@@ -78,8 +79,13 @@ class ThesaurusHydrator implements HydratorInterface
                 }
             }
         }
-
+        if(empty($terms)) {
+            return;
+        }
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($values, true)), FILE_APPEND);
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($terms, true)), FILE_APPEND);
         $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filters, true);
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($bulk, true)), FILE_APPEND);
 
         foreach ($bulk as $offset => $item_concepts) {
             if ($item_concepts && is_array($item_concepts) && count($item_concepts)>0) {
@@ -91,5 +97,6 @@ class ThesaurusHydrator implements HydratorInterface
                 $this->candidate_terms->insert($field_names[$offset], $values[$offset]);
             }
         }
+// file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($record, true)), FILE_APPEND);
     }
 }
