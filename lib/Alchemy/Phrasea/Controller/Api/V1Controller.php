@@ -37,6 +37,7 @@ use Alchemy\Phrasea\Fractal\ArraySerializer;
 use Alchemy\Phrasea\Fractal\CallbackTransformer;
 use Alchemy\Phrasea\Fractal\IncludeResolver;
 use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
+use Alchemy\Phrasea\Fractal\TraceableArraySerializer;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -1087,11 +1088,12 @@ class V1Controller extends Controller
         $includeResolver = new IncludeResolver($transformerResolver);
 
         $fractal = new \League\Fractal\Manager();
-        $fractal->setSerializer(new ArraySerializer());
+        $fractal->setSerializer(new TraceableArraySerializer($this->app['dispatcher']));
         $fractal->parseIncludes($this->resolveSearchIncludes($request));
 
+        $result = $this->doSearch($request);
         $searchView = $this->buildSearchView(
-            $this->doSearch($request),
+            $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request)
         );
