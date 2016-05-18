@@ -55,6 +55,7 @@ use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
+use Alchemy\Phrasea\Core\Provider\OrderServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -234,8 +235,10 @@ class Application extends SilexApplication
         $this->register(new PhraseaEventServiceProvider());
 
         $this->register(new LocaleServiceProvider());
+
         $this->setupEventDispatcher();
 
+        $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {

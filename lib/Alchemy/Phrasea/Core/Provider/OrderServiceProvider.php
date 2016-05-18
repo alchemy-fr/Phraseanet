@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\ValidationNotifier\MailNotifier;
@@ -30,13 +31,15 @@ class OrderServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $this['events.order_subscriber'] = $app->share(function (Application $app) {
+        $app['events.order_subscriber'] = $app->share(function (Application $app) {
             $notifierRegistry = new ValidationNotifierRegistry();
 
             $notifierRegistry->registerNotifier(Order::NOTIFY_MAIL, new MailNotifier($app));
-            $notifierRegistry->registerNotifier(Order::NOTIFY_WEBHOOK, new WebhookNotifier($app['manipulator.webhook-event']));
+            $notifierRegistry->registerNotifier(Order::NOTIFY_WEBHOOK, new WebhookNotifier(
+                new LazyLocator($app, 'manipulator.webhook-event')
+            ));
 
-            return new OrderSubscriber($notifierRegistry);
+            return new OrderSubscriber($app, $notifierRegistry);
         });
     }
 

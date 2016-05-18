@@ -22,16 +22,26 @@ class WebhookNotifier implements ValidationNotifier
 {
 
     /**
-     * @var WebhookEventManipulator
+     * @var callable
      */
-    private $webhookManipulator;
+    private $webhookManipulatorLocator;
 
     /**
-     * @param WebhookEventManipulator $webhookEventManipulator
+     * @param callable $webhookEventManipulatorLocator
      */
-    public function __construct(WebhookEventManipulator $webhookEventManipulator)
+    public function __construct($webhookEventManipulatorLocator)
     {
-        $this->webhookManipulator = $webhookEventManipulator;
+        $this->webhookManipulatorLocator = $webhookEventManipulatorLocator;
+    }
+
+    /**
+     * @return WebhookEventManipulator
+     */
+    private function getManipulator()
+    {
+        $factory = $this->webhookManipulatorLocator;
+
+        return $factory();
     }
 
     /**
@@ -45,7 +55,7 @@ class WebhookNotifier implements ValidationNotifier
             'user_id' => $recipient->getId(),
         ];
 
-        $this->webhookManipulator->create(WebhookEvent::ORDER_CREATED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_CREATED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 
     /**
@@ -59,7 +69,7 @@ class WebhookNotifier implements ValidationNotifier
             'quantity' => $delivery->getQuantity()
         ];
 
-        $this->webhookManipulator->create(WebhookEvent::ORDER_DELIVERED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_DELIVERED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 
     /**
@@ -73,6 +83,6 @@ class WebhookNotifier implements ValidationNotifier
             'quantity' => $delivery->getQuantity()
         ];
 
-        $this->webhookManipulator->create(WebhookEvent::ORDER_DENIED, WebhookEvent::ORDER_TYPE, $eventData);
+        $this->getManipulator()->create(WebhookEvent::ORDER_DENIED, WebhookEvent::ORDER_TYPE, $eventData);
     }
 }
