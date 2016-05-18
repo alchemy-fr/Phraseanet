@@ -125,7 +125,7 @@ class ApiOrderController extends BaseOrderController
 
         $fractal = $this->buildFractalManager($request->get('includes', []));
 
-        if ($this->isOrderAccessible($order)) {
+        if (! $this->isOrderAccessible($order)) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
         }
 
