@@ -51,7 +51,7 @@ class MailNotifier implements ValidationNotifier
     {
         $mail = MailInfoNewOrder::create($this->application, Receiver::fromUser($recipient));
 
-        $mail->setUser($recipient);
+        $mail->setUser($order->getUser());
 
         $this->getDeliverer()->deliver($mail);
     }
