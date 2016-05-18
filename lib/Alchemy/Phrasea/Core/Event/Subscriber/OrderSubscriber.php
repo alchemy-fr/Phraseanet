@@ -55,18 +55,15 @@ class OrderSubscriber extends AbstractNotificationSubscriber
             return;
         }
 
-        $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
         $notificationData = json_encode([
             'usr_id'   => $event->getOrder()->getUser()->getId(),
             'order_id' => $event->getOrder()->getId(),
         ]);
 
-        if ($event->getOrder()->getNotificationMethod() !== Order::NOTIFY_MAIL) {
-            $notifier = new CompositeNotifier([
-                $this->notifierRegistry->getNotifier(Order::NOTIFY_MAIL),
-                $notifier
-            ]);
-        }
+        $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
+        $notifier->notifyCreation($event->getOrder(), $event->getOrder()->getUser());
+
+        $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_MAIL);
 
         foreach ($users as $user) {
             $notified = false;
