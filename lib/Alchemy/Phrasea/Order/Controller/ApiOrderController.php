@@ -125,7 +125,7 @@ class ApiOrderController extends BaseOrderController
 
         $fractal = $this->buildFractalManager($request->get('includes', []));
 
-        if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
+        if ($this->isOrderAccessible($order)) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
         }
 
@@ -258,5 +258,22 @@ class ApiOrderController extends BaseOrderController
             $this->getApplicationBox(),
             $this->app['service.media_subdef']
         );
+    }
+
+    /**
+     * @param $order
+     * @return bool
+     */
+    private function isOrderAccessible(Order $order)
+    {
+        if ($order->getUser()->getId() === $this->getAuthenticatedUser()->getId()) {
+            return true;
+        }
+
+        if ($order->getUser()->isAdmin()) {
+            return true;
+        }
+
+        return false;
     }
 }
