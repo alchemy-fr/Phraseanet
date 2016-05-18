@@ -49,7 +49,7 @@ class SearchResultView
      */
     public function setStories($stories)
     {
-        Assertion::allIsInstanceOf($this->stories, StoryView::class);
+        Assertion::allIsInstanceOf($stories, StoryView::class);
 
         $this->stories = $stories instanceof \Traversable ? iterator_to_array($stories, false) : array_values($stories);
     }
