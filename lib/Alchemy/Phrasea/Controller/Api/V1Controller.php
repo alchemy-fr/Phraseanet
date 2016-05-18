@@ -1462,7 +1462,7 @@ class V1Controller extends Controller
      * @param RecordReferenceInterface[]|RecordReferenceCollection $records
      * @return array
      */
-    public function listRecords(Request $request, $records)
+    private function listRecords(Request $request, $records)
     {
         if (!$records instanceof RecordReferenceCollection) {
             $records = new RecordReferenceCollection($records);
@@ -1488,7 +1488,7 @@ class V1Controller extends Controller
      * @param \record_adapter $record
      * @return array
      */
-    public function listRecord(Request $request, \record_adapter $record)
+    private function listRecord(Request $request, \record_adapter $record)
     {
         $technicalInformation = [];
         foreach ($record->get_technical_infos()->getValues() as $name => $value) {
@@ -1525,27 +1525,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param RecordReferenceInterface[]|RecordReferenceCollection $stories
-     * @return array
-     * @throws \Exception
-     */
-    public function listStories(Request $request, $stories)
-    {
-        if (!$stories instanceof RecordReferenceCollection) {
-            $stories = new RecordReferenceCollection($stories);
-        }
-
-        $data = [];
-
-        foreach ($stories->toRecords($this->getApplicationBox()) as $story) {
-            $data[] = $this->listStory($request, $story);
-        }
-
-        return $data;
-    }
-
-    /**
      * Retrieve detailed information about one story
      *
      * @param Request         $request
@@ -1553,7 +1532,7 @@ class V1Controller extends Controller
      * @return array
      * @throws \Exception
      */
-    public function listStory(Request $request, \record_adapter $story)
+    private function listStory(Request $request, \record_adapter $story)
     {
         if (!$story->isStory()) {
             return Result::createError($request, 404, 'Story not found')->createResponse();
