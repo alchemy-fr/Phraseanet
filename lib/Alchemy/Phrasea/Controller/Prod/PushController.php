@@ -141,7 +141,7 @@ class PushController extends Controller
                 if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication'])
                     || !$request->get('force_authentication')
                 ) {
-                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($Basket, $user_receiver);
+                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($Basket, $user_receiver)->getValue();
                 }
 
                 $url = $this->app->url('lightbox_compare', $arguments);
@@ -343,7 +343,7 @@ class PushController extends Controller
                 if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication'])
                     || !$request->get('force_authentication')
                 ) {
-                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($basket, $participantUser);
+                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketAccessToken($basket, $participantUser)->getValue();
                 }
 
                 $url = $this->app->url('lightbox_validation', $arguments);
