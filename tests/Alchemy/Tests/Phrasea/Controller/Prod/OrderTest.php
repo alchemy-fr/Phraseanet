@@ -21,7 +21,7 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
 
         $triggered = false;
-        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function () use (&$triggered) {
             $triggered = true;
         });
 
