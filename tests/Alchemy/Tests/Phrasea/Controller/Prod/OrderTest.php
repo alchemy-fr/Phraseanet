@@ -21,18 +21,17 @@ class OrderTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
 
         $triggered = false;
-        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function (Event $event) use (&$triggered) {
+        $app['dispatcher']->addListener(PhraseaEvents::ORDER_CREATE, function () use (&$triggered) {
             $triggered = true;
         });
 
-        $client = $this->getClient();
-        $client->request('POST', '/prod/order/', [
+        $response = $this->request('POST', '/prod/order/', [
             'lst'      => $this->getRecord1()->getId(),
             'deadline' => '+10 minutes'
         ]);
 
-        $this->assertTrue($client->getResponse()->isRedirect(), 'Response should be redirect');
-        $url = parse_url($client->getResponse()->headers->get('location'));
+        $this->assertTrue($response->isRedirect(), 'Response should be redirect');
+        $url = parse_url($response->headers->get('location'));
         $var = [];
         parse_str($url['query'], $var);
         $this->assertTrue(!!$var['success'], 'Response should have a success parameter');
