@@ -33,7 +33,7 @@
                     </div>
                     <div id='THPD_T_treeBox' class="searchZone"
                          style="position:absolute; top:45px; bottom:0px; left:0px; width:100%;">
-                        <div class="thesaurus-branch-action">
+                        <div class="thesaurus-branch-action" data-context="thesaurus">
                             <ul class="treeview" id="THPD_T_tree">
                                 {% for base in search_datas['bases'] %}
                                     {% if base['thesaurus'] %}
@@ -52,7 +52,7 @@
                 {% if has_access_to_module %}
                     <div id="THPD_C">
                         <div id='THPD_C_treeBox' class="searchZone">
-                            <div class="thesaurus-branch-action">
+                            <div class="thesaurus-branch-action" data-context="candidate">
                                 <ul class="treeview" id="THPD_C_tree">
                                     {% for base in search_datas['bases'] %}
                                         {% if base['cterms'] %}
