@@ -48,7 +48,7 @@ class Thesaurus
     public function findConceptsBulk(array $terms, $lang = null, $filter = null, $strict = false)
     {
         $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked concepts in bulk for %d terms : %s\n", __FILE__, __LINE__, count($terms), var_export($terms, true)), FILE_APPEND);
+
         // We use the same filter for all terms when a single one is given
         $filters = is_array($filter)
             ? $filter
@@ -62,7 +62,7 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked con
         foreach ($terms as $index => $term) {
             $concepts[] = $this->findConcepts($term, $lang, $filters[$index], $strict);
         }
-// file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($concepts, true)), FILE_APPEND);
+
         return $concepts;
     }
 
@@ -80,7 +80,6 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Finding linked con
      */
     public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($term, true)), FILE_APPEND);
         return $strict ?
             $this->findConceptsStrict($term, $lang, $filter)
             :
@@ -99,7 +98,10 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, _
             'lang' => $lang
         ));
 
-        $query = [
+        $must = [];
+        $filters = [];
+
+        $must[] = [
             'match' => [
                 'value.strict' => [
                     'query' => $term->getValue(),
@@ -107,44 +109,60 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, _
                 ],
             ],
         ];
-
         if ($term->hasContext()) {
-            $query = [
-                'bool' => [
-                    'must' => [
-                        0 => $query,
-                        1 => [
-                            'match' => [
-                                'context.strict' => [
-                                    'query' => $term->getContext(),
-                                    'operator' => 'and',
-                                ],
-                            ],
-                        ],
+            $must[] = [
+                'match' => [
+                    'context.strict' => [
+                        'query' => $term->getContext(),
+                        'operator' => 'and',
                     ],
                 ],
             ];
         } else {
-            $context_filter = [
+            $filters[] = [
                 'missing' => [
                     'field' => 'context'
                 ]
             ];
-            $query = self::applyQueryFilter($query, $context_filter);
         }
-
         if ($lang) {
-            $lang_filter = [
+            $filters[] = [
                 'term' => [
                     'lang' => $lang
                 ]
             ];
-            $query = self::applyQueryFilter($query, $lang_filter);
+        }
+        if ($filter) {
+            $filters = array_merge($filters, $filter->getQueryFilters());
+        }
+        if(!empty($filters)) {
+            if (count($filters) > 1) {
+                $must[] = [
+                    'constant_score' => [
+                        'filter' => [
+                            'and' => $filters
+                        ]
+                    ]
+                ];
+            }
+            else {
+                $must[] = [
+                    'constant_score' => [
+                        'filter' => $filters[0]
+                    ]
+                ];
+            }
         }
 
-        if ($filter) {
-            $this->logger->debug('Using filter', array('filter' => Filter::dump($filter)));
-            $query = self::applyQueryFilter($query, $filter->getQueryFilter());
+        if(count($must) > 1) {
+            $query = [
+                'bool' => [
+                    'must' => $must
+                ]
+            ];
+        }
+        else {
+            $query = $must[0];
         }
 
         // Path deduplication
@@ -162,7 +180,7 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, _
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FILE__, __LINE__, json_encode($params, JSON_PRETTY_PRINT), var_export($response, true)), FILE_APPEND);
+
         // Extract concept paths from response
         $concepts = array();
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
@@ -248,7 +266,7 @@ file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FIL
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n\n", __FILE__, __LINE__, json_encode($params, JSON_PRETTY_PRINT), var_export($response, true)), FILE_APPEND);
+
         // Extract concept paths from response
         $concepts = array();
         $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
