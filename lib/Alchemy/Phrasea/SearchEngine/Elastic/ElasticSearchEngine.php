@@ -289,7 +289,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         $aggs = $this->getAggregationQueryParams($options);
-
         if ($aggs) {
             $params['body']['aggs'] = $aggs;
         }
