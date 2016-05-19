@@ -62,11 +62,11 @@
     <div class='well-small'>
         <ul class="pager">
           {% if previousPage %}
-              <li  class="previous"><a class='self-ajax' href="{{ path('prod_orders', {'page': previousPage}) }}"><i class="icon-arrow-left"></i>{{ 'Previous' | trans }}</a></li>
+              <li  class="previous"><a class="self-ajax btn btn-inverse" href="{{ path('prod_orders', {'page': previousPage, 'per-page': perPage}) }}">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
           {% endif %}
 
           {% if nextPage %}
-              <li class="next"><a class='self-ajax' href="{{ path('prod_orders', {'page': nextPage}) }}"><i class="icon-arrow-right"></i>{{ 'Next' | trans }}</a></li>
+              <li class="next"><a class="self-ajax btn btn-inverse" href="{{ path('prod_orders', {'page': nextPage, 'per-page': perPage}) }}"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
           {% endif %}
         </ul>
     </div>
