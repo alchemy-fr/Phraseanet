@@ -421,9 +421,7 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app['notification.deliverer']->expects($this->any())
             ->method('deliver')
-            ->will($this->returnCallback(function () {
-                $this->fail('Notification deliverer must be mocked');
-            }));
+            ->willReturn(0);
     }
 
     public function tearDown()
