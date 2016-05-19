@@ -110,7 +110,7 @@ class ProdOrderController extends BaseOrderController
 
         $baseIds = array_keys($this->getAclForUser()->get_granted_base(['order_master']));
 
-        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort);
+        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart * $perPage, $perPage, $sort);
         $total = $this->getOrderRepository()->countTotalOrders($baseIds);
 
         return $this->render('prod/orders/order_box.html.twig', [
