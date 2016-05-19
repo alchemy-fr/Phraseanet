@@ -77,19 +77,19 @@
             settings = $.extend({}, $.tooltip.defaults, settings);
             createHelper(settings);
             return this.each(function () {
-                $.data(this, "tooltip", settings);
-                // copy tooltip into its own expando and remove the title
-                this.tooltipText = $(this).attr('title');
-                this.tooltipSrc = $(this).attr('tooltipsrc');
+                    $.data(this, "tooltip", settings);
+                    // copy tooltip into its own expando and remove the title
+                    this.tooltipText = $(this).attr('title');
+                    this.tooltipSrc = $(this).attr('tooltipsrc');
 
-                this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
-                this.ajaxTimeout;
+                    this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
+                    this.ajaxTimeout;
 
-                this.orEl = $(this);
-                $(this).removeAttr("title");
-                // also remove alt attribute to prevent default tooltip in IE
-                this.alt = "";
-            })
+                    this.orEl = $(this);
+                    $(this).removeAttr("title");
+                    // also remove alt attribute to prevent default tooltip in IE
+                    this.alt = "";
+                })
                 .mouseover(save)
                 .mouseout(hide)
                 .mouseleave(function () {
@@ -114,10 +114,10 @@
                         'backgroundImage': 'none',
                         'filter': "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" + image + "')"
                     }).each(function () {
-                            var position = $(this).css('position');
-                            if (position != 'absolute' && position != 'relative')
-                                $(this).css('position', 'relative');
-                        });
+                        var position = $(this).css('position');
+                        if (position != 'absolute' && position != 'relative')
+                            $(this).css('position', 'relative');
+                    });
                 }
             });
         } : function () {
@@ -135,7 +135,7 @@
         },
         hideWhenEmpty: function () {
             return this.each(function () {
-                $(this)[ $(this).html() ? "show" : "hide" ]();
+                $(this)[$(this).html() ? "show" : "hide"]();
             });
         },
         url: function () {
@@ -149,7 +149,7 @@
             return;
         // create the helper, h3 for title, div for url
         helper.parent = $('<div id="' + settings.id + '"><div class="body"></div></div>')
-            // add to document
+        // add to document
             .appendTo(document.body)
             // hide it at first
             .hide();
@@ -197,8 +197,9 @@
 
         event.cancelBubble = true;
 
-        if ($.tooltip.blocked || this == $.tooltip.current || (!this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler))
+        if ($.tooltip.blocked || this == $.tooltip.current || (!this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler)) {
             return;
+        }
 
         // save current
         $.tooltip.current = this;
@@ -239,7 +240,7 @@
         helper.body.show();
         var $this = $.tooltip.current;
         var tooltipSettings = settings($this) ? settings($this) : {};
-        var fixedPosition = tooltipSettings.fixable ? tooltipSettings.fixable : false;
+        var fixedPosition = $.tooltip.blocked;
         // fix PNG background for IE
         if (tooltipSettings.fixPNG)
             helper.parent.fixPNG();
@@ -349,7 +350,7 @@
                     }
                 }
 
-                if( $selector !== undefined) {
+                if ($selector !== undefined) {
                     $selector.css({width: Math.floor(resizeW), height: Math.floor(resizeH)});
                 }
 
@@ -365,7 +366,6 @@
 
                 // since event target can have different positionning, try to get common closest parent:
                 var $eventTarget = $origEventTarget.closest('.diapo');
-
                 if ($eventTarget.length > 0) {
                     // tooltip from records answer
                     recordWidthOffset = 148; // remove size
@@ -499,7 +499,6 @@
                     }
                 }
 
-
                 var resizeProperties = {
                     left: left,
                     top: top
@@ -532,7 +531,7 @@
     function show() {
         tID = null;
         var isBrowsable = false;
-        if( $.tooltip.current !== null ) {
+        if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
 
@@ -548,7 +547,7 @@
         $(helper.parent[0])
             .unbind('mouseenter')
             .unbind('mouseleave')
-            .mouseenter(function(){
+            .mouseenter(function () {
                 if (isBrowsable) {
                     $.tooltip.currentHover = true;
                 }
@@ -575,6 +574,7 @@
         showOverlay('_tooltip', 'body', unfix_tooltip, settings(this).fixableIndex);
         $('#tooltip .tooltip_closer').show().bind('click', unfix_tooltip);
         $.tooltip.blocked = true;
+        positioning.apply(this, arguments);
     }
 
     function visible() {
@@ -613,7 +613,6 @@
 
         // remove position helper classes
         helper.parent.removeClass("viewport-right").removeClass("viewport-bottom");
-
         if (!settings($.tooltip.current).outside) {
             var left = helper.parent[0].offsetLeft;
             var top = helper.parent[0].offsetTop;
@@ -667,10 +666,10 @@
     // hide helper and restore added classes and the title
     function hide(event) {
         var isBrowsable = false;
-        if( $.tooltip.current !== null ) {
+        if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
-        if( $.tooltip.currentHover && isBrowsable ) {
+        if ($.tooltip.currentHover && isBrowsable) {
             return;
         }
 
@@ -723,7 +722,7 @@ function unfix_tooltip() {
 
 
 $(document).bind('keydown', function (event) {
-    if( $.tooltip === undefined ) return;
+    if ($.tooltip === undefined) return;
 
     if (event.keyCode == 27 && $.tooltip.blocked === true) {
         unfix_tooltip();
