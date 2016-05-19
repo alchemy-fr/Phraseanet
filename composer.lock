@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c98d08093630862a0d52ee8602c6e6a9",
-    "content-hash": "1269d6d77008c7eb964b2e9c76d02b4f",
+    "hash": "e3c9335da1fb653e0e2af3c12ad85d1e",
+    "content-hash": "2af2f721294eb3e2aed29d7a686f6567",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -489,20 +489,21 @@
         },
         {
             "name": "alchemy/rest-bundle",
-            "version": "0.0.4",
+            "version": "0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/rest-bundle.git",
-                "reference": "9048a99dd328cd2d01efaad16e6af648d11ad2b4"
+                "reference": "e795b3cd565086d575ee919d1b23279656c982ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/9048a99dd328cd2d01efaad16e6af648d11ad2b4",
-                "reference": "9048a99dd328cd2d01efaad16e6af648d11ad2b4",
+                "url": "https://api.github.com/repos/alchemy-fr/rest-bundle/zipball/e795b3cd565086d575ee919d1b23279656c982ad",
+                "reference": "e795b3cd565086d575ee919d1b23279656c982ad",
                 "shasum": ""
             },
             "require": {
-                "league/fractal": "^0.12.0",
+                "league/fractal": "^0.12.0|^0.13.0",
+                "php": ">=5.4",
                 "willdurand/negotiation": "~2.0@dev"
             },
             "require-dev": {
@@ -536,7 +537,7 @@
                 }
             ],
             "description": "Simple REST utility bundle",
-            "time": "2016-02-20 22:35:16"
+            "time": "2016-05-16 09:37:34"
         },
         {
             "name": "alchemy/symfony-cors",
@@ -545,6 +546,12 @@
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/symfony-cors.git",
                 "reference": "dbf7fcff1ce9fc1265db12955476ff169eab7375"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/symfony-cors/zipball/dbf7fcff1ce9fc1265db12955476ff169eab7375",
+                "reference": "dbf7fcff1ce9fc1265db12955476ff169eab7375",
+                "shasum": ""
             },
             "require": {
                 "symfony/http-kernel": "^2.3.0|^3.0.0"
@@ -566,11 +573,7 @@
                     "Alchemy\\CorsBundle\\": "src/Bundle/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Alchemy\\Cors\\Tests\\": "tests/unit/Component/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -593,7 +596,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/2b199e842551a1137640c822f433751a9f402099",
+                "url": "https://api.github.com/repos/alchemy-fr/task-manager/zipball/cefd59cad3ac9b26243f551e704e7142fca79522",
                 "reference": "cefd59cad3ac9b26243f551e704e7142fca79522",
                 "shasum": ""
             },
@@ -1873,6 +1876,7 @@
                 "facebook",
                 "sdk"
             ],
+            "abandoned": "facebook/php-sdk-v4",
             "time": "2013-11-19 23:11:14"
         },
         {
@@ -2714,12 +2718,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hoaproject/Stream.git",
-                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3"
+                "reference": "3bc446bc00849bf51166adc415d77aa375d48d8c"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/hoaproject/Stream/zipball/3bc446bc00849bf51166adc415d77aa375d48d8c",
-                "reference": "011ab91d942f1d7096deade4c8a10fe57d51c5b3",
+                "reference": "3bc446bc00849bf51166adc415d77aa375d48d8c",
                 "shasum": ""
             },
             "require": {
@@ -2764,7 +2768,7 @@
                 "stream",
                 "wrapper"
             ],
-            "time": "2015-10-22 06:30:43"
+            "time": "2015-10-26 12:21:43"
         },
         {
             "name": "hoa/ustring",
@@ -3356,23 +3360,23 @@
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "dev-master",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "6dad7bf4a76954a4798197810d6425ec0b145fa3"
+                "reference": "c21534c635f03428e92254333fab4ae35b2cdfd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/6dad7bf4a76954a4798197810d6425ec0b145fa3",
-                "reference": "6dad7bf4a76954a4798197810d6425ec0b145fa3",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/c21534c635f03428e92254333fab4ae35b2cdfd9",
+                "reference": "c21534c635f03428e92254333fab4ae35b2cdfd9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "json-schema/json-schema-test-suite": "1.2.0",
+                "json-schema/json-schema-test-suite": "1.1.2",
                 "phpdocumentor/phpdocumentor": "~2",
                 "phpunit/phpunit": "^4.8.22"
             },
@@ -3418,7 +3422,7 @@
                 "json",
                 "schema"
             ],
-            "time": "2016-05-11 21:39:50"
+            "time": "2016-05-10 20:38:51"
         },
         {
             "name": "league/flysystem",
@@ -3553,17 +3557,11 @@
         },
         {
             "name": "league/fractal",
-            "version": "0.12.0",
+            "version": "dev-bug/null-resource-serialization",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/fractal.git",
-                "reference": "0a51dcb6398dc2377d086210d0624996a1df8322"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/fractal/zipball/0a51dcb6398dc2377d086210d0624996a1df8322",
-                "reference": "0a51dcb6398dc2377d086210d0624996a1df8322",
-                "shasum": ""
+                "url": "https://github.com/bburnichon/fractal.git",
+                "reference": "891856f"
             },
             "require": {
                 "php": ">=5.4"
@@ -3592,7 +3590,11 @@
                     "League\\Fractal\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "League\\Fractal\\Test\\": "test"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -3612,7 +3614,7 @@
                 "league",
                 "rest"
             ],
-            "time": "2015-03-19 15:16:43"
+            "time": "2016-05-16 16:41:03"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
@@ -4612,9 +4614,7 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Pimple is a simple Dependency Injection Container for PHP 5.3",
@@ -4850,7 +4850,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2016-02-14 18:50:07"
+            "time": "2016-04-21 06:36:58"
         },
         {
             "name": "seld/jsonlint",
@@ -7401,8 +7401,14 @@
         {
             "alias": "1.6.1",
             "alias_normalized": "1.6.1.0",
-            "version": "9999999-dev",
+            "version": "2.0.3.0",
             "package": "justinrainbow/json-schema"
+        },
+        {
+            "alias": "0.13.0",
+            "alias_normalized": "0.13.0.0",
+            "version": "dev-bug/null-resource-serialization",
+            "package": "league/fractal"
         }
     ],
     "minimum-stability": "stable",
@@ -7410,7 +7416,7 @@
         "alchemy/task-manager": 20,
         "imagine/imagine": 20,
         "jms/translation-bundle": 20,
-        "justinrainbow/json-schema": 20,
+        "league/fractal": 20,
         "neutron/process-manager": 20,
         "roave/security-advisories": 20,
         "willdurand/negotiation": 15

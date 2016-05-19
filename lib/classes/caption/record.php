@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Databox\Caption\CachedCaptionDataRepository;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 
@@ -29,10 +30,16 @@ class caption_record implements cache_cacheableInterface
      */
     protected $app;
 
-    public function __construct(Application $app, RecordReferenceInterface $record)
+    /**
+     * @param Application $app
+     * @param RecordReferenceInterface $record
+     * @param array[]|null $fieldsData
+     */
+    public function __construct(Application $app, RecordReferenceInterface $record, array $fieldsData = null)
     {
         $this->app = $app;
         $this->record = $record;
+        $this->fields = null === $fieldsData ? null : $this->mapFieldsFromData($fieldsData);
     }
 
     public function toArray($includeBusinessFields)
@@ -61,81 +68,9 @@ class caption_record implements cache_cacheableInterface
             return $this->fields;
         }
 
-        $databox = $this->getDatabox();
+        $data = $this->getDataRepository()->findByRecordIds([$this->getRecordReference()->getRecordId()]);
 
-        try {
-            $fields = $this->get_data_from_cache();
-        } catch (\Exception $e) {
-            $sql = <<<'SQL'
-SELECT m.id AS meta_id, s.id AS structure_id, value, VocabularyType, VocabularyId
-FROM metadatas m INNER JOIN metadatas_structure s ON s.id = m.meta_struct_id
-WHERE m.record_id = :record_id
-ORDER BY s.sorter ASC
-SQL;
-            $fields = $databox->get_connection()
-                ->executeQuery($sql, [':record_id' => $this->record->getRecordId()])
-                ->fetchAll(PDO::FETCH_ASSOC);
-
-            $this->set_data_to_cache($fields);
-        }
-
-        $rec_fields = array();
-
-        if ($fields) {
-            $databox_descriptionStructure = $databox->get_meta_structure();
-            $record = $databox->get_record($this->record->getRecordId());
-
-            // first group values by field
-            $caption_fields = [];
-            foreach ($fields as $row) {
-                $structure_id = $row['structure_id'];
-                if(!array_key_exists($structure_id, $caption_fields)) {
-                    $caption_fields[$structure_id] = [
-                        'db_field' => $databox_descriptionStructure->get_element($structure_id),
-                        'values' => []
-                    ];
-                }
-
-                if (count($caption_fields[$structure_id]['values']) > 0  && !$caption_fields[$structure_id]['db_field']->is_multi()) {
-                    // Inconsistent, should not happen
-                    continue;
-                }
-
-                // build an EMPTY caption_Field_Value
-                $cfv = new caption_Field_Value(
-                    $this->app,
-                    $caption_fields[$structure_id]['db_field'],
-                    $record,
-                    $row['meta_id'],
-                    caption_Field_Value::DONT_RETRIEVE_VALUES   // ask caption_Field_Value "no n+1 sql"
-                );
-
-                // inject the value we already know
-                $cfv->injectValues($row['value'], $row['VocabularyType'], $row['VocabularyId']);
-
-                // add the value to the field
-                $caption_fields[$structure_id]['values'][] = $cfv;
-            }
-
-            // now build a "caption_field" with already known "caption_Field_Value"s
-            foreach($caption_fields as $structure_id => $caption_field) {
-
-                // build an EMPTY caption_field
-                $cf = new caption_field(
-                    $this->app,
-                    $caption_field['db_field'],
-                    $record,
-                    caption_field::DONT_RETRIEVE_VALUES     // ask caption_field "no n+1 sql"
-                );
-
-                // inject the value we already know
-                $cf->injectValues($caption_field['values']);
-
-                // add the field to the fields
-                $rec_fields[$structure_id] = $cf;
-            }
-        }
-        $this->fields = $rec_fields;
+        $this->fields = $this->mapFieldsFromData(array_shift($data));
 
         return $this->fields;
     }
@@ -305,6 +240,8 @@ SQL;
     {
         $this->fields = null;
 
+        $this->getDataRepository()->invalidate($this->getRecordReference()->getRecordId());
+
         return $this->getDatabox()->delete_data_from_cache($this->get_cache_key($option));
     }
 
@@ -314,5 +251,83 @@ SQL;
     private function getDatabox()
     {
         return $this->app->findDataboxById($this->record->getDataboxId());
+    }
+
+    /**
+     * @param array $data
+     * @return caption_field[]
+     */
+    protected function mapFieldsFromData($data)
+    {
+        if (!$data) {
+            return [];
+        }
+
+        $rec_fields = array();
+
+        $databox = $this->getDatabox();
+        $databox_descriptionStructure = $databox->get_meta_structure();
+        $record = $databox->get_record($this->record->getRecordId());
+
+        // first group values by field
+        $caption_fields = [];
+        foreach ($data as $row) {
+            $structure_id = $row['structure_id'];
+            if (!array_key_exists($structure_id, $caption_fields)) {
+                $caption_fields[$structure_id] = [
+                    'db_field' => $databox_descriptionStructure->get_element($structure_id),
+                    'values' => []
+                ];
+            }
+
+            if (count($caption_fields[$structure_id]['values']) > 0 && !$caption_fields[$structure_id]['db_field']->is_multi()) {
+                // Inconsistent, should not happen
+                continue;
+            }
+
+            // build an EMPTY caption_Field_Value
+            $cfv = new caption_Field_Value(
+                $this->app,
+                $caption_fields[$structure_id]['db_field'],
+                $record,
+                $row['meta_id'],
+                caption_Field_Value::DONT_RETRIEVE_VALUES   // ask caption_Field_Value "no n+1 sql"
+            );
+
+            // inject the value we already know
+            $cfv->injectValues($row['value'], $row['VocabularyType'], $row['VocabularyId']);
+
+            // add the value to the field
+            $caption_fields[$structure_id]['values'][] = $cfv;
+        }
+
+        // now build a "caption_field" with already known "caption_Field_Value"s
+        foreach ($caption_fields as $structure_id => $caption_field) {
+
+            // build an EMPTY caption_field
+            $cf = new caption_field(
+                $this->app,
+                $caption_field['db_field'],
+                $record,
+                caption_field::DONT_RETRIEVE_VALUES     // ask caption_field "no n+1 sql"
+            );
+
+            // inject the value we already know
+            $cf->injectValues($caption_field['values']);
+
+            // add the field to the fields
+            $rec_fields[$structure_id] = $cf;
+        }
+
+        return $rec_fields;
+    }
+
+    /**
+     * @return CachedCaptionDataRepository
+     */
+    private function getDataRepository()
+    {
+        return $this->app['provider.data_repo.caption']
+            ->getRepositoryForDatabox($this->getRecordReference()->getDataboxId());
     }
 }

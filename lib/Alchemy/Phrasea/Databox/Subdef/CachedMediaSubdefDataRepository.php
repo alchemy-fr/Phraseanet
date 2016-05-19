@@ -151,11 +151,12 @@ class CachedMediaSubdefDataRepository implements MediaSubdefDataRepository
      */
     private function generateCacheKeys(array $recordIds, array $names)
     {
+        $names = array_unique($names);
         $namesCount = count($names);
 
         $keys = array_map(function ($recordId) use ($namesCount, $names) {
             return array_map([$this, 'getCacheKey'], array_fill(0, $namesCount, $recordId), $names);
-        }, $recordIds);
+        }, array_unique($recordIds));
 
         return $keys ? call_user_func_array('array_merge', $keys) : [];
     }
