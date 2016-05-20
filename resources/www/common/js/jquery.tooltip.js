@@ -368,8 +368,8 @@
                 var $eventTarget = $origEventTarget.closest('.diapo');
                 if ($eventTarget.length > 0) {
                     // tooltip from records answer
-                    recordWidthOffset = 148; // remove size
-                    recordHeightOffset = 195;
+                    recordWidthOffset = $eventTarget.width()-2; // remove width with margin/2
+                    recordHeightOffset = $eventTarget.height()+2; // remove height with margin/2
                     // change offsets:
                     topOffset = 14;
                     leftOffset = 1;
