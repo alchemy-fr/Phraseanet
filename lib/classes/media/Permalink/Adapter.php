@@ -118,7 +118,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef' => $this->media_subdef->get_name(),
             /** @Ignore */
-            'label' => $label,
+            'label' => str_replace('/', '_', $label),
             'token' => $this->get_token(),
         ]));
     }

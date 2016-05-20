@@ -87,7 +87,7 @@ class PermalinkController extends AbstractDelivery
                 'sbas_id'   => $sbas_id,
                 'record_id' => $record_id,
                 'subdef'    => $subdefName,
-                'label'     => $record->get_title(),
+                'label'     => str_replace('/', '_', $record->get_title()),
                 'token'     => $token,
             ]
         );
