@@ -56,6 +56,8 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
                 return (new ApiOrderController($app))
                     ->setDispatcher($app['dispatcher'])
                     ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                    ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
+                    ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                     ->setJsonBodyHelper($app['json.body_helper']);
             }
         );
@@ -115,6 +117,10 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/orders/{orderId}/deny', 'controller.api.v2.orders:denyElementsAction')
             ->assert('orderId', '\d+')
             ->bind('api_v2_orders_deny');
+
+        $controllers->get('/orders/{orderId}/archive', 'controller.api.v2.orders:getArchiveAction')
+            ->assert('orderId', '\d+')
+            ->bind('api_v2_orders_archive');
 
         return $controllers;
     }

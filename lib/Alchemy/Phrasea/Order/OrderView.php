@@ -21,6 +21,11 @@ class OrderView
     private $order;
 
     /**
+     * @var string
+     */
+    private $archiveUrl;
+
+    /**
      * @var OrderElementView[]
      */
     private $viewElements = [];
@@ -44,11 +49,27 @@ class OrderView
     }
 
     /**
+     * @param string $archiveUrl
+     */
+    public function setArchiveUrl($archiveUrl)
+    {
+        $this->archiveUrl = (string)$archiveUrl;
+    }
+
+    /**
      * @return Order
      */
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArchiveUrl()
+    {
+        return $this->archiveUrl;
     }
 
     /**

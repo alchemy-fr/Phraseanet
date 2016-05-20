@@ -37,8 +37,12 @@ class OrderTransformer extends TransformerAbstract
             'owner_id' => (int)$order->getUser()->getId(),
             'created' => $order->getCreatedOn()->format(DATE_ATOM),
             'usage' => $order->getOrderUsage(),
-            'status' => 0 === $order->getTodo() ? 'finished' : 'pending'
+            'status' => 0 === $order->getTodo() ? 'finished' : 'pending',
         ];
+
+        if ($view->getArchiveUrl()) {
+            $data['archive_url'] = $view->getArchiveUrl();
+        }
 
         if ($order->getDeadline()) {
             $data['deadline'] = $order->getDeadline()->format(DATE_ATOM);
