@@ -892,7 +892,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return databox_subdefsStructure|databox_subdef[][]
+     * @return databox_subdefsStructure|\Alchemy\Phrasea\Databox\SubdefGroup[]|databox_subdef[][]
      */
     public function get_subdef_structure()
     {
