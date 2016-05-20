@@ -55,7 +55,7 @@ class OrderRepository extends EntityRepository
          } elseif ($sort === 'usage') {
              $qb->orderBy('o.orderUsage', 'ASC');
          } else {
-             $qb->orderBy('o.createdOn', 'ASC');
+             $qb->orderBy('o.createdOn', 'DESC');
          }
 
          $qb
