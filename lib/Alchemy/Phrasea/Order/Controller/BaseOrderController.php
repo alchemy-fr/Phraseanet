@@ -194,7 +194,7 @@ class BaseOrderController extends Controller
 
         $basketReferences = new RecordReferenceCollection();
 
-        $basket->getElements()->forAll(function (BasketElement $element) use ($basketReferences) {
+        $basket->getElements()->forAll(function ($index, BasketElement $element) use ($basketReferences) {
             $basketReferences->addRecordReference($element->getSbasId(), $element->getRecordId());
         });
 
