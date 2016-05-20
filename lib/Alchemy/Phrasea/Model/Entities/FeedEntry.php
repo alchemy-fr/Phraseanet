@@ -33,7 +33,7 @@ class FeedEntry
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=1024)
      */
     private $subtitle;
 
