@@ -2,8 +2,8 @@ $(document).ready(function () {
     if (typeof validator_loaded === 'boolean')
         return;
 
-
-    $('.confirm_report').on('click', function () {
+    $('body').on('touchstart click', '.confirm_report', function (event) {
+        event.preventDefault();
         var $this = $(this);
 
         $('.loader', $this).css({
@@ -38,9 +38,10 @@ $(document).ready(function () {
                 return;
             }
         });
+        return false;
     });
 
-    $('.agreement_radio').on('vmousedown', function () {
+    $('body').on('touchstart click', '.agreement_radio', function (event) {
         var sselcont_id = $(this).attr('for').split('_').pop();
         var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
 
@@ -81,10 +82,11 @@ $(document).ready(function () {
                 return;
             }
         });
-        return false;
+        //return false;
 
     });
-    $('.note_area_validate').on('click', function () {
+
+    $('body').on('touchstart click', '.note_area_validate', function (event) {
         var sselcont_id = $(this).closest('form').find('input[name="sselcont_id"]').val();
 
         $.mobile.loading();
