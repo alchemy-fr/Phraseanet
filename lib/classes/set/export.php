@@ -99,19 +99,20 @@ class set_export extends set_abstract
         } else {
             $this->exportName = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
-            $tmp_lst = explode(';', $lst);
             $n = 1;
-            foreach ($tmp_lst as $basrec) {
-                $basrec = explode('_', $basrec);
-                if (count($basrec) != 2)
-                    continue;
 
+            $records = new \Alchemy\Phrasea\Record\RecordReferenceCollection();
+
+            foreach (explode(';', $lst) as $basrec) {
                 try {
-                    $record = new record_adapter($this->app, $basrec[0], $basrec[1]);
-                } catch (\Exception_Record_AdapterNotFound $e) {
+                    $records[] = \Alchemy\Phrasea\Record\RecordReference::createFromRecordReference($basrec);
+                } catch (Exception $exception) {
+                    // Ignore invalid record references
                     continue;
                 }
+            }
 
+            foreach ($records->toRecords($app->getApplicationBox()) as $record) {
                 if ($record->isStory()) {
                     foreach ($record->getChildren() as $child_basrec) {
                         $base_id = $child_basrec->getBaseId();

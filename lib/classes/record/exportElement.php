@@ -68,8 +68,6 @@ class record_exportElement extends record_adapter
         parent::__construct($app, $sbas_id, $record_id);
 
         $this->get_actions($remain_hd);
-
-        return $this;
     }
 
     /**
@@ -270,8 +268,7 @@ class record_exportElement extends record_adapter
     }
 
     /**
-     *
-     * @return Array
+     * @return array
      */
     public function get_orderable()
     {
@@ -279,8 +276,7 @@ class record_exportElement extends record_adapter
     }
 
     /**
-     *
-     * @return Array
+     * @return array
      */
     public function get_downloadable()
     {
