@@ -19,6 +19,7 @@ use Alchemy\Phrasea\TaskManager\Editor\DefaultEditor;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Batch\BatchBuilder;
+use Guzzle\Http\Message\Request;
 use Silex\Application;
 use Guzzle\Common\Event;
 use Guzzle\Plugin\Backoff\BackoffPlugin;
@@ -98,25 +99,34 @@ class WebhookJob extends AbstractJob
             }, -254);
 
             // Set callback which logs success or failure
-            $subscriber = new CallbackBackoffStrategy(function ($retries, $request, $response, $e) use ($app, $that) {
+            $subscriber = new CallbackBackoffStrategy(function ($retries, Request $request, $response, $e) use ($app, $that) {
                 $retry = true;
                 if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
                     $delivery = $app['repo.webhook-delivery']->find($deliverId);
 
+                    $logContext = [ 'host' => $request->getHost() ];
+
                     if ($response->isSuccessful()) {
                         $app['manipulator.webhook-delivery']->deliverySuccess($delivery);
 
-                        $that->log('info', sprintf('Deliver success event "%d:%s" for app  "%s"',
+                        $logType = 'info';
+                        $logEntry = sprintf('Deliver success event "%d:%s" for app "%s"',
                             $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
-                            $delivery->getThirdPartyApplication()->getName()));
+                            $delivery->getThirdPartyApplication()->getName()
+                        );
+
                         $retry = false;
                     } else {
                         $app['manipulator.webhook-delivery']->deliveryFailure($delivery);
 
-                        $that->log('error', sprintf('Deliver failure event "%d:%s" for app  "%s"',
+                        $logType = 'error';
+                        $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s"',
                             $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
-                            $delivery->getThirdPartyApplication()->getName()));
+                            $delivery->getThirdPartyApplication()->getName()
+                        );
                     }
+
+                    $that->log($logType, $logEntry, $logContext);
 
                     return $retry;
                 }

@@ -41,11 +41,13 @@ class OrderRepository extends EntityRepository
     public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on")
     {
         $qb = $this
-            ->createQueryBuilder('o')
-            ->innerJoin('o.elements', 'e');
+            ->createQueryBuilder('o');
 
          if (!empty($baseIds)) {
-             $qb->where($qb->expr()->in('e.baseId', $baseIds));
+             $qb
+                 ->innerJoin('o.elements', 'e')
+                 ->where($qb->expr()->in('e.baseId', $baseIds))
+                 ->groupBy('o.id');
          }
 
          if ($sort === 'user') {
@@ -53,7 +55,7 @@ class OrderRepository extends EntityRepository
          } elseif ($sort === 'usage') {
              $qb->orderBy('o.orderUsage', 'ASC');
          } else {
-             $qb->orderBy('o.createdOn', 'ASC');
+             $qb->orderBy('o.createdOn', 'DESC');
          }
 
          $qb

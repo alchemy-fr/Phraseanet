@@ -61,6 +61,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
         ]);
 
         $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
+
         $notifier->notifyCreation($event->getOrder(), $event->getOrder()->getUser());
 
         $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_MAIL);
@@ -87,10 +88,10 @@ class OrderSubscriber extends AbstractNotificationSubscriber
         $notified = false;
         $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
         $notificationData = json_encode([
-            'from'    => $event->getAdmin()->getId(),
+            'from'    => $event->getDelivery()->getAdmin()->getId(),
             'to'      => $event->getOrder()->getUser()->getId(),
             'ssel_id' => $event->getOrder()->getBasket()->getId(),
-            'n'       => $event->getQuantity(),
+            'n'       => $event->getDelivery()->getQuantity()
         ]);
 
         if ($this->shouldSendNotificationFor($event->getOrder()->getUser(), 'eventsmanager_notify_orderdeliver')) {
@@ -111,9 +112,9 @@ class OrderSubscriber extends AbstractNotificationSubscriber
         $notified = false;
         $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
         $notificationData = json_encode([
-            'from' => $event->getAdmin()->getId(),
+            'from' => $event->getDelivery()->getAdmin()->getId(),
             'to'   => $event->getOrder()->getUser()->getId(),
-            'n'    => $event->getQuantity(),
+            'n'    => $event->getDelivery()->getQuantity()
         ]);
 
 
