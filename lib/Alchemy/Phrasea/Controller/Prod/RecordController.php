@@ -106,6 +106,7 @@ class RecordController extends Controller
             ]),
             "pos"           => $record->getNumber(),
             "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
+            "databox_name" => $record->getDatabox()->get_dbname(),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);
