@@ -157,7 +157,7 @@ class ApiOrderController extends BaseOrderController
         }
 
         $export = new \set_export($this->app, '', $basket->getId());
-        $exportName = sprintf('%s.zip', $export->getExportName());
+        $exportName = sprintf('%s/%s.zip', $this->app['tmp.download.path'], $export->getExportName());
 
         $user = $this->getAuthenticatedUser();
 
@@ -167,12 +167,17 @@ class ApiOrderController extends BaseOrderController
         $exportData['export_name'] = $exportName;
 
         $token = $this->app['manipulator.token']->createDownloadToken($user, serialize($exportData));
+        $lst = [];
+
+        foreach ($exportData['files'] as $file) {
+            $lst[] = $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id() . '_' . $file['record_id'];
+        }
 
         $this->dispatch(
             PhraseaEvents::EXPORT_CREATE,
-            new ExportEvent($user, $basket->getId(), '', $subdefs, $exportName)
+            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName)
         );
-
+        
         set_time_limit(0);
         ignore_user_abort(true);
         $file = \set_export::build_zip($this->app, $token, $exportData, $exportName);
@@ -330,7 +335,7 @@ class ApiOrderController extends BaseOrderController
         $subdefNames = [
             'document' => true,
         ];
-
+        $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id();
         foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
             foreach ($databox->get_subdef_structure() as $subdefGroup) {
                 /** @var \databox_subdef $subdef */
