@@ -177,7 +177,7 @@ class ApiOrderController extends BaseOrderController
             PhraseaEvents::EXPORT_CREATE,
             new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName)
         );
-        
+
         set_time_limit(0);
         ignore_user_abort(true);
         $file = \set_export::build_zip($this->app, $token, $exportData, $exportName);
@@ -335,7 +335,7 @@ class ApiOrderController extends BaseOrderController
         $subdefNames = [
             'document' => true,
         ];
-        $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id();
+        
         foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
             foreach ($databox->get_subdef_structure() as $subdefGroup) {
                 /** @var \databox_subdef $subdef */
