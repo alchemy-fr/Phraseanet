@@ -10,6 +10,8 @@
 
 namespace Alchemy\Phrasea\Media;
 
+use Alchemy\Phrasea\Databox\DataboxGroupable;
+use Alchemy\Phrasea\Record\PerDataboxRecordId;
 use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 
@@ -26,27 +28,40 @@ class TechnicalDataService
     }
 
     /**
-     * @param RecordReference[] $references
+     * @param DataboxGroupable|PerDataboxRecordId|RecordReference[] $references
      * @return RecordTechnicalDataSet[]
      */
     public function fetchRecordsTechnicalData($references)
     {
-        if (!$references instanceof  RecordReferenceCollection) {
+        if (!($references instanceof DataboxGroupable && $references instanceof PerDataboxRecordId)) {
             $references = new RecordReferenceCollection($references);
         }
 
         $sets = [];
 
-        foreach ($references->groupPerDataboxId() as $databoxId => $indexes) {
-            foreach ($this->provider->getRepositoryFor($databoxId)->findByRecordIds(array_keys($indexes)) as $set) {
-                $index = $indexes[$set->getRecordId()];
+        foreach ($references->getDataboxIds() as $databoxId) {
+            $recordIds = $references->getDataboxRecordIds($databoxId);
 
-                $sets[$index] = $set;
+            $setPerRecordId = [];
+
+            foreach ($this->provider->getRepositoryFor($databoxId)->findByRecordIds($recordIds) as $set) {
+                $setPerRecordId[$set->getRecordId()] = $set;
             }
+
+            $sets[$databoxId] = $setPerRecordId;
         }
 
-        ksort($sets);
+        $reorder = [];
 
-        return $sets;
+        foreach ($references as $index => $reference) {
+            $databoxId = $reference->getDataboxId();
+            $recordId = $reference->getRecordId();
+
+            $reorder[$index] = isset($sets[$databoxId][$recordId])
+                ? $sets[$databoxId][$recordId]
+                : new RecordTechnicalDataSet($recordId);
+        }
+
+        return $reorder;
     }
 }

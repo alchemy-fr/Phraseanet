@@ -800,25 +800,29 @@ class ApiJsonTest extends ApiTestCase
 
     public function testSearchRoute()
     {
-        self::$DI['app']['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
+        $app = $this->getApplication();
+
+        $app['manipulator.user'] = $this->getMockBuilder('Alchemy\Phrasea\Model\Manipulator\UserManipulator')
             ->setConstructorArgs([
-                self::$DI['app']['model.user-manager'],
-                self::$DI['app']['auth.password-encoder'],
-                self::$DI['app']['geonames.connector'],
-                self::$DI['app']['repo.users'],
-                self::$DI['app']['random.low'],
-                self::$DI['app']['dispatcher'],
+                $app['model.user-manager'],
+                $app['auth.password-encoder'],
+                $app['geonames.connector'],
+                $app['repo.users'],
+                $app['random.low'],
+                $app['dispatcher'],
             ])
             ->setMethods(['logQuery'])
             ->getMock();
 
-        self::$DI['app']['manipulator.user']->expects($this->once())->method('logQuery');
+        $app['manipulator.user']->expects($this->once())->method('logQuery');
 
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('POST', '/api/v1/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $response = $this->request('POST', '/api/v1/search/', $this->getParameters(), [
+            'HTTP_Accept' => $this->getAcceptMimeType(),
+        ]);
+        $content = $this->unserialize($response->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
@@ -837,17 +841,15 @@ class ApiJsonTest extends ApiTestCase
 
         self::$DI['record_story_1'];
 
-        $client = $this->getClient();
-        $client->request(
+        $response = $this->request(
             'POST',
             '/api/v1/search/',
             $this->getParameters(['search_type' => SearchEngineOptions::RECORD_GROUPING]),
-            [],
             ['HTTP_Accept' => $this->getAcceptMimeType()]
         );
-        $content = $this->unserialize($client->getResponse()->getContent());
+        $content = $this->unserialize($response->getContent());
 
-        $this->evaluateResponse200($client->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
@@ -873,10 +875,10 @@ class ApiJsonTest extends ApiTestCase
     public function testRecordsSearchRoute()
     {
         $this->setToken($this->userAccessToken);
-        self::$DI['client']->request('POST', '/api/v1/records/search/', $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
 
-        $this->evaluateResponse200(self::$DI['client']->getResponse());
+        $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
         $response = $content['response'];
