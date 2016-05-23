@@ -180,7 +180,7 @@ function openPreview(event, env, pos, contId, reload) {
 
             $('#SPANTITLE').empty().append(data.title);
             $("#PREVIEWTITLE_COLLLOGO").empty().append(data.collection_logo);
-            $("#PREVIEWTITLE_COLLNAME").empty().append(data.collection_name);
+            $("#PREVIEWTITLE_COLLNAME").empty().append(data.databox_name + ' / ' + data.collection_name);
 
             setPreview();
 
