@@ -16,8 +16,11 @@
   cursor: pointer;
 }
 
-#PREVIEWBOX #PREVIEWTITLE_COLLNAME {
-  display: none;
+#PREVIEWBOX #PREVIEWTITLE_COLLLOGO {
+  img {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .PREVIEW_PIC, .PREVIEW_HD {

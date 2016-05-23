@@ -258,7 +258,7 @@ class record_preview extends record_adapter
             return $this->title;
         }
 
-        $this->title = collection::getLogo($this->getBaseId(), $this->app) . ' ';
+        $this->title = '';
 
         switch ($this->env) {
 
