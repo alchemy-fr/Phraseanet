@@ -22,7 +22,7 @@ server {
       rewrite ^(.*)$ /api_dev.php/$1 last;
     }
 
-    location ~ ^/(index|index_dev|api)\.php(/|$) {
+    location ~ ^/(index|index_dev|api|api_dev)\.php(/|$) {
         root {{ nginx.docroot }}/www;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
