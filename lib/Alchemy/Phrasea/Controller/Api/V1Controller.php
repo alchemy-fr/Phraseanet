@@ -84,6 +84,7 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
+use JMS\TranslationBundle\Annotation\Ignore;
 use League\Fractal\Resource\Item;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -2608,12 +2609,16 @@ class V1Controller extends Controller
             $ret = [ 'success' => true ];
         }
         catch (AccountException $exception) {
+            /** @Ignore */
             $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
         }
 
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * @Ignore
+     */
     public function updateCurrentUserPasswordAction(Request $request)
     {
         $service = $this->getAccountService();
@@ -2631,6 +2636,7 @@ class V1Controller extends Controller
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
             } catch (AccountException $exception) {
+                /** @Ignore */
                 $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
             }
         } else {
