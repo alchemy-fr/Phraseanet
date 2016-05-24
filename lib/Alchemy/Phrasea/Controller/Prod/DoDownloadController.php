@@ -162,7 +162,7 @@ class DoDownloadController extends Controller
                 $this->app,
                 $token,
                 $list,
-                sprintf($this->app['tmp.download.path'].'/%s.zip', $token->getValue()) // Dest file
+                sprintf('%s/%s.zip', $this->app['tmp.download.path'], $token->getValue()) // Dest file
             );
         } else {
             $list['complete'] = true;
