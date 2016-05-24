@@ -19,7 +19,7 @@ server {
 
     location /api {
       root {{ nginx.docroot }}/www;
-      rewrite ^(.*)$ /api.php/$1 last;
+      rewrite ^(.*)$ /api_dev.php/$1 last;
     }
 
     location ~ ^/(index|index_dev|api)\.php(/|$) {
