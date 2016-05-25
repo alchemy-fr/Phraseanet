@@ -85,10 +85,8 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-<<<<<<< HEAD
-=======
+
 use JMS\TranslationBundle\Annotation\Ignore;
->>>>>>> 4.0
 use League\Fractal\Resource\Item;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -1215,7 +1213,6 @@ class V1Controller extends Controller
                     ->getRecordRepository()
                     ->findChildren($storyIds, $user);
                 $children[$databoxId] = array_combine($storyIds, $selections);
-<<<<<<< HEAD
             }
 
             /** @var StoryView[] $storyViews */
@@ -1259,51 +1256,6 @@ class V1Controller extends Controller
                 $allChildren[$index] = $childrenView->getRecord();
             }
 
-=======
-            }
-
-            /** @var StoryView[] $storyViews */
-            $storyViews = [];
-            /** @var RecordView[] $childrenViews */
-            $childrenViews = [];
-
-            foreach ($stories as $index => $story) {
-                $storyView = new StoryView($story);
-
-                $selection = $children[$story->getDataboxId()][$story->getRecordId()];
-
-                $childrenView = $this->buildRecordViews($selection);
-
-                foreach ($childrenView as $view) {
-                    $childrenViews[spl_object_hash($view)] = $view;
-                }
-
-                $storyView->setChildren($childrenView);
-
-                $storyViews[$index] = $storyView;
-            }
-
-            if (in_array('results.stories.thumbnail', $includes, true)) {
-                $subdefViews = $this->buildSubdefsViews($stories, ['thumbnail'], $urlTTL);
-
-                foreach ($storyViews as $index => $storyView) {
-                    $storyView->setSubdefs($subdefViews[$index]);
-                }
-            }
-
-            if (in_array('results.stories.metadatas', $includes, true)) {
-                $captions = $this->app['service.caption']->findByReferenceCollection($stories);
-                $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($stories);
-
-                $this->buildCaptionViews($storyViews, $captions, $canSeeBusiness);
-            }
-
-            $allChildren = new RecordCollection();
-            foreach ($childrenViews as $index => $childrenView) {
-                $allChildren[$index] = $childrenView->getRecord();
-            }
-
->>>>>>> 4.0
             $names = in_array('results.stories.records.subdefs', $includes, true) ? null : ['thumbnail'];
             $subdefViews = $this->buildSubdefsViews($allChildren, $names, $urlTTL);
             $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($allChildren);
@@ -1420,7 +1372,6 @@ class V1Controller extends Controller
         /** @var \media_subdef $subdef */
         foreach ($allSubdefs as $index => $subdef) {
             $subdefView = new SubdefView($subdef);
-<<<<<<< HEAD
 
             if (isset($allPermalinks[$index])) {
                 $subdefView->setPermalinkView(new PermalinkView($allPermalinks[$index]));
@@ -1489,76 +1440,6 @@ class V1Controller extends Controller
             ];
         }
 
-=======
-
-            if (isset($allPermalinks[$index])) {
-                $subdefView->setPermalinkView(new PermalinkView($allPermalinks[$index]));
-            }
-
-            $subdefView->setUrl($urls[$index]);
-            $subdefView->setUrlTTL($urlTTL);
-
-            $subdefViews[spl_object_hash($subdef)] = $subdefView;
-        }
-
-        $reorderedGroups = [];
-
-        /** @var \media_subdef[] $subdefGroup */
-        foreach ($subdefGroups as $index => $subdefGroup) {
-            $reordered = [];
-
-            foreach ($subdefGroup as $subdef) {
-                $reordered[] = $subdefViews[spl_object_hash($subdef)];
-            }
-
-            $reorderedGroups[$index] = $reordered;
-        }
-
-        return $reorderedGroups;
-    }
-
-    /**
-     * Returns requested includes
-     *
-     * @param Request $request
-     * @return string[]
-     */
-    private function resolveSearchIncludes(Request $request)
-    {
-        if ($request->attributes->get('_extended', false)) {
-            return [
-                'results.stories.records.subdefs',
-                'results.stories.records.metadata',
-                'results.stories.records.caption',
-                'results.stories.records.status',
-                'results.records.subdefs',
-                'results.records.metadata',
-                'results.records.caption',
-                'results.records.status',
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * Returns requested includes
-     *
-     * @param Request $request
-     * @return string[]
-     */
-    private function resolveSearchRecordsIncludes(Request $request)
-    {
-        if ($request->attributes->get('_extended', false)) {
-            return [
-                'results.subdefs',
-                'results.metadata',
-                'results.caption',
-                'results.status',
-            ];
-        }
-
->>>>>>> 4.0
         return [];
     }
 
