@@ -770,6 +770,32 @@ class V1Controller extends Controller
         return $grants;
     }
 
+    private function listUserDataboxes(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rightsByDatabox = $acl->get_sbas_rights();
+        $grants = [];
+
+        foreach ($rightsByDatabox as $databoxId => $databoxRights) {
+            $rights = [];
+
+            foreach ($databoxRights as $name => $allowedFlag) {
+                if (! $allowedFlag) {
+                    continue;
+                }
+
+                $rights[] = $name;
+            }
+
+            $grants[] = [
+                'databox_id' => $databoxId,
+                'rights' => $rights
+            ];
+        }
+
+        return $grants;
+    }
+
     private function listUserDemands(User $user)
     {
         return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
@@ -2560,6 +2586,7 @@ class V1Controller extends Controller
         $ret = [
             "user" => $this->listUser($this->getAuthenticatedUser()),
             "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
+            "databoxes" => $this->listUserDataboxes($this->getAuthenticatedUser())
         ];
 
         if (defined('API_SKIP_USER_REGISTRATIONS') && ! constant('API_SKIP_USER_REGISTRATIONS')) {
