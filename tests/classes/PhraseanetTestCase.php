@@ -693,23 +693,7 @@ abstract class PhraseanetTestCase extends WebTestCase
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
         $app['notification.deliverer'] = $delivererMock;
     }
-
-    protected function mockNotificationsDeliverer(array &$expectedMails)
-    {
-        $app = $this->getApplication();
-        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $delivererMock->expects($this->any())
-            ->method('deliver')
-            ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
-                $this->assertTrue(isset($expectedMails[get_class($email)]));
-                $expectedMails[get_class($email)]++;
-            }));
-        $app['notification.deliverer'] = $delivererMock;
-    }
-
+    
     protected function mockUserNotificationSettings($notificationName, $returnValue = true)
     {
         $app = $this->getApplication();
