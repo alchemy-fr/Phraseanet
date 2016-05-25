@@ -49,7 +49,7 @@ class RestrictedStatusExtractor
             $status = $structure->getStatus($position);
 
             if (! $andBit && $status['labels_on_i18n'] == null && $status['labels_off_i18n'] == null) {
-                // Ignore unrestricted statuses with null label arrays
+                // Ignore unrestricted statuses with null label arrays (label is not configured, hence not used)
                 continue;
             }
 
