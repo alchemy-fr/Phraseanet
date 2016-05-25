@@ -148,6 +148,18 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
+     * Returns the list of available rights by databox for the current user
+     *
+     * @return array
+     */
+    public function get_sbas_rights()
+    {
+        $this->load_rights_sbas();
+
+        return $this->_rights_sbas;
+    }
+
+    /**
      * Check if a hd grant has been received for a record
      *
      * @param RecordReferenceInterface $record
@@ -580,10 +592,11 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     * Check if the user has the right, at least on one collection
+     * Check if the user has the right, on at least one collection
      *
-     * @param  string  $right
-     * @return boolean
+     * @param  string $right
+     * @return bool
+     * @throws Exception
      */
     public function has_right($right)
     {
@@ -598,9 +611,10 @@ class ACL implements cache_cacheableInterface
     /**
      * Check if the user has the required right on a database
      *
-     * @param  <type> $sbas_id
-     * @param  <type> $right
-     * @return <type>
+     * @param  int $sbas_id
+     * @param  string $right
+     * @return bool
+     * @throws Exception
      */
     public function has_right_on_sbas($sbas_id, $right)
     {
