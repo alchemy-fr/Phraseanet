@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Helper\JsonBodyHelper;
 use JsonSchema\RefResolver;
+use JsonSchema\Uri\UriResolver;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use Silex\Application;
@@ -31,7 +32,7 @@ class JsonSchemaServiceProvider implements ServiceProviderInterface
         });
 
         $app['json-schema.ref_resolver'] = $app->share(function (Application $app) {
-            return new RefResolver($app['json-schema.retriever']);
+            return new RefResolver($app['json-schema.retriever'], new UriResolver());
         });
 
         $app['json-schema.validator'] = $app->share(function (Application $app) {

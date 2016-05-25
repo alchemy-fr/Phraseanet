@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
+use Alchemy\Phrasea\Order\OrderDelivery;
 use Alchemy\Phrasea\Order\OrderValidator;
 use Alchemy\Phrasea\Order\PartialOrder;
 use Alchemy\Phrasea\Record\RecordReference;
@@ -136,7 +137,9 @@ class BaseOrderController extends Controller
                     $manager->persist($element);
                 }
 
-                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($order, $acceptor, count($basketElements)));
+                $delivery = new OrderDelivery($order, $acceptor, count($basketElements));
+
+                $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($delivery));
             }
 
             $manager->persist($basket);
@@ -164,7 +167,9 @@ class BaseOrderController extends Controller
 
         try {
             if (!empty($elements)) {
-                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($order, $acceptor, count($elements)));
+                $delivery = new OrderDelivery($order, $acceptor, count($elements));
+
+                $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($delivery));
             }
 
             $manager = $this->getEntityManager();
@@ -189,7 +194,7 @@ class BaseOrderController extends Controller
 
         $basketReferences = new RecordReferenceCollection();
 
-        $basket->getElements()->forAll(function (BasketElement $element) use ($basketReferences) {
+        $basket->getElements()->forAll(function ($index, BasketElement $element) use ($basketReferences) {
             $basketReferences->addRecordReference($element->getSbasId(), $element->getRecordId());
         });
 

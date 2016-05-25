@@ -2231,4 +2231,19 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         return self::$DI['user'];
     }
+
+    private function mockNotificationsDeliverer(array &$expectedMails)
+    {
+        $app = $this->getApplication();
+        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $app['notification.deliverer']->expects($this->any())
+            ->method('deliver')
+            ->will($this->returnCallback(function ($email, $receipt) use (&$expectedMails) {
+                $this->assertTrue(isset($expectedMails[get_class($email)]));
+                $expectedMails[get_class($email)]++;
+            }));
+    }
 }

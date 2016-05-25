@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Command\TaskManagerCommand;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\TaskManager\Event\FinishedJobRemoverSubscriber;
+use Alchemy\Phrasea\TaskManager\Job\AbstractJob;
 use Alchemy\Phrasea\TaskManager\Job\JobData;
 use Alchemy\TaskManager\Event\JobSubscriber\DurationLimitSubscriber;
 use Alchemy\TaskManager\Event\JobSubscriber\LockFileSubscriber;
@@ -72,6 +73,12 @@ class TaskRun extends TaskManagerCommand
         return $task;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param Task $task
+     * @param Logger $logger
+     * @return AbstractJob
+     */
     protected function createJob(InputInterface $input, Task $task, Logger $logger)
     {
         $job = $this->container['task-manager.job-factory']->create($task->getJobId());

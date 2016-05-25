@@ -23,7 +23,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
-use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
@@ -56,6 +55,7 @@ use Alchemy\Phrasea\Core\Provider\JMSSerializerServiceProvider;
 use Alchemy\Phrasea\Core\Provider\LocaleServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ManipulatorServiceProvider;
 use Alchemy\Phrasea\Core\Provider\NotificationDelivererServiceProvider;
+use Alchemy\Phrasea\Core\Provider\OrderServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaEventServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseanetServiceProvider;
 use Alchemy\Phrasea\Core\Provider\PhraseaVersionServiceProvider;
@@ -237,10 +237,12 @@ class Application extends SilexApplication
         $this->register(new PhraseaEventServiceProvider());
 
         $this->register(new LocaleServiceProvider());
+
         $this->setupEventDispatcher();
 
+        $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
-        
+
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */
             $handler =  PhraseaExceptionHandler::register($app['debug']);
@@ -705,7 +707,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new RegistrationSubscriber($app));
                 $dispatcher->addSubscriber(new BridgeSubscriber($app));
                 $dispatcher->addSubscriber(new ExportSubscriber($app));
-                $dispatcher->addSubscriber(new OrderSubscriber($app));
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));

@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
 use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -174,8 +175,11 @@ class OAuth2Controller extends Controller
      */
     public function tokenAction(Request $request)
     {
-        if ( ! $request->isSecure()) {
-            throw new HttpException(400, 'This route requires the use of the https scheme', null, ['content-type' => 'application/json']);
+        /** @var PropertyAccess $config */
+        $config = $this->app['conf'];
+
+        if ( ! $request->isSecure() && $config->get(['main', 'api_require_ssl'], true) == true) {
+            throw new HttpException(400, 'This route requires the use of the https scheme: ' . $config->get(['main', 'api_require_ssl']), null, ['content-type' => 'application/json']);
         }
 
         $this->oAuth2Adapter->grantAccessToken($request);

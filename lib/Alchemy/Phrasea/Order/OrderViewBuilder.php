@@ -84,6 +84,21 @@ class OrderViewBuilder
      */
     private function fillViews(array $views, array $includes)
     {
+        array_walk($views, function (OrderView $view) {
+            // Archive is only available when a Basket is associated with the order (at least one element was accepted)
+            if (null === $basket = $view->getOrder()->getBasket()) {
+                return;
+            }
+
+            if ($basket->getElements()->isEmpty()) {
+                return;
+            }
+
+            $view->setArchiveUrl($this->application->url('api_v2_orders_archive', [
+                'orderId' => $view->getOrder()->getId(),
+            ]));
+        });
+
         if (!in_array('elements', $includes, true)) {
             return;
         }
