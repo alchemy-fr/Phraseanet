@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
+use Alchemy\Phrasea\Account\RestrictedStatusExtractor;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
@@ -748,6 +749,9 @@ class V1Controller extends Controller
 
         $grants = [];
 
+
+        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
+
         foreach ($bases as $base) {
             $baseGrants = [];
 
@@ -764,6 +768,7 @@ class V1Controller extends Controller
                 'base_id' => $base->get_base_id(),
                 'collection_id' => $base->get_coll_id(),
                 'rights' => $baseGrants,
+                'statuses' => $statusMapper->getRestrictedStatuses($base->get_base_id())
             ];
         }
 

@@ -637,8 +637,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Retrieve mask AND for user on specified base_id
      *
-     * @param  int    $base_id
-     * @return string
+     * @param  int $base_id
+     * @return int
      */
     public function get_mask_and($base_id)
     {
@@ -653,8 +653,8 @@ class ACL implements cache_cacheableInterface
     /**
      * Retrieve mask XOR for user on specified base_id
      *
-     * @param  int    $base_id
-     * @return string
+     * @param  int $base_id
+     * @return int
      */
     public function get_mask_xor($base_id)
     {
