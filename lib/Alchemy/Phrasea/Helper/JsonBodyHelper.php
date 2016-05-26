@@ -52,11 +52,7 @@ class JsonBodyHelper
      */
     public function retrieveSchema($schemaUri)
     {
-        $schema = $this->uriRetriever->retrieve($schemaUri, $this->baseUri);
-
-        $this->refResolver->resolve($schema);
-
-        return $schema;
+        return $this->refResolver->resolve($this->baseUri . $schemaUri);
     }
 
     /**

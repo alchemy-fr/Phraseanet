@@ -10,24 +10,23 @@
 
 namespace Alchemy\Phrasea\Order\Controller;
 
+use Alchemy\Phrasea\Application\Helper\DelivererAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\ExportEvent;
 use Alchemy\Phrasea\Core\Event\OrderEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Http\DeliverDataInterface;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
-use Alchemy\Phrasea\Model\Entities\OrderElement;
-use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
-use Alchemy\Phrasea\Order\OrderElementView;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
-use Alchemy\Phrasea\Order\OrderView;
 use Alchemy\Phrasea\Order\OrderViewBuilder;
-use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
-use Assert\Assertion;
 use Doctrine\Common\Collections\ArrayCollection;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
@@ -39,9 +38,12 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiOrderController extends BaseOrderController
 {
+    use DelivererAware;
+    use FilesystemAware;
     use JsonBodyAware;
 
     public function createAction(Request $request)
@@ -61,6 +63,7 @@ class ApiOrderController extends BaseOrderController
         $order->setUser($this->getAuthenticatedUser());
         $order->setDeadline(new \DateTime($data->data->deadline, new \DateTimeZone('UTC')));
         $order->setOrderUsage($data->data->usage);
+        $order->setNotificationMethod(Order::NOTIFY_WEBHOOK);
 
         $filler->fillOrder($order, $recordRequest);
 
@@ -124,7 +127,7 @@ class ApiOrderController extends BaseOrderController
 
         $fractal = $this->buildFractalManager($request->get('includes', []));
 
-        if ($order->getUser()->getId() !== $this->getAuthenticatedUser()->getId()) {
+        if (! $this->isOrderAccessible($order)) {
             throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
         }
 
@@ -132,6 +135,54 @@ class ApiOrderController extends BaseOrderController
         $resource = new Item($model, $this->getOrderTransformer());
 
         return $this->returnResourceResponse($request, $fractal, $resource);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $orderId
+     * @return Response
+     */
+    public function getArchiveAction(Request $request, $orderId)
+    {
+        $order = $this->findOr404($orderId);
+
+        if (! $this->isOrderAccessible($order)) {
+            throw new AccessDeniedHttpException(sprintf('Cannot access order "%d"', $order->getId()));
+        }
+
+        $basket = $order->getBasket();
+
+        if (null === $basket instanceof Basket) {
+            throw new NotFoundHttpException(sprintf('No archive could be downloaded for Order "%d"', $order->getId()));
+        }
+
+        $export = new \set_export($this->app, '', $basket->getId());
+        $exportName = sprintf('%s/%s.zip', $this->app['tmp.download.path'], $export->getExportName());
+
+        $user = $this->getAuthenticatedUser();
+
+        $subdefs = $this->findDataboxSubdefNames();
+
+        $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
+        $exportData['export_name'] = $exportName;
+
+        $token = $this->app['manipulator.token']->createDownloadToken($user, serialize($exportData));
+        $lst = [];
+
+        foreach ($exportData['files'] as $file) {
+            $lst[] = $this->getApplicationBox()->get_collection($file['base_id'])->get_databox()->get_sbas_id() . '_' . $file['record_id'];
+        }
+
+        $this->dispatch(
+            PhraseaEvents::EXPORT_CREATE,
+            new ExportEvent($user, $basket->getId(), implode(';', $lst), $subdefs, $exportName)
+        );
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $file = \set_export::build_zip($this->app, $token, $exportData, $exportName);
+
+        return $this->deliverFile($file, $exportName, DeliverDataInterface::DISPOSITION_INLINE, 'application/zip');
     }
 
     public function acceptElementsAction(Request $request, $orderId)
@@ -257,5 +308,43 @@ class ApiOrderController extends BaseOrderController
             $this->getApplicationBox(),
             $this->app['service.media_subdef']
         );
+    }
+
+    /**
+     * @param $order
+     * @return bool
+     */
+    private function isOrderAccessible(Order $order)
+    {
+        if ($order->getUser()->getId() === $this->getAuthenticatedUser()->getId()) {
+            return true;
+        }
+
+        if ($order->getUser()->isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function findDataboxSubdefNames()
+    {
+        $subdefNames = [
+            'document' => true,
+        ];
+        
+        foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
+            foreach ($databox->get_subdef_structure() as $subdefGroup) {
+                /** @var \databox_subdef $subdef */
+                foreach ($subdefGroup as $subdef) {
+                    $subdefNames[$subdef->get_name()] = true;
+                }
+            }
+        }
+
+        return array_keys($subdefNames);
     }
 }

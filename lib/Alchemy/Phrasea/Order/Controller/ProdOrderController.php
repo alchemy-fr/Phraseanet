@@ -100,8 +100,13 @@ class ProdOrderController extends BaseOrderController
     public function displayOrders(Request $request)
     {
         $page = (int) $request->query->get('page', 1);
-        $offsetStart = $page - 1;
         $perPage = (int) $request->query->get('per-page', 10);
+        $offsetStart = 0;
+
+        if ($page > 0) {
+            $offsetStart = ($page - 1) * $perPage;
+        }
+
         $sort = $request->query->get('sort');
 
         $baseIds = array_keys($this->getAclForUser()->get_granted_base(['order_master']));

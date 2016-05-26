@@ -5,9 +5,16 @@
 - name: Create mailcatcher log directory
   file: path={{ mailcatcher_log_path }} owner=mailcatcher mode=0755 state=directory
 
-- name: Install Mailcatcher
-  gem: name={{ mailcatcher_gem }} user_install=no state=latest
-  notify: restart mailcatcher
+# https://github.com/jadb/ansible-role-mailcatcher/blob/b4df99308f0e5222a4ccb7d519504f967b0ea21b/tasks/main.yml
+
+- name: Install mime-types for Ruby1.9
+  # https://github.com/sj26/mailcatcher/issues/277#issuecomment-209154903
+  command: gem install mime-types --version "< 3"
+
+- name: Install the mailcatcher (GEM)
+  # gem module is flaky, this is consistent
+  command: gem install mailcatcher --conservative
+  ignore_errors: yes
 
 - name: Install mailcatcher supervisord conf
   template: src='program_mailcatcher.conf.j2' dest='/etc/supervisor/conf.d/program_mailcatcher.conf'

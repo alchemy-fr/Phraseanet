@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -238,6 +239,10 @@ class DeveloperController extends Controller
         $token = $account
             ? $this->getApiOAuthTokenRepository()->findDeveloperToken($account)
             : null;
+
+        if (! $account) {
+            throw new AccessDeniedHttpException();
+        }
 
         return $this->render('developers/application.html.twig', [
             "application" => $application,

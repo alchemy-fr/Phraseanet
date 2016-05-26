@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Account\AccountService;
 use Alchemy\Phrasea\Account\CollectionRequestMapper;
 use Alchemy\Phrasea\Account\Command\UpdateAccountCommand;
 use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
+use Alchemy\Phrasea\Account\RestrictedStatusExtractor;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
@@ -84,6 +85,8 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
+
+use JMS\TranslationBundle\Annotation\Ignore;
 use League\Fractal\Resource\Item;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -747,6 +750,9 @@ class V1Controller extends Controller
 
         $grants = [];
 
+
+        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
+
         foreach ($bases as $base) {
             $baseGrants = [];
 
@@ -763,6 +769,33 @@ class V1Controller extends Controller
                 'base_id' => $base->get_base_id(),
                 'collection_id' => $base->get_coll_id(),
                 'rights' => $baseGrants,
+                'statuses' => $statusMapper->getRestrictedStatuses($base->get_base_id())
+            ];
+        }
+
+        return $grants;
+    }
+
+    private function listUserDataboxes(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rightsByDatabox = $acl->get_sbas_rights();
+        $grants = [];
+
+        foreach ($rightsByDatabox as $databoxId => $databoxRights) {
+            $rights = [];
+
+            foreach ($databoxRights as $name => $allowedFlag) {
+                if (! $allowedFlag) {
+                    continue;
+                }
+
+                $rights[] = $name;
+            }
+
+            $grants[] = [
+                'databox_id' => $databoxId,
+                'rights' => $rights
             ];
         }
 
@@ -2559,6 +2592,7 @@ class V1Controller extends Controller
         $ret = [
             "user" => $this->listUser($this->getAuthenticatedUser()),
             "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
+            "databoxes" => $this->listUserDataboxes($this->getAuthenticatedUser())
         ];
 
         if (defined('API_SKIP_USER_REGISTRATIONS') && ! constant('API_SKIP_USER_REGISTRATIONS')) {
@@ -2608,12 +2642,16 @@ class V1Controller extends Controller
             $ret = [ 'success' => true ];
         }
         catch (AccountException $exception) {
+            /** @Ignore */
             $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
         }
 
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * @Ignore
+     */
     public function updateCurrentUserPasswordAction(Request $request)
     {
         $service = $this->getAccountService();
@@ -2631,6 +2669,7 @@ class V1Controller extends Controller
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
             } catch (AccountException $exception) {
+                /** @Ignore */
                 $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
             }
         } else {

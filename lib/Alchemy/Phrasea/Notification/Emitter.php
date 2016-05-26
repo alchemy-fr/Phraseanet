@@ -16,9 +16,20 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class Emitter implements EmitterInterface
 {
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var string
+     */
     private $email;
 
+    /**
+     * @param string $name
+     * @param string $email
+     */
     public function __construct($name, $email)
     {
         if (!\Swift_Validate::email($email)) {
