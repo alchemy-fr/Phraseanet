@@ -25,6 +25,18 @@
         {% if width is not none and height is not none %}
             {{ width ~ " x " ~ height }}
         {% endif %}</dd>
+        {% set document = record.get_subdef('document') %}
+        {% if document and document.get_width() and document.get_height() %}
+            <dt>&nbsp;</dt>
+            <dd>{% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
+                    {% set size_w = (document.get_width() * (254/100) / 300) %}
+                    {% set size_h = (document.get_height() * (254/100) / 300) %}
+                    {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (300dpi)
+                    {% set size_w = (document.get_width() * (254/100) / 72) %}<br/>
+                    {% set size_h = (document.get_height() * (254/100) / 72) %}
+                    {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (72dpi)
+                {% endif %}</dd>
+        {% endif %}
     {%  endblock %}
     </dl>
         <hr/>
