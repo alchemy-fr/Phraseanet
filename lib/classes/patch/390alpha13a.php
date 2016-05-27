@@ -77,7 +77,7 @@ class patch_390alpha13a implements patchInterface
 
         foreach ($rs as $row) {
             try {
-                $user = $em->createQuery('SELECT PARTIAL u.{id} FROM Phraseanet:User s WHERE u.id = :id')
+                $user = $em->createQuery('SELECT PARTIAL u.{id} FROM Phraseanet:User u WHERE u.id = :id')
                     ->setParameters(['id' => $row['usr_id']])
                     ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
                     ->getSingleResult();
