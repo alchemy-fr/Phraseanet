@@ -794,8 +794,8 @@
                 );
             });
 
-            $('#sendmail .sendmail_button').bind('click',function(){
-                if(!check_subdefs($('#sendmail'))) {
+            var submitEmailForm = function () {
+                if (!check_subdefs($('#sendmail'))) {
                     return false;
                 }
 
@@ -803,12 +803,18 @@
                     return false;
                 }
 
-                if ($('iframe[name=""]').length === 0) {
-                    $('body').append('<iframe style="display:none;" name="sendmail_target"></iframe>');
-                }
+                $.post('{{ path('export_mail') }}', $('#sendmail form').serialize(), function (response) {
+                    dialog.Close();
+                });
+                return false;
+            };
 
-                $('#sendmail form').submit();
-                dialog.Close();
+            $('#sendmail form').on('submit', function () {
+                return submitEmailForm();
+            });
+
+            $('#sendmail .sendmail_button').on('click', function () {
+                return submitEmailForm();
             });
 
             $('.datepicker', dialog.getDomElement()).datepicker({
