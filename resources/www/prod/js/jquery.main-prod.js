@@ -142,6 +142,7 @@ function checkFilters(save) {
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
+    var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
 
@@ -153,6 +154,14 @@ function checkFilters(save) {
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
+
+    statusFilters.removeClass('danger_indicator danger');
+    $.each($('#ADVSRCH_SB_ZONE .field_switch'), function(index,el){
+        if( $(el).prop('checked') === true ) {
+            danger = true;
+            statusFilters.addClass('danger_indicator danger');
+        }
+    });
 
     var nbTotalSelectedColls = 0;
     $.each($('.sbascont', adv_box), function () {
