@@ -8,7 +8,7 @@
     <tr>
         <td valign="center" align="center">
              <select size=16 name="coll-order" id="coll-order" style="width:140px;">
-                 {% for collection in collections %}
+                 {% for collection in collections|sort_collections %}
                      <option value="{{ collection.get_base_id() }}"> {{ collection.get_name() }}</option>
                  {% endfor %}
              </select>
@@ -38,7 +38,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         var offsets = [
-            {% for collection in collections %}
+            {% for collection in collections|sort_collections %}
                 {% if not loop.first %},{% endif %} {{ collection.get_ord() }}
             {% endfor %}
         ];
@@ -86,7 +86,6 @@
                     $this.prop('disabled',true)
                 },
                 success : function(datas) {
-                    console.log('reorder success')
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
                         content:datas.msg
                     });
