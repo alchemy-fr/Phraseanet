@@ -197,6 +197,9 @@
                     if (window.console) {
                         console.log('adding new multi value ', value);
                     }
+                    if( value === '') {
+                        return;
+                    }
                     this.datas.push(new recordFieldValue(null, value, VocabularyId));
                     this.options.dirty = true;
                 }
@@ -211,6 +214,7 @@
                     if (window.console) {
                         console.log('Merging value ', value);
                     }
+
                     this.datas[0].setValue(this.datas[0].getValue() + ' ' + value, VocabularyId);
 
                     this.options.dirty = true;
