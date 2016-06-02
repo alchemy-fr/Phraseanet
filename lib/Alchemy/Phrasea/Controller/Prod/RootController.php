@@ -45,29 +45,12 @@ class RootController extends Controller
             return $this->app->redirectPath('logout');
         }
 
-        $cssPath = $this->app['root.path'] . '/www/assets/prod/skins';
-
         $css = [];
-
-        $finder = new Finder();
-        /** @var SplFileInfo[] $iterator */
-        $iterator = $finder
-            ->directories()
-            ->depth(0)
-            ->filter(function (\SplFileInfo $fileinfo) {
-                return ctype_xdigit($fileinfo->getBasename());
-            })
-            ->in($cssPath);
-
-        foreach ($iterator as $dir) {
-            $baseName = $dir->getBaseName();
-            $css[$baseName] = $baseName;
-        }
 
         $user = $this->getAuthenticatedUser();
         $cssfile = $this->getSettings()->getUserSetting($user, 'css');
 
-        if (!$cssfile && isset($css['000000'])) {
+        if (!$cssfile) {
             $cssfile = '000000';
         }
 
@@ -119,7 +102,6 @@ class RootController extends Controller
             'GV_multiAndReport'    => $conf->get(['registry', 'modules', 'stories']),
             'GV_thesaurus'         => $conf->get(['registry', 'modules', 'thesaurus']),
             'cgus_agreement'       => \databox_cgu::askAgreement($this->app),
-            'css'                  => $css,
             'feeds'                => $feeds,
             'aggregate'            => $aggregate,
             'GV_google_api'        => $conf->get(['registry', 'webservices', 'google-charts-enabled']),

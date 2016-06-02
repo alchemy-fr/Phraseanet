@@ -66,24 +66,20 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
-    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/skins/{{ cssfile  }}/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
-        /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
-            background-color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection-disabled', '333333')}}};
-        }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
         }
     </style>
-
 {% endblock %}
 
 {% block javascript %}
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+
     <script type="text/javascript">
 
         {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
@@ -103,6 +99,7 @@
                 moduleId: 1,
                 userId: {{app.getAuthenticatedUser().getId()}}
             },
+            debug: {{ app.debug }},
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',
             geocodingProviders: {{ geocodingProviders|json_encode()|raw}},
@@ -143,24 +140,11 @@
                 ]
             }
         });
-        // prodApp.appEvents.emit('search.doCheckFilters', true);
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
 
         });
-
-        function setCss(color) {
-            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
-            $.post("{{ path('save_pref') }}", {
-                prop: "css",
-                value: color,
-                t: Math.random()
-            }, function(data){
-                return;
-            });
-        }
-
     </script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
@@ -590,10 +574,7 @@
                     </div>
                     <div style="float:right; width:49%;">
                         <h1>{{ 'Theme' | trans }}</h1>
-                        {% for color, file in css %}
-                            <div title="{{ 'Selecteur de theme' | trans }}" class="colorpicker_box"
-                                onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:{{ '#' ~ color ~ ';' }}">&nbsp;</div>
-                        {% endfor %}
+                        <div id="theme-container"></div>
                     </div>
                 </div>
                 <div class="box">
@@ -785,7 +766,5 @@
     <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
-
-
     <script type="text/javascript" id="bitly_loader"></script>
 {% endblock %}
