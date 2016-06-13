@@ -190,8 +190,6 @@ class PDF
                 $t = $irow . '-' . $x;
                 $t = $rec->get_title();
 
-                $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
-
                 if ($links) {
                     $lk = $this->pdf->AddLink();
                     $this->pdf->SetLink($lk, 0, $npages + $rec->getNumber());
@@ -209,6 +207,8 @@ class PDF
                         , $wimg, $himg
                     );
                 }
+
+                $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
             }
         }
         $this->pdf->SetLeftMargin($oldMargins['left']);
