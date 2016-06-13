@@ -399,16 +399,11 @@ SQL;
             throw new Exception('No subdefs given');
         }
 
-        $includeBusinessFields = !!$includeBusinessFields;
-
+        $includeBusinessFields = (bool) $includeBusinessFields;
         $files = [];
-
         $n_files = 0;
-
         $file_names = [];
-
         $size = 0;
-
         $unicode = new \unicode();
 
         /** @var record_exportElement $download_element */
@@ -433,7 +428,7 @@ SQL;
 
             $files[$id]['original_name'] =
             $files[$id]['export_name'] =
-                $download_element->get_original_name(true);
+                $download_element->get_original_name(false);
 
             $files[$id]['original_name'] =
                 trim($files[$id]['original_name']) != '' ?
@@ -441,12 +436,12 @@ SQL;
 
             $infos = pathinfo($files[$id]['original_name']);
 
-            $extension = isset($infos['extension']) ? $infos['extension'] : '';
+            $extension = isset($infos['extension']) ? $infos['extension'] :
+                substr($files[$id]['original_name'], 0 - strrpos($files[$id]['original_name'], '.'));
 
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
-
-                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
+                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true) . '.' . $extension;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
             }
@@ -713,7 +708,7 @@ SQL;
                         $name = $obj["folder"]
                             . $record["export_name"]
                             . $obj["ajout"]
-                            . '.' . $obj["exportExt"];
+                            . (isset($obj["exportExt"]) && trim($obj["exportExt"]) != '' ? '.' . $obj["exportExt"] : '');
 
                         $archiveFiles[$app['unicode']->remove_diacritics($name)] = $path;
                         if ($o == 'caption') {
