@@ -425,16 +425,11 @@ class set_export extends set_abstract
             throw new Exception('No subdefs given');
         }
 
-        $includeBusinessFields = !!$includeBusinessFields;
-
+        $includeBusinessFields = (bool) $includeBusinessFields;
         $files = array();
-
         $n_files = 0;
-
         $file_names = array();
-
         $size = 0;
-
         $unicode = new \unicode();
 
         foreach ($this->elements as $download_element) {
@@ -459,8 +454,8 @@ class set_export extends set_abstract
             $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $BF);
 
             $files[$id]['original_name'] =
-                $files[$id]['export_name'] =
-                $download_element->get_original_name(true);
+            $files[$id]['export_name'] =
+                $download_element->get_original_name(false);
 
             $files[$id]['original_name'] =
                 trim($files[$id]['original_name']) != '' ?
@@ -468,13 +463,12 @@ class set_export extends set_abstract
 
             $infos = pathinfo($files[$id]['original_name']);
 
-            $extension = isset($infos['extension']) ? $infos['extension'] : '';
+            $extension = isset($infos['extension']) ? $infos['extension'] :
+                substr($files[$id]['original_name'], 0 - strrpos($files[$id]['original_name'], '.'));
 
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
-
-                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
-                $rename_done = true;
+                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true) . '.' . $extension;
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
             }
@@ -745,7 +739,7 @@ class set_export extends set_abstract
                         $name = $obj["folder"]
                             . $record["export_name"]
                             . $obj["ajout"]
-                            . '.' . $obj["exportExt"];
+                            . (isset($obj["exportExt"]) && trim($obj["exportExt"]) != '' ? '.' . $obj["exportExt"] : '');
 
                         $name = $app['unicode']->remove_diacritics($name);
 
