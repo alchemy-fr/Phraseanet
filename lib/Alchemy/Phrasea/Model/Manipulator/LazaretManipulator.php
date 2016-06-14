@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Model\Manipulator;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -146,7 +147,17 @@ class LazaretManipulator
                 $this->app,
                 $lazaretFile->getOriginalName()
             );
+        }
+        catch(\Exception $e) {
+            // the file is not in tmp anymore ?
+            // delete the quarantine item
+            $this->denyLazaretFile($lazaretFile);
+            $ret['message'] = $this->app->trans('File is not present in quarantine anymore, please refresh');
 
+            return $ret;
+        }
+
+        try {
             //Post record creation
             /** @var \record_adapter $record */
             $record = null;
@@ -186,7 +197,8 @@ class LazaretManipulator
                         case AttributeInterface::NAME_METADATA:
                             /** @var Metadata $value */
                             $value = $attribute->getValue();
-                            $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
+                            // $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
+                            $metadataBag->set($value->getTag()->getTagname(), $value);
                             break;
                         case AttributeInterface::NAME_STORY:
                             /** @var \record_adapter $value */
@@ -197,8 +209,8 @@ class LazaretManipulator
                             $record->setStatus($attribute->getValue());
                             break;
                         case AttributeInterface::NAME_METAFIELD:
-                            /** @var Border\Attribute\MetaField $attribute */
-                            $metaFields->set($attribute->getField()->get_name(), $attribute->getValue());
+                            /** @var MetaField $attribute */
+                            $metaFields->set($attribute->getField()->get_name(), $attribute);
                             break;
                     }
                 }
