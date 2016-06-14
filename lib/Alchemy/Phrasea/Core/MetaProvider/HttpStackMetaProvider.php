@@ -91,6 +91,7 @@ class HttpStackMetaProvider implements ServiceProviderInterface
                     unset($config['enabled']);
 
                     $paths['/api/v\d+/'] = $config;
+                    $paths['/download/'] = $config;
                 }
             }
 
