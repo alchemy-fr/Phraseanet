@@ -441,9 +441,13 @@ SQL;
 
             if ($rename_title) {
                 $title = strip_tags($download_element->get_title(null, null, true));
-                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true) . '.' . $extension;
+                $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
+            }
+
+            if (substr(strrev($files[$id]['export_name']), 0, strlen($extension)) != strrev($extension)) {
+                $files[$id]['export_name'] .= '.' . $extension;
             }
 
             $sizeMaxAjout = 0;
