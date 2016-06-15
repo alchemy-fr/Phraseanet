@@ -42,9 +42,9 @@ class RecordEditSubscriber implements EventSubscriberInterface
 
     public function onEdit(RecordEdit $event)
     {
-        $record = $event->getRecord();
+        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
 
-        $databox = $this->getRecordDatabox($record);
+        $databox = $recordAdapter->getDatabox();
 
         $metaStructure = $databox->get_meta_structure();
         $editDateField = false;
@@ -55,7 +55,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
 
         if ($editDateField instanceof \databox_field) {
-            $this->updateRecord($this->convertToRecordAdapter($record), $editDateField);
+            $this->updateRecord($recordAdapter, $editDateField);
         }
     }
 
