@@ -1401,8 +1401,8 @@ class ArchiveJob extends AbstractJob
 
         $metadataBag = new MetaFieldsBag();
 
-        foreach ($sxcaption->description->children() as $tagname => $field) {
-            $field = trim($field);
+        foreach ($sxcaption->description->children() as $tagname => $value) {
+            $value = trim($value);
 
             $meta = $metadatasStructure->get_element_by_name(trim($tagname));
             if (!$meta) {
@@ -1410,7 +1410,7 @@ class ArchiveJob extends AbstractJob
             }
 
             if ($meta->is_multi()) {
-                $fields = \caption_field::get_multi_values($field, $meta->get_separator());
+                $fields = \caption_field::get_multi_values($value, $meta->get_separator());
 
                 if (!$metadataBag->containsKey($meta->get_name())) {
                     $values = $fields;
@@ -1420,7 +1420,7 @@ class ArchiveJob extends AbstractJob
 
                 $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, $values));
             } else {
-                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, [$field]));
+                $metadataBag->set($meta->get_name(), new BorderAttribute\MetaField($meta, [$value]));
             }
         }
 
