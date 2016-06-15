@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Border;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use databox_field;
 
 /**
  * MetaFieldsBad is a collection of MetaField attributes indexed by field names.
@@ -28,11 +29,13 @@ class MetaFieldsBag extends ArrayCollection implements MetaBagInterface
         $metas = [];
         $unicode = new \unicode();
 
+        /** @var databox_field $databox_field */
         foreach ($metadatasStructure as $databox_field) {
-            if ($this->containsKey($databox_field->get_name())) {
+            $field_name = $databox_field->get_name();
+            if ($this->containsKey($field_name)) {
                 if ($databox_field->is_multi()) {
 
-                    $values = $this->get($databox_field->get_name())->getValue();
+                    $values = $this->get($field_name)->getValue();
 
                     $tmp = [];
 
@@ -60,7 +63,7 @@ class MetaFieldsBag extends ArrayCollection implements MetaBagInterface
                     }
                 } else {
 
-                    $values = $this->get($databox_field->get_name())->getValue();
+                    $values = $this->get($field_name)->getValue();
                     $value = array_shift($values);
 
                     $value = $unicode->substituteCtrlCharacters($value, ' ');
