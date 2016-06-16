@@ -477,7 +477,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         // remove stamp BEFORE changing collection since it uses the collection id :(
         // todo : change clearStampCache() to be agnostic of collection
-        $this->clearStampCache();
+        // $this->clearStampCache();
 
         $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
@@ -997,7 +997,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->set_metadata($param, $this->getDatabox());
         }
 
-        $this->clearStampCache();
+        // $this->clearStampCache();
 
         $xml = new DOMDocument();
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
