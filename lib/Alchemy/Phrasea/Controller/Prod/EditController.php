@@ -362,10 +362,7 @@ class EditController extends Controller
                 $record->setStatus($newstat);
             }
 
-            $record
-                ->write_metas()
-                ->getCollection()
-                ->reset_stamp($record->getRecordId());
+            $record->write_metas();
 
             if ($statbits != '') {
                 $this->getDataboxLogger($databox)
