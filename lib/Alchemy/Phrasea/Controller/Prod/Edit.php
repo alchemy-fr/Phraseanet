@@ -327,6 +327,7 @@ class Edit implements ControllerProviderInterface
 
             foreach ($request->request->get('mds') as $rec) {
                 try {
+                    /** @var \record_adapter $record */
                     $record = $databox->get_record($rec['record_id']);
                 } catch (\Exception $e) {
                     continue;
@@ -369,10 +370,7 @@ class Edit implements ControllerProviderInterface
                     $record->set_binary_status($newstat);
                 }
 
-                $record
-                    ->write_metas()
-                    ->get_collection()
-                    ->reset_stamp($record->get_record_id());
+                $record->write_metas()->clearStampCache();
 
                 if ($statbits != '') {
                     $app['phraseanet.logger']($record->get_databox())
