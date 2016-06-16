@@ -99,7 +99,7 @@
                 moduleId: 1,
                 userId: {{app.getAuthenticatedUser().getId()}}
             },
-            debug: {{ app.debug }},
+            debug: {% if app.debug %}true{% else %}false{% endif %},
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',
             geocodingProviders: {{ geocodingProviders|json_encode()|raw}},
