@@ -116,15 +116,15 @@ class CollectionService
      */
     public function resetStamp(Collection $collection, $record_id = null)
     {
-        $sql = 'SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)
-            WHERE r.coll_id = :coll_id
-              AND r.type="image" AND s.name IN ("preview", "document")';
+        $sql = "SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)\n"
+            . "WHERE r.coll_id = :coll_id\n"
+            . "AND r.type='image' AND s.name IN ('preview', 'document')";
 
 
         $params = [':coll_id' => $collection->getCollectionId()];
 
         if ($record_id) {
-            $sql .= ' AND record_id = :record_id';
+            $sql .= " AND record_id = :record_id";
             $params[':record_id'] = $record_id;
         }
 

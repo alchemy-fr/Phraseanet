@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
+use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -27,6 +28,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
             PhraseaEvents::RECORD_EDIT => 'onEdit',
             PhraseaEvents::RECORD_UPLOAD => 'onEdit',
             RecordEvents::ROTATE => 'onRecordChange',
+            RecordEvents::COLLECTION_CHANGED => 'onCollectionChanged',
         );
     }
 
@@ -40,11 +42,18 @@ class RecordEditSubscriber implements EventSubscriberInterface
         $this->appboxLocator = $appboxLocator;
     }
 
+    public function onCollectionChanged(CollectionChangedEvent $event)
+    {
+        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
+        $recordAdapter->clearStampCache();
+    }
+
     public function onEdit(RecordEdit $event)
     {
         $record = $event->getRecord();
+        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
 
-        $databox = $this->getRecordDatabox($record);
+        $databox = $recordAdapter->getDatabox();
 
         $metaStructure = $databox->get_meta_structure();
         $editDateField = false;
@@ -55,8 +64,10 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
 
         if ($editDateField instanceof \databox_field) {
-            $this->updateRecord($this->convertToRecordAdapter($record), $editDateField);
+            $this->updateRecord($recordAdapter, $editDateField);
         }
+
+        $recordAdapter->clearStampCache();
     }
 
     /**
