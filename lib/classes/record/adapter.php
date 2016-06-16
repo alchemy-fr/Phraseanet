@@ -461,6 +461,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $this->delete_data_from_cache();
 
+        $this->clearStampCache();
+
         return $this;
     }
 
@@ -1494,6 +1496,28 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
 
         return null;
+    }
+
+    public function clearStampCache()
+    {
+        $connbas = $this->get_databox()->get_connection();
+
+        $sql = "SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)\n"
+            . "WHERE r.type='image' AND s.name IN ('preview', 'document') AND record_id = :record_id";
+
+        $params = [
+            ':record_id' => $this->get_record_id()
+        ];
+
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            @unlink(\p4string::addEndSlash($row['path']) . 'stamp_' . $row['file']);
+        }
+
+        $stmt->closeCursor();
+        return $this;
     }
 
     /**
