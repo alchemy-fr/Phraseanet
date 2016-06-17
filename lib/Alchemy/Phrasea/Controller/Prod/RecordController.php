@@ -71,17 +71,14 @@ class RecordController extends Controller
             $options
         );
 
+        $currentRecord = $this->getContainerResult($record);
+
         if ($record->is_from_reg()) {
-            $currentRecord = $this->getContainerResult($record->get_container());
             $train = $this->render('prod/preview/reg_train.html.twig', ['record' => $record]);
         } else if ($record->is_from_basket() && $reloadTrain) {
-            $currentRecord = $this->getContainerResult($record);
             $train = $this->render('prod/preview/basket_train.html.twig', ['record' => $record]);
         } else if ($record->is_from_feed()) {
-            $currentRecord = $this->getContainerResult($record->get_container());
             $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
-        } else {
-            $currentRecord = $this->getContainerResult($record);
         }
 
         $recordCaptions = [];
@@ -89,9 +86,6 @@ class RecordController extends Controller
             // get field's values
             $recordCaptions[$field->get_name()] = $field->get_serialized_values();
         }
-
-        // add properties if record is embed in iframe:
-
 
         return $this->app->json([
             "desc"          => $this->render('prod/preview/caption.html.twig', [
@@ -109,7 +103,7 @@ class RecordController extends Controller
                 'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
             "current"       => $train,
-            "record" => $currentRecord,
+            "record"        => $currentRecord,
             "history"       => $this->render('prod/preview/short_history.html.twig', [
                 'record'        => $record,
             ]),
@@ -225,27 +219,20 @@ class RecordController extends Controller
         return $this->app['repo.story-wz'];
     }
 
-
-    private function getContainerResult($recordContainer)
+    /**
+     * @param \record_preview $recordContainer
+     * @return array
+     */
+    private function getContainerResult(\record_preview $recordContainer)
     {
-        /* @var $recordPreview \record_preview */
+        /* @var $recordPreview \media_subdef */
         $helpers = new PhraseanetExtension($this->app);
-
-        $fit = $this->fitIn($recordContainer);
 
         $recordData = [
           'databoxId' => $recordContainer->getBaseId(),
-          'id' => $recordContainer->get_serialize_key(),
+          'id' => $recordContainer->getId(),
           'isGroup' => $recordContainer->isStory(),
-            //'type' => $recordObj->getType(),
           'url' => (string)$helpers->getThumbnailUrl($recordContainer),
-          'width' => $fit['width'],
-          'height' => $fit['height'],
-          'fit' => [
-            'width' => $fit['width'],
-            'height' => $fit['height'],
-            'top' => $fit['top'],
-          ]
         ];
         $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
         if ($userHaveAccess) {
@@ -264,38 +251,5 @@ class RecordController extends Controller
         ];
 
         return $recordData;
-    }
-
-    /**
-     * Resize record thumbnail - direct translation from twig macro
-     * @param $record
-     * @return array
-     */
-    private function fitIn($record)
-    {
-        $thumb_w = 70;
-        $thumb_h = 70;
-
-        $thumbnail = $record->get_thumbnail();
-
-        if ($thumbnail != null) {
-
-            $thumb_w = $thumbnail->get_width();
-            $thumb_h = $thumbnail->get_height();
-        }
-
-        $box_w = 70;
-        $box_h = 80;
-
-        $original_h = $thumb_h > 0 ? $thumb_h : 70;
-        $original_w = $thumb_w > 0 ? $thumb_w : 70;
-
-        $fitHelper = new Fit();
-        $fit_size = $fitHelper->fitIn(
-          ["width" => $original_w, "height" => $original_h],
-          ["width" => $box_w, "height" => $box_h]
-        );
-
-        return $fit_size;
     }
 }
