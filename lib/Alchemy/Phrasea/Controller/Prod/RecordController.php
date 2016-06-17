@@ -14,9 +14,12 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Twig\Fit;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -69,15 +72,16 @@ class RecordController extends Controller
         );
 
         if ($record->is_from_reg()) {
+            $currentRecord = $this->getContainerResult($record->get_container());
             $train = $this->render('prod/preview/reg_train.html.twig', ['record' => $record]);
-        }
-
-        if ($record->is_from_basket() && $reloadTrain) {
+        } else if ($record->is_from_basket() && $reloadTrain) {
+            $currentRecord = $this->getContainerResult($record);
             $train = $this->render('prod/preview/basket_train.html.twig', ['record' => $record]);
-        }
-
-        if ($record->is_from_feed()) {
+        } else if ($record->is_from_feed()) {
+            $currentRecord = $this->getContainerResult($record->get_container());
             $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
+        } else {
+            $currentRecord = $this->getContainerResult($record);
         }
 
         $recordCaptions = [];
@@ -85,6 +89,9 @@ class RecordController extends Controller
             // get field's values
             $recordCaptions[$field->get_name()] = $field->get_serialized_values();
         }
+
+        // add properties if record is embed in iframe:
+
 
         return $this->app->json([
             "desc"          => $this->render('prod/preview/caption.html.twig', [
@@ -102,6 +109,7 @@ class RecordController extends Controller
                 'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
             "current"       => $train,
+            "record" => $currentRecord,
             "history"       => $this->render('prod/preview/short_history.html.twig', [
                 'record'        => $record,
             ]),
@@ -215,5 +223,79 @@ class RecordController extends Controller
     private function getStoryWorkZoneRepository()
     {
         return $this->app['repo.story-wz'];
+    }
+
+
+    private function getContainerResult($recordContainer)
+    {
+        /* @var $recordPreview \record_preview */
+        $helpers = new PhraseanetExtension($this->app);
+
+        $fit = $this->fitIn($recordContainer);
+
+        $recordData = [
+          'databoxId' => $recordContainer->getBaseId(),
+          'id' => $recordContainer->get_serialize_key(),
+          'isGroup' => $recordContainer->isStory(),
+            //'type' => $recordObj->getType(),
+          'url' => (string)$helpers->getThumbnailUrl($recordContainer),
+          'width' => $fit['width'],
+          'height' => $fit['height'],
+          'fit' => [
+            'width' => $fit['width'],
+            'height' => $fit['height'],
+            'top' => $fit['top'],
+          ]
+        ];
+        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
+        if ($userHaveAccess) {
+            $recordPreview = $recordContainer->get_preview();
+        } else {
+            $recordPreview = $recordContainer->get_thumbnail();
+        }
+
+        $recordData['preview'] = [
+          'width' => $recordPreview->get_width(),
+          'height' => $recordPreview->get_height(),
+          'url' => $this->app->url('alchemy_embed_view', [
+            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
+            'autoplay' => false
+          ])
+        ];
+
+        return $recordData;
+    }
+
+    /**
+     * Resize record thumbnail - direct translation from twig macro
+     * @param $record
+     * @return array
+     */
+    private function fitIn($record)
+    {
+        $thumb_w = 70;
+        $thumb_h = 70;
+
+        $thumbnail = $record->get_thumbnail();
+
+        if ($thumbnail != null) {
+
+            $thumb_w = $thumbnail->get_width();
+            $thumb_h = $thumbnail->get_height();
+        }
+
+        $box_w = 70;
+        $box_h = 80;
+
+        $original_h = $thumb_h > 0 ? $thumb_h : 70;
+        $original_w = $thumb_w > 0 ? $thumb_w : 70;
+
+        $fitHelper = new Fit();
+        $fit_size = $fitHelper->fitIn(
+          ["width" => $original_w, "height" => $original_h],
+          ["width" => $box_w, "height" => $box_h]
+        );
+
+        return $fit_size;
     }
 }

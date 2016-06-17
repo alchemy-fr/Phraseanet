@@ -26,8 +26,7 @@
     "fancytree": "~2.7",
     "bootstrap-sass": "v2.3.2.2",
     "jquery.lazyload": "~1.9.7",
-    "jquery-treeview": "~1.4.2",
-    "alchemy-embed-medias": "~0.3.2"
+    "jquery-treeview": "~1.4.2"
   },
   "devDependencies": {
     "mocha": "latest",
