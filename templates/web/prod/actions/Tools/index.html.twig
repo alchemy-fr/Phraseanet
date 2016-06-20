@@ -402,12 +402,12 @@
                         framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
                         type: "{{ subdef.get_mime() }}",
                         src: "{{ subdef.get_url() }}"
-                    }
+                    }{% if not loop.last %},{% endif %}
                     {% endfor %}
                 ]
                 {% endif %}
                 {% endif %}
-            }
+            }{% if not loop.last %},{% endif %}
             {% endfor %}
         ]
 
