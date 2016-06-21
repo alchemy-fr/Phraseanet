@@ -176,15 +176,32 @@
 
             </div>
           </div>
-            <div id="rangeExtractor"  class="tabBox">
-                <div class="PNB10 main_title">
+            <div id="rangeExtractor"  class="">
+                <div class="main_title">
                     <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
                     {{ "video range extractor" | trans }}
                 </div>
-                <hr style='margin-top:25px;'/>
                 <div class="video-range-editor-container"></div>
-
-                {#include embed plugin#}
+                <div class="video-data-container">
+                    <dl class="dl-horizontal">
+                        <dt>Ratio</dt><dd>{{ ratio }}</dd>
+                        <dt>Type</dt><dd>{{ record.get_mime() }}</dd>
+                        {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
+                            <dt>{{ 'Images par secondes' | trans }}</dt>
+                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }} ips</dd>
+                        {% endif %}
+                        {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
+                            <dt>{{ 'Codec Audio' | trans }}</dt>
+                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
+                        {% endif %}
+                        <dt>{{ 'Size' | trans }}</dt><dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
+                            (null) %}
+                            {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
+                            {% if width is not none and height is not none %}
+                                {{ width ~ " x " ~ height }}
+                            {% endif %}</dd>
+                    </dl>
+                </div>
             </div>
         {% endif %}
       {% endfor %}
@@ -378,6 +395,7 @@
             {% for record in records %}
             {
                 id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
                 {% if record.get_type() == 'video' %}
                 {% if selectionLength == 1 %}
                 {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
