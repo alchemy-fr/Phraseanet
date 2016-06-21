@@ -129,7 +129,9 @@
               {% set height = technical_info[dataH].value %}
 
               {% if width and height %}
-                {% set ratio = (width / height)|number_format(2, '.') %}
+                  {% set rawRatio =  (width / height)|number_format(3, '.') %}
+                  {% set rawRatioLength =  rawRatio|length %}
+                {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
               {% else %}
                  {% set ratio = '' %}
               {% endif %}
