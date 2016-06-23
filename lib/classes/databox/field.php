@@ -565,6 +565,18 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     *
+     * @param  boolean       $bool
+     * @return databox_field
+     */
+    public function set_multi($bool)
+    {
+        $this->multi = (bool)$bool;
+
+        return $this;
+    }
+
+    /**
      * Set a vocabulary
      *
      * @param  ControlProviderInterface $vocabulary
@@ -892,7 +904,7 @@ class databox_field implements cache_cacheableInterface
      *
      * @throws \Exception_InvalidArgument
      */
-    public static function create(Application $app, databox $databox, $name, $multi)
+    public static function create(Application $app, databox $databox, $name)
     {
         $sorter = 0;
 
@@ -911,7 +923,7 @@ class databox_field implements cache_cacheableInterface
           `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`, `separator`)
         VALUES (null, :name, '', 0, 0, 1, 'string', '',
-          null, :multi,
+          null, 0,
           0, 0, 1, :sorter, '')";
 
         $name = self::generateName($name);
@@ -920,10 +932,8 @@ class databox_field implements cache_cacheableInterface
             throw new \Exception_InvalidArgument();
         }
 
-        $multi = $multi ? 1 : 0;
-
         $stmt = $databox->get_connection()->prepare($sql);
-        $stmt->execute([':name'   => $name, ':sorter' => $sorter, ':multi' => $multi]);
+        $stmt->execute([':name'   => $name, ':sorter' => $sorter]);
         $id = $databox->get_connection()->lastInsertId();
         $stmt->closeCursor();
 
