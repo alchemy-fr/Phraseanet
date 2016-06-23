@@ -572,7 +572,7 @@ class databox_field implements cache_cacheableInterface
     public function set_multi($bool)
     {
         $this->multi = (bool)$bool;
-
+        $this->separator = self::checkMultiSeparator($this->separator, $this->multi);
         return $this;
     }
 
