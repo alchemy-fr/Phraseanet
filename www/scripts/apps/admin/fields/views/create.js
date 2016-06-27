@@ -130,7 +130,8 @@ define([
                 "label_fr": $("#new-label_fr", this.$el).val(),
                 "label_de": $("#new-label_de", this.$el).val(),
                 "label_nl": $("#new-label_nl", this.$el).val(),
-                "multi": $("#new-multivalued", this.$el).is(":checked")
+                "multi": $("#new-multivalued", this.$el).is(":checked"),
+                "report": false
             });
 
             field.save(null, {

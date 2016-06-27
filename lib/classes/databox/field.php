@@ -923,8 +923,8 @@ class databox_field implements cache_cacheableInterface
           `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`, `separator`)
         VALUES (null, :name, '', 0, 0, 1, 'string', '',
-          null, 0,
-          0, 0, 1, :sorter, '')";
+          null, 0, 0, 0,
+           1, :sorter, '')";
 
         $name = self::generateName($name);
 
