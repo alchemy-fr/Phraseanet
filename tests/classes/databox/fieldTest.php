@@ -37,7 +37,7 @@ class databox_fieldTest extends \PhraseanetTestCase
         }
         if (! $this->object_multi instanceof databox_field) {
             $this->object_multi = databox_field::create(self::$DI['app'], $this->databox, $this->name_multi);
-            $this->object_mono->set_multi(true);
+            $this->object_multi->set_multi(true);
         }
     }
 
