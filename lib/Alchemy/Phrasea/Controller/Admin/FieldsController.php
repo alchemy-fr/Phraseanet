@@ -210,7 +210,7 @@ class FieldsController extends Controller
         $this->validateTagField($data);
 
         try {
-            $field = \databox_field::create($this->app, $databox, $data['name'], $data['multi']);
+            $field = \databox_field::create($this->app, $databox, $data['name']);
             $this->updateFieldWithData($field, $data);
             $field->save();
         } catch (\Exception $e) {
@@ -308,6 +308,7 @@ class FieldsController extends Controller
             ->set_business($data['business'])
             ->set_aggregable($data['aggregable'])
             ->set_indexable($data['indexable'])
+            ->set_multi($data['multi'])
             ->set_required($data['required'])
             ->set_separator($data['separator'])
             ->set_readonly($data['readonly'])

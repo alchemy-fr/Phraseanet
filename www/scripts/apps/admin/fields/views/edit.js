@@ -93,7 +93,8 @@ define([
             "keyup input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
-            "click .lng-label a": "_toggleLabels"
+            "click .lng-label a": "_toggleLabels",
+            "click input#multi": "multiClickdAction"
         },
         triggerControlledVocabulary: function (e) {
             if ($(e.target, this.$el).find("option:selected").val() === "") {
@@ -133,6 +134,16 @@ define([
 
             return this;
         },
+        multiClickdAction: function (e) {
+            if($(e.target).is(":checked")) {
+                $("#separatorZone").show();
+            }
+            else {
+                $("#separatorZone").hide();
+            }
+
+            return this;
+        },
         tagFieldChangedAction: function (e) {
             var $this = this;
             var fieldTag = $(e.target);
@@ -154,7 +165,7 @@ define([
                 } else {
                     $this.fieldChangedAction(e);
                 }
-            }
+            };
 
             if ("" !== fieldTagValue) {
                 var jqxhr = $.get("/admin/fields/tags/" + fieldTagValue, onFieldValid).fail(function () {
