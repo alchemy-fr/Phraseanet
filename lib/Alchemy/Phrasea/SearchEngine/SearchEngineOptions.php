@@ -24,6 +24,7 @@ class SearchEngineOptions
 {
     const RECORD_RECORD = 0;
     const RECORD_GROUPING = 1;
+    const RECORD_STORY = 2;
     const TYPE_IMAGE = 'image';
     const TYPE_VIDEO = 'video';
     const TYPE_AUDIO = 'audio';
@@ -296,6 +297,7 @@ class SearchEngineOptions
                 $this->search_type = self::RECORD_RECORD;
                 break;
             case self::RECORD_GROUPING:
+            case self::RECORD_STORY:
                 $this->search_type = self::RECORD_GROUPING;
                 break;
         }

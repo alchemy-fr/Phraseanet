@@ -1117,6 +1117,7 @@ class V1Controller extends Controller
             'results.records.status' => new CallbackTransformer(),
             'results.records.caption' => new CallbackTransformer(),
         ]);
+
         $includeResolver = new IncludeResolver($transformerResolver);
 
         $fractal = new \League\Fractal\Manager();
@@ -1406,20 +1407,27 @@ class V1Controller extends Controller
      */
     private function resolveSearchIncludes(Request $request)
     {
-        if ($request->attributes->get('_extended', false)) {
-            return [
+        $includes = [];
+
+        if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+            $includes += [
                 'results.stories.records.subdefs',
                 'results.stories.records.metadata',
                 'results.stories.records.caption',
-                'results.stories.records.status',
-                'results.records.subdefs',
-                'results.records.metadata',
-                'results.records.caption',
-                'results.records.status',
+                'results.stories.records.status'
             ];
         }
 
-        return [];
+        if ($request->attributes->get('_extended', false)) {
+            $includes += [
+                'results.records.subdefs',
+                'results.records.metadata',
+                'results.records.caption',
+                'results.records.status'
+            ];
+        }
+
+        return $includes;
     }
 
     /**
@@ -1435,7 +1443,7 @@ class V1Controller extends Controller
                 'results.subdefs',
                 'results.metadata',
                 'results.caption',
-                'results.status',
+                'results.status'
             ];
         }
 
