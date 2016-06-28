@@ -58,6 +58,7 @@ class StoryTransformer extends TransformerAbstract
             'collection_id' => $story->getCollectionId(),
             'base_id' => $story->getBaseId(),
             'uuid' => $story->getUuid(),
+            'record_count' => count($storyView->getChildren())
         ];
     }
 
