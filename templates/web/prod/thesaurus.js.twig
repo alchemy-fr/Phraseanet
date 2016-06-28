@@ -56,9 +56,6 @@ function T_Gfilter(o)
       break;
     case "wiz_1":	// accept
       break;
-    case "wiz_2":	// replace
-      T_replaceBy2(f);
-      break;
     default:
       break;
   }
@@ -75,49 +72,10 @@ function T_Gfilter_delayed(f, delay)
     case "wiz_1":	// accept
       T_filter_delayed2(f, delay, "CANDIDATE");
       break;
-    case "wiz_2":	// replace
-      T_filter_delayed2(f, delay, "CANDIDATE");
-      break;
     default:
       break;
   }
 }
-
-
-function T_replaceBy2(f)
-{
-  if(trees.C._selInfos.n != 1)
-    return;
-  var msg;
-  var term = trees.C._selInfos.sel.eq(0).find("span span").html();
-
-  var cid  = trees.C._selInfos.sel[0].getAttribute('id').split('.');
-  cid.shift();
-  var sbas = cid.shift();
-  cid = cid.join('.');
-
-  trees.C._toReplace = { 'sbas':sbas, 'cid':cid, 'replaceby':f };
-
-  {% set message %}
-   {{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}
-  {% endset %}
-
-  var msg = $.sprintf("{{ message | e('js') }}", {'from':term, 'to':f});
-
-  var confirmBox = p4.Dialog.Create({
-      size : 'Alert',
-      closeOnEscape : true,
-      cancelButton: true,
-      buttons: {
-          "Ok" : function() {
-              confirmBox.Close();
-              T_replaceCandidates_OK();
-          }
-      }
-  });
-  confirmBox.setContent(msg);
-}
-
 
 function T_filter_delayed2(f, delay, mode)
 {
@@ -220,59 +178,6 @@ function T_filter_delayed2(f, delay, mode)
 
 
 // ======================================================================================================
-
-function T_replaceCandidates_OK()
-{
-  {% set replaceing_msg %}
-    {{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}
-  {% endset %}
-
-  var replacingBox = p4.Dialog.Create({
-    size : 'Alert'
-  });
-  replacingBox.setContent("{{ replaceing_msg | e('js') }}");
-
-  var parms = {
-    url:	"/xmlhttp/replacecandidate.j.php",
-    data:	{
-      "id[]" : trees.C._toReplace.sbas + "." + trees.C._toReplace.cid
-      , "t" : trees.C._toReplace.replaceby
-      , "debug" : '0'
-    },
-    async:		false,
-    cache:		false,
-    dataType:	"json",
-    timeout:	10*60*1000,	// 10 minutes !
-    success:	function(result, textStatus)
-    {
-      trees.C._toReplace = null;
-      thesauShowWizard("wiz_0", false);
-
-      replacingBox.Close();
-
-      if(result.msg != '')
-      {
-        var alert = p4.Dialog.Create({
-          size : 'Alert',
-          closeOnEscape : true,
-          closeButton:true
-        });
-        alert.setContent(result.msg);
-      }
-
-      for(i in result.ctermsDeleted)
-      {
-          var cid = "#CX_P\\." + result.ctermsDeleted[i].replace(new RegExp("\\.", "g"), "\\.");	// escape les '.' pour jquery
-          $(cid).remove();
-      }
-
-    },
-    _ret: null	// private alchemy
-  };
-
-  $.ajax( parms );
-}
-
 
 function T_acceptCandidates_OK()
 {
@@ -512,36 +417,6 @@ function C_MenuOption(menuItem, menu, option, parm)
       // ... and switch to the thesaurus tab
       p4.thesau.tabs.tabs('option', 'active', 0);
       thesauShowWizard("wiz_1", true);
-
-      break;
-
-    case 'REPLACE':
-      // display helpful message into the thesaurus box...
-      var msg;
-
-      {% set messageOne %}
-        {{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}
-      {% endset %}
-      {% set messageMany %}
-        {{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}
-      {% endset %}
-
-      if(trees.C._selInfos.n == 1)
-      {
-        var term = trees.C._selInfos.sel.eq(0).find("span span").html();
-        msg = $.sprintf('{{ messageOne | e('js') }}', term);
-      }
-      else
-      {
-        msg = $.sprintf('{{ messageMany | e('js') }}', trees.C._selInfos.n);
-      }
-
-      p4.thesau.tabs.tabs('option', 'active', 0);
-
-      // set the content of the wizard
-      $("#THPD_WIZARDS .wiz_2 .txt").html(msg);
-      // ... and switch to the thesaurus tab
-      thesauShowWizard("wiz_2", true);
 
       break;
 
@@ -1182,7 +1057,6 @@ function startThesaurus(){
     'C':{
       'tree'       : $("#THPD_C_tree", p4.thesau.tabs)
       , '_toAccept'  : null 			// may contain : {'type', 'dst', 'lng'}
-      , '_toReplace' : null		//
       , '_selInfos'  : null				// may contain : {'sel':lisel, 'field':field, 'sbas':sbas, 'n':lisel.length}
     }
   };
@@ -1287,16 +1161,8 @@ function startThesaurus(){
     ,
     {% endfor %}
     {
-      label:'{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
-//      disabled:true,
-      onclick:function(menuItem, menu)
-      {
-        C_MenuOption(menuItem, menu, 'REPLACE', null);
-      }
-    },
-    {
       label:'{{ 'boutton::supprimer' | trans }}',
-//      disabled:true,
+      //      disabled:true,
       onclick:function(menuItem, menu)
       {
         C_MenuOption(menuItem, menu, 'DELETE', null);
@@ -1308,7 +1174,6 @@ function startThesaurus(){
     beforeShow:function()
     {
       var ret = false;
-      var replaceBy_option = {{ thesau_languages|length }};
 
       var x = this._showEvent.srcElement ? this._showEvent.srcElement : this._showEvent.target;
       var li  = $(x).closest("li");
@@ -1340,23 +1205,11 @@ function startThesaurus(){
 
           // glue selection info to the tree
           trees.C._selInfos = {'sel':lisel, 'field':field, 'sbas':sbas, 'n':lisel.length} ;
-
-          if(lisel.length == 1)
-          {
-            // $(this.menu).find('.context-menu-item').eq(replaceBy_option).removeClass('context-menu-item-disabled');
-          }
-          else
-          {
-            // $(this.menu).find('.context-menu-item').eq(replaceBy_option).addClass('context-menu-item-disabled');
-          }
         }
         else
         {
           trees.C._selInfos = null;
         }
-
-        // replace with is not possible (for now) with es
-        $(this.menu).find('.context-menu-item').eq(replaceBy_option).addClass('context-menu-item-disabled');
 
         ret = true;
       }

@@ -1346,8 +1346,6 @@ class ThesaurusXmlHttpController extends Controller
             }
         }
 
-        $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => 0]);
-
         return $this->app->json($ret);
     }
 
