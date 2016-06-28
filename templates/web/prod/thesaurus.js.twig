@@ -1308,6 +1308,7 @@ function startThesaurus(){
     beforeShow:function()
     {
       var ret = false;
+      var replaceBy_option = {{ thesau_languages|length }};
 
       var x = this._showEvent.srcElement ? this._showEvent.srcElement : this._showEvent.target;
       var li  = $(x).closest("li");
@@ -1340,20 +1341,22 @@ function startThesaurus(){
           // glue selection info to the tree
           trees.C._selInfos = {'sel':lisel, 'field':field, 'sbas':sbas, 'n':lisel.length} ;
 
-//             $(this.menu).find('.context-menu-item')[{{ thesau_languages|length }}].addClass('context-menu-item-disabled');
           if(lisel.length == 1)
           {
-            $(this.menu).find('.context-menu-item').eq({{ thesau_languages|length }}).removeClass('context-menu-item-disabled');
+            // $(this.menu).find('.context-menu-item').eq(replaceBy_option).removeClass('context-menu-item-disabled');
           }
           else
           {
-            $(this.menu).find('.context-menu-item').eq({{ thesau_languages|length }}).addClass('context-menu-item-disabled');
+            // $(this.menu).find('.context-menu-item').eq(replaceBy_option).addClass('context-menu-item-disabled');
           }
         }
         else
         {
           trees.C._selInfos = null;
         }
+
+        // replace with is not possible (for now) with es
+        $(this.menu).find('.context-menu-item').eq(replaceBy_option).addClass('context-menu-item-disabled');
 
         ret = true;
       }
