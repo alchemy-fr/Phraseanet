@@ -15,8 +15,15 @@ use League\Fractal\TransformerAbstract;
 
 class StoryTransformer extends TransformerAbstract
 {
+    /**
+     * @var array
+     */
     protected $availableIncludes = ['thumbnail', 'metadatas', 'records'];
-    protected $defaultIncludes = ['thumbnail', 'metadatas', 'records'];
+
+    /**
+     * @var array
+     */
+    protected $defaultIncludes = ['thumbnail', 'metadatas'];
 
     /**
      * @var SubdefTransformer
