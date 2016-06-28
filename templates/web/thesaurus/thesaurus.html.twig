@@ -460,13 +460,8 @@
                             // alert(url);
 
                             ret = loadXMLDoc(url, null, true);
-                            // alert(ret);
-                            allhits = ret.getElementsByTagName("allhits").item(0).firstChild.nodeValue;
 
-                            if(allhits==0)
-                                msg = "{{ 'thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' | trans }}";
-                            else
-                                msg = "{{ 'thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' | trans }}";
+                            msg = "{{ 'thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)' | trans }}";
 
                             if(confirm(msg))
                             {
