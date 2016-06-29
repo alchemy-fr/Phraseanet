@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2d3272f471d3cf0eb5c7d44c46bc7145",
-    "content-hash": "f3050bb8fb62cb6b00e3799a8e5c6936",
+    "hash": "19164414a7dd4683f8d99d828456fb19",
+    "content-hash": "b908509f786ac7437d41055fbd021bef",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -132,16 +132,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "v0.3.3",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "2eedc22e0030f6b4a166de2b93ffb108193c43dd"
+                "reference": "edbbb7f0b9de199d5a67ce19fbc41bb94168352d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/2eedc22e0030f6b4a166de2b93ffb108193c43dd",
-                "reference": "2eedc22e0030f6b4a166de2b93ffb108193c43dd",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/edbbb7f0b9de199d5a67ce19fbc41bb94168352d",
+                "reference": "edbbb7f0b9de199d5a67ce19fbc41bb94168352d",
                 "shasum": ""
             },
             "require-dev": {
@@ -179,10 +179,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.3.3",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.4.1",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2016-06-14 13:51:50"
+            "time": "2016-06-16 09:35:17"
         },
         {
             "name": "alchemy/geonames-api-consumer",

@@ -29,7 +29,7 @@ gulp.task('watch-js', function(){
     // gulp.start('watch-permaview');
     gulp.start('watch-setup-js');
     gulp.start('watch-authentication-js');
-    gulp.start('watch-alchemy-embed-js');
+    gulp.start('watch-alchemy-embed-medias-js');
     gulp.start('watch-phraseanet-production-client-js');
 });
 

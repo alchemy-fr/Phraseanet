@@ -34,6 +34,7 @@
     "postinstall": "./node_modules/.bin/gulp install;"
   },
   "dependencies": {
-    "phraseanet-production-client": "~0.19.0"
+    "alchemy-embed-medias": "^0.4.3",
+    "phraseanet-production-client": "~0.20.0"
   }
 }

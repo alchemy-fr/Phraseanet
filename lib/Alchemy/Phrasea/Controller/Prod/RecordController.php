@@ -14,9 +14,12 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Twig\Fit;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -68,15 +71,13 @@ class RecordController extends Controller
             $options
         );
 
+        $currentRecord = $this->getContainerResult($record);
+
         if ($record->is_from_reg()) {
             $train = $this->render('prod/preview/reg_train.html.twig', ['record' => $record]);
-        }
-
-        if ($record->is_from_basket() && $reloadTrain) {
+        } else if ($record->is_from_basket() && $reloadTrain) {
             $train = $this->render('prod/preview/basket_train.html.twig', ['record' => $record]);
-        }
-
-        if ($record->is_from_feed()) {
+        } else if ($record->is_from_feed()) {
             $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
         }
 
@@ -102,6 +103,7 @@ class RecordController extends Controller
                 'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
             "current"       => $train,
+            "record"        => $currentRecord,
             "history"       => $this->render('prod/preview/short_history.html.twig', [
                 'record'        => $record,
             ]),
@@ -215,5 +217,39 @@ class RecordController extends Controller
     private function getStoryWorkZoneRepository()
     {
         return $this->app['repo.story-wz'];
+    }
+
+    /**
+     * @param \record_preview $recordContainer
+     * @return array
+     */
+    private function getContainerResult(\record_preview $recordContainer)
+    {
+        /* @var $recordPreview \media_subdef */
+        $helpers = new PhraseanetExtension($this->app);
+
+        $recordData = [
+          'databoxId' => $recordContainer->getBaseId(),
+          'id' => $recordContainer->getId(),
+          'isGroup' => $recordContainer->isStory(),
+          'url' => (string)$helpers->getThumbnailUrl($recordContainer),
+        ];
+        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
+        if ($userHaveAccess) {
+            $recordPreview = $recordContainer->get_preview();
+        } else {
+            $recordPreview = $recordContainer->get_thumbnail();
+        }
+
+        $recordData['preview'] = [
+          'width' => $recordPreview->get_width(),
+          'height' => $recordPreview->get_height(),
+          'url' => $this->app->url('alchemy_embed_view', [
+            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
+            'autoplay' => false
+          ])
+        ];
+
+        return $recordData;
     }
 }
