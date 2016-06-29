@@ -392,6 +392,7 @@
             processing: '{{ "processing" | trans }}',
             thumbnailTitle: '{{ 'thumbnail validation' | trans }}'
         },
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
         records: [
 
             {% for record in records %}

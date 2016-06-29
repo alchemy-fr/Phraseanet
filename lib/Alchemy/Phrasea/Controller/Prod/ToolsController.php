@@ -95,10 +95,12 @@ class ToolsController extends Controller
                 }
             }
         }
+        $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'   => $records,
             'record'    => $record,
+            'videoEditorConfig' => $conf->get(['video-editor']),
             'recordSubdefs' => $recordAccessibleSubdefs,
             'metadatas' => $metadata,
         ]);
