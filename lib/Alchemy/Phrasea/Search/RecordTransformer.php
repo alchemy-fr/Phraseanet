@@ -15,6 +15,7 @@ use League\Fractal\TransformerAbstract;
 class RecordTransformer extends TransformerAbstract
 {
     protected $availableIncludes = ['thumbnail', 'technical_informations', 'subdefs', 'metadata', 'status', 'caption'];
+
     protected $defaultIncludes = ['thumbnail', 'technical_informations'];
 
     /**

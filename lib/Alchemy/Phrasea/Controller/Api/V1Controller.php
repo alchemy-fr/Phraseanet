@@ -1407,24 +1407,26 @@ class V1Controller extends Controller
      */
     private function resolveSearchIncludes(Request $request)
     {
-        $includes = [];
-
-        if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
-            $includes += [
-                'results.stories.records.subdefs',
-                'results.stories.records.metadata',
-                'results.stories.records.caption',
-                'results.stories.records.status'
-            ];
-        }
+        $includes = [
+            'results.stories.records'
+        ];
 
         if ($request->attributes->get('_extended', false)) {
-            $includes += [
+            if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+                $includes = array_merge($includes, [
+                    'results.stories.records.subdefs',
+                    'results.stories.records.metadata',
+                    'results.stories.records.caption',
+                    'results.stories.records.status'
+                ]);
+            }
+
+            $includes = array_merge($includes, [
                 'results.records.subdefs',
                 'results.records.metadata',
                 'results.records.caption',
                 'results.records.status'
-            ];
+            ]);
         }
 
         return $includes;
