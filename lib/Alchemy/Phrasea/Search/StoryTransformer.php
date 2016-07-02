@@ -18,7 +18,7 @@ class StoryTransformer extends TransformerAbstract
     /**
      * @var array
      */
-    protected $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption_metadatas'];
+    protected $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption'];
 
     /**
      * @var array
@@ -77,9 +77,9 @@ class StoryTransformer extends TransformerAbstract
         return $this->collection($storyView->getChildren(), $this->recordTransformer);
     }
 
-    public function includeCaptionMetadatas(StoryView $storyView)
+    public function includeCaption(StoryView $storyView)
     {
-        return $this->collection($storyView->getStory()->get_caption()->get_fields(), $this->getCaptionRecordTransformer());
+        return $this->collection($storyView->getCaption()->getFields(), $this->getCaptionRecordTransformer());
     }
 
     private function getCaptionRecordTransformer()

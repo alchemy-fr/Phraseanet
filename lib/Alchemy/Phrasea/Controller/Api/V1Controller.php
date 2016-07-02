@@ -1102,6 +1102,7 @@ class V1Controller extends Controller
             'results.stories' => $storyTransformer,
             'results.stories.thumbnail' => $subdefTransformer,
             'results.stories.metadatas' => new CallbackTransformer(),
+            'results.stories.caption' => new CallbackTransformer(),
             'results.stories.records' => $recordTransformer,
             'results.stories.records.thumbnail' => $subdefTransformer,
             'results.stories.records.technical_informations' => $technicalDataTransformer,
@@ -1244,7 +1245,8 @@ class V1Controller extends Controller
                 }
             }
 
-            if (in_array('results.stories.metadatas', $includes, true)) {
+            if (in_array('results.stories.metadatas', $includes, true) ||
+                in_array('results.stories.caption', $includes, true)) {
                 $captions = $this->app['service.caption']->findByReferenceCollection($stories);
                 $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($stories);
 
@@ -1421,7 +1423,7 @@ class V1Controller extends Controller
                 ]);
             }
             else {
-                $includes[] = 'results.stories.caption_metadata';
+                $includes[] = 'results.stories.caption';
             }
 
             $includes = array_merge($includes, [
