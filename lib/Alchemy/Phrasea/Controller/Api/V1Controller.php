@@ -1423,7 +1423,7 @@ class V1Controller extends Controller
                 ]);
             }
             else {
-                $includes = 'results.stories.caption';
+                $includes = [ 'results.stories.caption' ];
             }
 
             $includes = array_merge($includes, [
