@@ -18,7 +18,7 @@ class StoryTransformer extends TransformerAbstract
     /**
      * @var array
      */
-    protected $availableIncludes = ['thumbnail', 'metadatas', 'records'];
+    protected $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption_metadatas'];
 
     /**
      * @var array
@@ -75,6 +75,22 @@ class StoryTransformer extends TransformerAbstract
     public function includeRecords(StoryView $storyView)
     {
         return $this->collection($storyView->getChildren(), $this->recordTransformer);
+    }
+
+    public function includeCaptionMetadatas(StoryView $storyView)
+    {
+        return $this->collection($storyView->getStory()->get_caption()->get_fields(), $this->getCaptionRecordTransformer());
+    }
+
+    private function getCaptionRecordTransformer()
+    {
+        return function (\caption_field $captionField) {
+            return [
+                'meta_structure_id' => $captionField->get_meta_struct_id(),
+                'name' => $captionField->get_name(),
+                'value' => $captionField->get_serialized_values(';')
+            ];
+        };
     }
 
     /**

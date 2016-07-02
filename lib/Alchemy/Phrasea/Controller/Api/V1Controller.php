@@ -1420,6 +1420,9 @@ class V1Controller extends Controller
                     'results.stories.records.status'
                 ]);
             }
+            else {
+                $includes[] = 'results.stories.caption_metadata';
+            }
 
             $includes = array_merge($includes, [
                 'results.records.subdefs',
