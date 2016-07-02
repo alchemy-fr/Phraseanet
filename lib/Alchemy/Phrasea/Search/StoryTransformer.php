@@ -69,7 +69,7 @@ class StoryTransformer extends TransformerAbstract
 
     public function includeMetadatas(StoryView $storyView)
     {
-        return $this->item($storyView->getCaption(), $this->getCaptionTransformer());
+        return $this->item($storyView->getCaption(), $this->getCaptionDCFieldTransformer());
     }
 
     public function includeRecords(StoryView $storyView)
@@ -79,10 +79,13 @@ class StoryTransformer extends TransformerAbstract
 
     public function includeCaption(StoryView $storyView)
     {
-        return $this->collection($storyView->getCaption()->getFields(), $this->getCaptionRecordTransformer());
+        return $this->collection($storyView->getCaption()->getFields(), $this->getCaptionFieldTransformer());
     }
 
-    private function getCaptionRecordTransformer()
+    /**
+     * @return \Closure
+     */
+    private function getCaptionFieldTransformer()
     {
         return function (\caption_field $captionField) {
             return [
@@ -96,7 +99,7 @@ class StoryTransformer extends TransformerAbstract
     /**
      * @return \Closure
      */
-    private function getCaptionTransformer()
+    private function getCaptionDCFieldTransformer()
     {
         /**
          * @param \caption_field[] $fields
