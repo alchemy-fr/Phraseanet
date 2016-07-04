@@ -28,6 +28,7 @@ final class PhraseaEvents
     const RECORD_UPLOAD = 'record.upload';
     const STATUS_CHANGED = 'record.status.changed';
     const STORY_COVER_CHANGED = 'record.story_cover.changed';
+    const RECORD_CREATED = 'record.created';
 
     const ACCOUNT_DELETED = 'account.deleted';
     const ACCOUNT_CREATED = 'account.created';

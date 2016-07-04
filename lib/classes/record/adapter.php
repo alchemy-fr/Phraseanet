@@ -12,6 +12,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\Event\StatusChanged;
+use Alchemy\Phrasea\Core\Event\RecordCreated;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -25,6 +26,7 @@ use Monolog\Logger;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 
 /**
  *
@@ -1184,6 +1186,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this;
     }
 
+    private function dispatch($eventName, $event)
+    {
+        $dispatcher = $this->getEventDispatcher();
+        if($dispatcher->hasListeners($eventName)) {
+            $dispatcher->dispatch($eventName, $event);
+        }
+    }
+
     /**
      *
      * @param  string $status
@@ -1219,10 +1229,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_STATUS);
 
         if($doSendEvent) {
-            $dispatcher = $this->getEventDispatcher();
-            if($dispatcher->hasListeners(PhraseaEvents::STATUS_CHANGED)) {
-                $dispatcher->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this, $old_status));
-            }
+            $this->dispatch(PhraseaEvents::STATUS_CHANGED, new StatusChanged($this, $old_status));
         }
 
         return $this;
@@ -1288,6 +1295,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         } catch (\Exception $e) {
             unset($e);
         }
+
+        $story->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreated($story));
 
         return $story;
     }
@@ -1357,6 +1366,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
         $record->insertTechnicalDatas($app['mediavorus']);
+
+        $record->dispatch(PhraseaEvents::RECORD_CREATED, new RecordCreated($record));
 
         return $record;
     }

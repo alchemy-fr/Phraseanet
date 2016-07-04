@@ -14,9 +14,11 @@ namespace Alchemy\Phrasea\Core\Event;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
+use record_adapter;
 
 class RecordEdit extends SfEvent
 {
+    /** @var record_adapter[]  */
     private $records = array();
     private $collections = array();
     private $databoxes = array();
