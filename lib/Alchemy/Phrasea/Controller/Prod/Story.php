@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use databox_field;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,8 +62,9 @@ class Story implements ControllerProviderInterface
 
             $metadatas = array();
 
+            /** @var databox_field $meta */
             foreach ($collection->get_databox()->get_meta_structure() as $meta) {
-                if ($meta->get_thumbtitle()) {
+                if ($meta->get_thumbtitle() && !$meta->is_readonly()) {
                     $value = $request->request->get('name');
                 } else {
                     continue;

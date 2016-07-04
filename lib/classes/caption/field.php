@@ -27,7 +27,7 @@ class caption_field implements cache_cacheableInterface
 
     /**
      *
-     * @var string
+     * @var caption_Field_Value[]
      */
     protected $values;
 
