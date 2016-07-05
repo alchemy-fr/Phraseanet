@@ -424,6 +424,43 @@
             T_id: {{ JSonIds|raw }},
             T_pos: {{ JSonIds|raw }},
             T_mval: []
-        }
+        },
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
+        records: [
+
+            {% for record in recordsRequest %}
+            {
+                id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
+                {% if record.get_type() == 'video' %}
+                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                {% set technical_info = record.get_technical_infos %}
+                {% set width = technical_info[dataW].value %}
+                {% set height = technical_info[dataH].value %}
+
+                {% if width and height %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
+                {% else %}
+                {% set ratio = '' %}
+                {% endif %}
+
+                sources: [
+                    {% for subdef in previewHtml5 %}
+                    {
+                        ratio: '{{ ratio }}',
+                        framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
+                        type: "{{ subdef.get_mime() }}",
+                        src: "{{ subdef.get_url() }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+                {% endif %}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
     };
 </script>

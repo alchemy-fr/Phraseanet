@@ -35,6 +35,6 @@
   },
   "dependencies": {
     "alchemy-embed-medias": "^0.4.3",
-    "phraseanet-production-client": "~0.19.14"
+    "phraseanet-production-client": "~0.19.15"
   }
 }
