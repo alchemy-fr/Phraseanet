@@ -233,5 +233,6 @@ geocoding-providers:
             #    name: Latitude
             #    type: lat
 video-editor:
+    vttFieldName: VideoTextTrackChapters
     seekBackwardStep: 1000 # in ms
     seekForwardStep: 1000  # in ms
