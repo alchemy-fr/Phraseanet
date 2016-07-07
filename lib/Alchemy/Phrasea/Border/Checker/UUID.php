@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use Entities\LazaretFile;
 
 /**
  * Checks if a file with the same UUID already exists in the destination databox
@@ -36,6 +37,25 @@ class UUID extends AbstractChecker
                 ));
 
         return new Response($boolean, $this);
+    }
+
+    /**
+     * @param LazaretFile $file
+     * @return \record_adapter[]
+     */
+    public static function listConflicts(Application $app, LazaretFile $file)
+    {
+        return \record_adapter::get_record_by_uuid(
+            $app, $file->getCollection($app)->get_databox(), $file->getUUID()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getReason()
+    {
+        return _('same UUID');
     }
 
     /**

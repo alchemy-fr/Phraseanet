@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use Entities\LazaretFile;
 
 /**
  * Checks if a file with the same Sha256 checksum already exists in the
@@ -37,6 +38,25 @@ class Sha256 extends AbstractChecker
                 ));
 
         return new Response($boolean, $this);
+    }
+
+    /**
+     * @param LazaretFile $file
+     * @return \record_adapter[]
+     */
+    public static function listConflicts(Application $app, LazaretFile $file)
+    {
+        return \record_adapter::get_record_by_sha(
+            $app, $file->getCollection($app)->get_databox()->get_sbas_id(), $file->getSha256()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getReason()
+    {
+        return _('same checksum');
     }
 
     /**

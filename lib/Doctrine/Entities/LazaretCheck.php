@@ -11,6 +11,8 @@
 
 namespace Entities;
 
+use Alchemy\Phrasea\Application;
+
 /**
  * LazaretCheck
  */
@@ -70,7 +72,7 @@ class LazaretCheck
      * @param  \Entities\LazaretFile $lazaretFile
      * @return LazaretCheck
      */
-    public function setLazaretFile(\Entities\LazaretFile $lazaretFile = null)
+    public function setLazaretFile(LazaretFile $lazaretFile = null)
     {
         $this->lazaretFile = $lazaretFile;
 
@@ -100,6 +102,35 @@ class LazaretCheck
             return $className::getMessage();
         } else {
             return '';
+        }
+    }
+
+    /**
+     * @return string  the reason why a record is in lazaret
+     */
+    public function getReason()
+    {
+        $className = $this->getCheckClassname();
+
+        if (method_exists($className, "getReason")) {
+            return $className::getReason();
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @param Application $app
+     * @return \record_adapter[]  the records conflicting with this check
+     */
+    public function listConflicts(Application $app)
+    {
+        $className = $this->getCheckClassname();
+
+        if (method_exists($className, "listConflicts")) {
+            return $className::listConflicts($app, $this->lazaretFile);
+        } else {
+            return [];
         }
     }
 }

@@ -213,10 +213,10 @@ class LazaretFile extends \Entities\LazaretFile implements \Doctrine\ORM\Proxy\P
         return parent::getSession();
     }
 
-    public function getRecordsToSubstitute(\Alchemy\Phrasea\Application $app)
+    public function getRecordsToSubstitute(\Alchemy\Phrasea\Application $app, $includeReason = false)
     {
         $this->__load();
-        return parent::getRecordsToSubstitute($app);
+        return parent::getRecordsToSubstitute($app, $includeReason);
     }
 
 
