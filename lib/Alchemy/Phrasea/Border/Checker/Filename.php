@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use Entities\LazaretFile;
 
 /**
  * Checks if a file with the same filename already exists in the destination databox
@@ -48,6 +49,25 @@ class Filename extends AbstractChecker
                 ));
 
         return new Response($boolean, $this);
+    }
+
+    /**
+     * @param LazaretFile $file
+     * @return \record_adapter[]
+     */
+    public static function listConflicts(Application $app, LazaretFile $file)
+    {
+        return \record_adapter::get_records_by_originalname(
+            $file->getCollection($app)->get_databox(), $file->getOriginalName(), false, 0, 1000
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getReason()
+    {
+        return _('same filename');
     }
 
     /**

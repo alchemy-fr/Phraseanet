@@ -314,7 +314,7 @@
 
 {% macro lazaretElement(app, file) %}
     {% import "common/thumbnail.html.twig" as thumb %}
-    {% set records = file.getRecordsToSubstitute(app) %}
+    {% set records = file.getRecordsToSubstitute(app, true) %}
     <div class="lazaret-file span4">
         <h5>{% trans "Last uploaded version" %}</h5>
         <ul class="thumbnails">
@@ -376,10 +376,15 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
+                    {% set reasons=record['reasons'] %}
+                    {% set record=record['record'] %}
                     {% if app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "canaddrecord")
                         and app['authentication'].getUser().ACL().has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
                             <div class="thumbnail">
+                                <div class="caption">
+                                    {{ record.get_original_name() }}
+                                </div>
                                 <div class="record-thumb" style="text-align:center;">
                                     {{ thumb.format(record.get_thumbnail(), 169, 180, "", false, false) }}
                                     <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
@@ -388,6 +393,9 @@
                                     <p><b>{{ record.get_title() }}</b></p>
                                 </div>
                             </div>
+                            {% for reason in reasons %}
+                                <p>{{ reason }}</p>
+                            {% endfor %}
                         </li>
                     {% endif %}
                 {% endfor %}

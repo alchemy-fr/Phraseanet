@@ -12,6 +12,7 @@
 namespace Entities;
 
 use Alchemy\Phrasea\Application;
+use \record_adapter;
 
 /**
  * LazaretFile
@@ -411,28 +412,31 @@ class LazaretFile
     /**
      * Get an array of records that can be substitued by the Lazaret file
      *
-     * @return array
+     * @return record_adapter[]
      */
-    public function getRecordsToSubstitute(Application $app)
+    public function getRecordsToSubstitute(Application $app, $includeReason = false)
     {
-        $ret = array();
-
-        $shaRecords = \record_adapter::get_record_by_sha(
-                $app, $this->getCollection($app)->get_sbas_id(), $this->getSha256()
-        );
-
-        $uuidRecords = \record_adapter::get_record_by_uuid(
-                $app, $this->getCollection($app)->get_databox(), $this->getUuid()
-        );
-
-        $merged = array_merge($uuidRecords, $shaRecords);
-
-        foreach ($merged as $record) {
-            if ( ! in_array($record, $ret)) {
-                $ret[] = $record;
+        $merged = [];
+        /** @var LazaretCheck $check */
+        foreach($this->getChecks() as $check) {
+            /** @var record_adapter $record */
+            $conflicts = $check->listConflicts($app);
+            foreach ($conflicts as $record) {
+                if($includeReason) {
+                    if (!array_key_exists($record->get_record_id(), $merged)) {
+                        $merged[$record->get_record_id()] = [
+                            'record' => $record,
+                            'reasons' => []
+                        ];
+                    }
+                    $merged[$record->get_record_id()]['reasons'][] = $check->getReason();
+                }
+                else {
+                    $merged[$record->get_record_id()] = $record;
+                }
             }
         }
 
-        return $ret;
+        return $merged;
     }
 }

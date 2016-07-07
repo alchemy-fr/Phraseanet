@@ -1426,7 +1426,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param  integer        $sbas_id
      * @param  string         $sha256
      * @param  integer        $record_id
-     * @return record_adapter
+     * @return record_adapter[]
      */
     public static function get_record_by_sha(Application $app, $sbas_id, $sha256, $record_id = null)
     {
@@ -1466,7 +1466,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param string      $uuid
      * @param int         $record_id Restrict check on a record_id
      *
-     * @return \record_adapter
+     * @return \record_adapter[]
      */
     public static function get_record_by_uuid(Application $app, \databox $databox, $uuid, $record_id = null)
     {
@@ -1955,14 +1955,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
-        $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
-        $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $offset_start = (int) ($offset_start) < 0 ? 0 : $offset_start;
+        $how_many = (int) ($how_many < 1) ? 1 : $how_many;
 
         $sql = sprintf('SELECT record_id FROM record
             WHERE originalname = :original_name '
             . ($caseSensitive ? 'COLLATE utf8_bin' : 'COLLATE utf8_unicode_ci')
             . ' LIMIT %d, %d'
-            , $offset_start, $how_many);
+            , (int)$offset_start, (int)$how_many);
 
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute(array(':original_name' => $original_name));
