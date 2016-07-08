@@ -236,3 +236,7 @@ video-editor:
     vttFieldName: VideoTextTrackChapters
     seekBackwardStep: 1000 # in ms
     seekForwardStep: 1000  # in ms
+    playbackRates:
+        - 1
+        - '1.5'
+        - 3

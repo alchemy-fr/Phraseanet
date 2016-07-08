@@ -118,6 +118,7 @@ class LanguageController
             'mapMarkerEditSubmit'     => $translator->trans('Submit'),
             'Keyboard shortcuts'      => $translator->trans('Keyboard shortcuts'),
             'Play'                    => $translator->trans('Play'),
+            'Change play speed'       => $translator->trans('Change play speed'),
             'Pause'                   => $translator->trans('Pause'),
             'One frame forward'       => $translator->trans('One frame forward'),
             'One frame backward'      => $translator->trans('One frame backward'),
