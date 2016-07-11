@@ -76,6 +76,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     const CACHE_GROUPING = 'grouping';
     const CACHE_STATUS = 'status';
 
+    // bitmask for twig render of a "diapo"
+    const RENDER_THUMBNAIL_DROPDOWN = 1;
+    const RENDER_THUMBNAIL_DBLCLK = 2;
+    const RENDER_THUMBNAIL_ALL = 3;
+
     /**
      * @param Application $app
      * @param integer     $sbas_id

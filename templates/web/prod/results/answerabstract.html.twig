@@ -15,8 +15,13 @@
     {% endtrans %}
     <br/>
   {% endif %}
-  {% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
   <div class="selectable" style="margin:10px 0; float:left;">
+  {%  set thumbnailRender = {
+      size: app['authentication'].getUser().getPrefs('images_size'),
+      elements: constant('\\record_adapter::RENDER_THUMBNAIL_ALL')
+      }
+  %}
+
     {% block content %}{% endblock %}
   </div>
 {% endif %}

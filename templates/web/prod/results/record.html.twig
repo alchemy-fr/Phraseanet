@@ -1,25 +1,30 @@
-{% macro block(record, highlight, searchEngine, prefix, entry_id)%}
+{% macro block(record, highlight, searchEngine, prefix, entry_id, thumbnailRender)%}
     {% import 'common/thumbnail.html.twig' as thumbnail %}
     {% import 'common/doctype_icons.html.twig' as doctype_icons %}
     {% import 'common/drop_down_options.html.twig' as drop_down %}
-    {% set th_size = app['authentication'].getUser().getPrefs('images_size')%}
+
+    {% set th_size = thumbnailRender.size %}
+    {% set render_elements = thumbnailRender.elements|default(constant('\\record_adapter::RENDER_THUMBNAIL_ALL')) %}
     {% set sbas_id = record.get_sbas_id %}
     {% set lazyload = not app['phraseanet.static-file-factory'].isStaticFileModeEnabled and app['phraseanet.configuration']['lazyload']|default(false) %}
     {% if entry_id %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
             id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
             class="IMGT diapo type-{{record.get_type}}"
-            onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});">
+            {% if render_elements b-and constant('\\record_adapter::RENDER_THUMBNAIL_DBLCLK') %}onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});"{% endif %}
+        >
     {% elseif record.is_grouping() %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
             id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
             class="IMGT diapo grouping type-{{record.get_type}}"
-            onDblClick="openPreview('REG','0','{{record.get_serialize_key()}}');">
+            {% if render_elements b-and constant('\\record_adapter::RENDER_THUMBNAIL_DBLCLK') %}onDblClick="openPreview('REG','0','{{record.get_serialize_key()}}');"{% endif %}
+        >
     {% else %}
         <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
             id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
             class="IMGT diapo type-{{record.get_type}}"
-            onDblClick="openPreview('RESULT',{{record.get_number}});">
+            {% if render_elements b-and constant('\\record_adapter::RENDER_THUMBNAIL_DBLCLK') %}onDblClick="openPreview('RESULT',{{record.get_number}});"{% endif %}
+        >
     {% endif %}
         <div style="padding: 4px;">
             <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
@@ -80,7 +85,9 @@
                     {% set l_width = l_width + 20 %}
                     {% endif %}
                     <td style='text-align:right;width:{{l_width}}px;' valign='bottom'>
+                    {%  if render_elements b-and constant('\\record_adapter::RENDER_THUMBNAIL_DROPDOWN') %}
                     {{drop_down.prod(record, entry_id)}}
+                    {% endif %}
                     {% if record.has_preview() and app['authentication'].getUser().ACL().has_access_to_subdef(record, 'preview') %}
                     <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}" class="previewTips"></div>
                     {% endif %}
