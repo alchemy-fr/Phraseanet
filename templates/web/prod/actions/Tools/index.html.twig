@@ -37,6 +37,11 @@
                                     {{ "video tool" | trans }}
                                 </a>
                             </li>
+                            <li>
+                                <a href="#rangeExtractor">
+                                    {{ "video range extractor" | trans }}
+                                </a>
+                            </li>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
@@ -124,7 +129,9 @@
               {% set height = technical_info[dataH].value %}
 
               {% if width and height %}
-                {% set ratio = (width / height)|number_format(2, '.') %}
+                  {% set rawRatio =  (width / height)|number_format(3, '.') %}
+                  {% set rawRatioLength =  rawRatio|length %}
+                {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
               {% else %}
                  {% set ratio = '' %}
               {% endif %}
@@ -171,6 +178,33 @@
 
             </div>
           </div>
+            <div id="rangeExtractor"  class="">
+                <div class="main_title">
+                    <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
+                    {{ "video range extractor" | trans }}
+                </div>
+                <div class="video-range-editor-container"></div>
+                <div class="video-data-container">
+                    <dl class="dl-horizontal">
+                        <dt>Ratio</dt><dd>{{ ratio }}</dd>
+                        <dt>Type</dt><dd>{{ record.get_mime() }}</dd>
+                        {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
+                            <dt>{{ 'Images par secondes' | trans }}</dt>
+                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }} ips</dd>
+                        {% endif %}
+                        {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
+                            <dt>{{ 'Codec Audio' | trans }}</dt>
+                            <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
+                        {% endif %}
+                        <dt>{{ 'Size' | trans }}</dt><dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
+                            (null) %}
+                            {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
+                            {% if width is not none and height is not none %}
+                                {{ width ~ " x " ~ height }}
+                            {% endif %}</dd>
+                    </dl>
+                </div>
+            </div>
         {% endif %}
       {% endfor %}
     {% endif %}
@@ -357,6 +391,46 @@
             noImgSelected: '{{ "no image selected" | trans }}',
             processing: '{{ "processing" | trans }}',
             thumbnailTitle: '{{ 'thumbnail validation' | trans }}'
-        }
+        },
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
+        records: [
+
+            {% for record in records %}
+            {
+                id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
+                {% if record.get_type() == 'video' %}
+                {% if selectionLength == 1 %}
+                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                {% set technical_info = record.get_technical_infos %}
+                {% set width = technical_info[dataW].value %}
+                {% set height = technical_info[dataH].value %}
+
+                {% if width and height %}
+                    {% set ratio = (width / height)|number_format(2, '.') %}
+                {% else %}
+                    {% set ratio = '' %}
+                {% endif %}
+
+                sources: [
+                    {% for subdef in previewHtml5 %}
+                    {
+                        ratio: '{{ ratio }}',
+                        framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
+                        type: "{{ subdef.get_mime() }}",
+                        src: "{{ subdef.get_url() }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+                {% endif %}
+                {% endif %}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+
     };
 </script>

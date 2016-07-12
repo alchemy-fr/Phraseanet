@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -206,18 +207,21 @@ class EditController extends Controller
                     'h'   => $thumbnail->get_height(),
                 ];
 
-                $elements[$indice]['preview'] = $this->render(
+                $elements[$indice]['template'] = $this->render(
                     'common/preview.html.twig',
-                    ['record' => $record]
+                    ['record' => $record, 'not_wrapped' => true]
                 );
+
+                $elements[$indice]['data'] = $this->getRecordElementData($record);
 
                 $elements[$indice]['type'] = $record->getType();
             }
         }
-
+        $conf = $this->getConf();
         $params = [
             'multipleDataboxes' => $multipleDataboxes,
             'recordsRequest'    => $records,
+            'videoEditorConfig' => $conf->get(['video-editor']),
             'databox'           => $databox,
             'JSonStatus'        => json_encode($status),
             'JSonRecords'       => json_encode($elements),
@@ -522,6 +526,37 @@ class EditController extends Controller
     private function getPresetManipulator()
     {
         return $this->app['manipulator.preset'];
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function getRecordElementData($record) {
+        $helpers = new PhraseanetExtension($this->app);
+        $recordData = [
+          'databoxId' => $record->getBaseId(),
+          'id' => $record->getId(),
+          'isGroup' => $record->isStory(),
+          'url' => (string)$helpers->getThumbnailUrl($record),
+        ];
+        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($record, 'preview');
+        if ($userHaveAccess) {
+            $recordPreview = $record->get_preview();
+        } else {
+            $recordPreview = $record->get_thumbnail();
+        }
+
+        $recordData['preview'] = [
+          'width' => $recordPreview->get_width(),
+          'height' => $recordPreview->get_height(),
+          'url' => $this->app->url('alchemy_embed_view', [
+            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
+            'autoplay' => false
+          ])
+        ];
+
+        return $recordData;
     }
 
 }
