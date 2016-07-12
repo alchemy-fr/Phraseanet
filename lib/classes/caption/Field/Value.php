@@ -371,16 +371,16 @@ class caption_Field_Value implements cache_cacheableInterface
         }
 
         // ---------------- new code ----------------------
-        $cleanvalue = str_replace(array("[[em]]", "[[/em]]", "'"), array("", "", "&apos;"), $value);
+        $cleanvalue = str_replace(array("[[em]]", "[[/em]]"), array("", ""), $value);
 
         list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
         $term_noacc = $this->app['unicode']->remove_indexer_chars($term_noacc);
         $context_noacc = $this->app['unicode']->remove_indexer_chars($context_noacc);
 
         // find all synonyms in all related branches
-        $q = "(" . $tbranch . ")//sy[@w='" . $term_noacc . "'";
+        $q = "(" . $tbranch . ")//sy[@w='" . str_replace("'", "&apos;", $term_noacc) . "'";
         if ($context_noacc) {
-            $q .= " and @k='" . $context_noacc . "']";
+            $q .= " and @k='" . str_replace("'", "&apos;", $context_noacc) . "']";
         } else {
             $q .= " and not(@k)]";
         }

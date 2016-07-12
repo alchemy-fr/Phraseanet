@@ -187,6 +187,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
         ), '', $value);
     }
 
+    /**
+     * @return caption_field[]
+     */
     protected function retrieve_fields()
     {
         if (is_array($this->fields)) {
@@ -230,7 +233,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
      * @param array   $grep_fields
      * @param Boolean $IncludeBusiness
      *
-     * @return array
+     * @return caption_field[]
      */
     public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
     {
