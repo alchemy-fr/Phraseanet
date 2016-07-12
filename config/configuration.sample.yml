@@ -191,6 +191,7 @@ api_cors:
   expose_headers: []
   max_age: 0
   hosts: []
+api_cors_paths: []
 session:
   idle: 0
   lifetime: 604800 # 1 week

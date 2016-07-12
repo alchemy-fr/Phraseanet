@@ -93,6 +93,11 @@ class HttpStackMetaProvider implements ServiceProviderInterface
                     $paths['/api/v\d+/'] = $config;
                     $paths['/download/'] = $config;
                 }
+                if (isset($app['phraseanet.configuration']['api_cors_paths'])) {
+                    foreach ($app['phraseanet.configuration']['api_cors_paths'] as $path) {
+                        $paths[$path] = $config;
+                    }
+                }
             }
 
             return new DefaultProvider($paths, []);
