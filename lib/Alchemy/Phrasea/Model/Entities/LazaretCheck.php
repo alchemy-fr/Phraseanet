@@ -10,7 +10,9 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ORM\Table(name="LazaretChecks")
@@ -91,4 +93,33 @@ class LazaretCheck
     {
         return $this->lazaretFile;
     }
+
+    /**
+     * @param TranslatorInterface $translator
+     * @return string   the reason why a record is in lazaret
+     */
+    public function getReason(TranslatorInterface $translator)
+    {
+        $className = $this->getCheckClassname();
+        if (method_exists($className, "getReason")) {
+            return $className::getReason($translator);
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @param Application $app
+     * @return \record_adapter[]  the records conflicting with this check
+     */
+    public function listConflicts(Application $app)
+    {
+        $className = $this->getCheckClassname();
+        if (method_exists($className, "listConflicts")) {
+            return $className::listConflicts($app, $this->lazaretFile);
+        } else {
+            return [];
+        }
+    }
+
 }

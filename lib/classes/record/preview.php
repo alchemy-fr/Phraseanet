@@ -264,10 +264,10 @@ class record_preview extends record_adapter
 
             case "RESULT":
                 $this->title .= $this->app->trans('resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span> : ']);
-                $this->title .= parent::get_title($highlight, $searchEngine);
+                $this->title .= parent::get_title();
                 break;
             case "BASK":
-                $this->title .= $this->name . ' - ' . parent::get_title($highlight, $searchEngine)
+                $this->title .= $this->name . ' - ' . parent::get_title()
                     . ' (' . $this->getNumber() . '/' . $this->total . ') ';
                 break;
             case "REG":
@@ -281,7 +281,7 @@ class record_preview extends record_adapter
                 }
                 break;
             default:
-                $this->title .= parent::get_title($highlight, $searchEngine);
+                $this->title .= parent::get_title();
                 break;
         }
 

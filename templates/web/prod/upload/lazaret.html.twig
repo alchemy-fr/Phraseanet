@@ -314,7 +314,7 @@
 
 {% macro lazaretElement(app, file) %}
     {% import "common/thumbnail.html.twig" as thumb %}
-    {% set records = file.getRecordsToSubstitute(app) %}
+    {% set records = file.getRecordsToSubstitute(app, true) %}
     <div class="lazaret-file span4">
         <h5>{{ "Last uploaded version" | trans }}</h5>
         <ul class="thumbnails">
@@ -370,6 +370,8 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
+                    {% set reasons = record['reasons'] %}
+                    {% set record = record['record'] %}
                     {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "canaddrecord")
                         and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "candeleterecord") %}
                         <li class="records-subititution span3">
@@ -380,8 +382,26 @@
                                 </div>
                                 <div class="caption">
                                     <p><b>{{ record.get_title() }}</b></p>
+                                    {% for reason in reasons %}
+                                    <p>{{ reason }}</p>
+                                    {% endfor %}
                                 </div>
                             </div>
+
+
+                            {% include 'prod/results/record.html.twig' with {
+                            'record': record,
+                            'settings': {
+                            'images_size': 169,
+                            'technical_display': '1',
+                            'rollover_thumbnail': 'caption',
+                            'doctype_display': '1',
+                            'handle_dblclick' : false,
+                            'show_context_menu': false
+                            }
+                            } %}
+
+
                         </li>
                     {% endif %}
                 {% endfor %}

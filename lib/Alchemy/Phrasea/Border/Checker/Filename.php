@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -49,6 +50,25 @@ class Filename extends AbstractChecker
         ));
 
         return new Response($boolean, $this);
+    }
+
+    /**
+     * @param Application $app
+     * @param LazaretFile $file
+     * @return \record_adapter[]
+     */
+    public static function listConflicts(Application $app, LazaretFile $file)
+    {
+        return \record_adapter::get_records_by_originalname(
+            $file->getCollection($app)->get_databox(), $file->getOriginalName(), false, 0, 1000
+        );
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public static function getReason(TranslatorInterface $translator)
+    {
+        return $translator->trans('same filename');
     }
 
     /**

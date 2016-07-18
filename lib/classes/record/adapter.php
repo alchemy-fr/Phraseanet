@@ -388,6 +388,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @return string  the name of the collection to which the record belongs to.
+     */
+    public function getCollectionName()
+    {
+        return $this->getCollection()->get_name();
+    }
+
+    /**
      * Returns record_id of the record
      *
      * @return int
@@ -794,16 +802,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    /**
-     * @param bool                  $highlight
-     * @param SearchEngineInterface $searchEngine
-     * @param null                  $removeExtension
-     * @param SearchEngineOptions   $options
-     * @return string
-     */
-    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
+    public function getTitle($locale = null, Array $options = [])
     {
-        $cache = !$highlight && !$searchEngine && !$removeExtension;
+        $removeExtension = !!igorw\get_in($options, ['removeExtension'], false);
+
+        $cache = !$removeExtension;
 
         if ($cache) {
             try {
@@ -820,13 +823,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $fields_to_retrieve = [];
 
         foreach ($fields as $field) {
-            if (in_array($field->get_thumbtitle(), ['1', $this->app['locale']])) {
+            if (in_array($field->get_thumbtitle(), ['1', $locale])) {
                 $fields_to_retrieve [] = $field->get_name();
             }
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve);
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($fields_to_retrieve);
             $titles = [];
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {
@@ -847,6 +850,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $title;
+    }
+
+    /**
+     * @param Array $options
+     *
+     * @return string
+     */
+    public function get_title(Array $options = [])
+    {
+        return $this->getTitle($this->app['locale'], $options);
     }
 
     /**
@@ -1523,12 +1536,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param int     $offset_start
      * @param int     $how_many
      *
-     * @return array
+     * @return record_adapter[]
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
-        $offset_start = (int)($offset_start < 0 ? 0 : $offset_start);
-        $how_many = (int)(($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $offset_start = max(0, (int)$offset_start);
+        $how_many = max(1, (int)$how_many);
 
         $sql = sprintf(
             'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',

@@ -444,8 +444,7 @@ SQL;
             $extension = isset($infos['extension']) ? $infos['extension'] : '';
 
             if ($rename_title) {
-                $title = strip_tags($download_element->get_title(null, null, true));
-
+                $title = strip_tags($download_element->get_title(['removeExtension' => true]));
                 $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
