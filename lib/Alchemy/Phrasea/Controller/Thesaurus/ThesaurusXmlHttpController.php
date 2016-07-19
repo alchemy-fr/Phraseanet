@@ -1463,8 +1463,6 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
-        // wip : some changes removed to see if tests timeout again
-
         $lng = $request->get('lng');
 
         $html = '';
