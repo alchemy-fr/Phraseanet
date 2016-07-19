@@ -1463,13 +1463,9 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
-        // changes removed to see if tests timeout again
-        if (null === $lng = $request->get('lng')) {
-            $data = explode('_', $this->app['locale']);
-            if (count($data) > 0) {
-                $lng = $data[0];
-            }
-        }
+        // wip : some changes removed to see if tests timeout again
+
+        $lng = $request->get('lng');
 
         $html = '';
         $sbid = (int) $request->get('sbid');
