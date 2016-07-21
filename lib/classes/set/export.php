@@ -130,7 +130,7 @@ class set_export extends set_abstract
                             $app,
                             $child_basrec->getDataboxId(),
                             $record_id,
-                            $record->get_title(null, null, true) . '_' . $n,
+                            $record->get_title(['removeExtension' => true]) . '_' . $n,
                             $remain_hd[$base_id]
                         );
                         $this->add_element($current_element);
