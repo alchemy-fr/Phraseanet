@@ -802,6 +802,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * get the title (concat "thumbtitle" fields which match locale, with "-")
+     * fallback to the filename, possibly with extension removed
+     *
+     * @param string $locale
+     * @param $options[]
+     *      'removeExtension' : boolean
+     *
+     * @return string
+     */
     public function getTitle($locale = null, Array $options = [])
     {
         $removeExtension = !!igorw\get_in($options, ['removeExtension'], false);
