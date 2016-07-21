@@ -32,6 +32,8 @@ class PhraseanetExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('user_setting', array($this, 'getUserSetting')),
             new \Twig_SimpleFunction('record_thumbnail_url', array($this, 'getThumbnailUrl')),
+            new \Twig_SimpleFunction('record_subdef_url', array($this, 'getSubdefUrl')),
+            new \Twig_SimpleFunction('record_subdef_size', array($this, 'getSubdefSize')),
             new \Twig_SimpleFunction('record_doctype_icon', array($this, 'getDoctypeIcon'), array(
                 'is_safe' => array('html')
             )),
@@ -268,8 +270,8 @@ class PhraseanetExtension extends \Twig_Extension
         if ($record instanceof ElasticsearchRecord) {
             $subdefs = $record->getSubdefs();
             if (isset($subdefs[$subdefName])) {
-                $thumbnail = $subdefs[$subdefName];
-                if (null !== $path = $thumbnail['path']) {
+                $subdef = $subdefs[$subdefName];
+                if (null !== $path = $subdef['path']) {
                     if (is_string($path) && '' !== $path) {
                         $etag = dechex(crc32(dechex($record->getVersion() ^ 0x5A5A5A5A)));
                         return $staticMode->getUrl($path, $etag);
@@ -290,6 +292,33 @@ class PhraseanetExtension extends \Twig_Extension
         );
 
         return $path;
+    }
+
+    public function getSubdefSize(RecordInterface $record, $subdefName)
+    {
+        $ret = null;
+
+        if ($record instanceof ElasticsearchRecord) {
+            $subdefs = $record->getSubdefs();
+            if (isset($subdefs[$subdefName])) {
+                $subdef = $subdefs[$subdefName];
+                if (isset($subdef['width']) && $subdef['width'] !== null && isset($subdef['height']) && $subdef['height'] !== null) {
+                    $ret = [
+                        'width' => $subdef['width'],
+                        'height' => $subdef['height']
+                    ];
+                }
+            }
+        } elseif ($record instanceof \record_adapter) {
+            if (null !== $subdef = $record->get_subdef($subdefName)) {
+                $ret = [
+                    'width' => $subdef->get_width(),
+                    'height' => $subdef->get_height()
+                ];
+            }
+        }
+
+        return $ret;
     }
 
     public function getUserSetting($setting, $default = null)
