@@ -1297,8 +1297,6 @@ class ThesaurusXmlHttpController extends Controller
         $ret = [
             'ctermsDeleted'    => [],
             'maxRecsUpdatable' => self::SEARCH_REPLACE_MAXREC,
-            'nRecsToUpdate'    => 0,
-            'nRecsUpdated'     => 0,
             'msg'              => ''
         ];
 
