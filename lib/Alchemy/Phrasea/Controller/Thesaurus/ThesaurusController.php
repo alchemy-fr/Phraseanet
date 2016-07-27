@@ -1834,7 +1834,7 @@ class ThesaurusController extends Controller
 
                         $this->renumerate($newte, $ct->getAttribute("id") . "." . $teid, $chgids);
 
-                        $databox->saveThesaurus($domth);
+                        $databox->saveCterms($domct);
 
                         $this->dispatch(
                             ThesaurusEvents::CONCEPT_TRASHED,
@@ -1843,9 +1843,10 @@ class ThesaurusController extends Controller
 
                         $thnode_parent->removeChild($thnode);
 
-                        $databox->saveCterms($domct);
+                        $databox->saveThesaurus($domth);
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
+                        $r->setAttribute("id", $pid);
                         $r->setAttribute("id", $pid);
                         $r->setAttribute("type", "TH");
                     }
