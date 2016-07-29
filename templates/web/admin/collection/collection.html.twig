@@ -257,6 +257,12 @@
             .appendTo( ul );
         };
 
+        $('#admin_adder').find('input').change(function () {
+            if (! this.checked) {
+                $('#admin_adder').submit();
+            }
+        });
+
         //change display
         $('#pub_wm_none, #pub_wm_wm, #pub_wm_stamp').bind('click', function(){
             var $this = $(this);

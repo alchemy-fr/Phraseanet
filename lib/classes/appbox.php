@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionService;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
 use Alchemy\Phrasea\Databox\DataboxRepository;
@@ -325,7 +326,8 @@ class appbox extends base
             $this->collectionService = new CollectionService(
                 $this->app,
                 $this->connection,
-                new DataboxConnectionProvider($this)
+                new DataboxConnectionProvider($this),
+                new LazyLocator($this->app, 'phraseanet.user-query')
             );
         }
 
