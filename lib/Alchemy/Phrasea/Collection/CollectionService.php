@@ -11,9 +11,12 @@
 namespace Alchemy\Phrasea\Collection;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Doctrine\DBAL\Connection;
 
 class CollectionService
@@ -23,15 +26,31 @@ class CollectionService
      */
     private $app;
 
+    /**
+     * @var Connection
+     */
     private $connection;
 
+    /**
+     * @var DataboxConnectionProvider
+     */
     private $connectionProvider;
 
-    public function __construct(Application $application, Connection $connection, DataboxConnectionProvider $connectionProvider)
-    {
+    /**
+     * @var callable
+     */
+    private $userQueryFactory;
+
+    public function __construct(
+        Application $application,
+        Connection $connection,
+        DataboxConnectionProvider $connectionProvider,
+        callable $userQueryFactory
+    ) {
         $this->app = $application;
         $this->connection = $connection;
         $this->connectionProvider = $connectionProvider;
+        $this->userQueryFactory = $userQueryFactory;
     }
 
     /**
@@ -270,5 +289,54 @@ class CollectionService
         ];
 
         $this->app->getAclForUser($user)->update_rights_to_base($reference->getBaseId(), $rights);
+    }
+
+    public function setOrderMasters(CollectionReference $reference, array $userIds)
+    {
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $users = $userRepository->findBy(['id' => $userIds]);
+
+        $missingAdmins = array_diff($userIds, array_map(function (User $user) {
+            return $user->getId();
+        }, $users));
+
+        if (! empty($missingAdmins)) {
+            throw new RuntimeException(sprintf('Invalid usrIds provided [%s].', implode(',', $missingAdmins)));
+        }
+
+        $admins = $users;
+
+        /** @var Connection $conn */
+        $conn = $this->app->getApplicationBox()->get_connection();
+        $conn->beginTransaction();
+
+        try {
+            $factory = $this->userQueryFactory;
+            /** @var \User_Query $userQuery */
+            $userQuery = $factory();
+
+            $result = $userQuery->on_base_ids([ $reference->getBaseId()] )
+                ->who_have_right(['order_master'])
+                ->execute()->get_results();
+
+            /** @var ACLProvider $acl */
+            $acl = $this->app['acl'];
+
+            foreach ($result as $user) {
+                $acl->get($user)->update_rights_to_base($reference->getBaseId(), ['order_master' => false]);
+            }
+
+            foreach ($admins as $admin) {
+                $acl->get($admin)->update_rights_to_base($reference->getBaseId(), ['order_master' => true]);
+            }
+
+            $conn->commit();
+        } catch (\Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        }
+
     }
 }
