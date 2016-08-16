@@ -933,6 +933,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox_field = $databox->get_meta_structure()->get_element($params['meta_struct_id']);
 
         $caption_field = new caption_field($this->app, $databox_field, $this);
+        $caption_field->delete_data_from_cache();
 
         $vocab = $vocab_id = null;
 
