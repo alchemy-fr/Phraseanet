@@ -110,7 +110,7 @@ class patch_390alpha6a extends patchAbstract
                 ->setDestfolder($row['destfolder'])
                 ->setSendermail($row['sendermail'])
                 ->setTextMailReceiver($row['text_mail_sender'])
-                ->setTextMailSender($row['text_mail_reveiver'])
+                ->setTextMailSender($row['text_mail_receiver'])
                 ->setUser($user)
                 ->setCreated(new \DateTime($row['date']))
                 ->setUpdated(new \DateTime($row['date']))
