@@ -67,3 +67,4 @@ grammar/query.js
 grammar/jison-*
 
 pimple.json
+playbook.retry
