@@ -1,5 +1,3 @@
-# vim:noexpandtab:ts=4:sts=4:ft=make:
-
 install:
 	composer install -o
 	rm -rf ./node_modules
