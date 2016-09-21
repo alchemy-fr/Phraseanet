@@ -30,4 +30,6 @@ final class RecordEvents
     const SUB_DEFINITION_CREATION_FAILED = 'record.sub_definition_creation_failed';
 
     const MEDIA_SUBSTITUTED = 'record.media_substituted';
+
+    const STORY_COVER_CHANGED = 'record.story_cover_changed';
 }
