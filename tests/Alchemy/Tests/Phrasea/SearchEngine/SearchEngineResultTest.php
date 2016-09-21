@@ -23,7 +23,8 @@ class SearchEngineResultTest extends \PhraseanetTestCase
                     self::$DI['record_2']
                 ]);
 
-        $query = 'Gotainer';
+        $user_query = 'Gotainer';
+        $engine_query = '{text:"Gotainer"}';    // fake, real is really more complex
         $duration = 1 / 3;
         $offsetStart = 23;
         $available = 25;
@@ -31,12 +32,12 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $error = 'this is an error message';
         $warning = 'this is a warning message';
         $suggestions = new ArrayCollection([
-                        new SearchEngineSuggestion($query, 'Richard', 22)
+                        new SearchEngineSuggestion($user_query, 'Richard', 22)
         ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
-        $result = new SearchEngineResult($options, $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
+        $result = new SearchEngineResult($options, $results, $user_query, $engine_query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
 
         $this->assertEquals($warning, $result->getWarning());
         $this->assertEquals(2, $result->getTotalPages(23));
@@ -44,7 +45,8 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $this->assertEquals($total, $result->getTotal());
         $this->assertEquals($suggestions, $result->getSuggestions());
         $this->assertEquals($results, $result->getResults());
-        $this->assertEquals($query, $result->getQuery());
+        $this->assertEquals($user_query, $result->getUserQuery());
+        $this->assertEquals($engine_query, $result->getEngineQuery());
         $this->assertEquals($propositions, $result->getProposals());
         $this->assertEquals($indexes, $result->getIndexes());
         $this->assertEquals($error, $result->getError());
@@ -60,7 +62,8 @@ class SearchEngineResultTest extends \PhraseanetTestCase
                     self::$DI['record_2']
                 ]);
 
-        $query = 'Gotainer';
+        $user_query = 'Gotainer';
+        $engine_query = '{text:"Gotainer"}';    // fake, real is really more complex
         $duration = 1 / 3;
         $offsetStart = 0;
         $available = 25;
@@ -68,12 +71,12 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $error = 'this is an error message';
         $warning = 'this is a warning message';
         $suggestions = new ArrayCollection([
-                        new SearchEngineSuggestion($query, 'Richard', 22)
+                        new SearchEngineSuggestion($user_query, 'Richard', 22)
         ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
-        $result = new SearchEngineResult($options, $results, $query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
+        $result = new SearchEngineResult($options, $results, $user_query, $engine_query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
 
         $this->assertEquals(1, $result->getCurrentPage(10));
         $this->assertEquals(1, $result->getCurrentPage(25));
