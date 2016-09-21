@@ -1,8 +1,9 @@
 install:
-	composer install -o
+	composer install
 	rm -rf ./node_modules
+	rm -rf ./www/assets
+	rm -rf ./www/bower_components
 	npm install
-	php bin/console system:clear-cache
 
 config:
 	@php bin/console compile:configuration
