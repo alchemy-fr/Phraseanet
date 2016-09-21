@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\StoryCoverChanged;
+use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Preset;
@@ -311,7 +311,7 @@ class EditController extends Controller
                     $subdefChanged = true;
                 }
                 if($subdefChanged) {
-                    $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChanged($reg_record, $newsubdef_reg));
+                    $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($reg_record, $newsubdef_reg));
                     $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                 }
             } catch (\Exception $e) {
