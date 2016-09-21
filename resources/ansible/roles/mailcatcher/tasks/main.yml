@@ -11,7 +11,7 @@
   # https://github.com/sj26/mailcatcher/issues/277#issuecomment-209154903
   command: gem install mime-types --version "< 3"
 
-- name: Install the mailcatcher (GEM)
+- name: Install mailcatcher gem
   # gem module is flaky, this is consistent
   command: gem install mailcatcher --conservative
   ignore_errors: yes
