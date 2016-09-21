@@ -28,7 +28,7 @@ class TokenRepository extends EntityRepository
             WHERE t.type = :type
                 AND t.user = :user
                 AND t.data = :basket_id
-                AND (t.expiration > CURRENT_TIMESTAMP() OR t.expiration IS NULL)';
+                AND (t.expiration > CURRENT_TIMESTAMP() OR t.expiration IS NULL) ORDER BY t.created DESC LIMIT 1';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([
@@ -49,7 +49,7 @@ class TokenRepository extends EntityRepository
     {
         $dql = 'SELECT t FROM Phraseanet:Token t
                 WHERE t.value = :value
-                    AND (t.expiration IS NULL OR t.expiration >= CURRENT_TIMESTAMP())';
+                    AND (t.expiration IS NULL OR t.expiration >= CURRENT_TIMESTAMP()) ORDER BY t.created DESC LIMIT 1';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([':value' => $value]);
