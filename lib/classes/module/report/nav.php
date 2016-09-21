@@ -64,8 +64,6 @@ class module_report_nav extends module_report
             . "FROM log FORCE INDEX(date)\n"
             . "WHERE (" . $report_filter['sql'] . ") AND nav != '' AND !ISNULL(usrid)\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -115,8 +113,6 @@ class module_report_nav extends module_report
             . "WHERE (" . $report_filter['sql'] . ") AND nav != '' AND !ISNULL(usrid)\n"
             . "GROUP BY nav\n"
             . "ORDER BY nb DESC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $this->initialize();
 
@@ -172,8 +168,6 @@ class module_report_nav extends module_report
             . "GROUP BY os\n"
             . "ORDER BY nb DESC\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $this->initialize();
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
@@ -227,8 +221,6 @@ class module_report_nav extends module_report
             . "GROUP BY res\n"
             . "ORDER BY nb DESC\n"
             . "LIMIT 0, 10\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $this->initialize();
 
@@ -288,8 +280,6 @@ class module_report_nav extends module_report
             . "ORDER BY nb DESC\n"
             . "LIMIT 0, 10\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $this->initialize();
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
@@ -344,8 +334,6 @@ class module_report_nav extends module_report
             . "FROM log FORCE INDEX(date)\n"
             . "WHERE (" . $report_filter['sql'] . ") AND appli != 'a:0:{}' AND !ISNULL(usrid)\n"
             . "GROUP BY appli\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $this->initialize();
 
@@ -437,8 +425,6 @@ class module_report_nav extends module_report
                 . "FROM Users\n"
                 . "WHERE (id = :value)\n";
         }
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params2, true)), FILE_APPEND);
 
         $params2 = [':value' => $val];
         $stmt = $conn->prepare($sql);
@@ -538,8 +524,6 @@ class module_report_nav extends module_report
             . ") AS tt\n"
             . "GROUP BY version\n"
             . "ORDER BY nb DESC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

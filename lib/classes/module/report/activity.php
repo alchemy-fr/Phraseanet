@@ -105,8 +105,6 @@ class module_report_activity extends module_report
             . "WHERE (" . $filter['sql'] . ") AND !ISNULL(usrid)\n"
             . "GROUP BY heures\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -162,16 +160,12 @@ class module_report_activity extends module_report
             . "AND log.`" . $what . "` = :main_value\n"
             . "ORDER BY date\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
         $sqlBuilder->setTotalrows($stmt->rowCount());
         $stmt->closeCursor();
 
         $sql .= $sqlBuilder->getFilters()->getLimitFilter();
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -223,8 +217,6 @@ class module_report_activity extends module_report
         if(!$no_answer) {
             $sql .= "LIMIT " . $this->nb_top . "\n";
         }
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -283,8 +275,6 @@ class module_report_activity extends module_report
             . ") AS tt\n"
             . "GROUP BY tt.final, ddate\n"
             . "ORDER BY tt.the_date DESC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -374,8 +364,6 @@ class module_report_activity extends module_report
                     . "GROUP BY usrid\n"
                     . "ORDER BY connexion DESC\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->req, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
         $stmt->execute($params);
         $sqlBuilder->setTotalrows($stmt->rowCount());
@@ -384,8 +372,6 @@ class module_report_activity extends module_report
         if($this->enable_limit) {
             $this->req .= "LIMIT 0, " . $this->nb_record . "\n";
         }
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->req, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $sqlBuilder->getConnBas()->prepare($this->req);
         $stmt->execute($params);
@@ -463,8 +449,6 @@ class module_report_activity extends module_report
             . "  AND (log_docs.action = 'download' OR log_docs.action = 'mail')\n"
             . "  AND (log_docs.final = 'preview' OR log_docs.final = 'document')\n"
             . "GROUP BY usrid\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt =  $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -576,8 +560,6 @@ class module_report_activity extends module_report
             . "WHERE s.name = tt.final\n"
             . "GROUP BY tt.user, tt.final\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -645,8 +627,6 @@ class module_report_activity extends module_report
             . "    AND log.site = :site_id\n"
             . ") AS tt\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -692,8 +672,6 @@ class module_report_activity extends module_report
             . "GROUP by tt.ddate\n"
             . "ORDER BY tt.ddate ASC\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -732,8 +710,6 @@ class module_report_activity extends module_report
             . "GROUP BY tt.usrid\n"
             . "ORDER BY nb DESC\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -768,8 +744,6 @@ class module_report_activity extends module_report
             . ") AS tt\n"
             . "GROUP BY tt.search\n"
             . "ORDER BY nb DESC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -807,8 +781,6 @@ class module_report_activity extends module_report
             . ") AS tt\n"
             . "GROUP BY referrer\n"
             . "ORDER BY nb_view DESC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -849,8 +821,6 @@ class module_report_activity extends module_report
             . "GROUP BY tt.ddate\n"
             . "ORDER BY activity ASC\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -881,8 +851,6 @@ class module_report_activity extends module_report
             . ") AS tt\n"
             . "GROUP BY tt.ddate\n"
             . "ORDER BY activity ASC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
@@ -916,8 +884,6 @@ class module_report_activity extends module_report
             . ") AS tt\n"
             . "GROUP BY tt.usrid\n"
             . "ORDER BY nb ASC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

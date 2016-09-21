@@ -81,8 +81,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
                         . "GROUP BY " . $name . ($name == 'record_id' && $this->on == 'DOC' ? ", final" : "") . "\n";
         }
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
-
         $stmt = $this->connbas->prepare($this->sql);
         $stmt->execute($this->params);
         $this->total_row = $stmt->rowCount();
@@ -97,8 +95,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
         if ($this->enable_limit) {
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         }
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
 
         return $this;
     }
@@ -121,8 +117,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
         $this->sql .= $this->filter->getOrderFilter() ? : '';
         $this->sql .= $this->filter->getLimitFilter() ? : '';
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
 
         return ['sql' => $this->sql, 'params' => $this->params];
     }

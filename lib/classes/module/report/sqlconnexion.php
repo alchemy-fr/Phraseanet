@@ -41,8 +41,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                         . "FROM log FORCE INDEX(date)\n"
                         . "WHERE (" . $filter['sql'] .") AND !ISNULL(log.usrid)\n";
 
-            // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
-
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
             $this->total_row = $stmt->rowCount();
@@ -62,8 +60,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                     . ") AS tt\n"
                     . "GROUP BY " . $this->groupby. "\n"
                     . "ORDER BY nb DESC\n";
-
-            // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -86,8 +82,6 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 . "  WHERE (" . $filter['sql'] . ")\n"
                 . ") AS tt\n"
                 . "ORDER BY val ASC\n";
-
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($this->sql, true), var_export($this->params, true)), FILE_APPEND);
 
         return ['sql' => $this->sql, 'params' => $this->params];
     }

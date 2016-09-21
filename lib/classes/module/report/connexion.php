@@ -154,8 +154,6 @@ class module_report_connexion extends module_report
             . "FROM log FORCE INDEX(date)\n"
             . "WHERE " . $finalfilter . "\n";
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n%s\n", __FILE__, __LINE__, var_export($sql, true), var_export($params, true)), FILE_APPEND);
-
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
