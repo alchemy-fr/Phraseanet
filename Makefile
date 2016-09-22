@@ -1,10 +1,16 @@
-# vim:noexpandtab:ts=4:sts=4:ft=make:
-
 install:
-	composer install -o
+	make install_composer
+	make install_assets
+
+install_composer:
+	composer install
+
+install_assets:
 	rm -rf ./node_modules
+	rm -rf ./www/assets
+	rm -rf ./www/bower_components
 	npm install
-	php bin/console system:clear-cache
+	./node_modules/bin/gulp build
 
 config:
 	@php bin/console compile:configuration

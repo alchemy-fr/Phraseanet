@@ -37,6 +37,7 @@ mariadb:
     install: '1'
     root_password: toor
     database: ab_master
+    databox_db: db_master
     user: phraseanet
     password: phraseanet
     dump: ''
