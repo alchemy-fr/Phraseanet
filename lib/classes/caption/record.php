@@ -165,7 +165,7 @@ class caption_record implements cache_cacheableInterface
      * @param bool $includeBusiness
      * @return array
      */
-    public function get_highlight_fields($highlight = '', array $grep_fields = null, $includeBusiness = false)
+    public function get_highlight_fields(array $grep_fields = null, $includeBusiness = false)
     {
         $fields = [];
 
@@ -177,11 +177,13 @@ class caption_record implements cache_cacheableInterface
                     'from_thesaurus' => false,
                     'qjs' => null,
                  ];
+                /*
                 if ($highlight) {
                     $v->highlight_thesaurus();
                     $values[$metaId]['from_thesaurus'] = $v->isThesaurusValue();
                     $values[$metaId]['qjs'] = $v->getQjs();
                 }
+                */
             }
             $fields[$field->get_name()] = [
                 'values'    => $values,

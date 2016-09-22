@@ -416,7 +416,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             $data[] = [
                 'subdef_id' => $media_subdef->get_subdef_id(),
                 'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
-                'label' => $records[$media_subdef->get_record_id()]->get_title(false, null, true),
+                'label' => $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true]),
             ];
         }
 
