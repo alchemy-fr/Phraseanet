@@ -1486,7 +1486,7 @@ class V1Controller extends Controller
 
         $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getUserQuery());
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
@@ -1496,7 +1496,7 @@ class V1Controller extends Controller
             }));
 
             $this->getSearchEngineLogger()
-                ->log($databox, $search_result->getQuery(), $search_result->getTotal(), $colls);
+                ->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $colls);
         }
 
         $this->getSearchEngine()->clearCache();

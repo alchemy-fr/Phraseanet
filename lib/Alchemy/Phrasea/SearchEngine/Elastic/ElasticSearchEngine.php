@@ -314,6 +314,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return new SearchEngineResult(
             $options,
             $results,   // ArrayCollection of results
+            $string,    // the query as typed by the user
             json_encode($query),
             $res['took'],   // duration
             $options->getFirstResult(),
