@@ -6,9 +6,18 @@
   shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && npm install -g bower recess
 
 - name: Initialize application dependencies
+  shell: make install_composer
   become: yes
   become_user: vagrant
-  shell: make
+  ignore_errors: yes
+  args:
+    chdir: /vagrant/
+
+- name: Initialize and build application assets
+  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_assets
+  become: yes
+  become_user: vagrant
+  ignore_errors: yes
   args:
     chdir: /vagrant/
 
