@@ -85,7 +85,7 @@ class DatabaseMaintenanceService
                 $ref_engine = strtolower($foundTable['Engine']);
 
                 if ($engine != $ref_engine && in_array($engine, ['innodb', 'myisam'])) {
-                    $recommends = $this->alterTableEngine($tableName, $engine, $recommends);
+                    $this->alterTableEngine($tableName, $engine, $recommends);
                 }
 
                 $ret = $this->upgradeTable($allTables[$tableName]);
