@@ -53,6 +53,10 @@
     .dropdownButton button.btn-inverse {
       border-left: 0;
       border-right: 0;
+      .caret{
+        border-top-color: $mediumTextColor;
+        border-bottom-color: $mediumTextColor;
+      }
     }
     .classicButton button.btn-inverse:hover,
     .dropdownButton button.btn-inverse:hover {
