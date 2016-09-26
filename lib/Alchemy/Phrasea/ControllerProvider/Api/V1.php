@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -46,6 +47,13 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
+        /** @var PropertyAccess $config */
+        $config = $app['conf'];
+
+        if ($config->get('api_disable', false) == true) {
+            return $app['controllers_factory'];
+        }
+
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 

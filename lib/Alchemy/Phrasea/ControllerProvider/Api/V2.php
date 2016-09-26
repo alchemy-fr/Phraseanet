@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Order\Controller\ApiOrderController;
 use Silex\Application;
@@ -70,6 +71,13 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
+        /** @var PropertyAccess $config */
+        $config = $app['conf'];
+
+        if ($config->get('api_disable', false) == true) {
+            return $app['controllers_factory'];
+        }
+
         $controllers = $this->createCollection($app);
 
         $controllers->before(new OAuthListener());

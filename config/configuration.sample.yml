@@ -6,6 +6,7 @@ main:
     maintenance: false
     languages: []
     key: ''
+    api_disable: false
     api_require_ssl: true
     api_disabled: true
     database:
