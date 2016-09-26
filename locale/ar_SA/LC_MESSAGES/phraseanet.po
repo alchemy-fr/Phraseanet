@@ -6670,11 +6670,6 @@ msgstr ""
 msgid "Ce champ est decrit comme un element DublinCore"
 msgstr ""
 
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr ""
-
 msgid "Chargement"
 msgstr ""
 

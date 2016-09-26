@@ -6837,11 +6837,6 @@ msgstr "Sammelkörbe durchsuchen"
 msgid "Ce champ est decrit comme un element DublinCore"
 msgstr "Dieses Feld wird als einen Dublin Core Element beschrieben"
 
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr "Drehungen werden nur für die Unterauflösungen \"Bilder\" angewendet."
-
 msgid "Chargement"
 msgstr "Ladend"
 
