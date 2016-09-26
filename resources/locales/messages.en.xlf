@@ -1560,11 +1560,6 @@
         <target state="translated">Change my e-mail address</target>
         <jms:reference-file line="6">web/account/reset-email.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04d0ff716d072a61412e969b78fe694be13d049f" resname="Changes for rotation will be applied only on the sub-definitions of &quot;image&quot; type." approved="yes">
-        <source>Changes for rotation will be applied only on the sub-definitions of "image" type.</source>
-        <target state="translated">Rotations are applied only on subviews of "image" type documents.</target>
-        <jms:reference-file line="180">actions/Tools/index.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="18e03e2a37ba37df713f9665ef752fb8b40fc1e8" resname="Channels" approved="yes">
         <source>Channels</source>
         <target state="translated">Channels</target>
