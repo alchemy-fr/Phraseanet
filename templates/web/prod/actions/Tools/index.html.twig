@@ -174,9 +174,6 @@
     {% endif %}
 
     <div id="image" class="tabBox">
-      <div class="text-info">
-        <i class=" icon-info-sign"></i> {% trans %}Changes for rotation will be applied only on the sub-definitions of "image" type.{% endtrans %}
-      </div>
       <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
         <fieldset style='border:1px solid #999;padding:20px;'>
           <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>

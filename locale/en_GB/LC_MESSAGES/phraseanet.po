@@ -6731,13 +6731,6 @@ msgstr "Browse Baskets"
 msgid "Ce champ est decrit comme un element DublinCore"
 msgstr "This field has a Dublin Core link"
 
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-
 msgid "Chargement"
 msgstr "Loading..."
 

@@ -6807,13 +6807,6 @@ msgstr "Mandjes doorbladeren"
 msgid "Ce champ est decrit comme un element DublinCore"
 msgstr "Dit veld is beschreven als een DublinCore element"
 
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr ""
-"Veranderingen in de rotatie zullen enkel op de thumbnail van het type \"beeld"
-"\" worden toegepast."
-
 msgid "Chargement"
 msgstr "Laden"
 

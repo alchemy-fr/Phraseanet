@@ -6838,13 +6838,6 @@ msgstr "Parcourir les paniers"
 msgid "Ce champ est decrit comme un element DublinCore"
 msgstr "Ce champ est décrit comme un élément DublinCore"
 
-msgid ""
-"Changes for rotation will be applied only on the sub-definitions of \"image"
-"\" type."
-msgstr ""
-"Les rotations ne sont appliquées qu'aux sous-définitions des documents de "
-"type image."
-
 msgid "Chargement"
 msgstr "Chargement..."
 
