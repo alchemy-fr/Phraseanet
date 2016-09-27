@@ -83,10 +83,10 @@ class ConfigurationEditor extends Command
         $configurationRoot = $configurationStore->getConfig();
         $configurationCurrent = & $configurationRoot;
 
-        $output->writeln('<info>Writing configuration entry</info> ' . $parameter);
+        $output->writeln('<info>Writing value to configuration entry</info> ' . $parameter);
 
         foreach ($parameterNodes as $paramName) {
-            if (! isset($mergeConfiguration[$paramName])) {
+            if (! isset($configurationCurrent[$paramName])) {
                 $configurationCurrent[$paramName] = array();
             }
 
