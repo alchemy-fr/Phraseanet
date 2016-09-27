@@ -50,7 +50,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
         /** @var PropertyAccess $config */
         $config = $app['conf'];
 
-        if ($config->get('api_disable', false) == true) {
+        if ($config->get([ 'main', 'api_disable' ], false) == true) {
             return $app['controllers_factory'];
         }
 
