@@ -10,7 +10,7 @@ install_assets:
 	rm -rf ./www/assets
 	rm -rf ./www/bower_components
 	npm install
-	./node_modules/bin/gulp build
+	./node_modules/.bin/gulp build
 
 config:
 	@php bin/console compile:configuration
