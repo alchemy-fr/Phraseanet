@@ -35,3 +35,9 @@
   shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=fr --appbox={{ mariadb.database }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
   args:
     chdir: /vagrant/
+
+- name: Enable debugger for host IP addresses
+  shell: bin/setup system:config add debugger.allowed-ips "{{ item}}"
+  with_items: '{{ host_addresses }}'
+  args:
+    chdir: /vagrant/
