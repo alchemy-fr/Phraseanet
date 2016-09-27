@@ -6,9 +6,8 @@ main:
     maintenance: false
     languages: []
     key: ''
-    api_disable: false
+    api_disable: true
     api_require_ssl: true
-    api_disabled: true
     database:
         host: 127.0.0.1
         port: 3306
