@@ -1,16 +1,23 @@
 install:
 	make install_composer
+	make clean_assets
+	make install_asset_dependencies
 	make install_assets
 
 install_composer:
 	composer install
 
+install_asset_dependencies:
+	npm install
+	./node_modules/.bin/gulp build
+
 install_assets:
+	./node_modules/.bin/gulp install-assets
+
+clean_assets:
 	rm -rf ./node_modules
 	rm -rf ./www/assets
 	rm -rf ./www/bower_components
-	npm install
-	./node_modules/.bin/gulp build
 
 config:
 	@php bin/console compile:configuration

@@ -5,7 +5,7 @@
   become_user: vagrant
   shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && npm install -g bower recess
 
-- name: Initialize application dependencies
+- name: Install Composer dependencies
   shell: make install_composer
   become: yes
   become_user: vagrant
@@ -13,7 +13,15 @@
   args:
     chdir: /vagrant/
 
-- name: Initialize and build application assets
+- name: Install assets dependencies
+  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_asset_dependencies
+  become: yes
+  become_user: vagrant
+  ignore_errors: yes
+  args:
+    chdir: /vagrant/
+
+- name: Install assets
   shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_assets
   become: yes
   become_user: vagrant
@@ -21,7 +29,7 @@
   args:
     chdir: /vagrant/
 
-- name: Initialize application configuration
+- name: Run application setup
   become: yes
   become_user: vagrant
   shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=fr --appbox={{ mariadb.database }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
