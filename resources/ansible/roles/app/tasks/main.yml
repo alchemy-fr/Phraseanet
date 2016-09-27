@@ -41,3 +41,18 @@
   with_items: '{{ host_addresses }}'
   args:
     chdir: /vagrant/
+
+- name: Disable API SSL requirement
+  shell: bin/setup system:config set main.api_require_ssl false
+  args:
+    chdir: /vagrant/
+
+- name: Enable API routes
+  shell: bin/setup system:config set main.api_disabled false
+  args:
+    chdir: /vagrant/
+
+- name: Create ElasticSearch indexes
+  shell: bin/console s:i:c
+  args:
+    chdir: /vagrant/
