@@ -26,12 +26,10 @@ def config_net(config)
         "dev." + $hostname + ".vb"
     ]
 
-    #config.vm.network :public_network, type: "dhcp", bridge: "en0: Ethernet"
-
     # Assign static IP if present in network config
     if File.file?($root + "/.network.conf")
         ipAddress = File.read($root + "/.network.conf")
-        config.vm.network :private_network, ip: ipAddress
+        #config.vm.network :private_network, ip: ipAddress
     else
         # vboxnet0 can be changed to use a specific private_network
         config.vm.network :private_network, type: "dhcp"
@@ -48,6 +46,7 @@ end
 
 # By default, the name of the VM is the project's directory name
 $hostname = File.basename($root).downcase
+$hostIps = `ip addr show | grep inet | grep -v inet6 | cut -d' ' -f6 | cut -d'/' -f1`.split("\n");
 
 Vagrant.configure("2") do |config|
 
@@ -80,9 +79,10 @@ Vagrant.configure("2") do |config|
         config.vm.provision "ansible" do |ansible|
             ansible.playbook = "resources/ansible/playbook.yml"
             ansible.limit = 'all'
-            ansible.verbose = 'v'
+            ansible.verbose = 'vvv'
             ansible.extra_vars = {
                 hostname: $hostname,
+                host_addresses: $hostIps,
                 postfix: {
                     postfix_domain: $hostname + ".vb"
                 }
@@ -92,7 +92,9 @@ Vagrant.configure("2") do |config|
         config.vm.provision "ansible", run: "always" do |ansible|
             ansible.playbook = "resources/ansible/playbook-always.yml"
             ansible.limit = 'all'
+            ansible.verbose = 'vvv'
             ansible.extra_vars = {
+                host_addresses: $hostIps,
                 hostname: $hostname
             }
         end
