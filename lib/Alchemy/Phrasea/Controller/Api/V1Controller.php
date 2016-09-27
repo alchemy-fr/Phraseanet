@@ -483,6 +483,16 @@ class V1Controller extends Controller
 
     private function listCollection(\collection $collection)
     {
+        $userQuery = new \User_Query($this->app);
+        $orderMasters = $userQuery->on_base_ids([ $collection->get_base_id() ] )
+            ->who_have_right(['order_master'])
+            ->execute()
+            ->get_results()
+            ->map(function (User $user) {
+                return $user->getEmail();
+            })
+            ->toArray();
+
         return [
             'base_id' => $collection->get_base_id(),
             'databox_id' => $collection->get_sbas_id(),
@@ -495,6 +505,7 @@ class V1Controller extends Controller
                 'nl' => $collection->get_label('nl'),
             ],
             'record_amount' => $collection->get_record_amount(),
+            'order_managers' => $orderMasters
         ];
     }
 
