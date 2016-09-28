@@ -358,7 +358,7 @@
                                                 <div id="ADVSRCH_SB_ZONE">
                                                 {% if search_status|length > 0 %}
                                                     <hr />
-                                                    <span>{{ 'Status des documents a rechercher' | trans }}</span>
+                                                    <span class="status-section-title">{{ 'Status des documents a rechercher' | trans }}</span>
                                                     {% for databox_id, databox in search_status %}
                                                     {% if databox.status|length > 0 %}
                                                     <table style="width: 100%;" id="ADVSRCH_SB_ZONE_{{databox_id}}" class="field_{{databox_id}}">

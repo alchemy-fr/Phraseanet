@@ -17,19 +17,21 @@
 - name: Install Dependencies
   apt: pkg=oracle-java8-installer state=latest
 
-- name: Download
+- name: Remove temporary debian package
+  shell: rm -f /tmp/elasticsearch-{{ elasticsearch.version }}.deb
+  when: not is_installed
+
+- name: Download debian package
   get_url: >
     url={{ elasticsearch_url }}
     dest=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
   when: not is_installed
 
-- name: Install
+- name: Install debian package
   apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
   when: not is_installed
 
 - name: Install plugins
-  become: yes
-  become_user: elasticsearch
   shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}/{{ item.version }}
   when: not is_installed
   with_items: "{{ elasticsearch.plugins }}"

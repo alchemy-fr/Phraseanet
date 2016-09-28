@@ -14,13 +14,21 @@ use League\Fractal\TransformerAbstract;
 
 class V1SearchCompositeResultTransformer extends TransformerAbstract
 {
+    /**
+     * @var string[]
+     */
     protected $availableIncludes = ['stories', 'records'];
+
+    /**
+     * @var string[]
+     */
     protected $defaultIncludes = ['stories', 'records'];
 
     /**
      * @var RecordTransformer
      */
     private $recordTransformer;
+
     /**
      * @var StoryTransformer
      */

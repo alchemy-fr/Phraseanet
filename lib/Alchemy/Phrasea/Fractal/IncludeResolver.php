@@ -54,7 +54,6 @@ class IncludeResolver
     private function figureOutWhichIncludes(ResourceTransformerAccessibleScope $scope)
     {
         $transformer = $scope->getResourceTransformer();
-
         $includes = $transformer->getDefaultIncludes();
 
         foreach ($transformer->getAvailableIncludes() as $include) {

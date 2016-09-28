@@ -10,19 +10,28 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
-use Alchemy\Phrasea\Authentication\ACLProvider;
+use Alchemy\Phrasea\Collection\CollectionService;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CollectionController extends Controller
 {
     use UserQueryAware;
+
+    /**
+     * @var CollectionService
+     */
+    private $collectionService;
+
+    public function __construct(Application $application, CollectionService $collectionService)
+    {
+        parent::__construct($application);
+
+        $this->collectionService = $collectionService;
+    }
 
     /**
      * Display collection information page
@@ -79,52 +88,23 @@ class CollectionController extends Controller
      */
     public function setOrderAdmins(Request $request, $bas_id)
     {
-        $admins = array_values($request->request->get('admins', []));
+        $admins = array_filter(
+            array_values($request->request->get('admins', [])),
+            function ($value) { return $value != false; }
+        );
 
-        if (count($admins) === 0) {
+        if (false && count($admins) === 0) {
             $this->app->abort(400, 'No admins provided.');
         }
+
         if (!is_array($admins)) {
             $this->app->abort(400, 'Admins must be an array.');
         }
 
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->app['repo.users'];
-        $users = $userRepository->findBy(['id' => $admins]);
-        $userIds = array_map(function (User $user) {
-            return $user->getId();
-        }, $users);
-        $missingAdmins = array_diff($admins, $userIds);
-        if (!empty($missingAdmins)) {
-            throw new RuntimeException(sprintf('Invalid usrId %s provided.', reset($missingAdmins)));
-        }
-        $admins = $users;
+        $collection = $this->getApplicationBox()->get_collection($bas_id);
+        $collectionReference = $collection->getReference();
 
-        /** @var Connection $conn */
-        $conn = $this->app->getApplicationBox()->get_connection();
-        $conn->beginTransaction();
-
-        try {
-            $userQuery = $this->createUserQuery();
-
-            $result = $userQuery->on_base_ids([$bas_id])
-                ->who_have_right(['order_master'])
-                ->execute()->get_results();
-
-            /** @var ACLProvider $acl */
-            $acl = $this->app['acl'];
-            foreach ($result as $user) {
-                $acl->get($user)->update_rights_to_base($bas_id, ['order_master' => false]);
-            }
-
-            foreach ($admins as $admin) {
-                $acl->get($admin)->update_rights_to_base($bas_id, ['order_master' => true]);
-            }
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
-            throw $e;
-        }
+        $this->collectionService->setOrderMasters($collectionReference, $admins);
 
         return $this->app->redirectPath('admin_display_collection', [
             'bas_id'  => $bas_id,
