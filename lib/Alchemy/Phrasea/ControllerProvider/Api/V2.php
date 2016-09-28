@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Order\Controller\ApiOrderController;
 use Silex\Application;
@@ -22,7 +23,7 @@ use Silex\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class V2 implements ControllerProviderInterface, ServiceProviderInterface
+class V2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
@@ -70,6 +71,10 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
+        if (! $this->isApiEnabled($app)) {
+            return $app['controllers_factory'];
+        }
+
         $controllers = $this->createCollection($app);
 
         $controllers->before(new OAuthListener());

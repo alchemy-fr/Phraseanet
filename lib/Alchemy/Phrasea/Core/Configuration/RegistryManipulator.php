@@ -19,10 +19,26 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class RegistryManipulator
 {
+    /**
+     * @var FormFactoryInterface
+     */
     private $factory;
+
+    /**
+     * @var array
+     */
     private $languages;
+
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
 
+    /**
+     * @param FormFactoryInterface $factory
+     * @param TranslatorInterface $translator
+     * @param array $languages
+     */
     public function __construct(FormFactoryInterface $factory, TranslatorInterface $translator, array $languages)
     {
         $this->factory = $factory;
@@ -128,6 +144,7 @@ class RegistryManipulator
                 'enabled' => false,
             ],
             'api-clients' => [
+                'api-enabled' => true,
                 'navigator-enabled' => true,
                 'office-enabled' => true,
             ],
