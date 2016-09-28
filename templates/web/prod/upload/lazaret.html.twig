@@ -92,13 +92,16 @@
             }
         }
 
-        $(".records-subititution", scope).bind('click', function(){
-            $(this).closest('.lazaret-proposals').find('.records-subititution').removeClass("thumb-selected");
-            $(this).closest('.lazaret-proposals').find('.thumbnail').css({'border-color': 'white'})
-            $(this).find('.thumbnail').css({'border-color': 'blue'});
-            $(this).addClass("thumb-selected");
-        });
+        $(".records-subititution .diapo", scope)
+                .bind('click', function(e){
+                    $(this).closest('.lazaret-proposals').find('.diapo').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+        );
 
+        $(".records-subititution .captionTips", scope).tooltip();
+        $(".records-subititution .infoTips", scope).tooltip();
+        $(".records-subititution .previewTips", scope).tooltip();
 
         var emptying = false;   // true=emptying, set to false to stop
 
@@ -198,14 +201,14 @@
                         var html = _.template($("#alert_error_tpl").html(), {
                              content:data.message
                         });
-                        that.closest(".thumbnail").append(html);
+                        that.closest(".diapo").append(html);
                     }
                 },
                 error: function(){
                    var html = _.template($("#alert_error_tpl").html(), {
                         content:language.errorAjaxRequest
                    });
-                   that.closest(".thumbnail").append(html);
+                   that.closest(".diapo").append(html);
                 },
                 complete: function(){
                     stopAjax(that);
@@ -233,14 +236,14 @@
                        var html = _.template($("#alert_error_tpl").html(), {
                             content:data.message
                        });
-                       that.closest(".thumbnail").append(html);
+                       that.closest(".diapo").append(html);
                     }
                 },
                 error: function(){
                     var html = _.template($("#alert_error_tpl").html(), {
                         content:language.errorAjaxRequest
                     });
-                    that.closest(".thumbnail").append(html);
+                    that.closest(".diapo").append(html);
                 },
                 complete: function(){
                     stopAjax(that);
@@ -253,14 +256,18 @@
         $("button.subtitute-lazaret", scope).bind('click', function(){
             var that = $(this);
             var lazaretId = getLazaretId(that);
-            var nbProposals = $('.records-subititution', $(this).closest('.wrapper-item')).length;
+            var container = $(this).closest('.wrapper-item');
+
+            var nbProposals = $('.records-subititution', container).length;
+            var elements = [];
+            var nbElement = 0;
 
             if(nbProposals > 1){ // we got more than one proposals
-                var elements = $(".thumb-selected", $(this).closest('.wrapper-item'));
-                var nbElement = elements.length;
+                elements = $(".selected", container);
+                nbElement = elements.length;
             }else if(nbProposals == 1){
-                var elements = $(this).closest('.wrapper-item').find(".records-subititution");
-                var nbElement = 1
+                elements = container.find(".records-subititution");
+                nbElement = 1
             }
             else{
                 return false;
@@ -274,8 +281,7 @@
                 return false;
             }
 
-            var recorThumb = elements.first().find('.record-thumb');
-            var recordId = recorThumb.find('input[name=record_id]').val();
+            var recordId = elements.first().attr("data-record_id");
 
             $.ajax({
                 type : 'POST',
@@ -294,14 +300,14 @@
                         var html = _.template($("#alert_error_tpl").html(), {
                             content:data.message
                         });
-                        that.closest(".thumbnail").append(html);
+                        that.closest(".diapo").append(html);
                     }
                 },
                 error: function(){
                     var html = _.template($("#alert_error_tpl").html(), {
                         content:language.errorAjaxRequest
                     });
-                    that.closest(".thumbnail").append(html);
+                    that.closest(".diapo").append(html);
                 },
                 complete: function(){
                     stopAjax(that);
@@ -311,10 +317,15 @@
         });
     });
 </script>
+<style>
+    .lazaret-proposals .diapo {
+        float:none;
+    }
+</style>
 
 {% macro lazaretElement(app, file) %}
     {% import "common/thumbnail.html.twig" as thumb %}
-    {% set records = file.getRecordsToSubstitute(app) %}
+    {% set records = file.getRecordsToSubstitute(app, true) %}
     <div class="lazaret-file span4">
         <h5>{{ "Last uploaded version" | trans }}</h5>
         <ul class="thumbnails">
@@ -370,17 +381,26 @@
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
+                    {% set reasons = record['reasons'] %}
+                    {% set record = record['record'] %}
                     {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "canaddrecord")
                         and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "candeleterecord") %}
-                        <li class="records-subititution span3">
-                            <div class="thumbnail">
-                                <div class="record-thumb" style="text-align:center;">
-                                    {{ thumb.format(record.get_thumbnail(), 169, 180, "", false, false) }}
-                                    <input name="record_id" value="{{ record.get_record_id() }}" type="hidden"/>
-                                </div>
-                                <div class="caption">
-                                    <p><b>{{ record.get_title() }}</b></p>
-                                </div>
+                        <li class="records-subititution span3" style="width:210px">
+                            {% include 'prod/results/record.html.twig' with {
+                            'record': record,
+                            'settings': {
+                            'images_size': 169,
+                            'technical_display': '1',
+                            'rollover_thumbnail': 'caption',
+                            'doctype_display': '1',
+                            'handle_dblclick' : false,
+                            'show_context_menu': false
+                            }
+                            } %}
+                            <div class="caption">
+                                {% for reason in reasons %}
+                                    <p>{{ reason }}</p>
+                                {% endfor %}
                             </div>
                         </li>
                     {% endif %}

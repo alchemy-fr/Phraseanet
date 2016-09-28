@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use \record_adapter;
 
 /**
  * @ORM\Table(name="LazaretFiles")
@@ -421,24 +422,32 @@ class LazaretFile
     /**
      * Get an array of records that can be substitued by the Lazaret file
      *
-     * @return \record_adapter[]
+     * @return record_adapter[]
      */
-    public function getRecordsToSubstitute(Application $app)
+    public function getRecordsToSubstitute(Application $app, $includeReason = false)
     {
-        $ret = [];
-
-        $repository = $this->getCollection($app)->get_databox()->getRecordRepository();
-        $shaRecords = $repository->findBySha256($this->getSha256());
-        $uuidRecords = $repository->findByUuid($this->getUuid());
-
-        $merged = array_merge($uuidRecords, $shaRecords);
-
-        foreach ($merged as $record) {
-            if ( ! in_array($record, $ret)) {
-                $ret[] = $record;
+        $merged = [];
+        /** @var LazaretCheck $check */
+        foreach($this->getChecks() as $check) {
+            /** @var record_adapter $record */
+            $conflicts = $check->listConflicts($app);
+            foreach ($conflicts as $record) {
+                if($includeReason) {
+                    if (!array_key_exists($record->getRecordId(), $merged)) {
+                        $merged[$record->getRecordId()] = [
+                            'record' => $record,
+                            'reasons' => []
+                        ];
+                    }
+                    $merged[$record->getRecordId()]['reasons'][] = $check->getReason($app['translator']);
+                }
+                else {
+                    $merged[$record->getRecordId()] = $record;
+                }
             }
         }
 
-        return $ret;
+        return $merged;
     }
+
 }

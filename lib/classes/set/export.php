@@ -130,7 +130,7 @@ class set_export extends set_abstract
                             $app,
                             $child_basrec->getDataboxId(),
                             $record_id,
-                            $record->get_title(null, null, true) . '_' . $n,
+                            $record->get_title(['removeExtension' => true]) . '_' . $n,
                             $remain_hd[$base_id]
                         );
                         $this->add_element($current_element);
@@ -440,7 +440,7 @@ SQL;
                 substr($files[$id]['original_name'], 0 - strrpos($files[$id]['original_name'], '.'));
 
             if ($rename_title) {
-                $title = strip_tags($download_element->get_title(null, null, true));
+                $title = strip_tags($download_element->get_title(['removeExtension' => true]));
                 $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
