@@ -256,18 +256,17 @@ class set_export extends set_abstract
                 $types['usr_id'] = PDO::PARAM_INT;
             }
 
-            $sql = <<<SQL
-SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
-FROM (
-  FtpCredential INNER JOIN Users ON (FtpCredential.active = 1 AND FtpCredential.user_id = Users.id)
-  INNER JOIN basusr ON (
-    Users.id=basusr.usr_id
-    ${userFilterSQL}
-    AND (basusr.base_id IN (:baseIds))
-  )
-)
-GROUP BY Users.id
-SQL;
+            $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*\n"
+                . "FROM (\n"
+                . " FtpCredential INNER JOIN Users ON (FtpCredential.active = 1 AND FtpCredential.user_id = Users.id)\n"
+                . "INNER JOIN\n"
+                . " basusr\n"
+                . "ON (Users.id=basusr.usr_id"
+                . $userFilterSQL
+                . " AND (basusr.base_id IN (:baseIds)))\n"
+                . ")\n"
+                . "GROUP BY Users.id\n";
+
             $params['baseIds'] = $lst_base_id;
             $types['baseIds'] = Connection::PARAM_INT_ARRAY;
 
@@ -458,10 +457,15 @@ SQL;
                     continue;
                 }
 
-                $subdef = $download_element->get_subdef($name);
-
-                if (!in_array($name, ['caption', 'caption-yaml']) && !isset($subdef)) {
-                    continue;
+                $subdef = null;
+                if (!in_array($name, ['caption', 'caption-yaml'])) {
+                    try {
+                        // get_subdef() can throw a 404
+                        $subdef = $download_element->get_subdef($name);
+                    }
+                    catch(\Exception $e) {
+                        continue;
+                    }
                 }
 
                 set_time_limit(100);
@@ -691,7 +695,7 @@ SQL;
     public static function build_zip(Application $app, Token $token, array $list, $zipFile)
     {
         if (isset($list['complete']) && $list['complete'] === true) {
-            return;
+            return $zipFile;
         }
 
         $files = $list['files'];
@@ -786,9 +790,7 @@ SQL;
         $list_base = array_unique(array_keys($tmplog));
 
         if (!$anonymous && null !== $app->getAuthenticatedUser()) {
-            $sql = "UPDATE basusr
-            SET remain_dwnld = :remain_dl
-            WHERE base_id = :base_id AND usr_id = :usr_id";
+            $sql = "UPDATE basusr SET remain_dwnld = :remain_dl WHERE base_id = :base_id AND usr_id = :usr_id";
 
             $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
