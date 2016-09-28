@@ -23,7 +23,7 @@ use Silex\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class V2 implements ControllerProviderInterface, ServiceProviderInterface
+class V2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
@@ -71,10 +71,7 @@ class V2 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var PropertyAccess $config */
-        $config = $app['conf'];
-
-        if ($config->get([ 'main', 'api_disable' ], false) == true) {
+        if (! $this->isApiEnabled($app)) {
             return $app['controllers_factory'];
         }
 

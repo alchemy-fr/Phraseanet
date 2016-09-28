@@ -21,7 +21,7 @@ use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class V1 implements ControllerProviderInterface, ServiceProviderInterface
+class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     const VERSION = '1.5.0';
 
@@ -47,10 +47,7 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var PropertyAccess $config */
-        $config = $app['conf'];
-
-        if ($config->get([ 'main', 'api_disable' ], false) == true) {
+        if (! $this->isApiEnabled($app)) {
             return $app['controllers_factory'];
         }
 

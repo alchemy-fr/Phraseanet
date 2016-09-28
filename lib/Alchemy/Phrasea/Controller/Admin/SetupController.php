@@ -11,6 +11,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\Configuration;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,12 +22,15 @@ class SetupController extends Controller
     {
         /** @var RegistryManipulator $manipulator */
         $manipulator = $this->app['registry.manipulator'];
+        /** @var PropertyAccess $config */
+        $config = $this->app['conf'];
+
         $form = $manipulator->createForm($this->app['conf']);
 
         if ('POST' === $request->getMethod()) {
             $form->submit($request->request->all());
             if ($form->isValid()) {
-                $this->app['conf']->set('registry', $manipulator->getRegistryData($form));
+                $config->set('registry', $manipulator->getRegistryData($form));
 
                 return $this->app->redirectPath('setup_display_globals');
             }

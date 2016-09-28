@@ -19,7 +19,7 @@ use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class OAuth2 implements ControllerProviderInterface, ServiceProviderInterface
+class OAuth2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
@@ -35,10 +35,7 @@ class OAuth2 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
-        /** @var PropertyAccess $config */
-        $config = $app['conf'];
-
-        if ($config->get([ 'main', 'api_disable' ], false) == true) {
+        if (! $this->isApiEnabled($app)) {
             return $app['controllers_factory'];
         }
 
