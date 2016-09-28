@@ -484,6 +484,16 @@ class V1Controller extends Controller
 
     private function listCollection(\collection $collection)
     {
+        $userQuery = new \User_Query($this->app);
+        $orderMasters = $userQuery->on_base_ids([ $collection->get_base_id() ] )
+            ->who_have_right(['order_master'])
+            ->execute()
+            ->get_results()
+            ->map(function (User $user) {
+                return $user->getEmail();
+            })
+            ->toArray();
+
         return [
             'base_id' => $collection->get_base_id(),
             'databox_id' => $collection->get_sbas_id(),
@@ -496,6 +506,7 @@ class V1Controller extends Controller
                 'nl' => $collection->get_label('nl'),
             ],
             'record_amount' => $collection->get_record_amount(),
+            'order_managers' => $orderMasters
         ];
     }
 
@@ -1103,6 +1114,7 @@ class V1Controller extends Controller
             'results.stories' => $storyTransformer,
             'results.stories.thumbnail' => $subdefTransformer,
             'results.stories.metadatas' => new CallbackTransformer(),
+            'results.stories.caption' => new CallbackTransformer(),
             'results.stories.records' => $recordTransformer,
             'results.stories.records.thumbnail' => $subdefTransformer,
             'results.stories.records.technical_informations' => $technicalDataTransformer,
@@ -1118,6 +1130,7 @@ class V1Controller extends Controller
             'results.records.status' => new CallbackTransformer(),
             'results.records.caption' => new CallbackTransformer(),
         ]);
+
         $includeResolver = new IncludeResolver($transformerResolver);
 
         $fractal = new \League\Fractal\Manager();
@@ -1244,7 +1257,8 @@ class V1Controller extends Controller
                 }
             }
 
-            if (in_array('results.stories.metadatas', $includes, true)) {
+            if (in_array('results.stories.metadatas', $includes, true) ||
+                in_array('results.stories.caption', $includes, true)) {
                 $captions = $this->app['service.caption']->findByReferenceCollection($stories);
                 $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($stories);
 
@@ -1407,20 +1421,32 @@ class V1Controller extends Controller
      */
     private function resolveSearchIncludes(Request $request)
     {
+        $includes = [
+            'results.stories.records'
+        ];
+
         if ($request->attributes->get('_extended', false)) {
-            return [
-                'results.stories.records.subdefs',
-                'results.stories.records.metadata',
-                'results.stories.records.caption',
-                'results.stories.records.status',
+            if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+                $includes = array_merge($includes, [
+                    'results.stories.records.subdefs',
+                    'results.stories.records.metadata',
+                    'results.stories.records.caption',
+                    'results.stories.records.status'
+                ]);
+            }
+            else {
+                $includes = [ 'results.stories.caption' ];
+            }
+
+            $includes = array_merge($includes, [
                 'results.records.subdefs',
                 'results.records.metadata',
                 'results.records.caption',
-                'results.records.status',
-            ];
+                'results.records.status'
+            ]);
         }
 
-        return [];
+        return $includes;
     }
 
     /**
@@ -1436,7 +1462,7 @@ class V1Controller extends Controller
                 'results.subdefs',
                 'results.metadata',
                 'results.caption',
-                'results.status',
+                'results.status'
             ];
         }
 

@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Preset;
@@ -295,6 +297,7 @@ class EditController extends Controller
 
                 $newsubdef_reg = new \record_adapter($this->app, $reg_record->getDataboxId(), $request->request->get('newrepresent'));
 
+                $subdefChanged = false;
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
                     if (!in_array($name, ['thumbnail', 'preview'])) {
                         continue;
@@ -304,14 +307,18 @@ class EditController extends Controller
                     }
 
                     $media = $this->app->getMediaFromUri($value->getRealPath());
-                    $this->getSubDefinitionSubstituer()->substitute($reg_record, $name, $media);
-                    $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
+                    $this->getSubDefinitionSubstituer()->substituteSubdef($reg_record, $name, $media);
                     $this->getDataboxLogger($reg_record->getDatabox())->log(
                         $reg_record,
                         \Session_Logger::EVENT_SUBSTITUTE,
-                        $name == 'document' ? 'HD' : $name,
+                        $name,
                         ''
                     );
+                    $subdefChanged = true;
+                }
+                if($subdefChanged) {
+                    $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($reg_record, $newsubdef_reg));
+                    $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($reg_record));
                 }
             } catch (\Exception $e) {
 
@@ -348,7 +355,7 @@ class EditController extends Controller
 
             if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                 $record->set_metadatas($rec['metadatas']);
-                $this->getDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+                $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
             }
 
             $newstat = $record->getStatus();

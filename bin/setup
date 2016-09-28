@@ -11,6 +11,7 @@
 
 namespace KonsoleKommander;
 
+use Alchemy\Phrasea\Command\Setup\ConfigurationEditor;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
@@ -24,6 +25,7 @@ use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
+use Alchemy\Phrasea\Setup\ConfigurationTester;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -53,16 +55,16 @@ $app->register(new DoctrineMigrationServiceProvider());
 $app->command(new \module_console_aboutAuthors('about:authors'));
 $app->command(new \module_console_aboutLicense('about:license'));
 
-if(
-    $app['phraseanet.configuration-tester']->isMigrable()
-    || $app['phraseanet.configuration-tester']->isUpgradable()
-    || $app['phraseanet.configuration-tester']->isInstalled()
-    ) {
+/** @var ConfigurationTester $configurationTester */
+$configurationTester = $app['phraseanet.configuration-tester'];
+
+if($configurationTester->isMigrable() || $configurationTester->isUpgradable() || $configurationTester->isInstalled()) {
     $app->command(new \module_console_systemUpgrade('system:upgrade'));
 }
 
-if ($app['phraseanet.configuration-tester']->isInstalled()) {
+if ($configurationTester->isInstalled()) {
     $app->command(new UpgradeDBDatas('system:upgrade-datas'));
+    $app->command(new ConfigurationEditor('system:config'));
 }
 
 $app->command(new AddPlugin());

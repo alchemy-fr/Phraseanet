@@ -31,7 +31,6 @@ class StoryView
      */
     public function __construct(\record_adapter $story)
     {
-
         $this->story = $story;
     }
 

@@ -42,6 +42,7 @@ class DoDownloadController extends Controller
         if (false === $list = @unserialize($token->getData())) {
             $this->app->abort(500, 'Invalid datas');
         }
+
         if (!is_array($list)) {
             $this->app->abort(500, 'Invalid datas');
         }

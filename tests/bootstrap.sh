@@ -28,9 +28,11 @@ SET @@global.wait_timeout= 999999;
 DROP SCHEMA IF EXISTS ab_test;DROP SCHEMA IF EXISTS db_test;
 CREATE SCHEMA IF NOT EXISTS ab_test;CREATE SCHEMA IF NOT EXISTS db_test;
 '
+
 if ! ./bin/developer system:uninstall > /dev/null 2>&1
 then
-    rm -f config/configuration.yml config/configuration-compiled.php
+    mv config/configuration.yml{,.backup}
+    rm -f config/configuration-compiled.php
 fi
 ./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=en --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
 case "$INSTALL_MODE" in

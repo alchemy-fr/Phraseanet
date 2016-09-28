@@ -9,24 +9,12 @@
  */
 namespace Alchemy\Phrasea\Controller;
 
-class LazyLocator
+/**
+ * Class LazyLocator
+ * @package Alchemy\Phrasea\Controller
+ * @deprecated Use Alchemy\Phrasea\Core\LazyLocator
+ */
+class LazyLocator extends \Alchemy\Phrasea\Core\LazyLocator
 {
-    /** @var \Pimple */
-    private $pimple;
-    private $serviceId;
-
-    /**
-     * @param \Pimple $pimple
-     * @param string  $serviceId
-     */
-    public function __construct(\Pimple $pimple, $serviceId)
-    {
-        $this->pimple = $pimple;
-        $this->serviceId = $serviceId;
-    }
-
-    public function __invoke()
-    {
-        return $this->pimple->offsetGet($this->serviceId);
-    }
+    // Stub left for BC
 }

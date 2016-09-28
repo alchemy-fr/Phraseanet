@@ -15,8 +15,15 @@ use League\Fractal\TransformerAbstract;
 
 class StoryTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['thumbnail', 'metadatas', 'records'];
-    protected $defaultIncludes = ['thumbnail', 'metadatas', 'records'];
+    /**
+     * @var array
+     */
+    protected $availableIncludes = ['thumbnail', 'metadatas', 'records', 'caption'];
+
+    /**
+     * @var array
+     */
+    protected $defaultIncludes = ['thumbnail', 'metadatas'];
 
     /**
      * @var SubdefTransformer
@@ -51,6 +58,7 @@ class StoryTransformer extends TransformerAbstract
             'collection_id' => $story->getCollectionId(),
             'base_id' => $story->getBaseId(),
             'uuid' => $story->getUuid(),
+            'record_count' => count($storyView->getChildren())
         ];
     }
 
@@ -61,7 +69,7 @@ class StoryTransformer extends TransformerAbstract
 
     public function includeMetadatas(StoryView $storyView)
     {
-        return $this->item($storyView->getCaption(), $this->getCaptionTransformer());
+        return $this->item($storyView->getCaption(), $this->getCaptionDCFieldTransformer());
     }
 
     public function includeRecords(StoryView $storyView)
@@ -69,10 +77,29 @@ class StoryTransformer extends TransformerAbstract
         return $this->collection($storyView->getChildren(), $this->recordTransformer);
     }
 
+    public function includeCaption(StoryView $storyView)
+    {
+        return $this->collection($storyView->getCaption()->getFields(), $this->getCaptionFieldTransformer());
+    }
+
     /**
      * @return \Closure
      */
-    private function getCaptionTransformer()
+    private function getCaptionFieldTransformer()
+    {
+        return function (\caption_field $captionField) {
+            return [
+                'meta_structure_id' => $captionField->get_meta_struct_id(),
+                'name' => $captionField->get_name(),
+                'value' => $captionField->get_serialized_values(';')
+            ];
+        };
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function getCaptionDCFieldTransformer()
     {
         /**
          * @param \caption_field[] $fields
