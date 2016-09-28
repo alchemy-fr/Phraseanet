@@ -18,6 +18,7 @@ clean_assets:
 	rm -rf ./node_modules
 	rm -rf ./www/assets
 	rm -rf ./www/bower_components
+    touch ./node_modules/.gitkeep
 
 config:
 	@php bin/console compile:configuration
