@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Cache\Manager;
 use Alchemy\Phrasea\Core\Provider\ORMServiceProvider;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Event\ConnectionEventArgs;
 use Doctrine\DBAL\Events;
 use Doctrine\ORM\Configuration;
 use Gedmo\DoctrineExtensions as GedmoExtension;
@@ -56,11 +57,22 @@ class DatabaseMetaProvider implements ServiceProviderInterface
                 $eventManager = $eventManagers[$name];
                 $app['dbal.evm.register.listeners']($eventManager);
 
-                $eventManager->addEventListener(Events::postConnect, $app);
+                $eventManager->addEventListener(Events::postConnect, $this);
             }
 
             return $eventManagers;
         }));
+    }
+
+    /**
+     * @param ConnectionEventArgs $args
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function postConnect(ConnectionEventArgs $args)
+    {
+        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
+            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
+        }
     }
 
     private function setupOrms(PhraseaApplication $app)

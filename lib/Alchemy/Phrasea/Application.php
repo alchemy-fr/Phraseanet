@@ -627,17 +627,6 @@ class Application extends SilexApplication
         });
     }
 
-    /**
-     * @param ConnectionEventArgs $args
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function postConnect(ConnectionEventArgs $args)
-    {
-        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
-            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
-        }
-    }
-
     private function setupSwiftMailer()
     {
         $this['swiftmailer.transport'] = $this->share(function (Application $app) {
