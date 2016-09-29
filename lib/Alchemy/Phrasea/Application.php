@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\HttpStackMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesMetaServiceProvider;
@@ -626,17 +627,6 @@ class Application extends SilexApplication
         });
     }
 
-    /**
-     * @param ConnectionEventArgs $args
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function postConnect(ConnectionEventArgs $args)
-    {
-        if ('sqlite' == $args->getDatabasePlatform()->getName()) {
-            $args->getConnection()->exec('PRAGMA foreign_keys = ON');
-        }
-    }
-
     private function setupSwiftMailer()
     {
         $this['swiftmailer.transport'] = $this->share(function (Application $app) {
@@ -710,6 +700,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
+                $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
 
                 return $dispatcher;
             })
