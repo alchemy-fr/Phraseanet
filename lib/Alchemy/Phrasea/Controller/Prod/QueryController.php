@@ -75,7 +75,7 @@ class QueryController extends Controller
                     return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
                 }));
 
-                $this->getSearchEngineLogger()->log($databox, $result->getQuery(), $result->getTotal(), $collections);
+                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collections);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;
@@ -185,7 +185,7 @@ class QueryController extends Controller
             $json['results'] = $this->render($template, ['results'=> $result]);
 
             /** Debug */
-            $json['parsed_query'] = $result->getQuery();
+            $json['parsed_query'] = $result->getEngineQuery();
             /** End debug */
 
             $fieldLabels = [

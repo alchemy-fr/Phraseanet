@@ -17,7 +17,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class SearchEngineResult
 {
     protected $results;
-    protected $query;
+    protected $user_query;
+    protected $engine_query;
     protected $duration;
     protected $offsetStart;
     protected $available;
@@ -39,7 +40,8 @@ class SearchEngineResult
      * SearchEngineResult constructor.
      * @param SearchEngineOptions $options
      * @param ArrayCollection $results
-     * @param string $query
+     * @param string $user_query        query as user typed, "dog"
+     * @param string $engine_query      query parsed for engine, "{"ast":"<text:\"dog\">","query_main" ....
      * @param float $duration
      * @param int $offsetStart
      * @param int $available
@@ -54,7 +56,8 @@ class SearchEngineResult
     public function __construct(
         SearchEngineOptions $options,
         ArrayCollection $results,
-        $query,
+        $user_query,
+        $engine_query,
         $duration,
         $offsetStart,
         $available,
@@ -69,7 +72,8 @@ class SearchEngineResult
         $this->options = $options;
 
         $this->results = $results;
-        $this->query = $query;
+        $this->user_query = $user_query;
+        $this->engine_query = $engine_query;
         $this->duration = (float) $duration;
         $this->offsetStart = (int) $offsetStart;
         $this->available = (int) $available;
@@ -102,12 +106,33 @@ class SearchEngineResult
 
     /**
      * The query related to these results
+     * @obsolete    use getUserQuery (unparsed query) or getEngineQuery (parsed)
      *
      * @return string
      */
     public function getQuery()
     {
-        return $this->query;
+        return $this->getEngineQuery();
+    }
+
+    /**
+     * The unparsed query related to these results
+     *
+     * @return string
+     */
+    public function getUserQuery()
+    {
+        return $this->user_query;
+    }
+
+    /**
+     * The parsed query related to these results
+     *
+     * @return string
+     */
+    public function getEngineQuery()
+    {
+        return $this->engine_query;
     }
 
     /**
