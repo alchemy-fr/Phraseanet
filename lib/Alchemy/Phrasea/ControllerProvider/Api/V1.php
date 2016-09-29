@@ -175,6 +175,11 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
             'controller.api.v1:getBadRequestAction'
         );
 
+        $controllers->delete('/records/{databox_id}/{record_id}/', 'controller.api.v1:deleteRecordAction')
+            ->before('controller.api.v1:ensureCanDeleteToRecord')
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+');
+
         $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v1:getRecordAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')

@@ -950,14 +950,15 @@ class ACL implements cache_cacheableInterface
             $this->_limited = $data;
 
             return $this;
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
+            // no-op
         }
 
-        $sql = 'SELECT  u.* FROM basusr u, bas b, sbas s
-            WHERE usr_id= :usr_id
-            AND b.base_id = u.base_id
-            AND b.sbas_id = s.sbas_id
-            AND s.sbas_id = b.sbas_id ';
+        $sql = "SELECT  u.* FROM basusr u, bas b, sbas s\n"
+            . "WHERE usr_id= :usr_id\n"
+            . "AND b.base_id = u.base_id\n"
+            . "AND s.sbas_id = b.sbas_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
