@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Manager;
 
+use Alchemy\Phrasea\Model\Entities\ApiLog;
 use Doctrine\Common\Persistence\ObjectManager;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UserSetting;
@@ -44,7 +45,7 @@ class UserManager
      * Deletes an user.
      *
      * @param User $user
-     * @param type $flush
+     * @param bool $flush
      */
     public function delete(User $user, $flush = true)
     {
@@ -52,8 +53,10 @@ class UserManager
         $this->cleanRights($user);
 
         $this->objectManager->persist($user);
+
         if ($flush) {
             $this->objectManager->flush();
+            $this->objectManager->clear(ApiLog::class);
         }
     }
 
@@ -61,11 +64,12 @@ class UserManager
      * Updates an user.
      *
      * @param User $user
-     * @param type $flush
+     * @param bool $flush
      */
     public function update(User $user, $flush = true)
     {
         $this->objectManager->persist($user);
+
         if ($flush) {
             $this->objectManager->flush();
         }
