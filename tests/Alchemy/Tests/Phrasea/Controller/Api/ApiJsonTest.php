@@ -550,7 +550,7 @@ class ApiJsonTest extends ApiTestCase
         $client = $this->getClient();
 
         $route = '/api/v1/records/' . $record_1->getDataboxId() . '/' . $record_1->getRecordId() . '/';
-        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT']);
         $client->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($client->getResponse()->getContent());
 
