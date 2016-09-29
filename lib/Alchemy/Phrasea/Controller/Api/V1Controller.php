@@ -1937,6 +1937,22 @@ class V1Controller extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param int     $databox_id
+     * @param int     $record_id
+     * @return Response
+     */
+    public function deleteRecordAction(Request $request, $databox_id, $record_id)
+    {
+        $databox = $this->findDataboxById($databox_id);
+        $record = $databox->get_record($record_id);
+
+        $record->delete();
+
+        return Result::create($request, [])->createResponse();
+    }
+
+    /**
      * Return detailed information about one record
      *
      * @param  Request $request
@@ -2843,6 +2859,18 @@ class V1Controller extends Controller
         return null;
     }
 
+    public function ensureCanDeleteRecord(Request $request)
+    {
+        $user = $this->getApiAuthenticatedUser();
+        $record = $this->findDataboxById($request->attributes->get('databox_id'))
+            ->get_record($request->attributes->get('record_id'));
+
+        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'candeleterecord')) {
+            return Result::createError($request, 401, 'You are not authorized')->createResponse();
+        }
+
+        return null;
+    }
 
     public function ensureJsonContentType(Request $request)
     {

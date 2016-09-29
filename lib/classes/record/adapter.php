@@ -1384,16 +1384,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM prop WHERE record_id = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM idx WHERE record_id = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
         $sql = "DELETE FROM permalinks WHERE subdef_id IN (SELECT subdef_id FROM subdef WHERE record_id=:record_id)";
         $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
@@ -1409,19 +1399,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM thit WHERE record_id = :record_id";
+        $sql = "DELETE FROM regroup WHERE rid_parent = :record_id1 OR rid_child = :record_id2";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM regroup WHERE rid_parent = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM regroup WHERE rid_child = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
+        $stmt->execute([':record_id1' => $this->getRecordId(), ':record_id2' => $this->getRecordId()]);
         $stmt->closeCursor();
 
         $orderElementRepository = $this->app['repo.order-elements'];
