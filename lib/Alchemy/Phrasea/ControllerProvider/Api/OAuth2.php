@@ -13,12 +13,13 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\OAuth2Controller;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class OAuth2 implements ControllerProviderInterface, ServiceProviderInterface
+class OAuth2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     public function register(Application $app)
     {
@@ -34,6 +35,10 @@ class OAuth2 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
+        if (! $this->isApiEnabled($app)) {
+            return $app['controllers_factory'];
+        }
+
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 

@@ -14,13 +14,14 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class V1 implements ControllerProviderInterface, ServiceProviderInterface
+class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     const VERSION = '1.5.0';
 
@@ -46,6 +47,10 @@ class V1 implements ControllerProviderInterface, ServiceProviderInterface
 
     public function connect(Application $app)
     {
+        if (! $this->isApiEnabled($app)) {
+            return $app['controllers_factory'];
+        }
+
         /** @var ControllerCollection $controllers */
         $controllers = $app['controllers_factory'];
 

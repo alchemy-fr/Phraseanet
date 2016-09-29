@@ -48,7 +48,7 @@
     chdir: /vagrant/
 
 - name: Enable API routes
-  shell: bin/setup system:config set main.api_disabled false
+  shell: bin/setup system:config set registry.api-clients.api-enable true
   args:
     chdir: /vagrant/
 
