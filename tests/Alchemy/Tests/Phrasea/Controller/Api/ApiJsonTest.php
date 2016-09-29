@@ -561,7 +561,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, ['GET']);
-        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
+        $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT']);
         $route = '/api/v1/records/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, ['GET']);
         $this->evaluateMethodNotAllowedRoute($route, ['POST', 'PUT', 'DELETE']);
