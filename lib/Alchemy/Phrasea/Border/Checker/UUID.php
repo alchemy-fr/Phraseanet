@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -35,6 +36,26 @@ class UUID extends AbstractChecker
         $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findByUuid($file->getUUID()));
 
         return new Response($boolean, $this);
+    }
+
+    /**
+     * @param Application $app
+     * @param LazaretFile $file
+     * @return \record_adapter[]
+     */
+    public static function listConflicts(Application $app, LazaretFile $file)
+    {
+        $databox = $file->getCollection($app)->get_databox();
+
+        return $databox->getRecordRepository()->findByUuid($file->getUUID());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getReason(TranslatorInterface $translator)
+    {
+        return $translator->trans('same UUID');
     }
 
     /**
