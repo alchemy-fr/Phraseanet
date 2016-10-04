@@ -15,7 +15,10 @@ use Alchemy\Phrasea\Command\CommandInterface;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\PhraseaCLIExceptionHandler;
+use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\QueueProvider\QueueServiceProvider;
+use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
@@ -23,6 +26,7 @@ use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\PluginServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -69,6 +73,9 @@ class CLI extends Application
         $this->register(new TaskManagerServiceProvider());
         $this->register(new TranslationExtractorServiceProvider());
         $this->register(new DoctrineMigrationServiceProvider());
+        $this->register(new QueueServiceProvider());
+        $this->register(new WorkerServiceProvider());
+        $this->register(new WorkerConfigurationServiceProvider());
 
         $this->bindRoutes();
 
@@ -115,11 +122,14 @@ class CLI extends Application
      *
      * If a command with the same name already exists, it will be overridden.
      *
-     * @param CommandInterface $command A Command object
+     * @param Command|CommandInterface $command A Command object
      */
-    public function command(CommandInterface $command)
+    public function command($command)
     {
-        $command->setContainer($this);
+        if ($command instanceof CommandInterface) {
+            $command->setContainer($this);
+        }
+
         $this['console']->add($command);
     }
 
