@@ -92,7 +92,7 @@ Vagrant.configure("2") do |config|
         config.vm.provision "ansible", run: "always" do |ansible|
             ansible.playbook = "resources/ansible/playbook-always.yml"
             ansible.limit = 'all'
-            ansible.verbose = 'vvv'
+            ansible.verbose = 'v'
             ansible.extra_vars = {
                 host_addresses: $hostIps,
                 hostname: $hostname

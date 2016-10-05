@@ -7,7 +7,7 @@
   register: pecl_result
   changed_when: "'already installed' not in pecl_result.stdout"
   failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
-  with_items: php.pecl_packages
+  with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
 
 - name: Create extension .ini file
@@ -17,10 +17,10 @@
     owner="root"
     group="root"
     mode=0644
-  with_items: php.pecl_packages
+  with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
 
 - name: Enable extension
   shell: php5enmod {{ item.name }}
-  with_items: php.pecl_packages
+  with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
