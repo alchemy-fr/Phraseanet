@@ -182,6 +182,10 @@ h2 {
   display: none;
 }
 
+input:disabled, textarea:disabled {
+  background: #555;
+}
+
 h3 {
   font-size: 1.2em;
   margin: 10px 0;

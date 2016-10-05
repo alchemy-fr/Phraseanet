@@ -145,6 +145,13 @@
             return false;
         });
 
+        $("[name='elasticsearch_settings[isexist]']").click(function(){
+            var checkBoxes = $(this).is(":checked"),
+                indexName = $("[name='elasticsearch_settings[indexName]']");
+
+            indexName.val("");
+            indexName.prop("disabled", !checkBoxes);
+        });
 
         function test_connection_appbox(callback)
         {
@@ -281,9 +288,7 @@
 
 {% block content %}
     <form id="create_admin" method="post" action="{{ path('install_do_install') }}">
-
-
-
+        
     <div class="steps">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
@@ -434,8 +439,6 @@
     </div>
 
 
-
-
     <div class="steps">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
@@ -522,13 +525,6 @@
             </table>
         </div>
     </div>
-
-
-
-
-
-
-
 
 
     <div class="steps appbox_settings">
@@ -637,6 +633,71 @@
     </div>
 
 
+    <div class="steps">
+            <div class="wrapper">
+                <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                        <h2>4/5
+                            {{ 'SearchEngine settings' | trans }}
+                        </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                        <table class="main_content_wrapper">
+                            <tr>
+                                <td>
+                                    <table class="main_content_table">
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch server host' | trans }}</label></td>
+                                            <td><input class="" type="text" name="elasticsearch_settings[host]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch service port' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[port]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Use an existing index' | trans }}</label></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[isexist]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch index name' | trans }}</label></td>
+                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[indexName]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Number of shards' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[shards]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Number of replicas' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[replicas]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Thesaurus Min score' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[minScore]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Activate highlight' | trans }}</label></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[highlight]" value="" /></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <table>
+                    <tr>
+                        <td>
+                            <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                        </td>
+                        <td style="text-align:right;">
+                            <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
 
     <div class="steps">
@@ -695,7 +756,6 @@
             </table>
         </div>
     </div>
-
 
 
     <div class="steps databox_settings">
