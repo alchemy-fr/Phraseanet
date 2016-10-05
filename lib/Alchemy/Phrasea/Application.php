@@ -71,6 +71,7 @@ use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
+use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
@@ -84,6 +85,8 @@ use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\QueueProvider\QueueServiceProvider;
+use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
@@ -239,6 +242,10 @@ class Application extends SilexApplication
         $this->register(new LocaleServiceProvider());
 
         $this->setupEventDispatcher();
+
+        $this->register(new QueueServiceProvider());
+        $this->register(new WorkerServiceProvider());
+        $this->register(new WorkerConfigurationServiceProvider());
 
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());

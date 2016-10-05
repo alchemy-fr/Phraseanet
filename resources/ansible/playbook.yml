@@ -9,6 +9,7 @@
     - nginx
     - mariadb
     - elasticsearch
+    - rabbitmq
     - php
     - xdebug
     - composer

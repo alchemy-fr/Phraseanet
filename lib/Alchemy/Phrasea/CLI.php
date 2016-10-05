@@ -15,10 +15,7 @@ use Alchemy\Phrasea\Command\CommandInterface;
 use Alchemy\Phrasea\Core\CLIProvider\TranslationExtractorServiceProvider;
 use Alchemy\Phrasea\Core\Event\Subscriber\BridgeSubscriber;
 use Alchemy\Phrasea\Core\PhraseaCLIExceptionHandler;
-use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\QueueProvider\QueueServiceProvider;
-use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Symfony\Component\Console;
 use Alchemy\Phrasea\Core\CLIProvider\CLIDriversServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\ComposerSetupServiceProvider;
@@ -73,9 +70,6 @@ class CLI extends Application
         $this->register(new TaskManagerServiceProvider());
         $this->register(new TranslationExtractorServiceProvider());
         $this->register(new DoctrineMigrationServiceProvider());
-        $this->register(new QueueServiceProvider());
-        $this->register(new WorkerServiceProvider());
-        $this->register(new WorkerConfigurationServiceProvider());
 
         $this->bindRoutes();
 
