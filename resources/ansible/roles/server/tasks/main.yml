@@ -15,7 +15,7 @@
 - name: Install Extra Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: server.packages
+  with_items: '{{ server.packages }}'
   when: server.packages is defined
 
 - name: Configure the timezone
@@ -27,6 +27,6 @@
   file: src=/usr/share/zoneinfo/{{server.timezone}} dest=/etc/localtime state=link force=yes backup=yes
 
 - name: Set default system language pack
-  shell: locale-gen {{server.locales|join(' ')}}
+  shell: locale-gen {{ server.locales|join(' ') }}
   sudo: yes
 
