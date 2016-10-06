@@ -49,7 +49,6 @@ before_install:
   - yes | pecl install imagick-beta
   - sudo apt-get install librabbitmq-dev
   - pecl install amqp-1.4.0
-  - echo "extension=amqp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 install:
   - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then travis_retry composer install --no-progress --no-interaction --optimize-autoloader; fi;
   - if [[ $TRAVIS_PHP_VERSION = 7.* ]];then travis_retry composer update --no-progress --no-interaction --optimize-autoloader; fi;
