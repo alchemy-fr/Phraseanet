@@ -743,16 +743,16 @@
         },
         {
             "name": "alchemy/worker-bundle",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/worker-bundle.git",
-                "reference": "eb8eef5407d1413e3ca5249db3b9bc8236027bf8"
+                "reference": "92f3adb00117ac32c00611a513ed8fa727c88dc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/worker-bundle/zipball/eb8eef5407d1413e3ca5249db3b9bc8236027bf8",
-                "reference": "eb8eef5407d1413e3ca5249db3b9bc8236027bf8",
+                "url": "https://api.github.com/repos/alchemy-fr/worker-bundle/zipball/92f3adb00117ac32c00611a513ed8fa727c88dc8",
+                "reference": "92f3adb00117ac32c00611a513ed8fa727c88dc8",
                 "shasum": ""
             },
             "require": {
@@ -787,7 +787,7 @@
                 }
             ],
             "description": "Symfony bundle for alchemy/worker-component",
-            "time": "2016-10-03 09:54:46"
+            "time": "2016-10-06 08:09:29"
         },
         {
             "name": "alchemy/worker-component",
@@ -6597,16 +6597,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.26.0",
+            "version": "v1.26.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "81c2b5fd36581370c7731387f05dcdb577050513"
+                "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/81c2b5fd36581370c7731387f05dcdb577050513",
-                "reference": "81c2b5fd36581370c7731387f05dcdb577050513",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
+                "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
                 "shasum": ""
             },
             "require": {
@@ -6654,7 +6654,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-10-02 16:19:13"
+            "time": "2016-10-05 18:57:41"
         },
         {
             "name": "vierbergenlars/php-semver",
