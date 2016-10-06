@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Exception\RuntimeException;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -37,25 +38,30 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
                 ]
             ];
 
-            /** @var PropertyAccess $configuration */
-            $configuration = $app['conf'];
+            try {
+                /** @var PropertyAccess $configuration */
+                $configuration = $app['conf'];
 
-            $queueConfigurations = $configuration->get(['workers', 'queue'], $defaultConfiguration);
+                $queueConfigurations = $configuration->get(['workers', 'queue'], $defaultConfiguration);
 
-            $queueConfiguration = reset($queueConfigurations);
-            $queueKey = key($queueConfigurations);
+                $queueConfiguration = reset($queueConfigurations);
+                $queueKey = key($queueConfigurations);
 
-            if (! isset($queueConfiguration['name'])) {
-                if (! is_string($queueKey)) {
-                    throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                if (! isset($queueConfiguration['name'])) {
+                    if (! is_string($queueKey)) {
+                        throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                    }
+
+                    $queueConfiguration['name'] = $queueKey;
                 }
 
-                $queueConfiguration['name'] = $queueKey;
+                $config = [ $queueConfiguration['name'] => $queueConfiguration ];
+
+                return $config;
             }
-
-            $config = [ $queueConfiguration['name'] => $queueConfiguration ];
-
-            return $config;
+            catch (RuntimeException $exception) {
+                return [];
+            }
         });
     }
 
@@ -68,6 +74,6 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // TODO: Implement boot() method.
+        // No-op
     }
 }
