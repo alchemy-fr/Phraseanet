@@ -135,4 +135,4 @@ $cli->command($cli['alchemy_worker.commands.show_configuration']);
 
 $cli->loadPlugins();
 
-exit( ($cli->run()) ?: 1);
+$cli->run();
