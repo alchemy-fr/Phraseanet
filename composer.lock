@@ -791,16 +791,16 @@
         },
         {
             "name": "alchemy/worker-component",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/worker-component.git",
-                "reference": "ec04aefd7bb5777b8f7a834f82e8ede2d651ce46"
+                "reference": "ca0b4633327dbf97be0f3b5bb0dd346a4e3e058d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/worker-component/zipball/ec04aefd7bb5777b8f7a834f82e8ede2d651ce46",
-                "reference": "ec04aefd7bb5777b8f7a834f82e8ede2d651ce46",
+                "url": "https://api.github.com/repos/alchemy-fr/worker-component/zipball/ca0b4633327dbf97be0f3b5bb0dd346a4e3e058d",
+                "reference": "ca0b4633327dbf97be0f3b5bb0dd346a4e3e058d",
                 "shasum": ""
             },
             "require": {
@@ -833,7 +833,7 @@
                 "MIT"
             ],
             "description": "Message queue worker component",
-            "time": "2016-10-03 08:24:51"
+            "time": "2016-10-06 11:23:03"
         },
         {
             "name": "alchemy/zippy",
