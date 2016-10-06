@@ -4,6 +4,8 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Worker\CallableWorkerFactory;
+use Alchemy\Worker\TypeBasedWorkerResolver;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
