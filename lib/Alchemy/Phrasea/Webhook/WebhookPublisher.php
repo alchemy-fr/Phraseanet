@@ -48,10 +48,10 @@ class WebhookPublisher
     {
         $queue = $this->queueRegistry->getQueue($this->queueName);
         $payload = [
-            'message_type' => $event->getId(),
+            'message_type' => 'webhook',
             'payload' => [ 'id' => $event->getId() ]
         ];
 
-        $queue->publish(new Message($payload));
+        $queue->publish(new Message(json_encode($payload)));
     }
 }

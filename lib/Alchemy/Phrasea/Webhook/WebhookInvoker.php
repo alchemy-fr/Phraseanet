@@ -91,8 +91,8 @@ class WebhookInvoker implements LoggerAwareInterface
         EventProcessorFactory $processorFactory,
         WebhookEventRepository $eventRepository,
         WebhookEventManipulator $eventManipulator,
-        WebhookEventDeliveryManipulator $eventDeliveryManipulator,
         WebhookEventDeliveryRepository $eventDeliveryRepository,
+        WebhookEventDeliveryManipulator $eventDeliveryManipulator,
         Client $client = null
     ) {
         $this->applicationRepository = $applicationRepository;
@@ -101,7 +101,7 @@ class WebhookInvoker implements LoggerAwareInterface
         $this->eventManipulator = $eventManipulator;
         $this->eventDeliveryManipulator = $eventDeliveryManipulator;
         $this->eventDeliveryRepository = $eventDeliveryRepository;
-        $this->client = $client;
+        $this->client = $client ?: new Client();
         $this->logger = new NullLogger();
 
         $this->configureClient();
