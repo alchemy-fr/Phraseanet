@@ -14,7 +14,7 @@
             {% set opener = 'opener' %}
         {% endif %}
 
-        {% if context is not none %}
+        {% if context %}
             {% set zterm %}
                 {% trans with {'%term%' : term, '%context%' : context} %}thesaurus:: le terme %term% avec contexte %context%{% endtrans %}
             {% endset %}
@@ -57,14 +57,13 @@
         </center>
         {% else %}
                 {% if nb_candidates_bad > 0 %}
-                    // present dans les candidats, mais aucun champ acceptable : on informe
                     {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
                 {% else %}
-                    // pas present dans les candidats
                     {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}
                 {% endif %}
         <br/>
-        <h3>{{ 'thesaurus:: attention :' | trans }}</h3>
+        <br/>
+        <br/>
         <br/>
         <br/>
         {{ zterm }}
@@ -72,14 +71,10 @@
         <br/>
         {{ prop_label }}
         <br/>
+        <br/>
+        <br/>
+        <br/>
         <form>
-            <center>
-                <div class='x3Dbox' style='margin:15px; height:90px; overflow:auto;'>
-                    <input type="radio" name="reindex" value="0" id="rad0" checked><label for="rad0">{{ 'thesaurus:: Ajouter le terme dans reindexer' | trans }}</label><br/>
-                    <br/>
-                    <input type="radio" name="reindex" value="1" id="rad1"><label for="rad1">{{ 'thesaurus:: ajouter le terme et reindexer' | trans }}</label><br/>
-                </div>
-            </center>
             <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
             &nbsp;&nbsp;&nbsp;
             <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
@@ -159,15 +154,8 @@
                                     parms += "&k={{ context | url_encode }}";
     {% endif %}
                         parms += "&sylng={{ sylng }}";
+                        parms += "&reindex=0";
 
-                        for(i=0; i<(n=document.getElementsByName("reindex")).length; i++)
-                        {
-                            if(n[i].checked)
-                            {
-                                parms += "&reindex=" + encodeURIComponent(n[i].value);
-                                break;
-                            }
-                        }
                         ret = loadXMLDoc(url, parms, true);
                         refresh = ret.getElementsByTagName("refresh");
                         for(i=0; i<refresh.length; i++)
