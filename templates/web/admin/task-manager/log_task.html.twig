@@ -9,7 +9,7 @@
     {% endif %}
 </h4>
 
-{% for v in logfile.getVersions() %}
+{% for v in logfile.getVersions() | sort | reverse %}
     <a href="{{ path('admin_tasks_task_log', {'task':logfile.getTask.getId(), 'version' : v }) }}">{{ v ? v : "(now)" }}</a>
     &nbsp;
 {% endfor %}

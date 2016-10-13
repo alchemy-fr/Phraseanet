@@ -196,6 +196,7 @@ class TaskManagerController extends Controller
         /** @var LogFileFactory $factory */
         $factory = $this->app['task-manager.log-file.factory'];
         $logFile = $factory->forTask($task);
+
         if ($request->query->get('clr') && $request->query->get('version') !== null) {
             $logFile->clear($request->query->get('version'));
         }

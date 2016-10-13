@@ -31,7 +31,7 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
      */
     public function getVersions()
     {
-        $x = sprintf('/^task_%d(|(-.*))\.log$/', $this->task->getId());
+        $x = sprintf('/^task_%d-(|(.*))\.log$/', $this->task->getId());
         $f = new Finder();
         $versions = [];
         /** @var \SplFileInfo $file */
@@ -59,6 +59,10 @@ class TaskLogFile extends AbstractLogFile implements LogFileInterface
      */
     public function getPath($version = '')
     {
+        if (trim($version) != '') {
+            $version = '-' . $version;
+        }
+
         return sprintf('%s/task_%d%s.log', $this->root, $this->task->getId(), $version);
     }
 
