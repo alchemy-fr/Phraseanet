@@ -16,8 +16,11 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
+use Alchemy\Phrasea\Core\Event\ExportEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -121,6 +124,17 @@ class PermalinkController extends AbstractDelivery
         $record = $this->retrieveRecord($databox, $token, $record_id, $subdef);
         $watermark = $stamp = false;
 
+        $isDownload = $request->query->getBoolean('download', false);
+
+        if ($isDownload) {
+            $user = $this->app->getAuthenticatedUser();
+
+            $this->getEventDispatcher()->dispatch(
+                PhraseaEvents::EXPORT_CREATE,
+                new ExportEvent($user, 0, $sbas_id . '_' . $record_id, [ $subdef ], '')
+            );
+        }
+
         if ($this->authentication->isAuthenticated()) {
             $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), 'nowatermark');
 
@@ -139,6 +153,7 @@ class PermalinkController extends AbstractDelivery
         }
 
         $collection = \collection::getByBaseId($this->app, $record->getBaseId());
+
         switch ($collection->get_pub_wm()) {
             default:
             case 'none':
@@ -213,5 +228,13 @@ class PermalinkController extends AbstractDelivery
         }
 
         throw new NotFoundHttpException('Wrong token.');
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }
