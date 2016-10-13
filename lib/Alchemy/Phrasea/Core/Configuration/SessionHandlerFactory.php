@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Utilities\RedisSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\WriteCheckSessionHandler;
 
 class SessionHandlerFactory
@@ -67,6 +68,8 @@ class SessionHandlerFactory
                         $this->connectionFactory->getRedisConnection($options, $serverOpts)
                     )
                 );
+            case 'native':
+                return new NativeSessionHandler();
         }
 
         throw new RuntimeException(sprintf('Unable to create the specified session handler "%s"', $type));
