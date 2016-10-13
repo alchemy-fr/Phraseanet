@@ -72,5 +72,8 @@ class PhpRequirements extends RequirementCollection implements RequirementInterf
         $this->addPhpIniRecommendation('session.hash_function', true, true);
         $this->addPhpIniRecommendation('session.use_only_cookies', true, true);
         $this->addPhpIniRecommendation('session.use_cookies', true, true);
+
+        $this->addPhpIniRecommendation('session.cookie_http_only', true, true);
+        $this->addPhpIniRecommendation('session.cookie_secure', true, true);
     }
 }
