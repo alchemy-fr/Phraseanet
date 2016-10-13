@@ -131,6 +131,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Unoconv\UnoconvServiceProvider;
@@ -300,6 +301,15 @@ class Application extends SilexApplication
             'session.test' => $this->getEnvironment() === static::ENV_TEST,
             'session.storage.options' => array('cookie_lifetime' => 0)
         ));
+
+        $this['session.storage.handler'] = $this->extend('session.storage.handler', function ($sessionHandler) {
+            if (ini_get('session.save_handler') == 'files') {
+                return $sessionHandler;
+            }
+            
+            return new NativeSessionHandler();
+        });
+
         $this['session.storage.test'] = $this->share(function ($app) {
             return new MockArraySessionStorage();
         });
