@@ -14,15 +14,18 @@ namespace Alchemy\Phrasea\Webhook;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
+use Alchemy\Phrasea\Model\Entities\WebhookEventPayload;
 use Alchemy\Phrasea\Model\Manipulator\WebhookEventDeliveryManipulator;
 use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository;
+use Alchemy\Phrasea\Model\Repositories\WebhookEventPayloadRepository;
 use Alchemy\Phrasea\Model\Repositories\WebhookEventRepository;
-use Guzzle\Batch\BatchBuilder;
 use Guzzle\Common\Event;
 use Guzzle\Http\Client;
+use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 use Guzzle\Http\Message\Request;
+use Guzzle\Http\Message\Response;
 use Guzzle\Plugin\Backoff\BackoffPlugin;
 use Guzzle\Plugin\Backoff\CallbackBackoffStrategy;
 use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
@@ -62,26 +65,35 @@ class WebhookInvoker implements LoggerAwareInterface
      * @var LoggerInterface
      */
     private $logger;
+
     /**
      * @var EventProcessorFactory
      */
     private $processorFactory;
+
     /**
      * @var WebhookEventRepository
      */
     private $eventRepository;
+
     /**
      * @var WebhookEventManipulator
      */
     private $eventManipulator;
 
     /**
+     * @var WebhookEventPayloadRepository
+     */
+    private $eventPayloadRepository;
+
+    /**
      * @param ApiApplicationRepository $applicationRepository
      * @param EventProcessorFactory $processorFactory
      * @param WebhookEventRepository $eventRepository
      * @param WebhookEventManipulator $eventManipulator
-     * @param WebhookEventDeliveryManipulator $eventDeliveryManipulator
      * @param WebhookEventDeliveryRepository $eventDeliveryRepository
+     * @param WebhookEventDeliveryManipulator $eventDeliveryManipulator
+     * @param WebhookEventPayloadRepository $eventPayloadRepository
      * @param Client $client
      *
      * @todo Extract classes to reduce number of required dependencies
@@ -93,6 +105,7 @@ class WebhookInvoker implements LoggerAwareInterface
         WebhookEventManipulator $eventManipulator,
         WebhookEventDeliveryRepository $eventDeliveryRepository,
         WebhookEventDeliveryManipulator $eventDeliveryManipulator,
+        WebhookEventPayloadRepository $eventPayloadRepository,
         Client $client = null
     ) {
         $this->applicationRepository = $applicationRepository;
@@ -101,6 +114,8 @@ class WebhookInvoker implements LoggerAwareInterface
         $this->eventManipulator = $eventManipulator;
         $this->eventDeliveryManipulator = $eventDeliveryManipulator;
         $this->eventDeliveryRepository = $eventDeliveryRepository;
+        $this->eventPayloadRepository = $eventPayloadRepository;
+
         $this->client = $client ?: new Client();
         $this->logger = new NullLogger();
 
@@ -216,24 +231,41 @@ class WebhookInvoker implements LoggerAwareInterface
         $eventProcessor = $this->processorFactory->getProcessor($event);
         $data = $eventProcessor->process($event);
 
-        // Batch requests
-        $batch = BatchBuilder::factory()
-            ->transferRequests(10)
-            ->build();
-
         foreach ($targets as $thirdPartyApplication) {
             $delivery = $this->eventDeliveryManipulator->create($thirdPartyApplication, $event);
-
-            // append delivery id as url anchor
+            // Append delivery id as url anchor
             $uniqueUrl = $this->buildUrl($thirdPartyApplication, $delivery);
 
-            // create http request with data as request body
-            $batch->add($this->client->createRequest('POST', $uniqueUrl, [
+            // Create http request with data as request body
+            $request = $this->client->createRequest('POST', $uniqueUrl, [
                 'Content-Type' => 'application/vnd.phraseanet.event+json'
-            ], json_encode($data)));
-        }
+            ], json_encode($data));
 
-        $batch->flush();
+            $requestBody = $request instanceof EntityEnclosingRequestInterface ? $request->getBody() : '';
+
+            try {
+                $response = $request->send();
+
+                $responseBody = $response->getBody(true);
+                $statusCode = $response->getStatusCode();
+                $headers = $this->extractResponseHeaders($response);
+            }
+            catch (\Exception $exception) {
+                $responseBody = $exception->getMessage();
+                $statusCode = -1;
+                $headers = '';
+            }
+
+            $deliveryPayload = new WebhookEventPayload(
+                $delivery,
+                $requestBody,
+                $responseBody,
+                $statusCode,
+                $headers
+            );
+
+            $this->eventPayloadRepository->save($deliveryPayload);
+        }
     }
 
     /**
@@ -244,5 +276,17 @@ class WebhookInvoker implements LoggerAwareInterface
     private function buildUrl(ApiApplication $application, WebhookEventDelivery $delivery)
     {
         return sprintf('%s#%s', $application->getWebhookUrl(), $delivery->getId());
+    }
+
+    private function extractResponseHeaders(Response $response)
+    {
+        $headerCollection = $response->getHeaders()->toArray();
+        $headers = '';
+
+        foreach ($headerCollection as $name => $value) {
+            $headers .= sprintf('%s: %s', $name, $value) . PHP_EOL;
+        }
+
+        return trim($headers);
     }
 }

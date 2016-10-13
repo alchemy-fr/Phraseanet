@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Doctrine\ORM\EntityRepository;
 
@@ -22,6 +23,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class WebhookEventDeliveryRepository extends EntityRepository
 {
+
+    /**
+     * @return WebhookEventDelivery[]
+     */
     public function findUndeliveredEvents()
     {
         $qb = $this->createQueryBuilder('e');
@@ -31,6 +36,24 @@ class WebhookEventDeliveryRepository extends EntityRepository
             ->andWhere($qb->expr()->lt('e.deliveryTries', ':nb_tries'));
 
         $qb->setParameter(':nb_tries', WebhookEventDelivery::MAX_DELIVERY_TRIES);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param ApiApplication $apiApplication
+     * @param int $count
+     * @return WebhookEventDelivery[]
+     */
+    public function findLastDeliveries(ApiApplication $apiApplication, $count = 10)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb
+            ->where('e.application = :app')
+            ->setMaxResults(max(0, (int) $count))
+            ->orderBy('e.created', 'DESC')
+            ->setParameters([ 'app' => $apiApplication ]);
 
         return $qb->getQuery()->getResult();
     }

@@ -21,6 +21,10 @@ class WebhookServiceProvider implements ServiceProviderInterface
         $this->createAlias($app, 'webhook.delivery_repository', 'repo.webhook-delivery');
         $this->createAlias($app, 'webhook.delivery_manipulator', 'manipulator.webhook-delivery');
 
+        $app['webhook.delivery_payload_repository'] = $app->share(function ($app) {
+            return $app['orm.em']->getRepository('Phraseanet:WebhookEventPayload');
+        });
+
         $app['webhook.processor_factory'] = $app->share(function ($app) {
             return new EventProcessorFactory($app);
         });
@@ -32,7 +36,8 @@ class WebhookServiceProvider implements ServiceProviderInterface
                 $app['webhook.event_repository'],
                 $app['webhook.event_manipulator'],
                 $app['webhook.delivery_repository'],
-                $app['webhook.delivery_manipulator']
+                $app['webhook.delivery_manipulator'],
+                $app['webhook.delivery_payload_repository']
             );
         });
 
