@@ -43,6 +43,7 @@
   with_items:
     - "{{ mariadb.database }}"
     - "{{ mariadb.databox_db }}"
+    - "{{ mariadb.alt_db }}"
 
 - name: mariadb | Import dump
   mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
