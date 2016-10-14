@@ -1152,16 +1152,29 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->app->getAclForUser($user)->give_access_to_base($base_ids);
+
         foreach ($base_ids as $base_id) {
             $this->app->getAclForUser($user)->update_rights_to_base($base_id, [
-                'canpush'         => 1, 'cancmd'          => 1
-                , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-                , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-                , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-                , 'modify_struct'   => 1, 'nowatermark'     => 1
-                ]
-            );
+                'canpush' => 1,
+                'cancmd' => 1,
+                'canputinalbum' => 1,
+                'candwnldhd' => 1,
+                'candwnldpreview' => 1,
+                'canadmin' => 1,
+                'actif' => 1,
+                'canreport' => 1,
+                'canaddrecord' => 1,
+                'canmodifrecord' => 1,
+                'candeleterecord' => 1,
+                'chgstatus' => 1,
+                'imgtools' => 1,
+                'manage' => 1,
+                'modify_struct' => 1,
+                'nowatermark' => 1
+            ]);
         }
+
+        $this->app->getAclForUser($user)->delete_data_from_cache();
 
         return $this;
     }
