@@ -22,12 +22,12 @@ class IndexCreateCommand extends Command
     {
         $this
             ->setName('searchengine:index:create')
-            ->setDescription('Creates search index')
-        ;
+            ->setDescription('Creates search index');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
 
         if ($indexer->indexExists()) {

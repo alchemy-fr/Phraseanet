@@ -11,6 +11,8 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
+use Alchemy\Phrasea\Databox\DataboxService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -116,82 +118,37 @@ class DataboxesController extends Controller
             return $this->app->redirectPath('admin_databases', ['error' => 'special-chars']);
         }
 
-        if ((null === $request->request->get('new_settings')) && (null !== $dataTemplate = $request->request->get('new_data_template'))) {
-            $connexion = $this->app['conf']->get(['main', 'database']);
+        /** @var DataboxService $databoxService */
+        $databoxService = $this->app['databox.service'];
+        $dataTemplate = $request->request->get('new_data_template');
 
-            $hostname = $connexion['host'];
-            $port = $connexion['port'];
-            $user = $connexion['user'];
-            $password = $connexion['password'];
+        $connectionSettings = $request->request->get('new_settings') == false ? null : new DataboxConnectionSettings(
+            $request->request->get('new_hostname'),
+            $request->request->get('new_port'),
+            $request->request->get('new_user'),
+            $request->request->get('new_password')
+        );
 
-            $dataTemplate = new \SplFileInfo($this->app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+        try {
+            $databox = $databoxService->createDatabox(
+                $dbName,
+                $dataTemplate,
+                $this->getAuthenticatedUser(),
+                $connectionSettings
+            );
 
-            try {
-                /** @var Connection $connection */
-                $connection = $this->app['dbal.provider']([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $user,
-                    'password' => $password,
-                    'dbname'   => $dbName,
-                ]);
-                $connection->connect();
-            } catch (DBALException $e) {
-                return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
-            }
-
-            try {
-                $base = \databox::create($this->app, $connection, $dataTemplate);
-                $base->registerAdmin($this->getAuthenticator()->getUser());
-                $this->getAclForUser()->delete_data_from_cache();
-
-                $connection->close();
-                return $this->app->redirectPath('admin_database', [
-                    'databox_id'  => $base->get_sbas_id(),
-                    'success'     => 1,
-                    'reload-tree' => 1
-                ]);
-            } catch (\Exception $e) {
-                return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
-            }
+            return $this->app->redirectPath('admin_database', [
+                'databox_id'  => $databox->get_sbas_id(),
+                'success'     => 1,
+                'reload-tree' => 1
+            ]);
         }
-
-        if (null !== $request->request->get('new_settings')
-            && (null !== $hostname = $request->request->get('new_hostname'))
-            && (null !== $port = $request->request->get('new_port'))
-            && (null !== $userDb = $request->request->get('new_user'))
-            && (null !== $passwordDb = $request->request->get('new_password'))
-            && (null !== $dataTemplate = $request->request->get('new_data_template'))
-        ) {
-            try {
-                $data_template = new \SplFileInfo($this->app['root.path'] . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-                /** @var Connection $connection */
-                $connection = $this->app['db.provider']([
-                    'host'     => $hostname,
-                    'port'     => $port,
-                    'user'     => $userDb,
-                    'password' => $passwordDb,
-                    'dbname'   => $dbName,
-                ]);
-                $connection->connect();
-                try {
-                    $base = \databox::create($this->app, $connection, $data_template);
-                    $base->registerAdmin($this->getAuthenticator()->getUser());
-
-                    return $this->app->redirectPath('admin_database', [
-                        'databox_id' => $base->get_sbas_id(),
-                        'success' => 1,
-                        'reload-tree' => 1,
-                    ]);
-                } catch (\Exception $e) {
-                    return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
-                }
-            } catch (\Exception $e) {
-                return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
-            }
+        catch (DBALException $e) {
+            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
         }
-
-        return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
+        catch (\Exception $e) {
+            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
+        }
     }
 
     /**
