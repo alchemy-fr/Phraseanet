@@ -36,6 +36,13 @@
   args:
     chdir: /vagrant/
 
+- name: Create extra databox
+  become: yes
+  become_user: vagrant
+  shell: 'bin/console databox:create db_alt admin@{{ hostname }}.vb'
+  args:
+    chdir: /vagrant/
+
 - name: Enable debugger for host IP addresses
   shell: bin/setup system:config add debugger.allowed-ips "{{ item}}"
   with_items: '{{ host_addresses }}'
