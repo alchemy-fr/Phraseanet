@@ -108,9 +108,12 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             'Please install Unoconv'
         );
 
+
+        putenv('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/node/bin');
+
         if (null !== $unoconv) {
             $output = null;
-            exec('sudo ' . $unoconv . ' --version 2>&1', $output);
+            exec($unoconv . ' --version 2>&1', $output);
             $data = sscanf($output[0], 'unoconv %d.%d');
             $version = sprintf('%d.%d', $data[0], $data[1]);
 
