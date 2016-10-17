@@ -1,7 +1,8 @@
 <?php
 
-namespace Alchemy\Phrasea\Command;
+namespace Alchemy\Phrasea\Command\Databox;
 
+use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxService;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;

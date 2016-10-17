@@ -200,6 +200,7 @@ class DataboxesController extends Controller
             && (null !== $passwordDb = $request->request->get('new_password'))
         ) {
             $connection = $this->getApplicationBox()->get_connection();
+            
             try {
                 $connection->beginTransaction();
                 $base = \databox::mount($this->app, $hostname, $port, $userDb, $passwordDb, $dbName);
