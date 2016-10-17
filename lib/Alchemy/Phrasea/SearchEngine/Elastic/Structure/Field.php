@@ -215,7 +215,7 @@ class Field implements Typed
         }
 
         if ($other->getFacetValuesLimit() !== $this->facet) {
-            throw new MergeException(sprintf("Field %s can't be merged, incompatible facet eligibility", $name));
+            //throw new MergeException(sprintf("Field %s can't be merged, incompatible facet eligibility", $name));
         }
 
         $thesaurus_roots = null;
