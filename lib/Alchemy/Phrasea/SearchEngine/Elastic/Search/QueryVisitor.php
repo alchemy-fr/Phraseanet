@@ -121,6 +121,7 @@ class QueryVisitor implements Visit
     private function visitQuery(Element $element)
     {
         $root = null;
+
         foreach ($element->getChildren() as $child) {
             $root = $child->accept($this);
         }
@@ -176,6 +177,7 @@ class QueryVisitor implements Visit
     private function handleBinaryExpression(Element $element, \Closure $factory)
     {
         $this->assertChildrenCount($element, 2);
+
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
 
@@ -284,6 +286,7 @@ class QueryVisitor implements Visit
     private function visitString(TreeNode $node)
     {
         $tokens = array();
+
         foreach ($node->getChildren() as $child) {
             $value = $child->getValue();
             if ($value === null || !isset($value['value'])) {

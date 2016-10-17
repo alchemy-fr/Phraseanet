@@ -353,15 +353,16 @@ class RecordIndexer
     private function buildCaptionMapping(array $fields, Mapping $root, $section)
     {
         $mapping = new Mapping();
+
         foreach ($fields as $field) {
             $this->addFieldToMapping($field, $mapping);
         }
+
         $root->add($section, $mapping);
         $root
             ->add(sprintf('%s_all', $section), 'string')
             ->addLocalizedSubfields($this->locales)
-            ->addRawVersion()
-        ;
+            ->addRawVersion();
     }
 
     private function addFieldToMapping(Field $field, Mapping $mapping)
@@ -376,6 +377,7 @@ class RecordIndexer
         if ($type === Mapping::TYPE_STRING) {
             $searchable = $field->isSearchable();
             $facet = $field->isFacet();
+
             if (!$searchable && !$facet) {
                 $mapping->notIndexed();
             } else {

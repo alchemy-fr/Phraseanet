@@ -51,14 +51,17 @@ final class GlobalStructure implements Structure
     {
         $fields = [];
         $flags = [];
+
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $fieldStructure) {
                 $fields[] = Field::createFromLegacyField($fieldStructure);
             }
+
             foreach ($databox->getStatusStructure() as $status) {
                 $flags[] = Flag::createFromLegacyStatus($status);
             }
         }
+
         return new self($fields, $flags, MetadataHelper::createTags());
     }
 
@@ -87,20 +90,25 @@ final class GlobalStructure implements Structure
     public function add(Field $field)
     {
         $name = $field->getName();
+
         if (isset($this->fields[$name])) {
             $field = $this->fields[$name]->mergeWith($field);
         }
+
         $this->fields[$name] = $field;
 
         if ($field->getType() === Mapping::TYPE_DATE) {
             $this->date_fields[$name] = $field;
         }
+
         if ($field->isPrivate()) {
             $this->private[$name] = $field;
         }
+
         if ($field->isFacet() && $field->isSearchable()) {
             $this->facets[$name] = $field;
         }
+
         if ($field->hasConceptInference()) {
             $this->thesaurus_fields[$name] = $field;
         }
