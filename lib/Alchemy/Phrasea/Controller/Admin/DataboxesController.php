@@ -167,57 +167,29 @@ class DataboxesController extends Controller
             return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'special-chars']);
         }
 
-        if ((null === $request->request->get('new_settings'))) {
-            try {
-                $connexion = $this->app['conf']->get(['main', 'database']);
+        /** @var DataboxService $databoxService */
+        $databoxService = $this->app['databox.service'];
 
-                $hostname = $connexion['host'];
-                $port = $connexion['port'];
-                $user = $connexion['user'];
-                $password = $connexion['password'];
+        $connectionSettings = $request->request->get('new_settings') == false ? null : new DataboxConnectionSettings(
+            $request->request->get('new_hostname'),
+            $request->request->get('new_port'),
+            $request->request->get('new_user'),
+            $request->request->get('new_password')
+        );
 
-                $this->app->getApplicationBox()->get_connection()->beginTransaction();
-                $base = \databox::mount($this->app, $hostname, $port, $user, $password, $dbName);
-                $base->registerAdmin($this->app->getAuthenticatedUser());
-                $this->app->getApplicationBox()->get_connection()->commit();
+        try {
+            $databox = $databoxService->mountDatabox($dbName, $this->app->getAuthenticatedUser(), $connectionSettings);
 
-                return $this->app->redirectPath('admin_database', [
-                    'databox_id' => $base->get_sbas_id(),
-                    'success' => 1,
-                    'reload-tree' => 1,
-                ]);
-            } catch (\Exception $e) {
-                $this->app->getApplicationBox()->get_connection()->rollBack();
-
-                return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
-            }
+            return $this->app->redirectPath('admin_database', [
+                'databox_id' => $databox->get_sbas_id(),
+                'success' => 1,
+                'reload-tree' => 1,
+            ]);
+        } catch (\Exception $exception) {
+            return $this->app->redirectPath('admin_databases', [
+                'success' => 0,
+                'error' => 'mount-failed'
+            ]);
         }
-
-        if (null !== $request->request->get('new_settings')
-            && (null !== $hostname = $request->request->get('new_hostname'))
-            && (null !== $port = $request->request->get('new_port'))
-            && (null !== $userDb = $request->request->get('new_user'))
-            && (null !== $passwordDb = $request->request->get('new_password'))
-        ) {
-            $connection = $this->getApplicationBox()->get_connection();
-            
-            try {
-                $connection->beginTransaction();
-                $base = \databox::mount($this->app, $hostname, $port, $userDb, $passwordDb, $dbName);
-                $base->registerAdmin($this->getAuthenticator()->getUser());
-                $connection->commit();
-
-                return $this->app->redirectPath('admin_database', [
-                    'databox_id'  => $base->get_sbas_id(),
-                    'success'     => 1,
-                    'reload-tree' => 1
-                ]);
-            } catch (\Exception $e) {
-                $connection->rollBack();
-
-                return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
-            }
-        }
-        return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'mount-failed']);
     }
 }
