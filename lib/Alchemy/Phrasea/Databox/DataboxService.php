@@ -130,7 +130,10 @@ class DataboxService
             );
 
             $databox->registerAdmin($owner);
+
             $this->applicationBox->get_connection()->commit();
+
+            return $databox;
         }
         catch (\Exception $exception) {
             $this->applicationBox->get_connection()->rollBack();
