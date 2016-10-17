@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
         v.customize [
             "modifyvm", :id,
             "--name", $hostname,
-            "--memory", 4096,
+            "--memory", 2048,
             "--cpus", 2,
         ]
     end

@@ -13,8 +13,9 @@ require([
     "i18n",
     "apps/login/home/common",
     "common/forms/views/formType/passwordSetter",
-    "common/geonames"
-], function ($, i18n, Common, RegisterForm, geonames) {
+    "common/geonames",
+    "common/forms/views/formType/zxcvbn"
+], function ($, i18n, Common, RegisterForm, geonames, zxcvbn) {
     var fieldsConfiguration = [];
 
     $.when.apply($, [
@@ -100,7 +101,8 @@ require([
 
                 new RegisterForm({
                     el: $form,
-                    rules: rules
+                    rules: rules,
+                    zxcvbn: zxcvbn
                 });
 
                 var geocompleter = geonames.init($("#geonameid"), {
