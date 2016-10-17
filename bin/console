@@ -26,7 +26,7 @@ use Alchemy\Phrasea\Command\WebsocketServer;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\CreateCollection;
-use Alchemy\Phrasea\Command\CreateDataboxCommand;
+use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
 use Alchemy\Phrasea\Command\MailTest;
 use Alchemy\Phrasea\Command\Compile\Configuration;
 use Alchemy\Phrasea\Command\RecordAdd;

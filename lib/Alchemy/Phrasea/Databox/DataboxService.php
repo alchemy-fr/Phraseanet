@@ -19,6 +19,11 @@ class DataboxService
     private $app;
 
     /**
+     * @var \appbox
+     */
+    private $applicationBox;
+
+    /**
      * @var PropertyAccess
      */
     private $configuration;
@@ -40,6 +45,7 @@ class DataboxService
 
     /**
      * @param Application $application
+     * @param \appbox $appbox
      * @param callable $connectionFactory
      * @param DataboxRepository $databoxRepository
      * @param PropertyAccess $defaultDbConfiguration
@@ -47,12 +53,14 @@ class DataboxService
      */
     public function __construct(
         Application $application,
+        \appbox $appbox,
         callable $connectionFactory,
         DataboxRepository $databoxRepository,
         PropertyAccess $defaultDbConfiguration,
         $rootPath
     ) {
         $this->app = $application;
+        $this->applicationBox = $appbox;
         $this->connectionFactory = $connectionFactory;
         $this->databoxRepository = $databoxRepository;
         $this->configuration = $defaultDbConfiguration;
@@ -98,14 +106,36 @@ class DataboxService
     }
 
     /**
-     * @param $databaseName
+     * @param string $databaseName
+     * @param User $owner
      * @param DataboxConnectionSettings $connectionSettings
      * @return \databox
      */
-    public function mountDatabox($databaseName, DataboxConnectionSettings $connectionSettings = null)
+    public function mountDatabox($databaseName, User $owner, DataboxConnectionSettings $connectionSettings = null)
     {
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
+
+        $this->applicationBox->get_connection()->beginTransaction();
+
+        try {
+            $databox = \databox::mount(
+                $this->app,
+                $connectionSettings->getHost(),
+                $connectionSettings->getPort(),
+                $connectionSettings->getUser(),
+                $connectionSettings->getPassword(),
+                $databaseName
+            );
+
+            $databox->registerAdmin($owner);
+            $this->applicationBox->get_connection()->commit();
+        }
+        catch (\Exception $exception) {
+            $this->applicationBox->get_connection()->rollBack();
+
+            throw new \RuntimeException($exception->getMessage(), 0, $exception);
+        }
     }
 }
