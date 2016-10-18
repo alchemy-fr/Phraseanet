@@ -16,9 +16,6 @@ use RuntimeException;
 
 class Mapping
 {
-    private $fields = array();
-    private $current;
-    private $enabled = true;
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
     const DATE_FORMAT_CAPTION = 'yyyy/MM/dd'; // ES format
@@ -29,6 +26,7 @@ class Mapping
     const TYPE_STRING  = 'string';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_DATE    = 'date';
+
     // Number core types
     const TYPE_FLOAT   = 'float';
     const TYPE_DOUBLE  = 'double';
@@ -37,6 +35,7 @@ class Mapping
     const TYPE_SHORT   = 'short';
     const TYPE_BYTE    = 'byte';
     const TYPE_IP      = 'ip';
+
     // Compound types
     const TYPE_OBJECT  = 'object';
 
@@ -53,16 +52,38 @@ class Mapping
         self::TYPE_IP,
     );
 
+    public static function disabledMapping()
+    {
+        return (new self())->disable();
+    }
+
+    /**
+     * @var array
+     */
+    private $fields = array();
+
+    /**
+     * @var string
+     */
+    private $current;
+
+    /**
+     * @var bool
+     */
+    private $enabled = true;
+
+    /**
+     * @param string $name
+     * @param string|Mapping $type
+     * @return $this
+     */
     public function add($name, $type)
     {
-        $field = array();
         if ($type instanceof self) {
-            $field['type'] = self::TYPE_OBJECT;
-            $field['mapping'] = $type;
+            return $this->addComplexType($name, $type);
         }
-        elseif (in_array($type, self::$types)) {
-            $field['type'] = $type;
-        } else {
+
+        if (! in_array($type, self::$types)) {
             throw new RuntimeException(sprintf(
                 'Invalid field mapping type "%s", expected "%s" or Mapping instance.',
                 $type,
@@ -70,20 +91,48 @@ class Mapping
             ));
         }
 
-        $this->fields[$name] = $field;
+        return $this->addFieldConfiguration($name, [ 'type' => $type ]);
+    }
+
+    /**
+     * @param $name
+     * @param Mapping $typeMapping
+     * @return $this
+     */
+    public function addComplexType($name, Mapping $typeMapping)
+    {
+        return $this->addFieldConfiguration($name, [
+            'type' => self::TYPE_OBJECT,
+            'mapping' => $typeMapping
+        ]);
+    }
+
+    /**
+     * @param $name
+     * @param array $configuration
+     * @return $this
+     */
+    private function addFieldConfiguration($name, array $configuration)
+    {
+        $this->fields[$name] = $configuration;
         $this->current = $name;
 
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function export()
     {
         $mapping = array();
         $mapping['properties'] = array();
+
         foreach ($this->fields as $name => $field) {
             if ($field['type'] === self::TYPE_OBJECT) {
                 $field = $field['mapping']->export();
             }
+
             $mapping['properties'][$name] = $field;
         }
 
@@ -92,55 +141,6 @@ class Mapping
         }
 
         return $mapping;
-    }
-
-    public function analyzer($analyzer, $type = null)
-    {
-        $field = &$this->currentField();
-        if ($field['type'] !== self::TYPE_STRING) {
-            throw new LogicException('Only string fields can be analyzed');
-        }
-        switch ($type) {
-            case null:
-                $field['analyzer'] = $analyzer;
-                unset($field['index_analyzer'], $field['search_analyzer']);
-                break;
-            case 'indexing':
-                $field['analyzer'] = $analyzer;
-                break;
-            case 'searching':
-                $field['search_analyzer'] = $analyzer;
-                break;
-            default:
-                throw new LogicException(sprintf('Invalid analyzer type "%s".', $type));
-        }
-        $field['index'] = 'analyzed';
-
-        return $this;
-    }
-
-    public function notAnalyzed()
-    {
-        $field = &$this->currentField();
-        if ($field['type'] !== self::TYPE_STRING) {
-            throw new LogicException('Only string fields can be not analyzed');
-        }
-        $field['index'] = 'not_analyzed';
-
-        return $this;
-    }
-
-    public function notIndexed()
-    {
-        $field = &$this->currentField();
-        $field['index'] = 'no';
-
-        return $this;
-    }
-
-    public static function disabledMapping()
-    {
-        return (new self())->disable();
     }
 
     /**
@@ -172,8 +172,6 @@ class Mapping
      */
     public function addAnalyzedVersion(array $locales)
     {
-        $field = &$this->currentField();
-
         $this->addMultiField('light', 'general_light');
 
         return $this->addLocalizedSubfields($locales);
@@ -202,19 +200,6 @@ class Mapping
         if ($analyzer) {
             $field['fields'][$name]['analyzer'] = $analyzer;
         }
-
-        return $this;
-    }
-
-    public function format($format)
-    {
-        $field = &$this->currentField();
-
-        if ($field['type'] !== self::TYPE_DATE) {
-            throw new LogicException('Only date fields can have a format');
-        }
-
-        $field['format'] = $format;
 
         return $this;
     }

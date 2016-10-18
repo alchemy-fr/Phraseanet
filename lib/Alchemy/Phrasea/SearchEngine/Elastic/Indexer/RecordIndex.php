@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 
 class RecordIndex
@@ -21,9 +22,19 @@ class RecordIndex
      */
     private $structure;
 
-    public function __construct(Structure $structure)
+    /**
+     * @var string[]
+     */
+    private $locales;
+
+    /**
+     * @param Structure $structure
+     * @param array $locales
+     */
+    public function __construct(Structure $structure, array $locales)
     {
         $this->structure = $structure;
+        $this->locales = $locales;
     }
 
 
