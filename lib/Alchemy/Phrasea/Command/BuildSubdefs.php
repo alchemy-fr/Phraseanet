@@ -37,51 +37,77 @@ class BuildSubdefs extends Command
     private $databox;
     /** @var  connection */
     private $connection;
+    /** @var array */
+    private $presets;
 
+    /** @var string */
+    private $mode;
     /** @var int */
     private $recmin;
     /** @var int */
     private $recmax;
     /** @var bool */
-    private $substitutedOnly;
+    private $substituted_only;
     /** @var bool */
-    private $withSubstituted;
+    private $with_substituted;
     /** @var bool */
-    private $missingOnly;
+    private $missing_only;
     /** @var bool */
-    private $garbageCollect;
+    private $prune;
+    /** @var bool */
+    private $all;
+    /** @var bool */
+    private $scheduled;
+    /** @var bool */
+    private $reverse;
     /** @var  int */
     private $partitionIndex;
     /** @var  int */
     private $partitionCount;
     /** @var bool */
-    private $resetSubdefFlag;
+    private $reset_subdef_flag;
     /** @var bool */
-    private $setWritemetaFlag;
+    private $set_writemeta_flag;
     /** @var bool */
     private $dry;
+    /** @var bool */
+    private $show_sql;
 
     /** @var  array */
-    private $subdefsNameByType;
+    private $subdefsByType;
+
+    /** @var  array */
+    private $subdefsTodoByType;
 
     public function __construct($name = null)
     {
         parent::__construct($name);
 
-        $this->setDescription('Build subviews for given subview names and record types');
+        $this->presets = [
+            'scheduled' => ['scheduled', 'reset_subdef_flag', 'set_writemeta_flag'],
+            'repair'    => ['missing_only', 'prune', 'reset_subdef_flag', 'set_writemeta_flag'],
+            'all'       => ['all', 'reset_subdef_flag', 'set_writemeta_flag']
+        ];
+
+        $this->setDescription('Build subviews');
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
+        $this->addOption('mode',               null, InputOption::VALUE_REQUIRED,                             'preset working mode : ' . implode('|', array_keys($this->presets)));
         $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to (re)build ex. "image,video", dafault=ALL');
         $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
         $this->addOption('min_record',         null, InputOption::VALUE_OPTIONAL,                             'Min record id');
         $this->addOption('max_record',         null, InputOption::VALUE_OPTIONAL,                             'Max record id');
+        $this->addOption('all',                null, InputOption::VALUE_NONE,                                 'Enforce listing of all records');
+        $this->addOption('scheduled',          null, InputOption::VALUE_NONE,                                 'Only records flagged with \"jeton\" subdef');
         $this->addOption('with_substituted',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records as well');
         $this->addOption('substituted_only',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records only');
         $this->addOption('missing_only',       null, InputOption::VALUE_NONE,                                 'Regenerate only missing subdefs');
-        $this->addOption('garbage_collect',    null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
+        $this->addOption('prune',              null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
+        $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Build records from the last to the oldest');
         $this->addOption('partition',          null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
         $this->addOption('reset_subdef_flag',  null, InputOption::VALUE_NONE,                                 'Reset "make-subdef" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('set_writemeta_flag', null, InputOption::VALUE_NONE,                                 'Set "write-metadata" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('dry',                null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
+        $this->addOption('show_sql',           null, InputOption::VALUE_NONE,                                 'show sql pre-selecting records');
     }
 
     /**
@@ -153,46 +179,78 @@ class BuildSubdefs extends Command
         }
 
         // get options
-        $this->dry              = $input->getOption('dry') ? true : false;
-        $this->recmin           = $input->getOption('min_record');
-        $this->recmax           = $input->getOption('max_record');
-        $this->substitutedOnly  = $input->getOption('substituted_only') ? true : false;
-        $this->withSubstituted  = $input->getOption('with_substituted') ? true : false;
-        $this->missingOnly      = $input->getOption('missing_only') ? true : false;
-        $this->garbageCollect   = $input->getOption('garbage_collect') ? true : false;
-        $this->resetSubdefFlag  = $input->getOption('reset_subdef_flag') ? true : false;
-        $this->setWritemetaFlag = $input->getOption('set_writemeta_flag') ? true : false;
+        $this->mode               = $input->getOption('mode');
+        $this->show_sql           = $input->getOption('show_sql') ? true : false;
+        $this->dry                = $input->getOption('dry') ? true : false;
+        $this->recmin             = $input->getOption('min_record');
+        $this->recmax             = $input->getOption('max_record');
+        $this->substituted_only   = $input->getOption('substituted_only') ? true : false;
+        $this->with_substituted   = $input->getOption('with_substituted') ? true : false;
+        $this->missing_only       = $input->getOption('missing_only') ? true : false;
+        $this->prune              = $input->getOption('prune') ? true : false;
+        $this->all                = $input->getOption('all') ? true : false;
+        $this->scheduled          = $input->getOption('scheduled') ? true : false;
+        $this->reverse            = $input->getOption('reverse') ? true : false;
+        $this->reset_subdef_flag  = $input->getOption('reset_subdef_flag') ? true : false;
+        $this->set_writemeta_flag = $input->getOption('set_writemeta_flag') ? true : false;
         $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
         $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
 
-        if ($this->withSubstituted && $this->substitutedOnly) {
+        if ($this->with_substituted && $this->substituted_only) {
             $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
             $argsOK = false;
         }
-        if($this->garbageCollect && !empty($names)) {
-            $output->writeln("<error>--garbage_collect and --name are mutually exclusive<error>");
+        if ($this->all && $this->scheduled) {
+            $output->writeln("<error>--all and --scheduled are mutually exclusive<error>");
+            $argsOK = false;
+        }
+        if($this->mode) {
+            if($this->substituted_only || $this->with_substituted || $this->missing_only || $this->prune || $this->all || $this->reset_subdef_flag || $this->set_writemeta_flag) {
+                $output->writeln("<error>--mode and (--substituted_only, --with_substituted, --missing_only, --prune, --all, --reset_subdef_flag, --set_writemeta_flag) are mutually exclusive<error>");
+                $argsOK = false;
+            }
+            if(!in_array($this->mode, array_keys($this->presets))) {
+                $output->writeln(sprintf("<error>invalid --mode \"%s\"<error>", $this->mode));
+                $argsOK = false;
+            }
+            else {
+                $output->writeln(sprintf("mode \"%s\" ==> --%s", $this->mode, implode(' --', $this->presets[$this->mode])));
+                foreach($this->presets[$this->mode] as $toset) {
+                    $this->{$toset} = true;
+                }
+            }
+        }
+        if($this->prune && !empty($names)) {
+            $output->writeln("<error>--prune and --name are mutually exclusive<error>");
             $argsOK = false;
         }
 
         // validate types and subdefs
-        $this->subdefsNameByType = [];
+        $this->subdefsTodoByType = [];
+        $this->subdefsByType = [];
 
         if($this->databox !== null) {
 
             /** @var SubdefGroup $sg */
             foreach ($this->databox->get_subdef_structure() as $sg) {
                 if (empty($types) || in_array($sg->getName(), $types)) {
-                    $this->subdefsNameByType[$sg->getName()] = [];
+                    $all = [];
+                    $todo = [];
                     /** @var databox_subdef $sd */
                     foreach ($sg as $sd) {
+                        $all[] = $sd->get_name();
                         if (empty($names) || in_array($sd->get_name(), $names)) {
-                            $this->subdefsNameByType[$sg->getName()][] = $sd->get_name();
+                            $todo[] = $sd->get_name();
                         }
                     }
+                    asort($all);
+                    $this->subdefsByType[$sg->getName()] = $all;
+                    asort($todo);
+                    $this->subdefsTodoByType[$sg->getName()] = $todo;
                 }
             }
             foreach ($types as $t) {
-                if (!array_key_exists($t, $this->subdefsNameByType)) {
+                if (!array_key_exists($t, $this->subdefsTodoByType)) {
                     $output->writeln(sprintf("<error>unknown type \"%s\"</error>", $t));
                     $argsOK = false;
                 }
@@ -214,8 +272,8 @@ class BuildSubdefs extends Command
         }
 
         // warning about changing jeton when not working on all subdefs
-        if(!empty($names) && ($this->resetSubdefFlag || $this->setWritemetaFlag)) {
-            $output->writeln("warning : changing record flag(s) but working on a subset of subdefs.");
+        if(!empty($names) && ($this->reset_subdef_flag || $this->set_writemeta_flag)) {
+            $output->writeln("<warning>changing record flag(s) but working on a subset of subdefs</warning>");
         }
         
         return $argsOK;
@@ -234,7 +292,10 @@ class BuildSubdefs extends Command
         $this->output = $output;
 
         $sql = $this->getSQL();
-        $this->verbose($sql . "\n");
+
+        if($this->show_sql) {
+            $this->output->writeln($sql);
+        }
 
         $sqlCount = sprintf('SELECT COUNT(*) FROM (%s) AS c', $sql);
 
@@ -251,50 +312,52 @@ class BuildSubdefs extends Command
             $progress->display();
         }
 
-        $rows = $this->connection->executeQuery($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->connection->executeQuery($sql);
 
-        foreach ($rows as $row) {
+        while( ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ) {
             $type = $row['type'];
-            $output->write(sprintf(' [#%s] (%s)', $row['record_id'], $type));
+            $msg = sprintf(' record %s (%s) : ', $row['record_id'], $type);
 
             try {
                 $record = $this->databox->get_record($row['record_id']);
 
-                $subdefNamesToDo = array_flip($this->subdefsNameByType[$type]);    // do all subdefs ?
+                $subdefNamesToDo = array_flip($this->subdefsTodoByType[$type]);    // do all subdefs ?
 
                 /** @var media_subdef $subdef */
+                $subdefsDeleted = [];
                 foreach ($record->get_subdefs() as $subdef) {
                     $name = $subdef->get_name();
                     if($name == "document") {
                         continue;
                     }
-                    if(!in_array($name, $this->subdefsNameByType[$type])) {
+                    if(!in_array($name, $this->subdefsByType[$type])) {
                         // this existing subdef is unknown in structure
-                        if($this->garbageCollect) {
+                        if($this->prune) {
                             if(!$this->dry) {
                                 $subdef->delete();
                             }
-                            $this->verbose(sprintf(" \"%s\" deleted,", $name));
+                            $subdefsDeleted[] = $name;
+                            $msg .= sprintf(" \"%s\" deleted,", $name);
                         }
                         continue;
                     }
-                    if($this->missingOnly) {
+                    if($this->missing_only) {
                         unset($subdefNamesToDo[$name]);
                         continue;
                     }
                     if($subdef->is_substituted()) {
-                        if(!$this->withSubstituted && !$this->substitutedOnly) {
+                        if(!$this->with_substituted && !$this->substituted_only) {
                             unset($subdefNamesToDo[$name]);
                             continue;
                         }
                     }
                     else {
-                        if($this->substitutedOnly) {
+                        if($this->substituted_only) {
                             unset($subdefNamesToDo[$name]);
                             continue;
                         }
                     }
-                    // here an existing subdef must be re-done
+                    // here an existing subdef must be (re)done
                     if(!$this->dry) {
                         $subdef->remove_file();
                         $subdef->set_substituted(false);
@@ -309,34 +372,49 @@ class BuildSubdefs extends Command
                         $subdefGenerator->generateSubdefs($record, $subdefNamesToDo);
                     }
 
-                    $this->verbose(sprintf(" subdefs[%s] built\n", implode(',', $subdefNamesToDo)));
+                    $msg .= sprintf(" [\"%s\"] built", implode('","', $subdefNamesToDo));
                 }
                 else {
-                    $this->verbose(" nothing to build\n");
+                    // $msg .= " nothing to build";
                 }
 
-                if($this->resetSubdefFlag|| $this->setWritemetaFlag) {
+                unset($record);
+
+                if($this->reset_subdef_flag || $this->set_writemeta_flag) {
                     // subdef created, ask to rewrite metadata
                     $sql = 'UPDATE record'
                         . ' SET jeton=(jeton & ~(:flag_and)) | :flag_or'
                         . ' WHERE record_id=:record_id';
 
-                    $this->connection->executeUpdate($sql, [
-                        ':record_id' => $row['record_id'],
-                        ':flag_and' => $this->resetSubdefFlag ? PhraseaTokens::MAKE_SUBDEF : 0,
-                        ':flag_or' => ($this->setWritemetaFlag ? PhraseaTokens::WRITE_META_SUBDEF : 0)
-                    ]);
-
+                    if($this->reset_subdef_flag) {
+                        $msg .= ", jeton[\"make_subdef\"]=0";
+                    }
+                    if($this->set_writemeta_flag) {
+                        $msg .= ", jeton[\"write_met_subdef\"]=1";
+                    }
+                    if(!$this->dry) {
+                        $this->connection->executeUpdate($sql, [
+                            ':record_id' => $row['record_id'],
+                            ':flag_and' => ($this->reset_subdef_flag ? PhraseaTokens::MAKE_SUBDEF : 0),
+                            ':flag_or' => ($this->set_writemeta_flag ? PhraseaTokens::WRITE_META_SUBDEF : 0)
+                        ]);
+                    }
                 }
             }
             catch(\Exception $e) {
-                $this->verbose("failed\n");
+                $this->output->write("failed\n");
             }
 
             if($progress) {
                 $progress->advance();
+                $this->output->write($msg);
+            }
+            else {
+                $this->output->writeln($msg);
             }
         }
+
+        unset($stmt);
 
         if($progress) {
             $progress->finish();
@@ -351,23 +429,45 @@ class BuildSubdefs extends Command
      */
     protected function getSQL()
     {
-        $sql = "SELECT record_id, type FROM record WHERE parent_record_id=0";
+        $sql = "SELECT r.`record_id`, r.`type`, GROUP_CONCAT(s.`name` ORDER BY `name`) AS `exists`,\n"
+            . " CASE r.`type`\n";
 
-        $recordTypes = array_keys($this->subdefsNameByType);
+        foreach($this->subdefsByType as $type=>$names) {
+            $sql .= "  WHEN " . $this->connection->quote($type) . " THEN " . $this->connection->quote(join(',', $names)) . "\n";
+        }
+
+        $sql .= "  END\n"
+            . " AS `waited`\n"
+            . "FROM `record` AS r LEFT JOIN `subdef` AS s USING(`record_id`)\n"
+            . "WHERE r.`parent_record_id`=0";
+
+        $recordTypes = array_keys($this->subdefsTodoByType);
         $types = array_map(function($v) {return $this->connection->quote($v);}, $recordTypes);
 
         if(!empty($types)) {
-            $sql .= ' AND type IN(' . implode(',', $types) . ')';
+            $sql .= " AND r.`type` IN(" . implode(',', $types) . ")\n";
         }
         if ($this->recmin !== null) {
-            $sql .= ' AND (record_id >= ' . (int)($this->recmin) . ')';
+            $sql .= " AND (r.`record_id` >= " . (int)($this->recmin) . ")\n";
         }
         if ($this->recmax) {
-            $sql .= ' AND (record_id <= ' . (int)($this->recmax) . ')';
+            $sql .= " AND (r.`record_id` <= " . (int)($this->recmax) . ")\n";
         }
         if($this->partitionCount !== null && $this->partitionIndex !== null) {
-            $sql .= ' AND MOD(record_id, ' . $this->partitionCount . ')=' . ($this->partitionIndex-1);
+            $sql .= " AND MOD(r.`record_id`, " . $this->partitionCount . ")=" . ($this->partitionIndex-1) . "\n";
         }
+        if($this->scheduled) {
+            $sql .= " AND r.`jeton` & " . PhraseaTokens::MAKE_SUBDEF;
+        }
+
+        $sql .= " AND s.`name` != 'document'\n"
+            . "GROUP BY r.`record_id`";
+
+        if(!$this->scheduled && !$this->all) {
+            $sql .= "\nHAVING `exists` != `waited`";
+        }
+
+        $sql .= "\nORDER BY r.`record_id` " . ($this->reverse ? "DESC" : "ASC");
 
         return $sql;
     }
