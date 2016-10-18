@@ -110,7 +110,7 @@ class IndexerSubscriber implements EventSubscriberInterface
     public function onThesaurusChange(ThesaurusEvent $event)
     {
         $databox = $event->getDatabox();
-        $databox->delete_data_from_cache(\databox::CACHE_THESAURUS);
+        $this->getIndexer()->scheduleRecordsFromDataboxForIndexing($databox);
     }
 
     public function onCollectionChange(CollectionEvent $event)

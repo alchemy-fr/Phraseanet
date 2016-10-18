@@ -89,17 +89,12 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.options'],
                 $app['elasticsearch.indexer.term_indexer'],
                 $app['elasticsearch.indexer.record_indexer'],
-                $app['phraseanet.appbox'],
-                new Logger('es.indexer')
+                $app['phraseanet.appbox']
             );
         });
 
         $app['elasticsearch.indexer.term_indexer'] = $app->share(function ($app) {
-            return new TermIndexer(
-                $app['phraseanet.appbox'],
-                array_keys($app['locales.available']),
-                new Logger('term.indexer')
-            );
+            return new TermIndexer($app['phraseanet.appbox'], array_keys($app['locales.available']));
         });
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
