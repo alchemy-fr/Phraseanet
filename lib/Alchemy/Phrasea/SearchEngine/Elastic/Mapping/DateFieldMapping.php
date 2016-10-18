@@ -11,13 +11,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-
 /**
  * Class DateFieldMapping
  * @package Alchemy\Phrasea\SearchEngine\Elastic\Mapping
  */
-class DateFieldMapping extends FieldMapping
+class DateFieldMapping extends ComplexFieldMapping
 {
     /**
      * @var string
@@ -26,12 +24,11 @@ class DateFieldMapping extends FieldMapping
 
     /**
      * @param string $name
-     * @param string $type
      * @param string $format
      */
-    public function __construct($name, $type, $format)
+    public function __construct($name, $format)
     {
-        parent::__construct($name, $type);
+        parent::__construct($name, self::TYPE_DATE);
 
         $this->format = $format;
     }
@@ -58,8 +55,8 @@ class DateFieldMapping extends FieldMapping
     /**
      * @return array
      */
-    public function toArray()
+    protected function getProperties()
     {
-        return $this->buildArray([ 'format' => $this->format ]);
+        return array_merge([ 'format' => $this->format ], parent::getProperties());
     }
 }

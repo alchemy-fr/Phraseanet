@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\MappingBuilder;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
@@ -81,25 +83,27 @@ class TermIndexer
 
     public function getMapping()
     {
-        $mapping = new Mapping();
-        $mapping
-            ->add('raw_value', 'string')->notAnalyzed()
-            ->add('value', 'string')
-                ->analyzer('general_light')
-                ->addMultiField('strict', 'thesaurus_term_strict')
-                ->addLocalizedSubfields($this->locales)
-            ->add('context', 'string')
-                ->analyzer('general_light')
-                ->addMultiField('strict', 'thesaurus_term_strict')
-                ->addLocalizedSubfields($this->locales)
-            ->add('path', 'string')
-                ->analyzer('thesaurus_path', 'indexing')
-                ->analyzer('keyword', 'searching')
-                ->addRawVersion()
-            ->add('lang', 'string')->notAnalyzed()
-            ->add('databox_id', 'integer')
-        ;
+        $mapping = new MappingBuilder();
 
-        return $mapping->export();
+        $mapping->addStringField('raw_value')->disableAnalysis();
+        $mapping->addStringField('value')
+            ->setAnalyzer('general_light')
+            ->addAnalyzedChild('strict', 'thesaurus_term_strict')
+            ->addLocalizedChildren($this->locales);
+
+        $mapping->addStringField('context')
+            ->setAnalyzer('general_light')
+            ->addAnalyzedChild('strict', 'thesaurus_term_strict')
+            ->addLocalizedChildren($this->locales);
+
+        $mapping->addStringField('path')
+            ->setAnalyzer('thesaurus_path', 'indexing')
+            ->setAnalyzer('keyword', 'searching')
+            ->addRawChild();
+
+        $mapping->addStringField('lang')->disableAnalysis();
+        $mapping->addField('databox_id', FieldMapping::TYPE_STRING);
+
+        return $mapping->getMapping()->export();
     }
 }

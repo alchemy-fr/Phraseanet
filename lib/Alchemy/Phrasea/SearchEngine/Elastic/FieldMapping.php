@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-abstract class FieldMapping
+class FieldMapping
 {
 
     const DATE_FORMAT_MYSQL = 'yyyy-MM-dd HH:mm:ss';
@@ -47,6 +47,7 @@ abstract class FieldMapping
         self::TYPE_SHORT,
         self::TYPE_BYTE,
         self::TYPE_IP,
+        self::TYPE_OBJECT
     );
 
     /**
@@ -64,6 +65,15 @@ abstract class FieldMapping
      */
     private $indexed = true;
 
+    /**
+     * @var bool
+     */
+    private $enabled = true;
+
+    /**
+     * @var bool
+     */
+    private $raw = false;
 
     /**
      * @param string $name
@@ -77,7 +87,7 @@ abstract class FieldMapping
 
         if (! in_array($type, self::$types)) {
             throw new \InvalidArgumentException(sprintf(
-                'Invalid field mapping type "%s", expected "%s" or Mapping instance.',
+                'Invalid field mapping type "%s", expected "%s"',
                 $type,
                 implode('", "', self::$types)
             ));
@@ -125,10 +135,46 @@ abstract class FieldMapping
         return $this;
     }
 
+    public function enableRawIndexing()
+    {
+        $this->raw = true;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    public function enableMapping()
+    {
+        $this->enabled = true;
+    }
+
+    public function disableMapping()
+    {
+        $this->enabled = false;
+    }
+
     /**
      * @return array
      */
-    abstract public function toArray();
+    public function toArray()
+    {
+        return $this->buildArray($this->getProperties());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getProperties()
+    {
+        return [];
+    }
 
     /**
      * Helper function to append custom field properties to generic properties array
@@ -136,11 +182,26 @@ abstract class FieldMapping
      * @param array $fieldProperties
      * @return array
      */
-    protected function buildArray(array $fieldProperties = [])
+    private function buildArray(array $fieldProperties = [])
     {
-        return array_merge([
-            'type' => $this->getType(),
-            'index' => $this->indexed ? 'yes' : 'no'
-        ], $fieldProperties);
+        $baseProperties = [ ];
+
+        if ($this->type !== self::TYPE_OBJECT) {
+            $baseProperties['type'] = $this->type;
+        } else {
+            $baseProperties['properties'] = [];
+        }
+
+        if (! $this->indexed) {
+            $baseProperties['index'] = 'no';
+        } elseif ($this->raw) {
+            $baseProperties['index'] = 'not_analyzed';
+        }
+
+        if (! $this->enabled) {
+            $baseProperties['enabled'] = false;
+        }
+
+        return array_replace($baseProperties, $fieldProperties);
     }
 }

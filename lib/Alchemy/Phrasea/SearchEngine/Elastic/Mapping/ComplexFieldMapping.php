@@ -20,12 +20,49 @@ class ComplexFieldMapping extends FieldMapping
      */
     private $children = [];
 
+    private $childKey = 'fields';
+
+    public function useAsPropertyContainer()
+    {
+        $this->childKey = 'properties';
+    }
+
+    public function useAsFieldContainer()
+    {
+        $this->childKey = 'fields';
+    }
+
     /**
      * @param FieldMapping $child
+     * @return FieldMapping
      */
     public function addChild(FieldMapping $child)
     {
-        $this->children[] = $child;
+        if (isset($this->children[$child->getName()])) {
+            throw new \LogicException(sprintf('There is already a "%s" multi field.', $child->getName()));
+        }
+
+        if ($child->getType() !== $this->getType() && $this->getType() !== self::TYPE_OBJECT) {
+            throw new \LogicException('Child field type must match parent type.');
+        }
+
+        return $this->children[$child->getName()] = $child;
+    }
+
+    /**
+     * @return RawFieldMapping
+     */
+    public function addRawChild()
+    {
+        return $this->addChild(new RawFieldMapping($this->getType()));
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasChildren()
+    {
+        return ! empty($this->children);
     }
 
     /**
@@ -39,8 +76,18 @@ class ComplexFieldMapping extends FieldMapping
     /**
      * @return array
      */
-    public function toArray()
+    protected function getProperties()
     {
-        return $this->buildArray([ ]);
+        if (! $this->hasChildren()) {
+            return [];
+        }
+
+        $properties = [ ];
+
+        foreach ($this->children as $name => $child) {
+            $properties[$name] = $child->toArray();
+        }
+
+        return [ $this->childKey => $properties ];
     }
 }
