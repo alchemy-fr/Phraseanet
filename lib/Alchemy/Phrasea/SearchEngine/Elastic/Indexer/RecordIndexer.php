@@ -100,7 +100,7 @@ class RecordIndexer
     {
         foreach ($databoxes as $databox) {
 
-            $submited_records = [];
+            $submitted_records = [];
 
             $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
 
@@ -113,12 +113,12 @@ class RecordIndexer
             });
 
             // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
-                $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
+            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
+                $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
             });
 
             // Perform indexing
-            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
+            $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
 
             $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
         }
@@ -140,7 +140,7 @@ class RecordIndexer
 
     private function indexScheduledInDatabox(BulkOperation $bulk, databox $databox)
     {
-        $submited_records = [];
+        $submitted_records = [];
 
         // Make fetcher
         $delegate = new ScheduledFetcherDelegate();
@@ -155,12 +155,12 @@ class RecordIndexer
         });
 
         // bulk flush : flag records as "indexed"
-        $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
-            $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
+        $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
+            $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
         });
 
         // Perform indexing
-        $this->indexFromFetcher($bulk, $fetcher, $submited_records);
+        $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
     }
 
     /**
