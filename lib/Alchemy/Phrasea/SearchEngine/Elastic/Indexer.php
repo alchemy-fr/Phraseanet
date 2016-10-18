@@ -157,12 +157,12 @@ class Indexer
         RecordQueuer::queueRecordsFromCollection($collection);
     }
 
-    public function indexRecord(record_adapter $record)
+    public function indexRecord(RecordInterface $record)
     {
         $this->indexQueue->attach($record);
     }
 
-    public function deleteRecord(record_adapter $record)
+    public function deleteRecord(RecordInterface $record)
     {
         $this->deleteQueue->attach($record);
     }
@@ -174,7 +174,7 @@ class Indexer
     public function indexScheduledRecords(\databox $databox)
     {
         $this->apply(function(BulkOperation $bulk) use ($databox) {
-            $this->recordIndexer->indexScheduled($this, $bulk, $databox);
+            $this->recordIndexer->indexScheduled($bulk, $databox);
         });
     }
 
@@ -189,7 +189,7 @@ class Indexer
         }
 
         $this->apply(function(BulkOperation $bulk) {
-            $this->recordIndexer->index($this, $bulk, $this->indexQueue);
+            $this->recordIndexer->index($bulk, $this->indexQueue);
             $this->recordIndexer->delete($bulk, $this->deleteQueue);
             $bulk->flush();
         });

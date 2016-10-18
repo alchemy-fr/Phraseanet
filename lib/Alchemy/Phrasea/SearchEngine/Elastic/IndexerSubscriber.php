@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
+use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -97,7 +98,8 @@ class IndexerSubscriber implements EventSubscriberInterface
             ThesaurusEvents::CONCEPT_TRASHED => 'onThesaurusChange',
             ThesaurusEvents::CONCEPT_DELETED => 'onThesaurusChange',
             ThesaurusEvents::SYNONYM_ADDED => 'onThesaurusChange',
-            ThesaurusEvents::CONCEPT_ADDED => 'onThesaurusChange'
+            ThesaurusEvents::CONCEPT_ADDED => 'onThesaurusChange',
+            ThesaurusEvents::REINDEX_REQUIRED => 'onReindexRequired'
         ];
     }
 
@@ -137,5 +139,10 @@ class IndexerSubscriber implements EventSubscriberInterface
         if ($this->indexer instanceof Indexer) {
             $this->getIndexer()->flushQueue();
         }
+    }
+
+    public function onReindexRequired(ReindexRequiredEvent $event)
+    {
+        $this->getIndexer()->populateIndex(Indexer::THESAURUS, $event->getDatabox());
     }
 }

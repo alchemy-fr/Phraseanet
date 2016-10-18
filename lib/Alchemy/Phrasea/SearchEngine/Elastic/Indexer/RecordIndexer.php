@@ -10,6 +10,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
+use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
+use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
@@ -31,6 +33,7 @@ use databox;
 use Iterator;
 use Psr\Log\LoggerInterface;
 use record_adapter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RecordIndexer
 {
@@ -49,19 +52,32 @@ class RecordIndexer
 
     private $logger;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
     private function getUniqueOperationId($record_key)
     {
         $_key = dechex(mt_rand());
         return $_key . '_' . $record_key;
     }
 
-    public function __construct(Structure $structure, RecordHelper $helper, Thesaurus $thesaurus, array $locales, LoggerInterface $logger)
+    public function __construct(
+        Structure $structure,
+        RecordHelper $helper,
+        Thesaurus $thesaurus,
+        array $locales,
+        LoggerInterface $logger,
+        EventDispatcherInterface $eventDispatcher
+    )
     {
         $this->structure = $structure;
         $this->helper = $helper;
         $this->thesaurus = $thesaurus;
         $this->locales = $locales;
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -94,11 +110,10 @@ class RecordIndexer
      * index whole databox(es), don't test actual "jetons"
      * called by command "populate"
      *
-     * @param Indexer $indexer
      * @param BulkOperation $bulk
      * @param databox $databox
      */
-    public function populateIndex(Indexer $indexer, BulkOperation $bulk, databox $databox)
+    public function populateIndex(BulkOperation $bulk, databox $databox)
     {
         $submited_records = [];
 
@@ -118,7 +133,7 @@ class RecordIndexer
         });
 
         // Perform indexing
-        $this->indexFromFetcher($indexer, $bulk, $fetcher, $submited_records);
+        $this->indexFromFetcher($bulk, $fetcher, $submited_records);
 
         $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
     }
@@ -127,11 +142,10 @@ class RecordIndexer
      * Index the records flagged as "to_index" on databox
      * called by task "indexer"
      *
-     * @param Indexer $indexer
      * @param BulkOperation $bulk
      * @param databox $databox
      */
-    public function indexScheduled(Indexer $indexer, BulkOperation $bulk, databox $databox)
+    public function indexScheduled(BulkOperation $bulk, databox $databox)
     {
         $submited_records = [];
 
@@ -154,17 +168,16 @@ class RecordIndexer
         });
 
         // Perform indexing
-        $this->indexFromFetcher($indexer, $bulk, $fetcher, $submited_records);
+        $this->indexFromFetcher($bulk, $fetcher, $submited_records);
     }
 
     /**
      * Index a list of records
      *
-     * @param Indexer $indexer
      * @param BulkOperation $bulk
      * @param Iterator $records
      */
-    public function index(Indexer $indexer, BulkOperation $bulk, Iterator $records)
+    public function index(BulkOperation $bulk, Iterator $records)
     {
         foreach ($this->createFetchersForRecords($records) as $fetcher) {
             $submited_records = [];
@@ -182,7 +195,7 @@ class RecordIndexer
             });
 
             // Perform indexing
-            $this->indexFromFetcher($indexer, $bulk, $fetcher, $submited_records);
+            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
         }
     }
 
@@ -261,18 +274,22 @@ class RecordIndexer
         return array_values($databoxes);
     }
 
-    private function indexFromFetcher(Indexer $indexer, BulkOperation $bulk, Fetcher $fetcher, array &$submited_records)
+    private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher, array &$submited_records)
     {
         $databox = $fetcher->getDatabox();
         $first = true;
         /** @var record_adapter $record */
         while ($record = $fetcher->fetch()) {
-            if($first) {
+            if ($first) {
                 $sql = "SELECT prop FROM pref WHERE prop IN('thesaurus','thesaurus_index')"
                     . " ORDER BY updated_on DESC, IF(prop='thesaurus', 'a', 'z') DESC LIMIT 1";
-                if($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
-                    // the thesaurus was modified, enforce index
-                    $indexer->populateIndex(Indexer::THESAURUS, $databox);
+
+                if ($databox->get_connection()->fetchColumn($sql) == 'thesaurus') {
+                    // The thesaurus was modified, enforce index
+                    $this->eventDispatcher->dispatch(
+                        ThesaurusEvents::REINDEX_REQUIRED,
+                        new ReindexRequiredEvent($databox)
+                    );
                 }
                 $first = false;
             }
