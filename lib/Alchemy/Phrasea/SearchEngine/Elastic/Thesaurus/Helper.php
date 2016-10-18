@@ -67,6 +67,10 @@ class Helper
         return $parents;
     }
 
+    /**
+     * @param databox $databox
+     * @return DOMDocument
+     */
     public static function thesaurusFromDatabox(databox $databox)
     {
         return self::document($databox->get_dom_thesaurus());
@@ -89,6 +93,10 @@ class Helper
         return $document;
     }
 
+    /**
+     * @param $document
+     * @return DOMDocument
+     */
     private static function document($document)
     {
         if (!$document) {
