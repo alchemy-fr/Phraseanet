@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\Event\Subscriber\Thesaurus\ReindexRequiredEventSubscriber;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
@@ -111,7 +112,8 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
                 array_keys($app['locales.available']),
-                $logger
+                $logger,
+                $app['dispatcher']
             );
         });
 

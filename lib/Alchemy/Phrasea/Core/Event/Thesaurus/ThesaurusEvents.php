@@ -24,4 +24,5 @@ final class ThesaurusEvents
     const CONCEPT_DELETED = 'thesaurus.concept-deleted';
     const SYNONYM_ADDED = 'thesaurus.synonym-added';
     const CONCEPT_ADDED = 'thesaurus.concept-added';
+    const REINDEX_REQUIRED = 'thesaurus.reindex-required';
 }
