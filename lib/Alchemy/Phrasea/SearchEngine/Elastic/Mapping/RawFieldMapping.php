@@ -13,14 +13,22 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 
-class LocalizedFieldMapping extends FieldMapping
+class RawFieldMapping extends FieldMapping
 {
+
+    /**
+     * @param string $type
+     */
+    public function __construct($type)
+    {
+        parent::__construct('raw', $type);
+    }
 
     /**
      * @return array
      */
-    public function toArray()
+    protected function getProperties()
     {
-        return $this->buildArray([]);
+        return [ 'index' => 'not_analyzed' ];
     }
 }
