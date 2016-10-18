@@ -157,7 +157,7 @@ class Mapping
 
     public function addRawVersion()
     {
-        $field = &$this->currentField();
+        $field = & $this->currentField();
 
         $field['fields']['raw'] = [
             'type' => $field['type'],
@@ -173,6 +173,7 @@ class Mapping
     public function addAnalyzedVersion(array $locales)
     {
         $field = &$this->currentField();
+
         $this->addMultiField('light', 'general_light');
 
         return $this->addLocalizedSubfields($locales);
@@ -190,11 +191,14 @@ class Mapping
     public function addMultiField($name, $analyzer = null)
     {
         $field = &$this->currentField();
+
         if (isset($field['fields'][$name])) {
             throw new LogicException(sprintf('There is already a "%s" multi field.', $name));
         }
+
         $field['fields'][$name] = array();
         $field['fields'][$name]['type'] = $field['type'];
+
         if ($analyzer) {
             $field['fields'][$name]['analyzer'] = $analyzer;
         }
@@ -205,9 +209,11 @@ class Mapping
     public function format($format)
     {
         $field = &$this->currentField();
+
         if ($field['type'] !== self::TYPE_DATE) {
             throw new LogicException('Only date fields can have a format');
         }
+
         $field['format'] = $format;
 
         return $this;
@@ -216,9 +222,11 @@ class Mapping
     public function enableTermVectors($recursive = false)
     {
         $field = &$this->currentField();
+
         if ($field['type'] !== self::TYPE_STRING) {
             throw new LogicException('Only string fields can have term vectors');
         }
+
         $field['term_vector'] = 'with_positions_offsets';
 
         if ($recursive) {
