@@ -22,6 +22,7 @@ use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
 use Psr\Log\NullLogger;
+use record_adapter;
 use Symfony\Component\Stopwatch\Stopwatch;
 use SplObjectStorage;
 
@@ -41,7 +42,9 @@ class Indexer
     private $recordIndexer;
     private $termIndexer;
 
-    private $indexQueue;        // contains RecordInterface(s)
+    /** @var SplObjectStorage */
+    private $indexQueue;        // contains record_adapter(s)
+    /** @var SplObjectStorage */
     private $deleteQueue;
 
     public function __construct(Client $client, ElasticsearchOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
@@ -98,21 +101,15 @@ class Indexer
         return $this->client->indices()->exists($params);
     }
 
-    public function populateIndex($what, array $databoxes_id = [])
+    public function populateIndex($what, \databox $databox)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        if ($databoxes_id) {
-            // If databoxes are given, only use those
-            $databoxes = array_map(array($this->appbox, 'get_databox'), $databoxes_id);
-        } else {
-            $databoxes = $this->appbox->get_databoxes();
-        }
+        $this->apply(function (BulkOperation $bulk) use ($what, $databox) {
 
-        $this->apply(function(BulkOperation $bulk) use ($what, $databoxes) {
             if ($what & self::THESAURUS) {
-                $this->termIndexer->populateIndex($bulk, $databoxes);
+                $this->termIndexer->populateIndex($bulk, $databox);
 
                 // Record indexing depends on indexed terms so we need to make
                 // everything ready to search
@@ -121,7 +118,7 @@ class Indexer
             }
 
             if ($what & self::RECORDS) {
-                $this->recordIndexer->populateIndex($bulk, $databoxes);
+                $this->recordIndexer->populateIndex($this, $bulk, $databox);
 
                 // Final flush
                 $bulk->flush();
@@ -133,7 +130,7 @@ class Indexer
         });
 
         $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+        $this->logger->info(sprintf("Indexation finished in %0.02f sec (Mem. %0.02f Mo)", ($event->getDuration()/1000), $event->getMemory()/1048576));
     }
 
     public function migrateMappingForDatabox($databox)
@@ -160,24 +157,24 @@ class Indexer
         RecordQueuer::queueRecordsFromCollection($collection);
     }
 
-    public function indexRecord(RecordInterface $record)
+    public function indexRecord(record_adapter $record)
     {
         $this->indexQueue->attach($record);
     }
 
-    public function deleteRecord(RecordInterface $record)
+    public function deleteRecord(record_adapter $record)
     {
         $this->deleteQueue->attach($record);
     }
 
     /**
-     * @param \databox[] $databoxes    databoxes to index
+     * @param \databox $databox    databox to index
      * @throws \Exception
      */
-    public function indexScheduledRecords(array $databoxes)
+    public function indexScheduledRecords(\databox $databox)
     {
-        $this->apply(function(BulkOperation $bulk) use($databoxes) {
-            $this->recordIndexer->indexScheduled($bulk, $databoxes);
+        $this->apply(function(BulkOperation $bulk) use ($databox) {
+            $this->recordIndexer->indexScheduled($this, $bulk, $databox);
         });
     }
 
@@ -192,7 +189,7 @@ class Indexer
         }
 
         $this->apply(function(BulkOperation $bulk) {
-            $this->recordIndexer->index($bulk, $this->indexQueue);
+            $this->recordIndexer->index($this, $bulk, $this->indexQueue);
             $this->recordIndexer->delete($bulk, $this->deleteQueue);
             $bulk->flush();
         });

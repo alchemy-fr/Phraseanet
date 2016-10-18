@@ -11,6 +11,10 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\TaskManager\Editor\IndexerEditor;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Alchemy\Phrasea\Core\Version;
+use Silex\Application;
+use Psr\Log\LoggerInterface;
+
 
 class IndexerJob extends AbstractJob
 {
@@ -47,12 +51,16 @@ class IndexerJob extends AbstractJob
      */
     protected function doJob(JobData $data)
     {
+
         $app = $data->getApplication();
         /** @var Indexer $indexer */
         $indexer = $app['elasticsearch.indexer'];
-        $databoxes = array_filter($app->getDataboxes(), function (\databox $databox) use ($app) {
-            return $app->getApplicationBox()->is_databox_indexable($databox);
-        });
-        $indexer->indexScheduledRecords($databoxes);
+
+        foreach($app->getDataboxes() as $databox) {
+            if($app->getApplicationBox()->is_databox_indexable($databox)) {
+                $indexer->indexScheduledRecords($databox);
+            }
+        }
     }
 }
+
