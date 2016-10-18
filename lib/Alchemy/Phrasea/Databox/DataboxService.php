@@ -13,6 +13,10 @@ use Doctrine\DBAL\Connection;
  */
 class DataboxService
 {
+
+    const EMPTY_DB_NAME = 0;
+    const INVALID_DB_NAME = 1;
+
     /**
      * @var Application
      */
@@ -80,6 +84,8 @@ class DataboxService
         User $owner,
         DataboxConnectionSettings $connectionSettings = null
     ) {
+        $this->validateDatabaseName($databaseName);
+
         $dataTemplate = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
@@ -113,6 +119,8 @@ class DataboxService
      */
     public function mountDatabox($databaseName, User $owner, DataboxConnectionSettings $connectionSettings = null)
     {
+        $this->validateDatabaseName($databaseName);
+
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
@@ -139,6 +147,20 @@ class DataboxService
             $this->applicationBox->get_connection()->rollBack();
 
             throw new \RuntimeException($exception->getMessage(), 0, $exception);
+        }
+    }
+
+    private function validateDatabaseName($databaseName)
+    {
+        if (trim($databaseName) == '') {
+            throw new \InvalidArgumentException('Database name cannot be empty.', self::EMPTY_DB_NAME);
+        }
+
+        if (\p4string::hasAccent($databaseName)) {
+            throw new \InvalidArgumentException(
+                'Database name cannot contain special characters.',
+                self::INVALID_DB_NAME
+            );
         }
     }
 }

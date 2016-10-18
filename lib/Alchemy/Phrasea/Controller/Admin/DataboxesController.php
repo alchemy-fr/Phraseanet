@@ -110,26 +110,14 @@ class DataboxesController extends Controller
      */
     public function createDatabase(Request $request)
     {
-        if ('' === $dbName = $request->request->get('new_dbname', '')) {
-            return $this->app->redirectPath('admin_databases', ['error' => 'no-empty']);
-        }
-
-        if (\p4string::hasAccent($dbName)) {
-            return $this->app->redirectPath('admin_databases', ['error' => 'special-chars']);
-        }
-
+        $dbName = $request->request->get('new_dbname', '');
         /** @var DataboxService $databoxService */
         $databoxService = $this->app['databox.service'];
         $dataTemplate = $request->request->get('new_data_template');
 
-        $connectionSettings = $request->request->get('new_settings') == false ? null : new DataboxConnectionSettings(
-            $request->request->get('new_hostname'),
-            $request->request->get('new_port'),
-            $request->request->get('new_user'),
-            $request->request->get('new_password')
-        );
 
         try {
+            $connectionSettings = $this->buildSettingsFromRequest($request);
             $databox = $databoxService->createDatabox(
                 $dbName,
                 $dataTemplate,
@@ -143,11 +131,17 @@ class DataboxesController extends Controller
                 'reload-tree' => 1
             ]);
         }
+        catch (\InvalidArgumentException $exception) {
+            return $this->handleInvalidArgument($exception);
+        }
         catch (DBALException $e) {
             return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'database-failed']);
         }
         catch (\Exception $e) {
-            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'base-failed']);
+            return $this->app->redirectPath('admin_databases', [
+                'success' => 0,
+                'error' => 'base-failed'
+            ]);
         }
     }
 
@@ -159,25 +153,13 @@ class DataboxesController extends Controller
      */
     public function databaseMount(Request $request)
     {
-        if ('' === $dbName = trim($request->request->get('new_dbname', ''))) {
-            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'no-empty']);
-        }
-
-        if (\p4string::hasAccent($dbName)) {
-            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'special-chars']);
-        }
+        $dbName = trim($request->request->get('new_dbname', ''));
 
         /** @var DataboxService $databoxService */
         $databoxService = $this->app['databox.service'];
 
-        $connectionSettings = $request->request->get('new_settings') == false ? null : new DataboxConnectionSettings(
-            $request->request->get('new_hostname'),
-            $request->request->get('new_port'),
-            $request->request->get('new_user'),
-            $request->request->get('new_password')
-        );
-
         try {
+            $connectionSettings = $this->buildSettingsFromRequest($request);
             $databox = $databoxService->mountDatabox($dbName, $this->app->getAuthenticatedUser(), $connectionSettings);
 
             return $this->app->redirectPath('admin_database', [
@@ -185,11 +167,48 @@ class DataboxesController extends Controller
                 'success' => 1,
                 'reload-tree' => 1,
             ]);
-        } catch (\Exception $exception) {
+        }
+        catch (\InvalidArgumentException $exception) {
+            return $this->handleInvalidArgument($exception);
+        }
+        catch (\Exception $exception) {
             return $this->app->redirectPath('admin_databases', [
                 'success' => 0,
                 'error' => 'mount-failed'
             ]);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return DataboxConnectionSettings|null
+     */
+    protected function buildSettingsFromRequest(Request $request)
+    {
+        $connectionSettings = $request->request->get('new_settings') == false ? null : new DataboxConnectionSettings(
+            $request->request->get('new_hostname'),
+            $request->request->get('new_port'),
+            $request->request->get('new_user'),
+            $request->request->get('new_password')
+        );
+
+        return $connectionSettings;
+    }
+
+    /**
+     * @param $exception
+     * @return RedirectResponse
+     */
+    protected function handleInvalidArgument(\InvalidArgumentException $exception)
+    {
+        if ($exception->getCode() == DataboxService::EMPTY_DB_NAME) {
+            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'no-empty']);
+        }
+
+        if ($exception->getCode() == DataboxService::INVALID_DB_NAME) {
+            return $this->app->redirectPath('admin_databases', ['success' => 0, 'error' => 'special-chars']);
+        }
+
+        throw new \InvalidArgumentException($exception->getMessage(), $exception->getCode(), $exception);
     }
 }
