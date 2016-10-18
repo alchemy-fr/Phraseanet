@@ -14,10 +14,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DataboxFactory
 {
-    /** @var Application */
+    /**
+     * @var Application
+     */
     private $app;
 
-    /** @var DataboxRepository */
+    /**
+     * @var DataboxRepository
+     */
     private $databoxRepository;
 
     /**

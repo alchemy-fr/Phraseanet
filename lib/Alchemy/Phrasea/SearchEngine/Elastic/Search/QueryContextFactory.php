@@ -36,9 +36,11 @@ class QueryContextFactory
     private function getSearchedFields(SearchEngineOptions $options)
     {
         $fields = [];
+
         foreach ($options->getFields() as $field) {
             $fields[] = $field->get_name();
         }
+
         return $fields;
     }
 

@@ -96,6 +96,7 @@ class Controller
     public function getAclForUser(User $user = null)
     {
         $aclProvider = $this->getAclProvider();
+
         if (null === $user) {
             $user = $this->getAuthenticatedUser();
         }

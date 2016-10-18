@@ -43,6 +43,7 @@ mariadb:
     root_password: toor
     database: ab_master
     databox_db: db_master
+    alt_db: db_alt
     user: phraseanet
     password: phraseanet
     dump: ''

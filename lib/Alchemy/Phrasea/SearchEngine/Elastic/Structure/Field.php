@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
@@ -14,16 +15,35 @@ use databox_field;
  */
 class Field implements Typed
 {
-    private $name;
-    private $type;
-    private $is_searchable;
-    private $is_private;
-    private $facet; // facet values limit or NULL (zero means no limit)
-    private $thesaurus_roots;
-    private $used_by_collections;
 
     const FACET_DISABLED = null;
     const FACET_NO_LIMIT = 0;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var bool
+     */
+    private $is_searchable;
+
+    /**
+     * @var bool
+     */
+    private $is_private;
+
+    private $facet; // facet values limit or NULL (zero means no limit)
+
+    private $thesaurus_roots;
+
+    private $used_by_collections;
 
     public static function createFromLegacyField(databox_field $field)
     {
@@ -32,7 +52,7 @@ class Field implements Typed
 
         // Thesaurus concept inference
         $xpath = $field->get_tbranch();
-        if ($type === Mapping::TYPE_STRING && !empty($xpath)) {
+        if ($type === FieldMapping::TYPE_STRING && !empty($xpath)) {
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         } else {
             $roots = null;
@@ -58,14 +78,15 @@ class Field implements Typed
     private static function getTypeFromLegacy(databox_field $field)
     {
         $type = $field->get_type();
+
         switch ($type) {
             case databox_field::TYPE_DATE:
-                return Mapping::TYPE_DATE;
+                return FieldMapping::TYPE_DATE;
             case databox_field::TYPE_NUMBER:
-                return Mapping::TYPE_DOUBLE;
+                return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
             case databox_field::TYPE_TEXT:
-                return Mapping::TYPE_STRING;
+                return FieldMapping::TYPE_STRING;
         }
 
         throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
@@ -83,12 +104,15 @@ class Field implements Typed
 
         Assertion::boolean($this->is_searchable);
         Assertion::boolean($this->is_private);
+
         if ($this->facet !== self::FACET_DISABLED) {
             Assertion::integer($this->facet);
         }
+
         if ($this->thesaurus_roots !== null) {
             Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
         }
+
         Assertion::allScalar($this->used_by_collections);
     }
 
@@ -114,7 +138,7 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
+            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
         );
     }
 
@@ -181,7 +205,7 @@ class Field implements Typed
         // type so we reject only those with different types.
 
         if (($type = $other->getType()) !== $this->type) {
-            throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $type, $this->type));
+            //throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $type, $this->type));
         }
 
         if ($other->isPrivate() !== $this->is_private) {
@@ -193,10 +217,11 @@ class Field implements Typed
         }
 
         if ($other->getFacetValuesLimit() !== $this->facet) {
-            throw new MergeException(sprintf("Field %s can't be merged, incompatible facet eligibility", $name));
+            //throw new MergeException(sprintf("Field %s can't be merged, incompatible facet eligibility", $name));
         }
 
         $thesaurus_roots = null;
+
         if ($this->thesaurus_roots !== null || $other->thesaurus_roots !== null) {
             $thesaurus_roots = array_merge(
                 (array) $this->thesaurus_roots,
