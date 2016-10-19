@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
-use Alchemy\Phrasea\Core\Event\Subscriber\Thesaurus\ReindexRequiredEventSubscriber;
 use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Index;
@@ -131,7 +130,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
-            // TODO Use upcomming monolog factory
+            // TODO Use upcoming monolog factory
             $logger = new Logger('indexer');
             $logger->pushHandler(new ErrorLogHandler());
 
@@ -207,7 +206,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
             return $options;
         });
-
 
         /* Querying helper services */
         $app['thesaurus'] = $app->share(function ($app) {

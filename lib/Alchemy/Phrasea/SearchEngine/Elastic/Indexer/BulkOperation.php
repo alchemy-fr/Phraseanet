@@ -183,7 +183,7 @@ class BulkOperation
         $header['_id']    = $params['id'];
         $header['_type']  = $params['type'];
 
-        if ($index = $params['index']) {
+        if (isset($params['index']) && $index = $params['index']) {
             $header['_index'] = $index;
         }
 
