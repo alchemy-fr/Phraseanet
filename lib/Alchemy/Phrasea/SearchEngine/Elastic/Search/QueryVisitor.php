@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Hoa\Compiler\Llk\TreeNode;
@@ -210,7 +211,7 @@ class QueryVisitor implements Visit
         if ($key instanceof AST\KeyValue\TimestampKey) {
             return true;
         } elseif ($key instanceof AST\KeyValue\FieldKey) {
-            return $this->structure->typeOf($key->getName()) === Mapping::TYPE_DATE;
+            return $this->structure->typeOf($key->getName()) === FieldMapping::TYPE_DATE;
         }
         return false;
     }

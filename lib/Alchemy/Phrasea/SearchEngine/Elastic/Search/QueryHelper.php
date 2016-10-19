@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
@@ -142,8 +143,8 @@ class QueryHelper
         }
 
         return [
-            'from' => $from->format(Mapping::DATE_FORMAT_CAPTION_PHP),
-            'to'   => $to->format(Mapping::DATE_FORMAT_CAPTION_PHP)
+            'from' => $from->format(FieldMapping::DATE_FORMAT_CAPTION_PHP),
+            'to'   => $to->format(FieldMapping::DATE_FORMAT_CAPTION_PHP)
         ];
     }
 }

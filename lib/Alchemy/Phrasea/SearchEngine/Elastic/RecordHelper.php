@@ -95,9 +95,9 @@ class RecordHelper
      */
     public static function validateDate($date)
     {
-        $d = DateTime::createFromFormat(Mapping::DATE_FORMAT_CAPTION_PHP, $date);
+        $d = DateTime::createFromFormat(FieldMapping::DATE_FORMAT_CAPTION_PHP, $date);
 
-        return $d && $d->format(Mapping::DATE_FORMAT_CAPTION_PHP) == $date;
+        return $d && $d->format(FieldMapping::DATE_FORMAT_CAPTION_PHP) == $date;
     }
 
     /**
@@ -111,7 +111,7 @@ class RecordHelper
         try {
             $date = new \DateTime($value);
 
-            return $date->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+            return $date->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
         } catch (\Exception $e) {
             return null;
         }

@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Assert\Assertion;
@@ -23,22 +24,22 @@ class ValueChecker
         $filtered = [];
         foreach ($list as $item) {
             switch ($item->getType()) {
-                case Mapping::TYPE_FLOAT:
-                case Mapping::TYPE_DOUBLE:
-                case Mapping::TYPE_INTEGER:
-                case Mapping::TYPE_LONG:
-                case Mapping::TYPE_SHORT:
-                case Mapping::TYPE_BYTE:
+                case FieldMapping::TYPE_FLOAT:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_INTEGER:
+                case FieldMapping::TYPE_LONG:
+                case FieldMapping::TYPE_SHORT:
+                case FieldMapping::TYPE_BYTE:
                     if ($is_numeric) {
                         $filtered[] = $item;
                     }
                     break;
-                case Mapping::TYPE_DATE:
+                case FieldMapping::TYPE_DATE:
                     if ($is_valid_date) {
                         $filtered[] = $item;
                     }
                     break;
-                case Mapping::TYPE_STRING:
+                case FieldMapping::TYPE_STRING:
                 default:
                     $filtered[] = $item;
             }

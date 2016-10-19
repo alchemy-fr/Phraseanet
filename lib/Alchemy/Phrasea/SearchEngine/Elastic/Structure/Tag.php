@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Assert\Assertion;
 
@@ -41,7 +42,7 @@ class Tag implements Typed
         return sprintf(
             'metadata_tags.%s%s',
             $this->name,
-            $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
+            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
         );
     }
 }

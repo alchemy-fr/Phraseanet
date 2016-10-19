@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Context;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\TermNode;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
@@ -27,7 +28,7 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
             ->getUnrestrictedFields()
@@ -64,7 +65,7 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithZeroConcept()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
             ->getUnrestrictedFields()
@@ -81,8 +82,8 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
-        $private_field = new Field('bar', Mapping::TYPE_STRING, [
+        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
             'used_by_collections' => [1, 2, 3]
         ]);

@@ -30,7 +30,7 @@ class TimestampKey implements Key, Typed
 
     public function getType()
     {
-        return Mapping::TYPE_DATE;
+        return FieldMapping::TYPE_DATE;
     }
 
     public function getIndexField(QueryContext $context, $raw = false)
