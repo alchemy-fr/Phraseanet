@@ -46,7 +46,7 @@ final class GlobalStructure implements Structure
 
     /**
      * @param \databox[] $databoxes
-     * @return self
+     * @return GlobalStructure
      */
     public static function createFromDataboxes(array $databoxes)
     {
@@ -61,6 +61,26 @@ final class GlobalStructure implements Structure
             foreach ($databox->getStatusStructure() as $status) {
                 $flags[] = Flag::createFromLegacyStatus($status);
             }
+        }
+
+        return new self($fields, $flags, MetadataHelper::createTags());
+    }
+
+    /**
+     * @param \databox $databox
+     * @return GlobalStructure
+     */
+    public static function createFromDatabox(\databox $databox)
+    {
+        $fields = [];
+        $flags = [];
+
+        foreach ($databox->get_meta_structure() as $fieldStructure) {
+            $fields[] = Field::createFromLegacyField($fieldStructure);
+        }
+
+        foreach ($databox->getStatusStructure() as $status) {
+            $flags[] = Flag::createFromLegacyStatus($status);
         }
 
         return new self($fields, $flags, MetadataHelper::createTags());
