@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\LimitedStructure;
@@ -16,7 +17,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetUnrestrictedFields()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING);
+        $field = new Field('foo', FieldMapping::TYPE_STRING);
         $wrapped = $this->prophesize(Structure::class);
         $wrapped
             ->getUnrestrictedFields()
@@ -38,13 +39,13 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $wrapped->get('foo')
             ->shouldBeCalled()
             ->willReturn(
-                new Field('foo', Mapping::TYPE_STRING, [
+                new Field('foo', FieldMapping::TYPE_STRING, [
                     'used_by_collections' => [1, 2, 3]
                 ])
             )
         ;
         $this->assertEquals(
-            new Field('foo', Mapping::TYPE_STRING, [
+            new Field('foo', FieldMapping::TYPE_STRING, [
                 'used_by_collections' => [2]
             ]),
             $structure->get('foo')
@@ -65,21 +66,21 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
         $wrapped->getAllFields()->willReturn([
-            'foo' => new Field('foo', Mapping::TYPE_STRING, [
+            'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
                 'private' => false,
                 'used_by_collections' => [1, 2, 3]
             ]),
-            'bar' => new Field('bar', Mapping::TYPE_STRING, [
+            'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
                 'private' => true,
                 'used_by_collections' => [1, 2, 3]
             ])
         ]);
         $this->assertEquals([
-            'foo' => new Field('foo', Mapping::TYPE_STRING, [
+            'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
                 'private' => false,
                 'used_by_collections' => [1, 2, 3]
             ]),
-            'bar' => new Field('bar', Mapping::TYPE_STRING, [
+            'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
                 'private' => true,
                 'used_by_collections' => [1, 3]
             ])

@@ -13,8 +13,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
@@ -334,7 +332,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $highlighted_fields = [];
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
-                case Mapping::TYPE_STRING:
+                case FieldMapping::TYPE_STRING:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field] = [
@@ -343,14 +341,14 @@ class ElasticSearchEngine implements SearchEngineInterface
                         'type' => 'fvh'
                     ];
                     break;
-                case Mapping::TYPE_FLOAT:
-                case Mapping::TYPE_DOUBLE:
-                case Mapping::TYPE_INTEGER:
-                case Mapping::TYPE_LONG:
-                case Mapping::TYPE_SHORT:
-                case Mapping::TYPE_BYTE:
+                case FieldMapping::TYPE_FLOAT:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_INTEGER:
+                case FieldMapping::TYPE_LONG:
+                case FieldMapping::TYPE_SHORT:
+                case FieldMapping::TYPE_BYTE:
                     continue;
-                case Mapping::TYPE_DATE:
+                case FieldMapping::TYPE_DATE:
                 default:
                     continue;
             }
@@ -490,10 +488,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
             }
 
             foreach ($options->getDateFields() as $dateField) {

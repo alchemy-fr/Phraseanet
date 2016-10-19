@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
@@ -101,7 +102,7 @@ class QueryContext
     {
         $index_field = $field->getIndexField();
 
-        if ($field->getType() === Mapping::TYPE_STRING) {
+        if ($field->getType() === FieldMapping::TYPE_STRING) {
             return $this->localizeFieldName($index_field);
         } else {
             return [$index_field];

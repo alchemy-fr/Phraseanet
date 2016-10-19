@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
@@ -120,20 +121,20 @@ SQL;
     private function sanitizeValue($value, $type)
     {
         switch ($type) {
-            case Mapping::TYPE_DATE:
+            case FieldMapping::TYPE_DATE:
                 return $this->helper->sanitizeDate($value);
 
-            case Mapping::TYPE_FLOAT:
-            case Mapping::TYPE_DOUBLE:
+            case FieldMapping::TYPE_FLOAT:
+            case FieldMapping::TYPE_DOUBLE:
                 return (float) $value;
 
-            case Mapping::TYPE_INTEGER:
-            case Mapping::TYPE_LONG:
-            case Mapping::TYPE_SHORT:
-            case Mapping::TYPE_BYTE:
+            case FieldMapping::TYPE_INTEGER:
+            case FieldMapping::TYPE_LONG:
+            case FieldMapping::TYPE_SHORT:
+            case FieldMapping::TYPE_BYTE:
                 return (int) $value;
 
-            case Mapping::TYPE_BOOLEAN:
+            case FieldMapping::TYPE_BOOLEAN:
                 return (bool) $value;
 
             default:

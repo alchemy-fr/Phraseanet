@@ -21,9 +21,14 @@ use igorw;
 
 class RecordHelper
 {
+    /**
+     * @var appbox
+     */
     private $appbox;
 
-    // Computation caches
+    /**
+     * @var int[][] Collection base IDs mapping by databox ID and collection ID
+     */
     private $collectionMap;
 
     public function __construct(appbox $appbox)
@@ -36,33 +41,46 @@ class RecordHelper
         return sprintf('%d_%d', $databoxId, $recordId);
     }
 
+    /**
+     * @param int $databoxId
+     * @param int $collectionId
+     * @return int|null
+     */
     public function getUniqueCollectionId($databoxId, $collectionId)
     {
         $col = $this->collectionMap();
 
         if (isset($col[$databoxId])) {
             if (isset($col[$databoxId][$collectionId])) {
-                return (int) $col[$databoxId][$collectionId];
+                return $col[$databoxId][$collectionId];
             }
         }
 
         return null;
     }
 
+    /**
+     * @return int[][]
+     * @throws \Doctrine\DBAL\DBALException
+     */
     private function collectionMap()
     {
         if (!$this->collectionMap) {
-            $connection = $this->appbox->get_connection();
+            $map = array();
             $sql = 'SELECT
                         sbas_id as databox_id,
                         server_coll_id as collection_id,
                         base_id
                     FROM bas';
-            $statement = $connection->query($sql);
 
-            $map = array();
+            $statement = $this->appbox->get_connection()->query($sql);
+
             while ($mapping = $statement->fetch()) {
-                $map = igorw\assoc_in($map, [$mapping['databox_id'], $mapping['collection_id']], (int) $mapping['base_id']);
+                if (! isset($map[$mapping['databox_id']])) {
+                    $map[$mapping['databox_id']] = [];
+                }
+
+                $map[$mapping['databox_id']][$mapping['collection_id']] = $mapping['base_id'];
             }
 
             $this->collectionMap = $map;
@@ -71,19 +89,29 @@ class RecordHelper
         return $this->collectionMap;
     }
 
+    /**
+     * @param string $date
+     * @return bool
+     */
     public static function validateDate($date)
     {
-        $d = DateTime::createFromFormat(Mapping::DATE_FORMAT_CAPTION_PHP, $date);
-        return $d && $d->format(Mapping::DATE_FORMAT_CAPTION_PHP) == $date;
+        $d = DateTime::createFromFormat(FieldMapping::DATE_FORMAT_CAPTION_PHP, $date);
+
+        return $d && $d->format(FieldMapping::DATE_FORMAT_CAPTION_PHP) == $date;
     }
 
+    /**
+     * @param string $value
+     * @return null|string
+     */
     public static function sanitizeDate($value)
     {
         // introduced in https://github.com/alchemy-fr/Phraseanet/commit/775ce804e0257d3a06e4e068bd17330a79eb8370#diff-bee690ed259e0cf73a31dee5295d2edcR286
         // not sure if it's really needed
         try {
             $date = new \DateTime($value);
-            return $date->format(Mapping::DATE_FORMAT_CAPTION_PHP);
+
+            return $date->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
         } catch (\Exception $e) {
             return null;
         }

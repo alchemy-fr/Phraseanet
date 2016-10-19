@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine\Search;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
@@ -14,7 +15,7 @@ class AggregationHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function testAggregationWrappingOnPrivateField()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
             'used_by_collections' => [1, 2, 3]
         ]);
@@ -40,7 +41,7 @@ class AggregationHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testAggregationWrappingOnUnrestrictedField()
     {
-        $field = new Field('foo', Mapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
         $agg = [
             'terms' => 'bar'
         ];

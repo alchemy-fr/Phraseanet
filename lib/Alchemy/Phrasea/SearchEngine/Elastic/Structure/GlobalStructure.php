@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Assert\Assertion;
 use DomainException;
@@ -45,7 +46,7 @@ final class GlobalStructure implements Structure
 
     /**
      * @param \databox[] $databoxes
-     * @return self
+     * @return GlobalStructure
      */
     public static function createFromDataboxes(array $databoxes)
     {
@@ -66,6 +67,26 @@ final class GlobalStructure implements Structure
     }
 
     /**
+     * @param \databox $databox
+     * @return GlobalStructure
+     */
+    public static function createFromDatabox(\databox $databox)
+    {
+        $fields = [];
+        $flags = [];
+
+        foreach ($databox->get_meta_structure() as $fieldStructure) {
+            $fields[] = Field::createFromLegacyField($fieldStructure);
+        }
+
+        foreach ($databox->getStatusStructure() as $status) {
+            $flags[] = Flag::createFromLegacyStatus($status);
+        }
+
+        return new self($fields, $flags, MetadataHelper::createTags());
+    }
+
+    /**
      * GlobalStructure constructor.
      * @param Field[] $fields
      * @param Flag[] $flags
@@ -76,12 +97,15 @@ final class GlobalStructure implements Structure
         Assertion::allIsInstanceOf($fields, Field::class);
         Assertion::allIsInstanceOf($flags, Flag::class);
         Assertion::allIsInstanceOf($metadata_tags, Tag::class);
+
         foreach ($fields as $field) {
             $this->add($field);
         }
+
         foreach ($flags as $flag) {
             $this->flags[$flag->getName()] = $flag;
         }
+
         foreach ($metadata_tags as $tag) {
             $this->metadata_tags[$tag->getName()] = $tag;
         }
@@ -97,7 +121,7 @@ final class GlobalStructure implements Structure
 
         $this->fields[$name] = $field;
 
-        if ($field->getType() === Mapping::TYPE_DATE) {
+        if ($field->getType() === FieldMapping::TYPE_DATE) {
             $this->date_fields[$name] = $field;
         }
 

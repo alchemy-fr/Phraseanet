@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
@@ -51,7 +52,7 @@ class Field implements Typed
 
         // Thesaurus concept inference
         $xpath = $field->get_tbranch();
-        if ($type === Mapping::TYPE_STRING && !empty($xpath)) {
+        if ($type === FieldMapping::TYPE_STRING && !empty($xpath)) {
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         } else {
             $roots = null;
@@ -77,14 +78,15 @@ class Field implements Typed
     private static function getTypeFromLegacy(databox_field $field)
     {
         $type = $field->get_type();
+
         switch ($type) {
             case databox_field::TYPE_DATE:
-                return Mapping::TYPE_DATE;
+                return FieldMapping::TYPE_DATE;
             case databox_field::TYPE_NUMBER:
-                return Mapping::TYPE_DOUBLE;
+                return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
             case databox_field::TYPE_TEXT:
-                return Mapping::TYPE_STRING;
+                return FieldMapping::TYPE_STRING;
         }
 
         throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
@@ -136,7 +138,7 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw && $this->type === Mapping::TYPE_STRING ? '.raw' : ''
+            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
         );
     }
 
