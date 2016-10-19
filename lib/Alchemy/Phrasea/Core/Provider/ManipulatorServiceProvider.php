@@ -108,7 +108,11 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
         });
 
         $app['manipulator.webhook-event'] = $app->share(function (Application $app) {
-            return new WebhookEventManipulator($app['orm.em'], $app['repo.webhook-event']);
+            return new WebhookEventManipulator(
+                $app['orm.em'],
+                $app['repo.webhook-event'],
+                $app['webhook.publisher']
+            );
         });
 
         $app['manipulator.webhook-delivery'] = $app->share(function (Application $app) {

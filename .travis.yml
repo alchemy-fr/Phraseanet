@@ -31,6 +31,7 @@ services:
   - mysql
   - memcached
   - redis
+  - rabbitmq
 
 before_install:
   - nvm install stable
@@ -46,6 +47,8 @@ before_install:
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - yes | pecl install imagick-beta
+  - sudo apt-get install librabbitmq-dev
+  - pecl install amqp-1.4.0
 install:
   - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then travis_retry composer install --no-progress --no-interaction --optimize-autoloader; fi;
   - if [[ $TRAVIS_PHP_VERSION = 7.* ]];then travis_retry composer update --no-progress --no-interaction --optimize-autoloader; fi;

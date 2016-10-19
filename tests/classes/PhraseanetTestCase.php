@@ -356,10 +356,13 @@ abstract class PhraseanetTestCase extends WebTestCase
         } else {
             $app = new Application($environment);
         }
+
         $this->addAppCacheFlush($app);
 
         $this->loadDb($app);
         $this->addMocks($app);
+
+        $app->boot();
 
         return $app;
     }
