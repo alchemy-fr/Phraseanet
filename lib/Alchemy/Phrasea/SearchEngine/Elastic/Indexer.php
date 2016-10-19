@@ -37,11 +37,6 @@ class Indexer
     private $client;
 
     /**
-     * @var appbox
-     */
-    private $appbox;
-
-    /**
      * @var LoggerInterface|null
      */
     private $logger;
@@ -76,12 +71,10 @@ class Indexer
         Index $index,
         TermIndexer $termIndexer,
         RecordIndexer $recordIndexer,
-        appbox $appbox,
         LoggerInterface $logger = null
     )
     {
         $this->client = $client;
-        $this->appbox = $appbox;
         $this->index = $index;
         $this->recordIndexer = $recordIndexer;
         $this->termIndexer = $termIndexer;
@@ -121,15 +114,16 @@ class Indexer
 
     public function deleteIndex()
     {
-        $params = array('index' => $this->index->getName());
-        $this->client->indices()->delete($params);
+        $this->client->indices()->delete([
+            'index' => $this->index->getName()
+        ]);
     }
 
     public function indexExists()
     {
-        $params = array('index' => $this->index->getName());
-
-        return $this->client->indices()->exists($params);
+        return $this->client->indices()->exists([
+            'index' => $this->index->getName()
+        ]);
     }
 
     public function populateIndex($what, \databox $databox)

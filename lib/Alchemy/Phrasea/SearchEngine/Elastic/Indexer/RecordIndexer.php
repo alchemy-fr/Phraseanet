@@ -184,7 +184,7 @@ class RecordIndexer
     public function index(BulkOperation $bulk, Iterator $records)
     {
         foreach ($this->createFetchersForRecords($records) as $fetcher) {
-            $submited_records = [];
+            $submitted_records = [];
             $databox = $fetcher->getDatabox();
 
             // post fetch : flag records as "indexing"
@@ -194,12 +194,12 @@ class RecordIndexer
             });
 
             // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submited_records) {
-                $this->onBulkFlush($databox, $operation_identifiers, $submited_records);
+            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
+                $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
             });
 
             // Perform indexing
-            $this->indexFromFetcher($bulk, $fetcher, $submited_records);
+            $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
         }
     }
 
@@ -261,6 +261,7 @@ class RecordIndexer
     {
         $databox = $fetcher->getDatabox();
         $first = true;
+
         /** @var record_adapter $record */
         while ($record = $fetcher->fetch()) {
             if ($first) {
@@ -274,12 +275,13 @@ class RecordIndexer
                         new ReindexRequiredEvent($databox)
                     );
                 }
+
                 $first = false;
             }
 
             $op_identifier = $this->getUniqueOperationId($record['id']);
 
-            $this->logger->debug(sprintf("indexing record %s of databox %s", $record['record_id'], $databox->get_sbas_id()));
+            $this->logger->debug(sprintf("Indexing record %s of databox %s", $record['record_id'], $databox->get_sbas_id()));
 
             $params = array();
             $params['id'] = $record['id'];
