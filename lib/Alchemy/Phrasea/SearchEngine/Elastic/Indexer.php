@@ -93,8 +93,8 @@ class Indexer
         $params['body']['settings']['analysis'] = $this->index->getAnalysis();
 
         if ($withMapping) {
-            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping();
-            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping();
+            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
+            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
         }
 
         $this->client->indices()->create($params);
@@ -105,8 +105,8 @@ class Indexer
         $params = array();
         $params['index'] = $this->index->getName();
         $params['type'] = RecordIndexer::TYPE_NAME;
-        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping();
-        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping();
+        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
+        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
 
         // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);
