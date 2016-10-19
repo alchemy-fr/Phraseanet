@@ -43,6 +43,8 @@ class IndexCreateCommand extends Command
         }
 
         if ($drop && $indexExists) {
+            $output->writeln('<info>Dropping existing search index</info>');
+
             $indexer->deleteIndex();
         }
 
