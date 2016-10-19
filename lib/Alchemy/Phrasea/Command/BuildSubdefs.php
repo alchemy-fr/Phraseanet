@@ -93,21 +93,48 @@ class BuildSubdefs extends Command
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
         $this->addOption('mode',               null, InputOption::VALUE_REQUIRED,                             'preset working mode : ' . implode('|', array_keys($this->presets)));
         $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to (re)build ex. "image,video", dafault=ALL');
-        $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
         $this->addOption('min_record',         null, InputOption::VALUE_OPTIONAL,                             'Min record id');
         $this->addOption('max_record',         null, InputOption::VALUE_OPTIONAL,                             'Max record id');
+        $this->addOption('partition',          null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
+        $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Build records from the last to the oldest');
+        $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Name(s) of sub-definition(s) to (re)build, ex. "thumbnail,preview", default=ALL');
         $this->addOption('all',                null, InputOption::VALUE_NONE,                                 'Enforce listing of all records');
         $this->addOption('scheduled',          null, InputOption::VALUE_NONE,                                 'Only records flagged with \"jeton\" subdef');
         $this->addOption('with_substituted',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records as well');
         $this->addOption('substituted_only',   null, InputOption::VALUE_NONE,                                 'Regenerate subdefs for substituted records only');
         $this->addOption('missing_only',       null, InputOption::VALUE_NONE,                                 'Regenerate only missing subdefs');
         $this->addOption('prune',              null, InputOption::VALUE_NONE,                                 'Delete subdefs not in structure anymore');
-        $this->addOption('reverse',            null, InputOption::VALUE_NONE,                                 'Build records from the last to the oldest');
-        $this->addOption('partition',          null, InputOption::VALUE_REQUIRED,                             'n/N : work only on records belonging to partition \'n\'');
         $this->addOption('reset_subdef_flag',  null, InputOption::VALUE_NONE,                                 'Reset "make-subdef" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('set_writemeta_flag', null, InputOption::VALUE_NONE,                                 'Set "write-metadata" flag (should only be used when working on all subdefs, that is NO --name filter)');
         $this->addOption('dry',                null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
         $this->addOption('show_sql',           null, InputOption::VALUE_NONE,                                 'show sql pre-selecting records');
+
+        $this->setHelp(""
+            . "Record filters :\n"
+            . " --record_type=image,video : Select records of those types ('image','video','audio','document','flash')\n"
+            . " --min_record=100          : Select records with record_id >= 100\n"
+            . " --max_record=500          : Select records with record_id <= 500\n"
+            . " --partition=2/5           : Split databox records in 5 buckets, select records in bucket #2\n"
+            . " --scheduled               : Select records flagged as \"make subdef\"\n"
+            . " --missing_only            : Select only records with a missing and/or unknown subdef name\n"
+            . " --all                     : Select all records\n"
+            . "Subdef filters :\n"
+            . " --name=thumbnail,preview  : (re)build only thumbnail and preview\n"
+            . " --with_substituted        : (re)build substituted subdefs also (normally ignored)\n"
+            . " --substituted_only        : rebuild substituted subdefs from document (= remove substitution)\n"
+            . "Actions :\n"
+            . " --prune                   : remove unknown subdefs\n"
+            . " --reset_subdef_flag       : reset the \"make subdef\" scheduling flag (= mark record as done)\n"
+            . " --set_writemeta_flag      : raise the \"write meta\" flag (= mark subdefs as missing metadata)\n"
+            . "Preset modes :\n"
+            . " --mode=scheduled : Create subdefs for records flagged \"make subdef\", same as \"subview creation\" task\n"
+            . "                    (= --scheduled --reset_subdef_flag --set_writemeta_flag)\n"
+            . " --mode=repair    : Create only missing subdefs, prune obsolete subdefs\n"
+            . "                    (= --missing_only --prune --reset_subdef_flag --set_writemeta_flag)\n"
+            . " --mode=all       : Re-creates all subdefs\n"
+            . "                    (= --all --reset_subdef_flag --set_writemeta_flag\n"
+        );
+
     }
 
     /**
@@ -200,10 +227,6 @@ class BuildSubdefs extends Command
             $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
             $argsOK = false;
         }
-        if ($this->all && $this->scheduled) {
-            $output->writeln("<error>--all and --scheduled are mutually exclusive<error>");
-            $argsOK = false;
-        }
         if($this->mode) {
             if($this->substituted_only || $this->with_substituted || $this->missing_only || $this->prune || $this->all || $this->reset_subdef_flag || $this->set_writemeta_flag) {
                 $output->writeln("<error>--mode and (--substituted_only, --with_substituted, --missing_only, --prune, --all, --reset_subdef_flag, --set_writemeta_flag) are mutually exclusive<error>");
@@ -222,6 +245,12 @@ class BuildSubdefs extends Command
         }
         if($this->prune && !empty($names)) {
             $output->writeln("<error>--prune and --name are mutually exclusive<error>");
+            $argsOK = false;
+        }
+
+        $n = ($this->scheduled?1:0) + ($this->missing_only?1:0) + ($this->all?1:0);
+        if($n != 1) {
+            $output->writeln("<error>set one an only one option --scheduled, --missing_only, --all<error>");
             $argsOK = false;
         }
 
