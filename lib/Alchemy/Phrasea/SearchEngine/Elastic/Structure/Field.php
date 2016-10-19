@@ -14,16 +14,35 @@ use databox_field;
  */
 class Field implements Typed
 {
-    private $name;
-    private $type;
-    private $is_searchable;
-    private $is_private;
-    private $facet; // facet values limit or NULL (zero means no limit)
-    private $thesaurus_roots;
-    private $used_by_collections;
 
     const FACET_DISABLED = null;
     const FACET_NO_LIMIT = 0;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var bool
+     */
+    private $is_searchable;
+
+    /**
+     * @var bool
+     */
+    private $is_private;
+
+    private $facet; // facet values limit or NULL (zero means no limit)
+
+    private $thesaurus_roots;
+
+    private $used_by_collections;
 
     public static function createFromLegacyField(databox_field $field)
     {
@@ -83,12 +102,15 @@ class Field implements Typed
 
         Assertion::boolean($this->is_searchable);
         Assertion::boolean($this->is_private);
+
         if ($this->facet !== self::FACET_DISABLED) {
             Assertion::integer($this->facet);
         }
+
         if ($this->thesaurus_roots !== null) {
             Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
         }
+
         Assertion::allScalar($this->used_by_collections);
     }
 
@@ -197,6 +219,7 @@ class Field implements Typed
         }
 
         $thesaurus_roots = null;
+
         if ($this->thesaurus_roots !== null || $other->thesaurus_roots !== null) {
             $thesaurus_roots = array_merge(
                 (array) $this->thesaurus_roots,

@@ -48,6 +48,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
+use Alchemy\Phrasea\Core\Provider\DataboxServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
@@ -241,6 +242,7 @@ class Application extends SilexApplication
 
         $this->setupEventDispatcher();
 
+        $this->register(new DataboxServiceProvider());
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
 
