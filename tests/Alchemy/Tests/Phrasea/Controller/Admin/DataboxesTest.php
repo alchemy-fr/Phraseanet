@@ -104,7 +104,7 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databoxes/?error=no-empty', $response->headers->get('location'));
+        $this->assertEquals('/admin/databoxes/?success=0&error=no-empty', $response->headers->get('location'));
     }
 
     /**
@@ -120,7 +120,7 @@ class DataboxesTest extends \PhraseanetAuthenticatedWebTestCase
 
         $response = self::$DI['client']->getResponse();
         $this->assertTrue($response->isRedirect());
-        $this->assertEquals('/admin/databoxes/?error=special-chars', $response->headers->get('location'));
+        $this->assertEquals('/admin/databoxes/?success=0&error=special-chars', $response->headers->get('location'));
     }
 
     /**
