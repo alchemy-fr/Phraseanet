@@ -29,18 +29,32 @@ class TermIndexer
      */
     private $appbox;
 
+    /**
+     * @var Navigator
+     */
     private $navigator;
-    private $locales;
+
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
-    public function __construct(\appbox $appbox, array $locales, LoggerInterface $logger)
+    /**
+     * @param \appbox $appbox
+     * @param LoggerInterface $logger
+     */
+    public function __construct(\appbox $appbox, LoggerInterface $logger)
     {
         $this->appbox = $appbox;
         $this->navigator = new Navigator();
-        $this->locales = $locales;
         $this->logger = $logger;
     }
 
+    /**
+     * @param BulkOperation $bulk
+     * @param databox $databox
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function populateIndex(BulkOperation $bulk, databox $databox)
     {
         $databoxId = $databox->get_sbas_id();
@@ -79,31 +93,5 @@ class TermIndexer
             . " ON DUPLICATE KEY UPDATE updated_on=?",
             [$indexDate, $indexDate]
         );
-    }
-
-    public function getMapping()
-    {
-        $mapping = new MappingBuilder();
-
-        $mapping->addStringField('raw_value')->disableAnalysis();
-        $mapping->addStringField('value')
-            ->setAnalyzer('general_light')
-            ->addAnalyzedChild('strict', 'thesaurus_term_strict')
-            ->addLocalizedChildren($this->locales);
-
-        $mapping->addStringField('context')
-            ->setAnalyzer('general_light')
-            ->addAnalyzedChild('strict', 'thesaurus_term_strict')
-            ->addLocalizedChildren($this->locales);
-
-        $mapping->addStringField('path')
-            ->setAnalyzer('thesaurus_path', 'indexing')
-            ->setAnalyzer('keyword', 'searching')
-            ->addRawChild();
-
-        $mapping->addStringField('lang')->disableAnalysis();
-        $mapping->addField('databox_id', FieldMapping::TYPE_STRING);
-
-        return $mapping->getMapping()->export();
     }
 }

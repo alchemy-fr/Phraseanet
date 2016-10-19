@@ -32,11 +32,6 @@ class Indexer
     const RECORDS   = 2;
 
     /**
-     * @var Index
-     */
-    private $index;
-
-    /**
      * @var \Elasticsearch\Client
      */
     private $client;
@@ -61,13 +56,36 @@ class Indexer
      */
     private $deleteQueue;
 
-    public function __construct(Client $client, ElasticsearchOptions $options, TermIndexer $termIndexer, RecordIndexer $recordIndexer, appbox $appbox, LoggerInterface $logger = null)
+    /**
+     * @var RecordIndexer
+     */
+    private $recordIndexer;
+
+    /**
+     * @var TermIndexer
+     */
+    private $termIndexer;
+
+    /**
+     * @var Index
+     */
+    private $index;
+
+    public function __construct(
+        Client $client,
+        Index $index,
+        TermIndexer $termIndexer,
+        RecordIndexer $recordIndexer,
+        appbox $appbox,
+        LoggerInterface $logger = null
+    )
     {
         $this->client = $client;
         $this->appbox = $appbox;
+        $this->index = $index;
+        $this->recordIndexer = $recordIndexer;
+        $this->termIndexer = $termIndexer;
         $this->logger = $logger ?: new NullLogger();
-
-        $this->index = new Index($options->getIndexName(), $options, $recordIndexer, $termIndexer);
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
@@ -82,8 +100,8 @@ class Indexer
         $params['body']['settings']['analysis'] = $this->index->getAnalysis();
 
         if ($withMapping) {
-            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndexer()->getMapping();
-            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndexer()->getMapping();
+            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping();
+            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping();
         }
 
         $this->client->indices()->create($params);
@@ -92,10 +110,10 @@ class Indexer
     public function updateMapping()
     {
         $params = array();
-        $params['index'] = $this->index->getOptions()->getIndexName();
+        $params['index'] = $this->index->getName();
         $params['type'] = RecordIndexer::TYPE_NAME;
-        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndexer()->getMapping();
-        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndexer()->getMapping();
+        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping();
+        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping();
 
         // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);
@@ -103,31 +121,25 @@ class Indexer
 
     public function deleteIndex()
     {
-        $params = array('index' => $this->index->getOptions()->getIndexName());
+        $params = array('index' => $this->index->getName());
         $this->client->indices()->delete($params);
     }
 
     public function indexExists()
     {
-        $params = array('index' => $this->index->getOptions()->getIndexName());
+        $params = array('index' => $this->index->getName());
 
         return $this->client->indices()->exists($params);
     }
 
-    public function populateIndex($what, array $databoxes_id = [])
+    public function populateIndex($what, \databox $databox)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        if ($databoxes_id) {
-            // If databoxes are given, only use those
-            $databoxes = array_map(array($this->appbox, 'get_databox'), $databoxes_id);
-        } else {
-            $databoxes = $this->appbox->get_databoxes();
-        }
-
+        $this->apply(function (BulkOperation $bulk) use ($what, $databox) {
             if ($what & self::THESAURUS) {
-                $this->index->getTermIndexer()->populateIndex($bulk, $databoxes);
+                $this->termIndexer->populateIndex($bulk, $databox);
 
                 // Record indexing depends on indexed terms so we need to make
                 // everything ready to search
@@ -136,16 +148,16 @@ class Indexer
             }
 
             if ($what & self::RECORDS) {
-                $this->index->getRecordIndexer()->populateIndex($bulk, $databoxes);
+                $this->recordIndexer->populateIndex($bulk, $databox);
 
                 // Final flush
                 $bulk->flush();
             }
+        }, $this->index);
 
-            // Optimize index
-            $params = array('index' => $this->index->getOptions()->getIndexName());
-            $this->client->indices()->optimize($params);
-        });
+        // Optimize index
+        $params = array('index' => $this->index->getName());
+        $this->client->indices()->optimize($params);
 
         $event = $stopwatch->stop('populate');
         printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
@@ -191,9 +203,9 @@ class Indexer
      */
     public function indexScheduledRecords(\databox $databox)
     {
-        $this->apply(function(BulkOperation $bulk) use($databoxes) {
-            $this->index->getRecordIndexer()->indexScheduled($bulk, $databoxes);
-        });
+        $this->apply(function(BulkOperation $bulk) use($databox) {
+            $this->recordIndexer->indexScheduled($bulk, $databox);
+        }, $this->index);
     }
 
     public function flushQueue()
@@ -207,23 +219,25 @@ class Indexer
         }
 
         $this->apply(function(BulkOperation $bulk) {
-            $this->index->getRecordIndexer()->index($bulk, $this->indexQueue);
-            $this->index->getRecordIndexer()->delete($bulk, $this->deleteQueue);
+            $this->recordIndexer->index($bulk, $this->indexQueue);
+            $this->recordIndexer->delete($bulk, $this->deleteQueue);
             $bulk->flush();
-        });
+        }, $this->index);
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
     }
 
-    private function apply(Closure $work)
+    private function apply(Closure $work, Index $index)
     {
         // Prepare the bulk operation
         $bulk = new BulkOperation($this->client, $this->logger);
-        $bulk->setDefaultIndex($this->index->getOptions()->getIndexName());
+        $bulk->setDefaultIndex($index->getName());
         $bulk->setAutoFlushLimit(1000);
+
         // Do the work
-        $work($bulk);
+        $work($bulk, $index);
+
         // Flush just in case, it's a noop when already done
         $bulk->flush();
     }

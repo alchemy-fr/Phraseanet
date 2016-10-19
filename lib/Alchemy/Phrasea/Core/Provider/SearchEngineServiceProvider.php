@@ -13,7 +13,10 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\Thesaurus\ReindexRequiredEventSubscriber;
+use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Index;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -83,11 +86,26 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
 
         /* Indexer related services */
+        $app['elasticsearch.index'] = $app->share(function ($app) {
+            return new Index($app['elasticsearch.options'], $app['elasticsearch.index.locator']);
+        });
+
+        $app['elasticsearch.index.record'] = $app->share(function ($app) {
+            return new Indexer\RecordIndex($app['search_engine.structure'], array_keys($app['locales.available']));
+        });
+
+        $app['elasticsearch.index.term'] = $app->share(function ($app) {
+            return new Indexer\TermIndex(array_keys($app['locales.available']));
+        });
+
+        $app['elasticsearch.index.locator'] = $app->share(function ($app) {
+            return new IndexLocator($app, 'elasticsearch.index.record', 'elasticsearch.index.term');
+        });
 
         $app['elasticsearch.indexer'] = $app->share(function ($app) {
             return new Indexer(
                 $app['elasticsearch.client'],
-                $app['elasticsearch.options'],
+                $app['elasticsearch.index'],
                 $app['elasticsearch.indexer.term_indexer'],
                 $app['elasticsearch.indexer.record_indexer'],
                 $app['phraseanet.appbox'],
@@ -103,17 +121,25 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             );
         });
 
+        $app['elasticsearch.indexer.databox_fetcher_factory'] = $app->share(function ($app) {
+            return new DataboxFetcherFactory(
+                $app['elasticsearch.record_helper'],
+                $app,
+                'search_engine.structure',
+                'thesaurus'
+            );
+        });
+
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             // TODO Use upcomming monolog factory
             $logger = new Logger('indexer');
             $logger->pushHandler(new ErrorLogHandler());
+
             return new RecordIndexer(
-                $app['search_engine.structure'],
+                $app['elasticsearch.indexer.databox_fetcher_factory'],
                 $app['elasticsearch.record_helper'],
-                $app['thesaurus'],
-                array_keys($app['locales.available']),
-                $app['monolog'],
-                $app['dispatcher']
+                $app['dispatcher'],
+                $app['monolog']
             );
         });
 

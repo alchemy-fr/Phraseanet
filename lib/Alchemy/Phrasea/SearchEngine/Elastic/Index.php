@@ -2,16 +2,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndex;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndex;
 
 class Index
 {
-
-    /**
-     * @var string
-     */
-    private $name;
 
     /**
      * @var array
@@ -24,41 +19,32 @@ class Index
     private $options;
 
     /**
-     * @var RecordIndexer
+     * @var IndexLocator
      */
-    private $recordIndexer;
+    private $indexLocator;
 
     /**
-     * @var TermIndexer
-     */
-    private $termIndexer;
-
-    /**
-     * @param string $name
      * @param ElasticsearchOptions $options
-     * @param RecordIndexer $recordIndexer
-     * @param TermIndexer $termIndexer
+     * @param IndexLocator $indexLocator
      */
     public function __construct(
-        $name,
         ElasticsearchOptions $options,
-        RecordIndexer $recordIndexer,
-        TermIndexer $termIndexer
+        IndexLocator $indexLocator
     ) {
-        $this->name = $name;
         $this->options = $options;
-        $this->recordIndexer = $recordIndexer;
-        $this->termIndexer = $termIndexer;
+        $this->indexLocator = $indexLocator;
 
         $this->buildDefaultAnalysis();
     }
 
     /**
+     * Returns the index name (this is same value as defined in ElasticsearchOptions)
+     *
      * @return string
      */
     public function getName()
     {
-        return $this->name;
+        return $this->options->getIndexName();
     }
 
     /**
@@ -78,19 +64,19 @@ class Index
     }
 
     /**
-     * @return RecordIndexer
+     * @return RecordIndex
      */
-    public function getRecordIndexer()
+    public function getRecordIndex()
     {
-        return $this->recordIndexer;
+        return $this->indexLocator->getRecordIndex();
     }
 
     /**
-     * @return TermIndexer
+     * @return TermIndex
      */
-    public function getTermIndexer()
+    public function getTermIndex()
     {
-        return $this->termIndexer;
+        return $this->indexLocator->getTermIndex();
     }
 
     private function buildDefaultAnalysis()

@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping\ComplexFieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping\DateFieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping\StringFieldMapping;
 
@@ -27,12 +28,30 @@ class MappingBuilder
     }
 
     /**
-     * @param string $name;
+     * @param string $name
      * @return StringFieldMapping
      */
     public function addStringField($name)
     {
         return $this->mapping->addField(new StringFieldMapping($name));
+    }
+
+    /**
+     * @param string $name
+     * @return FieldMapping
+     */
+    public function addIntegerField($name)
+    {
+        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_INTEGER));
+    }
+
+    /**
+     * @param string $name
+     * @return FieldMapping
+     */
+    public function addObjectField($name)
+    {
+        return $this->mapping->addField(new ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT));
     }
 
     /**
