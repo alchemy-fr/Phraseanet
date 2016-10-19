@@ -91,7 +91,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.indexer.term_indexer'],
                 $app['elasticsearch.indexer.record_indexer'],
                 $app['phraseanet.appbox'],
-                new Logger('es.indexer')
+                $app['monolog']
             );
         });
 
@@ -99,7 +99,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new TermIndexer(
                 $app['phraseanet.appbox'],
                 array_keys($app['locales.available']),
-                new Logger('term.indexer')
+                $app['monolog']
             );
         });
 
@@ -112,7 +112,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.record_helper'],
                 $app['thesaurus'],
                 array_keys($app['locales.available']),
-                $logger,
+                $app['monolog'],
                 $app['dispatcher']
             );
         });
