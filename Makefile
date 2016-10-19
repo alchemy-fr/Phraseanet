@@ -18,6 +18,7 @@ clean_assets:
 	rm -rf ./node_modules
 	rm -rf ./www/assets
 	rm -rf ./www/bower_components
+	mkdir ./node_modules
 	touch ./node_modules/.gitkeep
 
 config:
