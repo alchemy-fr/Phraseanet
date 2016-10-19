@@ -1,63 +1,10 @@
 {% macro captcha() %}
-    <script type="text/javascript">
-        var RecaptchaOptions = {
-            theme : 'custom',
-            custom_theme_widget: 'recaptcha_widget',
-            lang : '{{ app['locale'] }}'
-        };
-    </script>
-
     <div class="row-fluid">
         <div class="span12">
-            <div id="recaptcha_widget" style="display:none;max-width:300px;background-color: #fff;margin:30px auto 0 auto;" class="well-small">
-                <div class="row-fluid">
-                    <div id="recaptcha_image" class="span12" style="border:1px solid #CCC"></div>
-                </div>
-                <div class="row-fluid recaptcha_only_if_incorrect_sol">
-                    <div class="alert-error" style="padding:2px;margin: 2px 0;border:1px solid #c9322b">
-                        <i class="icon-warning-sign"></i> {{ "Incorrect please try again" | trans }}
-                    </div>
-                </div>
-
-                <div class="row-fluid">
-                    <div class="span12">
-                        <table style="table-layout:fixed;width:100%">
-                            <tr style="border:none;">
-                                <td>
-                                    <input type="text" id="recaptcha_response_field" style="width:100%;padding: 5px 0;margin:0;;background-color:#f5f5f5;border:1px solid #CCC;border-top:none;color:#6491b7;" name="recaptcha_response_field" />
-                                </td>
-                                <td style="width:70px;"class="text-right hidden-phone">
-                                    <div class="btn-group">
-                                        <a href="javascript:Recaptcha.reload()" class="btn btn-mini btn-info"><i class="icon-refresh"></i></a>
-                                        <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-mini  btn-info"><i class="icon-volume-up"></i></a>
-                                        <a href="javascript:Recaptcha.showhelp()" class="btn btn-mini btn-info"><i class="icon-question-sign"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="visible-phone" style="border:none;">
-                                <td>
-                                    <div class="btn-toolbar">
-                                        <div class="btn-group text-right">
-                                            <a href="javascript:Recaptcha.reload()" class="btn btn-info"><i class="icon-refresh"></i></a>
-                                            <a href="javascript:Recaptcha.switch_type('image')" class="btn btn-info"><i class="icon-volume-up"></i></a>
-                                            <a href="javascript:Recaptcha.showhelp()" class="btn  btn-info"><i class="icon-question-sign"></i></a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
+            <div class="g-recaptcha" data-sitekey="{{ public_key }}"></div>
         </div>
     </div>
-    {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k={{ app['recaptcha'].getPublicKey() }}"></script>
-    <noscript>
-        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
-        <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
-        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
-    </noscript>
 {% endmacro %}
 
 {% macro flashes() %}

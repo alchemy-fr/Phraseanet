@@ -418,7 +418,7 @@ class Application extends SilexApplication
      */
     public function requireCaptcha()
     {
-        if ($this['conf']->get(['registry', 'webservices', 'captcha-enabled'])) {
+        if ($this['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
             $this['session']->set('require_captcha', true);
         }
 
