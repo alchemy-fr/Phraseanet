@@ -32,25 +32,42 @@ use Doctrine\DBAL\DBALException;
 
 class ACL implements cache_cacheableInterface
 {
+    const ACTIF = 'actif';
+    const CANADDRECORD = 'canaddrecord';
+    const CANADMIN = 'canadmin';
+    const CANCMD = 'cancmd';
+    const CANDELETERECORD = 'candeleterecord';
+    const CANDWNLDHD = 'candwnldhd';
+    const CANDWNLDPREVIEW = 'candwnldpreview';
+    const CANMODIFRECORD = 'canmodifrecord';
+    const CANPUSH = 'canpush';
+    const CANPUTINALBUM = 'canputinalbum';
+    const CANREPORT = 'canreport';
+    const CHGSTATUS = 'chgstatus';
+    const IMGTOOLS = 'imgtools';
+    const COLL_MANAGE = 'manage';
+    const COLL_MODIFY_STRUCT = 'modify_struct';
+    const NOWATERMARK = 'nowatermark';
+    const ORDER_MASTER = 'order_master';
 
     protected static $bas_rights = [
         'actif',
         'canaddrecord',
-        'canadmin',
+        self::CANADMIN,
         'cancmd',
-        'candeleterecord',
-        'candwnldhd',
-        'candwnldpreview',
-        'canmodifrecord',
+        self::CANDELETERECORD,
+        self::CANDWNLDHD,
+        self::CANDWNLDPREVIEW,
+        self::CANMODIFRECORD,
         'canpush',
-        'canputinalbum',
+        self::CANPUTINALBUM,
         'canreport',
-        'chgstatus',
-        'imgtools',
-        'manage',
-        'modify_struct',
+        self::CHGSTATUS,
+        self::IMGTOOLS,
+        self::COLL_MANAGE,
+        self::COLL_MODIFY_STRUCT,
         'nowatermark',
-        'order_master',
+        self::ORDER_MASTER,
     ];
 
     /**
@@ -89,23 +106,23 @@ class ACL implements cache_cacheableInterface
     protected $is_admin;
 
     protected $_global_rights = [
-        'addrecord'          => false,
-        'addtoalbum'         => false,
+        self::CANADDRECORD          => false,
+        self::CANPUTINALBUM         => false,
         'bas_chupub'         => false,
         'bas_manage'         => false,
         'bas_modif_th'       => false,
         'bas_modify_struct'  => false,
-        'candwnldhd'         => true,
+        self::CANDWNLDHD         => true,
         'candwnldpreview'    => true,
-        'changestatus'       => false,
-        'coll_manage'        => false,
-        'coll_modify_struct' => false,
-        'deleterecord'       => false,
-        'doctools'           => false,
-        'manageusers'        => false,
-        'modifyrecord'       => false,
+        self::CHGSTATUS       => false,
+        self::COLL_MANAGE        => false,
+        self::COLL_MODIFY_STRUCT => false,
+        self::CANDELETERECORD       => false,
+        self::IMGTOOLS           => false,
+        self::CANADMIN        => false,
+        self::CANMODIFRECORD       => false,
         'order'              => false,
-        'order_master'       => false,
+        self::ORDER_MASTER       => false,
         'push'               => false,
         'report'             => false,
         'taskmanager'        => false,
@@ -124,6 +141,7 @@ class ACL implements cache_cacheableInterface
     const CACHE_GLOBAL_RIGHTS = 'global_rights';
     const GRANT_ACTION_PUSH = 'push';
     const GRANT_ACTION_VALIDATE = 'validate';
+    const GRANT_ACTION_ORDER = 'order';
 
     /**
      * Constructor
@@ -179,17 +197,16 @@ class ACL implements cache_cacheableInterface
 
     public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action)
     {
-        $sql = 'REPLACE INTO records_rights
-            (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)
-            VALUES
-            (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)';
+        $sql = "REPLACE INTO records_rights\n"
+            . "(id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)\n"
+            . "VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
 
         $params = [
-            ':usr_id'    => $this->user->getId()
-            , ':sbas_id'   => $record->getDataboxId()
-            , ':record_id' => $record->getRecordId()
-            , ':case'      => $action
-            , ':pusher'    => $pusher->getId()
+            ':usr_id'    => $this->user->getId(),
+            ':sbas_id'   => $record->getDataboxId(),
+            ':record_id' => $record->getRecordId(),
+            ':case'      => $action,
+            ':pusher'    => $pusher->getId()
         ];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
@@ -203,10 +220,10 @@ class ACL implements cache_cacheableInterface
 
     public function grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
     {
-        $sql = 'REPLACE INTO records_rights
-            (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)
-            VALUES
-            (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)';
+        $sql = "REPLACE INTO records_rights\n"
+            . " (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
+            . " VALUES\n"
+            . " (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
 
         $params = [
             ':usr_id'    => $this->user->getId()
@@ -279,11 +296,11 @@ class ACL implements cache_cacheableInterface
 
         if ($subdef_class == databox_subdef::CLASS_THUMBNAIL) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_right_on_base($record->getBaseId(), 'candwnldpreview')) {
+        } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_right_on_base($record->getBaseId(), self::CANDWNLDPREVIEW)) {
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_preview_grant($record)) {
             $granted = true;
-        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->getBaseId(), 'candwnldhd')) {
+        } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->getBaseId(), self::CANDWNLDHD)) {
             $granted = true;
         } elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_hd_grant($record)) {
             $granted = true;
@@ -448,10 +465,10 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  int     $base_id
-     * @param  string  $right
-     * @return boolean
+     * @param $base_id
+     * @param $right
+     * @return bool
+     * @throws Exception
      */
     public function has_right_on_base($base_id, $right)
     {
@@ -472,9 +489,8 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  <type> $option
-     * @return <type>
+     * @param string|null $option
+     * @return string
      */
     public function get_cache_key($option = null)
     {
@@ -482,9 +498,7 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  <type> $option
-     * @return <type>
+     * @param string|null $option
      */
     public function delete_data_from_cache($option = null)
     {
@@ -508,13 +522,12 @@ class ACL implements cache_cacheableInterface
                 break;
         }
 
-        return $this->app->getApplicationBox()->delete_data_from_cache($this->get_cache_key($option));
+        $this->app->getApplicationBox()->delete_data_from_cache($this->get_cache_key($option));
     }
 
     /**
-     *
-     * @param  <type> $option
-     * @return <type>
+     * @param  string|null $option
+     * @return array
      */
     public function get_data_from_cache($option = null)
     {
@@ -522,11 +535,10 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
-     *
-     * @param  <type> $value
-     * @param  <type> $option
-     * @param  <type> $duration
-     * @return <type>
+     * @param $value
+     * @param string|null $option
+     * @param int $duration
+     * @return bool
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
@@ -824,8 +836,7 @@ class ACL implements cache_cacheableInterface
         } catch (\Exception $e) {
 
         }
-        $sql = 'SELECT sbas_id, record_id, preview, document
-            FROM records_rights WHERE usr_id = :usr_id';
+        $sql = "SELECT sbas_id, record_id, preview, document FROM records_rights WHERE usr_id = :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -844,8 +855,8 @@ class ACL implements cache_cacheableInterface
         }
 
         $datas = [
-            'preview'  => $this->_rights_records_preview
-            , 'document' => $this->_rights_records_document
+            'preview'  => $this->_rights_records_preview,
+            'document' => $this->_rights_records_document
         ];
 
         $this->set_data_to_cache($datas, self::CACHE_RIGHTS_RECORDS);
@@ -883,9 +894,7 @@ class ACL implements cache_cacheableInterface
 
         }
 
-        $sql = 'SELECT sbasusr.* FROM sbasusr, sbas
-            WHERE usr_id= :usr_id
-              AND sbas.sbas_id = sbasusr.sbas_id';
+        $sql = "SELECT sbasusr.* FROM sbasusr INNER JOIN sbas USING(sbas_id) WHERE usr_id= :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -900,20 +909,12 @@ class ACL implements cache_cacheableInterface
         $this->_global_rights['bas_chupub'] = false;
 
         foreach ($rs as $row) {
-
-            if ($row['bas_modif_th'] == '1')
-                $this->_global_rights['bas_modif_th'] = true;
-            if ($row['bas_modify_struct'] == '1')
-                $this->_global_rights['bas_modify_struct'] = true;
-            if ($row['bas_manage'] == '1')
-                $this->_global_rights['bas_manage'] = true;
-            if ($row['bas_chupub'] == '1')
-                $this->_global_rights['bas_chupub'] = true;
-
-            $this->_rights_sbas[$row['sbas_id']]['bas_modify_struct'] = ($row['bas_modify_struct'] == '1');
-            $this->_rights_sbas[$row['sbas_id']]['bas_manage'] = ($row['bas_manage'] == '1');
-            $this->_rights_sbas[$row['sbas_id']]['bas_chupub'] = ($row['bas_chupub'] == '1');
-            $this->_rights_sbas[$row['sbas_id']]['bas_modif_th'] = ($row['bas_modif_th'] == '1');
+            $sbid = $row['sbas_id'];
+            $this->_rights_sbas[$sbid] = [];
+            $this->_global_rights['bas_modif_th']      |= ($this->_rights_sbas[$sbid]['bas_modif_th']      = ($row['bas_modif_th'] == '1'));
+            $this->_global_rights['bas_modify_struct'] |= ($this->_rights_sbas[$sbid]['bas_modify_struct'] = ($row['bas_modify_struct'] == '1'));
+            $this->_global_rights['bas_manage']        |= ($this->_rights_sbas[$sbid]['bas_manage']        = ($row['bas_manage'] == '1'));
+            $this->_global_rights['bas_chupub']        |= ($this->_rights_sbas[$sbid]['bas_chupub']        = ($row['bas_chupub'] == '1'));
         }
         $this->set_data_to_cache($this->_rights_sbas, self::CACHE_RIGHTS_SBAS);
         $this->set_data_to_cache($this->_global_rights, self::CACHE_GLOBAL_RIGHTS);
@@ -956,9 +957,9 @@ class ACL implements cache_cacheableInterface
         }
 
         $sql = "SELECT  u.* FROM basusr u, bas b, sbas s\n"
-            . "WHERE usr_id= :usr_id\n"
-            . "AND b.base_id = u.base_id\n"
-            . "AND s.sbas_id = b.sbas_id";
+            . " WHERE usr_id= :usr_id\n"
+            . " AND b.base_id = u.base_id\n"
+            . " AND s.sbas_id = b.sbas_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -967,55 +968,25 @@ class ACL implements cache_cacheableInterface
 
         $this->_rights_bas = $this->_limited = [];
 
-        $this->_global_rights['manageusers'] = false;
-        $this->_global_rights['coll_manage'] = false;
-        $this->_global_rights['coll_modify_struct'] = false;
+        $this->_global_rights[self::CANADMIN] = false;
+        $this->_global_rights[self::COLL_MANAGE] = false;
+        $this->_global_rights[self::COLL_MODIFY_STRUCT] = false;
         $this->_global_rights['order'] = false;
         $this->_global_rights['push'] = false;
-        $this->_global_rights['addrecord'] = false;
-        $this->_global_rights['modifyrecord'] = false;
-        $this->_global_rights['changestatus'] = false;
-        $this->_global_rights['doctools'] = false;
-        $this->_global_rights['deleterecord'] = false;
-        $this->_global_rights['addtoalbum'] = false;
+        $this->_global_rights[self::CANADDRECORD] = false;
+        $this->_global_rights[self::CANMODIFRECORD] = false;
+        $this->_global_rights[self::CHGSTATUS] = false;
+        $this->_global_rights[self::IMGTOOLS] = false;
+        $this->_global_rights[self::CANDELETERECORD] = false;
+        $this->_global_rights[self::CANPUTINALBUM] = false;
         $this->_global_rights['report'] = false;
-        $this->_global_rights['candwnldpreview'] = false;
-        $this->_global_rights['candwnldhd'] = false;
-        $this->_global_rights['order_master'] = false;
+        $this->_global_rights[self::CANDWNLDPREVIEW] = false;
+        $this->_global_rights[self::CANDWNLDHD] = false;
+        $this->_global_rights[self::ORDER_MASTER] = false;
 
         foreach ($rs as $row) {
-            $this->_rights_bas[$row['base_id']]['actif'] = ($row['actif'] == '1');
-
-            if ($row['canadmin'] == '1')
-                $this->_global_rights['manageusers'] = true;
-            if ($row['manage'] == '1')
-                $this->_global_rights['coll_manage'] = true;
-            if ($row['modify_struct'] == '1')
-                $this->_global_rights['coll_modify_struct'] = true;
-            if ($row['cancmd'] == '1')
-                $this->_global_rights['order'] = true;
-            if ($row['canpush'] == '1')
-                $this->_global_rights['push'] = true;
-            if ($row['canaddrecord'] == '1')
-                $this->_global_rights['addrecord'] = true;
-            if ($row['canmodifrecord'] == '1')
-                $this->_global_rights['modifyrecord'] = true;
-            if ($row['chgstatus'] == '1')
-                $this->_global_rights['changestatus'] = true;
-            if ($row['imgtools'] == '1')
-                $this->_global_rights['doctools'] = true;
-            if ($row['candeleterecord'] == '1')
-                $this->_global_rights['deleterecord'] = true;
-            if ($row['canputinalbum'] == '1')
-                $this->_global_rights['addtoalbum'] = true;
-            if ($row['canreport'] == '1')
-                $this->_global_rights['report'] = true;
-            if ($row['candwnldpreview'] == '1')
-                $this->_global_rights['candwnldpreview'] = true;
-            if ($row['candwnldhd'] == '1')
-                $this->_global_rights['candwnldhd'] = true;
-            if ($row['order_master'] == '1')
-                $this->_global_rights['order_master'] = true;
+            $bid = $row['base_id'];
+            $this->_rights_bas[$bid]['actif'] = ($row['actif'] == '1');
 
             $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
             $row['limited_to'] = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
@@ -1023,54 +994,41 @@ class ACL implements cache_cacheableInterface
             if ($row['time_limited'] == '1'
                 && ($row['limited_from'] !== '' || $row['limited_to'] !== '')) {
                 $this->_limited[$row['base_id']] = [
-                    'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null
-                    , 'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
+                    'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null,
+                    'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
                 ];
             }
 
-            $this->_rights_bas[$row['base_id']]['imgtools']
-                = $row['imgtools'] == '1';
+            $this->_global_rights[self::IMGTOOLS]           |= ($this->_rights_bas[$bid][self::IMGTOOLS]        = ($row['imgtools'] == '1'));
+            $this->_global_rights[self::CHGSTATUS]       |= ($this->_rights_bas[$bid][self::CHGSTATUS]       = ($row['chgstatus'] == '1'));
+            $this->_global_rights['order']              |= ($this->_rights_bas[$bid]['cancmd']          = ($row['cancmd'] == '1'));
+            $this->_global_rights[self::CANADDRECORD]          |= ($this->_rights_bas[$bid][self::CANADDRECORD]    = ($row['canaddrecord'] == '1'));
+            $this->_global_rights['push']               |= ($this->_rights_bas[$bid]['canpush']         = ($row['canpush'] == '1'));
+            $this->_global_rights[self::CANDELETERECORD]       |= ($this->_rights_bas[$bid][self::CANDELETERECORD] = ($row['candeleterecord'] == '1'));
+            $this->_global_rights[self::CANADMIN]        |= ($this->_rights_bas[$bid][self::CANADMIN]        = ($row['canadmin'] == '1'));
+            $this->_global_rights[self::CANDWNLDPREVIEW]    |= ($this->_rights_bas[$bid][self::CANDWNLDPREVIEW] = ($row['candwnldpreview'] == '1'));
+            $this->_global_rights[self::CANDWNLDHD]         |= ($this->_rights_bas[$bid][self::CANDWNLDHD]      = ($row['candwnldhd'] == '1'));
+            $this->_global_rights[self::CANMODIFRECORD]       |= ($this->_rights_bas[$bid][self::CANMODIFRECORD]  = ($row['canmodifrecord'] == '1'));
+            $this->_global_rights[self::CANPUTINALBUM]         |= ($this->_rights_bas[$bid][self::CANPUTINALBUM]   = ($row['canputinalbum'] == '1'));
+            $this->_global_rights['report']             |= ($this->_rights_bas[$bid]['canreport']       = ($row['canreport'] == '1'));
+            $this->_global_rights[self::COLL_MODIFY_STRUCT] |= ($this->_rights_bas[$bid][self::COLL_MODIFY_STRUCT]   = ($row['modify_struct'] == '1'));
+            $this->_global_rights[self::COLL_MANAGE]        |= ($this->_rights_bas[$bid][self::COLL_MANAGE]          = ($row['manage'] == '1'));
+            $this->_global_rights[self::ORDER_MASTER]       |= ($this->_rights_bas[$bid][self::ORDER_MASTER]    = ($row[\ACL::ORDER_MASTER] == '1'));
+            $this->_rights_bas[$bid]['nowatermark']    = ($row['nowatermark'] == '1');
+            $this->_rights_bas[$bid]['restrict_dwnld'] = ($row['restrict_dwnld'] == '1');
+            $this->_rights_bas[$bid]['remain_dwnld']   = (int) $row['remain_dwnld'];
+            $this->_rights_bas[$bid]['mask_and']       = (int) $row['mask_and'];
+            $this->_rights_bas[$bid]['mask_xor']       = (int) $row['mask_xor'];
 
-            $this->_rights_bas[$row['base_id']]['chgstatus']
-                = $row['chgstatus'] == '1';
-            $this->_rights_bas[$row['base_id']]['cancmd']
-                = $row['cancmd'] == '1';
-            $this->_rights_bas[$row['base_id']]['canaddrecord']
-                = $row['canaddrecord'] == '1';
-            $this->_rights_bas[$row['base_id']]['canpush']
-                = $row['canpush'] == '1';
-            $this->_rights_bas[$row['base_id']]['candeleterecord']
-                = $row['candeleterecord'] == '1';
-            $this->_rights_bas[$row['base_id']]['canadmin']
-                = $row['canadmin'] == '1';
-            $this->_rights_bas[$row['base_id']]['chgstatus']
-                = $row['chgstatus'] == '1';
-            $this->_rights_bas[$row['base_id']]['candwnldpreview']
-                = $row['candwnldpreview'] == '1';
-            $this->_rights_bas[$row['base_id']]['candwnldhd']
-                = $row['candwnldhd'] == '1';
-            $this->_rights_bas[$row['base_id']]['nowatermark']
-                = $row['nowatermark'] == '1';
-            $this->_rights_bas[$row['base_id']]['restrict_dwnld']
-                = $row['restrict_dwnld'] == '1';
-            $this->_rights_bas[$row['base_id']]['remain_dwnld']
-                = (int) $row['remain_dwnld'];
-            $this->_rights_bas[$row['base_id']]['canmodifrecord']
-                = $row['canmodifrecord'] == '1';
-            $this->_rights_bas[$row['base_id']]['canputinalbum']
-                = $row['canputinalbum'] == '1';
-            $this->_rights_bas[$row['base_id']]['canreport']
-                = $row['canreport'] == '1';
-            $this->_rights_bas[$row['base_id']]['mask_and']
-                = (int) $row['mask_and'];
-            $this->_rights_bas[$row['base_id']]['mask_xor']
-                = (int) $row['mask_xor'];
-            $this->_rights_bas[$row['base_id']]['modify_struct']
-                = $row['modify_struct'] == '1';
-            $this->_rights_bas[$row['base_id']]['manage']
-                = $row['manage'] == '1';
-            $this->_rights_bas[$row['base_id']]['order_master']
-                = $row['order_master'] == '1';
+            $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
+            $row['limited_to']   = $row['limited_to']   == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
+
+            if ($row['time_limited'] == '1' && ($row['limited_from'] !== '' || $row['limited_to'] !== '')) {
+                $this->_limited[$row['base_id']] = [
+                    'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null,
+                    'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
+                ];
+            }
         }
 
         $this->set_data_to_cache($this->_global_rights, self::CACHE_GLOBAL_RIGHTS);
@@ -1106,17 +1064,17 @@ class ACL implements cache_cacheableInterface
             case 'admin':
                 return (
                     ($this->has_right('bas_modify_struct') ||
-                    $this->has_right('coll_modify_struct') ||
+                    $this->has_right(self::COLL_MODIFY_STRUCT) ||
                     $this->has_right('bas_manage') ||
-                    $this->has_right('coll_manage') ||
-                    $this->has_right('manageusers') ||
+                    $this->has_right(self::COLL_MANAGE) ||
+                    $this->has_right(self::CANADMIN) ||
                     $this->is_admin()) );
                 break;
             case 'thesaurus':
                 return ($this->has_right('bas_modif_th') === true );
                 break;
             case 'upload':
-                return ($this->has_right('addrecord') === true);
+                return ($this->has_right(self::CANADDRECORD) === true);
                 break;
             case 'report':
                 return ($this->has_right('report') === true);
@@ -1168,48 +1126,31 @@ class ACL implements cache_cacheableInterface
      */
     public function give_access_to_base(Array $base_ids)
     {
-        $sql_ins = 'INSERT INTO basusr (id, base_id, usr_id, actif)
-                VALUES (null, :base_id, :usr_id, "1")';
-        $stmt_ins = $this->app->getApplicationBox()->get_connection()->prepare($sql_ins);
+        $sql = "INSERT INTO basusr (id, base_id, usr_id, actif)\n"
+            . "VALUES (null, :base_id, :usr_id, '1')\n"
+            . "ON DUPLICATE KEY UPDATE actif='1";
+        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $usr_id = $this->user->getId();
-        $to_update = [];
+
         $this->load_rights_bas();
 
         foreach ($base_ids as $base_id) {
-            if (!isset($this->_rights_bas[$base_id])) {
-                try {
-                    $stmt_ins->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
-                } catch (DBALException $e) {
-//                    if (null !== $e) {
-//                        var_dump(get_class($e->getPrevious()));
-//                    }
-                    if (($e->getCode() == 23000)) {
-                        $to_update[] = $base_id;
-                    }
+            if (!isset($this->_rights_bas[$base_id]) || $this->_rights_bas[$base_id]['actif'] === false) {
+                $stmt->execute([':base_id' => $base_id, ':usr_id'  => $usr_id]);
+                if($stmt->rowCount() > 0) {
+                    $this->app['dispatcher']->dispatch(
+                        AclEvents::ACCESS_TO_BASE_GRANTED,
+                        new AccessToBaseGrantedEvent(
+                            $this,
+                            array(
+                                'base_id'=>$base_id
+                            )
+                        )
+                    );
                 }
-            } elseif ($this->_rights_bas[$base_id]['actif'] === false) {
-                $to_update[] = $base_id;
             }
         }
-        $stmt_ins->closeCursor();
-
-        $sql_upd = 'UPDATE basusr SET actif="1"
-                  WHERE usr_id = :usr_id AND base_id = :base_id';
-        $stmt_upd = $this->app->getApplicationBox()->get_connection()->prepare($sql_upd);
-        foreach ($to_update as $base_id) {
-            $stmt_upd->execute([':usr_id'  => $usr_id, ':base_id' => $base_id]);
-
-            $this->app['dispatcher']->dispatch(
-                AclEvents::ACCESS_TO_BASE_GRANTED,
-                new AccessToBaseGrantedEvent(
-                    $this,
-                    array(
-                        'base_id'=>$base_id
-                    )
-                )
-            );
-        }
-        $stmt_upd->closeCursor();
+        $stmt->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
         $this->inject_rights();
@@ -1358,23 +1299,21 @@ class ACL implements cache_cacheableInterface
 
         $sql_args = [];
         $usr_id = $this->user->getId();
-        $params = [':sbas_id' => $sbas_id, ':usr_id'  => $usr_id];
 
         foreach ($rights as $right => $v) {
-            $sql_args[] = " " . $right . " = :" . $right;
-            $params[':' . $right] = $v ? '1' : '0';
+            $sql_args[] = "`" . $right . "`=" . ($v ? '1' : '0');
         }
 
         if (count($sql_args) == 0) {
             return $this;
         }
 
-        $sql_up .= implode(', ', $sql_args) . '
-                WHERE sbas_id = :sbas_id AND usr_id = :usr_id';
+        $sql_up .= implode(', ', $sql_args) . "\n"
+            . " WHERE sbas_id = :sbas_id AND usr_id = :usr_id";
 
         $stmt_up = $this->app->getApplicationBox()->get_connection()->prepare($sql_up);
 
-        if (!$stmt_up->execute($params)) {
+        if (!$stmt_up->execute([':sbas_id' => $sbas_id, ':usr_id'  => $usr_id])) {
             throw new Exception('Error while updating some rights');
         }
         $stmt_up->closeCursor();
@@ -1401,9 +1340,8 @@ class ACL implements cache_cacheableInterface
      */
     public function remove_quotas_on_base($base_id)
     {
-        $sql = 'UPDATE basusr
-      SET remain_dwnld = 0, restrict_dwnld = 0, month_dwnld_max = 0
-      WHERE usr_id = :usr_id AND base_id = :base_id ';
+        $sql = "UPDATE basusr SET remain_dwnld = 0, restrict_dwnld = 0, month_dwnld_max = 0\n"
+            . " WHERE usr_id = :usr_id AND base_id = :base_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id'  => $this->user->getId(), ':base_id' => $base_id]);
@@ -1427,16 +1365,15 @@ class ACL implements cache_cacheableInterface
 
     public function update_download_restrictions()
     {
-        $sql = 'UPDATE basusr SET remain_dwnld = month_dwnld_max
-            WHERE actif = 1
-            AND usr_id = :usr_id
-            AND MONTH(lastconn) != MONTH(NOW()) AND restrict_dwnld = 1';
+        $sql = "UPDATE basusr SET remain_dwnld = month_dwnld_max\n"
+            . " WHERE actif = 1"
+            . " AND usr_id = :usr_id"
+            . " AND MONTH(lastconn) != MONTH(NOW()) AND restrict_dwnld = 1'";
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $stmt->closeCursor();
 
-        $sql = "UPDATE basusr SET lastconn=now()
-            WHERE usr_id = :usr_id AND actif = 1";
+        $sql = "UPDATE basusr SET lastconn=now() WHERE usr_id = :usr_id AND actif = 1";
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
         $stmt->closeCursor();
@@ -1463,9 +1400,8 @@ class ACL implements cache_cacheableInterface
      */
     public function set_quotas_on_base($base_id, $droits, $restes)
     {
-        $sql = 'UPDATE basusr
-      SET remain_dwnld = :restes, restrict_dwnld = 1, month_dwnld_max = :droits
-      WHERE usr_id = :usr_id AND base_id = :base_id ';
+        $sql = "UPDATE basusr SET remain_dwnld = :restes, restrict_dwnld = 1, month_dwnld_max = :droits\n"
+            . " WHERE usr_id = :usr_id AND base_id = :base_id";
 
         $params = [
             ':usr_id'  => $this->user->getId(),
@@ -1498,8 +1434,7 @@ class ACL implements cache_cacheableInterface
 
     public function duplicate_right_from_bas($base_id_from, $base_id_dest)
     {
-        $sql = 'SELECT * FROM basusr
-              WHERE base_id = :base_from AND usr_id = :usr_id';
+        $sql = "SELECT * FROM basusr WHERE base_id = :base_from AND usr_id = :usr_id";
 
         $params = [
             ':base_from' => $base_id_from,
@@ -1522,16 +1457,12 @@ class ACL implements cache_cacheableInterface
             'mask_xor' => $row['mask_xor'],
         ];
 
-        if ($row['canputinalbum'])
-            $rights['canputinalbum'] = true;
-        if ($row['candwnldhd'])
-            $rights['candwnldhd'] = true;
-        if ($row['candwnldpreview'])
-            $rights['candwnldpreview'] = true;
+        $rights[self::CANPUTINALBUM] = ($row['canputinalbum'] == '1');
+        $rights[self::CANDWNLDHD] = ($row['candwnldhd'] == '1');
+        $rights[self::CANDWNLDPREVIEW] = ($row['candwnldpreview'] == '1');
         if ($row['cancmd'])
             $rights['cancmd'] = true;
-        if ($row['canadmin'])
-            $rights['canadmin'] = true;
+        $rights[self::CANADMIN] = ($row['canadmin'] == '1');
         if ($row['canreport'])
             $rights['canreport'] = true;
         if ($row['canpush'])
@@ -1540,18 +1471,12 @@ class ACL implements cache_cacheableInterface
             $rights['nowatermark'] = true;
         if ($row['canaddrecord'])
             $rights['canaddrecord'] = true;
-        if ($row['canmodifrecord'])
-            $rights['canmodifrecord'] = true;
-        if ($row['candeleterecord'])
-            $rights['candeleterecord'] = true;
-        if ($row['chgstatus'])
-            $rights['chgstatus'] = true;
-        if ($row['imgtools'])
-            $rights['imgtools'] = true;
-        if ($row['manage'])
-            $rights['manage'] = true;
-        if ($row['modify_struct'])
-            $rights['modify_struct'] = true;
+        $rights[self::CANMODIFRECORD] = ($row['canmodifrecord' == '1']);
+        $rights[self::CANDELETERECORD] = ($row['candeleterecord'] == '1');
+        $rights[self::CHGSTATUS] = ($row['chgstatus'] == '1');
+        $rights[self::IMGTOOLS] = ($row['imgtools'] == '1');
+        $rights[self::COLL_MANAGE] = ($row['manage'] == '1');
+        $rights[self::COLL_MODIFY_STRUCT] = ($row['modify_struct'] == '1');
 
         $this->update_rights_to_base($base_id_dest, $rights);
 
@@ -1695,6 +1620,13 @@ class ACL implements cache_cacheableInterface
         return $lim_max || $lim_min;
     }
 
+    /**
+     * returns date limits ['dmin'=>x, 'dmax'=>y] with x,y : NullableDateTime
+     *
+     *
+     * @param $base_id
+     * @return array|null
+     */
     public function get_limits($base_id)
     {
         $this->load_rights_bas();
@@ -1753,7 +1685,7 @@ class ACL implements cache_cacheableInterface
     {
         // a user can see the business fields if he has at least the right on one collection to edit a record
         foreach($databox->get_collections() as $collection) {
-            if ($this->has_access_to_base($collection->get_base_id()) && $this->has_right_on_base($collection->get_base_id(), 'canmodifrecord')) {
+            if ($this->has_access_to_base($collection->get_base_id()) && $this->has_right_on_base($collection->get_base_id(), self::CANMODIFRECORD)) {
                 return true;
             }
         }
@@ -1768,7 +1700,7 @@ class ACL implements cache_cacheableInterface
      */
     public function getOrderMasterCollectionsBaseIds()
     {
-        $sql = 'SELECT base_id FROM basusr WHERE order_master="1" AND usr_id= :usr_id';
+        $sql = "SELECT base_id FROM basusr WHERE order_master='1' AND usr_id= :usr_id";
         $result = $this->app->getApplicationBox()
             ->get_connection()
             ->executeQuery($sql, [':usr_id' => $this->user->getId()])
@@ -1819,8 +1751,7 @@ class ACL implements cache_cacheableInterface
      */
     public function set_order_master(\collection $collection, $bool)
     {
-        $sql = 'UPDATE basusr SET order_master = :master
-                WHERE usr_id = :usr_id AND base_id = :base_id';
+        $sql = "UPDATE basusr SET order_master = :master WHERE usr_id = :usr_id AND base_id = :base_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([

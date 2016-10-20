@@ -1,6 +1,6 @@
 {% import 'common/macros.html.twig' as macro %}
 
-{% set business = granted_on_collection(record.baseId, 'canmodifrecord') %}
+{% set business = granted_on_collection(record.baseId, constant('\\ACL::CANMODIFRECORD')) %}
 {% set display_exif = true %}
 
 {% if view == 'answer' %}

@@ -189,16 +189,21 @@ class ACLTest extends \PhraseanetTestCase
                 $this->object->give_access_to_base([$base_id]);
 
                 if ($first) {
-                    $this->object->update_rights_to_base($base_id, ['imgtools'      => true, 'chgstatus'     => true, 'canaddrecord'  => true, 'canputinalbum' => true]);
+                    $this->object->update_rights_to_base($base_id, [
+                        \ACL::IMGTOOLS      => true,
+                        \ACL::CHGSTATUS     => true,
+                        \ACL::CANADDRECORD  => true,
+                        \ACL::CANPUTINALBUM => true
+                    ]);
                     $base_ref = $base_id;
                 } else {
                     $this->object->duplicate_right_from_bas($base_ref, $base_id);
                 }
 
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canputinalbum'));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
 
                 $first = false;
             }
@@ -216,16 +221,16 @@ class ACLTest extends \PhraseanetTestCase
     public function testHasRightOnBase()
     {
         $rights_false = [
-            'imgtools'      => false,
-            'chgstatus'     => false,
-            'canaddrecord'  => false,
-            'canputinalbum' => false,
+            \ACL::IMGTOOLS      => false,
+            \ACL::CHGSTATUS     => false,
+            \ACL::CANADDRECORD  => false,
+            \ACL::CANPUTINALBUM => false,
         ];
 
         $rights_true = [
-            'imgtools'     => true,
-            'chgstatus'    => true,
-            'canaddrecord' => true,
+            \ACL::IMGTOOLS     => true,
+            \ACL::CHGSTATUS    => true,
+            \ACL::CANADDRECORD => true,
         ];
 
         foreach (self::$DI['app']->getDataboxes() as $databox) {
@@ -233,20 +238,20 @@ class ACLTest extends \PhraseanetTestCase
                 $base_id = $collection->get_base_id();
                 $this->object->give_access_to_base([$base_id]);
                 $this->object->update_rights_to_base($base_id, $rights_false);
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
                 $this->object->update_rights_to_base($base_id, $rights_true);
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
                 $this->object->update_rights_to_base($base_id, $rights_false);
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
             }
         }
     }

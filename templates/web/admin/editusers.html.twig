@@ -347,16 +347,16 @@
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'actif', users, 'base')}}
                 </td>
                 <td class="users_col case_right_canputinalbum" title="{{ 'Allowed to add in basket' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canputinalbum', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUTINALBUM'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_candwnldpreview" title="{{ 'Access to preview' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'candwnldpreview', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDPREVIEW'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_nowatermark" title="{{ 'Remove watermark' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'nowatermark', users, 'base')}}
                 </td>
                 <td class="users_col case_right_candwnldhd" title="{{ 'Access to HD' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'candwnldhd', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDHD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_cancmd" title="{{ 'Allowed to order' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'cancmd', users, 'base')}}
@@ -395,34 +395,34 @@
                 <td style="text-align:center;width:100px;"></td>
 
                 <td class="users_col case_right_canaddrecord" title="{{ 'Allowed to add' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canaddrecord', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANADDRECORD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_canmodifrecord" title="{{ 'Allowed to edit' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canmodifrecord', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANMODIFRECORD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_chgstatus" title="{{ 'Allowed to change statuses' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'chgstatus', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CHGSTATUS'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_candeleterecord" title="{{ 'Allowed to delete' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'candeleterecord', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDELETERECORD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_imgtools" title="{{ 'Access to image tools' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'imgtools', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::IMGTOOLS'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_canadmin" title="{{ 'Manage users' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canadmin', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANADMIN'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_canreport" title="{{ 'Allowed to access report' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canreport', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANREPORT'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_canpush" title="{{ 'Allowed to push' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'canpush', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUSH'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_manage" title="{{ 'Manage collection' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'manage', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::MANAGE'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_modify" title="{{ 'Manage values lists' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'modify_struct', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::MODIFY_STRUCT'), users, 'base')}}
                 </td>
                 <td colspan="5">
 

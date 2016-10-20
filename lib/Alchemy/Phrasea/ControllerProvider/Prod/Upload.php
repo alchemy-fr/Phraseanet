@@ -55,7 +55,7 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
         $firewall = $this->getFirewall($app);
 
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('addrecord');
+            $firewall->requireRight(\ACL::CANADDRECORD);
         });
 
         $controllers->get('/', 'controller.prod.upload:getUploadForm')

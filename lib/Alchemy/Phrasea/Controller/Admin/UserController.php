@@ -285,7 +285,7 @@ class UserController extends Controller
         $on_base = $request->request->get('base_id') ? : null;
         $on_sbas = $request->request->get('sbas_id') ? : null;
 
-        $eligible_users = $user_query->on_bases_where_i_am($this->getAclForConnectedUser(), ['canadmin'])
+        $eligible_users = $user_query->on_bases_where_i_am($this->getAclForConnectedUser(), [\ACL::CANADMIN])
             ->like($like_field, $like_value)
             ->on_base_ids($on_base)
             ->on_sbas_ids($on_sbas);
@@ -357,7 +357,7 @@ class UserController extends Controller
         $userRegistrations = [];
         /** @var RegistrationRepository $registrationRepository */
         $registrationRepository = $this->app['repo.registrations'];
-        $collections = $this->getAclForConnectedUser()->get_granted_base(['canadmin']);
+        $collections = $this->getAclForConnectedUser()->get_granted_base([\ACL::CANADMIN]);
         $authenticatedUserId = $authenticatedUser->getId();
         foreach ($registrationRepository->getPendingRegistrations($collections) as $registration) {
             $user = $registration->getUser();
@@ -689,7 +689,7 @@ class UserController extends Controller
             ]);
         }
 
-        $basList = array_keys($this->getAclForConnectedUser()->get_granted_base(['manage']));
+        $basList = array_keys($this->getAclForConnectedUser()->get_granted_base([\ACL::COLL_MANAGE]));
         /** @var NativeQueryProvider $query */
         $query = $this->app['orm.em.native-query'];
         $models = $query->getModelForUser($this->getAuthenticatedUser(), $basList);
@@ -832,7 +832,7 @@ class UserController extends Controller
 
                     $this->getAclForUser($newUser)->apply_model(
                         $userRepository->find($model),
-                        array_keys($this->getAclForConnectedUser()->get_granted_base(['manage']))
+                        array_keys($this->getAclForConnectedUser()->get_granted_base([\ACL::COLL_MANAGE]))
                     );
 
                     $nbCreation++;

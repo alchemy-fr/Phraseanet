@@ -71,7 +71,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(User $user)
     {
-        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         $this->app->getAclForUser($user)->revoke_access_from_bases($list);
 
@@ -84,7 +84,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function get_users_rights()
     {
-        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         $sql = "SELECT
             b.sbas_id,
@@ -477,29 +477,29 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     public function apply_rights()
     {
         $ACL = $this->app->getAclForUser($this->app->getAuthenticatedUser());
-        $base_ids = array_keys($ACL->get_granted_base(['canadmin']));
+        $base_ids = array_keys($ACL->get_granted_base([\ACL::CANADMIN]));
 
         $update = $create = $delete = $create_sbas = $update_sbas = [];
 
         foreach ($base_ids as $base_id) {
             $rights = [
                 'access',
-                'actif',
-                'canputinalbum',
-                'nowatermark',
-                'candwnldpreview',
-                'candwnldhd',
-                'cancmd',
-                'canaddrecord',
-                'canmodifrecord',
-                'chgstatus',
-                'candeleterecord',
-                'imgtools',
-                'canadmin',
-                'canreport',
-                'canpush',
-                'manage',
-                'modify_struct'
+                \ACL::ACTIF,
+                \ACL::CANPUTINALBUM,
+                \ACL::NOWATERMARK,
+                \ACL::CANDWNLDPREVIEW,
+                \ACL::CANDWNLDHD,
+                \ACL::CANCMD,
+                \ACL::CANADDRECORD,
+                \ACL::CANMODIFRECORD,
+                \ACL::CHGSTATUS,
+                \ACL::CANDELETERECORD,
+                \ACL::IMGTOOLS,
+                \ACL::CANADMIN,
+                \ACL::CANREPORT,
+                \ACL::CANPUSH,
+                \ACL::MANAGE,
+                \ACL::MODIFY_STRUCT
             ];
             foreach ($rights as $k => $right) {
                 if (($right == 'access' && !$ACL->has_access_to_base($base_id))
@@ -688,7 +688,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             throw new AccessDeniedHttpException('You are not the owner of the template');
         }
 
-        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
@@ -744,7 +744,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $activate = !!$this->request->get('limit');
 
-        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);
@@ -763,7 +763,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     public function resetRights()
     {
-        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['canadmin']));
+        $base_ids = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         foreach ($this->users as $usr_id) {
             $user = $this->app['repo.users']->find($usr_id);

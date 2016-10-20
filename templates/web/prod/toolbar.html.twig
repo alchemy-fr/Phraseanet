@@ -63,19 +63,19 @@
     </span>
 
     {% set actions = {} %}
-    {% if acl.has_right('modifyrecord') %}
+    {% if acl.has_right(constant('\\ACL::CANMODIFRECORD')) %}
         {% set label %}
         {{ 'action : editer' | trans }}
         {% endset %}
         {% set actions = actions|merge( { 'edit' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
     {% endif %}
-    {% if acl.has_right('changestatus') %}
+    {% if acl.has_right(constant('\\ACL::CHGSTATUS')) %}
         {% set label %}
         {{ 'action : status' | trans }}
         {% endset %}
         {% set actions = actions|merge( { 'status' : {'icon': "/assets/common/images/icons/chgstatus_history.png", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
     {% endif %}
-    {% if acl.has_right('deleterecord') and acl.has_right('addrecord') %}
+    {% if acl.has_right(constant('\\ACL::CANDELETERECORD')) and acl.has_right(constant('\\ACL::CANADDRECORD')) %}
         {% set label %}
         {{ 'action : collection' | trans }}
         {% endset %}
@@ -287,7 +287,7 @@
         </span>
     {% endif %}
 
-    {% if acl.has_right('doctools') %}
+    {% if acl.has_right(constant('\\ACL::IMGTOOLS')) %}
         <span class="classicButton">
             <div class="btn-group">
                 <button class="TOOL_imgtools_btn results_window btn btn-inverse">
@@ -296,7 +296,7 @@
             </div>
         </span>
     {% endif %}
-    {% if acl.has_right('deleterecord') %}
+    {% if acl.has_right(constant('\\ACL::CANDELETERECORD')) %}
         <span class="classicButton">
             <div class="btn-group">
                 <button class="TOOL_trash_btn results_window btn btn-inverse">

@@ -639,9 +639,9 @@ class SearchEngineOptions
 
         $options->onCollections($bas);
 
-        if ($isAuthenticated && $acl->has_right('modifyrecord')) {
+        if ($isAuthenticated && $acl->has_right(\ACL::CANMODIFRECORD)) {
             $bf = array_filter($bas, function (\collection $collection) use ($acl) {
-                return $acl->has_right_on_base($collection->get_base_id(), 'canmodifrecord');
+                return $acl->has_right_on_base($collection->get_base_id(), \ACL::CANMODIFRECORD);
             });
 
             $options->allowBusinessFieldsOn($bf);

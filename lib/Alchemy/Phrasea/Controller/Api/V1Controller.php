@@ -485,7 +485,7 @@ class V1Controller extends Controller
     {
         $userQuery = new \User_Query($this->app);
         $orderMasters = $userQuery->on_base_ids([ $collection->get_base_id() ] )
-            ->who_have_right(['order_master'])
+            ->who_have_right([\ACL::ORDER_MASTER])
             ->execute()
             ->get_results()
             ->map(function (User $user) {
@@ -1034,7 +1034,7 @@ class V1Controller extends Controller
                 return null;
             }
             if ($media->get_name() === 'document'
-                && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')
+                && !$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)
                 && !$acl->has_hd_grant($record)
             ) {
                 return null;
@@ -2769,9 +2769,11 @@ class V1Controller extends Controller
         $user = $this->getApiAuthenticatedUser();
         $acl = $this->getAclForUser($user);
 
-        if (! $acl->has_access_to_module('admin') || ! $acl->has_right('manageusers')) {
+        if (! $acl->has_access_to_module('admin') || ! $acl->has_right(\ACL::CANADMIN)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
+
+        return null;
     }
 
     public function ensureAccessToDatabox(Request $request)
@@ -2813,7 +2815,7 @@ class V1Controller extends Controller
     public function ensureCanModifyRecord(Request $request)
     {
         $user = $this->getApiAuthenticatedUser();
-        if (!$this->getAclForUser($user)->has_right('modifyrecord')) {
+        if (!$this->getAclForUser($user)->has_right(\ACL::CANMODIFRECORD)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 
@@ -2825,7 +2827,7 @@ class V1Controller extends Controller
         $user = $this->getApiAuthenticatedUser();
         $record = $this->findDataboxById($request->attributes->get('databox_id'))
             ->get_record($request->attributes->get('record_id'));
-        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'chgstatus')) {
+        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), \ACL::CHGSTATUS)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 
@@ -2849,9 +2851,9 @@ class V1Controller extends Controller
         $record = $this->findDataboxById($request->attributes->get('databox_id'))
             ->get_record($request->attributes->get('record_id'));
         // TODO: Check comparison. seems to be a mismatch
-        if ((!$this->getAclForUser($user)->has_right('addrecord')
-                && !$this->getAclForUser($user)->has_right('deleterecord'))
-            || !$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'candeleterecord')
+        if ((!$this->getAclForUser($user)->has_right(\ACL::CANADDRECORD)
+                && !$this->getAclForUser($user)->has_right(\ACL::CANDELETERECORD))
+            || !$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), \ACL::CANDELETERECORD)
         ) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
@@ -2865,7 +2867,7 @@ class V1Controller extends Controller
         $record = $this->findDataboxById($request->attributes->get('databox_id'))
             ->get_record($request->attributes->get('record_id'));
 
-        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), 'candeleterecord')) {
+        if (!$this->getAclForUser($user)->has_right_on_base($record->getBaseId(), \ACL::CANDELETERECORD)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 

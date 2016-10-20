@@ -175,7 +175,7 @@ class set_export extends set_abstract
 
         /** @var record_exportElement $download_element */
         foreach ($this->get_elements() as $download_element) {
-            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), 'canmodifrecord')) {
+            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
                 $this->businessFieldsAccess = true;
             }
 
@@ -227,11 +227,11 @@ class set_export extends set_abstract
 
         $display_ftp = [];
 
-        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right('addrecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('deleterecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('modifyrecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_manage')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_modify_struct');
+        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANADDRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANDELETERECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANMODIFRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MANAGE)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MODIFY_STRUCT);
 
         $this->ftp_datas = [];
 
@@ -419,7 +419,7 @@ class set_export extends set_abstract
 
             $BF = false;
 
-            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), 'canmodifrecord')) {
+            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
                 $BF = true;
             }
 

@@ -70,9 +70,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->error);
 
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "manage"));
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::COLL_MANAGE));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::CANPUSH));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::CANREPORT));
 
         self::$DI['app']['orm.em']->refresh($user);
         self::$DI['app']['manipulator.user']->delete($user);
@@ -355,10 +355,10 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
                 self::$DI['app']->getAclForUser($user)->give_access_to_base([$base_id]);
 
                 $rights = [
-                    'canputinalbum'  => '1'
-                    , 'candwnldhd'     => '1'
-                    , 'candwnldsubdef' => '1'
-                    , 'nowatermark'    => '1'
+                    \ACL::CANPUTINALBUM  => '1',
+                    \ACL::CANDWNLDHD     => '1',
+                    'candwnldsubdef' => '1',
+                    \ACL::NOWATERMARK    => '1'
                 ];
 
                 self::$DI['app']->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);

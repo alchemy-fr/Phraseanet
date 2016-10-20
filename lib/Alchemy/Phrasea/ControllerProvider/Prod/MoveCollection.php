@@ -41,8 +41,8 @@ class MoveCollection implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->before(function () use ($firewall) {
             $firewall
-                ->requireRight('addrecord')
-                ->requireRight('deleterecord');
+                ->requireRight(\ACL::CANADDRECORD)
+                ->requireRight(\ACL::CANDELETERECORD);
         });
 
         $controllers->post('/', 'controller.prod.move-collection:displayForm')

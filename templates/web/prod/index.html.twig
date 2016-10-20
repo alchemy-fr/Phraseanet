@@ -145,7 +145,7 @@
                                 {{ 'Browse Baskets' | trans }}
                             </a>
                         </div>
-                        {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
+                        {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
                             <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
                                     <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />

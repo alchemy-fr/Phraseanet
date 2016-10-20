@@ -133,7 +133,7 @@ class PhraseanetExtension extends \Twig_Extension
 
         $structure = $databox->getStatusStructure()->toArray();
 
-        if (!$this->isGrantedOnCollection($record->getBaseId(), 'chgstatus')) {
+        if (!$this->isGrantedOnCollection($record->getBaseId(), \ACL::CHGSTATUS)) {
             $structure = array_filter($structure, function($status) {
                 return  (bool) $status['printable'];
             });

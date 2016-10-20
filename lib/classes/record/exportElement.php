@@ -99,10 +99,10 @@ class record_exportElement extends record_adapter
             'thumbnail' => true
         ];
 
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'candwnldhd')) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDHD)) {
             $go_dl['document'] = true;
         }
-        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'candwnldpreview')) {
+        if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANDWNLDPREVIEW)) {
             $go_dl['preview'] = true;
         }
         if ($this->app->getAclForUser($this->app->getAuthenticatedUser())->has_hd_grant($this)) {
@@ -116,7 +116,7 @@ class record_exportElement extends record_adapter
         $query = $this->app['phraseanet.user-query'];
 
         $masters = $query->on_base_ids([$this->getBaseId()])
-                ->who_have_right(['order_master'])
+                ->who_have_right([\ACL::ORDER_MASTER])
                 ->execute()->get_results();
 
         $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'cancmd'));

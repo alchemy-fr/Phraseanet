@@ -1010,10 +1010,12 @@ class ApiJsonTest extends ApiTestCase
             $collection->set_public_presentation('none');
         }
         $app->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(
-            $collection->get_base_id(), array(
-            'candwnldpreview' => 1,
-            'candwnldhd' => 1
-        ));
+            $collection->get_base_id(),
+            [
+                \ACL::CANDWNLDPREVIEW => 1,
+                \ACL::CANDWNLDHD      => 1
+            ]
+        );
 
         /** @var \record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
@@ -1052,8 +1054,8 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
 
         self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
-            'candwnldpreview' => 1,
-            'candwnldhd' => 0
+            \ACL::CANDWNLDPREVIEW => 1,
+            \ACL::CANDWNLDHD      => 0
         ));
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
@@ -1075,10 +1077,13 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
-            'candwnldpreview' => 0,
-            'candwnldhd' => 0
-        ));
+        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(
+            self::$DI['collection']->get_base_id(),
+            [
+                \ACL::CANDWNLDPREVIEW => 0,
+                \ACL::CANDWNLDHD => 0
+            ]
+        );
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
