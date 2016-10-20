@@ -431,7 +431,7 @@ class PushController extends Controller
         $result = ['success' => false, 'message' => '', 'user'    => null];
 
         try {
-            if (!$this->getAclForUser($this->getAuthenticatedUser())->has_right('manageusers'))
+            if (!$this->getAclForUser($this->getAuthenticatedUser())->has_right(\ACL::CANADMIN))
                 throw new ControllerException($this->app->trans('You are not allowed to add users'));
 
             if (!$request->request->get('firstname'))

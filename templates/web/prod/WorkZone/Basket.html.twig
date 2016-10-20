@@ -11,19 +11,19 @@
         <img src="/assets/common/images/icons/print_history.png"/>
       </button>
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
       <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{{ 'action : editer' | trans }}">
         <img src="/assets/common/images/icons/ppen_history.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('changestatus') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
       <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{{ 'action : status' | trans }}">
         <img src="/assets/common/images/icons/chgstatus_history.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('deleterecord') and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
       <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{{ 'action : collection' | trans }}">
         <img src="/assets/common/images/icons/chgcoll_history.png"/>
       </button>
@@ -49,7 +49,7 @@
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('doctools') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
       <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{{ 'action : outils' | trans }}">
         <img src="/assets/common/images/icons/imgtools_history.png"/>
       </button>

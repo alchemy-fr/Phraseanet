@@ -283,7 +283,7 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->checkRedirection(self::$DI['client']->getResponse(), '/admin/collection/' . self::$DI['collection']->get_base_id() . '/?success=1');
 
-        $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_alt1'])->has_right_on_base(self::$DI['collection']->get_base_id(), 'order_master'));
+        $this->assertTrue(self::$DI['app']->getAclForUser(self::$DI['user_alt1'])->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::ORDER_MASTER));
     }
 
     /**

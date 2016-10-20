@@ -60,8 +60,10 @@ class Installer
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
                 $databox->get_sbas_id(), [
-                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                    'bas_manage'        => 1,
+                    'bas_modify_struct' => 1,
+                    'bas_modif_th'      => 1,
+                    'bas_chupub'        => 1
                 ]
         );
 
@@ -69,11 +71,22 @@ class Installer
 
         $this->app->getAclForUser($admin)->give_access_to_base([$collection->get_base_id()]);
         $this->app->getAclForUser($admin)->update_rights_to_base($collection->get_base_id(), [
-            'canpush'           => 1, 'cancmd'          => 1
-            , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-            , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-            , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-            , 'modify_struct'   => 1, 'nowatermark'     => 1
+                \ACL::CANPUSH         => 1,
+                \ACL::CANCMD          => 1,
+                \ACL::CANPUTINALBUM   => 1,
+                \ACL::CANDWNLDHD      => 1,
+                \ACL::CANDWNLDPREVIEW => 1,
+                \ACL::CANADMIN        => 1,
+                \ACL::ACTIF           => 1,
+                \ACL::CANREPORT       => 1,
+                \ACL::CANADDRECORD    => 1,
+                \ACL::CANMODIFRECORD  => 1,
+                \ACL::CANDELETERECORD => 1,
+                \ACL::CHGSTATUS       => 1,
+                \ACL::IMGTOOLS        => 1,
+                \ACL::MANAGE          => 1,
+                \ACL::MODIFY_STRUCT   => 1,
+                \ACL::NOWATERMARK     => 1
             ]
         );
 

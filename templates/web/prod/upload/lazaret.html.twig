@@ -383,8 +383,8 @@
                 {% for record in records %}
                     {% set reasons = record['reasons'] %}
                     {% set record = record['record'] %}
-                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "canaddrecord")
-                        and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), "candeleterecord") %}
+                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANADDRECORD'))
+                        and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDELETERECORD')) %}
                         <li class="records-subititution span3" style="width:210px">
                             {% include 'prod/results/record.html.twig' with {
                             'record': record,

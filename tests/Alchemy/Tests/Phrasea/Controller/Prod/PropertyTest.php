@@ -85,11 +85,11 @@ class PropertyTest extends \PhraseanetAuthenticatedWebTestCase
             ->will($this->returnValue(true));
         $acl->expects($this->any())
             ->method('has_right_on_base')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('chgstatus'))
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CHGSTATUS))
             ->will($this->returnValue(true));
         $acl->expects($this->any())
             ->method('has_right_on_sbas')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('chgstatus'))
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CHGSTATUS))
             ->will($this->returnValue(true));
 
         $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')

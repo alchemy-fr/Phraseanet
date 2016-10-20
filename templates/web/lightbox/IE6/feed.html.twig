@@ -82,7 +82,7 @@
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;">
                     <div id="record_infos">
                         <div class="lightbox_container">
-              {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), 'canmodifrecord') %}
+              {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(first_item.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
               {% if first_item %}
                 {{macro.caption(first_item.getRecord(app), business, false)}}
               {% endif %}

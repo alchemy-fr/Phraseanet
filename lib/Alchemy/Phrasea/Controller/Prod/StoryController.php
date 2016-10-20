@@ -109,7 +109,7 @@ class StoryController extends Controller
     {
         $Story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        if (!$this->getAclForUser()->has_right_on_base($Story->getBaseId(), 'canmodifrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($Story->getBaseId(), \ACL::CANMODIFRECORD)) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
         }
 
@@ -145,7 +145,7 @@ class StoryController extends Controller
         $story = new \record_adapter($this->app, $sbas_id, $record_id);
         $record = new \record_adapter($this->app, $child_sbas_id, $child_record_id);
 
-        if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), 'canmodifrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), \ACL::CANMODIFRECORD)) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
         }
 
@@ -188,7 +188,7 @@ class StoryController extends Controller
                 throw new \Exception('This is not a story');
             }
 
-            if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), 'canmodifrecord')) {
+            if (!$this->getAclForUser()->has_right_on_base($story->getBaseId(), \ACL::CANMODIFRECORD)) {
                 throw new ControllerException($this->app->trans('You can not edit this story'));
             }
 

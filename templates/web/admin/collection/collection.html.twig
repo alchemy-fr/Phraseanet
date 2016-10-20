@@ -35,7 +35,7 @@
     <li>{{ collection.get_record_amount() }} records <a class="ajax" target="rights" href="{{ path('admin_collection_display_document_details', { 'bas_id' : collection.get_base_id() }) }}">{{ 'phraseanet:: details' | trans }}</a></li>
 </ul>
 
-{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
 <div class="well well-small">
     <h5>{{ 'admin::collection:: Gestionnaires des commandes' | trans }}</h5>
     <form id="admin_adder" action="{{ path('admin_collection_submit_order_admins', { 'bas_id' : bas_id }) }}" method="post" style="margin:0;">
@@ -144,7 +144,7 @@
     <h5>{{ 'admin::base:collection: minilogo actuel' | trans }}</h5>
     {% if collection.getLogo(bas_id, app) is not empty %}
         <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id, app) | raw }}</div>
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
             <form method="post" action="{{ path('admin_collection_delete_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
                 <button class="btn btn-danger btn-mini" >
                     <i class="icon-trash icon-white"></i>
@@ -152,7 +152,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
         <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
@@ -169,7 +169,7 @@
     <h5>{{ "Watermark" | trans }}</h5>
     {% if collection.getWatermark(bas_id) is not empty %}
         <div class="thumbnail">{{ collection.getWatermark(bas_id)| raw }}</div>
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
             <form method="post" action="{{ path('admin_collection_delete_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
                 <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
@@ -177,7 +177,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
         <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">
@@ -194,7 +194,7 @@
     <h5>{{ "Stamp logo" | trans }}</h5>
     {% if collection.getStamp(bas_id) is not empty %}
         <div class="thumbnail" style="max-height:120px;max-width:260px">{{ collection.getStamp(bas_id)| raw }}</div>
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
             <form method="post" action="{{ path('admin_collection_delete_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
                 <button class="btn btn-danger btn-mini">
                     <i class="icon-trash icon-white"></i>
@@ -202,7 +202,7 @@
                 </button>
             </form>
         {% endif%}
-    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, 'manage') %}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
         <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
         <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
             <span class="btn btn-success fileinput-button">

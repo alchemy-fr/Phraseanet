@@ -94,7 +94,7 @@
                     <div id="record_infos">
                         <div class="lightbox_container">
               {% if basket_element %}
-                {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), 'canmodifrecord') %}
+                {% set business = app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(basket_element.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
                 {{macro.caption(basket_element.getRecord(app), business, false)}}
               {% endif %}
             </div>

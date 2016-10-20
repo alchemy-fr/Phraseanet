@@ -155,7 +155,7 @@
                     <li>
                         <form class="form-inline" method="post" action="{{ path('admin_database_mount_collection', {'databox_id': databox.get_sbas_id(), 'collection_id' : collId }) }}">
                             {% trans with {'%name%' : name} %}Monter la collection %name%{% endtrans %}<br/>
-                            {% if app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(["canadmin"]) | length > 0 %}
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) | length > 0 %}
                                 <label for="othcollsel">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces" | trans }}</label>
                                 <select id="othcollsel" name="othcollsel" >
                                     <option value="">{{ "choisir" | trans }}</option>

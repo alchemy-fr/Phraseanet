@@ -36,7 +36,7 @@
     </a>
   </li>
 
-  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
+  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
   <li class="{% if feature == 'users' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_users_search') }}" class="ajax zone_editusers">
       <img src="/assets/admin/images/Users.png" />
@@ -152,7 +152,7 @@
         {% set seeUsrGene = false %}
 
         {% for coll in databox.get_collections() %}
-          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base( coll.get_base_id() , 'canadmin') %}
+          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base( coll.get_base_id() , constant('\\ACL::CANADMIN')) %}
             {% set seeUsrGene = true %}
           {% endif %}
         {% endfor %}
@@ -167,9 +167,9 @@
         {% endif %}
 
         {% for collection in databox.get_collections()|sort_collections %}
-          {% if (collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['canadmin'])|keys
-              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['manage'])|keys
-              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base(['modify_struct'])|keys) %}
+          {% if (collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')])|keys
+              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::MANAGE')])|keys
+              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::MODIFY_STRUCT')])|keys) %}
 
           {% if feature == 'collection' and featured == collection.get_base_id() %}
               {% set coll_selected = true %}
@@ -185,7 +185,7 @@
             </div>
             <ul>
 
-            {% if (app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), 'modify_struct')) %}
+            {% if (app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::COLL_MODIFY_STRUCT'))) %}
               <li>
                 <a target="right" href="{{ path('admin_collection_display_suggested_values', { 'bas_id' : collection.get_base_id() }) }}" class="ajax">
                   <img src="/assets/common/images/icons/foldph20open_0.gif"/>
@@ -194,7 +194,7 @@
               </li>
             {% endif %}
 
-            {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), 'canadmin') %}
+            {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::CANADMIN')) %}
               <li>
                 <a target="right" href="{{ path('admin_users_search', { 'base_id' : [ collection.get_base_id() ] }) }}" class="ajax">
                   <img src="/assets/admin/images/Users.png"/>

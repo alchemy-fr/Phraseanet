@@ -56,7 +56,7 @@ class UserProvider implements ControlProviderInterface
                 ->like(\User_Query::LIKE_LOGIN, $query)
                 ->like_match(\User_Query::LIKE_MATCH_OR)
                 ->include_phantoms(true)
-                ->on_bases_where_i_am($this->app->getAclForUser($for_user), ['canadmin'])
+                ->on_bases_where_i_am($this->app->getAclForUser($for_user), [\ACL::CANADMIN])
                 ->limit(0, 50)
                 ->execute()->get_results();
 

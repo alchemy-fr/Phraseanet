@@ -28,7 +28,7 @@ class PropertyController extends Controller
             $this->app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['chgstatus']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CHGSTATUS]);
 
         $databoxes = $records->databoxes();
         if (count($databoxes) > 1) {
@@ -81,7 +81,7 @@ class PropertyController extends Controller
             $this->app->abort(400);
         }
 
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
         $recordsType = [];
 
@@ -115,7 +115,7 @@ class PropertyController extends Controller
     public function changeStatus(Request $request)
     {
         $applyStatusToChildren = $request->request->get('apply_to_children', []);
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['chgstatus']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CHGSTATUS]);
         $updated = [];
         $postStatus = (array) $request->request->get('status');
 
@@ -149,7 +149,7 @@ class PropertyController extends Controller
     public function changeType(Request $request)
     {
         $typeLst = $request->request->get('types', []);
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
         $mimeLst = $request->request->get('mimes', []);
         $forceType = $request->request->get('force_types', '');
         $updated = [];

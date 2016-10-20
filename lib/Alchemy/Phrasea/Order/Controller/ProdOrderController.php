@@ -109,7 +109,7 @@ class ProdOrderController extends BaseOrderController
 
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['order_master']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
         $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort);
         $total = $this->getOrderRepository()->countTotalOrders($baseIds);

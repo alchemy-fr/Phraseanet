@@ -13,7 +13,7 @@
                 <td valign="middle">
                     <div class='desc' style='max-height:{{ settings.images_size + 70 }}px;overflow-y:auto;'>
                         <div class="fixeddesc">
-                            {% set can_see_business = granted_on_collection(record.baseId, 'canmodifrecord') %}
+                            {% set can_see_business = granted_on_collection(record.baseId, constant('\\ACL::CANMODIFRECORD')) %}
                             {{ macro.caption(record, can_see_business) }}
                         </div>
                     </div>

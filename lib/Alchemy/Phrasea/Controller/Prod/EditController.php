@@ -38,7 +38,7 @@ class EditController extends Controller
             $this->app,
             $request,
             RecordsRequest::FLATTEN_YES_PRESERVE_STORIES,
-            ['canmodifrecord']
+            [\ACL::CANMODIFRECORD]
         );
 
         $thesaurus = false;
@@ -120,7 +120,7 @@ class EditController extends Controller
             }
 
             // generate javascript status
-            if ($this->getAclForUser()->has_right('changestatus')) {
+            if ($this->getAclForUser()->has_right(\ACL::CHGSTATUS)) {
                 $statusStructure = $databox->getStatusStructure();
                 foreach ($statusStructure as $statbit) {
                     $bit = $statbit['bit'];
@@ -156,7 +156,7 @@ class EditController extends Controller
                 ];
 
                 $elements[$indice]['statbits'] = [];
-                if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), 'chgstatus')) {
+                if ($this->getAclForUser()->has_right_on_base($record->getBaseId(), \ACL::CHGSTATUS)) {
                     foreach ($status as $n => $s) {
                         $tmp_val = substr(strrev($record->getStatus()), $n, 1);
                         $elements[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
@@ -273,7 +273,7 @@ class EditController extends Controller
 
     public function applyAction(Request $request) {
 
-        $records = RecordsRequest::fromRequest($this->app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, ['canmodifrecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, [\ACL::CANMODIFRECORD]);
 
         $databoxes = $records->databoxes();
         if (count($databoxes) !== 1) {
