@@ -145,9 +145,9 @@
             return false;
         });
 
-        $("[name='elasticsearch_settings[isexist]']").click(function(){
+        $("[name='elasticsearch_settings[use_existing_index]']").click(function(){
             var checkBoxes = $(this).is(":checked"),
-                indexName = $("[name='elasticsearch_settings[indexName]']");
+                indexName = $("[name='elasticsearch_settings[index_name]']");
 
             indexName.val("");
             indexName.prop("disabled", !checkBoxes);
@@ -656,11 +656,11 @@
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Use an existing index' | trans }}</label></td>
-                                            <td><input class="" type="checkbox" name="elasticsearch_settings[isexist]" value="" /></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[use_existing_index]" value="" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'ElasticSearch index name' | trans }}</label></td>
-                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[indexName]" value="" /></td>
+                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[index_name]" value="" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Number of shards' | trans }}</label></td>
@@ -672,7 +672,7 @@
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Thesaurus Min score' | trans }}</label></td>
-                                            <td><input class="" type="number" name="elasticsearch_settings[minScore]" value="" /></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[min_score]" value="" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Activate highlight' | trans }}</label></td>
