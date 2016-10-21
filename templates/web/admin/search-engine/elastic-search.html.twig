@@ -12,11 +12,6 @@
 {% block javascript %}
 <script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/search-engine/views/es_config.js' }) }}"></script>
 <script type="text/javascript">
-    {% if indexer.indexExists() %}
-    var elasticSearchIndexExists = true;
-    {% else %}
-    var elasticSearchIndexExists = false;
-    {% endif %}
-    searchEngineConfigurationFormInit(elasticSearchIndexExists);
+    searchEngineConfigurationFormInit({{ elasticSearchIndexExists ? 'true' : 'false' }});
 </script>
 {% endblock %}

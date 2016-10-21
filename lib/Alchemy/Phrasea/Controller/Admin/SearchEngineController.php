@@ -10,81 +10,80 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchManagementService;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchSettingsFormType;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SearchEngineController extends Controller
 {
     /**
+     * @var ElasticSearchManagementService
+     */
+    private $managementService;
+
+    /**
+     * @var FormFactoryInterface
+     */
+    private $formFactory;
+
+    /**
+     * @param Application $app
+     * @param ElasticSearchManagementService $managementService
+     * @param FormFactoryInterface $formFactory
+     */
+    public function __construct(
+        Application $app,
+        ElasticSearchManagementService $managementService,
+        FormFactoryInterface $formFactory
+    ) {
+        parent::__construct($app);
+
+        $this->managementService = $managementService;
+        $this->formFactory = $formFactory;
+    }
+
+    /**
      * @param Request $request
      * @return Response
      */
     public function formConfigurationPanelAction(Request $request)
     {
-        $options = $this->getElasticsearchOptions();
-        $form = $this->getConfigurationForm($options);
+        $options = $this->managementService->getCurrentConfiguration();
+        $form = $this->formFactory->create(new ElasticsearchSettingsFormType(), $options, [
+            'action' => $this->app->url('admin_searchengine_form'),
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $this->saveElasticSearchOptions($form->getData());
+            $options = $form->getData();
+
+            $this->managementService->updateConfiguration($options);
 
             return $this->app->redirectPath('admin_searchengine_form');
         }
 
         return $this->render('admin/search-engine/elastic-search.html.twig', [
             'form' => $form->createView(),
-            'indexer' => $this->app['elasticsearch.indexer']
+            'elasticSearchIndexExists' => $this->managementService->indexExists()
         ]);
     }
 
-    public function dropIndexAction(Request $request)
+    public function dropIndexAction()
     {
-        $indexer = $this->app['elasticsearch.indexer'];
-        if ($indexer->indexExists()) {
-            $indexer->deleteIndex();
-        }
+        $this->managementService->dropIndices();
+
         return $this->app->redirectPath('admin_searchengine_form');
     }
 
-    public function createIndexAction(Request $request)
+    public function createIndexAction()
     {
-        $indexer = $this->app['elasticsearch.indexer'];
-        if (!$indexer->indexExists()) {
-            $indexer->createIndex();
-        }
+        $this->managementService->createIndices();
+
         return $this->app->redirectPath('admin_searchengine_form');
-    }
-
-    /**
-     * @return ElasticsearchOptions
-     */
-    private function getElasticsearchOptions()
-    {
-        return $this->app['elasticsearch.options'];
-    }
-
-    /**
-     * @param ElasticsearchOptions $configuration
-     * @return void
-     */
-    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
-    {
-        $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
-    }
-
-    /**
-     * @param ElasticsearchOptions $options
-     * @return FormInterface
-     */
-    private function getConfigurationForm(ElasticsearchOptions $options)
-    {
-        return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
-            'action' => $this->app->url('admin_searchengine_form'),
-        ]);
     }
 }

@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Setup\Installer;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -154,6 +155,7 @@ class SetupController extends Controller
         $dataPath = $request->request->get('datapath_noweb');
 
         try {
+            /** @var Installer $installer */
             $installer = $this->app['phraseanet.installer'];
 
             $binaryData = [
