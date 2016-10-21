@@ -157,6 +157,7 @@ class SetupController extends Controller
         $dataPath = $request->request->get('datapath_noweb');
 
         try {
+            /** @var Installer $installer */
             $installer = $this->app['phraseanet.installer'];
 
             $binaryData = [];

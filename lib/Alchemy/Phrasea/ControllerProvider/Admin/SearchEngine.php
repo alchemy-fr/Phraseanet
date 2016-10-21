@@ -24,7 +24,7 @@ class SearchEngine implements ControllerProviderInterface, ServiceProviderInterf
     public function register(Application $app)
     {
         $app['controller.admin.search-engine'] = $app->share(function (PhraseaApplication $app) {
-            return new SearchEngineController($app);
+            return new SearchEngineController($app, $app['elasticsearch.management-service'], $app['form_factory']);
         });
     }
 
