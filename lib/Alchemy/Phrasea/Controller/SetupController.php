@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -62,6 +63,7 @@ class SetupController extends Controller
         $warnings = [];
 
         $requirementsCollection = $this->getRequirementsCollection();
+
         foreach ($requirementsCollection as $requirements) {
             foreach ($requirements->getRequirements() as $requirement) {
                 if (!$requirement->isFulfilled() && !$requirement->isOptional()) {
@@ -92,7 +94,7 @@ class SetupController extends Controller
 
         $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
-         $dbConn = null;
+        $dbConn = null;
 
         $database_host = $request->request->get('hostname');
         $database_port = $request->request->get('port');
@@ -103,16 +105,12 @@ class SetupController extends Controller
         $databox_name = $request->request->get('db_name');
 
         try {
-            $abInfo = [
-                'host'     => $database_host,
-                'port'     => $database_port,
-                'user'     => $database_user,
-                'password' => $database_password,
-                'dbname'   => $appbox_name,
-            ];
+            $abSettings = new ConnectionSettings(
+                $database_host, $database_port, $database_user, $database_password, $appbox_name
+            );
 
             /** @var Connection $abConn */
-            $abConn = $this->app['dbal.provider']($abInfo);
+            $abConn = $this->app['dbal.provider']($abSettings);
             $abConn->connect();
         } catch (\Exception $e) {
             return $this->app->redirectPath('install_step2', [
@@ -120,18 +118,16 @@ class SetupController extends Controller
             ]);
         }
 
+        $dbSettings = null;
+
         try {
             if ($databox_name) {
-                $dbInfo = [
-                    'host'     => $database_host,
-                    'port'     => $database_port,
-                    'user'     => $database_user,
-                    'password' => $database_password,
-                    'dbname'   => $databox_name,
-                ];
+                $dbSettings = new ConnectionSettings(
+                    $database_host, $database_port, $database_user, $database_password, $databox_name
+                );
 
                 /** @var Connection $dbConn */
-                $dbConn = $this->app['dbal.provider']($dbInfo);
+                $dbConn = $this->app['dbal.provider']($dbSettings);
                 $dbConn->connect();
             }
         } catch (\Exception $e) {
@@ -141,13 +137,14 @@ class SetupController extends Controller
         }
 
         $this->app['dbs.options'] = array_merge(
-            $this->app['db.options.from_info']($dbInfo),
-            $this->app['db.options.from_info']($abInfo),
+            $this->app['db.options.from_info']($dbSettings ? $dbSettings->toArray() : []),
+            $this->app['db.options.from_info']($abSettings->toArray()),
             $this->app['dbs.options']
         );
+
         $this->app['orm.ems.options'] = array_merge(
-            $this->app['orm.em.options.from_info']($dbInfo),
-            $this->app['orm.em.options.from_info']($abInfo),
+            $this->app['orm.em.options.from_info']($dbSettings ? $dbSettings->toArray() : []),
+            $this->app['orm.em.options.from_info']($abSettings->toArray()),
             $this->app['orm.ems.options']
         );
 
@@ -159,8 +156,7 @@ class SetupController extends Controller
         try {
             $installer = $this->app['phraseanet.installer'];
 
-            $binaryData = [];
-            foreach ([
+            $binaryData = [
                 'php_binary'         => $request->request->get('binary_php'),
                 'swf_extract_binary' => $request->request->get('binary_swfextract'),
                 'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
@@ -169,9 +165,7 @@ class SetupController extends Controller
                 'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
                 'mp4box_binary'      => $request->request->get('binary_MP4Box'),
                 'pdftotext_binary'   => $request->request->get('binary_xpdf'),
-                     ] as $key => $path) {
-                $binaryData[$key] = $path;
-            }
+            ];
 
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 

@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Connection;
 
@@ -82,24 +83,18 @@ class DataboxService
         $databaseName,
         $dataTemplate,
         User $owner,
-        DataboxConnectionSettings $connectionSettings = null
+        ConnectionSettings $connectionSettings = null
     ) {
         $this->validateDatabaseName($databaseName);
 
         $dataTemplate = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
-        $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
+        $connectionSettings = $connectionSettings ?: ConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
 
         $factory = $this->connectionFactory;
         /** @var Connection $connection */
-        $connection = $factory([
-            'host' => $connectionSettings->getHost(),
-            'port' => $connectionSettings->getPort(),
-            'user' => $connectionSettings->getUser(),
-            'password' => $connectionSettings->getPassword(),
-            'dbname' => $databaseName
-        ]);
+        $connection = $factory($connectionSettings->toArray());
 
         $connection->connect();
 
@@ -121,7 +116,7 @@ class DataboxService
     {
         $this->validateDatabaseName($databaseName);
 
-        $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
+        $connectionSettings = $connectionSettings ?: ConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
 

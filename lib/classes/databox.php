@@ -291,17 +291,14 @@ class databox extends base implements ThumbnailedElement
         $connectionConfig = $connectionConfigs[$sbas_id];
         $connection = $app['db.provider']($connectionConfig);
 
-        $connectionSettings = new ConnectionSettings(
-            $connectionConfig['host'],
-            $connectionConfig['port'],
-            $connectionConfig['dbname'],
-            $connectionConfig['user'],
-            $connectionConfig['password']
-        );
-
         $versionRepository = new DataboxVersionRepository($connection);
 
-        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
+        parent::__construct(
+            $app, 
+            $connection, 
+            ConnectionSettings::fromArray($connectionConfig),
+            $versionRepository
+        );
 
         $this->loadFromRow($row);
     }
