@@ -16,7 +16,6 @@ require.config({
         "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
         underscore: "../assets/vendors/underscore/underscore.min",
         backbone: "../assets/vendors/backbone/backbone.min",
-        zxcvbn: "../assets/vendors/zxcvbn/zxcvbn.min",
         "jquery.ui.widget": "../assets/vendors/jquery-file-upload/jquery.ui.widget.min",
         "jquery.cookie": "../assets/vendors/jquery.cookie/jquery.cookie.min",
         "jquery.treeview": "../assets/vendors/jquery-treeview/jquery.treeview",
