@@ -14,7 +14,7 @@ require([
     "apps/login/home/common",
     "common/forms/views/formType/passwordSetter",
     "common/geonames",
-    "common/forms/views/formType/zxcvbn"
+    "zxcvbn"
 ], function ($, i18n, Common, RegisterForm, geonames, zxcvbn) {
     var fieldsConfiguration = [];
 
