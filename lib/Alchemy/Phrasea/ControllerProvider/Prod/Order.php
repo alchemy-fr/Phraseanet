@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Order\Controller\ProdOrderController;
 use Alchemy\Phrasea\Order\OrderBasketProvider;
 use Alchemy\Phrasea\Order\OrderValidator;
@@ -39,7 +39,13 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
         });
 
         $app['controller.prod.order'] = $app->share(function (PhraseaApplication $app) {
-            return (new ProdOrderController($app))
+            $controller = new ProdOrderController($app,
+                $app['repo.orders'],
+                $app['repo.order-elements'],
+                $app['provider.order_basket']
+            );
+
+            $controller
                 ->setDispatcher($app['dispatcher'])
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                 ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
