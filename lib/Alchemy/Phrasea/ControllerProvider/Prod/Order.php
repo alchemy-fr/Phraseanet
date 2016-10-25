@@ -39,7 +39,8 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
         });
 
         $app['controller.prod.order'] = $app->share(function (PhraseaApplication $app) {
-            $controller = new ProdOrderController($app,
+            $controller = new ProdOrderController(
+                $app,
                 $app['repo.orders'],
                 $app['repo.order-elements'],
                 $app['provider.order_basket']
@@ -48,8 +49,9 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
             $controller
                 ->setDispatcher($app['dispatcher'])
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
-                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'))
-            ;
+                ->setUserQueryFactory(new LazyLocator($app, 'phraseanet.user-query'));
+
+            return $controller;
         });
     }
 
