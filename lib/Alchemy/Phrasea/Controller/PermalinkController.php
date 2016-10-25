@@ -136,7 +136,7 @@ class PermalinkController extends AbstractDelivery
         }
 
         if ($this->authentication->isAuthenticated()) {
-            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), 'nowatermark');
+            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), \ACL::NOWATERMARK);
 
             if ($watermark) {
                 /** @var BasketElementRepository $repository */

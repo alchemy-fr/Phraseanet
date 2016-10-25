@@ -51,7 +51,7 @@ class ToolsController extends Controller
 
             $acl = $this->getAclForUser();
 
-            if ($acl->has_right('bas_chupub')
+            if ($acl->has_right(\ACL::BAS_CHUPUB)
                 && $acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
                 && $acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
             ) {
@@ -340,7 +340,7 @@ class ToolsController extends Controller
         $state = $request->request->get('state') == 'true' ? true : false;
 
         $acl = $this->getAclForUser();
-        if (!$acl->has_right('bas_chupub')
+        if (!$acl->has_right(\ACL::BAS_CHUPUB)
             || !$acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
             || !$acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
             || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))

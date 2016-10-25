@@ -86,53 +86,52 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
-        $sql = "SELECT
-            b.sbas_id,
-            b.base_id,
-            sum(actif) as actif,
-            sum(canputinalbum) as canputinalbum,
-            sum(candwnldpreview) as candwnldpreview,
-            sum(candwnldhd) as candwnldhd,
-            sum(cancmd) as cancmd,
-            sum(nowatermark) as nowatermark,
+        $sql = "SELECT b.sbas_id, b.base_id,\n"
 
-            sum(canaddrecord) as canaddrecord,
-            sum(canmodifrecord) as canmodifrecord,
-            sum(chgstatus) as chgstatus,
-            sum(candeleterecord) as candeleterecord,
-            sum(imgtools) as imgtools,
+            . " SUM(actif) AS actif,\n"
+            . " SUM(canputinalbum) AS canputinalbum,\n"
+            . " SUM(candwnldpreview) AS candwnldpreview,\n"
+            . " SUM(candwnldhd) AS candwnldhd,\n"
+            . " SUM(cancmd) AS cancmd,\n"
+            . " SUM(nowatermark) AS nowatermark,\n"
 
-            sum(canadmin) as canadmin,
-            sum(canreport) as canreport,
-            sum(canpush) as canpush,
-            sum(manage) as manage,
-            sum(modify_struct) as modify_struct,
+            . " SUM(canaddrecord) AS canaddrecord,\n"
+            . " SUM(canmodifrecord) AS canmodifrecord,\n"
+            . " SUM(chgstatus) AS chgstatus,\n"
+            . " SUM(candeleterecord) AS candeleterecord,\n"
+            . " SUM(imgtools) AS imgtools,\n"
 
-            sum(sbu.bas_modif_th) as bas_modif_th,
-            sum(sbu.bas_manage) as bas_manage,
-            sum(sbu.bas_modify_struct) as bas_modify_struct,
-            sum(sbu.bas_chupub) as bas_chupub,
+            . " SUM(canadmin) AS canadmin,\n"
+            . " SUM(canreport) AS canreport,\n"
+            . " SUM(canpush) AS canpush,\n"
+            . " SUM(manage) AS manage,\n"
+            . " SUM(modify_struct) AS modify_struct,\n"
 
-            sum(time_limited) as time_limited,
-            DATE_FORMAT(limited_from,'%Y%m%d') as limited_from,
-            DATE_FORMAT(limited_to,'%Y%m%d') as limited_to,
+            . " SUM(sbu.bas_modif_th) AS bas_modif_th,\n"
+            . " SUM(sbu.bas_manage) AS bas_manage,\n"
+            . " SUM(sbu.bas_modify_struct) AS bas_modify_struct,\n"
+            . " SUM(sbu.bas_chupub) AS bas_chupub,\n"
 
-            sum(restrict_dwnld) as restrict_dwnld,
-            sum(remain_dwnld) as remain_dwnld,
-            sum(month_dwnld_max) as month_dwnld_max,
+            . " SUM(time_limited) AS time_limited,\n"
+            . " SUM(restrict_dwnld) AS restrict_dwnld,\n"
 
-            sum(mask_and + mask_xor) as masks
+            // --- wtf doing sum on non booleans ?
+            . " SUM(remain_dwnld) AS remain_dwnld,\n"
+            . " SUM(month_dwnld_max) AS month_dwnld_max,\n"
+            . " SUM(mask_and + mask_xor) AS masks,\n"
+            // ---
 
-            FROM (Users u, bas b, sbas s)
-              LEFT JOIN (basusr bu)
-                ON (bu.base_id = b.base_id AND u.id = bu.usr_id)
-              LEFT join  sbasusr sbu
-                ON (sbu.sbas_id = b.sbas_id AND u.id = sbu.usr_id)
-            WHERE ( (u.id IN (:users) )
-                    AND b.sbas_id = s.sbas_id
-                    AND (b.base_id IN (:bases)))
-            GROUP BY b.base_id
-            ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
+            // -- wtf no aggregate fct ?
+            . " DATE_FORMAT(limited_from,'%Y%m%d') AS limited_from,\n"
+            . " DATE_FORMAT(limited_to,'%Y%m%d') AS limited_to\n"
+            // ---
+
+            . " FROM (Users u, bas b, sbas s)\n"
+            . " LEFT JOIN (basusr bu) ON (bu.base_id = b.base_id AND u.id = bu.usr_id)\n"
+            . " LEFT join  sbasusr sbu ON (sbu.sbas_id = b.sbas_id AND u.id = sbu.usr_id)\n"
+            . " WHERE ( (u.id IN (:users) ) AND b.sbas_id = s.sbas_id AND (b.base_id IN (:bases)))\n"
+            . " GROUP BY b.base_id\n"
+            . " ORDER BY s.ord, s.sbas_id, b.ord, b.base_id ";
 
         $rs = $this->app->getApplicationBox()->get_connection()->fetchAll(
             $sql,
@@ -146,10 +145,10 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ]
         );
 
-        $sql = 'SELECT base_id, sum(1) as access FROM basusr
-            WHERE (usr_id IN (:users))
-              AND  (base_id IN (:bases))
-            GROUP BY base_id';
+        $sql = "SELECT base_id, SUM(1) AS access FROM basusr\n"
+            . " WHERE (usr_id IN (:users)) AND (base_id IN (:bases))\n"
+            . " GROUP BY base_id";
+
         $access = $this->app->getApplicationBox()->get_connection()->fetchAll(
             $sql,
             [
@@ -164,12 +163,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $base_ids = [];
         foreach ($access as $acc) {
-            $base_ids[$acc['base_id']] = $acc;
+            $base_ids[$acc['base_id']] = $acc['access'];
         }
         unset($access);
 
+        // add a 'access' column
         foreach ($rs as $k => $row) {
-            $rs[$k]['access'] = array_key_exists($row['base_id'], $base_ids) ? $base_ids[$row['base_id']]['access'] : '0';
+            $rs[$k]['access'] = array_key_exists($row['base_id'], $base_ids) ? $base_ids[$row['base_id']] : '0';
             foreach ($row as $dk => $data) {
                 if (is_null($data))
                     $rs[$k][$dk] = '0';
@@ -483,7 +483,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($base_ids as $base_id) {
             $rights = [
-                'access',
+                \ACL::ACCESS,
                 \ACL::ACTIF,
                 \ACL::CANPUTINALBUM,
                 \ACL::NOWATERMARK,
@@ -498,12 +498,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 \ACL::CANADMIN,
                 \ACL::CANREPORT,
                 \ACL::CANPUSH,
-                \ACL::MANAGE,
-                \ACL::MODIFY_STRUCT
+                \ACL::COLL_MANAGE,
+                \ACL::COLL_MODIFY_STRUCT
             ];
             foreach ($rights as $k => $right) {
-                if (($right == 'access' && !$ACL->has_access_to_base($base_id))
-                    || ($right != 'access' && !$ACL->has_right_on_base($base_id, $right))) {
+                if (($right == \ACL::ACCESS && !$ACL->has_access_to_base($base_id))
+                    || ($right != \ACL::ACCESS && !$ACL->has_right_on_base($base_id, $right))) {
                     unset($rights[$k]);
                     continue;
                 }
@@ -520,7 +520,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
                 $p = implode('_', $serial);
 
-                if ($p == 'access') {
+                if ($p == \ACL::ACCESS) {
                     if ($v === '1') {
                         $create_sbas[\phrasea::sbasFromBas($this->app, $base_id)] = \phrasea::sbasFromBas($this->app, $base_id);
                         $create[] = $base_id;
@@ -537,10 +537,10 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         foreach ($sbas_ids as $databox) {
             $rights = [
-                'bas_modif_th',
-                'bas_manage',
-                'bas_modify_struct',
-                'bas_chupub'
+                \ACL::BAS_MODIF_TH,
+                \ACL::BAS_MANAGE,
+                \ACL::BAS_MODIFY_STRUCT,
+                \ACL::BAS_CHUPUB
             ];
             foreach ($rights as $k => $right) {
                 if (!$ACL->has_right_on_sbas($databox->get_sbas_id(), $right)) {
@@ -569,6 +569,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             try {
                 $this->app->getApplicationBox()->get_connection()->beginTransaction();
 
+                /** @var User $user */
                 $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app->getAclForUser($user)->revoke_access_from_bases($delete)
@@ -611,18 +612,18 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         }
 
         $infos = [
-            'gender'
-            , 'first_name'
-            , 'last_name'
-            , 'email'
-            , 'address'
-            , 'zip'
-            , 'geonameid'
-            , 'function'
-            , 'company'
-            , 'activite'
-            , 'telephone'
-            , 'fax'
+            'gender',
+            'first_name',
+            'last_name',
+            'email',
+            'address',
+            'zip',
+            'geonameid',
+            'function',
+            'company',
+            'activite',
+            'telephone',
+            'fax'
         ];
 
         $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');

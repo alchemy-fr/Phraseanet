@@ -512,7 +512,7 @@ class set_export extends set_abstract
                             'path' => $subdef->get_path(),
                             'file' => $subdef->get_file(),
                         ];
-                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), "nowatermark")
+                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
                             && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
                             && $subdef->get_type() == media_subdef::TYPE_IMAGE
                         ) {

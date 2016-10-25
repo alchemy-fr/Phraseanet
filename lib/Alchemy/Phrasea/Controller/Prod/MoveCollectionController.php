@@ -17,13 +17,13 @@ class MoveCollectionController extends Controller
 {
     public function displayForm(Request $request)
     {
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['candeleterecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANDELETERECORD]);
 
         $sbas_ids = array_map(function (\databox $databox) {
             return $databox->get_sbas_id();
         }, $records->databoxes());
 
-        $collections = $this->getAclForUser()->get_granted_base(['canaddrecord'], $sbas_ids);
+        $collections = $this->getAclForUser()->get_granted_base([\ACL::CANADDRECORD], $sbas_ids);
 
         $parameters = [
             'records'     => $records,
@@ -37,7 +37,7 @@ class MoveCollectionController extends Controller
     public function apply(Request $request)
     {
         /** @var \record_adapter[] $records */
-        $records = RecordsRequest::fromRequest($this->app, $request, false, ['candeleterecord']);
+        $records = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANDELETERECORD]);
 
         $datas = [
             'success' => false,
@@ -51,7 +51,7 @@ class MoveCollectionController extends Controller
                 return $this->app->json($datas);
             }
 
-            if (!$this->getAclForUser()->has_right_on_base($request->request->get('base_id'), 'canaddrecord')) {
+            if (!$this->getAclForUser()->has_right_on_base($request->request->get('base_id'), \ACL::CANADDRECORD)) {
                 $datas['message'] = $this->app->trans("You do not have the permission to move records to %collection%", ['%collection%', \phrasea::bas_labels($request->request->get('base_id'), $this->app)]);
 
                 return $this->app->json($datas);
@@ -71,7 +71,7 @@ class MoveCollectionController extends Controller
                 if ($request->request->get("chg_coll_son") == "1") {
                     /** @var \record_adapter $child */
                     foreach ($record->getChildren() as $child) {
-                        if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), 'candeleterecord')) {
+                        if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), \ACL::CANDELETERECORD)) {
                             $child->move_to_collection($collection, $this->getApplicationBox());
                         }
                     }

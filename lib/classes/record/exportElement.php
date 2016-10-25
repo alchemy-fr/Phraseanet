@@ -119,7 +119,7 @@ class record_exportElement extends record_adapter
                 ->who_have_right([\ACL::ORDER_MASTER])
                 ->execute()->get_results();
 
-        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'cancmd'));
+        $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANCMD));
 
         $orderable['document'] = false;
         $downloadable['document'] = false;

@@ -166,7 +166,7 @@ class PDF
 
             $fimg = $subdef->getRealPath();
 
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), "nowatermark")
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
                 $fimg = \recordutils_image::watermark($this->app, $subdef);
             }
@@ -438,7 +438,7 @@ class PDF
 
             $f = $subdef->getRealPath();
 
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), "nowatermark")
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
                 && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
                 $f = \recordutils_image::watermark($this->app, $subdef);
 

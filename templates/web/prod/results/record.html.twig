@@ -129,7 +129,7 @@
                                         </div>
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
                                         or (app['conf'].get(['registry', 'actions', 'social-tools']) == 'publishers'
-                                        and granted_on_databox(record.databoxId, 'bas_chupub')) %}
+                                        and granted_on_databox(record.databoxId, constant('\\ACL::BAS_CHUPUB'))) %}
                                             {% if record.story is empty %}
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"

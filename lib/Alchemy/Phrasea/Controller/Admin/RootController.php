@@ -88,7 +88,7 @@ class RootController extends Controller
      */
     public function displayStatusBitAction($databox_id)
     {
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 
@@ -105,7 +105,7 @@ class RootController extends Controller
      */
     public  function displayDataboxStructureAction(Request $request, $databox_id)
     {
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 
@@ -132,7 +132,7 @@ class RootController extends Controller
 
     public function submitDatabaseStructureAction(Request $request, $databox_id)
     {
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 
@@ -162,7 +162,7 @@ class RootController extends Controller
 
     public function displayDatabaseStatusBitFormAction(Request $request, $databox_id, $bit)
     {
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 
@@ -220,7 +220,7 @@ class RootController extends Controller
             $this->app->abort(400, $this->app->trans('Bad request format, only JSON is allowed'));
         }
 
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 
@@ -238,7 +238,7 @@ class RootController extends Controller
     }
     
     public function submitStatusBitAction(Request $request, $databox_id, $bit) {
-        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, 'bas_modify_struct')) {
+        if (!$this->getAclForUser()->has_right_on_sbas($databox_id, \ACL::BAS_MODIFY_STRUCT)) {
             $this->app->abort(403);
         }
 

@@ -11,10 +11,9 @@
 
     {% set display = 'block' %}
 
-    {% if right[name] != users|length and name != 'access' and right['access'] != users|length and type != 'sbas' %}
+    {% if right[name] != users|length and name != constant('\\ACL::ACCESS') and right[constant('\\ACL::ACCESS')] != users|length and type != 'sbas' %}
       {% set display = 'none' %}
     {% endif %}
-
 
     {% if right[name] == 0 %}
       {% set class = 'unchecked' %}
@@ -322,16 +321,16 @@
                   </div>
                 </td>
                 <td style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'bas_chupub', users, 'sbas')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_CHUPUB'), users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'bas_modif_th', users, 'sbas')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIF_TH'), users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'bas_manage', users, 'sbas')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MANAGE'), users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'bas_modify_struct', users, 'sbas')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIFY_STRUCT'), users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:48px;"></td>
               </tr>
@@ -341,10 +340,10 @@
                   {{rights['base_id']|bas_labels(app)}}
                 </td>
                 <td class="users_col case_right_access" title="{{ 'Access' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'access', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACCESS'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_actif" title="{{ 'Active' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'actif', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACTIF'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_canputinalbum" title="{{ 'Allowed to add in basket' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUTINALBUM'), users, 'base')}}
@@ -353,17 +352,17 @@
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDPREVIEW'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_nowatermark" title="{{ 'Remove watermark' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'nowatermark', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::NOWATERMARK'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_candwnldhd" title="{{ 'Access to HD' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDHD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_cancmd" title="{{ 'Allowed to order' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, 'cancmd', users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANCMD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
                   <div class="quota_trigger quota_{{rights['base_id']}} base_{{rights['base_id']}}">
-                    {% if rights['restrict_dwnld'] > 0 %}
+                    {% if rights[constant('\\ACL::RESTRICT_DWNLD')] > 0 %}
                     <img src="/assets/common/images/icons/user_details_on.png" />
                     {% else %}
                     <img src="/assets/common/images/icons/user_details_off.png" />
@@ -419,10 +418,10 @@
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUSH'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_manage" title="{{ 'Manage collection' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::MANAGE'), users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MANAGE'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_modify" title="{{ 'Manage values lists' | trans }}">
-                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::MODIFY_STRUCT'), users, 'base')}}
+                  {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MODIFY_STRUCT'), users, 'base')}}
                 </td>
                 <td colspan="5">
 

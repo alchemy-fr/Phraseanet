@@ -138,7 +138,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
-                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
                     ->will($this->returnValue(false));
             }
         ]);
@@ -157,7 +157,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
-                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
                     ->will($this->returnValue(true));
             }
         ]);
@@ -191,7 +191,7 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
             'has_right_on_sbas'=> function (\PHPUnit_Framework_MockObject_MockObject $acl) {
                 $acl->expects($this->once())
                     ->method('has_right_on_sbas')
-                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), 'bas_modify_struct')
+                    ->with($this->equalTo(self::$DI['collection']->get_sbas_id()), \ACL::BAS_MODIFY_STRUCT)
                     ->will($this->returnValue(true));
             }
         ]);

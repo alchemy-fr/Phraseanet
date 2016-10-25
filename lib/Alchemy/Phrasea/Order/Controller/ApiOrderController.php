@@ -240,7 +240,7 @@ class ApiOrderController extends BaseOrderController
         $filtered = [];
 
         foreach ($records as $index => $record) {
-            if ($acl->has_right_on_base($record->getBaseId(), 'cancmd')) {
+            if ($acl->has_right_on_base($record->getBaseId(), \ACL::CANCMD)) {
                 $filtered[$index] = $record;
             }
         }

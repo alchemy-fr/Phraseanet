@@ -124,7 +124,7 @@
         </span>
     {% endif %}
 
-    {% if acl.has_right('push') and acl.has_right('bas_chupub') %}
+    {% if acl.has_right(constant('\\ACL::CANPUSH')) and acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
         <span class="dropdownButton">
             <div class="btn-group">
                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
@@ -173,7 +173,7 @@
                 </ul>
             </div>
         </span>
-    {% elseif acl.has_right('push') %}
+    {% elseif acl.has_right(constant('\\ACL::CANPUSH')) %}
         <span class="dropdownButton">
             <div class="btn-group">
                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
@@ -208,7 +208,7 @@
                 </ul>
             </div>
         </span>
-    {% elseif acl.has_right('bas_chupub') %}
+    {% elseif acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
         <span class="dropdownButton">
             <div class="btn-group">
                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">

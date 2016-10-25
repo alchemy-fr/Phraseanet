@@ -29,18 +29,18 @@
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('push') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_pushdoc_btn story_window" title="{{ 'action : push' | trans }}">
         <img src="/assets/common/images/icons/push16.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('push') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_feedback_btn story_window" title="{{ 'Feedback' | trans }}">
         <img src="/assets/common/images/icons/feedback16.png"/>
       </button>
       {% endif %}
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('bas_chupub') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(cnstant('\\ACL::BAS_CHUPUB')) %}
       <button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">
         <img src="/assets/common/images/icons/door.png"/>
       </button>

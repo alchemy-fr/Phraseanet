@@ -54,7 +54,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         $acl = $this->stubACL();
         $acl->expects($this->any())
             ->method('has_right')
-            ->with($this->equalTo('order'))
+            ->with($this->equalTo(\ACL::CANCMD))
             ->will($this->returnValue(true));
         $acl->expects($this->any())
             ->method('has_access_to_record')
@@ -62,11 +62,11 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
             ->will($this->returnValue(true));
         $acl->expects($this->any())
             ->method('has_right_on_base')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('cancmd'))
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACL::CANCMD))
             ->will($this->returnValue(true));
         $acl->expects($this->any())
             ->method('has_right_on_sbas')
-            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo('cancmd'))
+            ->with($this->isType(\PHPUnit_Framework_Constraint_IsType::TYPE_INT), $this->equalTo(\ACl::CANCMD))
             ->will($this->returnValue(true));
 
         $app = $this->getApplication();

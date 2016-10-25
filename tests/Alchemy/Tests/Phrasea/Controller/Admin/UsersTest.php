@@ -342,10 +342,10 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         foreach (self::$DI['app']->getDataboxes() as $databox) {
 
             $rights = [
-                'bas_manage'        => '1'
-                , 'bas_modify_struct' => '1'
-                , 'bas_modif_th'      => '1'
-                , 'bas_chupub'        => '1'
+                \ACL::BAS_MANAGE        => '1',
+                \ACL::BAS_MODIFY_STRUCT => '1',
+                \ACL::BAS_MODIF_TH      => '1',
+                \ACL::BAS_CHUPUB        => '1',
             ];
 
             self::$DI['app']->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);

@@ -30,7 +30,7 @@
 
     <li>
         {{ 'admin::base: Alias' | trans }} : <span id="viewname">{{ databox.get_label(app['locale']) }}</span>
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
             <img src="/assets/common/images/icons/edit_0.gif" id="show-view-name" />
             <div class="well well-small" id="change-view-name" style="display:none;">
                 <form method="post" action="{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}">
@@ -64,7 +64,7 @@
     </div>
 </div>
 
-{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
     <div>
          <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
              <label class="checkbox" for="is_indexable">
@@ -204,7 +204,7 @@
     <h4>{{ "admin::base: logo impression PDF" | trans }}</h4>
     <div id="printLogoDIV_OK">
         <img class="thumbnail" id="printLogo" src="/custom/minilogos/logopdf_{{ databox.get_sbas_id() }}.jpg" />
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
             <form method="post" target="right" action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}" >
                 <button class="btn btn-mini btn-danger">{{ "admin::base:collection: supprimer le logo" | trans }}</button>
             </form>
@@ -212,7 +212,7 @@
     </div>
     <div id="printLogoDIV_NONE">
         {{ "admin::base:collection: aucun fichier (minilogo, watermark ...)" | trans }}
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), "bas_manage") %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
             <input id="fileupload" class="no-ajax" type="file" name="newLogoPdf" data-url="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" accept="image/jpg, image/jpeg">
             <i>{{ "admin::base: envoyer un logo (jpeg 35px de hauteur max)" | trans }}</i>
         {% endif %}

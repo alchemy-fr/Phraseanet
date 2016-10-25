@@ -631,7 +631,7 @@ class V1Controller extends Controller
         $offset_start = max($request->get('offset_start', 0), 0);
         $per_page = min(max($request->get('per_page', 10), 1), 1000);
 
-        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['canaddrecord']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::CANADDRECORD]));
 
         $lazaretFiles = [];
 
@@ -666,7 +666,7 @@ class V1Controller extends Controller
             return Result::createError($request, 404, sprintf('Lazaret file id %d not found', $lazaret_id))->createResponse();
         }
 
-        if (!$this->getAclForUser()->has_right_on_base($lazaretFile->getBaseId(), 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($lazaretFile->getBaseId(), \ACL::CANADDRECORD)) {
             return Result::createError($request, 403, 'You do not have access to this quarantine item')->createResponse();
         }
 
@@ -905,7 +905,7 @@ class V1Controller extends Controller
 
         $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
 
-        if (!$this->getAclForUser()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($request->get('base_id'), \ACL::CANADDRECORD)) {
             return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale'])
             ))->createResponse();
@@ -1002,7 +1002,7 @@ class V1Controller extends Controller
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->getBaseId();
         $collection = \collection::getByBaseId($this->app, $base_id);
-        if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($base_id, \ACL::CANADDRECORD)) {
             return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale.I18n'])
             ));
@@ -2447,7 +2447,7 @@ class V1Controller extends Controller
     {
         $collection = \collection::getByBaseId($this->app, $data->{'base_id'});
 
-        if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), \ACL::CANADDRECORD)) {
             $this->app->abort(403, sprintf('You can not create a story on this collection %s', $collection->get_base_id()));
         }
 
@@ -2838,7 +2838,7 @@ class V1Controller extends Controller
     {
         $user = $this->getApiAuthenticatedUser();
         $databox = $this->findDataboxById($request->attributes->get('databox_id'));
-        if (!$this->getAclForUser($user)->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct')) {
+        if (!$this->getAclForUser($user)->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT)) {
             return Result::createError($request, 401, 'You are not authorized')->createResponse();
         }
 

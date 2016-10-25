@@ -572,10 +572,10 @@ abstract class PhraseanetTestCase extends WebTestCase
             $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
             $rights = [
-                'bas_manage'        => '1'
-                , 'bas_modify_struct' => '1'
-                , 'bas_modif_th'      => '1'
-                , 'bas_chupub'        => '1'
+                \ACL::BAS_MANAGE        => '1',
+                \ACL::BAS_MODIFY_STRUCT => '1',
+                \ACL::BAS_MODIF_TH      => '1',
+                \ACL::BAS_CHUPUB        => '1'
             ];
 
             $app->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
@@ -597,24 +597,24 @@ abstract class PhraseanetTestCase extends WebTestCase
                 $app->getAclForUser($user)->update_rights_to_base($base_id, [\ACL::ORDER_MASTER => true]);
 
                 $rights = [
-                    \ACL::CANPUTINALBUM     => '1',
-                    \ACL::CANDWNLDHD        => '1',
+                    \ACL::CANPUTINALBUM      => '1',
+                    \ACL::CANDWNLDHD         => '1',
                     'candwnldsubdef'    => '1',
                     \ACL::NOWATERMARK       => '1',
-                    \ACL::CANDWNLDPREVIEW   => '1',
-                    \ACL::CANCMD            => '1',
-                    \ACL::CANADMIN          => '1',
-                    \ACL::CANREPORT         => '1',
-                    \ACL::CANPUSH           => '1',
+                    \ACL::CANDWNLDPREVIEW    => '1',
+                    \ACL::CANCMD             => '1',
+                    \ACL::CANADMIN           => '1',
+                    \ACL::CANREPORT          => '1',
+                    \ACL::CANPUSH            => '1',
                     'creationdate'      => '1',
-                    \ACL::CANADDRECORD      => '1',
-                    \ACL::CANMODIFRECORD    => '1',
-                    \ACL::CANDELETERECORD   => '1',
-                    \ACL::CHGSTATUS         => '1',
-                    \ACL::IMGTOOLS          => '1',
-                    \ACL::MANAGE            => '1',
-                    \ACL::MODIFY_STRUCT     => '1',
-                    'bas_modify_struct' => '1'
+                    \ACL::CANADDRECORD       => '1',
+                    \ACL::CANMODIFRECORD     => '1',
+                    \ACL::CANDELETERECORD    => '1',
+                    \ACL::CHGSTATUS          => '1',
+                    \ACL::IMGTOOLS           => '1',
+                    \ACL::COLL_MANAGE        => '1',
+                    \ACL::COLL_MODIFY_STRUCT => '1',
+                    \ACL::BAS_MODIFY_STRUCT  => '1'
                 ];
 
                 $app->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);

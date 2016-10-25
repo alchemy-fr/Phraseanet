@@ -307,9 +307,10 @@ class record_preview extends record_adapter
 
         $tab = [];
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())
+            ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT);
 
-        $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
+        $sql = 'SELECT d.* , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
                 WHERE d.log_id = l.id
                 AND d.record_id = :record_id ';
@@ -374,8 +375,8 @@ class record_preview extends record_adapter
             return $this->view_popularity;
         }
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
-            $this->getBaseId(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())
+            ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT);
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->view_popularity = false;
@@ -458,8 +459,8 @@ class record_preview extends record_adapter
             return $this->refferer_popularity;
         }
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base(
-            $this->getBaseId(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())
+            ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT);
 
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
             $this->refferer_popularity = false;
@@ -526,7 +527,8 @@ class record_preview extends record_adapter
             return $this->download_popularity;
         }
 
-        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), 'canreport');
+        $report = $this->app->getAclForUser($this->app->getAuthenticatedUser())
+            ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT);
 
         $ret = false;
         if ( ! $report && ! $this->app['conf']->get(['registry', 'webservices', 'google-charts-enabled'])) {
