@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Http\DeliverDataInterface;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\Order;
+use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Order\OrderElementTransformer;
 use Alchemy\Phrasea\Order\OrderFiller;
 use Alchemy\Phrasea\Order\OrderTransformer;
@@ -88,7 +89,7 @@ class ApiOrderController extends BaseOrderController
             ]);
         };
 
-        $builder = $this->app['repo.orders']->createQueryBuilder('o');
+        $builder = $this->getOrderRepository()->createQueryBuilder('o');
         $builder
             ->where($builder->expr()->eq('o.user', $this->getAuthenticatedUser()->getId()))
         ;
@@ -138,11 +139,10 @@ class ApiOrderController extends BaseOrderController
     }
 
     /**
-     * @param Request $request
      * @param int $orderId
      * @return Response
      */
-    public function getArchiveAction(Request $request, $orderId)
+    public function getArchiveAction($orderId)
     {
         $order = $this->findOr404($orderId);
 
@@ -166,6 +166,7 @@ class ApiOrderController extends BaseOrderController
         $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
         $exportData['export_name'] = $exportName;
 
+        /** @var Token $token */
         $token = $this->app['manipulator.token']->createDownloadToken($user, serialize($exportData));
         $lst = [];
 
@@ -180,7 +181,7 @@ class ApiOrderController extends BaseOrderController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        $file = \set_export::build_zip($this->app, $token, $exportData, $exportName);
+        $file = \set_export::build_zip($this->app, $token, $exportData, $token->getValue() . '.zip');
 
         return $this->deliverFile($file, $exportName, DeliverDataInterface::DISPOSITION_INLINE, 'application/zip');
     }
@@ -188,7 +189,6 @@ class ApiOrderController extends BaseOrderController
     public function acceptElementsAction(Request $request, $orderId)
     {
         $elementIds = $this->fetchElementIdsFromRequest($request);
-
         $elements = $this->doAcceptElements($orderId, $elementIds, $this->getAuthenticatedUser());
 
         $resource = new Collection($elements, function (BasketElement $element) {
