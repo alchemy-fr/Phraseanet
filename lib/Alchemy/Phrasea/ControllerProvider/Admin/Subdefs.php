@@ -41,7 +41,7 @@ class Subdefs implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->before(function (Request $request) use ($firewall) {
             $firewall->requireAccessToModule('admin')
-                ->requireRightOnSbas($request->attributes->get('sbas_id'), 'bas_modify_struct');
+                ->requireRightOnSbas($request->attributes->get('sbas_id'), \ACL::BAS_MODIFY_STRUCT);
         });
 
         $controllers->get('/{sbas_id}/', 'controller.admin.subdefs:indexAction')

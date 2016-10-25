@@ -1120,8 +1120,10 @@ class databox extends base implements ThumbnailedElement
             ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
                 $this->id, [
-                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                    \ACL::BAS_MANAGE        => 1,
+                    \ACL::BAS_MODIFY_STRUCT => 1,
+                    \ACL::BAS_MODIF_TH      => 1,
+                    \ACL::BAS_CHUPUB        => 1
                 ]
         );
 
@@ -1168,8 +1170,8 @@ class databox extends base implements ThumbnailedElement
                 \ACL::CANDELETERECORD => 1,
                 \ACL::CHGSTATUS => 1,
                 \ACL::IMGTOOLS => 1,
-                \ACL::MANAGE => 1,
-                \ACL::MODIFY_STRUCT => 1,
+                \ACL::COLL_MANAGE => 1,
+                \ACL::COLL_MODIFY_STRUCT => 1,
                 \ACL::NOWATERMARK => 1
             ]);
         }

@@ -115,7 +115,7 @@ class UploadController extends Controller
             throw new BadRequestHttpException('Missing base_id parameter');
         }
 
-        if (!$this->getAclForUser()->has_right_on_base($base_id, 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($base_id, \ACL::CANADDRECORD)) {
             throw new AccessDeniedHttpException('User is not allowed to add record on this collection');
         }
 
@@ -243,7 +243,7 @@ class UploadController extends Controller
     {
         $collections = [];
 
-        foreach ($acl->get_granted_base(['canaddrecord']) as $collection) {
+        foreach ($acl->get_granted_base([\ACL::CANADDRECORD]) as $collection) {
             $databox = $collection->get_databox();
 
             if ( ! isset($collections[$databox->get_sbas_id()])) {

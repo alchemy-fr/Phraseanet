@@ -51,7 +51,7 @@
   </li>
   {% endif %}
 
-  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('bas_chupub') %}
+  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
   <li class="">
     <a target="right" href="{{ path('admin_feeds_list') }}" class="ajax">
       <img src="/assets/common/images/icons/rss16.png" />
@@ -60,7 +60,7 @@
   </li>
   {% endif %}
 
-  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('taskmanager') %}
+  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::TASKMANAGER')) %}
   <li class="{% if feature == 'taskmanager' %}selected{% endif %}">
     <a target="right" href="{{ path('admin_tasks_list') }}" class="ajax">
       <img src="/assets/admin/images/TaskManager.png" />
@@ -110,7 +110,7 @@
         </div>
         <ul>
 
-        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas( sbas_id , 'bas_modify_struct') %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas( sbas_id , constant('\\ACL::BAS_MODIFY_STRUCT')) %}
           <li>
             <a target="right" class="ajax" href="{{ path('database_display_stucture', { 'databox_id' : sbas_id }) }}">
               <img src="/assets/common/images/icons/miniadjust01.gif"/>
@@ -168,8 +168,8 @@
 
         {% for collection in databox.get_collections()|sort_collections %}
           {% if (collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')])|keys
-              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::MANAGE')])|keys
-              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::MODIFY_STRUCT')])|keys) %}
+              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::COLL_MANAGE')])|keys
+              or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::COLL_MODIFY_STRUCT')])|keys) %}
 
           {% if feature == 'collection' and featured == collection.get_base_id() %}
               {% set coll_selected = true %}

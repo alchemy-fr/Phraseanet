@@ -90,6 +90,6 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
      */
     public function is_available(User $user)
     {
-        return $this->app->getAclForUser($user)->has_right('push');
+        return $this->app->getAclForUser($user)->has_right(\ACL::CANPUSH);
     }
 }

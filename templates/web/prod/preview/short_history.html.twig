@@ -55,7 +55,7 @@
           {{ 'report::Modification du document -- je ne me souviens plus de quoi...' | trans }}
         {% endif %}
           <span class="actor">
-          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'canreport') %}
+          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANREPORT')) %}
             {% if done['user'] and done['user'].getId() != app.getAuthenticatedUser().getId() %}
               {% set user_infos = done['user'].getDisplayName() %}
               {% trans with {'%user_infos%' : user_infos} %}report:: par %user_infos%{% endtrans %}

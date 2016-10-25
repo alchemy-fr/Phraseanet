@@ -341,54 +341,54 @@ class ACLTest extends \PhraseanetTestCase
         $databox = self::$DI['collection']->get_databox();
         $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
         $this->object->update_rights_to_sbas($databox->get_sbas_id(), [
-            'bas_modify_struct' => false,
-            'bas_modif_th'      => false,
+            \ACL::BAS_MODIFY_STRUCT  => false,
+            \ACL::BAS_MODIF_TH       => false,
         ]);
 
-        $this->assertFalse($this->object->has_right('bas_modify_struct'));
-        $this->assertFalse($this->object->has_right('bas_modif_th'));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIFY_STRUCT ));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIF_TH));
 
         $this->object->update_rights_to_sbas($databox->get_sbas_id(), [
-            'bas_modify_struct' => true,
+            \ACL::BAS_MODIFY_STRUCT  => true,
         ]);
 
-        $this->assertTrue($this->object->has_right('bas_modify_struct'));
-        $this->assertFalse($this->object->has_right('bas_modif_th'));
+        $this->assertTrue($this->object->has_right(\ACL::BAS_MODIFY_STRUCT ));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIF_TH));
     }
 
     public function testHasRightOnSbas()
     {
         $rights_false = [
-            'bas_modify_struct' => false,
-            'bas_manage'        => false,
-            'bas_chupub'        => false,
-            'bas_modif_th'      => false,
+            \ACL::BAS_MODIFY_STRUCT => false,
+            \ACL::BAS_MANAGE        => false,
+            \ACL::BAS_CHUPUB        => false,
+            \ACL::BAS_MODIF_TH      => false,
         ];
 
         $rights_true = [
-            'bas_modify_struct' => true,
-            'bas_manage'        => true,
-            'bas_chupub'        => true,
-            'bas_modif_th'      => true,
+            \ACL::BAS_MODIFY_STRUCT => true,
+            \ACL::BAS_MANAGE        => true,
+            \ACL::BAS_CHUPUB        => true,
+            \ACL::BAS_MODIF_TH      => true,
         ];
 
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
             $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
             $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_true);
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
             $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
         }
     }
 
@@ -568,7 +568,7 @@ class ACLTest extends \PhraseanetTestCase
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
-                $this->object->update_rights_to_base($base_id, ['canreport' => true]);
+                $this->object->update_rights_to_base($base_id, [\ACL::CANREPORT => true]);
                 $found = true;
                 break;
             }
@@ -580,7 +580,7 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->has_access_to_module('upload'));
 
         foreach (self::$DI['app']->getDataboxes() as $databox) {
-            $this->object->update_rights_to_sbas($databox->get_sbas_id(), ['bas_modif_th' => true]);
+            $this->object->update_rights_to_sbas($databox->get_sbas_id(), [\ACL::BAS_MODIF_TH => true]);
             $found = true;
         }
         $this->assertTrue($this->object->has_access_to_module('report'));
@@ -592,7 +592,7 @@ class ACLTest extends \PhraseanetTestCase
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
-                $this->object->update_rights_to_base($base_id, ['canaddrecord' => true]);
+                $this->object->update_rights_to_base($base_id, [\ACL::CANADDRECORD => true]);
                 $found = true;
                 break;
             }

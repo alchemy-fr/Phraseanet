@@ -38,7 +38,7 @@ class LazaretSubscriber extends AbstractNotificationSubscriber
             $query = $this->app['phraseanet.user-query'];
             $users = $query
                 ->on_base_ids([$lazaretFile->getBaseId()])
-                ->who_have_right(['canaddrecord'])
+                ->who_have_right([\ACL::CANADDRECORD])
                 ->execute()
                 ->get_results();
 

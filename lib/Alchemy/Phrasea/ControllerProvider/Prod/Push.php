@@ -46,7 +46,7 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $firewall = $this->getFirewall($app);
 
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('push');
+            $firewall->requireRight(\ACL::CANPUSH);
         });
 
         $controllers->post('/sendform/', 'controller.prod.push:postFormAction');

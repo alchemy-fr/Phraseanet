@@ -5,8 +5,8 @@
 
 {% for usr_id, data in datas %}
   {% if restrict == -1 %}
-    {% set restrict = data['restrict_dwnld'] %}
-  {% elseif restrict != data['restrict_dwnld'] %}
+    {% set restrict = data[constant('\\ACL::RESTRICT_DWNLD')] %}
+  {% elseif restrict != data[constant('\\ACL::RESTRICT_DWNLD')] %}
     {% set restrict = 2 %}
   {% endif %}
 

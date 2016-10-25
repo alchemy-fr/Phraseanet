@@ -31,8 +31,8 @@ class DataboxesController extends Controller
     {
         $acl = $this->getAclForUser();
         $sbasIds = array_merge(
-            array_keys($acl->get_granted_sbas(['bas_manage'])),
-            array_keys($acl->get_granted_sbas(['bas_modify_struct']))
+            array_keys($acl->get_granted_sbas([\ACL::BAS_MANAGE])),
+            array_keys($acl->get_granted_sbas([\ACL::BAS_MODIFY_STRUCT]))
         );
 
         $sbas = [];

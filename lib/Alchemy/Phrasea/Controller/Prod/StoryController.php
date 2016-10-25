@@ -35,7 +35,7 @@ class StoryController extends Controller
     {
         $collection = \collection::getByBaseId($this->app, $request->request->get('base_id'));
 
-        if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+        if (!$this->getAclForUser()->has_right_on_base($collection->get_base_id(), \ACL::CANADDRECORD)) {
             throw new AccessDeniedHttpException('You can not create a story on this collection');
         }
 

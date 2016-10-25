@@ -41,7 +41,7 @@ class Feeds implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(function () use ($firewall) {
             $firewall
                 ->requireAccessToModule('admin')
-                ->requireRight('bas_chupub');
+                ->requireRight(\ACL::BAS_CHUPUB);
         });
 
         $controllers->get('/list/', 'controller.admin.feeds:listFeedsAction')
