@@ -160,11 +160,9 @@ class ApiOrderController extends BaseOrderController
         $exportName = sprintf('%s/%s.zip', $this->app['tmp.download.path'], $export->getExportName());
 
         $user = $this->getAuthenticatedUser();
-
         $subdefs = $this->findDataboxSubdefNames();
 
         $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
-        $exportData['export_name'] = $exportName;
 
         /** @var Token $token */
         $token = $this->app['manipulator.token']->createDownloadToken($user, serialize($exportData));
