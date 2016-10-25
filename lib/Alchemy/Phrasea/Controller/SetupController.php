@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Setup\Installer;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -120,6 +121,8 @@ class SetupController extends Controller
             ]);
         }
 
+        $dbInfo = [];
+
         try {
             if ($databox_name) {
                 $dbInfo = [
@@ -145,6 +148,7 @@ class SetupController extends Controller
             $this->app['db.options.from_info']($abInfo),
             $this->app['dbs.options']
         );
+
         $this->app['orm.ems.options'] = array_merge(
             $this->app['orm.em.options.from_info']($dbInfo),
             $this->app['orm.em.options.from_info']($abInfo),
@@ -160,8 +164,7 @@ class SetupController extends Controller
             /** @var Installer $installer */
             $installer = $this->app['phraseanet.installer'];
 
-            $binaryData = [];
-            foreach ([
+            $binaryData = [
                 'php_binary'         => $request->request->get('binary_php'),
                 'swf_extract_binary' => $request->request->get('binary_swfextract'),
                 'pdf2swf_binary'     => $request->request->get('binary_pdf2swf'),
@@ -169,10 +172,8 @@ class SetupController extends Controller
                 'unoconv_binary'     => $request->request->get('binary_unoconv'),
                 'ffmpeg_binary'      => $request->request->get('binary_ffmpeg'),
                 'mp4box_binary'      => $request->request->get('binary_MP4Box'),
-                'pdftotext_binary'   => $request->request->get('binary_xpdf'),
-                     ] as $key => $path) {
-                $binaryData[$key] = $path;
-            }
+                'pdftotext_binary'   => $request->request->get('binary_xpdf')
+            ];
 
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
