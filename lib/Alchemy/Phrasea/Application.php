@@ -678,10 +678,9 @@ class Application extends SilexApplication
     private function setupMonolog()
     {
         $this['monolog.name'] = 'phraseanet';
-        $this['monolog.logfile'] = $this['log.path'] . '/app_error.log';
         $this['monolog.handler'] = $this->share(function (Application $app) {
             return new RotatingFileHandler(
-                $app['monolog.logfile'],
+                $app['log.path'] . '/app_error.log',
                 10,
                 Logger::ERROR,
                 $app['monolog.bubble'],
