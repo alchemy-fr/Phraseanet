@@ -54,12 +54,21 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $app['controller.api.v2.orders'] = $app->share(
             function (PhraseaApplication $app) {
-                return (new ApiOrderController($app))
+                $controller = new ApiOrderController(
+                    $app,
+                    $app['repo.orders'],
+                    $app['repo.order-elements'],
+                    $app['provider.order_basket']
+                );
+
+                $controller
                     ->setDispatcher($app['dispatcher'])
                     ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                     ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
                     ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                     ->setJsonBodyHelper($app['json.body_helper']);
+
+                return $controller;
             }
         );
     }
