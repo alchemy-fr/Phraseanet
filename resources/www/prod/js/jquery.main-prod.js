@@ -347,7 +347,7 @@ function resize() {
 
     if ($('#idFrameC').data('ui-resizable')) {
         $('#idFrameC').resizable('option', 'maxWidth', (480));
-        $('#idFrameC').resizable('option', 'minWidth', 300);
+        $('#idFrameC').resizable('option', 'minWidth', 360);
     }
 
     answerSizer();
@@ -1166,7 +1166,7 @@ $(document).ready(function () {
             $('#idFrameC').stop().animate({
                     width: nwidth
                 },
-                300,
+                360,
                 'linear',
                 function () {
                     answerSizer();
@@ -1178,9 +1178,9 @@ $(document).ready(function () {
 
     $('#idFrameC .ui-tabs-nav li').on('click', function (event) {
         if($('#idFrameC').attr('data-status') == 'closed'){
-            $('#idFrameC').width(300);
-            $('#rightFrame').css('left', 300);
-            $('#rightFrame').width($(window).width()-300);
+            $('#idFrameC').width(360);
+            $('#rightFrame').css('left', 360);
+            $('#rightFrame').width($(window).width()-360);
             $('#baskets, #proposals, #thesaurus_tab').hide();
             $('.ui-resizable-handle, #basket_menu_trigger').show();
             var IDname = $(this).attr('aria-controls');
@@ -1188,7 +1188,7 @@ $(document).ready(function () {
         }
 
         $('#idFrameC').attr('data-status', 'open');
-        $('.WZbasketTab').css('background-position', '9px 21px');
+        $('.WZbasketTab').css('background-position', '9px 25px');
         $('#idFrameC').removeClass('closed');
     });
 
@@ -1204,17 +1204,17 @@ $(document).ready(function () {
             $('#idFrameC').attr('data-status', 'closed');
             $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
             $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
-            $('.WZbasketTab').css('background-position', '15px 16px');
+            $('.WZbasketTab').css('background-position', '15px 25px');
             $('#idFrameC').addClass('closed');
             previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
         }else{
             $(this).find('i').removeClass('icon-double-angle-right').addClass('icon-double-angle-left')
-            $('#idFrameC').width(300);
-            $('#rightFrame').css('left', 300);
-            $('#rightFrame').width($(window).width()-300);
+            $('#idFrameC').width(360);
+            $('#rightFrame').css('left', 360);
+            $('#rightFrame').width($(window).width()-360);
             $('#idFrameC').attr('data-status', 'open');
             $('.ui-resizable-handle, #basket_menu_trigger').show();
-            $('.WZbasketTab').css('background-position', '9px 16px');
+            $('.WZbasketTab').css('background-position', '9px 25px');
             $('#idFrameC').removeClass('closed');
             $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
