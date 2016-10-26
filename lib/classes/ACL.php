@@ -1153,43 +1153,71 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
 
-        $sql_i = "INSERT INTO basusr (base_id, usr_id, actif) VALUES (:base_id, :usr_id, '1')";
-        $sql_u = "UPDATE basusr SET UPDATE actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
-        $stmt_i = $this->app->getApplicationBox()->get_connection()->prepare($sql_i);
-        $stmt_u = $this->app->getApplicationBox()->get_connection()->prepare($sql_u);
-
         $usr_id = $this->user->getId();
         foreach ($base_ids as $base_id) {
-            if (!isset($this->_rights_bas[$base_id]) || $this->_rights_bas[$base_id][self::ACTIF] === false) {
-                try {
-                    $stmt_i->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-                    if($stmt_i->rowCount() > 0) {
-                        $this->app['dispatcher']->dispatch(
-                            AclEvents::ACCESS_TO_BASE_GRANTED,
-                            new AccessToBaseGrantedEvent(
-                                $this,
-                                array(
-                                    'base_id'=>$base_id
-                                )
-                            )
-                        );
-                    }
-                    else {
-                        $stmt_u->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-                    }
-                }
-                catch(\Exception $e) {
-                    // no-opp
-                }
+            if (isset($this->_rights_bas[$base_id]) && $this->_rights_bas[$base_id][self::ACTIF] == true) {
+                continue;
+            }
+
+            if($this->try_give_access_to_base_insert($base_id, $usr_id) == true) {
+                $this->app['dispatcher']->dispatch(
+                    AclEvents::ACCESS_TO_BASE_GRANTED,
+                    new AccessToBaseGrantedEvent(
+                        $this,
+                        array(
+                            'base_id'=>$base_id
+                        )
+                    )
+                );
+            }
+            else {
+                $this->try_give_access_to_base_update($base_id, $usr_id);
             }
         }
-        $stmt_u->closeCursor();
-        $stmt_i->closeCursor();
 
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
         $this->inject_rights();
 
         return $this;
+    }
+
+    private function try_give_access_to_base_insert($base_id, $usr_id)
+    {
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "INSERT INTO basusr (base_id, usr_id, actif) VALUES (:base_id, :usr_id, '1')";
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
+        $inserted = false;
+        try {
+            $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
+            if ($stmt->rowCount() > 0) {
+                $inserted = true;
+            }
+            $stmt->closeCursor();
+        }
+        catch(DBALException $e) {
+            // no-op, mostly the row did exist
+        }
+
+        return $inserted;
+    }
+
+    private function try_give_access_to_base_update($base_id, $usr_id)
+    {
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "UPDATE basusr SET UPDATE actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
+
+        try {
+            $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
+            $stmt->closeCursor();
+        }
+        catch(DBALException $e) {
+            // no-op, mostly the row was deleted
+        }
     }
 
     /**

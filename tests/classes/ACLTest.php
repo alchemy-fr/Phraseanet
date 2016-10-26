@@ -452,21 +452,21 @@ class ACLTest extends \PhraseanetTestCase
                         'mask_and' => 42
                     ]
                 );
-                $this->assertEquals('42', $this->object->get_mask_and($base_id));
+                $this->assertEquals(42, $this->object->get_mask_and($base_id));
                 $this->object->update_rights_to_base(
                     $base_id,
                     [
                         'mask_and' => 1
                     ]
                 );
-                $this->assertEquals('1', $this->object->get_mask_and($base_id));
+                $this->assertEquals(1, $this->object->get_mask_and($base_id));
                 $this->object->update_rights_to_base(
                     $base_id,
                     [
                         'mask_and' => 0
                     ]
                 );
-                $this->assertEquals('0', $this->object->get_mask_and($base_id));
+                $this->assertEquals(0, $this->object->get_mask_and($base_id));
             }
         }
     }
@@ -531,8 +531,9 @@ class ACLTest extends \PhraseanetTestCase
             $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
         }
 
-        if ($n === 0)
+        if ($n === 0) {
             $this->fail('Not enough collection to test');
+        }
 
         $this->object->give_access_to_base($base_ids);
         $bases = array_keys($this->object->get_granted_base());

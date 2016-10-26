@@ -40,7 +40,7 @@
         <img src="/assets/common/images/icons/feedback16.png"/>
       </button>
       {% endif %}
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(cnstant('\\ACL::BAS_CHUPUB')) %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
       <button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">
         <img src="/assets/common/images/icons/door.png"/>
       </button>
