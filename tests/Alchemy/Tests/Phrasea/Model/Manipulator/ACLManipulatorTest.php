@@ -2,6 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+use \ACL;
+use \Databox;
+
 /**
  * @group functional
  * @group legacy
@@ -11,46 +14,53 @@ class ACLManipulatorTest extends \PhraseanetTestCase
     public function testResetAdminRights()
     {
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('toto'), 'toto', null, true);
+        /** @var ACL $acl */
         $acl = self::$DI['app']->getAclForUser($user);
 
         $databoxId = null;
         $baseId = null;
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
-            $acl->update_rights_to_sbas($databoxId, [
-                \ACL::BAS_MANAGE        => '0',
-                \ACL::BAS_MODIFY_STRUCT => '0',
-                \ACL::BAS_MODIF_TH      => '0',
-                \ACL::BAS_CHUPUB        => '0',
-            ]);
+            $acl->update_rights_to_sbas(
+                $databoxId,
+                [
+                    \ACL::BAS_MANAGE        => false,
+                    \ACL::BAS_MODIFY_STRUCT => false,
+                    \ACL::BAS_MODIF_TH      => false,
+                    \ACL::BAS_CHUPUB        => false
+                ]
+            );
 
             foreach ($databox->get_collections() as $collection) {
                 $baseId = $collection->get_base_id();
                 $acl->set_limits($baseId, true);
                 $acl->set_masks_on_base($baseId, '1', '1', '1', '1');
 
-                $acl->update_rights_to_base($baseId, [
-                    \ACL::CANPUTINALBUM      => '0',
-                    \ACL::CANDWNLDHD         => '0',
-                    'candwnldsubdef'    => '0',
-                    \ACL::NOWATERMARK        => '0',
-                    \ACL::CANDWNLDPREVIEW    => '0',
-                    \ACL::CANCMD             => '0',
-                    \ACL::CANADMIN           => '0',
-                    \ACL::CANREPORT          => '0',
-                    \ACL::CANPUSH            => '0',
-                    'creationdate'      => '0',
-                    \ACL::CANADDRECORD       => '0',
-                    \ACL::CANMODIFRECORD     => '0',
-                    \ACL::CANDELETERECORD    => '0',
-                    \ACL::CHGSTATUS          => '0',
-                    \ACL::IMGTOOLS           => '0',
-                    \ACL::COLL_MANAGE        => '0',
-                    \ACL::COLL_MODIFY_STRUCT => '0',
-                    \ACL::BAS_MODIFY_STRUCT  => '0'
-                ]);
+                $acl->update_rights_to_base(
+                    $baseId,
+                    [
+                        'creationdate'      => '0',         // todo: wtf
+                        \ACL::CANPUTINALBUM      => false,
+                        \ACL::CANDWNLDHD         => false,
+                        \ACL::NOWATERMARK        => false,
+                        \ACL::CANDWNLDPREVIEW    => false,
+                        \ACL::CANCMD             => false,
+                        \ACL::CANADMIN           => false,
+                        \ACL::CANREPORT          => false,
+                        \ACL::CANPUSH            => false,
+                        \ACL::CANADDRECORD       => false,
+                        \ACL::CANMODIFRECORD     => false,
+                        \ACL::CANDELETERECORD    => false,
+                        \ACL::CHGSTATUS          => false,
+                        \ACL::IMGTOOLS           => false,
+                        \ACL::COLL_MANAGE        => false,
+                        \ACL::COLL_MODIFY_STRUCT => false,
+                        \ACL::BAS_MODIFY_STRUCT  => false
+                    ]
+                );
 
                 break 2;
             }

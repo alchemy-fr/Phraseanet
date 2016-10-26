@@ -115,13 +115,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             . " SUM(time_limited) AS time_limited,\n"
             . " SUM(restrict_dwnld) AS restrict_dwnld,\n"
 
-            // --- wtf doing sum on non booleans ?
+            // --- todo : wtf doing sum on non booleans ?
             . " SUM(remain_dwnld) AS remain_dwnld,\n"
             . " SUM(month_dwnld_max) AS month_dwnld_max,\n"
             . " SUM(mask_and + mask_xor) AS masks,\n"
             // ---
 
-            // -- wtf no aggregate fct ?
+            // -- todo : wtf no aggregate fct ?
             . " DATE_FORMAT(limited_from,'%Y%m%d') AS limited_from,\n"
             . " DATE_FORMAT(limited_to,'%Y%m%d') AS limited_to\n"
             // ---
@@ -509,9 +509,13 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 }
                 $rights[$k] = $right . '_' . $base_id;
             }
+
+            // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
+            //        as required by ACL::update_rights_to_bas(...)
             $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
+                // p is like {bid}_{right} => right-value
                 if (trim($v) == '')
                     continue;
 
@@ -524,10 +528,14 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                     if ($v === '1') {
                         $create_sbas[\phrasea::sbasFromBas($this->app, $base_id)] = \phrasea::sbasFromBas($this->app, $base_id);
                         $create[] = $base_id;
-                    } else
+                    }
+                    else {
                         $delete[] = $base_id;
-                } else {
+                    }
+                }
+                else {
                     $create_sbas[\phrasea::sbasFromBas($this->app, $base_id)] = \phrasea::sbasFromBas($this->app, $base_id);
+                    // todo : wtf $update is arg. for ACL::update_rights_to_base(...) but $v is always a string. how to convert to bool ?
                     $update[$base_id][$p] = $v;
                 }
             }
@@ -550,6 +558,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $rights[$k] = $right . '_' . $databox->get_sbas_id();
             }
 
+            // todo : wtf check if parm contains good types (a checkbox should be a bool, not a "0" or "1"
+            //        as required by ACL::update_rights_to_sbas(...)
             $parm = $this->unserializedRequestData($this->app['request'], $rights, 'values');
 
             foreach ($parm as $p => $v) {
@@ -577,11 +587,18 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                     ->give_access_to_sbas($create_sbas);
 
                 foreach ($update as $base_id => $rights) {
-                    $this->app->getAclForUser($user)->update_rights_to_base($base_id, $rights);
+                    $this->app->getAclForUser($user)
+                        ->update_rights_to_base(
+                            $base_id,
+                            $rights
+                        );
                 }
 
                 foreach ($update_sbas as $sbas_id => $rights) {
-                    $this->app->getAclForUser($user)->update_rights_to_sbas($sbas_id, $rights);
+                    $this->app->getAclForUser($user)->update_rights_to_sbas(
+                        $sbas_id,
+                        $rights
+                    );
                 }
 
                 $this->app->getApplicationBox()->get_connection()->commit();

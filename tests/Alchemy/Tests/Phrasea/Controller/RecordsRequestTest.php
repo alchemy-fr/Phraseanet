@@ -79,7 +79,12 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimpleWithoutSbasRights()
     {
         self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
-            ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), [\ACL::BAS_CHUPUB => 0]);
+            ->update_rights_to_sbas(
+                self::$DI['record_2']->get_sbas_id(),
+                [
+                    \ACL::BAS_CHUPUB => false
+                ]
+            );
 
         $request = new Request([
             'lst' => implode(';', [
@@ -107,7 +112,9 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
         self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
             ->update_rights_to_base(
                 self::$DI['record_2']->get_base_id(),
-                [\ACL::CHGSTATUS => 0]
+                [
+                    \ACL::CHGSTATUS => false
+                ]
             );
 
         $request = new Request([

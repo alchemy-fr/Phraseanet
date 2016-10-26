@@ -106,7 +106,7 @@
                 <div class="controls">
                     <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.isPublic() %}disabled="disabled"{% endif %}>
                         <option value="">{{ 'Non-Restreinte (publique)' | trans }}</option>
-                        {% for databox in app.getAclForUser(app.getAuthenticatedUser()).get_granted_sbas(constant('\\ACL::BAS_CHUPUB')) %}
+                        {% for databox in app.getAclForUser(app.getAuthenticatedUser()).get_granted_sbas([constant('\\ACL::BAS_CHUPUB')]) %}
                             <optgroup label="{{ databox.get_label(app['locale']) }}">
                                 {% for collection in databox.get_collections() %}
                                     <option {% if feed.getBaseId() and feed.getCollection(app).get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>

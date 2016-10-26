@@ -1,6 +1,6 @@
 {% import 'common/macros.html.twig' as macro %}
 
-  {% set can_edit = granted_on_collection(record.baseId, constant('\\ACL::CANMODIFRECORD')) %}
+  {% set can_edit = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
   {% set can_see_business = can_edit %}
 
   {% if can_edit %}

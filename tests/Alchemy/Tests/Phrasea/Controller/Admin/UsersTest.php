@@ -1,6 +1,8 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
+
+use \Databox;
 use Symfony\Component\HttpKernel\Client;
 
 /**
@@ -339,29 +341,34 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']->getAclForUser($user)->give_access_to_sbas(array_keys(self::$DI['app']->getDataboxes()));
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
 
-            $rights = [
-                \ACL::BAS_MANAGE        => '1',
-                \ACL::BAS_MODIFY_STRUCT => '1',
-                \ACL::BAS_MODIF_TH      => '1',
-                \ACL::BAS_CHUPUB        => '1',
-            ];
-
-            self::$DI['app']->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            self::$DI['app']->getAclForUser($user)
+                ->update_rights_to_sbas(
+                    $databox->get_sbas_id(),
+                    [
+                        \ACL::BAS_MANAGE        => true,
+                        \ACL::BAS_MODIFY_STRUCT => true,
+                        \ACL::BAS_MODIF_TH      => true,
+                        \ACL::BAS_CHUPUB        => true,
+                    ]
+                );
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 self::$DI['app']->getAclForUser($user)->give_access_to_base([$base_id]);
 
-                $rights = [
-                    \ACL::CANPUTINALBUM  => '1',
-                    \ACL::CANDWNLDHD     => '1',
-                    'candwnldsubdef' => '1',
-                    \ACL::NOWATERMARK    => '1'
-                ];
+                self::$DI['app']->getAclForUser($user)
+                    ->update_rights_to_base(
+                        $collection->get_base_id(),
+                        [
+                            \ACL::CANPUTINALBUM  => true,
+                            \ACL::CANDWNLDHD     => true,
+                            \ACL::NOWATERMARK    => true
+                        ]
+                    );
 
-                self::$DI['app']->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);
                 break;
             }
         }
@@ -444,7 +451,13 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         // create a template
         if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
             $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']->getAuthenticatedUser());
-            self::$DI['app']->getAclForUser($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
+            self::$DI['app']->getAclForUser($user)
+                ->update_rights_to_base(
+                    self::$DI['collection']->get_base_id(),
+                    [
+                        \ACL::ACTIF => true
+                    ]
+                );
         }
 
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')

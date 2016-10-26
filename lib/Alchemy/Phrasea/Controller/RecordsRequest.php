@@ -219,8 +219,8 @@ class RecordsRequest extends ArrayCollection
             $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId(
-                $app, $app->getAuthenticatedUser()
-                , $request->get('story')
+                $app, $app->getAuthenticatedUser(),
+                $request->get('story')
             );
 
             $received[$storyWZ->getRecord($app)->get_serialize_key()] = $storyWZ->getRecord($app);

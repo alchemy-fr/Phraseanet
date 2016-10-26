@@ -461,7 +461,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
-        $grantedCollections = array_keys($acl->get_granted_base(['actif']));
+        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
 
         if (count($grantedCollections) === 0) {
             return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];

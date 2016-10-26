@@ -37,7 +37,7 @@ class ProdOrderController extends BaseOrderController
      */
     public function createOrder(Request $request)
     {
-        $records = RecordsRequest::fromRequest($this->app, $request, true, ['cancmd']);
+        $records = RecordsRequest::fromRequest($this->app, $request, true, [\ACL::CANCMD]);
 
         try {
             if ($records->isEmpty()) {

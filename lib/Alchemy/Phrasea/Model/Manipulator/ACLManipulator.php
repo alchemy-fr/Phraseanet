@@ -71,12 +71,15 @@ class ACLManipulator implements ManipulatorInterface
     {
         $collections = $databox->get_collections();
 
-        $acl->update_rights_to_sbas($databox->get_sbas_id(), [
-            \ACL::BAS_MANAGE        => '1',
-            \ACL::BAS_MODIFY_STRUCT => '1',
-            \ACL::BAS_MODIF_TH      => '1',
-            \ACL::BAS_CHUPUB        => '1'
-        ]);
+        $acl->update_rights_to_sbas(
+            $databox->get_sbas_id(),
+            [
+                \ACL::BAS_MANAGE        => true,
+                \ACL::BAS_MODIFY_STRUCT => true,
+                \ACL::BAS_MODIF_TH      => true,
+                \ACL::BAS_CHUPUB        => true
+            ]
+        );
 
         $acl->give_access_to_base(array_map(function (\collection $collection) {
             return $collection->get_base_id();
@@ -100,26 +103,28 @@ class ACLManipulator implements ManipulatorInterface
         $acl->set_limits($baseId, false);
         $acl->remove_quotas_on_base($baseId);
         $acl->set_masks_on_base($baseId, '0', '0', '0', '0');
-        $acl->update_rights_to_base($baseId, [
-            \ACL::CANPUTINALBUM      => '1',
-            \ACL::CANDWNLDHD         => '1',
-            'candwnldsubdef'    => '1',
-            \ACL::NOWATERMARK        => '1',
-            \ACL::CANDWNLDPREVIEW    => '1',
-            \ACL::CANCMD             => '1',
-            \ACL::CANADMIN           => '1',
-            \ACL::CANREPORT          => '1',
-            \ACL::CANPUSH            => '1',
-            'creationdate'      => '1',
-            \ACL::CANADDRECORD       => '1',
-            \ACL::CANMODIFRECORD     => '1',
-            \ACL::CANDELETERECORD    => '1',
-            \ACL::CHGSTATUS          => '1',
-            \ACL::IMGTOOLS           => '1',
-            \ACL::COLL_MANAGE        => '1',
-            \ACL::COLL_MODIFY_STRUCT => '1',
-            \ACL::BAS_MODIFY_STRUCT  => '1'
-        ]);
+        $acl->update_rights_to_base(
+            $baseId,
+            [
+                'creationdate'      => '1',         // todo : wtf
+                \ACL::CANPUTINALBUM      => true,
+                \ACL::CANDWNLDHD         => true,
+                \ACL::NOWATERMARK        => true,
+                \ACL::CANDWNLDPREVIEW    => true,
+                \ACL::CANCMD             => true,
+                \ACL::CANADMIN           => true,
+                \ACL::CANREPORT          => true,
+                \ACL::CANPUSH            => true,
+                \ACL::CANADDRECORD       => true,
+                \ACL::CANMODIFRECORD     => true,
+                \ACL::CANDELETERECORD    => true,
+                \ACL::CHGSTATUS          => true,
+                \ACL::IMGTOOLS           => true,
+                \ACL::COLL_MANAGE        => true,
+                \ACL::COLL_MODIFY_STRUCT => true,
+                \ACL::BAS_MODIFY_STRUCT  => true
+            ]
+        );
     }
 
     /**

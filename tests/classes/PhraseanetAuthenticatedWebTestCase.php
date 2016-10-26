@@ -108,14 +108,15 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
         self::$createdDataboxes[] = $databox;
 
-        $rights = [
-            \ACL::BAS_MANAGE        => '1',
-            \ACL::BAS_MODIFY_STRUCT => '1',
-            \ACL::BAS_MODIF_TH      => '1',
-            \ACL::BAS_CHUPUB        => '1'
-        ];
-
-        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas(
+            $databox->get_sbas_id(),
+            [
+                \ACL::BAS_MANAGE        => true,
+                \ACL::BAS_MODIFY_STRUCT => true,
+                \ACL::BAS_MODIF_TH      => true,
+                \ACL::BAS_CHUPUB        => true
+            ]
+        );
 
         $databox->registerAdmin($app->getAuthenticatedUser());
 

@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        {% set can_see_business = granted_on_collection(record.baseId, constant('\\ACL::CANMODIFRECORD')) %}
+        {% set can_see_business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
 
         <div class="thumb captionTips"
              {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro.caption(record, can_see_business, false) | e }}"{% endif %}
@@ -105,7 +105,7 @@
                             <tr>
                                 <td>
                                     <div class="context-menu context-menu-theme-vista">
-                                        {% if granted_on_collection(record.baseId, constant('\\ACL::CANPUTINALBUM')) and not record.story %}
+                                        {% if granted_on_collection(record.baseId, [constant('\\ACL::CANPUTINALBUM')]) and not record.story %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
@@ -113,7 +113,7 @@
                                                 </div>
                                             </div>
                                         {% endif %}
-                                        {% if granted_on_collection(record.baseId, constant('\\ACL::CANDWNLDPREVIEW')) or granted_on_collection(record.baseId, constant('\\ACL::CANDWNLDHD')) %}
+                                        {% if granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDPREVIEW')]) or granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDHD')]) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
