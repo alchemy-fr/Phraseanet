@@ -1119,11 +1119,12 @@ class databox extends base implements ThumbnailedElement
         $this->app->getAclForUser($user)
             ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
-                $this->id, [
-                    \ACL::BAS_MANAGE        => 1,
-                    \ACL::BAS_MODIFY_STRUCT => 1,
-                    \ACL::BAS_MODIF_TH      => 1,
-                    \ACL::BAS_CHUPUB        => 1
+                $this->id,
+                [
+                    \ACL::BAS_MANAGE        => true,
+                    \ACL::BAS_MODIFY_STRUCT => true,
+                    \ACL::BAS_MODIF_TH      => true,
+                    \ACL::BAS_CHUPUB        => true
                 ]
         );
 
@@ -1133,9 +1134,7 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = "INSERT INTO bas
-                            (base_id, active, server_coll_id, sbas_id) VALUES
-                            (null,'1', :coll_id, :sbas_id)";
+        $sql = "INSERT INTO bas (active, server_coll_id, sbas_id) VALUES ('1', :coll_id, :sbas_id)";
         $stmt = $conn->prepare($sql);
 
         $base_ids = [];
@@ -1156,24 +1155,28 @@ class databox extends base implements ThumbnailedElement
         $this->app->getAclForUser($user)->give_access_to_base($base_ids);
 
         foreach ($base_ids as $base_id) {
-            $this->app->getAclForUser($user)->update_rights_to_base($base_id, [
-                \ACL::CANPUSH => 1,
-                \ACL::CANCMD => 1,
-                \ACL::CANPUTINALBUM => 1,
-                \ACL::CANDWNLDHD => 1,
-                \ACL::CANDWNLDPREVIEW => 1,
-                \ACL::CANADMIN => 1,
-                \ACL::ACTIF => 1,
-                \ACL::CANREPORT => 1,
-                \ACL::CANADDRECORD => 1,
-                \ACL::CANMODIFRECORD => 1,
-                \ACL::CANDELETERECORD => 1,
-                \ACL::CHGSTATUS => 1,
-                \ACL::IMGTOOLS => 1,
-                \ACL::COLL_MANAGE => 1,
-                \ACL::COLL_MODIFY_STRUCT => 1,
-                \ACL::NOWATERMARK => 1
-            ]);
+            $this->app->getAclForUser($user)
+                ->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::CANPUSH            => true,
+                        \ACL::CANCMD             => true,
+                        \ACL::CANPUTINALBUM      => true,
+                        \ACL::CANDWNLDHD         => true,
+                        \ACL::CANDWNLDPREVIEW    => true,
+                        \ACL::CANADMIN           => true,
+                        \ACL::ACTIF              => true,
+                        \ACL::CANREPORT          => true,
+                        \ACL::CANADDRECORD       => true,
+                        \ACL::CANMODIFRECORD     => true,
+                        \ACL::CANDELETERECORD    => true,
+                        \ACL::CHGSTATUS          => true,
+                        \ACL::IMGTOOLS           => true,
+                        \ACL::COLL_MANAGE        => true,
+                        \ACL::COLL_MODIFY_STRUCT => true,
+                        \ACL::NOWATERMARK        => true
+                    ]
+                );
         }
 
         $this->app->getAclForUser($user)->delete_data_from_cache();

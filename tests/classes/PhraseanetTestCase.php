@@ -571,14 +571,15 @@ abstract class PhraseanetTestCase extends WebTestCase
         foreach ($app->getDataboxes() as $databox) {
             $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_SBAS);
 
-            $rights = [
-                \ACL::BAS_MANAGE        => '1',
-                \ACL::BAS_MODIFY_STRUCT => '1',
-                \ACL::BAS_MODIF_TH      => '1',
-                \ACL::BAS_CHUPUB        => '1'
-            ];
-
-            $app->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            $app->getAclForUser($user)->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                [
+                    \ACL::BAS_MANAGE        => true,
+                    \ACL::BAS_MODIFY_STRUCT => true,
+                    \ACL::BAS_MODIF_TH      => true,
+                    \ACL::BAS_CHUPUB        => true
+                ]
+            );
 
             foreach ($databox->get_collections() as $collection) {
                 if (null !== $base_ids && !in_array($collection->get_base_id(), (array) $base_ids, true)) {
@@ -594,30 +595,35 @@ abstract class PhraseanetTestCase extends WebTestCase
 
                 $app->getAclForUser($user)->delete_data_from_cache(\ACL::CACHE_RIGHTS_BAS);
                 $app->getAclForUser($user)->give_access_to_base([$base_id]);
-                $app->getAclForUser($user)->update_rights_to_base($base_id, [\ACL::ORDER_MASTER => true]);
+                $app->getAclForUser($user)->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::ORDER_MASTER => true
+                    ]
+                );
 
-                $rights = [
-                    \ACL::CANPUTINALBUM      => '1',
-                    \ACL::CANDWNLDHD         => '1',
-                    'candwnldsubdef'    => '1',
-                    \ACL::NOWATERMARK       => '1',
-                    \ACL::CANDWNLDPREVIEW    => '1',
-                    \ACL::CANCMD             => '1',
-                    \ACL::CANADMIN           => '1',
-                    \ACL::CANREPORT          => '1',
-                    \ACL::CANPUSH            => '1',
-                    'creationdate'      => '1',
-                    \ACL::CANADDRECORD       => '1',
-                    \ACL::CANMODIFRECORD     => '1',
-                    \ACL::CANDELETERECORD    => '1',
-                    \ACL::CHGSTATUS          => '1',
-                    \ACL::IMGTOOLS           => '1',
-                    \ACL::COLL_MANAGE        => '1',
-                    \ACL::COLL_MODIFY_STRUCT => '1',
-                    \ACL::BAS_MODIFY_STRUCT  => '1'
-                ];
-
-                $app->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);
+                $app->getAclForUser($user)->update_rights_to_base(
+                    $collection->get_base_id(),
+                    [
+                        'creationdate' => '1',              // todo : wtf
+                        \ACL::CANPUTINALBUM      => true,
+                        \ACL::CANDWNLDHD         => true,
+                        \ACL::NOWATERMARK        => true,
+                        \ACL::CANDWNLDPREVIEW    => true,
+                        \ACL::CANCMD             => true,
+                        \ACL::CANADMIN           => true,
+                        \ACL::CANREPORT          => true,
+                        \ACL::CANPUSH            => true,
+                        \ACL::CANADDRECORD       => true,
+                        \ACL::CANMODIFRECORD     => true,
+                        \ACL::CANDELETERECORD    => true,
+                        \ACL::CHGSTATUS          => true,
+                        \ACL::IMGTOOLS           => true,
+                        \ACL::COLL_MANAGE        => true,
+                        \ACL::COLL_MODIFY_STRUCT => true,
+                        \ACL::BAS_MODIFY_STRUCT  => true
+                    ]
+                );
             }
         }
     }

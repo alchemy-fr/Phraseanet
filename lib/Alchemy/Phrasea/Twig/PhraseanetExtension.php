@@ -133,7 +133,7 @@ class PhraseanetExtension extends \Twig_Extension
 
         $structure = $databox->getStatusStructure()->toArray();
 
-        if (!$this->isGrantedOnCollection($record->getBaseId(), \ACL::CHGSTATUS)) {
+        if (!$this->isGrantedOnCollection($record->getBaseId(), [\ACL::CHGSTATUS])) {
             $structure = array_filter($structure, function($status) {
                 return  (bool) $status['printable'];
             });
@@ -175,16 +175,25 @@ class PhraseanetExtension extends \Twig_Extension
         return true;
     }
 
-    public function isGrantedOnCollection($baseId, $rights)
+    /**
+     * returns true if user is authenticated and has all the passed rights on the base
+     * todo : wtf $rights is an array since it's never called with more than 1 right in it ?
+     *
+     * @param $baseId
+     * @param array $rights
+     * @return bool
+     * @throws \Exception
+     */
+    public function isGrantedOnCollection($baseId, Array $rights)
     {
         if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return false;
         }
 
-        $rights = (array) $rights;
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($rights as $right) {
-            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($baseId, $right)) {
+            if (! $acl->has_right_on_base($baseId, $right)) {
 
                 return false;
             }
@@ -196,6 +205,7 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCollectionLogo($baseId)
     {
         if (false === $this->app['filesystem']->exists(sprintf('%s/config/minilogos/%s', $this->app['root.path'], $baseId))) {
+
             return '';
         }
 

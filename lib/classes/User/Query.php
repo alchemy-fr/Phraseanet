@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Utilities\Countries;
 
-class User_Query implements User_QueryInterface
+class User_Query
 {
     const ORD_ASC = 'ASC';
     const ORD_DESC = 'DESC';

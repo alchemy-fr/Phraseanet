@@ -268,27 +268,28 @@ class CollectionService
      */
     public function grantAdminRights(CollectionReference $reference, User $user)
     {
-        $rights = [
-            \ACL::CANPUTINALBUM       => "1",
-            \ACL::CANDWNLDHD          => "1",
-            \ACL::NOWATERMARK         => "1",
-            \ACL::CANDWNLDPREVIEW     => "1",
-            \ACL::CANCMD              => "1",
-            \ACL::CANADMIN            => "1",
-            \ACL::ACTIF               => "1",
-            \ACL::CANREPORT           => "1",
-            \ACL::CANPUSH             => "1",
-            "basusr_infousr"          => "",
-            \ACL::CANADDRECORD        => "1",
-            \ACL::CANMODIFRECORD      => "1",
-            \ACL::CANDELETERECORD     => "1",
-            \ACL::CHGSTATUS           => "1",
-            \ACL::IMGTOOLS            => "1",
-            \ACL::COLL_MANAGE         => "1",
-            \ACL::COLL_MODIFY_STRUCT  => "1"
-        ];
-
-        $this->app->getAclForUser($user)->update_rights_to_base($reference->getBaseId(), $rights);
+        $this->app->getAclForUser($user)->update_rights_to_base(
+            $reference->getBaseId(),
+            [
+                "basusr_infousr"          => "",    // todo : wtf
+                \ACL::CANPUTINALBUM       => true,
+                \ACL::CANDWNLDHD          => true,
+                \ACL::NOWATERMARK         => true,
+                \ACL::CANDWNLDPREVIEW     => true,
+                \ACL::CANCMD              => true,
+                \ACL::CANADMIN            => true,
+                \ACL::ACTIF               => true,
+                \ACL::CANREPORT           => true,
+                \ACL::CANPUSH             => true,
+                \ACL::CANADDRECORD        => true,
+                \ACL::CANMODIFRECORD      => true,
+                \ACL::CANDELETERECORD     => true,
+                \ACL::CHGSTATUS           => true,
+                \ACL::IMGTOOLS            => true,
+                \ACL::COLL_MANAGE         => true,
+                \ACL::COLL_MODIFY_STRUCT  => true
+            ]
+        );
     }
 
     public function setOrderMasters(CollectionReference $reference, array $userIds)
