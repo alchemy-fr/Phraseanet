@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Core;
 
+use Alchemy\Phrasea\Utilities\PassthroughTranslator;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
@@ -19,22 +21,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class PhraseaExceptionHandler extends SymfonyExceptionHandler
+class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerAwareInterface
 {
+
+    /**
+     * @var TranslatorInterface
+     */
     private $translator;
 
+    /**
+     * @var NullLogger
+     */
     private $logger;
 
     public function __construct()
     {
         $this->logger = new NullLogger();
+        $this->translator = new PassthroughTranslator();
     }
 
+    /**
+     * @param LoggerInterface $logger
+     * @return null
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * @param TranslatorInterface $translator
+     */
     public function setTranslator(TranslatorInterface $translator)
     {
         $this->translator = $translator;
@@ -56,42 +73,22 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler
 
         switch (true) {
             case 404 === $exception->getStatusCode():
-                if (null !== $this->translator) {
-                    $title = $this->translator->trans('Sorry, the page you are looking for could not be found.');
-                } else {
-                    $title = 'Sorry, the page you are looking for could not be found.';
-                }
+                $title = $this->translator->trans('Sorry, the page you are looking for could not be found.');
                 break;
             case 403 === $exception->getStatusCode():
-                if (null !== $this->translator) {
-                    $title = $this->translator->trans('Sorry, you do have access to the page you are looking for.');
-                } else {
-                    $title = 'Sorry, you do have access to the page you are looking for.';
-                }
+                $title = $this->translator->trans('Sorry, you do have access to the page you are looking for.');
                 break;
             case 500 === $exception->getStatusCode():
-                if (null !== $this->translator) {
-                    $title = $this->translator->trans('Whoops, looks like something went wrong.');
-                } else {
-                    $title = 'Whoops, looks like something went wrong.';
-                }
+                $title = $this->translator->trans('Whoops, looks like something went wrong.');
                 break;
             case 503 === $exception->getStatusCode():
-                if (null !== $this->translator) {
-                    $title = $this->translator->trans('Sorry, site is currently undergoing maintenance, come back soon.');
-                } else {
-                    $title = 'Sorry, site is currently undergoing maintenance, come back soon.';
-                }
+                $title = $this->translator->trans('Sorry, site is currently undergoing maintenance, come back soon.');
                 break;
             case isset(Response::$statusTexts[$exception->getStatusCode()]):
                 $title = $exception->getStatusCode() . ' : ' . Response::$statusTexts[$exception->getStatusCode()];
                 break;
             default:
-                if (null !== $this->translator) {
-                    $title = $this->translator->trans('Whoops, looks like something went wrong.');
-                } else {
-                    $title = 'Whoops, looks like something went wrong.';
-                }
+                $title = $this->translator->trans('Whoops, looks like something went wrong.');
         }
 
         $content = parent::getContent($exception);
