@@ -25,6 +25,7 @@ use Alchemy\Phrasea\Core\CLIProvider\SignalHandlerServiceProvider;
 use Alchemy\Phrasea\Core\CLIProvider\TaskManagerServiceProvider;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Phraseanet Command Line Application
@@ -86,7 +87,9 @@ class CLI extends Application
     {
         $this->boot();
 
+        /** @var Console\Application $app */
         $app = $this['console'];
+
         if ($interactive) {
             $app = new Console\Shell($app);
         }
@@ -101,10 +104,10 @@ class CLI extends Application
         $this['console']->setDispatcher($this['dispatcher']);
     }
 
-    public function run(\Symfony\Component\HttpFoundation\Request $request = null)
+    public function run(Request $request = null)
     {
         if (null !== $request) {
-            throw new RuntimeException('Phraseanet Konsole can not run Http Requests.');
+            throw new RuntimeException('Phraseanet console can not run HTTP requests.');
         }
 
         $this->runCLI();
@@ -120,6 +123,7 @@ class CLI extends Application
     public function command(CommandInterface $command)
     {
         $command->setContainer($this);
+
         $this['console']->add($command);
     }
 
@@ -130,10 +134,11 @@ class CLI extends Application
     {
         parent::loadPlugins();
 
-        call_user_func(function ($cli) {
-            if (file_exists($cli['plugin.path'] . '/commands.php')) {
-                require $cli['plugin.path'] . '/commands.php';
-            }
-        }, $this);
+        // Required variable in plugin commands file scope
+        $cli = $this;
+
+        if (file_exists($cli['plugin.path'] . '/commands.php')) {
+            require $cli['plugin.path'] . '/commands.php';
+        }
     }
 }

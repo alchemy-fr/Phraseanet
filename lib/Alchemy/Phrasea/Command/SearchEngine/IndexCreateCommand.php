@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchManagementService;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexAlreadyExistsException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,25 +32,23 @@ class IndexCreateCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        /** @var Indexer $indexer */
-        $indexer = $this->container['elasticsearch.indexer'];
+        $force = $input->getOption('drop');
+        /** @var ElasticSearchManagementService $managementService */
+        $managementService = $this->container['elasticsearch.management-service'];
 
-        $drop = $input->getOption('drop');
-        $indexExists = $indexer->indexExists();
+        try {
+            if ($managementService->indexExists()) {
+                $output->writeln('<info>Dropping existing search index before creation</info>');
+            }
 
-        if (! $drop && $indexExists) {
+            $managementService->createIndices($force);
+            $output->writeln('Search index was created');
+        }
+        catch (IndexAlreadyExistsException $exception) {
             $output->writeln('<error>The search index already exists.</error>');
 
             return 1;
         }
 
-        if ($drop && $indexExists) {
-            $output->writeln('<info>Dropping existing search index</info>');
-
-            $indexer->deleteIndex();
-        }
-
-        $indexer->createIndex();
-        $output->writeln('Search index was created');
     }
 }

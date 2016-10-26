@@ -241,7 +241,11 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.management-service'] = $app->share(function ($app) {
-            return new ElasticSearchManagementService($app['elasticsearch.indexer'], $app['conf']);
+            return new ElasticSearchManagementService(
+                $app['elasticsearch.indexer'],
+                $app['conf'],
+                $app['databox.iterator']
+            );
         });
 
         return $app;
