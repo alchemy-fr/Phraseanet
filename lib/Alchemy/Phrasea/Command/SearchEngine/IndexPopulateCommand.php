@@ -41,8 +41,7 @@ class IndexPopulateCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Only populate chosen databox'
-            )
-        ;
+            );
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -52,9 +51,11 @@ class IndexPopulateCommand extends Command
         if ($thesaurusOnly = $input->getOption('thesaurus')) {
             $what = Indexer::THESAURUS;
         }
+
         if ($recordsOnly = $input->getOption('records')) {
             $what = Indexer::RECORDS;
         }
+
         if ($thesaurusOnly && $recordsOnly) {
             throw new \RuntimeException("Could not provide --thesaurus and --records option at the same time.");
         }
@@ -62,8 +63,9 @@ class IndexPopulateCommand extends Command
         $databoxes_id = $input->getOption('databox_id');
 
         $app = $this->container;
-        foreach($app->getDataboxes() as $databox) {
-            if(!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
+
+        foreach ($app->getDataboxes() as $databox) {
+            if (!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
                 $this->container['elasticsearch.indexer']->populateIndex($what, $databox);
             }
         }
