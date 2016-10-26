@@ -107,16 +107,10 @@ class PhraseaExceptionHandler extends SymfonyExceptionHandler implements LoggerA
 
         switch ($exception->getStatusCode()) {
             case 403:
-                $errorImg = '/assets/common/images/error-pages/403.png';
-                break;
             case 404:
-                $errorImg = '/assets/common/images/error-pages/404.png';
-                break;
             case 500:
-                $errorImg = '/assets/common/images/error-pages/500.png';
-                break;
             case 503:
-                $errorImg = '/assets/common/images/error-pages/503.png';
+                $errorImg = sprintf('/assets/common/images/error-pages/%s.png', $exception->getStatusCode());
                 break;
             default:
                 $errorImg = '/assets/common/images/error-pages/error.png';
