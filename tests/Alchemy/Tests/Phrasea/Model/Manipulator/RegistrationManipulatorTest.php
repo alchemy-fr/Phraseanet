@@ -40,11 +40,11 @@ class RegistrationManipulatorTest extends \PhraseanetTestCase
         $aclMock->expects($this->once())->method('give_access_to_sbas')->with($this->equalTo([self::$DI['collection']->get_sbas_id()]));
         $aclMock->expects($this->once())->method('give_access_to_base')->with($this->equalTo([self::$DI['collection']->get_base_id()]));
         $aclMock->expects($this->once())->method('update_rights_to_base')->with($this->equalTo(self::$DI['collection']->get_base_id()), $this->equalTo([
-            \ACL::CANPUTINALBUM   => '1',
-            \ACL::CANDWNLDHD      => '1',
-            \ACL::NOWATERMARK     => '0',
-            \ACL::CANDWNLDPREVIEW => '1',
-            \ACL::ACTIF           => '1',
+            \ACL::CANPUTINALBUM   => true,
+            \ACL::CANDWNLDHD      => true,
+            \ACL::NOWATERMARK     => false,
+            \ACL::CANDWNLDPREVIEW => true,
+            \ACL::ACTIF           => true,
         ]));
 
         $aclProviderMock = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')->disableOriginalConstructor()->getMock();
