@@ -76,10 +76,6 @@ class ComplexMapping extends FieldMapping
             $properties[$name] = $child->toArray();
         }
 
-        if ($this->childKey) {
-            return [$this->childKey => $properties];
-        }
-
         return $properties;
     }
 }

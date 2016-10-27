@@ -24,7 +24,7 @@ class ComplexPropertiesMapping extends ComplexMapping
     /**
      * @return array
      */
-    public function toArray()
+    public function getProperties()
     {
         return [ 'properties' => parent::getProperties() ];
     }
