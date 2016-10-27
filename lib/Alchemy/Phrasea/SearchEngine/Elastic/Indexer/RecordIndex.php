@@ -47,8 +47,8 @@ class RecordIndex implements MappingProvider
         $mapping = new MappingBuilder();
 
         // Compound primary key
-        $mapping->addIntegerField('record_id', FieldMapping::TYPE_INTEGER);
-        $mapping->addField('databox_id', FieldMapping::TYPE_INTEGER);
+        $mapping->addIntegerField('record_id');
+        $mapping->addIntegerField('databox_id');
 
         // Database name (still indexed for facets)
         $mapping->addStringField('databox_name')->disableAnalysis();
