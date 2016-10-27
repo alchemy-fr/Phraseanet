@@ -78,6 +78,14 @@ class ACL implements cache_cacheableInterface
         self::COLL_MODIFY_STRUCT,
         self::NOWATERMARK,
         self::ORDER_MASTER,
+        self::RESTRICT_DWNLD
+    ];
+
+    protected static $sbas_rights = [
+        self::BAS_CHUPUB,
+        self::BAS_MANAGE,
+        self::BAS_MODIF_TH,
+        self::BAS_MODIFY_STRUCT
     ];
 
     /**
@@ -116,6 +124,7 @@ class ACL implements cache_cacheableInterface
     protected $is_admin;
 
     protected $_global_rights = [
+        self::ACTIF              => false,
         self::CANADDRECORD       => false,
         self::CANPUTINALBUM      => false,
         self::CANDWNLDHD         => true,
@@ -131,6 +140,8 @@ class ACL implements cache_cacheableInterface
         self::ORDER_MASTER       => false,
         self::CANPUSH            => false,
         self::CANREPORT          => false,
+        self::NOWATERMARK        => false,
+        self::RESTRICT_DWNLD     => false,
 
         self::BAS_CHUPUB         => false,
         self::BAS_MANAGE         => false,
@@ -346,13 +357,6 @@ class ACL implements cache_cacheableInterface
 
         $sbas_ids = array_unique($sbas_ids);
 
-        $sbas_rights = [
-            self::BAS_MANAGE,
-            self::BAS_MODIFY_STRUCT,
-            self::BAS_MODIF_TH,
-            self::BAS_CHUPUB
-        ];
-
         $sbas_to_acces = [];
         $rights_to_give = [];
 
@@ -366,7 +370,7 @@ class ACL implements cache_cacheableInterface
                 $sbas_to_acces[] = $sbas_id;
             }
 
-            foreach ($sbas_rights as $right) {
+            foreach (self::$sbas_rights as $right) {
                 if ($this->app->getAclForUser($template_user)->has_right_on_sbas($sbas_id, $right)) {
                     $rights_to_give[$sbas_id][$right] = true;
                 }
@@ -926,18 +930,16 @@ class ACL implements cache_cacheableInterface
 
         $this->_rights_sbas = [];
 
-        $this->_global_rights[self::BAS_MODIF_TH]      = false;
-        $this->_global_rights[self::BAS_MODIFY_STRUCT] = false;
-        $this->_global_rights[self::BAS_MANAGE]        = false;
-        $this->_global_rights[self::BAS_CHUPUB]        = false;
+        foreach(self::$sbas_rights as $b) {
+            $this->_global_rights[$b] = false;
+        }
 
         foreach ($rs as $row) {
             $sbid = $row['sbas_id'];
             $this->_rights_sbas[$sbid] = [];
-            $this->_global_rights[self::BAS_MODIF_TH]      |= ($this->_rights_sbas[$sbid][self::BAS_MODIF_TH]      = ($row[self::BAS_MODIF_TH] == '1'));
-            $this->_global_rights[self::BAS_MODIFY_STRUCT] |= ($this->_rights_sbas[$sbid][self::BAS_MODIFY_STRUCT] = ($row[self::BAS_MODIFY_STRUCT] == '1'));
-            $this->_global_rights[self::BAS_MANAGE]        |= ($this->_rights_sbas[$sbid][self::BAS_MANAGE]        = ($row[self::BAS_MANAGE] == '1'));
-            $this->_global_rights[self::BAS_CHUPUB]        |= ($this->_rights_sbas[$sbid][self::BAS_CHUPUB]        = ($row[self::BAS_CHUPUB] == '1'));
+            foreach (self::$sbas_rights as $b) {
+                $this->_global_rights[$b] = ($this->_rights_sbas[$sbid][$b] = ($row[$b] == '1')) || $this->_global_rights[$b];
+            }
         }
         $this->set_data_to_cache($this->_rights_sbas, self::CACHE_RIGHTS_SBAS);
         $this->set_data_to_cache($this->_global_rights, self::CACHE_GLOBAL_RIGHTS);
@@ -991,55 +993,17 @@ class ACL implements cache_cacheableInterface
 
         $this->_rights_bas = $this->_limited = [];
 
-        $this->_global_rights[self::CANADMIN] = false;
-        $this->_global_rights[self::COLL_MANAGE] = false;
-        $this->_global_rights[self::COLL_MODIFY_STRUCT] = false;
-        $this->_global_rights[self::CANCMD] = false;
-        $this->_global_rights[self::CANPUSH] = false;
-        $this->_global_rights[self::CANADDRECORD] = false;
-        $this->_global_rights[self::CANMODIFRECORD] = false;
-        $this->_global_rights[self::CHGSTATUS] = false;
-        $this->_global_rights[self::IMGTOOLS] = false;
-        $this->_global_rights[self::CANDELETERECORD] = false;
-        $this->_global_rights[self::CANPUTINALBUM] = false;
-        $this->_global_rights[self::CANREPORT] = false;
-        $this->_global_rights[self::CANDWNLDPREVIEW] = false;
-        $this->_global_rights[self::CANDWNLDHD] = false;
-        $this->_global_rights[self::ORDER_MASTER] = false;
+        foreach(self::$bas_rights  as $b) {
+            $this->_global_rights[$b] = false;
+        }
 
         foreach ($rs as $row) {
             $bid = $row['base_id'];
-            $this->_rights_bas[$bid][self::ACTIF] = ($row[self::ACTIF] == '1');
 
-            $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
-            $row['limited_to'] = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
-
-            if ($row['time_limited'] == '1'
-                && ($row['limited_from'] !== '' || $row['limited_to'] !== '')) {
-                $this->_limited[$row['base_id']] = [
-                    'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null,
-                    'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
-                ];
+            foreach(self::$bas_rights as $b) {
+                $this->_global_rights[$b] = ($this->_rights_bas[$bid][$b] = ($row[$b] == '1')) || $this->_global_rights[$b];
             }
 
-            $this->_global_rights[self::IMGTOOLS]           |= ($this->_rights_bas[$bid][self::IMGTOOLS]           = ($row[self::IMGTOOLS] == '1'));
-            $this->_global_rights[self::CHGSTATUS]          |= ($this->_rights_bas[$bid][self::CHGSTATUS]          = ($row[self::CHGSTATUS] == '1'));
-            $this->_global_rights[self::CANCMD]             |= ($this->_rights_bas[$bid][self::CANCMD]             = ($row[self::CANCMD] == '1'));
-            $this->_global_rights[self::CANADDRECORD]       |= ($this->_rights_bas[$bid][self::CANADDRECORD]       = ($row[self::CANADDRECORD] == '1'));
-            $this->_global_rights[self::CANPUSH]            |= ($this->_rights_bas[$bid][self::CANPUSH]            = ($row[self::CANPUSH] == '1'));
-            $this->_global_rights[self::CANDELETERECORD]    |= ($this->_rights_bas[$bid][self::CANDELETERECORD]    = ($row[self::CANDELETERECORD] == '1'));
-            $this->_global_rights[self::CANADMIN]           |= ($this->_rights_bas[$bid][self::CANADMIN]           = ($row[self::CANADMIN] == '1'));
-            $this->_global_rights[self::CANDWNLDPREVIEW]    |= ($this->_rights_bas[$bid][self::CANDWNLDPREVIEW]    = ($row[self::CANDWNLDPREVIEW] == '1'));
-            $this->_global_rights[self::CANDWNLDHD]         |= ($this->_rights_bas[$bid][self::CANDWNLDHD]         = ($row[self::CANDWNLDHD] == '1'));
-            $this->_global_rights[self::CANMODIFRECORD]     |= ($this->_rights_bas[$bid][self::CANMODIFRECORD]     = ($row[self::CANMODIFRECORD] == '1'));
-            $this->_global_rights[self::CANPUTINALBUM]      |= ($this->_rights_bas[$bid][self::CANPUTINALBUM]      = ($row[self::CANPUTINALBUM] == '1'));
-            $this->_global_rights[self::CANREPORT]          |= ($this->_rights_bas[$bid][self::CANREPORT]          = ($row[self::CANREPORT] == '1'));
-            $this->_global_rights[self::COLL_MODIFY_STRUCT] |= ($this->_rights_bas[$bid][self::COLL_MODIFY_STRUCT] = ($row[self::COLL_MODIFY_STRUCT] == '1'));
-            $this->_global_rights[self::COLL_MANAGE]        |= ($this->_rights_bas[$bid][self::COLL_MANAGE]        = ($row[self::COLL_MANAGE] == '1'));
-            $this->_global_rights[self::ORDER_MASTER]       |= ($this->_rights_bas[$bid][self::ORDER_MASTER]       = ($row[self::ORDER_MASTER] == '1'));
-
-            $this->_rights_bas[$bid][self::NOWATERMARK]    = ($row['nowatermark'] == '1');
-            $this->_rights_bas[$bid][self::RESTRICT_DWNLD] = ($row['restrict_dwnld'] == '1');
             $this->_rights_bas[$bid]['remain_dwnld']   = (int) $row['remain_dwnld'];
             $this->_rights_bas[$bid]['mask_and']       = (int) $row['mask_and'];
             $this->_rights_bas[$bid]['mask_xor']       = (int) $row['mask_xor'];
@@ -1207,7 +1171,7 @@ class ACL implements cache_cacheableInterface
     {
         static $stmt = null;
         if(!$stmt) {
-            $sql = "UPDATE basusr SET UPDATE actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
+            $sql = "UPDATE basusr SET actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         }
 

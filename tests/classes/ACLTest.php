@@ -502,7 +502,7 @@ class ACLTest extends \PhraseanetTestCase
                 $this->object->update_rights_to_base(
                     $base_id,
                     [
-                        'mask_xor' => 0
+                        'mask_xor' => 1
                     ]
                 );
                 $this->assertEquals('1', $this->object->get_mask_xor($base_id));
