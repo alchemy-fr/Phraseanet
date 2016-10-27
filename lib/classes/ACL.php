@@ -28,6 +28,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Statement;
 
 
 class ACL implements cache_cacheableInterface
@@ -1152,9 +1153,8 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    private function try_give_access_to_base_insert(PDOStatement $stmt, $base_id, $usr_id)
+    private function try_give_access_to_base_insert(Statement $stmt, $base_id, $usr_id)
     {
-        $stmt = null;
         $inserted = false;
         try {
             $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
@@ -1170,7 +1170,7 @@ class ACL implements cache_cacheableInterface
         return $inserted;
     }
 
-    private function try_give_access_to_base_update(PDOStatement $stmt, $base_id, $usr_id)
+    private function try_give_access_to_base_update(Statement $stmt, $base_id, $usr_id)
     {
         $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
         $stmt->closeCursor();
