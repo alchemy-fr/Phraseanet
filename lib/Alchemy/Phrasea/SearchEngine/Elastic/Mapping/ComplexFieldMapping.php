@@ -20,6 +20,9 @@ class ComplexFieldMapping extends FieldMapping
      */
     private $children = [];
 
+    /**
+     * @var null|string
+     */
     private $childKey = 'fields';
 
     public function useAsPropertyContainer()
@@ -30,6 +33,11 @@ class ComplexFieldMapping extends FieldMapping
     public function useAsFieldContainer()
     {
         $this->childKey = 'fields';
+    }
+
+    public function useAsBareContainer()
+    {
+        $this->childKey = null;
     }
 
     /**
@@ -88,6 +96,10 @@ class ComplexFieldMapping extends FieldMapping
             $properties[$name] = $child->toArray();
         }
 
-        return [ $this->childKey => $properties ];
+        if ($this->childKey) {
+            return [$this->childKey => $properties];
+        }
+
+        return $properties;
     }
 }
