@@ -111,6 +111,8 @@ class RecordIndex implements MappingProvider
     {
         $thesaurusMapping = new Mapping\ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT);
 
+        $thesaurusMapping->useAsPropertyContainer();
+
         foreach (array_keys($this->structure->getThesaurusEnabledFields()) as $name) {
             $child = new Mapping\StringFieldMapping($name);
 
