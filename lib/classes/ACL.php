@@ -1118,12 +1118,19 @@ class ACL implements cache_cacheableInterface
         $this->load_rights_bas();
 
         $usr_id = $this->user->getId();
+
+        $sql_i = "INSERT INTO basusr (base_id, usr_id, actif) VALUES (:base_id, :usr_id, '1')";
+        $stmt_i = $this->app->getApplicationBox()->get_connection()->prepare($sql_i);
+
+        $sql_u = "UPDATE basusr SET actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
+        $stmt_u = $this->app->getApplicationBox()->get_connection()->prepare($sql_u);
+
         foreach ($base_ids as $base_id) {
             if (isset($this->_rights_bas[$base_id]) && $this->_rights_bas[$base_id][self::ACTIF] == true) {
                 continue;
             }
 
-            if($this->try_give_access_to_base_insert($base_id, $usr_id) == true) {
+            if($this->try_give_access_to_base_insert($stmt_i, $base_id, $usr_id) == true) {
                 $this->app['dispatcher']->dispatch(
                     AclEvents::ACCESS_TO_BASE_GRANTED,
                     new AccessToBaseGrantedEvent(
@@ -1135,7 +1142,7 @@ class ACL implements cache_cacheableInterface
                 );
             }
             else {
-                $this->try_give_access_to_base_update($base_id, $usr_id);
+                $this->try_give_access_to_base_update($stmt_u, $base_id, $usr_id);
             }
         }
 
@@ -1145,13 +1152,8 @@ class ACL implements cache_cacheableInterface
         return $this;
     }
 
-    private function try_give_access_to_base_insert($base_id, $usr_id)
+    private function try_give_access_to_base_insert(&$stmt, $base_id, $usr_id)
     {
-        $stmt = null;
-        if(!$stmt) {
-            $sql = "INSERT INTO basusr (base_id, usr_id, actif) VALUES (:base_id, :usr_id, '1')";
-            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        }
         $inserted = false;
         try {
             $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
@@ -1167,21 +1169,10 @@ class ACL implements cache_cacheableInterface
         return $inserted;
     }
 
-    private function try_give_access_to_base_update($base_id, $usr_id)
+    private function try_give_access_to_base_update(&$stmt, $base_id, $usr_id)
     {
-        $stmt = null;
-        if(!$stmt) {
-            $sql = "UPDATE basusr SET actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
-            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        }
-
-        try {
-            $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
-            $stmt->closeCursor();
-        }
-        catch(DBALException $e) {
-            // no-op, mostly the row was deleted
-        }
+        $stmt->execute([':base_id' => $base_id, ':usr_id' => $usr_id]);
+        $stmt->closeCursor();
     }
 
     /**
