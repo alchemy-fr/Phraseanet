@@ -74,16 +74,6 @@ class ElasticSearchManagementService
         return $this->indexer->indexExists();
     }
 
-    public function populateRecordIndex()
-    {
-
-    }
-
-    public function populateThesaurusIndex()
-    {
-
-    }
-
     /**
      * @return ElasticsearchOptions
      */
