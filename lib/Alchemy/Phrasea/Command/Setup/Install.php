@@ -43,7 +43,9 @@ class Install extends Command
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
-            ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
+            ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server host', 'localhost')
+            ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server port', 9200)
+            ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
 
         return $this;
@@ -56,30 +58,7 @@ class Install extends Command
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $output->writeln("<comment>
-                                                      ,-._.-._.-._.-._.-.
-                                                      `-.             ,-'
- .----------------------------------------------.       |             |
-|                                                |      |             |
-|  Hello !                                       |      |             |
-|                                                |      |             |
-|  You are on your way to install Phraseanet,    |     ,';\".________.-.
-|  You will need access to 2 MySQL databases.    |     ;';_'         )]
-|                                                |    ;             `-|
-|                                                `.    `T-            |
- `----------------------------------------------._ \    |             |
-                                                  `-;   |             |
-                                                        |..________..-|
-                                                       /\/ |________..|
-                                                  ,'`./  >,(           |
-                                                  \_.-|_/,-/   ii  |   |
-                                                   `.\"' `-/  .-\"\"\"||    |
-                                                    /`^\"-;   |    ||____|
-                                                   /     /   `.__/  | ||
-                                                        /           | ||
-                                                                    | ||
-</comment>"
-        );
+        $output->writeln("You are on your way to install Phraseanet, you will need access to 2 MySQL databases");
 
         if (!$input->getOption('yes') && !$input->getOption('appbox')) {
             $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
