@@ -118,7 +118,7 @@ class RecordIndex implements MappingProvider
             $child->setAnalyzer('keyword', 'searching');
             $child->addChild((new Mapping\StringFieldMapping('raw'))->enableRawIndexing());
 
-            $thesaurusMapping->addChild($thesaurusMapping);
+            $thesaurusMapping->addChild($child);
         }
 
         return $thesaurusMapping;
