@@ -37,7 +37,7 @@ class IndexCreateCommand extends Command
         $managementService = $this->container['elasticsearch.management-service'];
 
         try {
-            if ($managementService->indexExists()) {
+            if ($managementService->indexExists() && $force) {
                 $output->writeln('<info>Dropping existing search index before creation</info>');
             }
 
