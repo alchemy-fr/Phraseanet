@@ -13,13 +13,19 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 
-class ComplexPropertiesMapping extends ComplexFieldMapping
+class ComplexPropertiesMapping extends ComplexMapping
 {
 
     public function __construct($name)
     {
         parent::__construct($name, FieldMapping::TYPE_OBJECT);
+    }
 
-        $this->useAsPropertyContainer();
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [ 'properties' => parent::getProperties() ];
     }
 }
