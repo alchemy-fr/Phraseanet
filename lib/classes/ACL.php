@@ -567,7 +567,7 @@ class ACL implements cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        return $this->app->getApplicationBox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        // return $this->app->getApplicationBox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
