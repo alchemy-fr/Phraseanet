@@ -567,7 +567,7 @@ class ACL implements cache_cacheableInterface
      */
     public function set_data_to_cache($value, $option = null, $duration = 0)
     {
-        // return $this->app->getApplicationBox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+        return $this->app->getApplicationBox()->set_data_to_cache($value, $this->get_cache_key($option), $duration);
     }
 
     /**
@@ -1147,7 +1147,7 @@ class ACL implements cache_cacheableInterface
 
     private function try_give_access_to_base_insert($base_id, $usr_id)
     {
-        static $stmt = null;
+        $stmt = null;
         if(!$stmt) {
             $sql = "INSERT INTO basusr (base_id, usr_id, actif) VALUES (:base_id, :usr_id, '1')";
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
@@ -1169,7 +1169,7 @@ class ACL implements cache_cacheableInterface
 
     private function try_give_access_to_base_update($base_id, $usr_id)
     {
-        static $stmt = null;
+        $stmt = null;
         if(!$stmt) {
             $sql = "UPDATE basusr SET actif='1' WHERE base_id = :base_id AND usr_id = :usr_id";
             $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
@@ -1231,7 +1231,6 @@ class ACL implements cache_cacheableInterface
      */
     public function update_rights_to_base($base_id, $rights)
     {
-
         if (!$this->has_access_to_base($base_id) && (!isset($rights[self::ACTIF]) || $rights[self::ACTIF] == true)) {
             $this->give_access_to_base([$base_id]);
         }
