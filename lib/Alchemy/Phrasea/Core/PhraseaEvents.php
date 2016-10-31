@@ -29,7 +29,8 @@ final class PhraseaEvents
     const STATUS_CHANGED = 'record.status.changed';
     const STORY_COVER_CHANGED = 'record.story_cover.changed';
     const RECORD_CREATED = 'record.created';
-    const RECORD_DOCUMENT_SUBSTITUTED = 'record.document.substituted';
+
+    const MEDIA_SUBSTITUTED = 'media.substituted';
 
     const ACCOUNT_DELETED = 'account.deleted';
     const ACCOUNT_CREATED = 'account.created';

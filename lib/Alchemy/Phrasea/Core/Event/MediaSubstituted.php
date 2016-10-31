@@ -15,18 +15,26 @@ use Symfony\Component\EventDispatcher\Event as SfEvent;
 use record_adapter;
 
 
-class RecordDocumentSubstituted extends SfEvent
+class MediaSubstituted extends SfEvent
 {
     /** @var  record_adapter */
     private $record;
+    /** @var  string */
+    private $subdefName;
 
-    public function __construct(record_adapter $record)
+    public function __construct(record_adapter $record, $subdefName)
     {
         $this->record = $record;
+        $this->subdefName = $subdefName;
     }
 
     public function getRecord()
     {
         return $this->record;
+    }
+
+    public function getName()
+    {
+        return $this->subdefName;
     }
 }
