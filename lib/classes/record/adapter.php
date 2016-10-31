@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Core\Event\StatusChanged;
 use Alchemy\Phrasea\Core\Event\RecordCreated;
+use Alchemy\Phrasea\Core\Event\RecordDocumentSubstituted;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -991,6 +992,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if ($name == 'document' && $adapt) {
             $this->rebuild_subdefs();
         }
+
+        $this->dispatch(PhraseaEvents::RECORD_DOCUMENT_SUBSTITUTED, new RecordDocumentSubstituted($this));
 
         return $this;
     }
