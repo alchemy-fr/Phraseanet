@@ -1,5 +1,5 @@
 
-{% if (record.is_from_basket is empty) and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'canputinalbum') %}
+{% if (record.is_from_basket is empty) and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANPUTINALBUM')) %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
        class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}"
        onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);">
@@ -21,7 +21,7 @@
       <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image" title="'{{ 'action : print' | trans }}">
   </div>
 
-{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldhd') or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDHD')) or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDPREVIEW')) %}
     <div onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
         <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image" title="{{ 'action : exporter' | trans }}">
        {# <img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}

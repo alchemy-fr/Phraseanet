@@ -59,23 +59,42 @@ class Installer
         $this->app->getAclForUser($admin)
             ->give_access_to_sbas([$databox->get_sbas_id()])
             ->update_rights_to_sbas(
-                $databox->get_sbas_id(), [
-                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                $databox->get_sbas_id(),
+                [
+                    \ACL::BAS_MANAGE        => true,
+                    \ACL::BAS_MODIFY_STRUCT => true,
+                    \ACL::BAS_MODIF_TH      => true,
+                    \ACL::BAS_CHUPUB        => true
                 ]
         );
 
         $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
 
-        $this->app->getAclForUser($admin)->give_access_to_base([$collection->get_base_id()]);
-        $this->app->getAclForUser($admin)->update_rights_to_base($collection->get_base_id(), [
-            'canpush'           => 1, 'cancmd'          => 1
-            , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-            , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-            , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-            , 'modify_struct'   => 1, 'nowatermark'     => 1
-            ]
-        );
+        $this->app->getAclForUser($admin)
+            ->give_access_to_base([$collection->get_base_id()]);
+
+        $this->app->getAclForUser($admin)
+            ->update_rights_to_base(
+                $collection->get_base_id(),
+                [
+                    \ACL::CANPUSH            => true,
+                    \ACL::CANCMD             => true,
+                    \ACL::CANPUTINALBUM      => true,
+                    \ACL::CANDWNLDHD         => true,
+                    \ACL::CANDWNLDPREVIEW    => true,
+                    \ACL::CANADMIN           => true,
+                    \ACL::ACTIF              => true,
+                    \ACL::CANREPORT          => true,
+                    \ACL::CANADDRECORD       => true,
+                    \ACL::CANMODIFRECORD     => true,
+                    \ACL::CANDELETERECORD    => true,
+                    \ACL::CHGSTATUS          => true,
+                    \ACL::IMGTOOLS           => true,
+                    \ACL::COLL_MANAGE        => true,
+                    \ACL::COLL_MODIFY_STRUCT => true,
+                    \ACL::NOWATERMARK        => true
+                ]
+            );
 
         foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
             /** @var JobInterface $job */

@@ -87,7 +87,7 @@
                                 <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
                                 <br/>
                                 {{ 'Select a user in the list' | trans }} <br/>
-                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
                                     {{ 'or' | trans }}
                                     <a href="{{ path('prod_push_add_user') }}" class="user_adder btn btn-mini">{{ 'Add user' | trans }}</a>
                                 {% endif %}

@@ -46,7 +46,7 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $firewall = $this->getFirewall($app);
 
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('doctools');
+            $firewall->requireRight(\ACL::IMGTOOLS);
         });
 
         $controllers->get('/', 'controller.prod.tools:indexAction');

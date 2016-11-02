@@ -53,7 +53,7 @@ class SubdefTransformer extends TransformerAbstract
             return null;
         }
         if ($media->get_name() === 'document'
-            && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')
+            && !$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)
             && !$acl->has_hd_grant($record)
         ) {
             return null;

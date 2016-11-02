@@ -2,6 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
+use \ACL;
+use \Databox;
+
 /**
  * @group functional
  * @group legacy
@@ -11,46 +14,53 @@ class ACLManipulatorTest extends \PhraseanetTestCase
     public function testResetAdminRights()
     {
         $user = self::$DI['app']['manipulator.user']->createUser(uniqid('toto'), 'toto', null, true);
+        /** @var ACL $acl */
         $acl = self::$DI['app']->getAclForUser($user);
 
         $databoxId = null;
         $baseId = null;
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
 
-            $acl->update_rights_to_sbas($databoxId, [
-                'bas_manage'        => '0',
-                'bas_modify_struct' => '0',
-                'bas_modif_th'      => '0',
-                'bas_chupub'        => '0'
-            ]);
+            $acl->update_rights_to_sbas(
+                $databoxId,
+                [
+                    \ACL::BAS_MANAGE        => false,
+                    \ACL::BAS_MODIFY_STRUCT => false,
+                    \ACL::BAS_MODIF_TH      => false,
+                    \ACL::BAS_CHUPUB        => false
+                ]
+            );
 
             foreach ($databox->get_collections() as $collection) {
                 $baseId = $collection->get_base_id();
                 $acl->set_limits($baseId, true);
                 $acl->set_masks_on_base($baseId, '1', '1', '1', '1');
 
-                $acl->update_rights_to_base($baseId, [
-                    'canputinalbum'     => '0',
-                    'candwnldhd'        => '0',
-                    'candwnldsubdef'    => '0',
-                    'nowatermark'       => '0',
-                    'candwnldpreview'   => '0',
-                    'cancmd'            => '0',
-                    'canadmin'          => '0',
-                    'canreport'         => '0',
-                    'canpush'           => '0',
-                    'creationdate'      => '0',
-                    'canaddrecord'      => '0',
-                    'canmodifrecord'    => '0',
-                    'candeleterecord'   => '0',
-                    'chgstatus'         => '0',
-                    'imgtools'          => '0',
-                    'manage'            => '0',
-                    'modify_struct'     => '0',
-                    'bas_modify_struct' => '0'
-                ]);
+                $acl->update_rights_to_base(
+                    $baseId,
+                    [
+                        'creationdate'      => '0',         // todo: wtf
+                        \ACL::CANPUTINALBUM      => false,
+                        \ACL::CANDWNLDHD         => false,
+                        \ACL::NOWATERMARK        => false,
+                        \ACL::CANDWNLDPREVIEW    => false,
+                        \ACL::CANCMD             => false,
+                        \ACL::CANADMIN           => false,
+                        \ACL::CANREPORT          => false,
+                        \ACL::CANPUSH            => false,
+                        \ACL::CANADDRECORD       => false,
+                        \ACL::CANMODIFRECORD     => false,
+                        \ACL::CANDELETERECORD    => false,
+                        \ACL::CHGSTATUS          => false,
+                        \ACL::IMGTOOLS           => false,
+                        \ACL::COLL_MANAGE        => false,
+                        \ACL::COLL_MODIFY_STRUCT => false,
+                        \ACL::BAS_MODIFY_STRUCT  => false
+                    ]
+                );
 
                 break 2;
             }
@@ -65,26 +75,26 @@ class ACLManipulatorTest extends \PhraseanetTestCase
             $this->fail("Need at least one collection");
         }
 
-        $this->assertTrue($acl->has_right_on_sbas($databoxId, 'bas_manage'));
-        $this->assertTrue($acl->has_right_on_sbas($databoxId, 'bas_modify_struct'));
-        $this->assertTrue($acl->has_right_on_sbas($databoxId, 'bas_modif_th'));
-        $this->assertTrue($acl->has_right_on_sbas($databoxId, 'bas_chupub'));
+        $this->assertTrue($acl->has_right_on_sbas($databoxId, \ACL::BAS_MANAGE));
+        $this->assertTrue($acl->has_right_on_sbas($databoxId, \ACL::BAS_MODIFY_STRUCT));
+        $this->assertTrue($acl->has_right_on_sbas($databoxId, \ACL::BAS_MODIF_TH));
+        $this->assertTrue($acl->has_right_on_sbas($databoxId, \ACL::BAS_CHUPUB));
 
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canputinalbum'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'candwnldhd'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'nowatermark'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'candwnldpreview'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'cancmd'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canadmin'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canreport'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canpush'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canaddrecord'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'canmodifrecord'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'candeleterecord'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'chgstatus'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'imgtools'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'manage'));
-        $this->assertTrue($acl->has_right_on_base($baseId, 'modify_struct'));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANPUTINALBUM));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANDWNLDHD));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::NOWATERMARK));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANDWNLDPREVIEW));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANCMD));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANADMIN));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANREPORT));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANPUSH));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANADDRECORD));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CANDELETERECORD));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::CHGSTATUS));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::IMGTOOLS));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::COLL_MANAGE));
+        $this->assertTrue($acl->has_right_on_base($baseId, \ACL::COLL_MODIFY_STRUCT));
 
         $this->assertEquals(0, $acl->get_limits($baseId));
         $this->assertEquals(0, $acl->get_limits($acl->get_mask_xor($baseId)));

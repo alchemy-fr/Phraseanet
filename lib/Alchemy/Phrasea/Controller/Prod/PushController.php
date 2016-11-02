@@ -395,7 +395,7 @@ class PushController extends Controller
         $data = null;
 
         $query = $this->createUserQuery();
-        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), [\ACL::CANPUSH]);
 
         $query->in([$usr_id]);
 
@@ -431,7 +431,7 @@ class PushController extends Controller
         $result = ['success' => false, 'message' => '', 'user'    => null];
 
         try {
-            if (!$this->getAclForUser($this->getAuthenticatedUser())->has_right('manageusers'))
+            if (!$this->getAclForUser($this->getAuthenticatedUser())->has_right(\ACL::CANADMIN))
                 throw new ControllerException($this->app->trans('You are not allowed to add users'));
 
             if (!$request->request->get('firstname'))
@@ -502,7 +502,7 @@ class PushController extends Controller
     public function searchUserAction(Request $request)
     {
         $query = $this->createUserQuery();
-        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), [\ACL::CANPUSH]);
         $query
             ->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
             ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
@@ -540,7 +540,7 @@ class PushController extends Controller
         $list = $repository->findUserListByUserAndId($this->getAuthenticatedUser(), $list_id);
 
         $query = $this->createUserQuery();
-        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), ['canpush']);
+        $query->on_bases_where_i_am($this->getAclForUser($this->getAuthenticatedUser()), [\ACL::CANPUSH]);
 
         if ($request->get('query')) {
             $query

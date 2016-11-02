@@ -51,7 +51,7 @@ class Fields implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(function () use ($firewall) {
             $firewall
                 ->requireAccessToModule('admin')
-                ->requireRight('bas_modify_struct');
+                ->requireRight(\ACL::BAS_MODIFY_STRUCT);
         });
 
         $controllers->get('/language.json', 'controller.admin.fields:getLanguage')

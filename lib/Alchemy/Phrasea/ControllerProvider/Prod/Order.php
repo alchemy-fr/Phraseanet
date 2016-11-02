@@ -72,7 +72,7 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
         };
 
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('order');
+            $firewall->requireRight(\ACL::CANCMD);
         });
 
         $controllers->get('/', 'controller.prod.order:displayOrders')

@@ -48,7 +48,7 @@ class OrderSubscriber extends AbstractNotificationSubscriber
         $query = $this->app['phraseanet.user-query'];
         /** @var User[] $users */
         $users = $query->on_base_ids($base_ids)
-            ->who_have_right(['order_master'])
+            ->who_have_right([\ACL::ORDER_MASTER])
             ->execute()->get_results();
 
         if (count($users) == 0) {

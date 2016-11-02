@@ -268,27 +268,28 @@ class CollectionService
      */
     public function grantAdminRights(CollectionReference $reference, User $user)
     {
-        $rights = [
-            "canputinalbum"   => "1",
-            "candwnldhd"      => "1",
-            "nowatermark"     => "1",
-            "candwnldpreview" => "1",
-            "cancmd"          => "1",
-            "canadmin"        => "1",
-            "actif"           => "1",
-            "canreport"       => "1",
-            "canpush"         => "1",
-            "basusr_infousr"  => "",
-            "canaddrecord"    => "1",
-            "canmodifrecord"  => "1",
-            "candeleterecord" => "1",
-            "chgstatus"       => "1",
-            "imgtools"        => "1",
-            "manage"          => "1",
-            "modify_struct"   => "1"
-        ];
-
-        $this->app->getAclForUser($user)->update_rights_to_base($reference->getBaseId(), $rights);
+        $this->app->getAclForUser($user)->update_rights_to_base(
+            $reference->getBaseId(),
+            [
+                "basusr_infousr"          => "",    // todo : wtf
+                \ACL::CANPUTINALBUM       => true,
+                \ACL::CANDWNLDHD          => true,
+                \ACL::NOWATERMARK         => true,
+                \ACL::CANDWNLDPREVIEW     => true,
+                \ACL::CANCMD              => true,
+                \ACL::CANADMIN            => true,
+                \ACL::ACTIF               => true,
+                \ACL::CANREPORT           => true,
+                \ACL::CANPUSH             => true,
+                \ACL::CANADDRECORD        => true,
+                \ACL::CANMODIFRECORD      => true,
+                \ACL::CANDELETERECORD     => true,
+                \ACL::CHGSTATUS           => true,
+                \ACL::IMGTOOLS            => true,
+                \ACL::COLL_MANAGE         => true,
+                \ACL::COLL_MODIFY_STRUCT  => true
+            ]
+        );
     }
 
     public function setOrderMasters(CollectionReference $reference, array $userIds)
@@ -318,18 +319,28 @@ class CollectionService
             $userQuery = $factory();
 
             $result = $userQuery->on_base_ids([ $reference->getBaseId()] )
-                ->who_have_right(['order_master'])
+                ->who_have_right([\ACL::ORDER_MASTER])
                 ->execute()->get_results();
 
             /** @var ACLProvider $acl */
             $acl = $this->app['acl'];
 
             foreach ($result as $user) {
-                $acl->get($user)->update_rights_to_base($reference->getBaseId(), ['order_master' => false]);
+                $acl->get($user)->update_rights_to_base(
+                    $reference->getBaseId(),
+                    [
+                        \ACL::ORDER_MASTER => false
+                    ]
+                );
             }
 
             foreach ($admins as $admin) {
-                $acl->get($admin)->update_rights_to_base($reference->getBaseId(), ['order_master' => true]);
+                $acl->get($admin)->update_rights_to_base(
+                    $reference->getBaseId(),
+                    [
+                        \ACL::ORDER_MASTER => true
+                    ]
+                );
             }
 
             $conn->commit();

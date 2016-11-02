@@ -45,7 +45,7 @@ class LazaretController extends Controller
      */
     public function listElement(Request $request)
     {
-        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['canaddrecord']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::CANADDRECORD]));
 
         $lazaretFiles = null;
         $perPage = 10;

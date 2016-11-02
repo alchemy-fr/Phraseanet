@@ -46,10 +46,10 @@ class CollectionController extends Controller
 
         $admins = [];
 
-        if ($this->getAclForUser()->has_right_on_base($bas_id, 'manage')) {
+        if ($this->getAclForUser()->has_right_on_base($bas_id, \ACL::COLL_MANAGE)) {
             $query = $this->createUserQuery();
             $admins = $query->on_base_ids([$bas_id])
-                ->who_have_right(['order_master'])
+                ->who_have_right([\ACL::ORDER_MASTER])
                 ->execute()
                 ->get_results();
         }

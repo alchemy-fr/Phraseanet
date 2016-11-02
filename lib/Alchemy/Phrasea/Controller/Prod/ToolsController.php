@@ -51,9 +51,9 @@ class ToolsController extends Controller
 
             $acl = $this->getAclForUser();
 
-            if ($acl->has_right('bas_chupub')
-                && $acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
-                && $acl->has_right_on_base($record->getBaseId(), 'imgtools')
+            if ($acl->has_right(\ACL::BAS_CHUPUB)
+                && $acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
+                && $acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
             ) {
                 $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
@@ -64,7 +64,7 @@ class ToolsController extends Controller
                     }
 
                     if ('document' == $subdefName) {
-                        if (!$acl->has_right_on_base($record->getBaseId(), 'candwnldhd')) {
+                        if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
@@ -147,7 +147,7 @@ class ToolsController extends Controller
 
         $force = $request->request->get('force_substitution') == '1';
 
-        $selection = RecordsRequest::fromRequest($this->app, $request, false, array('canmodifrecord'));
+        $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
         foreach ($selection as $record) {
             $substituted = false;
@@ -340,10 +340,10 @@ class ToolsController extends Controller
         $state = $request->request->get('state') == 'true' ? true : false;
 
         $acl = $this->getAclForUser();
-        if (!$acl->has_right('bas_chupub')
-            || !$acl->has_right_on_base($record->getBaseId(), 'canmodifrecord')
-            || !$acl->has_right_on_base($record->getBaseId(), 'imgtools')
-            || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), 'candwnldhd'))
+        if (!$acl->has_right(\ACL::BAS_CHUPUB)
+            || !$acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
+            || !$acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
+            || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
             || ('document' != $subdefName && !$acl->has_access_to_subdef($record, $subdefName))
         ) {
             $this->app->abort(403);
