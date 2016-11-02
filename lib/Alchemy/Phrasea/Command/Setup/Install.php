@@ -61,7 +61,7 @@ class Install extends Command
         $output->writeln("You are on your way to install Phraseanet, you will need access to 2 MySQL databases");
 
         if (!$input->getOption('yes') && !$input->getOption('appbox')) {
-            $continue = $dialog->askConfirmation($output, 'Do you have these two DB handy ? (N/y)', false);
+            $continue = $dialog->askConfirmation($output, 'Do you have these two databases handy ? (N/y)', false);
 
             if (!$continue) {
                 $output->writeln("See you later !");
@@ -74,11 +74,16 @@ class Install extends Command
 
         list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
+
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
 
         if (!$input->getOption('yes')) {
-            $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
+            $continue = $dialog->askConfirmation(
+                $output,
+                "<question>Phraseanet is going to be installed, continue ? (N/y)</question>",
+                false
+            );
 
             if (!$continue) {
                 $output->writeln("See you later !");
