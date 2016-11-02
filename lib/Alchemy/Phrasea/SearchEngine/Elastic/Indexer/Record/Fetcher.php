@@ -132,7 +132,9 @@ class Fetcher
                  . ", r.sha256" // -- TODO rename in "hash"
                  . ", r.originalname AS original_name"
                  . ", r.mime, r.type, r.parent_record_id, r.credate AS created_on, r.moddate AS updated_on"
-                 . " FROM record r INNER JOIN coll c ON (c.coll_id = r.coll_id)"
+                 . ", subdef.width, subdef.height"
+                 . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
+                 . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
                  . " ORDER BY r.record_id DESC"
                  . " LIMIT :offset, :limit";
