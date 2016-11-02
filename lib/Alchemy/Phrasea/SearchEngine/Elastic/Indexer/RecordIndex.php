@@ -66,6 +66,9 @@ class RecordIndex implements MappingProvider
         $mapping->addStringField('type')->disableAnalysis();
         $mapping->addStringField('record_type')->disableAnalysis();
 
+        $mapping->addIntegerField('width')->disableIndexing();
+        $mapping->addIntegerField('height')->disableIndexing();
+
         $mapping->addDateField('created_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
         $mapping->addDateField('updated_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
 
