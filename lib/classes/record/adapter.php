@@ -98,6 +98,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** @var DateTime */
     private $updated;
 
+    /** @var bool|null|integer  */
+    private $width;
+    /** @var bool|null|integer  */
+    private $height;
+    /** @var bool|null|integer  */
+    private $size;
+
     /**
      * @param Application $app
      * @param integer     $sbas_id
@@ -110,6 +117,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app = $app;
         $this->reference = RecordReference::createFromDataboxIdAndRecordId($sbas_id, $record_id);
         $this->number = (int)$number;
+
+        $this->width = $this->height = $this->size = false; // means unknown for now
 
         if ($load) {
             $this->load();
@@ -169,6 +178,42 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    public function getWidth()
+    {
+        $this->getDocInfos();
+
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        $this->getDocInfos();
+
+        return $this->height;
+    }
+
+    public function getSize()
+    {
+        $this->getDocInfos();
+
+        return $this->size;
+    }
+
+    private function getDocInfos()
+    {
+        if($this->width === false) {       // strict false means unknown
+            try {
+                $doc = $this->get_subdef('document');
+                $this->width = $doc->get_width();
+                $this->height = $doc->get_height();
+                $this->size = $doc->get_size();
+            } catch (\Exception $e) {
+                // failing once is failing ever
+                $this->width = $this->height = $this->size = null;
+            }
+        }
     }
 
     /**

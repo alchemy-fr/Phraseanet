@@ -2,7 +2,7 @@
 {% if record.story %}
   <dt>{{ 'Story_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% else %}
-    <dt>{{ 'Record_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
+  <dt>{{ 'Record_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% endif %}
 
 {% if not record.story %}
@@ -15,27 +15,37 @@
     {% endblock %}
 
     {% block td_weight %}
-        {# @todo we should index document weight as well #}
+        {% set size = record.getSize()/1024.0 %}
+        {% set unit = "Ko" %}
+        {% if size > 1000 %}
+            {% set size = size/1024.0 %}
+            {% set unit = "Mo" %}
+        {% endif %}
+        {% if size > 1000 %}
+            {% set size = size/1024.0 %}
+            {% set unit = "Go" %}
+        {% endif %}
+        <dt>Weight</dt>
+        <dd>{{ record.getSize() }}&nbsp;({{ size|round(2) }}&nbsp;{{ unit }})</dd>
     {% endblock %}
 
     {% block td_size %}
-        <dt>{{ 'Size' | trans }}</dt><dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
-        (null) %}
-        {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
-        {% if width is not none and height is not none %}
-            {{ width ~ " x " ~ height }}
-        {% endif %}</dd>
-        {% set document = record.get_subdef('document') %}
-        {% if document and document.get_width() and document.get_height() %}
-            <dt>&nbsp;</dt>
-            <dd>{% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
-                    {% set size_w = (document.get_width() * (254/100) / 300) %}
-                    {% set size_h = (document.get_height() * (254/100) / 300) %}
-                    {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (300dpi)
-                    {% set size_w = (document.get_width() * (254/100) / 72) %}<br/>
-                    {% set size_h = (document.get_height() * (254/100) / 72) %}
-                    {{ size_w|round(1) }} x {{ size_h|round(1) }} cm (72dpi)
-                {% endif %}</dd>
+        {% if record.getWidth() and record.getHeight() %}
+            {% set width = record.getWidth() %}
+            {% set height = record.getHeight() %}
+            {% if width is not none and height is not none %}
+                <dt>{{ 'Size' | trans }}</dt>
+                <dd>{{ width }}&nbsp;x&nbsp;{{  height }}
+                    {% if record.getType() == 'image' %}
+                        {% set size_w = width * 2.54 %}
+                        {% set size_h = height * 2.54 %}
+                        <br/>
+                        {{ (size_w/300)|round(1) }}&nbsp;x&nbsp;{{ (size_h/300)|round(1) }}&nbsp;cm&nbsp;(300&nbsp;dpi)
+                        <br/>
+                        {{ (size_w/72)|round(1) }}&nbsp;x&nbsp;{{ (size_h/72)|round(1) }}&nbsp;cm&nbsp;(72&nbsp;dpi)
+                    {% endif %}
+                </dd>
+            {% endif %}
         {% endif %}
     {%  endblock %}
     </dl>

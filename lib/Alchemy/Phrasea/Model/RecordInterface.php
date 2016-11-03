@@ -49,6 +49,27 @@ interface RecordInterface extends RecordReferenceInterface
     public function getExif();
 
     /**
+     * The width of the 'document' subdef
+     *
+     * @return integer|null
+     */
+    public function getWidth();
+
+    /**
+     * The height of the 'document' subdef
+     *
+     * @return integer|null
+     */
+    public function getHeight();
+
+    /**
+     * The size (filesize) of the 'document' subdef
+     *
+     * @return integer|null
+     */
+    public function getSize();
+
+    /**
      * Get Caption with requested fields if exists.
      * @param array $fields Returns only public fields when null
      * @return array
