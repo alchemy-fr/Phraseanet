@@ -53,6 +53,7 @@ class ElasticsearchRecordHydrator
         $record->setSha256(igorw\get_in($data, ['sha256'], ''));
         $record->setWidth(igorw\get_in($data, ['width'], 0));
         $record->setHeight(igorw\get_in($data, ['height'], 0));
+        $record->setSize(igorw\get_in($data, ['size'], 0));
         $record->setType(igorw\get_in($data, ['type'], 'unknown'));
         $updatedOn = igorw\get_in($data, ['updated_on']);
         $record->setUpdated($updatedOn ? new \DateTime($updatedOn) : $updatedOn);
