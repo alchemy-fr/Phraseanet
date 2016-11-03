@@ -26,6 +26,12 @@ class ComplexFieldMapping extends ComplexMapping
      */
     protected function getProperties()
     {
-        return [ 'fields' => parent::getProperties() ];
+        $properties = parent::getProperties();
+
+        if (! empty($properties)) {
+            return ['fields' => parent::getProperties()];
+        }
+
+        return $properties;
     }
 }
