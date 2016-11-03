@@ -11,14 +11,11 @@
 
 namespace Alchemy\Phrasea\Media\Type;
 
-interface Type
+class Unknown implements Type
 {
-    const TYPE_AUDIO = 'audio';
-    const TYPE_VIDEO = 'video';
-    const TYPE_DOCUMENT = 'document';
-    const TYPE_FLASH = 'flash';
-    const TYPE_IMAGE = 'image';
-    const TYPE_UNKNOWN = 'unknown';
 
-    public function getType();
+    public function getType()
+    {
+        return self::TYPE_UNKNOWN;
+    }
 }
