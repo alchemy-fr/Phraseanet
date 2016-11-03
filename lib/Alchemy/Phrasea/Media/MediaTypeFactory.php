@@ -30,6 +30,8 @@ class MediaTypeFactory
                 return new Type\Document();
             case Type\Type::TYPE_FLASH:
                 return new Type\Flash();
+            case Type\Type::TYPE_UNKNOWN:
+                return new Type\Unknown();
         }
 
         throw new \RuntimeException('Could not create requested media type');
