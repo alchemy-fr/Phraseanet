@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
+use Alchemy\Phrasea\Media\Subdef\Unknown;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
@@ -46,6 +47,7 @@ class databox_subdef
         SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
         SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
         SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE],
     ];
 
     const CLASS_THUMBNAIL = 'thumbnail';
@@ -105,6 +107,9 @@ class databox_subdef
                 break;
             case SubdefSpecs::TYPE_FLEXPAPER:
                 $this->subdef_type = $this->buildFlexPaperSubdef($sd);
+                break;
+            case SubdefSpecs::TYPE_UNKNOWN:
+                $this->subdef_type = $this->buildImageSubdef($sd);
                 break;
         }
     }
@@ -228,6 +233,9 @@ class databox_subdef
                             break;
                         case SubdefSpecs::TYPE_VIDEO:
                             $mediatype_obj = new Video($this->translator);
+                            break;
+                        case SubdefSpecs::TYPE_UNKNOWN:
+                            $mediatype_obj = new Unknown($this->translator);
                             break;
                         default:
                             continue;
