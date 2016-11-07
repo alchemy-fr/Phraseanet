@@ -31,6 +31,10 @@
   apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
   when: not is_installed
 
+- name: Remove old plugin directory
+  shell: rm -rf /usr/share/elasticsearch/plugins/analysis-icu
+  sudo: yes
+
 - name: Install plugins
   shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}/{{ item.version }}
   when: not is_installed
