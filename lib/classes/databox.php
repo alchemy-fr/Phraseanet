@@ -1193,14 +1193,40 @@ class databox extends base implements ThumbnailedElement
         return $this;
     }
 
+    public function clearCandidates()
+    {
+        try {
+            $domct = $this->get_dom_cterms();
+
+            if ($domct !== false) {
+                $nodesToDel = [];
+                for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
+                    if(!($n->getAttribute('delbranch'))){
+                        $nodesToDel[] = $n;
+                    }
+                }
+                foreach($nodesToDel as $n) {
+                    $n->parentNode->removeChild($n);
+                }
+                if(!empty($nodesToDel)) {
+                    $this->saveCterms($domct);
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+    }
+
     public function reindex()
     {
+        $this->clearCandidates();
         $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
 
         // Set TO_INDEX flag on all records
-        $sql = "UPDATE record SET jeton = (jeton | :token)";
+        $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':token', PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
+        $stmt->bindValue(':token_and', PhraseaTokens::INDEXING, PDO::PARAM_INT);
+        $stmt->bindValue(':token_or',  PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
         $stmt->execute();
 
         $this->app['dispatcher']->dispatch(
