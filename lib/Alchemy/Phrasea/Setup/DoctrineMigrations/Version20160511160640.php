@@ -18,9 +18,7 @@ class Version20160511160640 extends BaseMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql(sprintf("ALTER TABLE Orders ADD COLUMN notification_method VARCHAR(32) NOT NULL DEFAULT '%s'", Order::NOTIFY_MAIL));
-        $this->addSql("ALTER TABLE Orders ALTER COLUMN notification_method DROP DEFAULT");
+        // no-op
     }
 
     /**
@@ -30,7 +28,6 @@ class Version20160511160640 extends BaseMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->addSql("ALTER TABLE Orders DROP COLUMN notification_method");
+        // no-op
     }
 }
