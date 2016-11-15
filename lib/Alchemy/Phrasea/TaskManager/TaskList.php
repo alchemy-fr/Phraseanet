@@ -49,6 +49,17 @@ class TaskList implements TaskListInterface
             $arguments[] = $this->phpConf;
         }
 
+        $maxmegs     = 128;     // default (Mo) if not set in xml
+        $maxduration = 1800;    // default (seconds) if not set in xml
+        if( ($sxSettings = @simplexml_load_string($task->getSettings())) ) {
+            if( ($v = (int)($sxSettings->maxmegs)) && $v > 0) {
+                $maxmegs = $v;
+            }
+            if( ($v = (int)($sxSettings->maxduration)) && $v > 0) {
+                $maxduration = $v;
+            }
+        }
+
         $arguments[] = '-f';
         $arguments[] = $this->root . '/bin/console';
         $arguments[] = '--';
@@ -57,9 +68,9 @@ class TaskList implements TaskListInterface
         $arguments[] = $task->getId();
         $arguments[] = '--listen-signal';
         $arguments[] = '--max-duration';
-        $arguments[] = '1800';
+        $arguments[] = $maxduration;
         $arguments[] = '--max-memory';
-        $arguments[] = 128 << 20;
+        $arguments[] = $maxmegs << 20;
 
         $builder = ProcessBuilder::create($arguments);
         $builder->setTimeout(0);
