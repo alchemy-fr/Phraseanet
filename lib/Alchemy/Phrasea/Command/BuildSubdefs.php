@@ -345,7 +345,9 @@ class BuildSubdefs extends Command
 
         while( ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ) {
             $type = $row['type'];
-            $msg = sprintf(' record %s (%s) : ', $row['record_id'], $type);
+            $msg = [];
+
+            $msg[] = sprintf(' record %s (%s) :', $row['record_id'], $type);
 
             try {
                 $record = $this->databox->get_record($row['record_id']);
@@ -366,7 +368,7 @@ class BuildSubdefs extends Command
                                 $subdef->delete();
                             }
                             $subdefsDeleted[] = $name;
-                            $msg .= sprintf(" \"%s\" deleted,", $name);
+                            $msg[] = sprintf(" \"%s\" pruned", $name);
                         }
                         continue;
                     }
@@ -386,10 +388,14 @@ class BuildSubdefs extends Command
                             continue;
                         }
                     }
+
                     // here an existing subdef must be (re)done
-                    if(!$this->dry) {
-                        $subdef->remove_file();
-                        $subdef->set_substituted(false);
+                    if(isset($subdefNamesToDo[$name])) {
+                        if (!$this->dry) {
+                            $subdef->remove_file();
+                            $subdef->set_substituted(false);
+                        }
+                        $msg[] = sprintf(" [\"%s\"] deleted", $name);
                     }
                 }
 
@@ -401,7 +407,7 @@ class BuildSubdefs extends Command
                         $subdefGenerator->generateSubdefs($record, $subdefNamesToDo);
                     }
 
-                    $msg .= sprintf(" [\"%s\"] built", implode('","', $subdefNamesToDo));
+                    $msg[] = sprintf(" [\"%s\"] built", implode('","', $subdefNamesToDo));
                 }
                 else {
                     // $msg .= " nothing to build";
@@ -416,10 +422,10 @@ class BuildSubdefs extends Command
                         . ' WHERE record_id=:record_id';
 
                     if($this->reset_subdef_flag) {
-                        $msg .= ", jeton[\"make_subdef\"]=0";
+                        $msg[] = "jeton[\"make_subdef\"]=0";
                     }
                     if($this->set_writemeta_flag) {
-                        $msg .= ", jeton[\"write_met_subdef\"]=1";
+                        $msg[] = "jeton[\"write_met_subdef\"]=1";
                     }
                     if(!$this->dry) {
                         $this->connection->executeUpdate($sql, [
@@ -436,10 +442,10 @@ class BuildSubdefs extends Command
 
             if($progress) {
                 $progress->advance();
-                $this->output->write($msg);
+                $this->output->write(implode(' ', $msg));
             }
             else {
-                $this->output->writeln($msg);
+                $this->output->writeln(implode("\n", $msg));
             }
         }
 
