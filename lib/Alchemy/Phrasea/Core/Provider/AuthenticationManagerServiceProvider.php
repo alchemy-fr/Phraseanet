@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Silex\Application;
+use ReCaptcha\ReCaptcha;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
 
@@ -37,6 +38,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
             return new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
         });
 
+        if($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']) !== ""){
+            $app['recaptcha'] = $app->share(function (Application $app) {
+                return new ReCaptcha($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']));
+            });
+        }
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
             return new CookieManager($app['auth.password-encoder'], $app['repo.sessions'], $app['browser']);
         });
@@ -129,7 +135,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            $authConf = $app['conf']->get(['authentication', 'captcha']);
+            $authConf = $app['conf']->get(['registry', 'webservices']);
 
             return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
@@ -139,14 +145,16 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {
-            $authConf = $app['conf']->get('authentication');
+            $authConf = $app['conf']->get('registry');
 
-            if ($authConf['captcha']['enabled']) {
+            if ($authConf['webservices']['captchas-enabled']) {
+
                 return new FailureHandledNativeAuthentication(
                     $app['auth.password-checker'],
                     $app['auth.native.failure-manager']
                 );
             } else {
+
                 return $app['auth.password-checker'];
             }
         });

@@ -2,7 +2,7 @@
     <div class="row-fluid">
         <div class="span12">
             {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
-            <div class="g-recaptcha" data-sitekey="{{ public_key }}"></div>
+            <div class="g-recaptcha" data-theme="dark" data-sitekey="{{ public_key }}" style="margin-top:1rem;transform:scale(0.86);-webkit-transform:scale(0.86);transform-origin:0 0;-webkit-transform-origin:0 0;"></div>
         </div>
     </div>
 {% endmacro %}

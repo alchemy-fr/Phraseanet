@@ -41,6 +41,9 @@ class WebservicesFormType extends AbstractType
             'label'        => 'Use recaptcha API',
             'help_message' => $help
         ]);
+        $builder->add('trials-before-display', 'number', [
+            'label'       => 'Trials before display captcha',
+        ]);
         $builder->add('recaptcha-public-key', 'text', [
             'label'       => 'Recaptcha public key',
         ]);

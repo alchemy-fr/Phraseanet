@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Model\Repositories\AuthFailureRepository;
 use Doctrine\ORM\EntityManager;
 use Alchemy\Phrasea\Model\Entities\AuthFailure;
-use Neutron\ReCaptcha\ReCaptcha;
+use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\Request;
 
 class FailureManager
@@ -103,10 +103,17 @@ class FailureManager
             return $this;
         }
 
-        if ($this->trials < count($failures) && $this->captcha->isSetup()) {
-            $response = $this->captcha->bind($request);
+        if ($this->trials < count($failures)) {
 
-            if (!$response->isValid()) {
+            $captchaResp = "";
+
+            if (isset($_POST["g-recaptcha-response"])) {
+                $captchaResp = $_POST["g-recaptcha-response"];
+            }
+
+            $response = $this->captcha->verify($captchaResp, $request->getClientIp());
+
+            if (!$response->isSuccess()) {
                 throw new RequireCaptchaException('Too many failures, require captcha');
             }
 

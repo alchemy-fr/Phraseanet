@@ -56,7 +56,6 @@ use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
 use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Doctrine\ORM\EntityManagerInterface;
-use Neutron\ReCaptcha\ReCaptcha;
 use RandomLib\Generator;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
@@ -743,10 +742,15 @@ class LoginController extends Controller
         $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
 
         $form->handleRequest($request);
-        if (!$form->isValid()) {
-            $this->app->addFlash('error', $this->app->trans('An unexpected error occurred during authentication process, please contact an admin'));
 
-            throw new AuthenticationException(call_user_func($redirector));
+        $resp = $form->getExtraData();
+
+        if(!isset($resp["g-recaptcha-response"])) {
+            if (!$form->isValid()) {
+                $this->app->addFlash('error', $this->app->trans('An unexpected error occurred during authentication process, please contact an admin'));
+
+                throw new AuthenticationException(call_user_func($redirector));
+            }
         }
 
         $params = [];

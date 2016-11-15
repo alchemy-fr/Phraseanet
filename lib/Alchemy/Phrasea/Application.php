@@ -91,7 +91,6 @@ use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use Neutron\ReCaptcha\ReCaptchaServiceProvider;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -202,7 +201,6 @@ class Application extends SilexApplication
         $this->register(new PhraseaVersionServiceProvider());
 
         $this->register(new RandomGeneratorServiceProvider());
-        $this->register(new ReCaptchaServiceProvider());
         $this->register(new SubdefServiceProvider());
         $this->register(new ZippyServiceProvider());
         $this->setupRecaptacha();
@@ -412,7 +410,7 @@ class Application extends SilexApplication
     }
 
     /**
-     * Asks for a captcha ar next authentication
+     * Asks for a captcha at next authentication
      *
      * @return Application
      */
