@@ -126,9 +126,7 @@ class PermalinkController extends AbstractDelivery
 
         $isDownload = $request->query->getBoolean('download', false);
 
-        if ($isDownload) {
-            $user = $this->app->getAuthenticatedUser();
-
+        if ($isDownload && $user = $this->app->getAuthenticatedUser()) {
             $this->getEventDispatcher()->dispatch(
                 PhraseaEvents::EXPORT_CREATE,
                 new ExportEvent($user, 0, $sbas_id . '_' . $record_id, [ $subdef ], '')
