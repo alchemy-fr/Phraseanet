@@ -541,8 +541,14 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['_score'] = $options->getSortOrder();
         } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
             $sort['created_on'] = $options->getSortOrder();
+        } elseif ($options->getSortBy() === 'recordid') {
+            $sort['recordid'] = $options->getSortOrder();
         } else {
             $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
+        }
+
+        if (! array_key_exists('recordid', $sort)) {
+            $sort['recordid'] = $options->getSortOrder();
         }
 
         return $sort;
