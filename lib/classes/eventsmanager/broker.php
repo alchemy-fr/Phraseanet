@@ -129,13 +129,13 @@ class eventsmanager_broker
 
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
-            $data = @json_decode($row['datas'], true);
+            $json = @json_decode($row['datas'], true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 continue;
             }
 
-            $content = $this->pool_classes[$type]->datas($data, $row['unread']);
+            $content = $this->pool_classes[$type]->datas($json, $row['unread']);
 
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
