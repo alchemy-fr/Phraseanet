@@ -186,8 +186,10 @@ class ToolsController extends Controller
                 try {
 
                     $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
+
                     unlink($tempoDir);
                     mkdir($tempoDir);
+
                     $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
 
                     if (false === rename($file->getPathname(), $tempoFile)) {

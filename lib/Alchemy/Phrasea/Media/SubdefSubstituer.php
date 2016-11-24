@@ -67,9 +67,9 @@ class SubdefSubstituer
         $source = $file->getRealPath();
         $target = $this->fs->generateDocumentFilename($record, $file);
 
-        $this->fs->writeMediaSourceFile($record->getDatabox(), $source, $target);
+        $target  = $this->fs->writeMediaSourceFile($record->getDatabox(), $source, $target);
 
-        $media = $this->mediavorus->guess($source);
+        $media = $this->mediavorus->guess($target);
 
         $this->createMediaSubdef($record, 'document', $media);
 
