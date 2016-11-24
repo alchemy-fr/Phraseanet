@@ -46,8 +46,10 @@ class TaskManagerController extends Controller
 
         $this->getDispatcher()->addListener(KernelEvents::TERMINATE, function () use ($cmdLine) {
             $process = new Process($cmdLine);
+
             $process->setTimeout(0);
             $process->disableOutput();
+
             set_time_limit(0);
             ignore_user_abort(true);
 
@@ -65,6 +67,7 @@ class TaskManagerController extends Controller
 
         $info = $this->getLiveInformationRequest();
         $data = $info->getManager();
+
         if (null !== $pid = $data['process-id']) {
             if (substr(php_uname(), 0, 7) == "Windows"){
                 exec(sprintf('TaskKill /PID %d', $pid));
