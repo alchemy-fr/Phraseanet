@@ -61,6 +61,7 @@ class SetupTest extends \PhraseanetAuthenticatedWebTestCase
         /** @var Client $client */
         $client = self::$DI['client'];
         $client->request('POST', '/admin/setup/', ['_token'   => 'token']);
-        $this->assertTrue($client->getResponse()->isRedirect('/admin/setup/'));
+
+        $this->assertTrue($client->getResponse()->isSuccessful());
     }
 }
