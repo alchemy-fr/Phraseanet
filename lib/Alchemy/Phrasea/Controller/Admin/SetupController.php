@@ -10,30 +10,43 @@
 
 namespace Alchemy\Phrasea\Controller\Admin;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
-use Symfony\Component\Form\FormInterface;
+use Alchemy\Phrasea\Core\Configuration\RegistryFormManipulator;
 use Symfony\Component\HttpFoundation\Request;
 
 class SetupController extends Controller
 {
+    /**
+     * @var RegistryFormManipulator
+     */
+    private $registryFormManipulator;
+
+    /**
+     * @var PropertyAccess
+     */
+    private $configuration;
+
+    public function __construct(Application $app, RegistryFormManipulator $registryFormManipulator, PropertyAccess $configuration)
+    {
+        parent::__construct($app);
+
+        $this->registryFormManipulator = $registryFormManipulator;
+        $this->configuration = $configuration;
+    }
+
     public function submitGlobalsAction(Request $request)
     {
-        /** @var RegistryManipulator $manipulator */
-        $manipulator = $this->app['registry.manipulator'];
-        /** @var PropertyAccess $config */
-        $config = $this->app['conf'];
-
-        $form = $manipulator->createForm($this->app['conf']);
+        $form = $this->registryFormManipulator->createForm();
 
         if ('POST' === $request->getMethod()) {
             $form->submit($request->request->all());
-            if ($form->isValid()) {
-                $config->set('registry', $this->buildRegistryData($config, $manipulator, $form));
 
-                return $this->app->redirectPath('setup_display_globals');
+            if ($form->isValid()) {
+                $registryData = $this->registryFormManipulator->getRegistryData($form, $this->configuration);
+
+                $this->configuration->set('registry', $registryData);
             }
 
             // Do not return a 400 status code as not very well handled in calling JS.
@@ -42,22 +55,5 @@ class SetupController extends Controller
         return $this->renderResponse('admin/setup.html.twig', [
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @param PropertyAccess $config
-     * @param RegistryManipulator $manipulator
-     * @param FormInterface $form
-     * @return mixed
-     */
-    protected function buildRegistryData(PropertyAccess $config, RegistryManipulator $manipulator, FormInterface $form)
-    {
-        $data = $manipulator->getRegistryData($form);
-
-        if ($data['email']['smtp-password'] == null) {
-            $data['email']['smtp-password'] = $config->get([ 'registry', 'email', 'smtp-password']);
-        }
-
-        return $data;
     }
 }
