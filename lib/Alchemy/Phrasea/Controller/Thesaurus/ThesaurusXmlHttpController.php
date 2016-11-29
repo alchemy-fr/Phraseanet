@@ -700,43 +700,14 @@ class ThesaurusXmlHttpController extends Controller
         foreach ($collections as $collection) {
             $lcoll .= ($lcoll?",":"") . $collection->get_coll_id();
         }
-        $site = $this->app['phraseanet.configuration']['main']['key'];
-        $usr_id = $this->getAuthenticatedUser()->getId();
 
         $tids = explode('.', $request->get('id'));
         $thid = implode('.', $tids);
 
         try {
             $databox = $this->findDataboxById($sbid);
-            $connbas = $databox->get_connection();
             $dbname = \phrasea::sbas_labels($sbid, $this->app);
 
-            $t_nrec = [];
-            $lthid = strlen($thid);
-
-            // count occurrences
-            if ($lthid > 1) {
-                $dthid = str_replace('.', 'd', $thid);
-                $sql = "SELECT"
-                    . " 0+SUBSTR(t.value, " . ($lthid + 2) . ") AS k, COUNT(DISTINCT(`record_id`)) AS n"
-                    . " FROM (thit AS t INNER JOIN record AS r USING(record_id))"
-                    . " INNER JOIN collusr AS c ON c.site=:site AND c.usr_id=:usr_id AND r.coll_id=c.coll_id"
-                    . " WHERE t.value LIKE :like AND r.coll_id IN(".$lcoll.") AND (r.status^c.mask_xor)&c.mask_and=0"
-                    . " GROUP BY k ORDER BY NULL";
-                $sqlparm = array(':like' => $dthid . 'd%', ':site'=>$site, ':usr_id'=>$usr_id);
-
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute($sqlparm);
-
-                $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                foreach ($rs as $rowbas) {
-                    $t_nrec[$thid . '.' . $rowbas['k']] = $rowbas;
-                }
-            }
-
-            $databox = $this->findDataboxById($sbid);
             if ($request->get('type') == 'T') {
                 $xqroot = 'thesaurus';
                 $dom = $databox->get_dom_thesaurus();
@@ -758,17 +729,7 @@ class ThesaurusXmlHttpController extends Controller
                     $node0 = $nodes->item(0);
 
                     $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
-                    $nts0 = 0;  // count of ts under this term
 
-                    $label = $this->buildBranchLabel($dbname, $lng, $node0, $key0, $nts0);
-
-                    $class = '';
-                    if ($nts0 > 0) {
-                        $class .= ( $class == '' ? '' : ' ') . 'expandable';
-                    }
-                    if ($request->get('last')) {
-                        $class .= ( $class == '' ? '' : ' ') . 'last';
-                    }
                     // on dresse la liste des termes specifiques avec comme cle le synonyme dans la langue pivot
                     $nts = 0;
                     $tts = [];
@@ -795,14 +756,14 @@ class ThesaurusXmlHttpController extends Controller
                         }
                     }
 
+                    $field0 = $node0->getAttribute('field');
+                    if ($field0) {
+                        $field0 = 'field="' . $field0 . '"';
+                    }
+
+                    $html .= '<UL ' . $field0 . '>' . "\n";
+
                     if ($nts > 0) {
-                        $field0 = $node0->getAttribute('field');
-                        if ($field0) {
-                            $field0 = 'field="' . $field0 . '"';
-                        }
-
-                        $html .= '<UL ' . $field0 . '>' . "\n";
-
                         if ($request->get('sortsy') && $lng != '') {
                             ksort($tts, SORT_STRING);
                         } elseif ($request->get('type') == 'C') {
@@ -830,10 +791,6 @@ class ThesaurusXmlHttpController extends Controller
 
                             $html .= '<span>' . $ts['label'] . '</span>';
 
-                            if (isset($t_nrec[$tid])) {
-                                $html .= ' <I>' . $t_nrec[$tid]['n'] . '</I>';
-                            }
-
                             $html .= "\n";
 
                             if ($ts['nts'] > 0) {
@@ -842,10 +799,9 @@ class ThesaurusXmlHttpController extends Controller
 
                             $html .= '</LI>' . "\n";
                         }
-                        $html .= '</UL>' . "\n";
                     }
 
-                    $html .= '</LI>' . "\n";
+                    $html .= '</UL>' . "\n";
                 }
             }
         } catch (\Exception $e) {
