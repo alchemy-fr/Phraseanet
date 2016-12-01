@@ -253,6 +253,7 @@ div.switch_right.unchecked {
 }
 .board_section div[class="section"] ul.setup li.blocker {
   background-image: url('#{$iconsPath}delete.png');
+  background-size: 16px;
 }
 .board_section div[class="section"] ul.setup li:hover {
   background-color: #fffbcd;
