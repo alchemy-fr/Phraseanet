@@ -7,11 +7,11 @@
                 <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
                     {{ requirement.getTestMessage }}
 
-                    <p>
                     {% if not requirement.isFulfilled() %}
+                    <p>
                         {{ requirement.getHelpHtml() | raw }}
-                    {% endif %}
                     </p>
+                    {% endif %}
                 </li>
             {% endfor %}
         {% endif %}
