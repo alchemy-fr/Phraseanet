@@ -121,6 +121,7 @@ class databox_subdef
 
     /**
      * Build Image Subdef object depending the SimpleXMLElement
+<<<<<<< HEAD
      *
      * @param  SimpleXMLElement $sd
      * @return Image
@@ -236,6 +237,123 @@ class databox_subdef
      * Build Flexpaper Subdef object depending the SimpleXMLElement
      *
      * @param  SimpleXMLElement $sd
+=======
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Image
+     */
+    protected function buildImageSubdef(SimpleXMLElement $sd)
+    {
+        $image = new Image($this->translator);
+
+        if ($sd->icodec) {
+            $image->setOptionValue(Image::OPTION_ICODEC, (string) $sd->icodec);
+        }
+        if ($sd->size) {
+            $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->quality) {
+            $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
+        }
+        if ($sd->strip) {
+            $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
+        }
+        if ($sd->dpi) {
+            $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
+        }
+        if ($sd->flatten) {
+            $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
+        }
+
+        return $image;
+    }
+
+    /**
+     * Build Audio Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Audio
+     */
+    protected function buildAudioSubdef(SimpleXMLElement $sd)
+    {
+        $audio = new Audio($this->translator);
+
+        if ($sd->acodec) {
+            $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->audiobitrate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+
+        return $audio;
+    }
+
+    /**
+     * Build Video Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Video
+     */
+    protected function buildVideoSubdef(SimpleXMLElement $sd)
+    {
+        $video = new Video($this->translator);
+
+        if ($sd->size) {
+            $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->acodec) {
+            $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->vcodec) {
+            $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
+        }
+        if ($sd->fps) {
+            $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
+        }
+        if ($sd->bitrate) {
+            $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+        if ($sd->audiobitrate) {
+            $video->setOptionValue(Video::OPTION_AUDIOBITRATE, (int) $sd->audiobitrate);
+        }
+        if ($sd->audiosamplerate) {
+            $video->setOptionValue(Video::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+        if ($sd->GOPsize) {
+            $video->setOptionValue(Video::OPTION_GOPSIZE, (int) $sd->GOPsize);
+        }
+
+        return $video;
+    }
+
+    /**
+     * Build GIF Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Gif
+     */
+    protected function buildGifSubdef(SimpleXMLElement $sd)
+    {
+        $gif = new Gif($this->translator);
+
+        if ($sd->size) {
+            $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->delay) {
+            $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
+        }
+
+        return $gif;
+    }
+
+    /**
+     * Build Flexpaper Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+>>>>>>> origin/master
      * @return FlexPaper
      */
     protected function buildFlexPaperSubdef(SimpleXMLElement $sd)

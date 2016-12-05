@@ -1312,6 +1312,7 @@ class ThesaurusXmlHttpController extends Controller
             if (empty($lids)) {
                 // no cterm was found
                 continue;
+<<<<<<< HEAD
             }
             $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
 
@@ -1408,6 +1409,104 @@ class ThesaurusXmlHttpController extends Controller
                     $databox->saveCterms($sbas['domct']);
                 }
             }
+=======
+            }
+            $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
+
+            // count records
+            $sql = 'SELECT DISTINCT record_id AS r'
+                . ' FROM thit WHERE value IN (:lids)'
+                . ' ORDER BY record_id';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(['lids' => $lids]);
+            $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $stmt->closeCursor();
+
+            $ret['nRecsToUpdate'] += count($tsbas[$ksbas]['trids']);
+        }
+
+        if ($ret['nRecsToUpdate'] <= self::SEARCH_REPLACE_MAXREC) {
+            foreach ($tsbas as $sbas) {
+
+                try {
+                    $databox = $this->findDataboxById($sbas['sbas_id']);
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                // fix caption of records
+                foreach ($sbas['trids'] as $rid) {
+                    try {
+                        $record = $databox->get_record($rid);
+
+                        $metadatask = [];  // datas to keep
+                        $metadatasd = [];  // datas to delete
+
+                        /* @var $field caption_field */
+                        foreach ($record->get_caption()->get_fields(null, true) as $field) {
+                            $meta_struct_id = $field->get_meta_struct_id();
+                            /* @var $v caption_Field_Value */
+                            $fname = $field->get_name();
+                            if (!array_key_exists($fname, $sbas['tvals'])) {
+                                foreach ($field->get_values() as $v) {
+                                    $metadatask[] = [
+                                        'meta_struct_id' => $meta_struct_id,
+                                        'meta_id'        => $v->getId(),
+                                        'value'          => $v->getValue()
+                                    ];
+                                }
+                            } else {
+                                foreach ($field->get_values() as $v) {
+                                    $keep = true;
+                                    $vtxt = $this->getUnicode()->remove_indexer_chars($v->getValue());
+                                    /** @var DOMElement $sy */
+                                    foreach ($sbas['tvals'][$fname] as $sy) {
+                                        if ($sy->getAttribute('w') == $vtxt) {
+                                            $keep = false;
+                                        }
+                                    }
+
+                                    if ($keep) {
+                                        $metadatask[] = [
+                                            'meta_struct_id' => $meta_struct_id,
+                                            'meta_id'        => $v->getId(),
+                                            'value'          => $v->getValue()
+                                        ];
+                                    } else {
+                                        $metadatasd[] = [
+                                            'meta_struct_id' => $meta_struct_id,
+                                            'meta_id'        => $v->getId(),
+                                            'value'          => $request->get('t') ? $request->get('t') : ''
+                                        ];
+                                    }
+                                }
+                            }
+                        }
+
+                        if (count($metadatasd) > 0) {
+                            if (!$request->get('debug')) {
+                                $record->set_metadatas($metadatasd, true);
+                                $ret['nRecsUpdated']++;
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                }
+
+                foreach ($sbas['tvals'] as $tval) {
+                    foreach ($tval as $sy) {
+                        // remove candidate from cterms
+                        $te = $sy->parentNode;
+                        $te->parentNode->removeChild($te);
+                        $ret['ctermsDeleted'][] = $sbas['sbas_id'] . '.' . $te->getAttribute('id');
+                    }
+                }
+                if (!$request->get('debug')) {
+                    $databox->saveCterms($sbas['domct']);
+                }
+            }
+>>>>>>> origin/master
             $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsUpdated']]);
         } else {
             // too many records to update

@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Webhook\Processor\CallableProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\OrderNotificationProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorFactory;
+use Alchemy\Phrasea\Webhook\Processor\ProcessorInterface;
 use Alchemy\Phrasea\Webhook\Processor\UserDeletedProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessorFactory;
 
