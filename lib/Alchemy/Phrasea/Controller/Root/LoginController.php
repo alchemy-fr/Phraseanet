@@ -107,6 +107,7 @@ class LoginController extends Controller
             'current_url' => $request->getUri(),
             'flash_types' => $this->app->getAvailableFlashTypes(),
             'recaptcha_display' => $this->app->isCaptchaRequired(),
+            'recaptcha_enabled' => $conf->get(['registry', 'webservices', 'captchas-enabled']),
             'unlock_usr_id' => $this->app->getUnlockAccountData(),
             'guest_allowed' => $this->app->isGuestAllowed(),
             'register_enable' => $this->getRegistrationManager()->isRegistrationEnabled(),
@@ -221,13 +222,6 @@ class LoginController extends Controller
 
             try {
                 if ($form->isValid()) {
-                    $captcha = $this->getRecaptcha()->bind($request);
-
-                    $conf = $this->getConf();
-                    if ($conf->get(['registry', 'webservices', 'captcha-enabled']) && !$captcha->isValid()) {
-                        throw new FormProcessingException($this->app->trans('Invalid captcha answer.'));
-                    }
-
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;

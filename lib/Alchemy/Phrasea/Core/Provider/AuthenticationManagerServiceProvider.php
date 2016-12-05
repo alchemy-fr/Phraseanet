@@ -135,7 +135,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            $authConf = $app['conf']->get(['registry', 'webservices']);
+            $authConf = $app['conf']->get(['authentication', 'captcha']);
 
             return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
