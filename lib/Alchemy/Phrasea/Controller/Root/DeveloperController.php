@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Alchemy\Phrasea\Model\Repositories\ApiOauthTokenRepository;
+use Alchemy\Phrasea\Model\Repositories\WebhookEventDeliveryRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -244,8 +245,12 @@ class DeveloperController extends Controller
             throw new AccessDeniedHttpException();
         }
 
+        $deliveries = $this->getWebhookDeliveryRepository()
+            ->findLastDeliveries($account->getApplication(), 10);
+
         return $this->render('developers/application.html.twig', [
             "application" => $application,
+            "deliveries"  => $deliveries,
             "user"        => $user,
             "token"       => $token,
         ]);
@@ -297,5 +302,13 @@ class DeveloperController extends Controller
     private function getApiApplicationRepository()
     {
         return $this->app['repo.api-applications'];
+    }
+
+    /**
+     * @return WebhookEventDeliveryRepository
+     */
+    private function getWebhookDeliveryRepository()
+    {
+        return $this->app['webhook.delivery_repository'];
     }
 }

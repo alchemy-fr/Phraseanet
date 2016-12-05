@@ -523,22 +523,16 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
         switch ($connector_status) {
             case self::UPLOAD_STATE_DELETED:
                 return $this->translator->trans('La video a ete supprimee');
-                break;
             case self::UPLOAD_STATE_REJECTED:
                 return $this->translator->trans('La video a ete rejetee');
-                break;
             case self::UPLOAD_STATE_ENCODING_ERROR:
                 return $this->translator->trans('Erreur d\'encodage');
-                break;
             case self::UPLOAD_STATE_PROCESSING:
                 return $this->translator->trans('En cours d\'encodage');
-                break;
             default:
                 return '';
-                break;
             case self::UPLOAD_STATE_DONE:
                 return $this->translator->trans('OK');
-                break;
         }
     }
 

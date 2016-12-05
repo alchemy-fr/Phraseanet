@@ -1,6 +1,29 @@
 <h1>{{ 'ElasticSearch configuration' | trans }}</h1>
 
-{{ form(form) }}
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.host) }}
+    {{ form_row(form.port) }}
+
+    <div>
+    {{ form_label(form.indexName) }}
+    {{ form_errors(form.indexName) }}
+    {{ form_widget(form.indexName) }}
+
+    {{ form_label(form.esSettingsDropIndexButton) }}
+    {{ form_widget(form.esSettingsDropIndexButton) }}
+
+    {{ form_label(form.esSettingsCreateIndexButton) }}
+    {{ form_widget(form.esSettingsCreateIndexButton) }}
+    </div>
+
+    {{ form_row(form.shards) }}
+    {{ form_row(form.replicas) }}
+    {{ form_row(form.minScore) }}
+    {{ form_row(form.highlight) }}
+    {{ form_row(form.save) }}
+{{ form_end(form) }}
 
 <form id="ElasticSearchDropIndexForm" action="{{ path('admin_searchengine_drop_index') }}" method="POST">
 </form>

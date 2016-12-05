@@ -25,7 +25,10 @@
     %}
 
   <div id="PREVMAINREG" class="PNB10">
-  <img onclick="openPreview(this, 'REG',0,'{{story.get_serialize_key}}')"
+  <img data-kind="REG"
+       data-position="0"
+       data-id="{{story.get_serialize_key}}"
+       class="open-preview-action"
        src="{{url}}"
        style="
           width:{{fit_size.width}}px;
@@ -80,10 +83,10 @@
           </div>
           <div class="cont_infos">
           <div>
-          <img src="/assets/common/images/icons/light_left.gif" style="margin-right:10px;" onclick="getPrevious();"/>
-          <img src="/assets/common/images/icons/light_right.gif" style="margin-left:10px;" onclick="getNext();"/><br/>
-          <span onclick="startSlide()" id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }}</span>
-          <span onclick="stopSlide()" id="stop_slide">{{ 'preview:: arreter le diaporama' | trans }}</span>
+          <img src="/assets/common/images/icons/light_left.gif" style="margin-right:10px;" class="preview-navigate-action" data-direction="backward"/>
+          <img src="/assets/common/images/icons/light_right.gif" style="margin-left:10px;" class="preview-navigate-action" data-direction="forward"/><br/>
+          <span class="preview-start-slideshow-action" id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }}</span>
+          <span class="preview-stop-slideshow-action" id="stop_slide">{{ 'preview:: arreter le diaporama' | trans }}</span>
           </div>
           </div>
           <div id="PREVIEWTOOL">

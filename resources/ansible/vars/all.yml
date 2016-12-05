@@ -59,6 +59,7 @@ php:
     packages: [php5-cli, php5-intl, php5-mcrypt, php5-enchant, php5-gd, php5-imagick, php5-memcache, php5-memcached, php5-curl, php5-mysql, php5-sqlite]
     pecl_packages:
         - {name: zmq, package: zmq-beta}
+        - {name: amqp, package: amqp-1.4.0}
 xdebug:
     install: '1'
 composer:

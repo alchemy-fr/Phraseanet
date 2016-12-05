@@ -44,14 +44,14 @@
                   <td>
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
                           <div title="" class="context-menu-item menu3-custom-item">
-                            <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
-                                 class="context-menu-item-inner">{{ 'edit' | trans }}
+                            <div  data-kind="basket" data-id="{{basket.getId()}}"
+                                 class="context-menu-item-inner edit-record-action">{{ 'edit' | trans }}
                             </div>
                           </div>
                         {% endif %}
@@ -138,8 +138,8 @@
                   <td>
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
@@ -149,7 +149,7 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog small-dialog" title="{{ 'action::renommer' | trans }}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
+                          <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
                             {{ 'action::renommer' | trans }}
                           </a>
                         </div>
@@ -166,21 +166,19 @@
                       {% endif %}
 
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="archiveBasket({{ basket.getId() }});return false;">
+                        <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
                           {{ 'Archive' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
-                             onclick="checkDeleteThis('SSTT',this);return false;">
+                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
                           {{ 'action : supprimer' | trans }}
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
+                          <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
                             {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
@@ -226,14 +224,15 @@
                   <td>
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
                       <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
-                             class="context-menu-item-inner">{{ 'action::editer' | trans }}
+                        <div class="context-menu-item-inner edit-record-action"
+                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"
+                             >{{ 'action::editer' | trans }}
                         </div>
                       </div>
                         {% endif %}
@@ -246,7 +245,10 @@
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                          <a class="story-reorder-content-action" title="{{ 'Re-ordonner' | trans }}"
+                             data-db-id="{{ story.getRecord(app).get_sbas_id }}"
+                             data-record-id="{{ story.getRecord(app).get_record_id() }}"
+                             href="#">
                             {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
@@ -277,8 +279,11 @@
 
   {% import 'common/thumbnail.html.twig' as thumbnail %}
 
-  <div ondblclick="{% if wz_scope == 'groupings' %}openPreview(this, 'REG',{{ ord }},'{{container.get_sbas_id()}}_{{container.get_record_id()}}');{% else %}openPreview(this, 'BASK',{{ ord }},{{container.getId()}});{% endif %}"
-       class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
+  <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
+       data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
+       data-position="{{ ord }}"
+       data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
+       style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
       {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}

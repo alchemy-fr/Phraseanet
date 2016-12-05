@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
 use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\Record\RecordRepository;
+use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Status\StatusStructure;
@@ -450,8 +451,9 @@ class databox extends base implements ThumbnailedElement
 
             $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
 
-            $meta_struct_field = databox_field::create($this->app, $this, $fname, $multi);
+            $meta_struct_field = databox_field::create($this->app, $this, $fname);
             $meta_struct_field
+                ->set_multi($multi)
                 ->set_readonly(isset($field['readonly']) ? (string) $field['readonly'] : 0)
                 ->set_indexable(isset($field['index']) ? (string) $field['index'] : '1')
                 ->set_separator(isset($field['separator']) ? (string) $field['separator'] : '')
@@ -892,7 +894,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return databox_subdefsStructure|\Alchemy\Phrasea\Databox\SubdefGroup[]|databox_subdef[][]
+     * @return databox_subdefsStructure|SubdefGroup[]
      */
     public function get_subdef_structure()
     {

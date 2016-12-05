@@ -42,11 +42,7 @@ class LightboxController extends Controller
             $repository->findActiveValidationByUser($this->getAuthenticatedUser())
         );
 
-        $template = $this->isBrowserNewGenerationOrMobile()
-            ? 'lightbox/index.html.twig'
-            : 'lightbox/IE6/index.html.twig';
-
-        return $this->renderResponse($template, [
+        return $this->renderResponse('lightbox/index.html.twig', [
             'baskets_collection' => $basket_collection,
             'module_name'        => 'Lightbox',
             'module'             => 'lightbox',
@@ -92,7 +88,6 @@ class LightboxController extends Controller
             ]);
         }
 
-        $isNewGenerationBrowser = $this->app['browser']->isNewGeneration();
         $basket = $basketElement->getBasket();
 
         $ret = [];
@@ -104,11 +99,11 @@ class LightboxController extends Controller
             ['record' => $basketElement->getRecord($this->app), 'not_wrapped' => true]
         );
         $ret['options_html'] = $this->render(
-            $isNewGenerationBrowser ? 'lightbox/sc_options_box.html.twig' : 'lightbox/IE6/sc_options_box.html.twig',
+            'lightbox/sc_options_box.html.twig',
             ['basket_element' => $basketElement]
         );
         $ret['agreement_html'] = $this->render(
-            $isNewGenerationBrowser ? 'lightbox/agreement_box.html.twig' : 'lightbox/IE6/agreement_box.html.twig',
+            'lightbox/agreement_box.html.twig',
             ['basket' => $basket, 'basket_element' => $basketElement]
         );
         $ret['selector_html'] = $this->render('lightbox/selector_box.html.twig', ['basket_element' => $basketElement]);
@@ -149,10 +144,7 @@ class LightboxController extends Controller
             'record' => $record,
             'not_wrapped' => true,
         ]);
-        $template_options = $browser->isNewGeneration()
-            ? 'lightbox/feed_options_box.html.twig'
-            : 'lightbox/IE6/feed_options_box.html.twig';
-        $ret['options_html'] = $this->render($template_options, ['feed_element' => $item]);
+        $ret['options_html'] = $this->render('lightbox/feed_options_box.html.twig', ['feed_element' => $item]);
         $ret['caption'] = $this->render(
             'common/caption.html.twig', [
             'view'   => 'preview',
@@ -213,7 +205,7 @@ class LightboxController extends Controller
 
         $basket = $this->markBasketRead($basket);
         $basket = $this->markBasketUserAwareOfValidation($basket);
-        
+
         $response = $this->renderResponse($this->getValidationTemplate(), [
             'baskets_collection' => $basket_collection,
             'basket'             => $basket,
@@ -238,28 +230,16 @@ class LightboxController extends Controller
             $basket->markRead();
             $this->app['orm.em']->flush();
         }
-        
+
         return $basket;
     }
 
-    /**
-     * @return bool
-     */
-    private function isBrowserNewGenerationOrMobile()
-    {
-        /** @var \Browser $browser */
-        $browser = $this->app['browser'];
-        return $browser->isNewGeneration() || $browser->isMobile();
-    }
-    
     /**
      * @return string
      */
     private function getValidationTemplate()
     {
-        return $this->isBrowserNewGenerationOrMobile()
-            ? 'lightbox/validate.html.twig'
-            : 'lightbox/IE6/validate.html.twig';
+        return 'lightbox/validate.html.twig';
     }
 
     /**
@@ -280,7 +260,7 @@ class LightboxController extends Controller
             ;
             $this->app['orm.em']->flush();
         }
-        
+
         return $basket;
     }
 
@@ -300,14 +280,10 @@ class LightboxController extends Controller
         /** @var FeedEntry $feed_entry */
         $feed_entry = $app['repo.feed-entries']->find($entry_id);
 
-        $template = $this->isBrowserNewGenerationOrMobile()
-            ? 'lightbox/feed.html.twig'
-            : 'lightbox/IE6/feed.html.twig';
-
         $content = $feed_entry->getItems();
         $first = $content->first();
 
-        $response = $this->renderResponse($template, [
+        $response = $this->renderResponse('lightbox/feed.html.twig', [
             'feed_entry'  => $feed_entry,
             'first_item'  => $first,
             'local_title' => $feed_entry->getTitle(),
@@ -359,7 +335,7 @@ class LightboxController extends Controller
 
         return $this->app->json($output);
     }
-    
+
     public function ajaxSetElementAgreementAction(Request $request, $sselcont_id)
     {
         $agreement = $request->request->get('agreement');

@@ -80,15 +80,14 @@
 
 {% if app['conf'].get(['registry', 'actions', 'auth-required-for-export']) and app.getAuthenticatedUser().isGuest() %}
     <script type="text/javascript">
-        p4.Dialog.get(1).Close();
-        var $dialog = p4.Dialog.Create({
-            size : '500x100',
-            closeOnEscape : true,
-            closeButton:false,
-            title : "{{ "Unauthorized action"|trans }}"
-        }, 2);
-
-        $dialog.setContent("{{ "Guest, you must be authenticated to have the right to download."|trans }}");
+        {% set max_download = app['conf'].get(['registry', 'actions', 'download-max-size'], 120) %}
+        var exportConfig = {
+            isGuest: true,
+            msg: {
+                modalTile: '{{ "Unauthorized action"|trans }}',
+                modalContent: '{{ "Guest, you must be authenticated to have the right to download."|trans }}'
+            }
+        };
     </script>
 {% else %}
     {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
@@ -488,357 +487,31 @@
                         <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
                     </div>
                 </div>
-                <script type="text/javascript">
-                    $(document).ready(function(){
-                        $('#ftp_form_selector').bind('change',function(){
-                        $('#ftp .ftp_form').hide();
-                        $('#ftp .ftp_form_'+$(this).val()).show();
-                            $('.ftp_folder_check', p4.Dialog.get(1).getDomElement()).unbind('change').bind('change', function(){
-                                if($(this).prop('checked'))
-                                    $(this).next().prop('disabled',false);
-                                else
-                                    $(this).next().prop('disabled',true);
-                            });
-                        }).trigger('change');
-                    });
-                </script>
              </div>
         {% endif %}
     </div>
 
     <script type="text/javascript">
-
-        function check_TOU(container)
-        {
-            var checkbox = $('input[name="TOU_accept"]', $(container));
-            var go = checkbox.length === 0 || checkbox.prop('checked');
-
-            if(!go)
-            {
-                {% set alert_message %}
-                    {{ 'You must agree to the Terms of Use to continue.' | trans }}
-                {% endset %}
-
-                var alert = p4.Dialog.Create({
-                    size : 'Alert',
-                    closeOnEscape : true,
-                    closeButton:true,
-                    title : '{{ "Warning !" | trans }}'
-                }, 2);
-
-                alert.setContent("{{ alert_message | e('js') }}");
-
-                return false;
+        {% set max_download = app['conf'].get(['registry', 'actions', 'download-max-size'], 120) %}
+        var exportConfig = {
+            isGuest: false,
+            maxDownload: {{max_download}},
+            haveFtp: {% if download.get_total_ftp() > 0 %}true{% else %}false{% endif %},
+            msg: {
+                termOfUseTitle: '{{ "Terms of Use" | trans | e('js') }}',
+                termOfUseAgree: '{{ 'You must agree to the Terms of Use to continue.' | trans | e('js') }}',
+                requiredFields: '{{ 'Certains champs sont obligatoires, veuillez les remplir' | trans | e('js') }}',
+                missingSubdef: '{{ 'Vous devez selectionner un type de sous definitions' | trans | e('js') }}',
+                fileTooLarge: '{{ 'You can not directly download more than %max_download% Mo ; time to package all documents is too long'|trans({'%max_download%' : max_download})|e('js') }}',
+                fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans | e('js') }}',
+                fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans | e('js') }}',
+                success: '{{ "Success" | trans | e('js') }}',
+                warning: '{{ "Warning !" | trans | e('js') }}'
+            },
+            user: {
+                email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
             }
-            return true;
-        }
-
-        function check_subdefs(container)
-        {
-            var go = required = false;
-
-            $('input[name="obj[]"]', $(container)).each(function(){
-                if($(this).prop('checked'))
-                {
-                    go = true;
-                }
-            });
-
-            $('input.required, textarea.required', container).each(function(i,n){
-                if($.trim($(n).val()) === '')
-                {
-                    required = true;
-                    $(n).addClass('error');
-                }
-                else
-                {
-                    $(n).removeClass('error');
-                }
-            });
-
-            if(required)
-            {
-                {% set alert_message %}
-                    {{ 'Certains champs sont obligatoires, veuillez les remplir' | trans }}
-                {% endset %}
-
-                var alert = p4.Dialog.Create({
-                    size : 'Alert',
-                    closeOnEscape : true,
-                    closeButton:true,
-                    title : '{{ "Warning !" | trans | e('js') }}'
-                }, 2);
-
-                alert.setContent("{{ alert_message | e('js') }}");
-
-                return false;
-            }
-            if(!go)
-            {
-                {% set alert_message %}
-                    {{ 'Vous devez selectionner un type de sous definitions' | trans }}
-                {% endset %}
-
-                var alert = p4.Dialog.Create({
-                    size : 'Alert',
-                    closeOnEscape : true,
-                    closeButton:true,
-                    title : '{{ "Warning !" | trans | e('js') }}'
-                }, 2);
-
-                alert.setContent("{{ alert_message | e('js') }}");
-
-                return false;
-            }
-
-            return true;
-        }
-
-        {% set TOUTitle %}
-            {{ "Terms of Use" | trans }}
-        {% endset %}
-
-        $(document).ready(function(){
-            var dialog = p4.Dialog.get(1);
-            var tabs = $('.tabs', dialog.getDomElement());
-
-            $('a.TOUview').bind('click', function(){
-                var options = {
-                  size : 'Medium',
-                  closeButton: true,
-                  title :'{{ TOUTitle|e('js') }}'
-                };
-
-                $dialog = p4.Dialog.Create(options, 2);
-
-                $.get($(this).attr('href'), function(content){$dialog.setContent(content);});
-            });
-
-            $('.close_button').bind('click',function(){
-                dialog.Close();
-            });
-
-            /*define([
-                "common/geonames"
-            ], function (geonames) {
-                geonames.init($('#command_geoname_field'), {
-                    "server": "{{ app['geonames.server-uri'] }}",
-                    "limit": 40
-                });
-            });*/
-
-
-
-            $('#download .download_button').bind('click',function(){
-                if(!check_subdefs($('#download')))
-                    return false;
-
-                if (!check_TOU($('#download'))) {
-                    return false;
-                }
-
-                var total = 0;
-                var count = 0;
-
-                $('input[name="obj[]"]', $('#download')).each(function(){
-                    var total_el = $('#download input[name=download_'+$(this).val()+']');
-                    var count_el = $('#download input[name=count_'+$(this).val()+']');
-                    if($(this).prop('checked'))
-                    {
-                        total += parseInt($(total_el).val());
-                        count += parseInt($(count_el).val());
-                    }
-                });
-
-                {% set max_download = app['conf'].get(['registry', 'actions', 'download-max-size'], 120) %}
-                {% set alert_too_big_one %}
-                        {% trans with {'%max_download%' : max_download} %}You can not directly download more than %max_download% Mo ; time to package all documents is too long{% endtrans %}
-                {% endset %}
-                {% set alert_too_big_two %}
-                        {{ 'You can alternatively receive an email when the download is ready.' | trans }}
-                {% endset %}
-                {% set alert_too_big_three %}
-                        {{ 'Would you like to receive an e-mail when your download is ready ?' | trans }}
-                {% endset %}
-
-                if(count>1 && total/1024/1024 > {{max_download}}) {
-                    if(confirm("{{alert_too_big_one|e('js') ~ "\\n" ~ alert_too_big_two|e('js') ~ "\\n" ~ alert_too_big_three|e('js')}}")) {
-                        $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
-                        $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).prop('checked', true);
-                        });
-                        $('input[name="destmail"]', $('#sendmail')).val("{{app.getAuthenticatedUser().getEmail()}}");
-
-                        var tabs = $('.tabs', dialog.getDomElement());
-                        tabs.tabs("option", "active", 1);
-                    }
-
-                    return;
-                }
-
-                $('#download form').submit();
-                dialog.Close();
-            });
-
-            $('#order .order_button').bind('click',function(){
-                if (!check_TOU($('#order'))) {
-                    return false;
-                }
-
-                $('#order .order_button_loader').css('visibility','visible');
-
-                var options = $('#order form').serialize();
-
-                var $this = $(this);
-                $this.prop('disabled', true).addClass('disabled');
-                $.post("../prod/order/"
-                    , options
-                    , function(data){
-                        $this.prop('disabled', false).removeClass('disabled');
-
-                        $('#order .order_button_loader').css('visibility','hidden');
-
-                        if(!data.error) {
-                            var title = '{{ "Success" | trans | e('js') }}';
-                        } else {
-                            var title = '{{ "Warning !" | trans | e('js') }}';
-                        }
-
-                        var options = {
-                          size : 'Alert',
-                          closeButton: true,
-                          title : title
-                        };
-
-                        p4.Dialog.Create(options, 2).setContent(data.msg);
-
-                        if(!data.error)
-                        {
-                            humane.info(data.msg);
-                            dialog.Close();
-                        } else {
-                            humane.error(data.msg);
-                        }
-
-                        return;
-                    }
-                    ,'json'
-                );
-            });
-
-            $('#ftp .ftp_button').bind('click',function(){
-                if(!check_subdefs($('#ftp')))
-                    return false;
-
-                if (!check_TOU($('#ftp'))) {
-                    return false;
-                }
-
-                $('#ftp .ftp_button_loader').show();
-
-                    $('#ftp .ftp_form:hidden').remove();
-
-                var $this = $(this);
-
-                var options_addr = $('#ftp_form_stock form:visible').serialize();
-                var options_join = $('#ftp_joined').serialize();
-
-                $this.prop('disabled',true);
-                $.post("../prod/export/ftp/"
-                    , options_addr + '&' + options_join
-                    , function(data){
-                        $this.prop('disabled', false);
-                        $('#ftp .ftp_button_loader').hide();
-
-                        if(data.success) {
-                            humane.info(data.message);
-                            dialog.Close();
-                        } else {
-                            var alert = p4.Dialog.Create({
-                                size : 'Alert',
-                                closeOnEscape : true,
-                                closeButton:true,
-                                title : '{{ "Warning !" | trans | e('js') }}'
-                            }, 2);
-
-                            alert.setContent(data.message);
-                         }
-                        return;
-                    }
-                    , 'json'
-                );
-            });
-
-            $('#ftp .tryftp_button').bind('click',function(){
-                $('#ftp .tryftp_button_loader').css('visibility','visible');
-                var $this = $(this);
-                $this.prop('disabled',true)
-                var options_addr = $('#ftp_form_stock form:visible').serialize();
-
-                $.post("../prod/export/ftp/test/"
-                    , options_addr           // no need to include 'ftp_joined' checkboxes to test ftp
-                    , function(data){
-                        $('#ftp .tryftp_button_loader').css('visibility','hidden');
-
-                        var options = {
-                          size : 'Alert',
-                          closeButton: true,
-                          title : data.success ? '{{ "Success" | trans | e('js') }}' : '{{ "Warning !" | trans | e('js') }}'
-                        };
-
-                        p4.Dialog.Create(options, 3).setContent(data.message);
-
-                        $this.prop('disabled', false);
-
-                        return;
-                    }
-                );
-            });
-
-            var submitEmailForm = function () {
-                if (!check_subdefs($('#sendmail'))) {
-                    return false;
-                }
-
-                if (!check_TOU($('#sendmail'))) {
-                    return false;
-                }
-
-                $.post('{{ path('export_mail') }}', $('#sendmail form').serialize(), function (response) {
-                    dialog.Close();
-                });
-                return false;
-            };
-
-            $('#sendmail form').on('submit', function () {
-                return submitEmailForm();
-            });
-
-            $('#sendmail .sendmail_button').on('click', function () {
-                return submitEmailForm();
-            });
-
-            $('.datepicker', dialog.getDomElement()).datepicker({
-                changeYear: true,
-                changeMonth:true,
-                dateFormat : 'yy-mm-dd'
-            });
-
-            $('a.undisposable_link', dialog.getDomElement()).bind('click',function(){
-                $(this).parent().parent().find('.undisposable').slideToggle();
-                return false;
-            });
-
-            $('input[name="obj[]"]', $('#download, #sendmail, #ftp')).bind('change', function(){
-
-                var $form = $(this).closest('form');
-
-                if($('input.caption[name="obj[]"]:checked', $form).length > 0) {
-                    $('div.businessfields', $form).show();
-                } else {
-                    $('div.businessfields', $form).hide();
-                }
-            });
-        });
+        };
     </script>
 {% endif %}
 

@@ -38,7 +38,7 @@ define([
             },
             success: function(data){
                 if (data) {
-                    manageSession(data);
+                    commonModule.manageSession(data);
                 }
                 var t = 120000;
                 if (data.apps && parseInt(data.apps) > 1) {

@@ -346,7 +346,7 @@
 
                 if (this.getStats().files_queued === 0) {
                     $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
-                    var dialog = p4.Dialog.get(1);
+                    var dialog = dialogModule.dialog.get(1);
                     //unbind check before close event & disabled button for cancel all download
                     dialog.getDomElement().unbind("dialogbeforeclose");
 
@@ -366,7 +366,7 @@
         $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(e){
 
             //prevent dialog box from being closed while files are being downloaded
-            p4.Dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
+            dialogModule.dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
                 if ( swfu.getStats().files_queued > 0) {
                     p4.Alerts(language.warning, language.fileBeingDownloaded);
                     return false;

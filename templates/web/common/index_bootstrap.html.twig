@@ -19,17 +19,7 @@
 
         <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-        <script src="//code.jquery.com/jquery-migrate-1.2.1.js"></script>
-        <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript">
-            $.widget.bridge('uitooltip', $.ui.tooltip);
-        </script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript">
-            // jQuery.noConflict();
-            var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
-            $.fn.btn = btn; // assigns bootstrap button functionality to $.fn.btn
-        </script>
         {% block rss %}{% endblock %}
         {% block javascript %}{% endblock %}
     </head>

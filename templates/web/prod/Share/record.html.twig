@@ -53,44 +53,7 @@
                 </form>
             </p>
         </div>
-
-        <script language="javascript">
-            $(document).ready(function(){
-                $('input.ui-state-default').hover(
-                    function(){$(this).addClass('ui-state-hover');},
-                    function(){$(this).removeClass('ui-state-hover');}
-                );
-
-                $('#permalinkUrlCopy').on('click', function(event) {
-                    event.preventDefault();
-                    return copyElContentClipboard('permalinkUrl');
-                });
-
-                $('#permaviewUrlCopy').on('click', function(event) {
-                    event.preventDefault();
-                    return copyElContentClipboard('permaviewUrl');
-                });
-
-                $('#embedCopy').on('click', function(event) {
-                    event.preventDefault();
-                    return copyElContentClipboard('embedRecordUrl');
-                });
-
-                var copyElContentClipboard = function(elId) {
-                    var copyEl = document.getElementById(elId);
-                    copyEl.select();
-                    try {
-                        var successful = document.execCommand('copy');
-                        var msg = successful ? 'successful' : 'unsuccessful';
-                        console.log('Copying text command was ' + msg);
-                    } catch (err) {
-                        console.log('unable to copy');
-                    }
-                }
-            });
-        </script>
     {% else %}
         <div>{{ 'No URL available' | trans }}</div>
     {% endif %}
 {% endif %}
-

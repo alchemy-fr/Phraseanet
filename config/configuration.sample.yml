@@ -236,3 +236,16 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+geocoding-providers:
+  -
+    name: 'mapBox'
+    public-key: ''
+workers:
+  queue:
+    worker-queue:
+      registry: alchemy_worker.queue_registry
+      host: localhost
+      port: 5672
+      user: guest
+      password: guest
+      vhost: /

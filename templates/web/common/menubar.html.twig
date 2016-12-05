@@ -67,7 +67,7 @@
                     {% set link = path('upload_flash_form') %}
                 {% endif %}
 
-                <a  href="{{ link }}" class="dialog full-dialog" title="{{ 'Upload' | trans }}">
+                <a  href="{{ link }}" class="uploader-open-action" title="{{ 'Upload' | trans }}">
                 <span>
                     {{ 'admin::monitor: module upload' | trans }}
                 </span>
@@ -79,7 +79,7 @@
           {# MODULE #}
           {% if module == "prod" %}
           <li>
-            <a href="#" onclick="getHome('PUBLI');" >
+            <a href="#" class="state-navigation" data-state="publication" >
               <span>
                 {{ 'Publications' | trans }}
               </span>
@@ -89,7 +89,7 @@
 
           {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right('order_master') %}
           <li>
-            <a href="{{ path('prod_orders') }}" class="dialog full-dialog" title="{{ 'Orders manager' | trans }}">
+            <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
               <span>
                 {{ 'Commandes' | trans }}
               </span>

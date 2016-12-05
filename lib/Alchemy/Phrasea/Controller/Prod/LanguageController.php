@@ -17,13 +17,13 @@ class LanguageController
     /** @var TranslatorInterface */
     private $translator;
     private $serverName;
-    
+
     public function __construct(TranslatorInterface $translator, $serverName)
     {
         $this->translator = $translator;
         $this->serverName = $serverName;
     }
-    
+
     public function getTranslationsAction()
     {
         $translator = $this->translator;
@@ -111,6 +111,39 @@ class LanguageController
             'toolbox'                 => $translator->trans('Tool box'),
             'print'                   => $translator->trans('Print'),
             'attention'               => $translator->trans('Attention !'),
+            'mapMarkerEdit'           => $translator->trans('Edit position'),
+            'mapMarkerAdd'            => $translator->trans('Add a position'),
+            'mapMarkerMoveLabel'      => $translator->trans('Drag and drop the pin to move position'),
+            'mapMarkerEditCancel'     => $translator->trans('Cancel'),
+            'mapMarkerEditSubmit'     => $translator->trans('Submit'),
+            'Keyboard shortcuts'      => $translator->trans('Keyboard shortcuts'),
+            'Play'                    => $translator->trans('Play'),
+            'Change play speed'       => $translator->trans('Change play speed'),
+            'Pause'                   => $translator->trans('Pause'),
+            'One frame forward'       => $translator->trans('One frame forward'),
+            'One frame backward'      => $translator->trans('One frame backward'),
+            'Add an entry point'      => $translator->trans('Add an entry point'),
+            'Add an end point'        => $translator->trans('Add an end point'),
+            'Navigate to entry point' => $translator->trans('Navigate to entry point'),
+            'Navigate to end point'   => $translator->trans('Navigate to end point'),
+            'Delete current'          => $translator->trans('Delete current'),
+            'Toggle loop'             => $translator->trans('Toggle loop'),
+            'Shift'                   => $translator->trans('Shift'),
+            'Ctrl'                    => $translator->trans('Ctrl'),
+            'Space bar'               => $translator->trans('Space bar'),
+            'or'                      => $translator->trans('or'),
+            'Suppr'                   => $translator->trans('Suppr'),
+            'Add new range'           => $translator->trans('Add new range'),
+            'Export ranges'           => $translator->trans('Export ranges'),
+            'Start Range'             => $translator->trans('Start Range'),
+            'End Range'               => $translator->trans('End Range'),
+            'Remove current Range'    => $translator->trans('Remove current Range'),
+            'Go to start point'       => $translator->trans('Go to start point'),
+            'Go 1 frame backward'     => $translator->trans('Go 1 frame backward'),
+            'Go 1 frame forward'      => $translator->trans('Go 1 frame forward'),
+            'Go to end point'         => $translator->trans('Go to end point'),
+            'Move up range'           => $translator->trans('Move up range'),
+            'Move down range'         => $translator->trans('Move down range'),
         ]);
     }
 }

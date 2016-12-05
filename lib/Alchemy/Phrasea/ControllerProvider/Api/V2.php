@@ -39,7 +39,6 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
                     ->setJsonBodyHelper($app['json.body_helper']);
             }
         );
-
         $app['controller.api.v2.lazaret'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new LazaretController($app));

@@ -130,7 +130,7 @@ class SearchEngineOptions
     /** @var string */
     protected $record_type = self::TYPE_ALL;
 
-    protected $search_type =  self::RECORD_RECORD;
+    protected $search_type = self::RECORD_RECORD;
     /** @var \collection[] */
     protected $collections = [];
     /** @var null|\databox[] */

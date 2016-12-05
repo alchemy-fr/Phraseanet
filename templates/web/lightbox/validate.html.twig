@@ -4,8 +4,8 @@
 {% import 'common/macros.html.twig' as macro %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/lightbox/js/lightbox{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/lightbox{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
@@ -176,9 +176,16 @@
     </div>
     {% endif %}
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
+{% endblock %}
+{% block bodyJavascript %}
   <script type="text/javascript">
     {% if basket.getValidation() %}
-    p4.releasable = {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+    var lightboxApp = lightboxApplication.bootstrap({
+        lang: '{{ app.locale }}',
+        baseUrl: '{{ app['request'].getUriForPath('/') }}',
+        basePath: '{{ app.request.basePath|e('js') }}',
+        releasable: {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+    });
     {% endif %}
   </script>
 {% endblock %}

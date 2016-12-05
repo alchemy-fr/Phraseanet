@@ -94,8 +94,7 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
         $subdefs = new \databox_subdefsStructure($app->findDataboxById($this->databox_id), $app['translator']);
         $subdef = $subdefs->get_subdef("image", $name);
 
-        /* @var $subdef \databox_subdef */
-        $this->assertFalse($subdef->is_downloadable());
+        $this->assertFalse($subdef->isDownloadable());
 
         $options = $subdef->getOptions();
 

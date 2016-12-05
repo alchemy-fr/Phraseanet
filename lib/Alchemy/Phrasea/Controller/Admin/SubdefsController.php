@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Databox\SubdefGroup;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,7 +26,7 @@ class SubdefsController extends Controller
 
         return $this->render('admin/subdefs.html.twig', [
             'databox' => $databox,
-            'subdefs' => $databox->get_subdef_structure()
+            'subdefs' => $databox->get_subdef_structure(),
         ]);
     }
 
@@ -70,6 +71,8 @@ class SubdefsController extends Controller
         } else {
             $subdefs = $databox->get_subdef_structure();
 
+            $this->updateSubdefGroups($subdefs, $request);
+
             foreach ($Parmsubdefs as $post_sub) {
                 $options = [];
 
@@ -80,6 +83,7 @@ class SubdefsController extends Controller
 
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
+                $orderable = $request->request->get($post_sub . '_orderable');
 
                 $defaults = ['path', 'meta', 'mediatype'];
 
@@ -107,12 +111,45 @@ class SubdefsController extends Controller
 
                 $labels = $request->request->get($post_sub . '_label', []);
 
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable);
             }
         }
 
         return $this->app->redirectPath('admin_subdefs_subdef', [
             'sbas_id' => $databox->get_sbas_id(),
         ]);
+    }
+
+    /**
+     * Update Databox subdefsStructure DOM according to defined groups.
+     *
+     * @param \databox_subdefsStructure $subdefs
+     * @param Request $request
+     */
+    private function updateSubdefGroups(\databox_subdefsStructure $subdefs, Request $request)
+    {
+        $subdefsGroups = $request->request->get('subdefsgroups', []);
+        $changedGroups = [];
+
+        /** @var SubdefGroup $subdefsGroup */
+        foreach ($subdefs as $groupName => $subdefsGroup) {
+            $documentOrderable = isset($subdefsGroups[$groupName]['document_orderable'])
+                ? \p4field::isyes($subdefsGroups[$groupName]['document_orderable'])
+                : false;
+
+            if ($subdefsGroup->isDocumentOrderable() !== $documentOrderable) {
+                if ($documentOrderable) {
+                    $subdefsGroup->allowDocumentOrdering();
+                } else {
+                    $subdefsGroup->disallowDocumentOrdering();
+                }
+
+                $changedGroups[] = $subdefsGroup;
+            }
+        }
+
+        if ($changedGroups) {
+            $subdefs->updateSubdefGroups($changedGroups);
+        }
     }
 }

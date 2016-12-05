@@ -16,7 +16,7 @@ class EventProcessorFactory
 {
 
     /**
-     * @var ProcessorFactory
+     * @var ProcessorFactory[]
      */
     private $processorFactories = [];
 
@@ -59,10 +59,20 @@ class EventProcessorFactory
     /**
      * @param WebhookEvent $event
      * @return Processor\ProcessorInterface
+     * @deprecated Use getProcessor() instead
      */
     public function get(WebhookEvent $event)
     {
-        if (! isset($this->processorFactories[$event->getType()])) {
+        return $this->getProcessor($event);
+    }
+
+    /**
+     * @param WebhookEvent $event
+     * @return ProcessorInterface
+     */
+    public function getProcessor(WebhookEvent $event)
+    {
+        if (!isset($this->processorFactories[$event->getType()])) {
             throw new \RuntimeException(sprintf('No processor found for %s', $event->getType()));
         }
 

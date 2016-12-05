@@ -47,7 +47,7 @@
                     <label for="">{{ 'City' | trans }}</label>
                 </td>
                 <td>
-                    <input name="city" type="text" value="" class="geoname_field"/>
+                    <input name="city" type="text" value="" class="geoname_field" autocomplete="false"/>
                 </td>
             </tr>
             <tr>
@@ -66,67 +66,8 @@
 </div>
 
 <script type="text/javascript">
+    var addUserConfig = {
+        geonameServerUrl: "{{ app['geonames.server-uri'] }}"
+    }
 
-    $addUserForm = $('#quickAddUser');
-    $addUserFormMessages = $addUserForm.find('.messages');
-
-    var closeModal = function() {
-        var dialog = $addUserForm.closest('.ui-dialog-content');
-        if (dialog.data("ui-dialog")) {
-            dialog.dialog('destroy').remove();
-        }
-    };
-
-    var submitAddUser = function() {
-        console.log('add user');
-        $addUserFormMessages.empty();
-        var method = $addUserForm.attr('method');
-
-        method = $.inArray(method.toLowerCase(), ['post', 'get']) ? method : 'POST';
-        $.ajax({
-            type : method,
-            url : $addUserForm.attr('action'),
-            data : $addUserForm.serializeArray(),
-            beforeSend : function(){
-                $addUserForm.addClass('loading');
-            },
-            success : function(datas){
-                if( datas.success === true ) {
-                    p4.Feedback.addUser($addUserForm, closeModal);
-                } else {
-                    if( datas.message !== undefined ) {
-                        $addUserFormMessages.empty().append('<div class="alert alert-error">' + datas.message + '</div>');
-                    }
-                }
-                $addUserForm.removeClass('loading');
-            },
-            error:function(){
-                $addUserForm.removeClass("loading");
-            },
-            timeout:function(){
-                $addUserForm.removeClass("loading");
-            }
-        });
-    };
-
-    $addUserForm.find('.geoname_field').geocompleter({
-        "server": "{{ app['geonames.server-uri'] }}",
-        "limit": 40
-    });
-
-    $addUserForm.on('submit', function(event) {
-        event.preventDefault();
-        submitAddUser();
-    });
-
-    $addUserForm.on('click', '.validate', function(event) {
-        event.preventDefault();
-        submitAddUser();
-    });
-
-    $addUserForm.on('click', '.cancel', function(event) {
-        event.preventDefault();
-        closeModal();
-        return false;
-    });
-    </script>
+</script>

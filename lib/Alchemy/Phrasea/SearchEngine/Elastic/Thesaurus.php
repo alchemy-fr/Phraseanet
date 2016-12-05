@@ -80,18 +80,137 @@ class Thesaurus
      */
     public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
+        return $strict ?
+            $this->findConceptsStrict($term, $lang, $filter)
+            :
+            $this->findConceptsFuzzy($term, $lang, $filter)
+            ;
+    }
+
+    private function findConceptsStrict($term, $lang = null, Filter $filter = null)
+    {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
         }
 
         $this->logger->info(sprintf('Searching for term %s', $term), array(
-            'strict' => $strict,
+            'strict' => true,
             'lang' => $lang
         ));
 
-        if ($strict) {
-            $field_suffix = '.strict';
-        } elseif ($lang) {
+        $must = [];
+        $filters = [];
+
+        $must[] = [
+            'match' => [
+                'value.strict' => [
+                    'query' => $term->getValue(),
+                    'operator' => 'and',
+                ],
+            ],
+        ];
+        if ($term->hasContext()) {
+            $must[] = [
+                'match' => [
+                    'context.strict' => [
+                        'query' => $term->getContext(),
+                        'operator' => 'and',
+                    ],
+                ],
+            ];
+        } else {
+            $filters[] = [
+                'missing' => [
+                    'field' => 'context'
+                ]
+            ];
+        }
+        if ($lang) {
+            $filters[] = [
+                'term' => [
+                    'lang' => $lang
+                ]
+            ];
+        }
+        if ($filter) {
+            $filters = array_merge($filters, $filter->getQueryFilters());
+        }
+        if(!empty($filters)) {
+            if (count($filters) > 1) {
+                $must[] = [
+                    'constant_score' => [
+                        'filter' => [
+                            'and' => $filters
+                        ]
+                    ]
+                ];
+            }
+            else {
+                $must[] = [
+                    'constant_score' => [
+                        'filter' => $filters[0]
+                    ]
+                ];
+            }
+        }
+
+        if(count($must) > 1) {
+            $query = [
+                'bool' => [
+                    'must' => $must
+                ]
+            ];
+        }
+        else {
+            $query = $must[0];
+        }
+
+        // Path deduplication
+        $aggs = array();
+        $aggs['dedup']['terms']['field'] = 'path.raw';
+
+        // Search request
+        $params = array();
+        $params['index'] = $this->options->getIndexName();
+        $params['type'] = TermIndexer::TYPE_NAME;
+        $params['body']['query'] = $query;
+        $params['body']['aggs'] = $aggs;
+        // No need to get any hits since we extract data from aggs
+        $params['body']['size'] = 0;
+
+        $this->logger->debug('Sending search', $params['body']);
+        $response = $this->client->search($params);
+
+        // Extract concept paths from response
+        $concepts = array();
+        $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $keys = array();
+        foreach ($buckets as $bucket) {
+            if (isset($bucket['key'])) {
+                $keys[] = $bucket['key'];
+                $concepts[] = new Concept($bucket['key']);
+            }
+        }
+
+        $this->logger->info(sprintf('Found %d matching concepts', count($concepts)),
+            array('concepts' => $keys)
+        );
+
+        return $concepts;
+    }
+
+    private function findConceptsFuzzy($term, $lang = null, Filter $filter = null)
+    {
+        if (!($term instanceof TermInterface)) {
+            $term = new Term($term);
+        }
+
+        $this->logger->info(sprintf('Searching for term %s', $term), array(
+            'strict' => false,
+            'lang' => $lang
+        ));
+
+        if($lang) {
             $field_suffix = sprintf('.%s', $lang);
         } else {
             $field_suffix = '';
@@ -114,10 +233,6 @@ class Thesaurus
             $query = array();
             $query['bool']['must'][0] = $value_query;
             $query['bool']['must'][1] = $context_query;
-        } elseif ($strict) {
-            $context_filter = array();
-            $context_filter['missing']['field'] = 'context';
-            $query = self::applyQueryFilter($query, $context_filter);
         }
 
         if ($lang) {

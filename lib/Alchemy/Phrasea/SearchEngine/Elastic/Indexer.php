@@ -139,6 +139,8 @@ class Indexer
                 // everything ready to search
                 $bulk->flush();
                 $this->client->indices()->refresh();
+                $this->client->indices()->clearCache();
+                $this->client->indices()->flushSynced();
             }
 
             if ($what & self::RECORDS) {

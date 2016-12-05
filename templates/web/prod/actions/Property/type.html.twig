@@ -53,36 +53,3 @@
         </span>
     </div>
  </form>
-
-<script type="text/javascript">
-    var $dialog = p4.Dialog.get(1);
-    var $dialogBox = $dialog.getDomElement();
-
-    $("button.cancel", $dialogBox).bind("click", function(){
-        $dialog.Close();
-    });
-
-    $("button.submiter", $dialogBox).bind("click", function(){
-        var $this = $(this);
-        var form = $(this).closest("form");
-        var loader = form.find("form-action-loader");
-
-        $.ajax({
-            type: form.attr("method"),
-            url: form.attr("action"),
-            data: form.serializeArray(),
-            dataType: "json",
-            beforeSend:function(){
-                $this.attr("disabled", true);
-                loader.show();
-            },
-            success: function(data){
-                $dialog.Close();
-            },
-            complete: function(){
-                $this.attr("disabled", false);
-                loader.hide();
-            }
-        });
-    });
-</script>

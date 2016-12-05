@@ -10,6 +10,10 @@
 {% endblock  icon%}
 
 {% block javascript %}
+    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
     <script type="text/javascript" >
 
             var usrId = '{{ app.getAuthenticator().user.getId }}' ;

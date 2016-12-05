@@ -79,4 +79,4 @@ $app->command(new CrossDomainGenerator());
 
 $app['phraseanet.setup_mode'] = true;
 
-exit(is_int($app->run()) ? : 1);
+$app->run();

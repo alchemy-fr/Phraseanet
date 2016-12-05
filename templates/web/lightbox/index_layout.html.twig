@@ -3,3 +3,12 @@
 {% block extra_content %}
     <div id="DIALOG"></div>
 {% endblock %}
+{% block bodyJavascript %}
+    <script>
+        var lightboxApp = lightboxApplication.bootstrap({
+            lang: '{{ app.locale }}',
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}'
+        });
+    </script>
+{% endblock %}

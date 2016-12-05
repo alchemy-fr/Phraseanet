@@ -8,7 +8,7 @@
     {%  endif %}
     </div>
     <div style="text-align:center;margin-top:15px;">
-        <button class="btn btn-inverse" onclick="p4.Dialog.Close(1)">{{ "boutton::fermer" | trans }}</button>
+        <button class="btn btn-inverse close-dialog-action">{{ "boutton::fermer" | trans }}</button>
     </div>
 </div>
 {%  else  %}
@@ -89,7 +89,7 @@
                                 {{ 'Select a user in the list' | trans }} <br/>
                                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('manageusers') %}
                                     {{ 'or' | trans }}
-                                    <a href="{{ path('prod_push_add_user') }}" class="user_adder btn btn-mini">{{ 'Add user' | trans }}</a>
+                                    <a href="#" class="push-add-user btn btn-mini">{{ 'Add user' | trans }}</a>
                                 {% endif %}
                             </div>
                             <p id="recommanded-users">
@@ -263,11 +263,4 @@
 </div>
 
 {% include "prod/templates/push.html.twig" %}
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
-        p4.ListManager = new ListManager($('#ListManager'));
-    });
-</script>
 {%  endif %}

@@ -212,3 +212,31 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+geocoding-providers:
+    -
+        name: 'mapBox'
+        enabled: true
+        public-key: ''
+        default-position:
+            - 2.335062
+            - 48.879162
+        default-zoom: 2
+        marker-default-zoom: 11
+        position-fields:
+            -
+                name: GpsCompositePosition
+                type: latlng
+            # -
+            #    name: Longitude
+            #    type: lng
+            # -
+            #    name: Latitude
+            #    type: lat
+video-editor:
+    vttFieldName: VideoTextTrackChapters
+    seekBackwardStep: 1000 # in ms
+    seekForwardStep: 1000  # in ms
+    playbackRates:
+        - 1
+        - '1.5'
+        - 3

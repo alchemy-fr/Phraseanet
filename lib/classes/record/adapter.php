@@ -1334,9 +1334,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             @unlink(\p4string::addEndSlash($row['path']) . 'stamp_' . $row['file']);
         }
-       $stmt->closeCursor();
 
-       return $this;
+        $stmt->closeCursor();
+
+        return $this;
     }
 
     /**

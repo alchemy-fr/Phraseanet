@@ -26,6 +26,8 @@ gulp.task('build-common-css', ['build-common-font-css'],function(){
 
 gulp.task('build-common-js', function(){
     var commonGroup = [
+        config.paths.src + 'common/js/components/utils.js',
+        config.paths.src + 'common/js/components/user.js',
         // config.paths.dist + 'assets/bootstrap/js/bootstrap.js', // should append no conflict
         config.paths.src + 'vendors/jquery-mousewheel/js/jquery.mousewheel.js',
         // jquery ui date picker langs
@@ -37,9 +39,9 @@ gulp.task('build-common-js', function(){
         config.paths.vendors + 'jquery-ui/ui/i18n/jquery.ui.datepicker-en-GB.js',
         config.paths.vendors + 'jquery.cookie/jquery.cookie.js',
         config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
-        config.paths.src + 'common/js/jquery.common.js',
-        config.paths.src + 'common/js/jquery.tooltip.js',
-        config.paths.src + 'common/js/jquery.Dialog.js'
+        config.paths.src + 'common/js/components/common.js',
+        config.paths.src + 'common/js/components/tooltip.js',
+        config.paths.src + 'common/js/components/dialog.js'
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });

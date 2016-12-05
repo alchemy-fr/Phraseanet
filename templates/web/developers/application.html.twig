@@ -6,19 +6,29 @@
 
 {% set selected = "" %}
 
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        accountApp.bootstrap({
+            state: 'editApplication',
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}'
+        });
+    </script>
+{% endblock %}
+
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
-            <h1>{{ "Application" | trans }}</h1>
+            <h1>{{ "Application" | trans }} - <strong><a class="link" href="{{ path("developers_application", {"application" : application.getId()}) }}">{{ application.getName() }}</a></strong></h1>
             <input type="hidden" value="{{ application.getId() }}" name="app_id"/>
 
             <div>
-              <div><strong><a class="link" href="{{ path("developers_application", {"application" : application.getId()}) }}">{{ application.getName() }}</a></strong></div>
               <div>{{ application.getDescription() }}</div>
             </div>
 
+            <br />
+
             <h1>{{ "settings OAuth" | trans }}</h1>
-            <p>{{ "Les parametres oauth de votre application." | trans }}</p>
 
             <table id="app-oauth-setting" class="table table-condensed  table-bordered">
                 <tbody>
@@ -111,9 +121,39 @@
                     </tr>
                 </tbody>
             </table>
+
+            {% if deliveries | length > 0 %}
+            <h1>{{ "Derniers envois" | trans }}</h1>
+            <p> {{ "Résultats des derniers envois effectués pour cette application" | trans }}</p>
+
+            <table id="app-access-delivery-log" class="table table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for delivery in deliveries %}
+                    <tr>
+                        <td>{{ delivery.isDelivered ? 'OK' : 'KO' }}</td>
+                        <td style="font-family: monospace">{{ delivery.payload ? delivery.payload.id : '-' }}</td>
+                        <td>{{ delivery.webhookEvent.type }}</td>
+                        <td>{{ delivery.created | date }}</td>
+                        <td>{{ delivery.payload ? delivery.payload.statusCode : '-' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
             <div class="form-actions">
-              <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
+                <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
             </div>
+
         </div>
     </div>
 {% endblock %}

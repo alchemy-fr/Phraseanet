@@ -122,4 +122,4 @@ if ($cli['configuration.store']->isSetup()) {
     }
 }
 
-exit(is_int($cli->run()) ? : 1);
+$cli->run();

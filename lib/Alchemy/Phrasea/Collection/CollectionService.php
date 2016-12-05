@@ -139,7 +139,6 @@ class CollectionService
             . "WHERE r.coll_id = :coll_id\n"
             . "AND r.type='image' AND s.name IN ('preview', 'document')";
 
-
         $params = [':coll_id' => $collection->getCollectionId()];
 
         if ($record_id) {

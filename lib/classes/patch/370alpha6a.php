@@ -108,7 +108,7 @@ class patch_370alpha6a extends patchAbstract
         $options['meta'] = $subdef->isMetadataUpdateRequired() ? 'yes' : 'no';
         $options['devices'] = [databox_subdef::DEVICE_SCREEN];
 
-        $root->set_subdef($groupname, $subdef->get_name(), $subdef->get_class(), $subdef->is_downloadable(), $options, []);
+        $root->set_subdef($groupname, $subdef->get_name(), $subdef->get_class(), $subdef->isDownloadable(), $options, []);
     }
 
     protected function addMobileSubdefVideo($root, $baseSubdef, $groupname)

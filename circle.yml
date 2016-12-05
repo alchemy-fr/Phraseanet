@@ -9,11 +9,12 @@ machine:
   php:
     version: 5.5.21
   node:
-    version: 0.12.0
+    version: stable
   services:
     - memcached
     - redis
     - mysql
+    - rabbitmq-server
 
 dependencies:
   cache_directories:
@@ -21,17 +22,19 @@ dependencies:
     - node_modules
     - ~/.composer
   pre:
+    - sudo apt-get install librabbitmq-dev
+    - pecl install amqp-1.4.0
     - yes '' | pecl install imagick
     - pecl install json
     - yes '' | pecl install zmq-beta
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - npm rebuild node-sass
   override:
     - composer install --no-progress --no-interaction --optimize-autoloader
   post:
     - npm install
     - if [[ ! -e elasticsearch-1.6.0 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.6.0.tar.gz && tar -xvf elasticsearch-1.6.0.tar.gz && elasticsearch-1.6.0/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0; fi
     - elasticsearch-1.6.0/bin/elasticsearch: {background: true}
-
 
 database:
   override:
@@ -46,5 +49,5 @@ database:
 
 test:
   override:
-    - case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; ./node_modules/.bin/gulp test || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac:
+    - case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac:
         parallel: true

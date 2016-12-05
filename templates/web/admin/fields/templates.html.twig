@@ -60,13 +60,11 @@
                     </div>
                     <div class="control-group">
                         <div class="controls">
-                            <label class="checkbox">
-                                <input id="new-multivalued" type="checkbox">{% trans %}Multivalued{% endtrans %}
-                            </label>
                             <button type="button" class="btn btn-success btn-submit-field"><i class="icon-ok icon-white"></i>{% trans %}Add{% endtrans %}</button>
                             <button type="button" class="btn btn-cancel-field">{% trans %}Cancel{% endtrans %}</button>
                         </div>
                     </div>
+                    <input id="new-multivalued" type="hidden" />
                 </form>
             </div>
         </div>
@@ -119,45 +117,20 @@
                 <td colspan="2" class="dces-help-block info"></td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <% if(field.multi == true) { %>
-                        <i class='icon-ok'></i>
-                    <% } else { %>
-                        <i class='icon-remove'></i>
-                    <% } %> {% trans %}Multivalued{% endtrans %}
+                <td><label for="type">{% trans %}Type{% endtrans %}</label></td>
+                <td>
+                    <select id="type">
+                        <option <%= field.type == '' ? 'selected' : '' %> value=""></option>
+                        <option <%= field.type == 'string' ? 'selected' : '' %> value="string">string</option>
+                        <option <%= field.type == 'text' ? 'selected' : '' %> value="text">text</option>
+                        <option <%= field.type == 'number' ? 'selected' : '' %> value="number">number</option>
+                        <option <%= field.type == 'date' ? 'selected' : '' %> value="date">date</option>
+                    </select>
                 </td>
             </tr>
         </table>
         <div class="edit-form">
-            <h4>{% trans %}Advanced field parameters{% endtrans %}</h4>
             <table>
-                <tr>
-                    <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
-                    <td><input id="tbranch" type="text" value="<%= field.tbranch %>"/></td>
-                </tr>
-                <tr>
-                    <td><label for="type">{% trans %}Type{% endtrans %}</label></td>
-                    <td>
-                        <select id="type">
-                            <option <%= field.type == '' ? 'selected' : '' %> value=""></option>
-                            <option <%= field.type == 'string' ? 'selected' : '' %> value="string">string</option>
-                            <option <%= field.type == 'text' ? 'selected' : '' %> value="text">text</option>
-                            <option <%= field.type == 'number' ? 'selected' : '' %> value="number">number</option>
-                            <option <%= field.type == 'date' ? 'selected' : '' %> value="date">date</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="vocabulary-type">{% trans %}Vocabulary type{% endtrans %}</label></td>
-                    <td>
-                        <select id="vocabulary-type">
-                            <option <%= field['vocabulary-type'] == null ? 'selected' : '' %> value=''></option>
-                            <% _.each(vocabularyTypes, function(vocab) { %>
-                                <option <%= field['vocabulary-type'] == vocab.type ? 'selected' : '' %> value="<%= vocab.type %>"><%= vocab.name %></option>
-                            <% }); %>
-                        </select>
-                    </td>
-                </tr>
                 <tr>
                     <td colspan="2">
                         <% if(field['vocabulary-type'] != null && field['vocabulary-type'] != '') { %>
@@ -168,36 +141,23 @@
                         <% } %>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="2">
-                        <label for="business" class="checkbox">
-                            <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />
-                            {% trans %}Business Fields{% endtrans %}
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="aggregable">{% trans %}Aggregation{% endtrans %}</label>
-                    </td>
-                    <td>
-                        <select id="aggregable">
-                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'>{% trans %}Not aggregated{% endtrans %}</option>
-                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
-                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
-                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
-                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
-                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label for="separator">{% trans %}Separator{% endtrans %}</label></td>
-                    <td><input id="separator" type="text" value="<%= field.separator %>" /></td>
-                </tr>
             </table>
             <h4>{% trans %}Display & action settings{% endtrans %}</h4>
             <table>
+                <tr>
+                    <td>
+                        <label for="multi" class="checkbox">
+                            <input id="multi" type="checkbox" <%= field["multi"] ? "checked='checked'" : "" %> />
+                            {% trans %}Multivalued{% endtrans %}
+                        </label>
+                    </td>
+                    <td>
+                        <label id="separatorZone" style="display:<%= field.multi ? "inherit" : "none" %>" for="separator">{% trans %}Separator{% endtrans %}
+                            <input style="width:50px;" id="separator" type="text" value="<%= field.separator %>" />
+                        </label>
+                    </td>
+                </tr>
+
                 <tr>
                     <td>
                         <label for="required" class="checkbox">
@@ -223,6 +183,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2">
+                        <label for="business" class="checkbox">
+                            <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />
+                            {% trans %}Business Fields{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
                     <td>
                         <label for="report" class="checkbox">
                             <input id="report" type="checkbox" <%= field.report ? "checked='checked'" : "" %> />
@@ -241,6 +209,36 @@
                             {% endfor %}
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="aggregable">{% trans %}Aggregation{% endtrans %}</label>
+                    </td>
+                    <td>
+                        <select id="aggregable">
+                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'>{% trans %}Not aggregated{% endtrans %}</option>
+                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
+                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
+                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
+                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
+                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="vocabulary-type">{% trans %}Vocabulary type{% endtrans %}</label></td>
+                    <td>
+                        <select id="vocabulary-type">
+                            <option <%= field['vocabulary-type'] == null ? 'selected' : '' %> value=''></option>
+                            <% _.each(vocabularyTypes, function(vocab) { %>
+                            <option <%= field['vocabulary-type'] == vocab.type ? 'selected' : '' %> value="<%= vocab.type %>"><%= vocab.name %></option>
+                            <% }); %>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
+                    <td><input id="tbranch" type="text" value="<%= field.tbranch %>"/></td>
                 </tr>
             </table>
         </div>

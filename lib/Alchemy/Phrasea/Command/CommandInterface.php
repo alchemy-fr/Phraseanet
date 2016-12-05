@@ -24,6 +24,8 @@ interface CommandInterface
 
     /**
      * Factory for the command.
+     *
+     * @deprecated Will be removed in a future release.
      */
     public static function create();
 }

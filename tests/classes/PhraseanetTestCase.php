@@ -356,10 +356,13 @@ abstract class PhraseanetTestCase extends WebTestCase
         } else {
             $app = new Application($environment);
         }
+
         $this->addAppCacheFlush($app);
 
         $this->loadDb($app);
         $this->addMocks($app);
+
+        $app->boot();
 
         return $app;
     }
@@ -685,15 +688,15 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
     {
         $app = $this->getApplication();
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $app['notification.deliverer']->expects($this->exactly($qty))
+        $delivererMock->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
+        $app['notification.deliverer'] = $delivererMock;
     }
-
+    
     protected function mockUserNotificationSettings($notificationName, $returnValue = true)
     {
         $app = $this->getApplication();

@@ -5,9 +5,8 @@
         <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
-                <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );" class="deployer_closed" ></span>
-                <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
-                       onchange="clksbas(this, {{sbas_id}});" />
+                <span class="toggle-collection deployer_closed" data-toggle-content=".sbascont_{{sbas_id}}"></span>
+                <input type="checkbox" checked style="display: none;" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="select-database sbasChkr_{{sbas_id}}"  data-database="{{sbas_id}}" />
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox danger_indicator" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <span>{{sbas_id|sbas_labels(app)}}</span>
                     <span class="infos_sbas_{{sbas_id}}">
@@ -23,8 +22,8 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input class="ck_{{collection["base_id"]}} checkbas" style="*margin-top:-18px;"
-                                            onchange="checkFilters(true);"
+                                        <input class="ck_{{collection["base_id"]}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
+
                                             id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
                                             name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
@@ -67,22 +66,86 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/prod/css/prod{% if not app.debug %}.min{% endif %}.css">
-    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/prod/skins/{{ cssfile  }}/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/production/production{% if not app.debug %}.min{% endif %}.css">
+    <link id="skinCss" type="text/css" rel="stylesheet" href="/assets/production/skin-{{ cssfile  }}{% if not app.debug %}.min{% endif %}.css">
     <style title="color_selection" type="text/css">
-        /*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo {
-            color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF') }};
-            background-color: #{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection-disabled', '333333')}}};
-        }*/
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
         }
     </style>
-
 {% endblock %}
 
 {% block javascript %}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+
+    <script type="text/javascript">
+
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+        {% set initialAppState = 'default' %}
+        {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
+        {% set initialAppState = 'publication' %}
+        {% endif %}
+
+        window.prodApp = ProductionApplication.bootstrap({
+            lang: "{{ app.locale }}",
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}',
+            notify: {
+                url: "{{ path('list_notifications') }}",
+                moduleId: 1,
+                userId: {{app.getAuthenticatedUser().getId()}}
+            },
+            debug: {% if app.debug %}true{% else %}false{% endif %},
+            initialState: "{{ initialAppState }}",
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}',
+            geocodingProviders: {{ geocodingProviders|json_encode()|raw}},
+            thesaurusConfig: {
+                replaceMessage: '{{ 'prod::thesaurusTab:dlg:Remplacement du candidat "%(from)s" par "%(to)s"' | trans }}',
+                replaceInProgressMsg: '{{ 'prod::thesaurusTab:dlg:Remplacement en cours.' | trans }}',
+                acceptMsg: '{{ 'prod::thesaurusTab:dlg:Acceptation en cours.' | trans }}',
+                deleteMsg: '{{ 'prod::thesaurusTab:dlg:Suppression en cours.' | trans }}',
+                candidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?' | trans }}',
+                candidateManyMsg: '{{ 'prod::thesaurusTab:dlg:accepter les %d termes candidats ?' | trans }}',
+                acceptCandidateUniqueMsg: '{{ 'prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"' | trans }}',
+                acceptCandidateManyMsg: '{{ "prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" | trans }}',
+                replaceCandidateUniqueMsg: '{{ "prod::thesaurusTab:dlg:remplacer le terme \"%s\" des fiches par :" | trans }}',
+                replaceCandidateManyMsg: '{{ "prod::thesaurusTab:dlg:remplacer les %d termes des fiches par :" | trans }}',
+                deleteCandidateUniqueMsg: '{{ 'prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?' | trans }}',
+                deleteCandidateManyMsg: '{{ 'prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?' | trans }}',
+                loadingMsg: '{{ 'prod::thesaurusTab:tree:loading' | trans }}',
+                searchMsg: '{{ 'boutton::chercher' | trans }}',
+                acceptSpecificTermMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme terme specifique' | trans }}',
+                acceptSynonymeMsg: '{{ 'prod::thesaurusTab:tmenu:Accepter comme synonyme' | trans }}',
+                replaceWithMsg: '{{ 'prod::thesaurusTab:cmenu:Remplacer par...' | trans }}',
+                removeActionMsg: '{{ 'boutton::supprimer' | trans }}',
+                sbas: {{thesau_json_sbas|raw}},
+                bas2sbas: {{thesau_json_bas2sbas|raw}},
+                availableDatabases: [
+                        {% for base in search_datas['bases'] %}{% if base['thesaurus'] %}{
+                        id: {{base['sbas_id']}}
+                    }{% if not loop.last %},{% endif %}{% endif %}{% endfor %}
+                ],
+                languagesCount: {{ thesau_languages|length }},
+                langContextMenu: [
+                    {% for lng_code, lng in thesau_languages %}
+                    {
+                        label:'{% trans with {'%lng_code%' : lng_code} %}prod::thesaurusTab:cmenu:Accepter en %lng_code%{% endtrans %}',
+                        lngCode: '{{lng_code}}',
+                    },
+                    {% endfor %}
+                ]
+            }
+        });
+
+        $(document).ready(function(){
+            prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+
+        });
+    </script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
 
@@ -115,8 +178,7 @@
                             {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                         </div>
                         {% if GV_thesaurus %}
-                            <div id="proposals" class="PNB"
-                                ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
+                            <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <button id="facets-back-btn" style="display:none;">back</button>
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
@@ -135,19 +197,19 @@
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
-                            <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
+                            <a title="{{ 'action:: nouveau panier' | trans }}" class="basket-create-action" href="#">
                                 <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
                                 {{ 'action:: nouveau panier' | trans }}
                             </a>
                         </div>
                         <div class="context-menu-item-inner">
-                            <a title="{{ 'Browse Baskets' | trans }}" class="dialog" href="{{ path('prod_workzone_browse') }}">
+                            <a title="{{ 'Browse Baskets' | trans }}" class="basket-browse-action" href="#">
                                 {{ 'Browse Baskets' | trans }}
                             </a>
                         </div>
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
                             <div class="context-menu-item-inner">
-                                <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
+                                <a title="{{ 'action:: nouveau reportage' | trans }}" class="story-create-action" href="#">
                                     <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
                                     {{ 'action:: nouveau reportage' | trans }}
                                 </a>
@@ -155,19 +217,19 @@
                        {% endif %}
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
+                        <div class="context-menu-item-inner basket-filter-action" data-sort="date">
                             <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
                             {{ 'phraseanet:: tri par date' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
+                        <div class="context-menu-item-inner basket-filter-action" data-sort="name">
                             <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
                             {{ 'phraseanet:: tri par nom' | trans }}
                         </div>
                     </li>
                     <li class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="basketPrefs();">
+                        <div class="context-menu-item-inner basket-preferences-action">
                             {{ 'Preferences' | trans }}
                         </div>
                     </li>
@@ -189,6 +251,11 @@
                                 <a id="ADV_query" href="#" class="btn btn-inverse adv_trigger adv_search_button">
                                     <img src="/assets/common/images/icons/settings.png" title="{{ 'Advanced Search' | trans }}"/>
                                 </a>
+                                {% if geocodingProviders|length > 0 %}
+                                <a id="geo_query" href="#" class="btn btn-inverse adv_trigger geo-search-action-btn">
+                                    <img src="/assets/common/images/icons/map.png" title="{{ 'Geo Search' | trans }}"/>
+                                </a>
+                                {% endif %}
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
                             <div class="control-group">
@@ -215,17 +282,17 @@
                             </div>
                         </div>
 
-
-                        <div class="controls controls-row adv_options" style="display:none;">
+                        <div id="advancedSearchForm" class="controls controls-row adv_options" style="display:none;">
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
                                             <div class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);" />
-                                                <input class="btn btn-inverse" type="button"
-                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" onclick="checkBases(false);" />
+                                                <input class="btn btn-inverse toggle-database" type="button"
+                                                    value="{{ 'boutton:: selectionner toutes les bases' | trans }}"
+                                                       data-state="true" />
+                                                <input class="btn btn-inverse toggle-database" type="button" data-state="false"
+                                                    value="{{ 'boutton:: selectionner aucune base' | trans }}" />
                                             </div>
                                             {{_self.bas_list(module_prod, search_datas)}}
                                         </div>
@@ -233,7 +300,7 @@
                                     <td style="width:50%; vertical-align:top;">
                                         <div id="sbasfiltercont">
                                             <div  class="btn-toolbar">
-                                                <input class="btn btn-inverse" type="button" value="{{ 'Re-initialiser' | trans }}" onclick="reset_adv_search();" />
+                                                <input class="btn btn-inverse search-reset-action" type="button" value="{{ 'Re-initialiser' | trans }}" />
                                             </div>
                                             <div id="ADVSRCH_OPTIONS_ZONE">
                                                 <div id="ADVSRCH_SORT_ZONE">
@@ -250,7 +317,7 @@
                                                         {% set sortOrderPreference = search_datas.elasticSort.order %}
                                                     {% endif %}
                                                     <span>{{ 'Trier par' | trans }}</span>
-                                                    <select name="sort" class="input-medium" onchange="checkFilters(true);">
+                                                    <select name="sort" class="input-medium check-filters" data-save="true">
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
@@ -267,7 +334,7 @@
                                                         {% endfor %}
                                                         </optgroup>
                                                     </select>
-                                                    <select name="ord" class="input-medium" onchange="checkFilters(true);">
+                                                    <select name="ord" class="input-medium check-filters" data-save="true">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}
                                                             {% set isSelected = (sortOrderPreference == ord) %}
                                                             {% set isDefault = (sortOrderDefault == ord) %}
@@ -278,7 +345,7 @@
 
                                                 <div id="ADVSRCH_FIELDS_ZONE" class="danger_indicator">
                                                     <span>{{ 'Les termes apparaissent dans le(s) champs' | trans }}</span>
-                                                    <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                    <select size="8" multiple onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" name="fields[]" style="vertical-align:middle; width:99%;">
                                                         <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                         {% for field_id, field in search_datas['fields'] %}
                                                             {% if field['type'] != 'date' %}
@@ -298,7 +365,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <td colspan="2">
-                                                                    <span onclick="deploy(this, '#ADVSRCH_SB_{{databox_id}}' );return false;" class="deployer_closed" ></span>
+                                                                    <span class="toggle-collection deployer_closed" data-toggle-content="#ADVSRCH_SB_{{databox_id}}"></span>
                                                                     <span class="danger_indicator">{{ databox['name'] }}</span>
                                                                 </td>
                                                             </tr>
@@ -311,7 +378,7 @@
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
                                                                         type="checkbox" value="0"
                                                                         n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
                                                                         {{status['labels_off_i18n'][app['locale']]}}
@@ -322,7 +389,7 @@
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
+                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
                                                                         type="checkbox" value="1"
                                                                         n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
@@ -341,7 +408,7 @@
                                                     {% if app['phraseanet.SE'].getAvailableDateFields() | length > 0 %}
                                                     <hr />
                                                     <span>
-                                                        <select name="date_field" class="input-medium" onchange="checkFilters(true);">
+                                                        <select name="date_field" class="input-medium check-filters" data-save="true">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
@@ -354,12 +421,12 @@
                                                         {{ 'phraseanet::time:: de' | trans }}
                                                         <div class="input-prepend">
                                                             <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                         {{ 'phraseanet::time:: a' | trans }}
                                                         <div class="input-prepend">
                                                             <span class="add-on"><i class="icon-calendar"></i></span>
-                                                            <input onchange="checkFilters(true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
+                                                            <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                     </span>
                                                     {% endif %}
@@ -372,42 +439,14 @@
                         </div>
                     </form>
                 </div>
-
-                <!--
-                <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
-                    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-                    {{queries_history|raw}}
-                    </div>
-                </div>
-                {% if queries_topics %}
-                <div id="choosen-topics" class="PNB" style="top:30px;overflow:hidden;">
-                    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-                    {{queries_topics|raw}}
-                    </div>
-                </div>
-                {% endif %}
-                </div>
-                </div>-->
             </div>
 
             <div id="idFrameT" class="PNB ui-corner-top">
                 <div class="tools PNB10 btn-toolbar">
                     {% include "prod/toolbar.html.twig" with {acl: app.getAclForUser(app.getAuthenticatedUser())} %}
-                    <a href="#" id="settings" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
+                    <a href="#" id="settings" class="open-preferences" data-action="">{{ 'Preferences' | trans }} </a>
                 </div>
-                <div id="answers" class=" PNB10">
-                    <script>
-                        $(document).ready(function(){
-                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
-                                getHome('PUBLI');
-                            {% endif %}
-                        });
-                    </script>
-                </div>
+                <div id="answers" class=" PNB10"></div>
                 <div id="answers_status">
                     <div class="infos">
                         <span id="tool_results">
@@ -415,22 +454,6 @@
                         </span>
                     </div>
                 </div>
-                <!--div id="answers_status" class="PNB">
-                    <table>
-                        <tr>
-                            <td class="infos">
-                                <a href="#" onclick="lookBox(this,event);return false;">{{ 'Preferences' | trans }} </a>
-                                |
-                                <span id="tool_results">
-
-                                </span>
-                            </td>
-                            <td class="navigation">
-                                <div id="tool_navigate"></div>
-                            </td>
-                        </tr>
-                    </table>
-                </div-->
             </div>
         </div>
     </div>
@@ -531,7 +554,7 @@
                     <div class="" style="float:left; width:100%;margin-top:20px;">
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'advanced_search_reload') %}
                         <label class="checkbox inline" for="user_settings_advanced_search_reload">
-                            <input onchange="setPref('advanced_search_reload',$(this).prop('checked')?'1' : '0');" name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
+                            <input name="advanced_search_reload" type="checkbox" style="margin: 3px 0 0 -18px;" class="checkbox preferences-options-search-reload" value="1" id="user_settings_advanced_search_reload" {% if mod == '1' %}checked="checked"{% endif %}/>
                             {{ 'Use latest search settings on Production loading' | trans }}
                         </label>
                     </div>
@@ -541,31 +564,28 @@
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'view') %}
                         <label class="radio inline" for="thumbs_view">
-                            <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
+                            <input name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio preferences-options-presentation-thumbnail" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
                             {{ 'reponses:: mode vignettes' | trans }}
                         </label>
                         <label class="radio inline" for="list_view">
-                            <input onchange="setPref('view',$(this).val());" name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
+                            <input name="view_type" type="radio" style="margin: 3px 0 0 -18px;" class="radio preferences-options-presentation-list" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
                             {{ 'reponses:: mode liste' | trans }}
                         </label>
                     </div>
                     <div style="float:right; width:49%;">
                         <h1>{{ 'Theme' | trans }}</h1>
-                        {% for color, file in css %}
-                            <div title="{{ 'Selecteur de theme' | trans }}" class="colorpicker_box"
-                                onclick="setCss('{{color}}');" style="width:16px;height:16px;background-color:{{ '#' ~ color ~ ';' }}">&nbsp;</div>
-                        {% endfor %}
+                        <div id="theme-container"></div>
                     </div>
                 </div>
                 <div class="box">
                     {% set rollover_thumbnail = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'rollover_thumbnail') %}
                     <h1>{{ 'Presentation de vignettes'  | trans }}</h1>
                     <label class="radio" for="rollover_caption">
-                        <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
+                        <input name="rollover_thumbnail" type="radio" class="radio preferences-options-rollover-caption" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
                         {{ 'Iconographe (description au rollover)' | trans }}
                     </label>
                     <label class="radio" for="rollover_preview">
-                        <input onchange="setPref('rollover_thumbnail',$(this).val());" name="rollover_thumbnail" type="radio" class="radio" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
+                        <input name="rollover_thumbnail" type="radio" class="radio preferences-options-rollover-preview" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
                         {{ 'Graphiste (preview au rollover)' | trans }}
                     </label>
                 </div>
@@ -573,15 +593,15 @@
                     {% set technical_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'technical_display') %}
                     <h1>{{'Display technical data'  | trans }}</h1>
                     <label class="radio" for="technical_show">
-                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
+                        <input name="technical_display" type="radio" class="radio preferences-options-technical-display" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
                         {{ 'In the answer grid' | trans }}
                     </label>
                     <label class="radio" for="technical_group">
-                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
+                        <input name="technical_display" type="radio" class="radio preferences-options-technical-display" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
                         {{ 'After metadata' | trans }}
                     </label>
                     <label class="radio" for="technical_hide">
-                        <input onchange="setPref('technical_display',$(this).val());" name="technical_display" type="radio" class="radio" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
+                        <input name="technical_display" type="radio" class="radio preferences-options-technical-display" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
                         {{ 'Do not display' | trans }}
                     </label>
                 </div>
@@ -589,7 +609,7 @@
                     {% set doctype_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'doctype_display') %}
                     <h1>{{'Type de documents'  | trans }}</h1>
                     <label class="checkbox" for="doctype_display_show">
-                        <input onchange="setPref('doctype_display',($(this).prop('checked') ? '1' :'0'));" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
+                        <input name="doctype_display" type="checkbox" class="checkbox preferences-options-doctype-display" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
                         {{ 'Afficher une icone' | trans }}
                     </label>
 
@@ -623,7 +643,7 @@
                         <h1>{{ 'Affichage au demarrage' | trans }}</h1>
                         <form class="form-inline">
                             {% set start_page_pref = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') %}
-                            <select class="span4" name="start_page" onchange="start_page_selector();">
+                            <select class="span4 preferences-options-start-page" name="start_page">
                                 <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
                                     {{ 'Ma derniere question' | trans }}
                                 </option>
@@ -638,7 +658,7 @@
                                 </option>
                             </select>
                             <input type="text" class="span4" name="start_page_value" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}" style="display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" />
-                            <input type="button" class="btn btn-inverse" value="{{'boutton::valider'  | trans }}" onclick="set_start_page();" />
+                            <input type="button" class="btn btn-inverse preferences-options-submit" value="{{'boutton::valider'  | trans }}" />
                         </form>
                     </div>
                 </div>
@@ -669,7 +689,7 @@
                 <div class="gui_vsplitter gui_vsplitter2" style="left:60%;">
 
                 </div>
-                <div id="PREVIEWRIGHT" class="preview_col PNB" style="top:7px;left:60%;overflow:hidden;">
+                <div id="PREVIEWRIGHT" class="preview_col PNB">
                     <div id="PREVIEWIMGDESC" class="PNB10">
                         <ul class="PNB" style="height:30px;bottom:auto;">
                             <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
@@ -696,7 +716,7 @@
         <div class="PNB" style="width:180px;left:auto;">
             <div class="PNB10 ui-corner-all" style="height:20px;">
 
-                <button type="button" onclick="closePreview();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close">
+                <button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close close-preview-action" role="button" aria-disabled="false" title="close">
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
@@ -716,8 +736,8 @@
             <div>
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
-                    <input onchange="setPref('basket_status_display',($(this).prop('checked') ? '1' :'0'));"
-                    name="basket_status_display" type="checkbox" class="checkbox" value="1"
+                    <input
+                    name="basket_status_display" type="checkbox preferences-options-basket-status" class="checkbox" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
                 </label>
@@ -725,8 +745,8 @@
             <div>
                 {% set basket_caption_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') %}
                 <label for="basket_caption_display" class="checkbox">
-                    <input onchange="setPref('basket_caption_display',($(this).prop('checked') ? '1' :'0'));"
-                    name="basket_caption_display" type="checkbox" class="checkbox" value="1"
+                    <input
+                    name="basket_caption_display" type="checkbox" class="checkbox preferences-options-basket-caption" value="1"
                     id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher la fiche descriptive' | trans }}
                 </label>
@@ -734,8 +754,8 @@
             <div>
                 {% set basket_title_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') %}
                 <label for="basket_title_display" class="checkbox">
-                    <input onchange="setPref('basket_title_display',($(this).prop('checked') ? '1' :'0'));"
-                    name="basket_title_display" type="checkbox" class="checkbox" value="1"
+                    <input
+                    name="basket_title_display" type="checkbox" class="checkbox preferences-options-basket-title" value="1"
                     id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher le titre' | trans }}
                 </label>
@@ -746,59 +766,5 @@
     <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
-
-    <script type="text/javascript">
-        {% include "prod/thesaurus.js.twig" with {'search_datas': search_datas} %}
-    </script>
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/prod/js/prod{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
-        });
-
-        function pollNotifications(){
-            $.ajax({
-                type: "POST",
-                url: "{{ path('list_notifications') }}",
-                dataType: "json",
-                data: {
-                    module : 1,
-                    usr : {{app.getAuthenticatedUser().getId()}}
-                },
-                error: function(){
-                    window.setTimeout("pollNotifications();", 10000);
-                },
-                timeout: function(){
-                    window.setTimeout("pollNotifications();", 10000);
-                },
-                success: function(data){
-                    if(data)
-                        manageSession(data, true);
-                    var t = 120000;
-                    if(data.apps && parseInt(data.apps)>1)
-                        t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 60000));
-                    window.setTimeout("pollNotifications();", t);
-
-                    return;
-                }
-            });
-        };
-
-        function setCss(color) {
-            $("#skinCss").attr("href","/assets/prod/skins/" + color + "/skin-" + color + "{% if not app.debug %}.min{% endif %}.css");
-            $.post("{{ path('save_pref') }}", {
-                prop: "css",
-                value: color,
-                t: Math.random()
-            }, function(data){
-                return;
-            });
-            if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {
-                $("select").hide().show();
-            }
-        }
-
-    </script>
     <script type="text/javascript" id="bitly_loader"></script>
 {% endblock %}

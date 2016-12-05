@@ -124,5 +124,9 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/oauthLogin.js'}) }}"></script>
+    <script>
+        authenticateApp.bootstrap({
+            state: 'login'
+        })
+    </script>
 {% endblock %}

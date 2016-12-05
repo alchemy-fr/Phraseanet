@@ -2,17 +2,17 @@
       <div class="PNB10 lists">
         <h1>{{ 'Lists' | trans }}</h1>
         <span class="action">
-          <a href="{{ path('prod_lists_list') }}" class="list_adder link">
+          <a href="{{ path('prod_lists_list') }}" class="list_adder link push-add-list-action">
             {{ "Add" | trans }}
           </a>
-          <a href="{{ path('prod_lists_all') }}" class="list_refresh link">
+          <a href="{{ path('prod_lists_all') }}" class="list_refresh link push-refresh-list-action">
             {{ "Refresh" | trans }}
           </a>
         </span>
         <ul class="lists">
           {% for list in lists %}
             <li class="list" style="padding:2px;">
-              <a href="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}" class="list_link">
+              <a href="#" class="list_link list-edit-action" data-list-id="{{  list.getId() }}">
                 {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                   <img src="/assets/prod/images/Push/list-icon.png" />
                 {% else %}

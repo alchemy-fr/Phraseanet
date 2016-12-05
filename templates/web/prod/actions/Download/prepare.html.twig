@@ -106,19 +106,18 @@
 
             {% if list['complete'] is not defined %} {# Zip not done #}
                 $.post("{{ path('execute_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}", function(data){
-                    var data = $.parseJSON(data);
                     if(data.success) {
                         $('form[name=download]').submit();
+                    } else {
+                        setTimeout("location.reload()", "{{ time ~ "000" }}");
                     }
                     return false;
                 });
 
-                setTimeout("location.reload()", "{{ time ~ "000" }}");
             {% elseif (list['complete'] is defined and list['complete'])%} {# Zip done #}
                 // Get files
                 $('form[name=download]').submit();
             {% else %}
-
                 setTimeout("location.reload()", "{{ time ~ "000" }}");
             {% endif %}
         });

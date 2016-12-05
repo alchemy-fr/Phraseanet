@@ -147,7 +147,8 @@ class LazaretManipulator
                 $this->app,
                 $lazaretFile->getOriginalName()
             );
-        } catch (\Exception $e) {
+        }
+        catch(\Exception $e) {
             // the file is not in tmp anymore ?
             // delete the quarantine item
             $this->denyLazaretFile($lazaretFile);
@@ -196,6 +197,7 @@ class LazaretManipulator
                         case AttributeInterface::NAME_METADATA:
                             /** @var Metadata $value */
                             $value = $attribute->getValue();
+                            // $metadataBag->set($value->getTag()->getTagname(), new Metadata($value->getTag(), $value->getValue()));
                             $metadataBag->set($value->getTag()->getTagname(), $value);
                             break;
                         case AttributeInterface::NAME_STORY:

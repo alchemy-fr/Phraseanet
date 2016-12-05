@@ -484,11 +484,9 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
         switch ($connector_status) {
             case self::UPLOAD_STATE_FAILED:
                 return $this->translator->trans('L\'upload a echoue');
-                break;
             default:
             case self::UPLOAD_STATE_DONE:
                 return '';
-                break;
         }
     }
 

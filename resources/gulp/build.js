@@ -26,16 +26,15 @@ gulp.task('build', ['build-vendors'], function(){
 
 // standalone vendors used across application
 gulp.task('build-vendors', [
-    'build-alchemy-embed',
+    'build-alchemy-embed-medias',
+    'build-phraseanet-production-client',
     'build-bootstrap',
-    'build-colorpicker',
     'build-html5shiv',
     'build-jquery',
     'build-jquery-ui', // will build themes too
     'build-jquery-mobile',
     'build-jquery-galleria',
     'build-jquery-file-upload',
-    // 'build-jquery-image-enhancer', //bundled in prod only
     'build-json2',
     'build-modernizr',
     'build-zxcvbn',

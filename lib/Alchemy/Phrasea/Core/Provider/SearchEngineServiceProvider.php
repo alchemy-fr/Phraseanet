@@ -219,7 +219,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
             $clientBuilder = ClientBuilder::create()
                 ->setHosts($clientParams['hosts']);
-            if (array_key_exists('logObject', $clientParams)) {
+            if(array_key_exists('logObject', $clientParams)) {
                 $clientBuilder->setLogger($clientParams['logObject']);
             }
 

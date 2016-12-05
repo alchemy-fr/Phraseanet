@@ -1,11 +1,5 @@
 language: php
 sudo: require
-env:
-  - TEST_SUITE=1
-  - TEST_SUITE=2
-php:
-  - 5.5
-  - 5.6
 
 branches:
   except:
@@ -14,14 +8,33 @@ branches:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - php: 7.0
+      env: TEST_SUITE=1
+    - php: 7.0
+      env: TEST_SUITE=2
+  include:
+    - php: 5.5
+      env: TEST_SUITE=1
+    - php: 5.6
+      env: TEST_SUITE=1
+    - php: 7.0
+      env: TEST_SUITE=1
+    - php: 5.5
+      env: TEST_SUITE=2
+    - php: 5.6
+      env: TEST_SUITE=2
+    - php: 7.0
+      env: TEST_SUITE=2
 
 services:
   - mysql
   - memcached
   - redis
+  - rabbitmq
 
 before_install:
-  - nvm install 0.12.0
+  - nvm install stable
   - phpenv config-rm xdebug.ini
   - composer self-update --no-progress --no-interaction
   - sudo apt-get purge elasticsearch
@@ -30,12 +43,15 @@ before_install:
   - sudo service elasticsearch start
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - yes | pecl install imagick
+  - yes | pecl install imagick-beta
+  - sudo apt-get install librabbitmq-dev
+  - pecl install amqp-1.4.0
 install:
-  - travis_retry composer install --no-progress --no-interaction --optimize-autoloader
+  - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then travis_retry composer install --no-progress --no-interaction --optimize-autoloader; fi;
+  - if [[ $TRAVIS_PHP_VERSION = 7.* ]];then travis_retry composer update --no-progress --no-interaction --optimize-autoloader; fi;
   - travis_retry npm install
 before_script:
   - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
@@ -51,7 +67,6 @@ before_script:
   - "./bin/developer phraseanet:generate-js-fixtures"
 
 script:
-  - "./node_modules/.bin/gulp test"
   - |
     echo "$TEST_SUITE";
     case "$TEST_SUITE" in
