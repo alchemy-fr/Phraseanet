@@ -1,5 +1,10 @@
 <div id="admin-field-app" class="container-fluid">
     {# sbas_id is saved in the dom and used to fetch right models and collections #}
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{% trans %}Danger zone !{% endtrans %}</strong><br>
+        <span>{% trans %}See documentation about structure manipulation.{% endtrans %}</span>
+    </div>
     <input type="hidden" name="current_sbas_id" value="{{ sbas_id }}">
     <div class="row-fluid row-top">
         <div class="span4 save-block">

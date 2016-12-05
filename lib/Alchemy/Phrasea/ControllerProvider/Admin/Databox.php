@@ -135,11 +135,11 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
 
     public function requireManageRightOnSbas(Request $request, Application $app)
     {
-        $this->getFirewall($app)->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_manage');
+        $this->getFirewall($app)->requireRightOnSbas($request->attributes->get('databox_id'), \ACL::BAS_MANAGE);
     }
 
     public function requireChangeSbasStructureRight(Request $request, Application $app)
     {
-        $this->getFirewall($app)->requireRightOnSbas($request->attributes->get('databox_id'), 'bas_modify_struct');
+        $this->getFirewall($app)->requireRightOnSbas($request->attributes->get('databox_id'), \ACL::BAS_MODIFY_STRUCT);
     }
 }

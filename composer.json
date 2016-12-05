@@ -10,26 +10,28 @@
       "type": "vcs",
       "url": "https://github.com/alchemy-fr/tcpdf-clone"
     },
-    {
       "type": "git",
       "url": "https://github.com/romainneutron/ProcessManager.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/alchemy-fr/imagine"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/alchemy-fr/JMSTranslationBundle"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/bburnichon/fractal.git"
-    }
-  ],
-  "require": {
-    "php": ">=5.5.9",
-    "ext-intl": "*",
+        {
+            "type": "vcs",
+            "url":  "https://github.com/alchemy-fr/imagine"
+        },
+        {
+            "type": "vcs",
+            "url":  "https://github.com/alchemy-fr/JMSTranslationBundle"
+        },
+        {
+            "type": "vcs",
+            "url":  "https://github.com/alchemy-fr/embed-bundle.git"
+        },
+        {
+            "type": "git",
+            "url":  "https://github.com/alchemy-fr/fractal.git"
+        }
+    ],
+    "require":      {
+        "php": ">=5.5.9",
+        "ext-intl": "*",
     "alchemy-fr/tcpdf-clone": "~6.0",
     "alchemy/embed-bundle": "^0.4.1",
     "alchemy/geonames-api-consumer": "~0.1.0",

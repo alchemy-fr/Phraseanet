@@ -38,6 +38,9 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $updated;
     private $created;
     private $sha256;
+    private $width;
+    private $height;
+    private $size;
     private $uuid;
     private $position;
     private $type;
@@ -230,6 +233,42 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setSha256($sha256)
     {
         $this->sha256 = $sha256;
+    }
+
+    /** {@inheritdoc} */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    /** {@inheritdoc} */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+    }
+
+    /** {@inheritdoc} */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /** {@inheritdoc} */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    /** {@inheritdoc} */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /** {@inheritdoc} */
+    public function setSize($size)
+    {
+        $this->size = $size;
     }
 
     /**

@@ -115,6 +115,7 @@ class FilesystemService
      * @param \databox $databox
      * @param string $source
      * @param string $filename
+     * @return string
      */
     public function writeMediaSourceFile(\databox $databox, $source, $filename)
     {
@@ -122,6 +123,8 @@ class FilesystemService
 
         $this->filesystem->copy($source, $realPath, true);
         $this->filesystem->chmod($realPath, 0760);
+
+        return $realPath;
     }
 
     /**

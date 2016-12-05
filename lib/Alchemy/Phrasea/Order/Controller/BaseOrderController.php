@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Order\Controller;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
@@ -22,10 +23,10 @@ use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\OrderElementRepository;
 use Alchemy\Phrasea\Model\Repositories\OrderRepository;
+use Alchemy\Phrasea\Order\OrderBasketProvider;
 use Alchemy\Phrasea\Order\OrderDelivery;
 use Alchemy\Phrasea\Order\OrderValidator;
 use Alchemy\Phrasea\Order\PartialOrder;
-use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\Record\RecordReferenceCollection;
 use Assert\Assertion;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -39,11 +40,45 @@ class BaseOrderController extends Controller
     use EntityManagerAware;
 
     /**
+     * @var OrderRepository
+     */
+    private $orderRepository;
+
+    /**
+     * @var OrderElementRepository
+     */
+    private $orderElementRepository;
+
+    /**
+     * @var OrderBasketProvider
+     */
+    private $orderBasketProvider;
+
+    /**
+     * @param Application $app
+     * @param OrderRepository $orderRepository
+     * @param OrderElementRepository $orderElementRepository
+     * @param OrderBasketProvider $orderBasketProvider
+     */
+    public function __construct(
+        Application $app,
+        OrderRepository $orderRepository,
+        OrderElementRepository $orderElementRepository,
+        OrderBasketProvider $orderBasketProvider
+    ) {
+        parent::__construct($app);
+
+        $this->orderRepository = $orderRepository;
+        $this->orderElementRepository = $orderElementRepository;
+        $this->orderBasketProvider = $orderBasketProvider;
+    }
+
+    /**
      * @return OrderRepository
      */
     protected function getOrderRepository()
     {
-        return $this->app['repo.orders'];
+        return $this->orderRepository;
     }
 
     /**
@@ -51,7 +86,7 @@ class BaseOrderController extends Controller
      */
     protected function getOrderElementRepository()
     {
-        return $this->app['repo.order-elements'];
+        return $this->orderElementRepository;
     }
 
     /**
@@ -116,7 +151,7 @@ class BaseOrderController extends Controller
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
 
-        $basket = $this->app['provider.order_basket']->provideBasketForOrderAndUser($order, $acceptor);
+        $basket = $this->orderBasketProvider->provideBasketForOrderAndUser($order, $acceptor);
 
         $partialOrder = new PartialOrder($order, $elements);
 

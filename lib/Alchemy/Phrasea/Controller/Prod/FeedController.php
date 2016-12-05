@@ -37,7 +37,7 @@ class FeedController extends Controller
     public function publishRecordsAction(Request $request)
     {
         $feeds = $this->getFeedRepository()->getAllForUser($this->getAclForUser());
-        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], ['bas_chupub']);
+        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], [\ACL::BAS_CHUPUB]);
 
         return $this->render(
             'prod/actions/publish/publish.html.twig',
@@ -76,7 +76,7 @@ class FeedController extends Controller
 
         $feed->addEntry($entry);
 
-        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], ['bas_chupub']);
+        $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], [\ACL::BAS_CHUPUB]);
         $manager = $this->getEntityManager();
         foreach ($publishing as $record) {
             $item = new FeedItem();
@@ -270,7 +270,7 @@ class FeedController extends Controller
 
     public function ensureUserHasPublishRight()
     {
-        $this->requireRight('bas_chupub');
+        $this->requireRight(\ACL::BAS_CHUPUB);
     }
 
     /**

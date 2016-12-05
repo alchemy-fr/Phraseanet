@@ -460,7 +460,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
-        $grantedCollections = array_keys($acl->get_granted_base(['actif']));
+        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
 
         if (count($grantedCollections) === 0) {
             return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
@@ -540,8 +540,14 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['_score'] = $options->getSortOrder();
         } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
             $sort['created_on'] = $options->getSortOrder();
+        } elseif ($options->getSortBy() === 'recordid') {
+            $sort['record_id'] = $options->getSortOrder();
         } else {
             $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
+        }
+
+        if (! array_key_exists('record_id', $sort)) {
+            $sort['record_id'] = $options->getSortOrder();
         }
 
         return $sort;

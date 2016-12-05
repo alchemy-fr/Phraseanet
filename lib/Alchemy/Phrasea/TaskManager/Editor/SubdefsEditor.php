@@ -53,6 +53,7 @@ class SubdefsEditor extends AbstractEditor
   <flush>5</flush>
   <maxrecs>20</maxrecs>
   <maxmegs>256</maxmegs>
+  <maxduration>3600</maxduration>
 </tasksettings>
 EOF;
     }

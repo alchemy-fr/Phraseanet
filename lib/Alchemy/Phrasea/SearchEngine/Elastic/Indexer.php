@@ -144,6 +144,7 @@ class Indexer
             }
 
             if ($what & self::RECORDS) {
+                $databox->clearCandidates();
                 $this->recordIndexer->populateIndex($bulk, $databox);
 
                 // Final flush

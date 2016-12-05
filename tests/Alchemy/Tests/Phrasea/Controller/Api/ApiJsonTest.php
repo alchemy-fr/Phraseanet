@@ -1009,11 +1009,14 @@ class ApiJsonTest extends ApiTestCase
         if ('none' !== $collection->get_pub_wm()) {
             $collection->set_public_presentation('none');
         }
-        $app->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(
-            $collection->get_base_id(), array(
-            'candwnldpreview' => 1,
-            'candwnldhd' => 1
-        ));
+        $app->getAclForUser(self::$DI['user_notAdmin'])
+            ->update_rights_to_base(
+                $collection->get_base_id(),
+                [
+                    \ACL::CANDWNLDPREVIEW => true,
+                    \ACL::CANDWNLDHD      => true
+                ]
+            );
 
         /** @var \record_adapter $record_1 */
         $record_1 = self::$DI['record_1'];
@@ -1051,10 +1054,14 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
-            'candwnldpreview' => 1,
-            'candwnldhd' => 0
-        ));
+        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])
+            ->update_rights_to_base(
+                self::$DI['collection']->get_base_id(),
+                [
+                    \ACL::CANDWNLDPREVIEW => true,
+                    \ACL::CANDWNLDHD      => false
+                ]
+            );
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
@@ -1075,10 +1082,14 @@ class ApiJsonTest extends ApiTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])->update_rights_to_base(self::$DI['collection']->get_base_id(), array(
-            'candwnldpreview' => 0,
-            'candwnldhd' => 0
-        ));
+        self::$DI['app']->getAclForUser(self::$DI['user_notAdmin'])
+            ->update_rights_to_base(
+                self::$DI['collection']->get_base_id(),
+                [
+                    \ACL::CANDWNLDPREVIEW => false,
+                    \ACL::CANDWNLDHD      => false
+                ]
+            );
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 

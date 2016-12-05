@@ -79,7 +79,12 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimpleWithoutSbasRights()
     {
         self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
-            ->update_rights_to_sbas(self::$DI['record_2']->get_sbas_id(), ['bas_chupub' => 0]);
+            ->update_rights_to_sbas(
+                self::$DI['record_2']->get_sbas_id(),
+                [
+                    \ACL::BAS_CHUPUB => false
+                ]
+            );
 
         $request = new Request([
             'lst' => implode(';', [
@@ -87,7 +92,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
             ])
         ]);
 
-        $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, [], ['bas_chupub']);
+        $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, [], [\ACL::BAS_CHUPUB]);
 
         $this->assertEquals(0, count($records));
         $this->assertEquals(1, count($records->received()));
@@ -105,7 +110,12 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
     public function testSimpleWithoutBasRights()
     {
         self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
-            ->update_rights_to_base(self::$DI['record_2']->get_base_id(), ['chgstatus' => 0]);
+            ->update_rights_to_base(
+                self::$DI['record_2']->get_base_id(),
+                [
+                    \ACL::CHGSTATUS => false
+                ]
+            );
 
         $request = new Request([
             'lst' => implode(';', [
@@ -113,7 +123,7 @@ class RecordsRequestTest extends \PhraseanetAuthenticatedTestCase
             ])
         ]);
 
-        $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, ['chgstatus']);
+        $records = RecordsRequest::fromRequest(self::$DI['app'], $request, false, [\ACL::CHGSTATUS]);
 
         $this->assertEquals(0, count($records));
         $this->assertEquals(1, count($records->received()));

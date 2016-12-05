@@ -53,7 +53,7 @@ class RootController extends Controller
 
         $granted = [];
 
-        foreach ($this->getAclForUser()->get_granted_base(['canreport']) as $collection) {
+        foreach ($this->getAclForUser()->get_granted_base([\ACL::CANREPORT]) as $collection) {
             if (!isset($granted[$collection->get_sbas_id()])) {
                 $granted[$collection->get_sbas_id()] = [
                     'id' => $collection->get_sbas_id(),

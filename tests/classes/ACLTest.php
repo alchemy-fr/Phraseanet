@@ -118,7 +118,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testGive_access_to_sbas()
     {
-
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
             $base_ids = [];
@@ -136,6 +136,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testRevoke_unused_sbas_rights()
     {
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_id = $databox->get_sbas_id();
             $base_ids = [];
@@ -158,6 +159,7 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testSet_quotas_on_base()
     {
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -178,10 +180,10 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testDuplicate_right_from_bas()
     {
-
         $first = true;
         $base_ref = null;
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -189,16 +191,24 @@ class ACLTest extends \PhraseanetTestCase
                 $this->object->give_access_to_base([$base_id]);
 
                 if ($first) {
-                    $this->object->update_rights_to_base($base_id, ['imgtools'      => true, 'chgstatus'     => true, 'canaddrecord'  => true, 'canputinalbum' => true]);
+                    $this->object->update_rights_to_base(
+                        $base_id,
+                        [
+                            \ACL::IMGTOOLS      => true,
+                            \ACL::CHGSTATUS     => true,
+                            \ACL::CANADDRECORD  => true,
+                            \ACL::CANPUTINALBUM => true
+                        ]
+                    );
                     $base_ref = $base_id;
                 } else {
                     $this->object->duplicate_right_from_bas($base_ref, $base_id);
                 }
 
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canputinalbum'));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
 
                 $first = false;
             }
@@ -216,37 +226,50 @@ class ACLTest extends \PhraseanetTestCase
     public function testHasRightOnBase()
     {
         $rights_false = [
-            'imgtools'      => false,
-            'chgstatus'     => false,
-            'canaddrecord'  => false,
-            'canputinalbum' => false,
+            \ACL::IMGTOOLS      => false,
+            \ACL::CHGSTATUS     => false,
+            \ACL::CANADDRECORD  => false,
+            \ACL::CANPUTINALBUM => false,
         ];
 
         $rights_true = [
-            'imgtools'     => true,
-            'chgstatus'    => true,
-            'canaddrecord' => true,
+            \ACL::IMGTOOLS     => true,
+            \ACL::CHGSTATUS    => true,
+            \ACL::CANADDRECORD => true,
         ];
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $this->object->give_access_to_base([$base_id]);
-                $this->object->update_rights_to_base($base_id, $rights_false);
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
-                $this->object->update_rights_to_base($base_id, $rights_true);
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertTrue($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
-                $this->object->update_rights_to_base($base_id, $rights_false);
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'imgtools'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'chgstatus'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canaddrecord'));
-                $this->assertFalse($this->object->has_right_on_base($base_id, 'canputinalbum'));
+
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    $rights_false
+                );
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
+
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    $rights_true
+                );
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertTrue($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
+
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    $rights_false
+                );
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::IMGTOOLS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CHGSTATUS));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANADDRECORD));
+                $this->assertFalse($this->object->has_right_on_base($base_id, \ACL::CANPUTINALBUM));
             }
         }
     }
@@ -257,6 +280,7 @@ class ACLTest extends \PhraseanetTestCase
      */
     public function testGetSetOrder_master()
     {
+        /** @var Appbox $appbox */
         $appbox = self::$DI['app']['phraseanet.appbox'];
         $acl = $this->object;
 
@@ -333,94 +357,161 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testHasRight()
     {
+        /** @var Databox $databox */
         $databox = self::$DI['collection']->get_databox();
         $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
-        $this->object->update_rights_to_sbas($databox->get_sbas_id(), [
-            'bas_modify_struct' => false,
-            'bas_modif_th'      => false,
-        ]);
+        $this->object->update_rights_to_sbas(
+            $databox->get_sbas_id(),
+            [
+                \ACL::BAS_MODIFY_STRUCT  => false,
+                \ACL::BAS_MODIF_TH       => false
+            ]
+        );
 
-        $this->assertFalse($this->object->has_right('bas_modify_struct'));
-        $this->assertFalse($this->object->has_right('bas_modif_th'));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIFY_STRUCT ));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIF_TH));
 
-        $this->object->update_rights_to_sbas($databox->get_sbas_id(), [
-            'bas_modify_struct' => true,
-        ]);
+        $this->object->update_rights_to_sbas(
+            $databox->get_sbas_id(),
+            [
+                \ACL::BAS_MODIFY_STRUCT  => true
+            ]
+        );
 
-        $this->assertTrue($this->object->has_right('bas_modify_struct'));
-        $this->assertFalse($this->object->has_right('bas_modif_th'));
+        $this->assertTrue($this->object->has_right(\ACL::BAS_MODIFY_STRUCT ));
+        $this->assertFalse($this->object->has_right(\ACL::BAS_MODIF_TH));
     }
 
     public function testHasRightOnSbas()
     {
         $rights_false = [
-            'bas_modify_struct' => false,
-            'bas_manage'        => false,
-            'bas_chupub'        => false,
-            'bas_modif_th'      => false,
+            \ACL::BAS_MODIFY_STRUCT => false,
+            \ACL::BAS_MANAGE        => false,
+            \ACL::BAS_CHUPUB        => false,
+            \ACL::BAS_MODIF_TH      => false
         ];
 
         $rights_true = [
-            'bas_modify_struct' => true,
-            'bas_manage'        => true,
-            'bas_chupub'        => true,
-            'bas_modif_th'      => true,
+            \ACL::BAS_MODIFY_STRUCT => true,
+            \ACL::BAS_MANAGE        => true,
+            \ACL::BAS_CHUPUB        => true,
+            \ACL::BAS_MODIF_TH      => true
         ];
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
-            $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
-            $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_true);
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
-            $this->object->update_rights_to_sbas($databox->get_sbas_id(), $rights_false);
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modify_struct'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_manage'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_chupub'));
-            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), 'bas_modif_th'));
+
+            $this->object->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                $rights_false
+            );
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
+
+            $this->object->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                $rights_true
+            );
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertTrue($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
+
+            $this->object->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                $rights_false
+            );
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIFY_STRUCT));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MANAGE));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_CHUPUB));
+            $this->assertFalse($this->object->has_right_on_sbas($databox->get_sbas_id(), \ACL::BAS_MODIF_TH));
         }
     }
 
     public function testGet_mask_and()
     {
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
                 $this->object->give_access_to_base([$base_id]);
-                $this->object->update_rights_to_base($base_id, ['actif' => false]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::ACTIF => false
+                    ]
+                );
                 $this->assertFalse($this->object->get_mask_and($base_id));
-                $this->object->update_rights_to_base($base_id, ['mask_and' => 42]);
-                $this->assertEquals('42', $this->object->get_mask_and($base_id));
-                $this->object->update_rights_to_base($base_id, ['mask_and' => 1]);
-                $this->assertEquals('1', $this->object->get_mask_and($base_id));
-                $this->object->update_rights_to_base($base_id, ['mask_and' => 0]);
-                $this->assertEquals('0', $this->object->get_mask_and($base_id));
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_and' => 42
+                    ]
+                );
+                $this->assertEquals(42, $this->object->get_mask_and($base_id));
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_and' => 1
+                    ]
+                );
+                $this->assertEquals(1, $this->object->get_mask_and($base_id));
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_and' => 0
+                    ]
+                );
+                $this->assertEquals(0, $this->object->get_mask_and($base_id));
             }
         }
     }
 
     public function testGet_mask_xor()
     {
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
 
                 $this->object->give_access_to_base([$base_id]);
-                $this->object->update_rights_to_base($base_id, ['actif' => false]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::ACTIF => false
+                    ]
+                );
                 $this->assertFalse($this->object->get_mask_xor($base_id));
-                $this->object->update_rights_to_base($base_id, ['actif' => true]);
-                $this->object->update_rights_to_base($base_id, ['mask_xor' => 42]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::ACTIF => true
+                    ]
+                );
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_xor' => 42
+                    ]
+                );
                 $this->assertEquals('42', $this->object->get_mask_xor($base_id));
-                $this->object->update_rights_to_base($base_id, ['mask_xor' => 1]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_xor' => 1
+                    ]
+                );
                 $this->assertEquals('1', $this->object->get_mask_xor($base_id));
-                $this->object->update_rights_to_base($base_id, ['mask_xor' => 0]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        'mask_xor' => 0
+                    ]
+                );
                 $this->assertEquals('0', $this->object->get_mask_xor($base_id));
             }
         }
@@ -430,6 +521,8 @@ class ACLTest extends \PhraseanetTestCase
     {
         $base_ids = [];
         $n = 0;
+
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
@@ -438,8 +531,9 @@ class ACLTest extends \PhraseanetTestCase
             $this->object->give_access_to_sbas([$databox->get_sbas_id()]);
         }
 
-        if ($n === 0)
+        if ($n === 0) {
             $this->fail('Not enough collection to test');
+        }
 
         $this->object->give_access_to_base($base_ids);
         $bases = array_keys($this->object->get_granted_base());
@@ -455,21 +549,36 @@ class ACLTest extends \PhraseanetTestCase
             $this->assertEquals(1, $row['actif']);
 
             $this->assertTrue($this->object->has_access_to_base($base_id));
-            $this->object->update_rights_to_base($base_id, ['actif' => false]);
+            $this->object->update_rights_to_base(
+                $base_id,
+                [
+                    \ACL::ACTIF => false
+                ]
+            );
 
             $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->assertEquals(0, $row['actif']);
 
             $this->assertFalse($this->object->has_access_to_base($base_id));
-            $this->object->update_rights_to_base($base_id, ['actif' => true]);
+            $this->object->update_rights_to_base(
+                $base_id,
+                [
+                    \ACL::ACTIF => true
+                ]
+            );
 
             $stmt->execute([':usr_id'  => self::$DI['user']->getId(), ':base_id' => $base_id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->assertEquals(1, $row['actif']);
 
             $this->assertTrue($this->object->has_access_to_base($base_id));
-            $this->object->update_rights_to_base($base_id, ['actif' => false]);
+            $this->object->update_rights_to_base(
+                $base_id,
+                [
+                    \ACL::ACTIF => false
+                ]
+            );
             $this->assertFalse($this->object->has_access_to_base($base_id));
         }
         $this->object->give_access_to_base($base_ids);
@@ -484,6 +593,8 @@ class ACLTest extends \PhraseanetTestCase
     {
         $base_ids = [];
         $n = 0;
+
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_ids[] = $collection->get_base_id();
@@ -516,6 +627,8 @@ class ACLTest extends \PhraseanetTestCase
     {
         $sbas_ids = [];
         $n = 0;
+
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             $sbas_ids[] = $databox->get_sbas_id();
             $n ++;
@@ -563,7 +676,12 @@ class ACLTest extends \PhraseanetTestCase
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
-                $this->object->update_rights_to_base($base_id, ['canreport' => true]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::CANREPORT => true
+                    ]
+                );
                 $found = true;
                 break;
             }
@@ -574,8 +692,14 @@ class ACLTest extends \PhraseanetTestCase
         $this->assertFalse($this->object->has_access_to_module('thesaurus'));
         $this->assertFalse($this->object->has_access_to_module('upload'));
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
-            $this->object->update_rights_to_sbas($databox->get_sbas_id(), ['bas_modif_th' => true]);
+            $this->object->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                [
+                    \ACL::BAS_MODIF_TH => true
+                ]
+            );
             $found = true;
         }
         $this->assertTrue($this->object->has_access_to_module('report'));
@@ -587,7 +711,12 @@ class ACLTest extends \PhraseanetTestCase
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 $base_ids[] = $base_id;
-                $this->object->update_rights_to_base($base_id, ['canaddrecord' => true]);
+                $this->object->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::CANADDRECORD => true
+                    ]
+                );
                 $found = true;
                 break;
             }
@@ -601,9 +730,9 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testis_limited()
     {
-
         $found = false;
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
@@ -634,9 +763,9 @@ class ACLTest extends \PhraseanetTestCase
 
     public function testget_limits()
     {
-
         $found = false;
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();

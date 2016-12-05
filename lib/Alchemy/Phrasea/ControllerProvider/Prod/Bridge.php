@@ -40,7 +40,7 @@ class Bridge implements ControllerProviderInterface, ServiceProviderInterface
 
         $firewall = $this->getFirewall($app);
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('bas_chupub');
+            $firewall->requireRight(\ACL::BAS_CHUPUB);
         });
 
         $controllers

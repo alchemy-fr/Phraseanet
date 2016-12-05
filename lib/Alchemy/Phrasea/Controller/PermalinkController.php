@@ -126,9 +126,7 @@ class PermalinkController extends AbstractDelivery
 
         $isDownload = $request->query->getBoolean('download', false);
 
-        if ($isDownload) {
-            $user = $this->app->getAuthenticatedUser();
-
+        if ($isDownload && $user = $this->app->getAuthenticatedUser()) {
             $this->getEventDispatcher()->dispatch(
                 PhraseaEvents::EXPORT_CREATE,
                 new ExportEvent($user, 0, $sbas_id . '_' . $record_id, [ $subdef ], '')
@@ -136,7 +134,7 @@ class PermalinkController extends AbstractDelivery
         }
 
         if ($this->authentication->isAuthenticated()) {
-            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), 'nowatermark');
+            $watermark = !$this->acl->get($this->authentication->getUser())->has_right_on_base($record->getBaseId(), \ACL::NOWATERMARK);
 
             if ($watermark) {
                 /** @var BasketElementRepository $repository */

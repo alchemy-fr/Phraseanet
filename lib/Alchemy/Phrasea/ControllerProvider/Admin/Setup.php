@@ -24,7 +24,7 @@ class Setup implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.admin.setup'] = $app->share(function (PhraseaApplication $app) {
-            return new SetupController($app);
+            return new SetupController($app, $app['registry.manipulator'], $app['conf']);
         });
     }
 

@@ -47,8 +47,8 @@ class RecordIndex implements MappingProvider
         $mapping = new MappingBuilder();
 
         // Compound primary key
-        $mapping->addField('record_id', FieldMapping::TYPE_INTEGER);
-        $mapping->addField('databox_id', FieldMapping::TYPE_INTEGER);
+        $mapping->addIntegerField('record_id');
+        $mapping->addIntegerField('databox_id');
 
         // Database name (still indexed for facets)
         $mapping->addStringField('databox_name')->disableAnalysis();
@@ -65,6 +65,10 @@ class RecordIndex implements MappingProvider
         $mapping->addStringField('mime')->disableAnalysis();
         $mapping->addStringField('type')->disableAnalysis();
         $mapping->addStringField('record_type')->disableAnalysis();
+
+        $mapping->addIntegerField('width')->disableIndexing();
+        $mapping->addIntegerField('height')->disableIndexing();
+        $mapping->addIntegerField('size')->disableIndexing();
 
         $mapping->addDateField('created_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
         $mapping->addDateField('updated_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
@@ -87,9 +91,7 @@ class RecordIndex implements MappingProvider
     private function buildCaptionMapping(MappingBuilder $parent, $name, array $fields)
     {
         $fieldConverter = new Mapping\FieldToFieldMappingConverter();
-        $captionMapping = new Mapping\ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT);
-
-        $captionMapping->useAsPropertyContainer();
+        $captionMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach ($fields as $field) {
             $captionMapping->addChild($fieldConverter->convertField($field, $this->locales));
@@ -109,7 +111,7 @@ class RecordIndex implements MappingProvider
 
     private function buildThesaurusPathMapping($name)
     {
-        $thesaurusMapping = new Mapping\ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT);
+        $thesaurusMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach (array_keys($this->structure->getThesaurusEnabledFields()) as $name) {
             $child = new Mapping\StringFieldMapping($name);
@@ -118,7 +120,7 @@ class RecordIndex implements MappingProvider
             $child->setAnalyzer('keyword', 'searching');
             $child->addChild((new Mapping\StringFieldMapping('raw'))->enableRawIndexing());
 
-            $thesaurusMapping->addChild($thesaurusMapping);
+            $thesaurusMapping->addChild($child);
         }
 
         return $thesaurusMapping;
@@ -127,9 +129,7 @@ class RecordIndex implements MappingProvider
     private function buildMetadataTagMapping($name)
     {
         $tagConverter = new Mapping\MetadataTagToFieldMappingConverter();
-        $metadataMapping = new Mapping\ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT);
-
-        $metadataMapping->useAsPropertyContainer();
+        $metadataMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach ($this->structure->getMetadataTags() as $tag) {
             $metadataMapping->addChild($tagConverter->convertTag($tag));
@@ -141,9 +141,7 @@ class RecordIndex implements MappingProvider
     private function buildFlagMapping($name)
     {
         $index = 0;
-        $flagMapping = new Mapping\ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT);
-
-        $flagMapping->useAsPropertyContainer();
+        $flagMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach ($this->structure->getAllFlags() as $childName => $_) {
             if (trim($childName) == '') {

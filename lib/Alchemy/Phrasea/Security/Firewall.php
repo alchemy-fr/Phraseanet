@@ -146,7 +146,7 @@ class Firewall
 
     public function requireOrdersAdmin()
     {
-        if (empty($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base(['order_master']))) {
+        if (empty($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::ORDER_MASTER]))) {
             $this->app->abort(403, 'You are not an order admin');
         }
 
