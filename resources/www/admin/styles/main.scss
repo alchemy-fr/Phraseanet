@@ -323,7 +323,9 @@ div.switch_right.unchecked {
 #admin_setup_registry .form-horizontal .controls, #admin_setup_registry .form-horizontal .help-message {
   margin-left: 300px;
 }
-
+.alert .close{
+  text-decoration: none;
+}
 
 @import './databases';
 @import './fields';
