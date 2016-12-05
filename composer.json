@@ -101,8 +101,8 @@
     "webmozart/json": "^1.1",
     "willdurand/negotiation": "^2.0.0-alpha1",
     "zend/gdata": "~1.12.1",
-    "alchemy/worker-bundle": "^0.1.0",
-    "alchemy/queue-bundle": "^0.1.4"
+    "alchemy/worker-bundle": "^0.1.5",
+    "alchemy/queue-bundle": "^0.1.5"
   },
   "require-dev": {
     "mikey179/vfsStream": "~1.5",
