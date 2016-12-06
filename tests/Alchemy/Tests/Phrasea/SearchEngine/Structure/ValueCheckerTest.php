@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
@@ -23,45 +24,45 @@ class ValueCheckerTest extends \PHPUnit_Framework_TestCase
     public function escapeRawProvider()
     {
         $values = [
-            [Mapping::TYPE_FLOAT  ,  42         , true ],
-            [Mapping::TYPE_FLOAT  , '42'        , true ],
-            [Mapping::TYPE_FLOAT  , '42foo'     , false],
-            [Mapping::TYPE_FLOAT  , 'foo'       , false],
-            [Mapping::TYPE_DOUBLE ,  42         , true ],
-            [Mapping::TYPE_DOUBLE , '42'        , true ],
-            [Mapping::TYPE_DOUBLE , '42foo'     , false],
-            [Mapping::TYPE_DOUBLE , 'foo'       , false],
-            [Mapping::TYPE_INTEGER,  42         , true ],
-            [Mapping::TYPE_INTEGER, '42'        , true ],
-            [Mapping::TYPE_INTEGER, '42foo'     , false],
-            [Mapping::TYPE_INTEGER, 'foo'       , false],
-            [Mapping::TYPE_LONG   ,  42         , true ],
-            [Mapping::TYPE_LONG   , '42'        , true ],
-            [Mapping::TYPE_LONG   , '42foo'     , false],
-            [Mapping::TYPE_LONG   , 'foo'       , false],
-            [Mapping::TYPE_SHORT  ,  42         , true ],
-            [Mapping::TYPE_SHORT  , '42'        , true ],
-            [Mapping::TYPE_SHORT  , '42foo'     , false],
-            [Mapping::TYPE_SHORT  , 'foo'       , false],
-            [Mapping::TYPE_BYTE   ,  42         , true ],
-            [Mapping::TYPE_BYTE   , '42'        , true ],
-            [Mapping::TYPE_BYTE   , '42foo'     , false],
-            [Mapping::TYPE_BYTE   , 'foo'       , false],
+            [FieldMapping::TYPE_FLOAT  ,  42         , true ],
+            [FieldMapping::TYPE_FLOAT  , '42'        , true ],
+            [FieldMapping::TYPE_FLOAT  , '42foo'     , false],
+            [FieldMapping::TYPE_FLOAT  , 'foo'       , false],
+            [FieldMapping::TYPE_DOUBLE ,  42         , true ],
+            [FieldMapping::TYPE_DOUBLE , '42'        , true ],
+            [FieldMapping::TYPE_DOUBLE , '42foo'     , false],
+            [FieldMapping::TYPE_DOUBLE , 'foo'       , false],
+            [FieldMapping::TYPE_INTEGER,  42         , true ],
+            [FieldMapping::TYPE_INTEGER, '42'        , true ],
+            [FieldMapping::TYPE_INTEGER, '42foo'     , false],
+            [FieldMapping::TYPE_INTEGER, 'foo'       , false],
+            [FieldMapping::TYPE_LONG   ,  42         , true ],
+            [FieldMapping::TYPE_LONG   , '42'        , true ],
+            [FieldMapping::TYPE_LONG   , '42foo'     , false],
+            [FieldMapping::TYPE_LONG   , 'foo'       , false],
+            [FieldMapping::TYPE_SHORT  ,  42         , true ],
+            [FieldMapping::TYPE_SHORT  , '42'        , true ],
+            [FieldMapping::TYPE_SHORT  , '42foo'     , false],
+            [FieldMapping::TYPE_SHORT  , 'foo'       , false],
+            [FieldMapping::TYPE_BYTE   ,  42         , true ],
+            [FieldMapping::TYPE_BYTE   , '42'        , true ],
+            [FieldMapping::TYPE_BYTE   , '42foo'     , false],
+            [FieldMapping::TYPE_BYTE   , 'foo'       , false],
 
-            [Mapping::TYPE_STRING , 'foo'       , true ],
-            [Mapping::TYPE_STRING , '42'        , true ],
-            [Mapping::TYPE_STRING ,  42         , true ],
+            [FieldMapping::TYPE_STRING , 'foo'       , true ],
+            [FieldMapping::TYPE_STRING , '42'        , true ],
+            [FieldMapping::TYPE_STRING ,  42         , true ],
 
-            [Mapping::TYPE_BOOLEAN, true        , true ],
-            [Mapping::TYPE_BOOLEAN, false       , true ],
-            [Mapping::TYPE_BOOLEAN, 'yes'       , true ],
-            [Mapping::TYPE_BOOLEAN, 'no'        , true ],
-            [Mapping::TYPE_BOOLEAN, 'foo'       , true ],
-            [Mapping::TYPE_BOOLEAN, 42          , true ],
+            [FieldMapping::TYPE_BOOLEAN, true        , true ],
+            [FieldMapping::TYPE_BOOLEAN, false       , true ],
+            [FieldMapping::TYPE_BOOLEAN, 'yes'       , true ],
+            [FieldMapping::TYPE_BOOLEAN, 'no'        , true ],
+            [FieldMapping::TYPE_BOOLEAN, 'foo'       , true ],
+            [FieldMapping::TYPE_BOOLEAN, 42          , true ],
 
-            [Mapping::TYPE_DATE   , '2015/01/01'         , true ],
-            [Mapping::TYPE_DATE   , '2015/01/01 00:00:00', false],
-            [Mapping::TYPE_DATE   , 'foo'                , false],
+            [FieldMapping::TYPE_DATE   , '2015/01/01'         , true ],
+            [FieldMapping::TYPE_DATE   , '2015/01/01 00:00:00', false],
+            [FieldMapping::TYPE_DATE   , 'foo'                , false],
         ];
 
         foreach ($values as &$value) {

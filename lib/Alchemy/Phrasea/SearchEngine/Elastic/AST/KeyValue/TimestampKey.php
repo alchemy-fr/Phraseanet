@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
@@ -30,7 +31,7 @@ class TimestampKey implements Key, Typed
 
     public function getType()
     {
-        return Mapping::TYPE_DATE;
+        return FieldMapping::TYPE_DATE;
     }
 
     public function getIndexField(QueryContext $context, $raw = false)

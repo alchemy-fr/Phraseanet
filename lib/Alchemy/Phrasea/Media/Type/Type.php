@@ -18,6 +18,7 @@ interface Type
     const TYPE_DOCUMENT = 'document';
     const TYPE_FLASH = 'flash';
     const TYPE_IMAGE = 'image';
+    const TYPE_UNKNOWN = 'unknown';
 
     public function getType();
 }

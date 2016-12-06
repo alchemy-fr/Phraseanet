@@ -93,7 +93,7 @@ class Prod extends Helper
             if (!$bases[$sbasId]['thesaurus']) {
                 continue;
             }
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbasId, 'bas_modif_th')) {
+            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbasId, \ACL::BAS_MODIF_TH)) {
                 continue;
             }
 

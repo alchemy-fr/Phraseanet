@@ -32,16 +32,13 @@ class NativeQueryProvider
 
         $selectClause = $rsm->generateSelectClause();
 
-        return $this->em->createNativeQuery("
-            SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "
-            FROM (demand d INNER JOIN Users u ON d.usr_id=u.id
-            AND d.en_cours=1
-            AND u.deleted=0
-            )
-            WHERE (base_id='" . implode("' OR base_id='", $basList) . "')
-            ORDER BY d.usr_id DESC, d.base_id ASC
-            ", $rsm)
-        ->getResult();
+        return $this->em->createNativeQuery(
+            "SELECT d.date_modif AS date_demand, d.base_id AS base_demand, " . $selectClause . "\n"
+            . " FROM (demand d INNER JOIN Users u ON d.usr_id=u.id AND d.en_cours=1 AND u.deleted=0)\n"
+            . " WHERE (base_id='" . implode("' OR base_id='", $basList) . "')\n"
+            . " ORDER BY d.usr_id DESC, d.base_id ASC",
+            $rsm
+        )->getResult();
     }
 
     public function getModelForUser(User $user, array $basList)
@@ -51,14 +48,14 @@ class NativeQueryProvider
 
         $selectClause = $rsm->generateSelectClause();
 
-        $query = $this->em->createNativeQuery("
-                SELECT " . $selectClause . "
-                FROM Users u
-                    INNER JOIN basusr b ON (b.usr_id=u.id)
-                WHERE u.model_of = :user_id
-                  AND b.base_id IN (" . implode(', ', $basList) . ")
-                  AND u.deleted='0'
-                GROUP BY u.id", $rsm);
+        $query = $this->em->createNativeQuery(
+            "SELECT " . $selectClause . " FROM Users u INNER JOIN basusr b ON (b.usr_id=u.id)\n"
+            . " WHERE u.model_of = :user_id\n"
+            . "  AND b.base_id IN (" . implode(', ', $basList) . ")\n"
+            . "  AND u.deleted='0'\n"
+            . " GROUP BY u.id",
+            $rsm
+        );
 
         $query->setParameter(':user_id', $user->getId());
 
@@ -72,14 +69,15 @@ class NativeQueryProvider
         $rsm->addScalarResult('base_id', 'base_id');
         $selectClause = $rsm->generateSelectClause();
 
-        $query = $this->em->createNativeQuery('
-            SELECT b.base_id, '.$selectClause.' FROM Users u, basusr b
-            WHERE u.id = b.usr_id
-                AND b.base_id IN (' . implode(', ', $basList) . ')
-                AND u.model_of IS NULL
-                AND b.actif="1"
-                AND b.canadmin="1"
-                AND u.deleted="0"', $rsm
+        $query = $this->em->createNativeQuery(
+            "SELECT b.base_id, ".$selectClause." FROM Users u, basusr b\n"
+            . " WHERE u.id = b.usr_id\n"
+            . "  AND b.base_id IN (" . implode(', ', $basList) . ")\n"
+            . "  AND u.model_of IS NULL\n"
+            . "  AND b.actif=1\n"
+            . "  AND b.canadmin=1\n"
+            . "  AND u.deleted=0",
+            $rsm
         );
 
         return $query->getResult();

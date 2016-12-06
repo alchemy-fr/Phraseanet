@@ -114,7 +114,7 @@ class OrderValidator
                 $element->getRecordId()
             );
 
-            $acl->grant_hd_on($recordReference, $user, 'order');
+            $acl->grant_hd_on($recordReference, $user, \ACL::GRANT_ACTION_ORDER);
         }
     }
 

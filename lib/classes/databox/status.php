@@ -24,7 +24,7 @@ class databox_status
         foreach ($app->getAclForUser($app->getAuthenticatedUser())->get_granted_sbas() as $databox) {
             $see_all = false;
             foreach ($databox->get_collections() as $collection) {
-                if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), 'chgstatus')) {
+                if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($collection->get_base_id(), \ACL::CHGSTATUS)) {
                     $see_all = true;
                     break;
                 }

@@ -43,7 +43,7 @@ class Users implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->before(function () use ($firewall) {
             $firewall->requireAccessToModule('admin')
-                ->requireRight('manageusers');
+                ->requireRight(\ACL::CANADMIN);
         });
 
         $controllers->match('/rights/', 'controller.admin.users:editRightsAction')

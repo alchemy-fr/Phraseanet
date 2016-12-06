@@ -114,7 +114,7 @@ class RecordController extends Controller
                 'record'        => $record,
             ]),
             "pos"           => $record->getNumber(),
-            "title"         => str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), $record->get_title($query, $searchEngine)),
+            "title"         => $record->get_title(),
             "databox_name" => $record->getDatabox()->get_dbname(),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
@@ -130,9 +130,11 @@ class RecordController extends Controller
     public function doDeleteRecords(Request $request)
     {
         $flatten = (bool)($request->request->get('del_children')) ? RecordsRequest::FLATTEN_YES_PRESERVE_STORIES : RecordsRequest::FLATTEN_NO;
-        $records = RecordsRequest::fromRequest($this->app, $request, $flatten, [
-            'candeleterecord'
-        ]);
+        $records = RecordsRequest::fromRequest(
+            $this->app,
+            $request,$flatten,
+            [\ACL::CANDELETERECORD]
+        );
 
         $basketElementsRepository = $this->getBasketElementRepository();
         $StoryWZRepository = $this->getStoryWorkZoneRepository();
@@ -175,9 +177,12 @@ class RecordController extends Controller
      */
     public function whatCanIDelete(Request $request)
     {
-        $records = RecordsRequest::fromRequest($this->app, $request, !!$request->request->get('del_children'), [
-            'candeleterecord',
-        ]);
+        $records = RecordsRequest::fromRequest(
+            $this->app,
+            $request,
+            !!$request->request->get('del_children'),
+            [\ACL::CANDELETERECORD]
+        );
 
         return $this->render('prod/actions/delete_records_confirm.html.twig', [
             'records'   => $records,

@@ -37,7 +37,7 @@ class ProdOrderController extends BaseOrderController
      */
     public function createOrder(Request $request)
     {
-        $records = RecordsRequest::fromRequest($this->app, $request, true, ['cancmd']);
+        $records = RecordsRequest::fromRequest($this->app, $request, true, [\ACL::CANCMD]);
 
         try {
             if ($records->isEmpty()) {
@@ -109,7 +109,7 @@ class ProdOrderController extends BaseOrderController
 
         $sort = $request->query->get('sort');
 
-        $baseIds = array_keys($this->getAclForUser()->get_granted_base(['order_master']));
+        $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
         $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort);
         $total = $this->getOrderRepository()->countTotalOrders($baseIds);

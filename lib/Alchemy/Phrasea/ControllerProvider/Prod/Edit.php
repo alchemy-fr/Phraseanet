@@ -47,7 +47,7 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(function () use ($firewall) {
             $firewall
                 ->requireNotGuest()
-                ->requireRight('modifyrecord');
+                ->requireRight(\ACL::CANMODIFRECORD);
         });
 
         $controllers->post('/', 'controller.prod.edit:submitAction');

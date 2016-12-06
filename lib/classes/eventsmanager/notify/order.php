@@ -75,6 +75,6 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
      */
     public function is_available(User $user)
     {
-        return $this->app->getAclForUser($user)->has_right('order_master');
+        return $this->app->getAclForUser($user)->has_right(\ACL::ORDER_MASTER);
     }
 }

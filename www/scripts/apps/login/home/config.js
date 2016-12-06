@@ -14,6 +14,7 @@ require.config({
         jquery: "../assets/vendors/jquery/jquery.min",
         "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
         underscore: "../assets/vendors/underscore/underscore.min",
+        "zxcvbn": "../assets/vendors/zxcvbn/zxcvbn.min",
         backbone: "../assets/vendors/backbone/backbone.min",
         i18n: "../assets/vendors/i18next/i18next.min",
         bootstrap: "../assets/vendors/bootstrap/js/bootstrap.min",
@@ -28,6 +29,9 @@ require.config({
         "jquery.geonames": {
             deps: ["jquery", "jquery.ui"],
             exports: "$.fn.geocompleter"
+        },
+        "zxcvbn": {
+            deps: ["jquery"]
         },
         "common/geonames": {
             deps: ["jquery.geonames"]

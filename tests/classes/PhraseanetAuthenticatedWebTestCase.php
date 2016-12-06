@@ -108,14 +108,15 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
 
         self::$createdDataboxes[] = $databox;
 
-        $rights = [
-            'bas_manage'        => '1'
-            , 'bas_modify_struct' => '1'
-            , 'bas_modif_th'      => '1'
-            , 'bas_chupub'        => '1'
-        ];
-
-        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+        $app->getAclForUser($app->getAuthenticatedUser())->update_rights_to_sbas(
+            $databox->get_sbas_id(),
+            [
+                \ACL::BAS_MANAGE        => true,
+                \ACL::BAS_MODIFY_STRUCT => true,
+                \ACL::BAS_MODIF_TH      => true,
+                \ACL::BAS_CHUPUB        => true
+            ]
+        );
 
         $databox->registerAdmin($app->getAuthenticatedUser());
 
@@ -208,7 +209,8 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $result = new SearchEngineResult(
             new SearchEngineOptions(),
             new ArrayCollection([$elasticsearchRecord]), // Records
-            '', // Query
+            '', // Query as user typed
+            '{}', // Query as engine parsed
             0, // Duration
             0, // offsetStart
             1, // available

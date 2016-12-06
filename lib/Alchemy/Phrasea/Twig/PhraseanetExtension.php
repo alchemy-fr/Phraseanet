@@ -32,6 +32,8 @@ class PhraseanetExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('user_setting', array($this, 'getUserSetting')),
             new \Twig_SimpleFunction('record_thumbnail_url', array($this, 'getThumbnailUrl')),
+            new \Twig_SimpleFunction('record_subdef_url', array($this, 'getSubdefUrl')),
+            new \Twig_SimpleFunction('record_subdef_size', array($this, 'getSubdefSize')),
             new \Twig_SimpleFunction('record_doctype_icon', array($this, 'getDoctypeIcon'), array(
                 'is_safe' => array('html')
             )),
@@ -131,7 +133,7 @@ class PhraseanetExtension extends \Twig_Extension
 
         $structure = $databox->getStatusStructure()->toArray();
 
-        if (!$this->isGrantedOnCollection($record->getBaseId(), 'chgstatus')) {
+        if (!$this->isGrantedOnCollection($record->getBaseId(), [\ACL::CHGSTATUS])) {
             $structure = array_filter($structure, function($status) {
                 return  (bool) $status['printable'];
             });
@@ -173,16 +175,25 @@ class PhraseanetExtension extends \Twig_Extension
         return true;
     }
 
-    public function isGrantedOnCollection($baseId, $rights)
+    /**
+     * returns true if user is authenticated and has all the passed rights on the base
+     * todo : wtf $rights is an array since it's never called with more than 1 right in it ?
+     *
+     * @param $baseId
+     * @param array $rights
+     * @return bool
+     * @throws \Exception
+     */
+    public function isGrantedOnCollection($baseId, Array $rights)
     {
         if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
 
             return false;
         }
 
-        $rights = (array) $rights;
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($rights as $right) {
-            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($baseId, $right)) {
+            if (! $acl->has_right_on_base($baseId, $right)) {
 
                 return false;
             }
@@ -194,6 +205,7 @@ class PhraseanetExtension extends \Twig_Extension
     public function getCollectionLogo($baseId)
     {
         if (false === $this->app['filesystem']->exists(sprintf('%s/config/minilogos/%s', $this->app['root.path'], $baseId))) {
+
             return '';
         }
 
@@ -290,6 +302,33 @@ class PhraseanetExtension extends \Twig_Extension
         );
 
         return $path;
+    }
+
+    public function getSubdefSize(RecordInterface $record, $subdefName)
+    {
+        $ret = null;
+
+        if ($record instanceof ElasticsearchRecord) {
+            $subdefs = $record->getSubdefs();
+            if (isset($subdefs[$subdefName])) {
+                $subdef = $subdefs[$subdefName];
+                if (isset($subdef['width']) && $subdef['width'] !== null && isset($subdef['height']) && $subdef['height'] !== null) {
+                    $ret = [
+                        'width' => $subdef['width'],
+                        'height' => $subdef['height']
+                    ];
+                }
+            }
+        } elseif ($record instanceof \record_adapter) {
+            if (null !== $subdef = $record->get_subdef($subdefName)) {
+                $ret = [
+                    'width' => $subdef->get_width(),
+                    'height' => $subdef->get_height()
+                ];
+            }
+        }
+
+        return $ret;
     }
 
     public function getUserSetting($setting, $default = null)

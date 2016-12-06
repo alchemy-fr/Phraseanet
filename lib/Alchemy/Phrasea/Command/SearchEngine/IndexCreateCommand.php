@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexCreateCommand extends Command
@@ -23,18 +25,30 @@ class IndexCreateCommand extends Command
         $this
             ->setName('searchengine:index:create')
             ->setDescription('Creates search index')
-        ;
+            ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drops the index if it already exists.');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
 
-        if ($indexer->indexExists()) {
+        $drop = $input->getOption('drop');
+        $indexExists = $indexer->indexExists();
+
+        if (! $drop && $indexExists) {
             $output->writeln('<error>The search index already exists.</error>');
-        } else {
-            $indexer->createIndex();
-            $output->writeln('Search index was created');
+
+            return 1;
         }
+
+        if ($drop && $indexExists) {
+            $output->writeln('<info>Dropping existing search index</info>');
+
+            $indexer->deleteIndex();
+        }
+
+        $indexer->createIndex();
+        $output->writeln('Search index was created');
     }
 }

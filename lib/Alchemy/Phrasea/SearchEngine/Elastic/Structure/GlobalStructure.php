@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Assert\Assertion;
 use DomainException;
@@ -45,20 +46,43 @@ final class GlobalStructure implements Structure
 
     /**
      * @param \databox[] $databoxes
-     * @return self
+     * @return GlobalStructure
      */
     public static function createFromDataboxes(array $databoxes)
     {
         $fields = [];
         $flags = [];
+
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $fieldStructure) {
                 $fields[] = Field::createFromLegacyField($fieldStructure);
             }
+
             foreach ($databox->getStatusStructure() as $status) {
                 $flags[] = Flag::createFromLegacyStatus($status);
             }
         }
+
+        return new self($fields, $flags, MetadataHelper::createTags());
+    }
+
+    /**
+     * @param \databox $databox
+     * @return GlobalStructure
+     */
+    public static function createFromDatabox(\databox $databox)
+    {
+        $fields = [];
+        $flags = [];
+
+        foreach ($databox->get_meta_structure() as $fieldStructure) {
+            $fields[] = Field::createFromLegacyField($fieldStructure);
+        }
+
+        foreach ($databox->getStatusStructure() as $status) {
+            $flags[] = Flag::createFromLegacyStatus($status);
+        }
+
         return new self($fields, $flags, MetadataHelper::createTags());
     }
 
@@ -73,12 +97,15 @@ final class GlobalStructure implements Structure
         Assertion::allIsInstanceOf($fields, Field::class);
         Assertion::allIsInstanceOf($flags, Flag::class);
         Assertion::allIsInstanceOf($metadata_tags, Tag::class);
+
         foreach ($fields as $field) {
             $this->add($field);
         }
+
         foreach ($flags as $flag) {
             $this->flags[$flag->getName()] = $flag;
         }
+
         foreach ($metadata_tags as $tag) {
             $this->metadata_tags[$tag->getName()] = $tag;
         }
@@ -87,20 +114,25 @@ final class GlobalStructure implements Structure
     public function add(Field $field)
     {
         $name = $field->getName();
+
         if (isset($this->fields[$name])) {
             $field = $this->fields[$name]->mergeWith($field);
         }
+
         $this->fields[$name] = $field;
 
-        if ($field->getType() === Mapping::TYPE_DATE) {
+        if ($field->getType() === FieldMapping::TYPE_DATE) {
             $this->date_fields[$name] = $field;
         }
+
         if ($field->isPrivate()) {
             $this->private[$name] = $field;
         }
+
         if ($field->isFacet() && $field->isSearchable()) {
             $this->facets[$name] = $field;
         }
+
         if ($field->hasConceptInference()) {
             $this->thesaurus_fields[$name] = $field;
         }

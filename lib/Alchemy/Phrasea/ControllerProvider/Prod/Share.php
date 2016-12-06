@@ -49,7 +49,7 @@ class Share implements ControllerProviderInterface, ServiceProviderInterface
             ->before(function (Request $request) use ($app, $firewall) {
                 $firewall->requireRightOnSbas(
                     \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
-                    'bas_chupub'
+                    \ACL::BAS_CHUPUB
                 );
             })
             ->bind('share_record');

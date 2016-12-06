@@ -45,7 +45,7 @@ class Collection implements ControllerProviderInterface, ServiceProviderInterfac
         $controllers->before(function (Request $request) use ($firewall) {
             $firewall
                 ->requireAccessToModule('admin')
-                ->requireRightOnBase($request->attributes->get('bas_id'), 'canadmin');
+                ->requireRightOnBase($request->attributes->get('bas_id'), \ACL::CANADMIN);
         });
 
         $controllers->get('/{bas_id}/', 'controller.admin.collection:getCollection')

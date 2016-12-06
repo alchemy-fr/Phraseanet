@@ -656,10 +656,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $params['height'] = $media->getHeight();
         }
 
+        /** @var callable $factoryProvider */
         $factoryProvider = $app['provider.factory.media_subdef'];
         $factory = $factoryProvider($record->getDataboxId());
 
         $subdef = $factory($params);
+
         Assertion::isInstanceOf($subdef, \media_subdef::class);
 
         $repository = self::getMediaSubdefRepository($app, $record->getDataboxId());

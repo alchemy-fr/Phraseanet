@@ -45,6 +45,9 @@ class CoreHydrator implements HydratorInterface
         $record['base_id'] = $this->helper->getUniqueCollectionId($this->databox_id, $record['collection_id']);
         $record['databox_id'] = $this->databox_id;
         $record['databox_name'] = $this->databox_name;
+        $record['width'] = (int) $record['width'];
+        $record['height'] = (int) $record['height'];
+        $record['size'] = (int) $record['size'];
 
         $record['record_type'] = ((int) $record['parent_record_id'] === 1)
             ? SearchEngineInterface::GEM_TYPE_STORY

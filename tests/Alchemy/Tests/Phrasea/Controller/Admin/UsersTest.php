@@ -1,6 +1,8 @@
 <?php
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
+
+use \Databox;
 use Symfony\Component\HttpKernel\Client;
 
 /**
@@ -70,9 +72,9 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         $datas = json_decode($response->getContent());
         $this->assertFalse($datas->error);
 
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "manage"));
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canpush"));
-        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), "canreport"));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::COLL_MANAGE));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::CANPUSH));
+        $this->assertTrue(self::$DI['app']->getAclForUser($user)->has_right_on_base(self::$DI['collection']->get_base_id(), \ACL::CANREPORT));
 
         self::$DI['app']['orm.em']->refresh($user);
         self::$DI['app']['manipulator.user']->delete($user);
@@ -339,29 +341,34 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['app']->getAclForUser($user)->give_access_to_sbas(array_keys(self::$DI['app']->getDataboxes()));
 
+        /** @var Databox $databox */
         foreach (self::$DI['app']->getDataboxes() as $databox) {
 
-            $rights = [
-                'bas_manage'        => '1'
-                , 'bas_modify_struct' => '1'
-                , 'bas_modif_th'      => '1'
-                , 'bas_chupub'        => '1'
-            ];
-
-            self::$DI['app']->getAclForUser($user)->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+            self::$DI['app']->getAclForUser($user)
+                ->update_rights_to_sbas(
+                    $databox->get_sbas_id(),
+                    [
+                        \ACL::BAS_MANAGE        => true,
+                        \ACL::BAS_MODIFY_STRUCT => true,
+                        \ACL::BAS_MODIF_TH      => true,
+                        \ACL::BAS_CHUPUB        => true,
+                    ]
+                );
 
             foreach ($databox->get_collections() as $collection) {
                 $base_id = $collection->get_base_id();
                 self::$DI['app']->getAclForUser($user)->give_access_to_base([$base_id]);
 
-                $rights = [
-                    'canputinalbum'  => '1'
-                    , 'candwnldhd'     => '1'
-                    , 'candwnldsubdef' => '1'
-                    , 'nowatermark'    => '1'
-                ];
+                self::$DI['app']->getAclForUser($user)
+                    ->update_rights_to_base(
+                        $collection->get_base_id(),
+                        [
+                            \ACL::CANPUTINALBUM  => true,
+                            \ACL::CANDWNLDHD     => true,
+                            \ACL::NOWATERMARK    => true
+                        ]
+                    );
 
-                self::$DI['app']->getAclForUser($user)->update_rights_to_base($collection->get_base_id(), $rights);
                 break;
             }
         }
@@ -444,7 +451,13 @@ class UsersTest extends \PhraseanetAuthenticatedWebTestCase
         // create a template
         if (null === self::$DI['app']['repo.users']->findByLogin('csv_template')) {
             $user = self::$DI['app']['manipulator.user']->createTemplate('csv_template', self::$DI['app']->getAuthenticatedUser());
-            self::$DI['app']->getAclForUser($user)->update_rights_to_base(self::$DI['collection']->get_base_id(), ['actif'=> 1]);
+            self::$DI['app']->getAclForUser($user)
+                ->update_rights_to_base(
+                    self::$DI['collection']->get_base_id(),
+                    [
+                        \ACL::ACTIF => true
+                    ]
+                );
         }
 
         $nativeQueryMock = $this->getMockBuilder('Alchemy\Phrasea\Model\NativeQueryProvider')

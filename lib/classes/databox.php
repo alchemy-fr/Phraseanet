@@ -1121,9 +1121,12 @@ class databox extends base implements ThumbnailedElement
         $this->app->getAclForUser($user)
             ->give_access_to_sbas([$this->id])
             ->update_rights_to_sbas(
-                $this->id, [
-                'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                $this->id,
+                [
+                    \ACL::BAS_MANAGE        => true,
+                    \ACL::BAS_MODIFY_STRUCT => true,
+                    \ACL::BAS_MODIF_TH      => true,
+                    \ACL::BAS_CHUPUB        => true
                 ]
         );
 
@@ -1133,9 +1136,7 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql = "INSERT INTO bas
-                            (base_id, active, server_coll_id, sbas_id) VALUES
-                            (null,'1', :coll_id, :sbas_id)";
+        $sql = "INSERT INTO bas (active, server_coll_id, sbas_id) VALUES ('1', :coll_id, :sbas_id)";
         $stmt = $conn->prepare($sql);
 
         $base_ids = [];
@@ -1154,16 +1155,33 @@ class databox extends base implements ThumbnailedElement
         $stmt->closeCursor();
 
         $this->app->getAclForUser($user)->give_access_to_base($base_ids);
+
         foreach ($base_ids as $base_id) {
-            $this->app->getAclForUser($user)->update_rights_to_base($base_id, [
-                'canpush'         => 1, 'cancmd'          => 1
-                , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-                , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-                , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-                , 'modify_struct'   => 1, 'nowatermark'     => 1
-                ]
-            );
+            $this->app->getAclForUser($user)
+                ->update_rights_to_base(
+                    $base_id,
+                    [
+                        \ACL::CANPUSH            => true,
+                        \ACL::CANCMD             => true,
+                        \ACL::CANPUTINALBUM      => true,
+                        \ACL::CANDWNLDHD         => true,
+                        \ACL::CANDWNLDPREVIEW    => true,
+                        \ACL::CANADMIN           => true,
+                        \ACL::ACTIF              => true,
+                        \ACL::CANREPORT          => true,
+                        \ACL::CANADDRECORD       => true,
+                        \ACL::CANMODIFRECORD     => true,
+                        \ACL::CANDELETERECORD    => true,
+                        \ACL::CHGSTATUS          => true,
+                        \ACL::IMGTOOLS           => true,
+                        \ACL::COLL_MANAGE        => true,
+                        \ACL::COLL_MODIFY_STRUCT => true,
+                        \ACL::NOWATERMARK        => true
+                    ]
+                );
         }
+
+        $this->app->getAclForUser($user)->delete_data_from_cache();
 
         return $this;
     }
@@ -1177,14 +1195,40 @@ class databox extends base implements ThumbnailedElement
         return $this;
     }
 
+    public function clearCandidates()
+    {
+        try {
+            $domct = $this->get_dom_cterms();
+
+            if ($domct !== false) {
+                $nodesToDel = [];
+                for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
+                    if(!($n->getAttribute('delbranch'))){
+                        $nodesToDel[] = $n;
+                    }
+                }
+                foreach($nodesToDel as $n) {
+                    $n->parentNode->removeChild($n);
+                }
+                if(!empty($nodesToDel)) {
+                    $this->saveCterms($domct);
+                }
+            }
+        } catch (\Exception $e) {
+
+        }
+    }
+
     public function reindex()
     {
+        $this->clearCandidates();
         $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
 
         // Set TO_INDEX flag on all records
-        $sql = "UPDATE record SET jeton = (jeton | :token)";
+        $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':token', PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
+        $stmt->bindValue(':token_and', PhraseaTokens::INDEXING, PDO::PARAM_INT);
+        $stmt->bindValue(':token_or',  PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
         $stmt->execute();
 
         $this->app['dispatcher']->dispatch(

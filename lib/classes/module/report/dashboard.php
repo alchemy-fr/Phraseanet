@@ -241,7 +241,7 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
     {
         $all_coll = [];
 
-        $base_ids = $this->app->getAclForUser($this->usr)->get_granted_base(['canreport']);
+        $base_ids = $this->app->getAclForUser($this->usr)->get_granted_base([\ACL::CANREPORT]);
 
         foreach ($base_ids as $base_id => $collection) {
             $databox = $collection->get_databox();

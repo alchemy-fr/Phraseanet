@@ -46,7 +46,7 @@ class TaskManager implements ControllerProviderInterface, ServiceProviderInterfa
         };
 
         $controllers->before(function () use ($firewall) {
-            $firewall->requireRight('taskmanager');
+            $firewall->requireRight(\ACL::TASKMANAGER);
         });
 
         $controllers

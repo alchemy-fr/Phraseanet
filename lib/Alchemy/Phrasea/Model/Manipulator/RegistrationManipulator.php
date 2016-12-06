@@ -81,13 +81,16 @@ class RegistrationManipulator implements ManipulatorInterface
 
         $this->aclProvider->get($user)->give_access_to_sbas([$collection->get_sbas_id()]);
         $this->aclProvider->get($user)->give_access_to_base([$collection->get_base_id()]);
-        $this->aclProvider->get($user)->update_rights_to_base($collection->get_base_id(), [
-            'canputinalbum'   => '1',
-            'candwnldhd'      => (string) (int) $grantHd,
-            'nowatermark'     => (string) (int) $grantWatermark,
-            'candwnldpreview' => '1',
-            'actif'           => '1',
-        ]);
+        $this->aclProvider->get($user)->update_rights_to_base(
+            $collection->get_base_id(),
+            [
+                \ACL::CANPUTINALBUM   => true,
+                \ACL::CANDWNLDHD      => (bool)$grantHd,
+                \ACL::NOWATERMARK     => (bool)$grantWatermark,
+                \ACL::CANDWNLDPREVIEW => true,
+                \ACL::ACTIF           => true
+            ]
+        );
         $this->em->remove($registration);
         $this->em->flush();
     }

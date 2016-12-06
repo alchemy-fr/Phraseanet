@@ -27,7 +27,7 @@
     {% endif %}
 
     {% set class_status = 'nostatus' %}
-    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), 'chgstatus') %}
+    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
         {% set class_status = '' %}
     {% endif %}
 

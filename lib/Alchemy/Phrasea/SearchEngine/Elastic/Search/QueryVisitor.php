@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Hoa\Compiler\Llk\TreeNode;
@@ -121,6 +122,7 @@ class QueryVisitor implements Visit
     private function visitQuery(Element $element)
     {
         $root = null;
+
         foreach ($element->getChildren() as $child) {
             $root = $child->accept($this);
         }
@@ -176,6 +178,7 @@ class QueryVisitor implements Visit
     private function handleBinaryExpression(Element $element, \Closure $factory)
     {
         $this->assertChildrenCount($element, 2);
+
         $left  = $element->getChild(0)->accept($this);
         $right = $element->getChild(1)->accept($this);
 
@@ -208,7 +211,7 @@ class QueryVisitor implements Visit
         if ($key instanceof AST\KeyValue\TimestampKey) {
             return true;
         } elseif ($key instanceof AST\KeyValue\FieldKey) {
-            return $this->structure->typeOf($key->getName()) === Mapping::TYPE_DATE;
+            return $this->structure->typeOf($key->getName()) === FieldMapping::TYPE_DATE;
         }
         return false;
     }
@@ -284,6 +287,7 @@ class QueryVisitor implements Visit
     private function visitString(TreeNode $node)
     {
         $tokens = array();
+
         foreach ($node->getChildren() as $child) {
             $value = $child->getValue();
             if ($value === null || !isset($value['value'])) {

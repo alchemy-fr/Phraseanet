@@ -83,10 +83,7 @@ class patch_390alpha1a extends patchAbstract
         $em->getEventManager()->removeEventSubscriber(new TimestampableListener());
 
         foreach ($rs as $row) {
-            $sql = 'SELECT count(id) as todo
-                    FROM order_elements
-                    WHERE deny = NULL
-                        AND order_id = :id';
+            $sql = "SELECT count(id) as todo FROM order_elements WHERE deny = NULL AND order_id = :id";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);
@@ -116,9 +113,7 @@ class patch_390alpha1a extends patchAbstract
 
             $em->persist($order);
 
-            $sql = 'SELECT base_id, record_id, order_master_id, deny
-                    FROM order_elements
-                    WHERE order_id = :id';
+            $sql = "SELECT base_id, record_id, order_master_id, deny FROM order_elements WHERE order_id = :id";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute([':id' => $row['id']]);

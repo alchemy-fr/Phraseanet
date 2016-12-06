@@ -48,6 +48,7 @@ use Alchemy\Phrasea\Core\Provider\ConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConfigurationTesterServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ConvertersServiceProvider;
 use Alchemy\Phrasea\Core\Provider\CSVServiceProvider;
+use Alchemy\Phrasea\Core\Provider\DataboxServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FeedServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FileServeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\FtpServiceProvider;
@@ -244,6 +245,7 @@ class Application extends SilexApplication
 
         $this->setupEventDispatcher();
 
+        $this->register(new DataboxServiceProvider());
         $this->register(new QueueServiceProvider());
         $this->register(new WorkerServiceProvider());
         $this->register(new WorkerConfigurationServiceProvider());
@@ -542,6 +544,7 @@ class Application extends SilexApplication
         $this['root.path'] = realpath(__DIR__ . '/../../..');
         // temporary resources default path such as download zip, quarantined documents etc ..
         $this['tmp.path'] = getenv('PHRASEANET_TMP') ?: $this['root.path'].'/tmp';
+
         // plugin path
         $this['plugin.path'] = $this['root.path'].'/plugins';
         // thumbnails path
@@ -683,10 +686,9 @@ class Application extends SilexApplication
     private function setupMonolog()
     {
         $this['monolog.name'] = 'phraseanet';
-        $this['monolog.logfile'] = $this['root.path'] . '/logs/app_error.log';
         $this['monolog.handler'] = $this->share(function (Application $app) {
             return new RotatingFileHandler(
-                $app['monolog.logfile'],
+                $app['log.path'] . '/app_error.log',
                 10,
                 Logger::ERROR,
                 $app['monolog.bubble'],

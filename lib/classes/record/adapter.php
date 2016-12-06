@@ -98,6 +98,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /** @var DateTime */
     private $updated;
 
+    /** @var bool|null|integer  */
+    private $width;
+    /** @var bool|null|integer  */
+    private $height;
+    /** @var bool|null|integer  */
+    private $size;
+
     /**
      * @param Application $app
      * @param integer     $sbas_id
@@ -110,6 +117,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app = $app;
         $this->reference = RecordReference::createFromDataboxIdAndRecordId($sbas_id, $record_id);
         $this->number = (int)$number;
+
+        $this->width = $this->height = $this->size = false; // means unknown for now
 
         if ($load) {
             $this->load();
@@ -169,6 +178,42 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    public function getWidth()
+    {
+        $this->getDocInfos();
+
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        $this->getDocInfos();
+
+        return $this->height;
+    }
+
+    public function getSize()
+    {
+        $this->getDocInfos();
+
+        return $this->size;
+    }
+
+    private function getDocInfos()
+    {
+        if($this->width === false) {       // strict false means unknown
+            try {
+                $doc = $this->get_subdef('document');
+                $this->width = $doc->get_width();
+                $this->height = $doc->get_height();
+                $this->size = $doc->get_size();
+            } catch (\Exception $e) {
+                // failing once is failing ever
+                $this->width = $this->height = $this->size = null;
+            }
+        }
     }
 
     /**
@@ -385,6 +430,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getCollection()
     {
         return \collection::getByCollectionId($this->app, $this->getDatabox(), $this->collection_id);
+    }
+
+    /**
+     * @return string  the name of the collection to which the record belongs to.
+     */
+    public function getCollectionName()
+    {
+        return $this->getCollection()->get_name();
     }
 
     /**
@@ -795,15 +848,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param bool                  $highlight
-     * @param SearchEngineInterface $searchEngine
-     * @param null                  $removeExtension
-     * @param SearchEngineOptions   $options
+     * get the title (concat "thumbtitle" fields which match locale, with "-")
+     * fallback to the filename, possibly with extension removed
+     *
+     * @param string $locale
+     * @param $options[]
+     *      'removeExtension' : boolean
+     *
      * @return string
      */
-    public function get_title($highlight = false, SearchEngineInterface $searchEngine = null, $removeExtension = null, SearchEngineOptions $options = null)
+    public function getTitle($locale = null, Array $options = [])
     {
-        $cache = !$highlight && !$searchEngine && !$removeExtension;
+        $removeExtension = !!igorw\get_in($options, ['removeExtension'], false);
+
+        $cache = !$removeExtension;
 
         if ($cache) {
             try {
@@ -820,13 +878,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $fields_to_retrieve = [];
 
         foreach ($fields as $field) {
-            if (in_array($field->get_thumbtitle(), ['1', $this->app['locale']])) {
+            if (in_array($field->get_thumbtitle(), ['1', $locale])) {
                 $fields_to_retrieve [] = $field->get_name();
             }
         }
 
         if (count($fields_to_retrieve) > 0) {
-            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve);
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($fields_to_retrieve);
             $titles = [];
             foreach ($retrieved_fields as $value) {
                 foreach ($value['values'] as $v) {
@@ -847,6 +905,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $title;
+    }
+
+    /**
+     * @param Array $options
+     *
+     * @return string
+     */
+    public function get_title(Array $options = [])
+    {
+        return $this->getTitle($this->app['locale'], $options);
     }
 
     /**
@@ -933,6 +1001,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $databox_field = $databox->get_meta_structure()->get_element($params['meta_struct_id']);
 
         $caption_field = new caption_field($this->app, $databox_field, $this);
+        $caption_field->delete_data_from_cache();
 
         $vocab = $vocab_id = null;
 
@@ -1361,16 +1430,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM prop WHERE record_id = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM idx WHERE record_id = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
         $sql = "DELETE FROM permalinks WHERE subdef_id IN (SELECT subdef_id FROM subdef WHERE record_id=:record_id)";
         $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
@@ -1386,19 +1445,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM thit WHERE record_id = :record_id";
+        $sql = "DELETE FROM regroup WHERE rid_parent = :record_id1 OR rid_child = :record_id2";
         $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM regroup WHERE rid_parent = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
-        $stmt->closeCursor();
-
-        $sql = "DELETE FROM regroup WHERE rid_child = :record_id";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute([':record_id' => $this->getRecordId()]);
+        $stmt->execute([':record_id1' => $this->getRecordId(), ':record_id2' => $this->getRecordId()]);
         $stmt->closeCursor();
 
         $orderElementRepository = $this->app['repo.order-elements'];
@@ -1524,12 +1573,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param int     $offset_start
      * @param int     $how_many
      *
-     * @return array
+     * @return record_adapter[]
      */
     public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
-        $offset_start = (int)($offset_start < 0 ? 0 : $offset_start);
-        $how_many = (int)(($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $offset_start = max(0, (int)$offset_start);
+        $how_many = max(1, (int)$how_many);
 
         $sql = sprintf(
             'SELECT record_id FROM record WHERE originalname = :original_name COLLATE %s LIMIT %d, %d',

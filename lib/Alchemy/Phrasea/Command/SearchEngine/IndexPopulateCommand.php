@@ -59,8 +59,13 @@ class IndexPopulateCommand extends Command
             throw new \RuntimeException("Could not provide --thesaurus and --records option at the same time.");
         }
 
-        $databoxes = $input->getOption('databox_id');
+        $databoxes_id = $input->getOption('databox_id');
 
-        $this->container['elasticsearch.indexer']->populateIndex($what, $databoxes);
+        $app = $this->container;
+        foreach($app->getDataboxes() as $databox) {
+            if(!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
+                $this->container['elasticsearch.indexer']->populateIndex($what, $databox);
+            }
+        }
     }
 }

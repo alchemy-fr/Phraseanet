@@ -18,7 +18,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         $route = "/prod/story/";
 
         $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
-            ->get_granted_base(['canaddrecord']);
+            ->get_granted_base([\ACL::CANADDRECORD]);
 
         $collection = array_shift($collections);
 
@@ -47,7 +47,7 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         $route = "/prod/story/";
 
         $collections = self::$DI['app']->getAclForUser(self::$DI['app']->getAuthenticatedUser())
-            ->get_granted_base(['canaddrecord']);
+            ->get_granted_base([\ACL::CANADDRECORD]);
 
         $collection = array_shift($collections);
 

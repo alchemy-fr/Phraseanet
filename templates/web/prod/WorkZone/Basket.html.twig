@@ -11,37 +11,37 @@
         <img src="/assets/common/images/icons/print_history.png"/>
       </button>
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
       <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{{ 'action : editer' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/ppen_history.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('changestatus') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
       <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{{ 'action : status' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/chgstatus_history.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('deleterecord') and app.getAclForUser(app.getAuthenticatedUser()).has_right('addrecord') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
       <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{{ 'action : collection' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/chgcoll_history.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('push') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{{ 'action : push' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/push16.png"/>
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('push') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{{ 'Feedback' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/feedback16.png"/>
       </button>
       {% endif %}
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('bas_chupub') %}
-      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}" data-selection-source="basket">
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">
         <img src="/assets/common/images/icons/door.png"/>
       </button>
       <button class="ui-corner-all TOOL_publish_btn basket_window" title="{{ 'action : publier' | trans }}" data-selection-source="basket">
@@ -49,7 +49,7 @@
       </button>
       {% endif %}
 
-      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('doctools') %}
+      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
       <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{{ 'action : outils' | trans }}" data-selection-source="basket">
         <img src="/assets/common/images/icons/imgtools_history.png"/>
       </button>

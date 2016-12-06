@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
@@ -36,6 +37,7 @@ class QueryContext
         if (is_array($this->fields)) {
             // Ensure we are not escaping from original fields restrictions
             $fields = array_intersect($this->fields, $fields);
+
             if (!$fields) {
                 throw new QueryException('Query narrowed to non available fields');
             }
@@ -56,7 +58,8 @@ class QueryContext
         return $this->filterFields($this->structure->getPrivateFields());
     }
 
-    public function getHighlightedFields() {
+    public function getHighlightedFields()
+    {
         return $this->filterFields($this->structure->getAllFields());
     }
 
@@ -74,6 +77,7 @@ class QueryContext
         if ($name instanceof ASTField) {
             $name = $name->getValue();
         }
+
         return $this->structure->get($name);
     }
 
@@ -82,6 +86,7 @@ class QueryContext
         if ($name instanceof Flag) {
             $name = $name->getName();
         }
+
         return $this->structure->getFlagByName($name);
     }
 
@@ -96,7 +101,8 @@ class QueryContext
     public function localizeField(Field $field)
     {
         $index_field = $field->getIndexField();
-        if ($field->getType() === Mapping::TYPE_STRING) {
+
+        if ($field->getType() === FieldMapping::TYPE_STRING) {
             return $this->localizeFieldName($index_field);
         } else {
             return [$index_field];
@@ -110,6 +116,7 @@ class QueryContext
             $boost = ($locale === $this->queryLocale) ? '^5' : '';
             $fields[] = sprintf('%s.%s%s', $field, $locale, $boost);
         }
+
         // TODO Put generic analyzers on main field instead of "light" sub-field
         $fields[] = sprintf('%s.light^10', $field);
 

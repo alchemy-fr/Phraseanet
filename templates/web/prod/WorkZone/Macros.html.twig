@@ -48,7 +48,7 @@
                              data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                           <div title="" class="context-menu-item menu3-custom-item">
                             <div  data-kind="basket" data-id="{{basket.getId()}}"
                                  class="context-menu-item-inner edit-record-action">{{ 'edit' | trans }}
@@ -228,7 +228,7 @@
                              data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">{{ 'action::exporter' | trans }}
                         </div>
                       </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right('modifyrecord') %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner edit-record-action"
                              data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"

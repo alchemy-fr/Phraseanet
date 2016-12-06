@@ -130,7 +130,7 @@ class set_export extends set_abstract
                             $app,
                             $child_basrec->getDataboxId(),
                             $record_id,
-                            $record->get_title(null, null, true) . '_' . $n,
+                            $record->get_title(['removeExtension' => true]) . '_' . $n,
                             $remain_hd[$base_id]
                         );
                         $this->add_element($current_element);
@@ -175,7 +175,7 @@ class set_export extends set_abstract
 
         /** @var record_exportElement $download_element */
         foreach ($this->get_elements() as $download_element) {
-            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), 'canmodifrecord')) {
+            if ($app->getAclForUser($app->getAuthenticatedUser())->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
                 $this->businessFieldsAccess = true;
             }
 
@@ -227,11 +227,11 @@ class set_export extends set_abstract
 
         $display_ftp = [];
 
-        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right('addrecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('deleterecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('modifyrecord')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_manage')
-            || $app->getAclForUser($app->getAuthenticatedUser())->has_right('coll_modify_struct');
+        $hasadminright = $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANADDRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANDELETERECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::CANMODIFRECORD)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MANAGE)
+            || $app->getAclForUser($app->getAuthenticatedUser())->has_right(\ACL::COLL_MODIFY_STRUCT);
 
         $this->ftp_datas = [];
 
@@ -256,18 +256,17 @@ class set_export extends set_abstract
                 $types['usr_id'] = PDO::PARAM_INT;
             }
 
-            $sql = <<<SQL
-SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*
-FROM (
-  FtpCredential INNER JOIN Users ON (FtpCredential.active = 1 AND FtpCredential.user_id = Users.id)
-  INNER JOIN basusr ON (
-    Users.id=basusr.usr_id
-    ${userFilterSQL}
-    AND (basusr.base_id IN (:baseIds))
-  )
-)
-GROUP BY Users.id
-SQL;
+            $sql = "SELECT Users.id AS usr_id ,Users.login AS usr_login ,Users.email AS usr_mail, FtpCredential.*\n"
+                . "FROM (\n"
+                . " FtpCredential INNER JOIN Users ON (FtpCredential.active = 1 AND FtpCredential.user_id = Users.id)\n"
+                . "INNER JOIN\n"
+                . " basusr\n"
+                . "ON (Users.id=basusr.usr_id"
+                . $userFilterSQL
+                . " AND (basusr.base_id IN (:baseIds)))\n"
+                . ")\n"
+                . "GROUP BY Users.id\n";
+
             $params['baseIds'] = $lst_base_id;
             $types['baseIds'] = Connection::PARAM_INT_ARRAY;
 
@@ -420,7 +419,7 @@ SQL;
 
             $BF = false;
 
-            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), 'canmodifrecord')) {
+            if ($includeBusinessFields && $this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::CANMODIFRECORD)) {
                 $BF = true;
             }
 
@@ -440,7 +439,7 @@ SQL;
                 substr($files[$id]['original_name'], 0 - strrpos($files[$id]['original_name'], '.'));
 
             if ($rename_title) {
-                $title = strip_tags($download_element->get_title(null, null, true));
+                $title = strip_tags($download_element->get_title(['removeExtension' => true]));
                 $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true, true, true);
             } else {
                 $files[$id]["export_name"] = $infos['filename'];
@@ -458,10 +457,15 @@ SQL;
                     continue;
                 }
 
-                $subdef = $download_element->get_subdef($name);
-
-                if (!in_array($name, ['caption', 'caption-yaml']) && !isset($subdef)) {
-                    continue;
+                $subdef = null;
+                if (!in_array($name, ['caption', 'caption-yaml'])) {
+                    try {
+                        // get_subdef() can throw a 404
+                        $subdef = $download_element->get_subdef($name);
+                    }
+                    catch(\Exception $e) {
+                        continue;
+                    }
                 }
 
                 set_time_limit(100);
@@ -508,7 +512,7 @@ SQL;
                             'path' => $subdef->get_path(),
                             'file' => $subdef->get_file(),
                         ];
-                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), "nowatermark")
+                        if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
                             && !$this->app->getAclForUser($user)->has_preview_grant($download_element)
                             && $subdef->get_type() == media_subdef::TYPE_IMAGE
                         ) {
@@ -691,7 +695,7 @@ SQL;
     public static function build_zip(Application $app, Token $token, array $list, $zipFile)
     {
         if (isset($list['complete']) && $list['complete'] === true) {
-            return;
+            return $zipFile;
         }
 
         $files = $list['files'];
@@ -786,9 +790,7 @@ SQL;
         $list_base = array_unique(array_keys($tmplog));
 
         if (!$anonymous && null !== $app->getAuthenticatedUser()) {
-            $sql = "UPDATE basusr
-            SET remain_dwnld = :remain_dl
-            WHERE base_id = :base_id AND usr_id = :usr_id";
+            $sql = "UPDATE basusr SET remain_dwnld = :remain_dl WHERE base_id = :base_id AND usr_id = :usr_id";
 
             $stmt = $app->getApplicationBox()->get_connection()->prepare($sql);
 
