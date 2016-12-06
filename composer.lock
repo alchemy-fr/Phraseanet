@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "074cb00e6ae4624cfda6bb6da348e7dc",
-    "content-hash": "098d348246597bd509b1014ed3738952",
+    "hash": "9a1955fa0102a16b25ee47148a6537a0",
+    "content-hash": "b19b6544330d38b28cc31554738bded3",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -743,16 +743,16 @@
         },
         {
             "name": "alchemy/worker-bundle",
-            "version": "0.1.5",
+            "version": "0.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/worker-bundle.git",
-                "reference": "ae83862104fcb0873370b237c93fdd744e33d800"
+                "reference": "a4911cc4a4c9ccf1195c78a11ca5899c9077b1df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/worker-bundle/zipball/ae83862104fcb0873370b237c93fdd744e33d800",
-                "reference": "ae83862104fcb0873370b237c93fdd744e33d800",
+                "url": "https://api.github.com/repos/alchemy-fr/worker-bundle/zipball/a4911cc4a4c9ccf1195c78a11ca5899c9077b1df",
+                "reference": "a4911cc4a4c9ccf1195c78a11ca5899c9077b1df",
                 "shasum": ""
             },
             "require": {
@@ -788,7 +788,7 @@
                 }
             ],
             "description": "Symfony bundle for alchemy/worker-component",
-            "time": "2016-11-14 16:42:58"
+            "time": "2016-12-06 10:39:58"
         },
         {
             "name": "alchemy/worker-component",
