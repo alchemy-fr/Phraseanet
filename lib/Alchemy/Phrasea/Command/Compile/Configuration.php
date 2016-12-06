@@ -20,12 +20,14 @@ class Configuration extends Command
     public function __construct()
     {
         parent::__construct('compile:configuration');
+
         $this->setDescription('Compiles YAML configuration to plain PHP');
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $this->container['configuration.store']->compileAndWrite();
+
         $output->writeln("Configuration compiled.");
 
         return 0;

@@ -29,8 +29,8 @@
 
 <ul class="unstyled">
     <li>{{ 'phraseanet:: adresse' | trans }} : {{ collection.get_databox().get_serialized_server_info() }}</li>
+    <li>{{ 'admin::base:collection: identifiant' | trans }} : {{ collection.get_base_id() }}</li>
     <li>{{ 'admin::base:collection: numero de collection distante' | trans }} : {{ collection.get_coll_id() }}</li>
-    <li>{{ 'admin::base:collection: numero de collection locale' | trans }} : {{ collection.get_base_id() }}</li>
     <li>{{ 'admin::base:collection: etat de la collection' | trans }} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
     <li>{{ collection.get_record_amount() }} records <a class="ajax" target="rights" href="{{ path('admin_collection_display_document_details', { 'bas_id' : collection.get_base_id() }) }}">{{ 'phraseanet:: details' | trans }}</a></li>
 </ul>
