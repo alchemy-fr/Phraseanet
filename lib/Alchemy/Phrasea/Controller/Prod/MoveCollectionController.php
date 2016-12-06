@@ -25,7 +25,6 @@ class MoveCollectionController extends Controller
 
         $message = '';
         $template = '';
-        $collections = $this->getAclForUser()->get_granted_base(['canaddrecord'], $sbas_ids);
         $collections = $this->getAclForUser()->get_granted_base([\ACL::CANADDRECORD], $sbas_ids);
 
         if (count($records->databoxes()) > 1) {
@@ -45,26 +44,6 @@ class MoveCollectionController extends Controller
             $template = $this->render('prod/actions/collection_default.html.twig', $parameters);
         }
 
-<<<<<<< HEAD
-=======
-        if (count($records->databoxes()) > 1) {
-            $success = false;
-            $message = $this->app->trans('prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble');
-        } elseif (count($records) == 0) {
-            $success = false;
-            $message = $this->app->trans('prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document');
-        } else {
-            // is able to move:
-            $success = true;
-            $parameters = [
-              'records' => $records,
-              'message' => '',
-              'collections' => $collections,
-            ];
-            $template = $this->render('prod/actions/collection_default.html.twig', $parameters);
-        }
-
->>>>>>> origin/master
         $datas = [
           'success' => $success,
           'message' => $message,
