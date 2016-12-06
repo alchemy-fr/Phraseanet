@@ -202,7 +202,8 @@ class IniReset extends Command
                 $credentials['password'],
                 $databox->get_dbname()
             );
-            $output->writeln('Mounting database "'.$databox->get_dbname().'"...<info>OK</info>');
+
+            $output->writeln('Mounting database "' . $databox->get_dbname() . '"...<info>OK</info>');
         }
 
         if ($input->getOption('run-patches') || false === $this->container['phraseanet.configuration']->isUpToDate()) {

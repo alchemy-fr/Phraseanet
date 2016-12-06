@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchManagementService;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Index;
 use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
@@ -237,6 +238,10 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             }
 
             return $options;
+        });
+
+        $app['elasticsearch.management-service'] = $app->share(function ($app) {
+            return new ElasticSearchManagementService($app['elasticsearch.indexer'], $app['conf']);
         });
 
         return $app;

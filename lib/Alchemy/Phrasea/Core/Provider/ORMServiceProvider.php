@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\Connection\ConnectionPoolManager;
+use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -529,7 +531,15 @@ class ORMServiceProvider implements ServiceProviderInterface
         });
 
         // Returns a new DBALConnection instance using configuration parameters
-        $app['dbal.provider'] = $app->protect(function (array $info) use ($app) {
+        $app['dbal.provider'] = $app->protect(function ($info) use ($app) {
+            if ($info instanceof ConnectionSettings) {
+                $info = $info->toArray();
+            }
+
+            if (! is_array($info)) {
+                throw new \InvalidArgumentException('$info must be an array or a ConnectionSettings instance');
+            }
+
             $info = $app['db.info']($info);
 
             /** @var ConnectionPoolManager $manager */

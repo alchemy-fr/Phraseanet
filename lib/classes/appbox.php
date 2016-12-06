@@ -55,11 +55,11 @@ class appbox extends base
         $connection = $app['db.provider']($connectionConfig);
 
         $connectionSettings = new ConnectionSettings(
-            $connectionConfig['host'],
-            $connectionConfig['port'],
-            $connectionConfig['dbname'],
+            $connectionConfig['host'], 
+            $connectionConfig['port'], 
             $connectionConfig['user'],
-            $connectionConfig['password']
+            $connectionConfig['password'], 
+            $connectionConfig['dbname']
         );
 
         $versionRepository = new AppboxVersionRepository($connection);

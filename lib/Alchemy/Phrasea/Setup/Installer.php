@@ -142,6 +142,7 @@ class Installer
 
             }
         }
+
         if (null !== $dbConn) {
             foreach ($databox->tables->table as $table) {
                 try {

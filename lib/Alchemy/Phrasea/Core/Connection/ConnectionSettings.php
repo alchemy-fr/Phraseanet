@@ -6,6 +6,21 @@ class ConnectionSettings
 {
 
     /**
+     * @param array $configuration
+     * @return self
+     */
+    public static function fromArray(array $configuration)
+    {
+        return new self(
+            $configuration['host'],
+            $configuration['port'],
+            $configuration['user'],
+            $configuration['password'],
+            isset($configuration['dbname']) ? $configuration['dbname'] : ''
+        );
+    }
+
+    /**
      * @var string
      */
     protected $host;
@@ -33,11 +48,11 @@ class ConnectionSettings
     /**
      * @param string $host
      * @param int|null $port
-     * @param string $databaseName
      * @param string $user
      * @param string $password
+     * @param string $databaseName
      */
-    public function __construct($host, $port, $databaseName, $user, $password)
+    public function __construct($host, $port, $user, $password, $databaseName)
     {
         $this->host = (string) $host;
         $this->port = ((int) $port) > 0 ? (int) $port : null;
@@ -86,15 +101,23 @@ class ConnectionSettings
         return $this->password;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
-        return [
-            'dbname' => $this->databaseName,
+        $settings = [
             'host' => $this->host,
             'port' => $this->port,
             'user' => $this->user,
             'password' => $this->password
         ];
+
+        if ($this->databaseName) {
+            $settings['dbname'] = $this->databaseName;
+        }
+
+        return $settings;
     }
 
 }
