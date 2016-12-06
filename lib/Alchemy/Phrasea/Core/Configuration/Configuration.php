@@ -144,7 +144,7 @@ class Configuration implements ConfigurationInterface
     public function setConfig(array $config)
     {
         $this->cache = $config;
-        $this->dumpFile($this->config, $this->parser->dump($config, 7));
+        $this->dumpFile($this->config, $this->parser->dump($config, 7), 0660);
         $this->writeCacheConfig($this->compiler->compile($config));
 
         return $this;
@@ -183,7 +183,7 @@ class Configuration implements ConfigurationInterface
     public function initialize()
     {
         $this->delete();
-        $this->dumpFile($this->config, $this->loadFile(__DIR__ . static::CONFIG_REF), 0600);
+        $this->dumpFile($this->config, $this->loadFile(__DIR__ . static::CONFIG_REF), 0660);
 
         // force rewrite
         $this->getConfig();
@@ -211,7 +211,8 @@ class Configuration implements ConfigurationInterface
 
     private function writeCacheConfig($content)
     {
-        $this->dumpFile($this->compiled, $content, 0600);
+        $this->dumpFile($this->compiled, $content, 0660);
+
         if(function_exists("opcache_invalidate")) {
             opcache_invalidate($this->compiled);
         }
@@ -234,6 +235,7 @@ class Configuration implements ConfigurationInterface
     private function dumpFile($file, $content, $mod = 0600)
     {
         $tmpFile = tempnam(dirname($file), basename($file));
+
         if (false !== @file_put_contents($tmpFile, $content)) {
             // rename does not work on Win32 before 5.2.6
             if (@rename($tmpFile, $file)) {
