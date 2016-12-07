@@ -39,6 +39,12 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     /** @var Application */
     protected $app;
 
+    private static $bad_chars = [
+        "\x00", "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07",
+        "\x08", "\x09", "\x0A", "\x0B", "\x0C", "\x0D", "\x0E", "\x0F",
+        " ",    "/",    "\\",   "%",    "+"
+    ];
+
     /**
      * @param Application $app
      * @param databox $databox
@@ -118,7 +124,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             'record_id' => $this->media_subdef->get_record_id(),
             'subdef' => $this->media_subdef->get_name(),
             /** @Ignore */
-            'label' => str_replace('/', '_', $label),
+            'label' => str_replace(self::$bad_chars, '_', $label),
             'token' => $this->get_token(),
         ]));
     }
