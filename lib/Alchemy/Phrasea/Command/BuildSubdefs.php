@@ -350,12 +350,15 @@ class BuildSubdefs extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $time_start = new \DateTime();
+
         if(!$this->sanitizeArgs($input, $output)) {
             return -1;
         }
 
         $this->input  = $input;
         $this->output = $output;
+        $progress = null;
 
         $sql = $this->getSQL();
 
@@ -367,22 +370,19 @@ class BuildSubdefs extends Command
 
         $totalRecords = (int)$this->connection->executeQuery($sqlCount)->fetchColumn();
 
-        if ($totalRecords === 0) {
-            return 0;
-        }
+        $nRecordsDone = 0;
 
-        $progress = null;
-        if($output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
-            $progress = new ProgressBar($output, $totalRecords);
-            $progress->start();
-            $progress->display();
-        }
+        $again = true;
 
         $stmt = $this->connection->executeQuery($sql);
+        while($again && ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ) {
 
-        $time_start = new \DateTime();
-        $nRecordsDone = 0;
-        while( ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ) {
+            if($output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE && $progress === null) {
+                $progress = new ProgressBar($output, $totalRecords);
+                $progress->start();
+                $progress->display();
+            }
+
             $recordChanged = false;
             $type = $row['type'];
             $msg = [];
@@ -489,7 +489,7 @@ class BuildSubdefs extends Command
 
             if($progress) {
                 $progress->advance();
-                $output->write(implode(' ', $msg));
+                //$output->write(implode(' ', $msg));
             }
             else {
                 $output->writeln(implode("\n", $msg));
@@ -500,6 +500,7 @@ class BuildSubdefs extends Command
                     $output->writeln('');
                 }
                 $output->writeln(sprintf("Maximum number (%d >= %d) of records done, quit.", $nRecordsDone, $this->maxrecs));
+                $again = false;
             }
 
             $time_end = new \DateTime();
@@ -509,6 +510,7 @@ class BuildSubdefs extends Command
                     $output->writeln('');
                 }
                 $output->writeln(sprintf("Maximum duration (%d >= %d) done, quit.", $dt, $this->maxduration));
+                $again = false;
             }
 
         }
@@ -516,7 +518,6 @@ class BuildSubdefs extends Command
         unset($stmt);
 
         if($progress) {
-            $progress->finish();
             $output->writeln('');
         }
 
