@@ -23,6 +23,7 @@ clean_assets:
 
 config:
 	@php bin/console compile:configuration
+	@php bin/developer orm:generate-proxies
 
 watch:
 	@echo 'config/configuration.yml' | entr make config
