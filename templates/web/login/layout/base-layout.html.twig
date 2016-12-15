@@ -40,6 +40,8 @@
                 <![endif]-->
                 <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
 
+                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
                 {# include backbone templates #}
                 {% include "login/common/templates.html.twig" %}
                 <script type="text/javascript" src="/assets/authentication/js/authentication{% if not app.debug %}.min{% endif %}.js"></script>
