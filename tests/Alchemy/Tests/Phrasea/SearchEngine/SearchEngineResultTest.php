@@ -24,7 +24,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
                 ]);
 
         $user_query = 'Gotainer';
-        $engine_query = '{text:"Gotainer"}';    // fake, real is really more complex
+        $engine_query = ['text' => "Gotainer"];    // fake, real is really more complex
         $duration = 1 / 3;
         $offsetStart = 23;
         $available = 25;
@@ -63,7 +63,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
                 ]);
 
         $user_query = 'Gotainer';
-        $engine_query = '{text:"Gotainer"}';    // fake, real is really more complex
+        $engine_query = ['text' => "Gotainer"];    // fake, real is really more complex
         $duration = 1 / 3;
         $offsetStart = 0;
         $available = 25;

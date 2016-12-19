@@ -98,18 +98,18 @@ class QueryContext
     /**
      * @todo Maybe we should put this logic in Field class?
      */
-    public function localizeField(Field $field)
+    public function localizeField(Field $field, $includeEdgeNgram)
     {
         $index_field = $field->getIndexField();
 
         if ($field->getType() === FieldMapping::TYPE_STRING) {
-            return $this->localizeFieldName($index_field);
+            return $this->localizeFieldName($index_field, $includeEdgeNgram);
         } else {
             return [$index_field];
         }
     }
 
-    private function localizeFieldName($field)
+    private function localizeFieldName($field, $includeEdgeNgram)
     {
         $fields = array();
         foreach ($this->locales as $locale) {
@@ -119,6 +119,9 @@ class QueryContext
 
         // TODO Put generic analyzers on main field instead of "light" sub-field
         $fields[] = sprintf('%s.light^10', $field);
+        if($includeEdgeNgram) {
+            $fields[] = sprintf('%s.engram', $field);
+        }
 
         return $fields;
     }

@@ -210,7 +210,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
             new SearchEngineOptions(),
             new ArrayCollection([$elasticsearchRecord]), // Records
             '', // Query as user typed
-            '{}', // Query as engine parsed
+            [], // Query as engine parsed (fake)
             0, // Duration
             0, // offsetStart
             1, // available

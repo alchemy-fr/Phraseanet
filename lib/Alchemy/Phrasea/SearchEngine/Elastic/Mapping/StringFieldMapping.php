@@ -55,8 +55,13 @@ class StringFieldMapping extends ComplexFieldMapping
     {
         $child = new StringFieldMapping('light');
         $child->setAnalyzer('general_light');
-
         $this->addChild($child);
+
+        $child = new StringFieldMapping('engram');
+        $child->setAnalyzer('my_edge_ngram_analyzer', 'indexing');
+        $child->setAnalyzer('my_edge_ngram_analyzer#search', 'searching');
+        $this->addChild($child);
+
         $this->addLocalizedChildren($locales);
 
         return $this;

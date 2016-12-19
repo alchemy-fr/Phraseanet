@@ -42,7 +42,7 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
             // Full text
             $index_fields = [];
             foreach (ValueChecker::filterByValueCompatibility($fields, $this->text) as $field) {
-                foreach ($context->localizeField($field) as $f) {
+                foreach ($context->localizeField($field, true) as $f) {     // true: includeEdgeNgram
                     $index_fields[] = $f;
                 }
             }

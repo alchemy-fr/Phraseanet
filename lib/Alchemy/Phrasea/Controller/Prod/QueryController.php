@@ -185,7 +185,7 @@ class QueryController extends Controller
             $json['results'] = $this->render($template, ['results'=> $result]);
 
             /** Debug */
-            $json['parsed_query'] = $result->getEngineQuery();
+            $json['parsed_query'] = json_encode($result->getEngineQuery());
             /** End debug */
 
             $fieldLabels = [

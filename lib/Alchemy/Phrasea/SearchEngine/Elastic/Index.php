@@ -90,6 +90,16 @@ class Index
                     // TODO Maybe replace nfkc_normalizer + asciifolding with icu_folding
                     'filter' => ['nfkc_normalizer', 'asciifolding']
                 ],
+                'my_edge_ngram_analyzer' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'my_edge_ngram_tokenizer',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
+                ],
+                'my_edge_ngram_analyzer#search' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'standard',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
+                ],
                 // Lang specific
                 'fr_full' => [
                     'type' => 'custom',
@@ -145,6 +155,12 @@ class Index
                 ]
             ],
             'tokenizer' => [
+                'my_edge_ngram_tokenizer' => [
+                    "type" => "edgeNGram",
+                    "min_gram" => "2",
+                    "max_gram" => "15",
+                    "token_chars" => [ "letter", "digit" ]
+                ],
                 'thesaurus_path' => [
                     'type' => 'path_hierarchy'
                 ]

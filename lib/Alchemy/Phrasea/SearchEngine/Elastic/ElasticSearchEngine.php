@@ -303,16 +303,16 @@ class ElasticSearchEngine implements SearchEngineInterface
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $query_compiler->parse($string)->dump();
-        $query['query_main'] = $recordQuery;
-        $query['query'] = $params['body'];
-        $query['query_string'] = json_encode($params['body']);
-
         return new SearchEngineResult(
             $options,
             $results,   // ArrayCollection of results
             $string,    // the query as typed by the user
-            json_encode($query),
+            [           // the query by the search engine
+                'ast' => $query_compiler->parse($string)->dump(),
+                'query_main' => $recordQuery,
+                'query' => $params['body'],
+                'query_string' => json_encode($params['body'])
+            ],
             $res['took'],   // duration
             $options->getFirstResult(),
             $res['hits']['total'],  // available
