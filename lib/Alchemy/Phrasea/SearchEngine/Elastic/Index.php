@@ -90,6 +90,16 @@ class Index
                     // TODO Maybe replace nfkc_normalizer + asciifolding with icu_folding
                     'filter' => ['nfkc_normalizer', 'asciifolding']
                 ],
+                'truncation_analyzer' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'truncation_tokenizer',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
+                ],
+                'truncation_analyzer#search' => [
+                    'type'      => 'custom',
+                    'tokenizer' => 'standard',
+                    'filter'    => ['lowercase', 'stop', 'kstem']
+                ],
                 // Lang specific
                 'fr_full' => [
                     'type' => 'custom',
@@ -145,6 +155,12 @@ class Index
                 ]
             ],
             'tokenizer' => [
+                'truncation_tokenizer' => [
+                    "type" => "edgeNGram",
+                    "min_gram" => "2",
+                    "max_gram" => "15",
+                    "token_chars" => [ "letter", "digit" ]
+                ],
                 'thesaurus_path' => [
                     'type' => 'path_hierarchy'
                 ]
