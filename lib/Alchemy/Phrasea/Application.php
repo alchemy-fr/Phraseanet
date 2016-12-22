@@ -131,8 +131,10 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
@@ -302,12 +304,18 @@ class Application extends SilexApplication
             'session.storage.options' => array('cookie_lifetime' => 0)
         ));
 
-        $this['session.storage.handler'] = $this->extend('session.storage.handler', function ($sessionHandler) {
-            if (ini_get('session.save_handler') == 'files') {
-                return $sessionHandler;
-            }
-            
-            return new NativeSessionHandler();
+        $this['session.storage'] = $this->share(function ($app) {
+            $factory = function ($app) {
+                if (ini_get('session.save_handler') == 'files') {
+                    return $app['session.storage.handler'];
+                }
+
+                return new NativeSessionHandler();
+            };
+
+            $handler = $factory($app);
+
+            return new NativeSessionStorage($app['session.storage.options'], $handler);
         });
 
         $this['session.storage.test'] = $this->share(function ($app) {
