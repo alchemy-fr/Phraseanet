@@ -49,6 +49,15 @@ class MappingBuilder
      * @param string $name
      * @return FieldMapping
      */
+    public function addLongField($name)
+    {
+        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_LONG));
+    }
+
+    /**
+     * @param string $name
+     * @return FieldMapping
+     */
     public function addObjectField($name)
     {
         return $this->mapping->addField(new ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT));
