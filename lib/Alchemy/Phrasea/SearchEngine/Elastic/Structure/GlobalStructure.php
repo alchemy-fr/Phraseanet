@@ -53,16 +53,22 @@ final class GlobalStructure implements Structure
         $fields = [];
         $flags = [];
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $fieldStructure) {
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
                 $fields[] = Field::createFromLegacyField($fieldStructure);
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             }
 
             foreach ($databox->getStatusStructure() as $status) {
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
                 $flags[] = Flag::createFromLegacyStatus($status);
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             }
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
         return new self($fields, $flags, MetadataHelper::createTags());
     }
 

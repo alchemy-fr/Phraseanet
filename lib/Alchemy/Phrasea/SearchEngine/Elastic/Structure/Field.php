@@ -53,7 +53,9 @@ class Field implements Typed
         // Thesaurus concept inference
         $xpath = $field->get_tbranch();
         if ($type === FieldMapping::TYPE_STRING && !empty($xpath)) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
         } else {
             $roots = null;
         }

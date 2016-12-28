@@ -72,14 +72,18 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['search_engine'] = $app->share(function ($app) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             $type = $app['conf']->get(['main', 'search-engine', 'type']);
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
                 throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
 
-            return new ElasticSearchEngine(
+            $r = new ElasticSearchEngine(
                 $app,
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
@@ -88,12 +92,20 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.facets_response.factory'],
                 $options
             );
+
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+            return $r;
         });
 
         $app['search_engine.structure'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
             $databoxes = $app->getDataboxes();
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
 
-            return GlobalStructure::createFromDataboxes($databoxes);
+            $r = GlobalStructure::createFromDataboxes($databoxes);
+
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+            return $r;
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {

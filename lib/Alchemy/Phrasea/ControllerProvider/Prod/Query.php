@@ -45,6 +45,8 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/', 'controller.prod.query:query')
             ->bind('prod_query');
 
+        $controllers->post('/completion/', 'controller.prod.query:completion');
+
         $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
             ->bind('preview_answer_train');
 

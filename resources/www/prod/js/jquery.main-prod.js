@@ -388,6 +388,7 @@ function search_doubles() {
 }
 
 function newSearch(query) {
+    alert("efzefzef");
     p4.Results.Selection.empty();
 
     clearAnswers();
@@ -1528,6 +1529,54 @@ $(document).ready(function () {
             resizePreview();
         }
     });
+
+    $("#EDIT_query").autocomplete({
+        minLength: 2,
+        //    appendTo: "#idEditZone",
+        source: function (request, response) {
+
+            var data={};
+            var a = $("#searchForm").serializeArray();
+            // console.log(a);
+            for(var i=0; i<a.length; i++) {
+                var k = a[i].name;
+                var v = a[i].value;
+                if(k.substring(k.length-2) == "[]") {
+                    if(data[k] == undefined) {
+                        data[k] = [];
+                    }
+                    data[k].push(v);
+                }
+                else {
+                    data[k] = v;
+                }
+            }
+            // console.log(data);
+            //console.log($.param($("#searchForm").serializeArray(), false));
+            //console.log($.param($("#searchForm").serializeArray(), true));
+            // var data = $.param($("#searchForm").serializeArray());
+
+            data.qry = data.fake_qry;
+            $.ajax({
+                url: '/prod/query/completion/',
+                dataType: "json",
+                method: "post",
+                data: data,
+                success: function (data) {
+                    console.log(data);
+                    // response(data.results);
+                    response(data);
+                }
+            });
+        },
+        select: function (event, ui) {
+
+            console.log(ui.item.label, ui.item.id);
+
+            return false;
+        }
+    });
+
 
     $('input.input_select_copy').on('focus', function () {
         $(this).select();

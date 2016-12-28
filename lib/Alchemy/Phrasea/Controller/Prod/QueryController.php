@@ -24,6 +24,30 @@ class QueryController extends Controller
 {
     use SearchEngineAware;
 
+    public function completion(Request $request)
+    {
+        $query = (string) $request->request->get('qry');
+
+        // since the query comes from a submited form, normalize crlf,cr,lf ...
+        $query = StringHelper::crlfNormalize($query);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        //$engine = $this->getSearchEngine();
+        $engine = $this->app['search_engine'];
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        $autocomplete = $engine->autocomplete($query, $options);
+        $ret = $autocomplete['text'];
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        return $this->app->json($ret);
+    }
+
     /**
      * Query Phraseanet to fetch records
      *

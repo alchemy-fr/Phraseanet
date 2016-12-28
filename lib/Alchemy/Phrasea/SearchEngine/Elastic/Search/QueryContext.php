@@ -57,6 +57,9 @@ class QueryContext
         return new static($this->options, $this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
+    /**
+     * @return Field[]
+     */
     public function getUnrestrictedFields()
     {
         // TODO Restore search optimization by using "caption_all" field
@@ -74,7 +77,11 @@ class QueryContext
         return $this->filterFields($this->structure->getAllFields());
     }
 
-    private function filterFields(array $fields)
+    /**
+     * @param Field[] $fields
+     * @return Field[]
+     */
+    private function filterFields($fields)
     {
         if ($this->fields !== null) {
             $fields = array_intersect_key($fields, array_flip($this->fields));
