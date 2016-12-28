@@ -604,6 +604,7 @@ class SearchEngineOptions
         return $options;
     }
 
+
     /**
      * Creates options based on a Symfony Request object
      *

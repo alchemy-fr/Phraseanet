@@ -16,6 +16,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\MappingBuilder;
 use Alchemy\Phrasea\SearchEngine\Elastic\MappingProvider;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Mapping\CompletionFieldMapping;
 
 class RecordIndex implements MappingProvider
 {
@@ -52,8 +53,12 @@ class RecordIndex implements MappingProvider
 
         // Database name (still indexed for facets)
         $mapping->addStringField('databox_name')->disableAnalysis();
+
         // Unique collection ID
-        $mapping->addIntegerField('base_id');
+        // $mapping->addIntegerField('base_id')->enableIndexing();
+        $mapping->addStringField('base_id')->disableAnalysis();
+
+
         // Useless collection ID (local to databox)
         $mapping->addIntegerField('collection_id')->disableIndexing();
         // Collection name (still indexed for facets)
@@ -64,7 +69,11 @@ class RecordIndex implements MappingProvider
         $mapping->addStringField('original_name')->disableIndexing();
         $mapping->addStringField('mime')->disableAnalysis();
         $mapping->addStringField('type')->disableAnalysis();
-        $mapping->addStringField('record_type')->disableAnalysis();
+
+
+        //$child = new CompletionFieldMapping('suggest');
+        $mapping->addStringField('record_type')->disableAnalysis(); //->addChild($child);
+
 
         $mapping->addIntegerField('width')->disableIndexing();
         $mapping->addIntegerField('height')->disableIndexing();

@@ -23,6 +23,7 @@ class FieldMapping
     const TYPE_STRING  = 'string';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_DATE    = 'date';
+    const TYPE_COMPLETION = 'completion';
 
     // Number core types
     const TYPE_FLOAT   = 'float';
@@ -47,7 +48,8 @@ class FieldMapping
         self::TYPE_SHORT,
         self::TYPE_BYTE,
         self::TYPE_IP,
-        self::TYPE_OBJECT
+        self::TYPE_OBJECT,
+        self::TYPE_COMPLETION
     );
 
     /**

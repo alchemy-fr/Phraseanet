@@ -308,6 +308,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
+        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($query['query_string'], true)), FILE_APPEND);
 
         return new SearchEngineResult(
             $options,
@@ -367,7 +368,38 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        $params = $this->createCompletionParams($query, $options);
+
+        $res = $this->client->suggest($params);
+
+        $ret = [
+            'text' => [],
+            'byField' => []
+        ];
+        foreach(array_keys($params['body']) as $fname) {
+            $t = [];
+            foreach($res[$fname] as $suggest) {    // don't know why there is a sub-array level
+                foreach($suggest['options'] as $option) {
+                    $text = $option['text'];
+                    if(!in_array($text, $ret['text'])) {
+                        $ret['text'][] = $text;
+                    }
+                    $t[] = [
+                        'label' => $text,
+                        'query' => $fname.':'.$text
+                    ];
+                }
+            }
+            if(!empty($t)) {
+                $ret['byField'][$fname] = $t;
+            }
+        }
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+
+        return $ret;
     }
 
     /**
@@ -389,6 +421,46 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function clearAllCache(\DateTime $date = null)
     {
+    }
+
+    private function createCompletionParams($query, SearchEngineOptions $options)
+    {
+        $body = [];
+        $context = [
+            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
+        ];
+
+        $base_ids = array_keys($options->getCollections());
+        if ($this->app->getAuthenticator()->isAuthenticated()) {
+            $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
+
+            $grantedBasesIds = array_keys($acl->get_granted_base([\ACL::ACTIF]));
+            $base_ids = array_intersect($base_ids, $grantedBasesIds);
+        }
+        if (count($base_ids) > 0) {
+            $context['base_id'] = $base_ids;
+        }
+
+        $search_context = $this->context_factory->createContext($options);
+        $fields = $search_context->getUnrestrictedFields();
+        foreach($fields as $field) {
+            if($field->getType() == FieldMapping::TYPE_STRING) {
+                $k = '' . $field->getName();
+                $body[$k] = [
+                    'text' => $query,
+                    'completion' => [
+                        'field' => "caption." . $field->getName() . ".suggest",
+                        'context' => &$context
+                    ]
+                ];
+            }
+        }
+
+        return [
+            'index' => $this->indexName,
+            'body'  => $body
+        ];
     }
 
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
