@@ -54,6 +54,7 @@ class SearchEngineOptions
         'business_fields',
         'max_results',
         'first_result',
+        'use_truncature',
     ];
 
     /**
@@ -110,6 +111,7 @@ class SearchEngineOptions
                 }
             },
             'stemming' => $optionSetter('setStemming'),
+            'use_truncature' => $optionSetter('setUseTruncature'),
             'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
                 $options->setDateFields($fieldNormalizer($value));
             },
@@ -147,6 +149,8 @@ class SearchEngineOptions
     protected $i18n;
     /** @var bool */
     protected $stemming = true;
+    /** @var bool */
+    protected $use_truncature = false;
     /** @var string */
     protected $sort_by;
 
@@ -271,6 +275,29 @@ class SearchEngineOptions
         $this->stemming = !!$boolean;
 
         return $this;
+    }
+
+    /**
+     * Tells whether to use truncature or not
+     *
+     * @param  boolean             $boolean
+     * @return $this
+     */
+    public function setUseTruncature($boolean)
+    {
+        $this->use_truncature = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Return wheter the use of truncature is enabled or not
+     *
+     * @return boolean
+     */
+    public function useTruncature()
+    {
+        return $this->use_truncature;
     }
 
     /**
@@ -711,6 +738,7 @@ class SearchEngineOptions
         $options->setDateFields($databoxDateFields);
         $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
         $options->setStemming((Boolean) $request->get('stemme'));
+        $options->setUseTruncature((Boolean) $request->get('truncation'));
 
         return $options;
     }

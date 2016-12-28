@@ -9,6 +9,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Flag;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
  * @todo Check for private fields and only search on them if allowed
@@ -23,13 +24,16 @@ class QueryContext
     private $queryLocale;
     /** @var array */
     private $fields;
+    /** @var  SearchEngineOptions */
+    private $options;
 
-    public function __construct(Structure $structure, array $locales, $queryLocale, array $fields = null)
+    public function __construct(SearchEngineOptions $options, Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
         $this->locales = $locales;
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
+        $this->options = $options;
     }
 
     public function narrowToFields(array $fields)
@@ -43,7 +47,12 @@ class QueryContext
             }
         }
 
-        return new static($this->structure, $this->locales, $this->queryLocale, $fields);
+        return new static($this->options, $this->structure, $this->locales, $this->queryLocale, $fields);
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     public function getUnrestrictedFields()
