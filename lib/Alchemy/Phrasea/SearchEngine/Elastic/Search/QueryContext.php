@@ -27,7 +27,14 @@ class QueryContext
     /** @var  SearchEngineOptions */
     private $options;
 
-    public function __construct(SearchEngineOptions $options, Structure $structure, array $locales, $queryLocale, array $fields = null)
+    /**
+     * @param SearchEngineOptions|null $options
+     * @param Structure $structure
+     * @param array $locales
+     * @param $queryLocale
+     * @param array $fields
+     */
+    public function __construct($options, Structure $structure, array $locales, $queryLocale, array $fields = null)
     {
         $this->structure = $structure;
         $this->locales = $locales;
