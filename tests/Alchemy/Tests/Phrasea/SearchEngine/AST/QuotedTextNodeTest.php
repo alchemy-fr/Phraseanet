@@ -29,6 +29,7 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
         $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
+        $query_context->hasOptions()->willReturn(false);
 
         $node = new QuotedTextNode('bar');
         $query = $node->buildQuery($query_context->reveal());
@@ -66,6 +67,9 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
         $query_context
             ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+        $query_context
+            ->hasOptions()
+            ->willReturn(false);
 
         $node = new QuotedTextNode('baz');
         $query = $node->buildQuery($query_context->reveal());
