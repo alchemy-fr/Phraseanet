@@ -16,8 +16,10 @@ server:
         - memcached
         - build-essential
         - libssl-dev
+        - libjpeg-dev
+        - libgif-dev
+        - libfreetype6-dev
         - unoconv
-        - swftools
         - xpdf
         - libav-tools
         - gpac
@@ -55,8 +57,8 @@ elasticsearch:
         - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.7.0'}
 php:
     install: '1'
-    ppa: php5
-    packages: [php5-cli, php5-intl, php5-mcrypt, php5-enchant, php5-gd, php5-imagick, php5-memcache, php5-memcached, php5-curl, php5-mysql, php5-sqlite]
+    ppa: php
+    packages: [php5.6-cli, php5.6-fpm, php5.6-intl, php5.6-mcrypt, php5.6-enchant, php5.6-gd, php-imagick, php5.6-memcache, php5.6-xml, php5.6-xmlrpc, php-pear, php5.6-memcached, php5.6-curl, php5.6-mysql, php5.6-sqlite3]
     pecl_packages:
         - {name: zmq, package: zmq-beta}
 xdebug:
@@ -67,3 +69,7 @@ composer:
 mailcatcher:
     install: '1'
 
+# setting global compilation path
+source_dir: /tmp
+bin_dir: /usr/local/bin
+build_dir: /tmp

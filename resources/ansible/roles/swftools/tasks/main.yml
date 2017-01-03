@@ -1,0 +1,20 @@
+---
+- name: swftools | Download
+  get_url: url=http://www.swftools.org/swftools-0.9.2.tar.gz dest={{ source_dir }}/swftools-0.9.2.tar.gz
+
+- name: swftools | Untar
+  shell: tar xzvf swftools-0.9.2.tar.gz
+  args:
+      chdir: "{{ source_dir }}"
+      creates: "{{ source_dir }}/swftools-0.9.2"
+
+- name: swftools | Compile
+  sudo: yes
+  shell: "export PATH=/usr/local/bin/:$PATH && {{ item }}"
+  args:
+    chdir: "{{ source_dir }}/swftools-0.9.2"
+    creates: "{{ bin_dir }}/swftools-0.9.2"
+  with_items:
+    - ./configure
+    - make
+    - make install -i
