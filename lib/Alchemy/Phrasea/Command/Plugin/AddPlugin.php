@@ -43,7 +43,7 @@ class AddPlugin extends AbstractPluginCommand
         $targetDir  = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $manifest->getName();
 
         $output->write("Setting up composer...");
-        $this->container['plugins.composer-installer']->install($temporaryDir);
+        $this->container['plugins.composer-installer']->install($temporaryDir, $output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE);
         $output->writeln(" <comment>OK</comment>");
 
         $output->write("Installing plugin <info>".$manifest->getName()."</info>...");
