@@ -119,8 +119,7 @@ key:
   | quoted_string()
 
 group:
-    ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
-
+    ::space::? ::parenthese_:: ::space::? primary() ::space::? ::_parenthese:: ::space::?
 
 // Thesaurus terms
 
@@ -140,8 +139,7 @@ context_block:
     ::parenthese_:: ::space::? context() ::space::? ::_parenthese:: #context
 
 context:
-    word_or_keyword() ( <space>? word_or_keyword() )*
-
+   word_or_keyword() ( <space>? word_or_keyword() )*
 
 // Generic helpers
 
