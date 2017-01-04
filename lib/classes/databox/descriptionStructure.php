@@ -16,6 +16,8 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      * @var databox_field[]
      */
     protected $elements = [];
+    /** @var  unicode */
+    private $unicode;
 
     /**
      * Cache array for the get element by name function
@@ -26,9 +28,11 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     /**
      * @param databox_field[] $fields
+     * @param unicode $unicode
      */
-    public function __construct($fields = [])
+    public function __construct($fields, unicode $unicode)
     {
+        $this->unicode = $unicode;
         Assertion::allIsInstanceOf($fields, databox_field::class);
 
         foreach ($fields as $field) {
@@ -107,7 +111,7 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
             }
         }
 
-        $name = databox_field::generateName($name);
+        $name = databox_field::generateName($name, $this->unicode);
 
         return isset($this->cache_name_id[$name])
             ? $this->elements[$this->cache_name_id[$name]]

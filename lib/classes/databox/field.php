@@ -143,6 +143,18 @@ class databox_field implements cache_cacheableInterface
      */
     protected function loadFromRow(array $row)
     {
+        if(1) {
+            $this->id = (int)$row['id'];
+            $this->name = $row['name'];
+            $this->indexable = (bool)$row['indexable'];
+            $this->readonly = (bool)$row['readonly'];
+            $this->required = (bool)$row['required'];
+            $this->multi = (bool)$row['multi'];
+            $this->Business = (bool)$row['business'];
+            $this->type = $row['type'] ?: self::TYPE_STRING;
+            return;
+        }
+
         $this->id = (int)$row['id'];
         $this->name = $row['name'];
         $this->original_src = $row['src'];
@@ -452,7 +464,7 @@ class databox_field implements cache_cacheableInterface
     {
         $previous_name = $this->name;
 
-        $name = self::generateName($name);
+        $name = self::generateName($name, $this->app['unicode']);
 
         if ($name === '') {
             throw new \Exception_InvalidArgument();
@@ -914,7 +926,7 @@ class databox_field implements cache_cacheableInterface
           null, :multi,
           0, 0, 1, :sorter, '')";
 
-        $name = self::generateName($name);
+        $name = self::generateName($name, $app['unicode']);
 
         if ($name === '') {
             throw new \Exception_InvalidArgument();
@@ -932,10 +944,8 @@ class databox_field implements cache_cacheableInterface
         return $databox->get_meta_structure()->get_element($id);
     }
 
-    public static function generateName($name)
+    public static function generateName($name, unicode $unicode_processor)
     {
-        $unicode_processor = new unicode();
-
         $name = $unicode_processor->remove_nonazAZ09($name, false, false);
 
         return $unicode_processor->remove_first_digits($name);

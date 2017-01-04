@@ -679,10 +679,10 @@ class databox extends base implements ThumbnailedElement
      */
     public function getStatusStructure()
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
         /** @var StatusStructureFactory $structureFactory */
         $structureFactory = $this->app['factory.status-structure'];
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         return $structureFactory->getStructure($this);
     }
@@ -885,12 +885,16 @@ class databox extends base implements ThumbnailedElement
             return $this->meta_struct;
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
         /** @var \Alchemy\Phrasea\Databox\Field\DataboxFieldRepository $fieldRepository */
         $fieldRepository = $this->app['repo.fields.factory']($this);
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
 
-        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll());
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
+        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll(), $this->app['unicode']);
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         return $this->meta_struct;
     }

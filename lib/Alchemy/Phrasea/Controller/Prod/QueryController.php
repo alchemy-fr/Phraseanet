@@ -14,11 +14,15 @@ use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 
 class QueryController extends Controller
 {
@@ -30,20 +34,40 @@ class QueryController extends Controller
 
         // since the query comes from a submited form, normalize crlf,cr,lf ...
         $query = StringHelper::crlfNormalize($query);
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         $options = SearchEngineOptions::fromRequest($this->app, $request);
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         //$engine = $this->getSearchEngine();
-        $engine = $this->app['search_engine'];
+        //$engine = $this->app['search_engine'];
+        $search_engine_structure = GlobalStructure::createFromDataboxes(
+            $this->app->getDataboxes(),
+            Structure::WITH_EVERYTHING - (Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
+        );
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        $query_context_factory = new QueryContextFactory(
+            $search_engine_structure,
+            array_keys($this->app['locales.available']),
+            $this->app['locale']
+        );
+
+        $engine = new ElasticSearchEngine(
+            $this->app,
+            $search_engine_structure,
+            $this->app['elasticsearch.client'],
+            $query_context_factory,
+            $this->app['elasticsearch.facets_response.factory'],
+            $this->app['elasticsearch.options']
+        );
+
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         $autocomplete = $engine->autocomplete($query, $options);
         $ret = $autocomplete['text'];
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         return $this->app->json($ret);
     }

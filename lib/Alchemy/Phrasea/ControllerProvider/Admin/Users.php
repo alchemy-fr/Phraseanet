@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Controller\Admin\UserController;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;

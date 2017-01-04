@@ -615,10 +615,31 @@ class SearchEngineOptions
      */
     public static function fromRequest(Application $app, Request $request)
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         $options = new static();
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
+
+        $options->setSearchType($request->get('search_type'));
+        $options->setRecordType($request->get('record_type'));
+        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
+        $options->setStemming((Boolean) $request->get('stemme'));
+
+        $min_date = $max_date = null;
+        if ($request->get('date_min')) {
+            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_min') . ' 00:00:00');
+        }
+        if ($request->get('date_max')) {
+            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_max') . ' 23:59:59');
+        }
+        $options->setMinDate($min_date);
+        $options->setMaxDate($max_date);
+
+        $status = is_array($request->get('status')) ? $request->get('status') : [];
+        $options->setStatus($status);
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         /** @var Authenticator $authenticator */
         $authenticator = $app->getAuthenticator();
@@ -629,6 +650,8 @@ class SearchEngineOptions
 
         $selected_bases = $request->get('bases');
         if (is_array($selected_bases)) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             $bas = [];
             foreach ($selected_bases as $bas_id) {
                 try {
@@ -638,11 +661,16 @@ class SearchEngineOptions
                 }
             }
         } elseif (!$isAuthenticated) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             $bas = $app->getOpenCollections();
         } else {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             $bas = $acl->get_granted_base();
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         // Filter out not found collections
         $bas = array_filter($bas);
 
@@ -661,12 +689,15 @@ class SearchEngineOptions
         /** @var \collection[] $bas */
         $bas = array_filter($bas, $filter);
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
         if (!empty($selected_bases) && empty($bas)) {
             throw new BadRequestHttpException('No collections match your criteria');
         }
 
         $options->onCollections($bas);
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         if ($isAuthenticated && $acl->has_right(\ACL::CANMODIFRECORD)) {
             $bf = array_filter($bas, function (\collection $collection) use ($acl) {
                 return $acl->has_right_on_base($collection->get_base_id(), \ACL::CANMODIFRECORD);
@@ -675,71 +706,57 @@ class SearchEngineOptions
             $options->allowBusinessFieldsOn($bf);
         }
 
-        $status = is_array($request->get('status')) ? $request->get('status') : [];
-        $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
-        if (empty($fields)) {
+        /** @var \databox[] $databoxes */
+        $databoxes = $options->getDataboxes();
+
+        $queryFields = is_array($request->get('fields')) ? $request->get('fields') : [];
+        if (empty($queryFields)) {
             // Select all fields (business included)
-            foreach ($options->getDataboxes() as $databox) {
+             foreach ($databoxes as $databox) {
                 foreach ($databox->get_meta_structure() as $field) {
-                    $fields[] = $field->get_name();
+                    $queryFields[] = $field->get_name();
                 }
             }
-            $fields = array_unique($fields);
         }
+        $queryFields = array_unique($queryFields);
+
+        $queryDateFields = array_unique(explode('|', $request->get('date_field')));
 
         $databoxFields = [];
-        $databoxes = $options->getDataboxes();
-        foreach ($databoxes as $databox) {
-            $metaStructure = $databox->get_meta_structure();
-            foreach ($fields as $field) {
-                try {
-                    $databoxField = $metaStructure->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxFields[] = $databoxField;
-                }
-            }
-        }
-
-        $options->setFields($databoxFields);
-        $options->setStatus($status);
-
-        $options->setSearchType($request->get('search_type'));
-        $options->setRecordType($request->get('record_type'));
-
-        $min_date = $max_date = null;
-        if ($request->get('date_min')) {
-            $min_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_min') . ' 00:00:00');
-        }
-        if ($request->get('date_max')) {
-            $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_max') . ' 23:59:59');
-        }
-
-        $options->setMinDate($min_date);
-        $options->setMaxDate($max_date);
-
         $databoxDateFields = [];
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
         foreach ($databoxes as $databox) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
             $metaStructure = $databox->get_meta_structure();
-            foreach (explode('|', $request->get('date_field')) as $field) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+            foreach ($queryFields as $fieldName) {
                 try {
-                    $databoxField = $metaStructure->get_element_by_name($field);
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName)) ) {
+                        $databoxFields[] = $databoxField;
+                    }
                 } catch (\Exception $e) {
-                    continue;
+                    // no-op
                 }
-                if ($databoxField) {
-                    $databoxDateFields[] = $databoxField;
+            }
+            foreach ($queryDateFields as $fieldName) {
+                try {
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName)) ) {
+                        $databoxDateFields[] = $databoxField;
+                    }
+                } catch (\Exception $e) {
+                    // no-op
                 }
             }
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
+        $options->setFields($databoxFields);
         $options->setDateFields($databoxDateFields);
-        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
-        $options->setStemming((Boolean) $request->get('stemme'));
-        $options->setUseTruncation((Boolean) $request->get('truncation'));
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         return $options;
     }

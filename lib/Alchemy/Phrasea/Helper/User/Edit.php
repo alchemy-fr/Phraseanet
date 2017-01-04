@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Helper\User;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
