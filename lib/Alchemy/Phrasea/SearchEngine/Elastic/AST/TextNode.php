@@ -45,6 +45,9 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
                 foreach ($context->localizeField($field) as $f) {
                     $index_fields[] = $f;
                 }
+                foreach ($context->truncationField($field) as $f) {
+                    $index_fields[] = $f;
+                }
             }
             if (!$index_fields) {
                 return null;
