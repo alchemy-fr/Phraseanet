@@ -45,27 +45,35 @@ class Field implements Typed
 
     private $used_by_collections;
 
-    public static function createFromLegacyField(databox_field $field)
+    public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
     {
+//        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) with=0x%2X\n", __FILE__, __LINE__, $with), FILE_APPEND);
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
-        // Thesaurus concept inference
-        $xpath = $field->get_tbranch();
-        if ($type === FieldMapping::TYPE_STRING && !empty($xpath)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
-            $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
-        } else {
-            $roots = null;
+        $roots = null;
+        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
+            // Thesaurus concept inference
+            $xpath = $field->get_tbranch();
+            if (!empty($xpath)) {
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
+                $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
+
+
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+            }
         }
 
-        // Facet (enable + optional limit)
-        $facet = $field->getFacetValuesLimit();
-        if ($facet === databox_field::FACET_DISABLED) {
-            $facet = self::FACET_DISABLED;
-        } elseif ($facet === databox_field::FACET_NO_LIMIT) {
-            $facet = self::FACET_NO_LIMIT;
+        $facet = self::FACET_DISABLED;
+        if($with & Structure::FIELD_WITH_FACETS) {
+            // Facet (enable + optional limit)
+            $facet = $field->getFacetValuesLimit();
+            if ($facet === databox_field::FACET_DISABLED) {
+                $facet = self::FACET_DISABLED;
+            } elseif ($facet === databox_field::FACET_NO_LIMIT) {
+                $facet = self::FACET_NO_LIMIT;
+            }
         }
 
         return new self($field->get_name(), $type, [

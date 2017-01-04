@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\TaskManager\Job\FtpJob;
 use Alchemy\Phrasea\TaskManager\Job\ArchiveJob;
 use Alchemy\Phrasea\TaskManager\Job\BridgeJob;

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\CacheStatisticsSubscriber;
 use Alchemy\Phrasea\Core\Profiler\CacheDataCollector;
 use Alchemy\Phrasea\Core\Profiler\TraceableCache;

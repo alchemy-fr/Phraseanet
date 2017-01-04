@@ -55,7 +55,16 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    /**
+     * @param Application $app
+     * @param Structure $structure
+     * @param Client $client
+     * @param $indexName
+     * @param QueryContextFactory|null $context_factory
+     * @param Closure $facetsResponseFactory
+     * @param ElasticsearchOptions $options
+     */
+    public function __construct(Application $app, Structure $structure, $client, $context_factory, $facetsResponseFactory, $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -64,11 +73,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
 
-        if ('' === trim($indexName)) {
-            throw new \InvalidArgumentException('The provided index name is invalid.');
-        }
-
-        $this->indexName = $indexName;
+        $this->indexName = $options->getIndexName();
 
     }
 
@@ -368,7 +373,7 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         $params = $this->createCompletionParams($query, $options);
 
@@ -397,7 +402,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
         }
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) dt = %.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true)))), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         return $ret;
     }
