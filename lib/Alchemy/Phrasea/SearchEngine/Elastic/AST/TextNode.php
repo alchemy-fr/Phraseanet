@@ -41,9 +41,11 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
         $query_builder = function (array $fields) use ($context) {
             // Full text
             $index_fields = [];
-            $truncation = $context->hasOptions() && $context->getOptions()->useTruncation();
             foreach (ValueChecker::filterByValueCompatibility($fields, $this->text) as $field) {
-                foreach ($context->localizeField($field, $truncation) as $f) {
+                foreach ($context->localizeField($field) as $f) {
+                    $index_fields[] = $f;
+                }
+                foreach ($context->truncationField($field) as $f) {
                     $index_fields[] = $f;
                 }
             }
