@@ -141,3 +141,10 @@ INA OREO|<text:"INA OREO">
 ARGENT OR (MÉTAUX PRECIEUX)|(<text:"ARGENT"> OR <text:"MÉTAUX PRECIEUX">)
 # ARGENT OR (MÉTAUX PRECIEUX)|<text:"ARGENT OR" context:"MÉTAUX PRECIEUX">
 # ARGENT OR (MÉTAUX PRECIEUX)|(<text:"ARGENT"> AND <text:"OR" context:"MÉTAUX PRECIEUX">)
+
+# Space normalization tests
+(field.date > 2017/01/01 )|<range:field.date gt="2017/01/01">
+(  field.date > 2017/01/01 )|<range:field.date gt="2017/01/01">
+(  field.date > " 2017/01/01" )|<range:field.date gt=" 2017/01/01">
+(  field.date > "2017/01/01 " )|<range:field.date gt="2017/01/01 ">
+(  field.date > " 2017/01/01 " )|<range:field.date gt=" 2017/01/01 ">
