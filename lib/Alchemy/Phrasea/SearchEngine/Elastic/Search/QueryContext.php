@@ -57,16 +57,6 @@ class QueryContext
         return new static($this->options, $this->structure, $this->locales, $this->queryLocale, $fields);
     }
 
-    public function hasOptions()
-    {
-        return $this->options !== null;
-    }
-
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
     public function getUnrestrictedFields()
     {
         // TODO Restore search optimization by using "caption_all" field
@@ -119,18 +109,28 @@ class QueryContext
     /**
      * @todo Maybe we should put this logic in Field class?
      */
-    public function localizeField(Field $field, $includeTruncated)
+    public function localizeField(Field $field)
     {
         $index_field = $field->getIndexField();
 
         if ($field->getType() === FieldMapping::TYPE_STRING) {
-            return $this->localizeFieldName($index_field, $includeTruncated);
+            return $this->localizeFieldName($index_field);
         } else {
             return [$index_field];
         }
     }
 
-    private function localizeFieldName($field, $includeTruncated)
+    public function truncationField(Field $field)
+    {
+        if($this->options && $this->options->useTruncation()) {
+            return [sprintf('%s.truncated', $field->getIndexField())];
+        }
+        else {
+            return [];
+        }
+    }
+
+    private function localizeFieldName($field)
     {
         $fields = array();
         foreach ($this->locales as $locale) {
@@ -140,9 +140,6 @@ class QueryContext
 
         // TODO Put generic analyzers on main field instead of "light" sub-field
         $fields[] = sprintf('%s.light^10', $field);
-        if($includeTruncated) {
-            $fields[] = sprintf('%s.truncated', $field);
-        }
 
         return $fields;
     }
