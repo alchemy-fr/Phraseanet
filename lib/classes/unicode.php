@@ -1628,28 +1628,16 @@ class unicode
 
     public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)
     {
-        $regexp = '/[a-zA-Z0-9';
-        if ($keep_minus === true) {
-            $regexp .= '-';
-        }
-        if ($keep_underscores === true) {
-            $regexp .= '_';
-        }
-        if ($keep_dot === true) {
-            $regexp .= '\.';
-        }
-
-        $regexp .= ']{1}/';
-
         $string = $this->remove_diacritics($string);
 
         $out = '';
-
         $l = mb_strlen($string);
         for ($i = 0; $i < $l; $i ++) {
             $c = mb_substr($string, $i, 1);
-            if (preg_match($regexp, $c))
+            if(($c>='a'&&$c<='z')||($c>='A'&&$c<='Z')||($c>='0'&&$c<='9')
+                        ||($keep_underscores&&$c=='_')||($keep_dot&&$c=='.')||($keep_minus&&$c=='-')) {
                 $out .= $c;
+            }
         }
 
         return $out;
