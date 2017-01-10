@@ -486,7 +486,7 @@ class set_export extends set_abstract
             }
 
             // cleanup the exportname so it can be used as a filename (even if it came from the originale_name)
-            $export_name = str_replace([' ', '\t', '\r', '\n'], '_', $export_name);
+            $export_name = str_replace([' ', "\t", "\r", "\n"], '_', $export_name);
             $export_name = $unicode->remove_nonazAZ09($export_name, true, true, true);
             // really no luck if nothing left ?
             if($export_name == '') {
