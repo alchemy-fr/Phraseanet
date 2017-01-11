@@ -7,7 +7,7 @@ general:
 
 machine:
   php:
-    version: 5.5.21
+    version: 5.5.31
   node:
     version: 0.12.0
   services:
@@ -23,8 +23,11 @@ dependencies:
   pre:
     - yes '' | pecl install imagick
     - pecl install json
+    - sudo apt-get install libzmq-dev
     - yes '' | pecl install zmq-beta
-    - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
+    - echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
+    - sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
   override:
     - composer install --no-progress --no-interaction --optimize-autoloader
   post:
