@@ -7,7 +7,7 @@ general:
 
 machine:
   php:
-    version: 5.5.21
+    version: 5.5.31
   node:
     version: 0.12.0
   services:
