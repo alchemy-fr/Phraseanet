@@ -25,6 +25,7 @@ dependencies:
     - pecl install json
     - sudo apt-get install libzmq-dev
     - yes '' | pecl install zmq-beta
+    - echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
   override:
     - composer install --no-progress --no-interaction --optimize-autoloader
