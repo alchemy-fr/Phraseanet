@@ -281,11 +281,11 @@ class media_subdefTest extends \PhraseanetTestCase
 
         // because rotate may cause round errors we check with +-1?
 
-        $this->assertGreaterThanOrEqual(self::$objectPresent->get_height(), $width_before-1);
-        $this->assertLessThanOrEqual(self::$objectPresent->get_height(), $width_before+1);
+        $this->assertGreaterThanOrEqual($width_before-1, self::$objectPresent->get_height());
+        $this->assertLessThanOrEqual($width_before+1, self::$objectPresent->get_height());
 
-        $this->assertGreaterThanOrEqual(self::$objectPresent->get_width(), $height_before-1);
-        $this->assertLessThanOrEqual(self::$objectPresent->get_width(), $height_before+1);
+        $this->assertGreaterThanOrEqual($height_before-1, self::$objectPresent->get_width());
+        $this->assertLessThanOrEqual($height_before+1, self::$objectPresent->get_width());
     }
 
     /**
