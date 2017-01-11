@@ -279,8 +279,13 @@ class media_subdefTest extends \PhraseanetTestCase
 
         self::$objectPresent->rotate(90, self::$DI['app']['media-alchemyst'], self::$DI['app']['mediavorus']);
 
-        $this->assertEquals($width_before, self::$objectPresent->get_height());
-        $this->assertEquals($height_before, self::$objectPresent->get_width());
+        // because rotate may cause round errors we check with +-1?
+
+        $this->assertGreaterThanOrEqual(self::$objectPresent->get_height(), $width_before-1);
+        $this->assertLessThanOrEqual(self::$objectPresent->get_height(), $width_before+1);
+
+        $this->assertGreaterThanOrEqual(self::$objectPresent->get_width(), $height_before-1);
+        $this->assertLessThanOrEqual(self::$objectPresent->get_width(), $height_before+1);
     }
 
     /**
