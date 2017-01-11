@@ -23,6 +23,7 @@ dependencies:
   pre:
     - yes '' | pecl install imagick
     - pecl install json
+    - sudo install libzmq-dev
     - yes '' | pecl install zmq-beta
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
   override:
