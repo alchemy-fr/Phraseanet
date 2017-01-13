@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -19,6 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\VarDumper\VarDumper;
 
 class Install extends Command
 {
@@ -43,7 +45,9 @@ class Install extends Command
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
-            ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
+            ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', null)
+            ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', null)
+            ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
 
         return $this;
@@ -64,8 +68,8 @@ class Install extends Command
 |  Hello !                                       |      |             |
 |                                                |      |             |
 |  You are on your way to install Phraseanet,    |     ,';\".________.-.
-|  You will need access to 2 MySQL databases.    |     ;';_'         )]
-|                                                |    ;             `-|
+|  You will need access to 2 MySQL databases     |     ;';_'         )]
+|  and an ElasticSearch server.                  |    ;             `-|
 |                                                `.    `T-            |
  `----------------------------------------------._ \    |             |
                                                   `-;   |             |
@@ -98,6 +102,19 @@ class Install extends Command
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
 
+        $output->writeln("\n<info>--- ElasticSearch connection settings ---</info>\n");
+
+        list($esHost, $esPort) = $this->getESHost($input, $output, $dialog);
+        $esIndexName = $this->getESIndexName($input, $output, $dialog);
+
+        $esOptions = ElasticsearchOptions::fromArray([
+            'host' => $esHost,
+            'port' => $esPort,
+            'index' => $esIndexName
+        ]);
+
+        $output->writeln('');
+
         if (!$input->getOption('yes')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
 
@@ -109,6 +126,7 @@ class Install extends Command
         }
 
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
+        $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
@@ -296,6 +314,35 @@ class Install extends Command
         }
 
         return $serverName;
+    }
+
+    private function getESHost(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    {
+        $host = $input->getOption('es-host');
+        $port = (int) $input->getOption('es-port');
+
+        if (! $input->getOption('yes')) {
+            while (! $host) {
+                $host = $dialog->ask($output, 'ElasticSearch server host : ', null);
+            };
+
+            while ($port <= 0 || $port >= 65535) {
+                $port = (int) $dialog->ask($output, 'ElasticSearch server port : ', null);
+            };
+        }
+
+        return [ $host, $port ];
+    }
+
+    private function getESIndexName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    {
+        $index = $input->getOption('es-index');
+
+        if (! $input->getOption('yes')) {
+            $index = $dialog->ask($output, 'ElasticSearch server index name (blank to autogenerate) : ', null);
+        }
+
+        return $index;
     }
 
     private function detectBinaries()
