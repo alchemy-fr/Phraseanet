@@ -75,6 +75,7 @@ php:
         - 'php5.6-mysql'
         - 'php5.6-imagick'
         - 'php5.6-zip'
+        - 'php5.6-sqlite3'
         - 'php-pear'
     pecl_packages:
         - {name: zmq, package: zmq-beta}
