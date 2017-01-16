@@ -73,7 +73,7 @@ php:
         - 'php5.6-memcached'
         - 'php5.6-curl'
         - 'php5.6-mysql'
-        - 'php5.6-sqlite'
+        - 'php5-sqlite'
     pecl_packages:
         - {name: zmq, package: zmq-beta}
 xdebug:
