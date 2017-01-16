@@ -4,6 +4,7 @@ server:
     packages:
         - vim
         - git
+        - zip
         - imagemagick
         - htop
         - iotop
@@ -65,15 +66,16 @@ php:
         - 'php5.6-mcrypt'
         - 'php5.6-enchant'
         - 'php5.6-gd'
-        - 'php-imagick'
         - 'php5.6-memcache'
         - 'php5.6-xml'
         - 'php5.6-xmlrpc'
-        - 'php-pear'
         - 'php5.6-memcached'
+        - 'php5.6-mbstring'
         - 'php5.6-curl'
         - 'php5.6-mysql'
-        - 'php5-sqlite'
+        - 'php5.6-imagick'
+        - 'php5.6-zip'
+        - 'php-pear'
     pecl_packages:
         - {name: zmq, package: zmq-beta}
 xdebug:
