@@ -10,7 +10,7 @@
 - name: Install PHP Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: php.packages
+  with_items: "{{ php.packages }}"
   when: php.packages is defined
 
 - include: configure.yml
