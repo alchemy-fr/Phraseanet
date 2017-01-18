@@ -29,6 +29,8 @@ use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 
 class ACL implements cache_cacheableInterface
@@ -59,6 +61,7 @@ class ACL implements cache_cacheableInterface
     const ORDER_MASTER       = 'order_master';
     const RESTRICT_DWNLD     = 'restrict_dwnld';
 
+    const ADMIN              = 'admin';
     const TASKMANAGER        = 'taskmanager';
 
     protected static $bas_rights = [
@@ -119,11 +122,6 @@ class ACL implements cache_cacheableInterface
      */
     protected $_limited;
 
-    /**
-     * @var bool
-     */
-    protected $is_admin;
-
     protected $_global_rights = [
         self::ACTIF              => false,
         self::CANADDRECORD       => false,
@@ -149,6 +147,7 @@ class ACL implements cache_cacheableInterface
         self::BAS_MODIF_TH       => false,
         self::BAS_MODIFY_STRUCT  => false,
 
+        self::ADMIN              => false,
         self::TASKMANAGER        => false,
     ];
 
@@ -157,7 +156,6 @@ class ACL implements cache_cacheableInterface
      */
     protected $app;
 
-    const CACHE_IS_ADMIN        = 'is_admin';
     const CACHE_RIGHTS_BAS      = 'rights_bas';
     const CACHE_LIMITS_BAS      = 'limits_bas';
     const CACHE_RIGHTS_SBAS     = 'rights_sbas';
@@ -636,7 +634,11 @@ class ACL implements cache_cacheableInterface
      */
     public function has_right($right)
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
         $this->load_global_rights();
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         if (!isset($this->_global_rights[$right])) {
             throw new Exception('This right does not exists');
@@ -776,6 +778,41 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
+     * @return array    baseIds where user can search
+     */
+    public function getSearchableBasesIds()
+    {
+        static $ret = null;
+
+        if($ret === null) {
+            $this->load_rights_bas();
+            foreach ($this->_rights_bas as $baseId => $rights) {
+                if ($this->has_access_to_base($baseId) && !$this->is_limited($baseId)) {
+                    $ret[] = $baseId;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return CollectionReference[]    CollectionsReferences where the user can search;
+     */
+    public function getSearchableBasesReferences()
+    {
+        static $ret = null;
+
+        if($ret == null) {
+            /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+            $dbalCollectionReferenceRepository = $this->app['repo.collection-references'];
+            $ret = $dbalCollectionReferenceRepository->findMany($this->getSearchableBasesIds());
+        }
+
+        return $ret;
+    }
+
+    /**
      * Return an array of databox (key=sbas_id) which are granted, with
      * optionnal filter by rights
      *
@@ -819,7 +856,9 @@ class ACL implements cache_cacheableInterface
 
     public function is_admin()
     {
-        return $this->user->isAdmin();
+        $this->load_global_rights();
+
+        return $this->_global_rights[self::ADMIN];
     }
 
     public function set_admin($boolean)
@@ -829,6 +868,7 @@ class ACL implements cache_cacheableInterface
         } else {
             $this->app['manipulator.user']->demote($this->user);
         }
+        $this->_global_rights[self::ADMIN] = $boolean;
 
         $this->app['dispatcher']->dispatch(
             AclEvents::SYSADMIN_CHANGED,
@@ -899,7 +939,6 @@ class ACL implements cache_cacheableInterface
      */
     protected function load_rights_sbas()
     {
-
         if ($this->_rights_sbas && $this->_global_rights) {
             return $this;
         }
@@ -922,7 +961,10 @@ class ACL implements cache_cacheableInterface
             // no-op
         }
 
-        $sql = "SELECT sbasusr.* FROM sbasusr INNER JOIN sbas USING(sbas_id) WHERE usr_id= :usr_id";
+        $sql = "SELECT u.admin, sbu.* FROM\n"
+                . "(Users AS u INNER JOIN sbasusr AS sbu ON sbu.usr_id=u.id)\n"
+                . " INNER JOIN sbas AS sb USING(sbas_id)\n"
+                . "WHERE u.id= :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -941,6 +983,9 @@ class ACL implements cache_cacheableInterface
             foreach (self::$sbas_rights as $b) {
                 $this->_global_rights[$b] = ($this->_rights_sbas[$sbid][$b] = ($row[$b] == '1')) || $this->_global_rights[$b];
             }
+            // set multiple times but anyway it's faster than a test :
+            $this->_global_rights[self::ADMIN]       = ($row['admin'] == '1');
+            $this->_global_rights[self::TASKMANAGER] = ($row['admin'] == '1');
         }
         $this->set_data_to_cache($this->_rights_sbas, self::CACHE_RIGHTS_SBAS);
         $this->set_data_to_cache($this->_global_rights, self::CACHE_GLOBAL_RIGHTS);
@@ -1034,9 +1079,11 @@ class ACL implements cache_cacheableInterface
      */
     protected function load_global_rights()
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         $this->load_rights_bas();
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         $this->load_rights_sbas();
-        $this->_global_rights[self::TASKMANAGER] = $this->is_admin();
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         return $this;
     }

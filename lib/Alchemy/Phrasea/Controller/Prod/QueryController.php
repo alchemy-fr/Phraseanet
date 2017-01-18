@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 class QueryController extends Controller
 {
@@ -43,7 +44,7 @@ class QueryController extends Controller
         //$engine = $this->app['search_engine'];
         $search_engine_structure = GlobalStructure::createFromDataboxes(
             $this->app->getDataboxes(),
-            Structure::WITH_EVERYTHING - (Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
+            Structure::WITH_EVERYTHING & ~(Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
         );
 
         $query_context_factory = new QueryContextFactory(
@@ -116,14 +117,12 @@ class QueryController extends Controller
                 $userManipulator->setUserSetting($user, 'start_page_query', $query);
             }
 
-            foreach ($options->getDataboxes() as $databox) {
-                $collections = array_map(function (\collection $collection) {
-                    return $collection->get_coll_id();
-                }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                    return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-                }));
-
-                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collections);
+            // log array of collectionIds (from $options) for each databox
+            $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+            foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+                $databox = $this->findDataboxById($sbid);
+                $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collectionsIds);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;
@@ -242,8 +241,10 @@ class QueryController extends Controller
                 'Type_Name' => $this->app->trans('prod::facet:doctype_label'),
             ];
             foreach ($this->app->getDataboxes() as $databox) {
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) databox %s\n", __FILE__, __LINE__, var_export($databox->get_dbname(), true)), FILE_APPEND);
                 foreach ($databox->get_meta_structure() as $field) {
                     if (!isset($fieldLabels[$field->get_name()])) {
+                        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) field %s\n", __FILE__, __LINE__, var_export($field->get_name(), true)), FILE_APPEND);
                         $fieldLabels[$field->get_name()] = $field->get_label($this->app['locale']);
                     }
                 }

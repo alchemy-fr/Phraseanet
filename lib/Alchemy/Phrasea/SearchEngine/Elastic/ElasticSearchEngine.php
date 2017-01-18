@@ -29,6 +29,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Application;
 use Elasticsearch\Client;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -436,13 +437,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
         ];
 
-        $base_ids = array_keys($options->getCollections());
-        if ($this->app->getAuthenticator()->isAuthenticated()) {
-            $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
-
-            $grantedBasesIds = array_keys($acl->get_granted_base([\ACL::ACTIF]));
-            $base_ids = array_intersect($base_ids, $grantedBasesIds);
-        }
+        $base_ids = $options->getBasesIds();
         if (count($base_ids) > 0) {
             $context['base_id'] = $base_ids;
         }
@@ -580,9 +575,9 @@ class ElasticSearchEngine implements SearchEngineInterface
             $filters[]['term']['type'] = $type;
         }
 
-        $collections = $options->getCollections();
-        if (count($collections) > 0) {
-            $filters[]['terms']['base_id'] = array_keys($collections);
+        $bases = $options->getBasesIds();
+        if (count($bases) > 0) {
+            $filters[]['terms']['base_id'] = $bases;
         }
 
         if (count($options->getStatus()) > 0) {
@@ -723,12 +718,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $filters = [];
 
-        $collections = $options->getCollections();
+        $bases = $options->getBasesIds();
 
         $collectionsWoRules = [];
         $collectionsWoRules['terms']['base_id'] = [];
         foreach ($aclRules as $baseId => $flagsRules) {
-            if(!array_key_exists($baseId, $collections)) {
+            if(!in_array($baseId, $bases)) {
                 // no need to add a filter if the collection is not searched
                 continue;
             }

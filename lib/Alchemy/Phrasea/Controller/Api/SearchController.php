@@ -23,6 +23,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 class SearchController extends Controller
 {
@@ -60,15 +61,12 @@ class SearchController extends Controller
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getUserQuery());
 
-        foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
-                return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-            }));
-
-            $this->getSearchEngineLogger()
-                ->log($databox, $result->getUserQuery(), $result->getTotal(), $colls);
+        // log array of collectionIds (from $options) for each databox
+        $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+        foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+            $databox = $this->findDataboxById($sbid);
+            $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+            $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();

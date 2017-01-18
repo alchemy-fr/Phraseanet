@@ -19,6 +19,10 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     /** @var  unicode */
     private $unicode;
 
+    const STRICT_COMPARE = 1;
+    const FUZZY_COMPARE = 2;
+
+
     /**
      * Cache array for the get element by name function
      *
@@ -98,10 +102,11 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
     }
 
     /**
-     * @param  string $name
+     * @param $name
+     * @param int $compareMode      // use STRICT_COMPARE if the name already comes from phrasea (faster)
      * @return databox_field|null
      */
-    public function get_element_by_name($name)
+    public function get_element_by_name($name, $compareMode=self::FUZZY_COMPARE)
     {
         if (null === $this->cache_name_id) {
             $this->cache_name_id = [];
@@ -111,7 +116,9 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
             }
         }
 
-        $name = databox_field::generateName($name, $this->unicode);
+        if($compareMode == self::FUZZY_COMPARE) {
+            $name = databox_field::generateName($name, $this->unicode);
+        }
 
         return isset($this->cache_name_id[$name])
             ? $this->elements[$this->cache_name_id[$name]]

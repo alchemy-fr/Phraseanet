@@ -117,6 +117,30 @@ class DbalCollectionRepository implements CollectionRepository
     }
 
     /**
+     * @param int[] $collectionIds
+     * @return \collection|null
+     */
+    public function findManyByCollIds($collectionIds)
+    {
+        $query = self::$selectQuery . ' WHERE coll_id IN (:collectionIds)';
+        $parameters = ['collectionIds' => $collectionIds];
+        $parameterTypes = ['collectionIds' => Connection::PARAM_INT_ARRAY];
+
+        $rows = $this->databoxConnection->fetchAll($query, $parameters, $parameterTypes);
+
+        return $this->collectionFactory->createMany($this->databoxId, $references, $rows);
+
+        $query = self::$selectQuery . ' WHERE coll_id = :collectionId';
+        $row = $this->databoxConnection->fetchAssoc($query, [':collectionId' => $reference->getCollectionId()]);
+
+        if ($row !== false) {
+            return $this->collectionFactory->create($this->databoxId, $reference, $row);
+        }
+
+        return null;
+    }
+
+    /**
      * @param int $databoxId
      * @param int $collectionId
      * @return \collection|null

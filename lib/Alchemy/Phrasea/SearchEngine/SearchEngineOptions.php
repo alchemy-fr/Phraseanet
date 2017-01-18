@@ -15,10 +15,13 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Collection\CollectionRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use databox_descriptionStructure;
 
 class SearchEngineOptions
 {
@@ -38,10 +41,60 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
+    /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+    private $collectionReferenceRepository;
+
+    /** @var string */
+    protected $record_type = self::TYPE_ALL;
+
+    protected $search_type =  self::RECORD_RECORD;
+
+    /** @var null|int[]  bases ids where searching is done */
+    private $basesIds = null;
+
+    /** @var  null|CollectionReference[][] */
+    private $collectionsReferencesByDatabox = null;
+
+    /** @var null|\int[] */
+    private $databoxesIds;
+    /** @var \databox_field[] */
+
+    protected $fields = [];
+    protected $status = [];
+    /** @var \DateTime */
+    protected $date_min;
+    /** @var \DateTime */
+    protected $date_max;
+    protected $date_fields = [];
+    /** @var string */
+    protected $i18n;
+    /** @var bool */
+    protected $stemming = true;
+    /** @var bool */
+    protected $use_truncation = false;
+    /** @var string */
+    protected $sort_by;
+
+    /** @var string */
+    protected $sort_ord = self::SORT_MODE_DESC;
+
+    /** @var int[] */
+    protected $business_fields = [];
+
+    /**
+     * @var int
+     */
+    private $max_results = 10;
+
+    /**
+     * @var int
+     */
+    private $first_result = 0;
+
     private static $serializable_properties = [
         'record_type',
         'search_type',
-        'collections',
+        'basesIds',
         'fields',
         'status',
         'date_min',
@@ -118,8 +171,8 @@ class SearchEngineOptions
             'fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
                 $options->setFields($fieldNormalizer($value));
             },
-            'collections' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
-                $options->onCollections($collectionNormalizer($value));
+            'basessIds' => function ($value, SearchEngineOptions $options) {
+                $options->onBasesIds($value);
             },
             'business_fields' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
                 $options->allowBusinessFieldsOn($collectionNormalizer($value));
@@ -128,45 +181,6 @@ class SearchEngineOptions
             'max_results' => $optionSetter('setMaxResults'),
         ];
     }
-
-    /** @var string */
-    protected $record_type = self::TYPE_ALL;
-
-    protected $search_type =  self::RECORD_RECORD;
-    /** @var \collection[] */
-    protected $collections = [];
-    /** @var null|\databox[] */
-    private $databoxes;
-    /** @var \databox_field[] */
-    protected $fields = [];
-    protected $status = [];
-    /** @var \DateTime */
-    protected $date_min;
-    /** @var \DateTime */
-    protected $date_max;
-    protected $date_fields = [];
-    /** @var string */
-    protected $i18n;
-    /** @var bool */
-    protected $stemming = true;
-    /** @var bool */
-    protected $use_truncation = false;
-    /** @var string */
-    protected $sort_by;
-
-    /** @var string */
-    protected $sort_ord = self::SORT_MODE_DESC;
-    protected $business_fields = [];
-
-    /**
-     * @var int
-     */
-    private $max_results = 10;
-
-    /**
-     * @var int
-     */
-    private $first_result = 0;
 
     /**
      * Defines locale code to use for query
@@ -209,14 +223,14 @@ class SearchEngineOptions
     }
 
     /**
-     * Allows business fields query on the given collections
+     * Allows business fields query on the given bases
      *
-     * @param \collection[] $collection An array of collection
+     * @param int[] $basesIds
      * @return $this
      */
-    public function allowBusinessFieldsOn(array $collection)
+    public function allowBusinessFieldsOn(array $basesIds)
     {
-        $this->business_fields = $collection;
+        $this->business_fields = $basesIds;
 
         return $this;
     }
@@ -234,10 +248,10 @@ class SearchEngineOptions
     }
 
     /**
-     * Returns an array of collection on which business fields are allowed to
+     * Returns an array of bases ids on which business fields are allowed to
      * search on
      *
-     * @return \collection[] An array of collection
+     * @return int[]
      */
     public function getBusinessFieldsOn()
     {
@@ -343,48 +357,33 @@ class SearchEngineOptions
     }
 
     /**
-     * Set the collections where to search for
+     * Set the bases where to search for
      *
-     * @param  \collection[] $collections An array of collection
+     * @param  int[] $basesIds An array of ids
      * @return $this
      */
-    public function onCollections(array $collections)
+    public function onBasesIds(array $basesIds)
     {
-        $this->collections = $collections;
+        $this->basesIds = $basesIds;
+
         // Defer databox retrieval
-        $this->databoxes = null;
+        $this->databoxesIds = null;
 
         return $this;
     }
 
     /**
-     * Returns the collections on which the search occurs
+     * Returns the bases ids on which the search occurs
      *
-     * @return \collection[] An array of collection
+     * @return int[]
      */
-    public function getCollections()
+    public function getBasesIds()
     {
-        return $this->collections;
-    }
-
-    /**
-     * Returns an array containing all the databoxes where the search will
-     * happen
-     *
-     * @return \databox[]
-     */
-    public function getDataboxes()
-    {
-        if (null === $this->databoxes) {
-            $databoxes = [];
-            foreach ($this->collections as $collection) {
-                $databoxes[$collection->get_databox()->get_sbas_id()] = $collection->get_databox();
-            }
-
-            $this->databoxes = array_values($databoxes);
+        if($this->basesIds === null) {
+            throw new \LogicException('onBasesIds() must be called before getBasesIds()');
         }
 
-        return $this->databoxes;
+        return $this->basesIds;
     }
 
     /**
@@ -534,7 +533,7 @@ class SearchEngineOptions
                     return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
                 }, $value);
             }
-            if (in_array($key, ['collections', 'business_fields'])) {
+            if ($key == 'business_fields') {
                 $value = array_map(function (\collection $collection) {
                     return $collection->get_base_id();
                 }, $value);
@@ -616,7 +615,22 @@ class SearchEngineOptions
     public static function fromRequest(Application $app, Request $request)
     {
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
+        /** @var Authenticator $authenticator */
+        $authenticator = $app->getAuthenticator();
+        $isAuthenticated = $authenticator->isAuthenticated();
+
+        /** @var ACLProvider $aclProvider */
+        $aclProvider = $app['acl'];
+        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
+        if (!$acl) {
+            throw new BadRequestHttpException('Not authentified');
+        }
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         $options = new static();
+
+        $options->collectionReferenceRepository = $app['repo.collection-references'];
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
@@ -641,78 +655,56 @@ class SearchEngineOptions
 
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
-        /** @var Authenticator $authenticator */
-        $authenticator = $app->getAuthenticator();
-        $isAuthenticated = $authenticator->isAuthenticated();
-        /** @var ACLProvider $aclProvider */
-        $aclProvider = $app['acl'];
-        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
+        $searchableBaseIds = $acl->getSearchableBasesIds();
 
         $selected_bases = $request->get('bases');
         if (is_array($selected_bases)) {
             file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
-            $bas = [];
-            foreach ($selected_bases as $bas_id) {
-                try {
-                    $bas[$bas_id] = \collection::getByBaseId($app, $bas_id);
-                } catch (\Exception_Databox_CollectionNotFound $e) {
-                    // Ignore
-                }
-            }
-        } elseif (!$isAuthenticated) {
+            $searchableBaseIds = array_intersect($searchableBaseIds, $selected_bases);
+
             file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
-            $bas = $app->getOpenCollections();
         } else {
             file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
-            $bas = $acl->get_granted_base();
         }
 
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-        // Filter out not found collections
-        $bas = array_filter($bas);
 
-        if ($acl) {
-            $filter = function (\collection $collection) use ($acl) {
-                return $acl->has_access_to_base($collection->get_base_id());
-            };
-        } else {
-            $openCollections = $app->getOpenCollections();
-
-            $filter = function (\collection $collection) use ($openCollections) {
-                return in_array($collection, $openCollections);
-            };
-        }
-
-        /** @var \collection[] $bas */
-        $bas = array_filter($bas, $filter);
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
-        if (!empty($selected_bases) && empty($bas)) {
+        if (empty($searchableBaseIds)) {
             throw new BadRequestHttpException('No collections match your criteria');
         }
 
-        $options->onCollections($bas);
+        $options->onBasesIds($searchableBaseIds);
 
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-        if ($isAuthenticated && $acl->has_right(\ACL::CANMODIFRECORD)) {
-            $bf = array_filter($bas, function (\collection $collection) use ($acl) {
-                return $acl->has_right_on_base($collection->get_base_id(), \ACL::CANMODIFRECORD);
+
+        if ($acl->has_right(\ACL::CANMODIFRECORD)) {
+
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
+            /** @var int[] $bf */
+            $bf = array_filter($searchableBaseIds, function ($baseId) use ($acl) {
+                return $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD);
             });
 
             $options->allowBusinessFieldsOn($bf);
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
         /** @var \databox[] $databoxes */
-        $databoxes = $options->getDataboxes();
+        $databoxes = [];
+        foreach($options->getCollectionsReferencesByDatabox() as $sbid=>$refs) {
+            $databoxes[] = $app->findDataboxById($sbid);
+        }
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         $queryFields = is_array($request->get('fields')) ? $request->get('fields') : [];
         if (empty($queryFields)) {
             // Select all fields (business included)
-             foreach ($databoxes as $databox) {
+            foreach ($databoxes as $databox) {
                 foreach ($databox->get_meta_structure() as $field) {
                     $queryFields[] = $field->get_name();
                 }
@@ -728,27 +720,36 @@ class SearchEngineOptions
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         foreach ($databoxes as $databox) {
+
             file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             $metaStructure = $databox->get_meta_structure();
+
             file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             foreach ($queryFields as $fieldName) {
                 try {
-                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName)) ) {
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName, databox_descriptionStructure::STRICT_COMPARE)) ) {
                         $databoxFields[] = $databoxField;
                     }
                 } catch (\Exception $e) {
                     // no-op
                 }
             }
+
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+
             foreach ($queryDateFields as $fieldName) {
                 try {
-                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName)) ) {
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName, databox_descriptionStructure::STRICT_COMPARE)) ) {
                         $databoxDateFields[] = $databoxField;
                     }
                 } catch (\Exception $e) {
                     // no-op
                 }
             }
+
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         }
 
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
@@ -759,6 +760,31 @@ class SearchEngineOptions
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
 
         return $options;
+    }
+
+    /**
+     * @deprecated
+     */
+    public function dead_getCollectionsRefences()
+    {
+
+    }
+
+    public function getCollectionsReferencesByDatabox()
+    {
+        if($this->collectionsReferencesByDatabox === null) {
+            $this->collectionsReferencesByDatabox = [];
+            $refs = $this->collectionReferenceRepository->findMany($this->getBasesIds());
+            foreach($refs as $ref) {
+                $sbid = $ref->getDataboxId();
+                if(!array_key_exists($sbid, $this->collectionsReferencesByDatabox)) {
+                    $this->collectionsReferencesByDatabox[$sbid] = [];
+                }
+                $this->collectionsReferencesByDatabox[$sbid][] = $ref;
+            }
+        }
+
+        return $this->collectionsReferencesByDatabox;
     }
 
     public function setMaxResults($max_results)

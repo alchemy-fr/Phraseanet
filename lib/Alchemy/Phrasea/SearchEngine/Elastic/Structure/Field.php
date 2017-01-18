@@ -47,7 +47,6 @@ class Field implements Typed
 
     public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
     {
-//        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) with=0x%2X\n", __FILE__, __LINE__, $with), FILE_APPEND);
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
