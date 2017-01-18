@@ -30,9 +30,9 @@ class DataboxFieldFactory
      * @param array $raw
      * @return databox_field
      */
-    public function create(array $raw)
+    public function create(array $row)
     {
-        return new databox_field($this->app, $this->databox, $raw);
+        return new databox_field($this->app, $this->databox, $row);
     }
 
     /**
@@ -44,8 +44,8 @@ class DataboxFieldFactory
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
         $instances = [];
 
-        foreach ($rows as $index => $raw) {
-            $instances[$index] = new databox_field($this->app, $this->databox, $raw);
+        foreach ($rows as $index => $row) {
+            $instances[$index] = new databox_field($this->app, $this->databox, $row);
         }
 
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);

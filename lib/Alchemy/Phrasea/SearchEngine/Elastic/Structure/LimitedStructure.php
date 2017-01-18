@@ -138,10 +138,6 @@ final class LimitedStructure implements Structure
     private function allowedCollections()
     {
         // Get all collections (base_id) with allowed private field access (user rights are computed in options object)
-        $allowed_collections = [];
-        foreach ($this->search_options->getBusinessFieldsOn() as $collection) {
-            $allowed_collections[] = $collection->get_base_id();
-        }
-        return $allowed_collections;
+        return $this->search_options->getBusinessFieldsOn();
     }
 }

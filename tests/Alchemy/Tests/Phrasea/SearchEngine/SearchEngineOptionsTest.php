@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 /**
  * @group functional
@@ -19,12 +20,12 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
     {
         /** @var Application $app */
         $app = self::$DI['app'];
-        /** @var \collection $collection */
-        $collection = self::$DI['collection'];
-        $collections[$collection->get_base_id()] = $collection;
+
+        $collection = $this->getCollection();
+        $collections = [$this->getCollectionReference()];
 
         $options = new SearchEngineOptions($app);
-        $options->onCollections($collections);
+        $options->onCollectionsReferences($collections);
         $options->setRecordType(SearchEngineOptions::TYPE_ALL);
         $options->setSearchType(SearchEngineOptions::RECORD_RECORD);
         $options->allowBusinessFieldsOn($collections);
@@ -57,6 +58,8 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         $app = self::$DI['app'];
         $this->authenticate($app);
 
+        /** @var \collection $collection */
+        $collection = self::$DI['collection'];
         foreach ($this->provideRequestData() as $pack) {
             list ($query, $request, $field, $dateField) = $pack;
 
@@ -65,9 +68,10 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
             $options = SearchEngineOptions::fromRequest($app, $httpRequest);
 
             // Check done this way because returned array can be indexed differently
-            $collections = $options->getCollections();
-            $this->assertCount(1, $collections);
-            $this->assertContains(self::$DI['collection'], $collections);
+            $collectionsReferences = $options->getCollectionsRefences();
+            $this->assertCount(1, $collectionsReferences);
+            $collRef = $collectionsReferences[0];
+            $this->assertEquals($collection->get_base_id(), $collRef->getBaseId());
             $this->assertEquals([$field], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());
@@ -99,7 +103,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
 
-            $this->assertEquals([], $options->getCollections());
+            $this->assertEquals([], $options->getCollectionsRefences());
             $this->assertEquals([], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());
@@ -119,7 +123,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
     {
         $options = SearchEngineOptions::fromRequest(self::$DI['app'], new Request());
 
-        $this->assertEquals([], $options->getCollections());
+        $this->assertEquals([], $options->getCollectionsRefences());
         $this->assertEquals([], $options->getFields());
         $this->assertEquals(null, $options->getRecordType());
         $this->assertEquals('0', $options->getSearchType());

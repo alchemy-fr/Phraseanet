@@ -94,6 +94,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 class V1Controller extends Controller
 {
@@ -1499,15 +1500,12 @@ class V1Controller extends Controller
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getUserQuery());
 
-        foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
-                return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-            }));
-
-            $this->getSearchEngineLogger()
-                ->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $colls);
+        // log array of collectionIds (from $options) for each databox
+        $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+        foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+            $databox = $this->findDataboxById($sbid);
+            $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+            $this->getSearchEngineLogger()->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();
