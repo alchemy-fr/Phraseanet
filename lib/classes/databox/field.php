@@ -144,8 +144,6 @@ class databox_field implements cache_cacheableInterface
      */
     protected function loadFromRow(array $row)
     {
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
         $this->id = (int)$row['id'];
         $this->name = $row['name'];
         $this->original_src = $row['src'];
@@ -425,7 +423,6 @@ class databox_field implements cache_cacheableInterface
     public function set_label($code, $value)
     {
         if (!array_key_exists($code, $this->labels)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "OUCH !!!"), FILE_APPEND);
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
@@ -446,8 +443,6 @@ class databox_field implements cache_cacheableInterface
     public function get_label($code)
     {
         if (!array_key_exists($code, $this->labels)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "OUCH !!!"), FILE_APPEND);
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true)), FILE_APPEND);
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 

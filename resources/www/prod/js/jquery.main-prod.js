@@ -388,7 +388,6 @@ function search_doubles() {
 }
 
 function newSearch(query) {
-    alert("efzefzef");
     p4.Results.Selection.empty();
 
     clearAnswers();
@@ -1531,13 +1530,15 @@ $(document).ready(function () {
     });
 
     $("#EDIT_query").autocomplete({
+        delay: 200,
         minLength: 2,
-        //    appendTo: "#idEditZone",
         source: function (request, response) {
-
-            var data={};
+            var inp = document.getElementById("EDIT_query");
+            var data={
+                '_selectionStart': inp.selectionStart,
+                '_selectionEnd':   inp.selectionEnd
+            };
             var a = $("#searchForm").serializeArray();
-            // console.log(a);
             for(var i=0; i<a.length; i++) {
                 var k = a[i].name;
                 var v = a[i].value;
@@ -1551,27 +1552,21 @@ $(document).ready(function () {
                     data[k] = v;
                 }
             }
-            // console.log(data);
-            //console.log($.param($("#searchForm").serializeArray(), false));
-            //console.log($.param($("#searchForm").serializeArray(), true));
-            // var data = $.param($("#searchForm").serializeArray());
-
-            data.qry = data.fake_qry;
             $.ajax({
                 url: '/prod/query/completion/',
                 dataType: "json",
                 method: "post",
                 data: data,
                 success: function (data) {
-                    console.log(data);
-                    // response(data.results);
                     response(data);
                 }
             });
         },
+        focus: function(event, ui) {
+            event.preventDefault();
+        },
         select: function (event, ui) {
-
-            console.log(ui.item.label, ui.item.id);
+            $("#EDIT_query").val(ui.item.value.completed);
 
             return false;
         }
