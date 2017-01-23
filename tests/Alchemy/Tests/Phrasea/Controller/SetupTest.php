@@ -160,6 +160,15 @@ class SetupTest extends \PhraseanetWebTestCase
             'db_name'           => $dbName,
             'db_template'       => 'en',
             'create_task'       => array(),
+            'elasticsearch_settings' => [
+                'host'          => 'localhost',
+                'port'          => '9200',
+                'index'         => 'phrasea_test',
+                'shards'        => 3,
+                'replicas'      => 0,
+                'min_score'     => 4,
+                'highlight'     => true
+            ]
         );
 
         $client->request('POST', '/setup/installer/install/', $params);
