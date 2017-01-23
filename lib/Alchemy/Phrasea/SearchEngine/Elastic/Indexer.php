@@ -155,7 +155,7 @@ class Indexer
         $this->client->indices()->optimize($params);
 
         $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+        //printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
     }
 
     public function migrateMappingForDatabox($databox)

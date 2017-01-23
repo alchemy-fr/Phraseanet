@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Command;
 
 use Alchemy\Phrasea\Command\CheckConfig;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * @group functional

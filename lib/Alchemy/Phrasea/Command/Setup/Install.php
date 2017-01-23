@@ -102,7 +102,9 @@ class Install extends Command
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
 
-        $output->writeln("\n<info>--- ElasticSearch connection settings ---</info>\n");
+        if (! $input->getOption('yes')) {
+            $output->writeln("\n<info>--- ElasticSearch connection settings ---</info>\n");
+        }
 
         list($esHost, $esPort) = $this->getESHost($input, $output, $dialog);
         $esIndexName = $this->getESIndexName($input, $output, $dialog);
