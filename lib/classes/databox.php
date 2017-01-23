@@ -37,10 +37,6 @@ use Alchemy\Phrasea\Core\Event\Databox\ThesaurusChangedEvent;
 use Alchemy\Phrasea\Core\Event\Databox\TouChangedEvent;
 use Alchemy\Phrasea\Core\Event\Databox\UnmountedEvent;
 
-use Alchemy\Phrasea\Databox\Field\DbalDataboxFieldRepository;
-use Alchemy\Phrasea\Databox\Field\DataboxLightFieldFactory;
-
-
 class databox extends base implements ThumbnailedElement
 {
 
@@ -616,7 +612,6 @@ class databox extends base implements ThumbnailedElement
     public function get_label($code, $substitute = true)
     {
         if (!array_key_exists($code, $this->labels)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "OUCH !!!"), FILE_APPEND);
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
@@ -660,7 +655,6 @@ class databox extends base implements ThumbnailedElement
     public function set_label($code, $label)
     {
         if (!array_key_exists($code, $this->labels)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "OUCH !!!"), FILE_APPEND);
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
@@ -684,10 +678,8 @@ class databox extends base implements ThumbnailedElement
      */
     public function getStatusStructure()
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
         /** @var StatusStructureFactory $structureFactory */
         $structureFactory = $this->app['factory.status-structure'];
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         return $structureFactory->getStructure($this);
     }
@@ -890,20 +882,9 @@ class databox extends base implements ThumbnailedElement
             return $this->meta_struct;
         }
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
         /** @var \Alchemy\Phrasea\Databox\Field\DataboxFieldRepository $fieldRepository */
         $fieldRepository = $this->app['repo.fields.factory']($this);
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
-        $zz = $fieldRepository->findAll();
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
-
-        $this->meta_struct = new databox_descriptionStructure($zz, $this->app['unicode']);
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_']) ? $GLOBALS['_t_'] : ($GLOBALS['_t_'] = microtime(true))), min((isset($GLOBALS['_t0_']) ? microtime(true) - $GLOBALS['_t0_'] : 0), $GLOBALS['_t0_'] = microtime(true))), FILE_APPEND);
+        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll(), $this->app['unicode']);
 
         return $this->meta_struct;
     }

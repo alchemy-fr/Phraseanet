@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use unicode;
 
 class QueryController extends Controller
 {
@@ -31,17 +32,39 @@ class QueryController extends Controller
 
     public function completion(Request $request)
     {
-        $query = (string) $request->request->get('qry');
+        /** @var unicode $unicode */
+        $query = (string) $request->request->get('fake_qry');
+        $selStart = (int) $request->request->get('_selectionStart');
+        $selEnd   = (int) $request->request->get('_selectionEnd');
+
+        // move the selection back to find the begining of the "word"
+        for(;;) {
+            $c = '';
+            if($selStart>0) {
+                $c = mb_substr($query, $selStart-1, 1);
+            }
+            if(in_array($c, ['', ' ', '"'])) {
+                break;
+            }
+            $selStart--;
+        }
+
+        // move the selection up to find the end of the "word"
+        for(;;) {
+            $c = mb_substr($query, $selEnd, 1);
+            if(in_array($c, ['', ' ', '"'])) {
+                break;
+            }
+            $selEnd++;
+        }
+        $before = mb_substr($query, 0, $selStart);
+        $word = mb_substr($query, $selStart, $selEnd-$selStart);
+        $after = mb_substr($query, $selEnd);
 
         // since the query comes from a submited form, normalize crlf,cr,lf ...
-        $query = StringHelper::crlfNormalize($query);
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
-
+        $word = StringHelper::crlfNormalize($word);
         $options = SearchEngineOptions::fromRequest($this->app, $request);
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
-        //$engine = $this->getSearchEngine();
-        //$engine = $this->app['search_engine'];
         $search_engine_structure = GlobalStructure::createFromDataboxes(
             $this->app->getDataboxes(),
             Structure::WITH_EVERYTHING & ~(Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
@@ -62,15 +85,37 @@ class QueryController extends Controller
             $this->app['elasticsearch.options']
         );
 
+        $autocomplete = $engine->autocomplete($word, $options);
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
+        $completions = [];
+        foreach($autocomplete['text'] as $text) {
+            $completions[] = [
+                'label' => $text,
+                'value' => [
+                    'before' => $before,
+                    'word' => $word,
+                    'after' => $after,
+                    'completion' => $text,
+                    'completed' => $before . $text . $after
+                ]
+            ];
+        }
+        foreach($autocomplete['byField'] as $fieldName=>$values) {
+            foreach($values as $value) {
+                $completions[] = [
+                    'label' => $value['query'],
+                    'value' => [
+                        'before' => $before,
+                        'word' => $word,
+                        'after' => $after,
+                        'completion' => $value['query'],
+                        'completed' => $before . $value['query'] . $after
+                    ]
+                ];
+            }
+        }
 
-        $autocomplete = $engine->autocomplete($query, $options);
-        $ret = $autocomplete['text'];
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
-
-        return $this->app->json($ret);
+        return $this->app->json($completions);
     }
 
     /**
@@ -241,10 +286,8 @@ class QueryController extends Controller
                 'Type_Name' => $this->app->trans('prod::facet:doctype_label'),
             ];
             foreach ($this->app->getDataboxes() as $databox) {
-                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) databox %s\n", __FILE__, __LINE__, var_export($databox->get_dbname(), true)), FILE_APPEND);
                 foreach ($databox->get_meta_structure() as $field) {
                     if (!isset($fieldLabels[$field->get_name()])) {
-                        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) field %s\n", __FILE__, __LINE__, var_export($field->get_name(), true)), FILE_APPEND);
                         $fieldLabels[$field->get_name()] = $field->get_label($this->app['locale']);
                     }
                 }

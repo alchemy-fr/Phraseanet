@@ -157,7 +157,6 @@ EOT;
     public function getLabel($lang, $substitute = true)
     {
         if (!array_key_exists($lang, $this->labels)) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "OUCH !!!"), FILE_APPEND);
             throw new \InvalidArgumentException(sprintf('Code %s is not defined', $lang));
         }
 

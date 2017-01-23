@@ -96,7 +96,7 @@ class Indexer
             $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
             $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
         }
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($params, true)), FILE_APPEND);
+
         $this->client->indices()->create($params);
     }
 

@@ -60,6 +60,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
         /** @var \collection $collection */
         $collection = self::$DI['collection'];
+        $sbid = $collection->get_sbas_id();
         foreach ($this->provideRequestData() as $pack) {
             list ($query, $request, $field, $dateField) = $pack;
 
@@ -68,9 +69,10 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
             $options = SearchEngineOptions::fromRequest($app, $httpRequest);
 
             // Check done this way because returned array can be indexed differently
-            $collectionsReferences = $options->getCollectionsRefences();
+            $collectionsReferences = $options->getCollectionsReferencesByDatabox();
             $this->assertCount(1, $collectionsReferences);
-            $collRef = $collectionsReferences[0];
+            $this->assertCount(1, $collectionsReferences[$sbid]);
+            $collRef = $collectionsReferences[$sbid][0];
             $this->assertEquals($collection->get_base_id(), $collRef->getBaseId());
             $this->assertEquals([$field], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
@@ -103,7 +105,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
 
             $options = SearchEngineOptions::fromRequest(self::$DI['app'], $httpRequest);
 
-            $this->assertEquals([], $options->getCollectionsRefences());
+            $this->assertEquals([], $options->getCollectionsReferencesByDatabox());
             $this->assertEquals([], $options->getFields());
             $this->assertEquals('video', $options->getRecordType());
             $this->assertEquals('1', $options->getSearchType());
@@ -123,7 +125,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
     {
         $options = SearchEngineOptions::fromRequest(self::$DI['app'], new Request());
 
-        $this->assertEquals([], $options->getCollectionsRefences());
+        $this->assertEquals([], $options->getCollectionsReferencesByDatabox());
         $this->assertEquals([], $options->getFields());
         $this->assertEquals(null, $options->getRecordType());
         $this->assertEquals('0', $options->getSearchType());

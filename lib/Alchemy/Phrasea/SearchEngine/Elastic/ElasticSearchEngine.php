@@ -314,7 +314,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query['query_main'] = $recordQuery;
         $query['query'] = $params['body'];
         $query['query_string'] = json_encode($params['body']);
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($query['query_string'], true)), FILE_APPEND);
 
         return new SearchEngineResult(
             $options,
@@ -374,8 +373,6 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
-
         $params = $this->createCompletionParams($query, $options);
 
         $res = $this->client->suggest($params);
@@ -402,8 +399,6 @@ class ElasticSearchEngine implements SearchEngineInterface
                 $ret['byField'][$fname] = $t;
             }
         }
-
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Dt=%.4f, dt=%.4f\n", __FILE__, __LINE__, microtime(true) - (isset($GLOBALS['_t_'])?$GLOBALS['_t_']:($GLOBALS['_t_']=microtime(true))), min((isset($GLOBALS['_t0_'])?microtime(true)-$GLOBALS['_t0_']:0), $GLOBALS['_t0_']=microtime(true)) ), FILE_APPEND);
 
         return $ret;
     }
