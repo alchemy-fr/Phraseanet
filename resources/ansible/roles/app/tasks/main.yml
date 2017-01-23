@@ -29,12 +29,23 @@
   args:
     chdir: /vagrant/
 
+- name: Stat source configuration file
+  stat:
+    path: /vagrant/config/configuration-compiled.php
+  register: app_cfg
+
+- name: Stat compiled configuration file
+  stat:
+    path: /vagrant/config/configuration-compiled.php
+  register: app_comp_cfg
+
 - name: Run application setup
   become: yes
   become_user: vagrant
   shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=fr --appbox={{ mariadb.database }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
   args:
     chdir: /vagrant/
+  when: app_cfg.stat.exists == False
 
 - name: Create extra databox
   become: yes
@@ -42,24 +53,30 @@
   shell: 'bin/console databox:create db_alt admin@{{ hostname }}.vb'
   args:
     chdir: /vagrant/
+  when: app_cfg.stat.exists == False
 
 - name: Enable debugger for host IP addresses
-  shell: bin/setup system:config add debugger.allowed-ips "{{ item}}"
+  shell: 'bin/setup system:config add debugger.allowed-ips "{{ item}}"'
   with_items: '{{ host_addresses }}'
   args:
     chdir: /vagrant/
 
 - name: Disable API SSL requirement
-  shell: bin/setup system:config set main.api_require_ssl false
+  shell: 'bin/setup system:config set main.api_require_ssl false'
+  args:
+    chdir: /vagrant/
+
+- name: Compile configuration
+  shell: bin/console compile:configuration
   args:
     chdir: /vagrant/
 
 - name: Enable API routes
-  shell: bin/setup system:config set registry.api-clients.api-enable true
+  shell: 'bin/setup system:config set registry.api-clients.api-enable true'
   args:
     chdir: /vagrant/
 
 - name: Create ElasticSearch indexes
-  shell: bin/console s:i:c
+  shell: 'bin/console searchengine:index:create --drop'
   args:
     chdir: /vagrant/
