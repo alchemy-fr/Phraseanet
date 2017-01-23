@@ -11,6 +11,8 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -32,6 +34,7 @@ class SetupController extends Controller
             'available_locales'      => Application::getAvailableLanguages(),
             'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'requirementsCollection' => $requirementsCollection,
+            'version'                => new Version()
         ]);
     }
 
@@ -62,6 +65,7 @@ class SetupController extends Controller
         $warnings = [];
 
         $requirementsCollection = $this->getRequirementsCollection();
+
         foreach ($requirementsCollection as $requirements) {
             foreach ($requirements->getRequirements() as $requirement) {
                 if (!$requirement->isFulfilled() && !$requirement->isOptional()) {
@@ -102,13 +106,26 @@ class SetupController extends Controller
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
 
+        $elastic_settings = $request->request->get('elasticsearch_settings');
+        $elastic_settings = [
+            'host' => (string) $elastic_settings['host'],
+            'port' => (int) $elastic_settings['port'],
+            'index' => (string) (isset($elastic_settings['index_name']) ? $elastic_settings['index_name'] : ''),
+            'shards' => (int) $elastic_settings['shards'],
+            'replicas' => (int) $elastic_settings['replicas'],
+            'minScore' => (int) $elastic_settings['min_score'],
+            'highlight' => (bool) $elastic_settings['highlight']
+        ];
+
+        $elastic_settings = ElasticsearchOptions::fromArray($elastic_settings);
+
         try {
             $abInfo = [
                 'host'     => $database_host,
                 'port'     => $database_port,
                 'user'     => $database_user,
                 'password' => $database_password,
-                'dbname'   => $appbox_name,
+                'dbname'   => $appbox_name
             ];
 
             /** @var Connection $abConn */
@@ -176,6 +193,8 @@ class SetupController extends Controller
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
+
+            $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 
             return $this->app->redirectPath('admin', [
                 'section' => 'taskmanager',
