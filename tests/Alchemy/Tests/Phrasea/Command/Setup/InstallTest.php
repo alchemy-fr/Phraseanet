@@ -43,43 +43,36 @@ class InstallTest extends \PhraseanetTestCase
                 switch ($option) {
                     case 'appbox':
                         return $infoDb['database']['ab_name'];
-                        break;
                     case 'databox':
                         return $infoDb['database']['db_name'];
-                        break;
                     case 'db-template':
                         return $template;
-                        break;
                     case 'email':
                         return $email;
-                        break;
                     case 'password':
                         return $password;
-                        break;
                     case 'data-path':
                         return $dataPath;
-                        break;
                     case 'server-name':
                         return $serverName;
-                        break;
                     case 'yes':
                         return true;
-                        break;
                     case 'db-host':
                         return $infoDb['database']['host'];
-                        break;
                     case 'db-port':
                         return $infoDb['database']['port'];
-                        break;
                     case 'db-user':
                         return $infoDb['database']['user'];
-                        break;
                     case 'db-password':
                         return $infoDb['database']['password'];
-                        break;
                     case 'yes':
                         return true;
-                        break;
+                    case 'es-host':
+                        return 'localhost';
+                    case 'es-port':
+                        return 9200;
+                    case 'es-index':
+                        return 'phrasea_test';
                     default:
                         return;
                 }
@@ -93,7 +86,7 @@ class InstallTest extends \PhraseanetTestCase
             ->method('install')
             ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
 
-        $command = new Install('system:check');
+        $command = new Install('system:install');
         $command->setHelperSet($helperSet);
         $command->setContainer(self::$DI['cli']);
         $this->assertEquals(0, $command->execute($input, $output));
