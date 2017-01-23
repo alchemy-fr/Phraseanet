@@ -150,6 +150,14 @@ class DataboxService
         }
     }
 
+    /**
+     * @param User $user
+     */
+    public function listDataboxes(User $user = null)
+    {
+
+    }
+
     private function validateDatabaseName($databaseName)
     {
         if (trim($databaseName) == '') {

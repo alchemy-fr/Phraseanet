@@ -66,6 +66,13 @@ class Indexer
      */
     private $index;
 
+    /**
+     * @param Client $client
+     * @param Index $index
+     * @param TermIndexer $termIndexer
+     * @param RecordIndexer $recordIndexer
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         Client $client,
         Index $index,
@@ -155,7 +162,11 @@ class Indexer
         $this->client->indices()->optimize($params);
 
         $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+
+        $this->logger->info(sprintf(
+            "Indexation finished in %s min (Mem. %s Mo)",
+            ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2)
+        ));
     }
 
     public function migrateMappingForDatabox($databox)

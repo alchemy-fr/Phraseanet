@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\Command\PopulateDataboxIndexCommand;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchManagementService;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,53 +21,47 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexPopulateCommand extends Command
 {
+
     protected function configure()
     {
         $this
             ->setName('searchengine:index:populate')
             ->setDescription('Populate search index')
-            ->addOption(
-                'thesaurus',
-                null,
-                InputOption::VALUE_NONE,
-                'Only populate thesaurus data'
-            )
-            ->addOption(
-                'records',
-                null,
-                InputOption::VALUE_NONE,
-                'Only populate record data'
-            )
+            ->addOption('thesaurus', null, InputOption::VALUE_NONE, 'Only populate thesaurus data')
+            ->addOption('records', null, InputOption::VALUE_NONE, 'Only populate record data')
             ->addOption(
                 'databox_id',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'Only populate chosen databox'
-            )
-        ;
+                'Only populate chosen databox(es)',
+                []
+            );
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $what = Indexer::THESAURUS | Indexer::RECORDS;
+        $databoxes = $input->getOption('databox_id');
+        $indexMask = 0;
 
-        if ($thesaurusOnly = $input->getOption('thesaurus')) {
-            $what = Indexer::THESAURUS;
-        }
-        if ($recordsOnly = $input->getOption('records')) {
-            $what = Indexer::RECORDS;
-        }
-        if ($thesaurusOnly && $recordsOnly) {
-            throw new \RuntimeException("Could not provide --thesaurus and --records option at the same time.");
+        if ($input->getOption('thesaurus')) {
+            $indexMask |= Indexer::THESAURUS;
+            $output->writeln('Adding "thesaurus" index to populate operation.');
         }
 
-        $databoxes_id = $input->getOption('databox_id');
-
-        $app = $this->container;
-        foreach($app->getDataboxes() as $databox) {
-            if(!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
-                $this->container['elasticsearch.indexer']->populateIndex($what, $databox);
-            }
+        if ($input->getOption('records')) {
+            $indexMask |= Indexer::RECORDS;
+            $output->writeln('Adding "records" index to populate operation.');
         }
+
+        if ($indexMask == 0) {
+            $indexMask = Indexer::RECORDS | Indexer::THESAURUS;
+            $output->writeln('Add all entities to populate operation.');
+        }
+
+        /** @var ElasticSearchManagementService $managementService */
+        $managementService = $this->container['elasticsearch.management-service'];
+        $managementService->populateIndices(new PopulateDataboxIndexCommand($databoxes, $indexMask));
+
+        $output->writeln('<info>Done</info>');
     }
 }

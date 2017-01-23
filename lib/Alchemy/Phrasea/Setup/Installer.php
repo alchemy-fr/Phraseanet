@@ -32,8 +32,8 @@ class Installer
     public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
-
         $this->createConfigFile($abConn, $serverName, $binaryData, $dataPath);
+
         try {
             $this->createAB($abConn);
             $user = $this->createUser($email, $password);
@@ -142,6 +142,7 @@ class Installer
 
             }
         }
+
         if (null !== $dbConn) {
             foreach ($databox->tables->table as $table) {
                 try {

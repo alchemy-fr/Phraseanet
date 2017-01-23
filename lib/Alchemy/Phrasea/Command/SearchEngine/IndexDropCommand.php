@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchManagementService;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\MissingIndexException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,24 +37,23 @@ class IndexDropCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var ElasticSearchManagementService $managementService */
+        $managementService = $this->container['elasticsearch.management-service'];
 
         $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
-        if ($input->getOption('force')) {
-            $confirmation = true;
-        } else {
-            $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+
+        if (! $input->getOption('force') && !$this->getHelper('dialog')->askConfirmation($output, $question, false)) {
+            $output->writeln('Canceled.');
+
+            return;
         }
 
-        if ($confirmation) {
-            $indexer = $this->container['elasticsearch.indexer'];
-            if ($indexer->indexExists()) {
-                $indexer->deleteIndex();
-                $output->writeln('Search index was dropped');
-            } else {
-                $output->writeln('<error>The index was not dropped because it does not exists</error>');
-            }
-        } else {
-            $output->writeln('Canceled.');
+        try {
+            $managementService->dropIndices();
+            $output->writeln('Search index was dropped');
+        }
+        catch (MissingIndexException $exception) {
+            $output->writeln('<error>The index was not dropped because it does not exists</error>');
         }
     }
 }
