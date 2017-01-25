@@ -2047,7 +2047,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $sql = 'SELECT r.record_id
+        if ($this->app['authentication']->getUser()) {
+            $sql = 'SELECT r.record_id
             FROM regroup g
               INNER JOIN (record r
                 INNER JOIN collusr c
@@ -2060,11 +2061,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ON (g.rid_parent = r.record_id)
             WHERE rid_child = :record_id';
 
-        $params = array(
-            ':GV_site'   => $this->app['phraseanet.configuration']['main']['key']
-            , ':usr_id'    => $this->app['authentication']->getUser()->get_id()
+            $params = array(
+                ':GV_site' => $this->app['phraseanet.configuration']['main']['key']
+            , ':usr_id' => $this->app['authentication']->getUser()->get_id()
             , ':record_id' => $this->get_record_id()
-        );
+            );
+        }
+        else {
+            $sql = "SELECT r.record_id\n"
+                . " FROM regroup g INNER JOIN record r ON (g.rid_parent = r.record_id)\n"
+                . " WHERE r.parent_record_id = 1 AND g.rid_child = :record_id";
+
+            $params = [':record_id' => $this->get_record_id()];
+        }
 
         $stmt = $this->get_databox()->get_connection()->prepare($sql);
         $stmt->execute($params);
