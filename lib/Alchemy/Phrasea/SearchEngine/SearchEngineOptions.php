@@ -465,13 +465,6 @@ class SearchEngineOptions
         $authenticator = $app->getAuthenticator();
         $isAuthenticated = $authenticator->isAuthenticated();
 
-        /** @var ACLProvider $aclProvider */
-        $aclProvider = $app['acl'];
-        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
-        if (!$acl) {
-            throw new BadRequestHttpException('Not authentified');
-        }
-
         $options = new static();
 
         $options->collectionReferenceRepository = $app['repo.collection-references'];
@@ -497,25 +490,30 @@ class SearchEngineOptions
         $status = is_array($request->get('status')) ? $request->get('status') : [];
         $options->setStatus($status);
 
-        $searchableBaseIds = $acl->getSearchableBasesIds();
+        /** @var ACLProvider $aclProvider */
+        $aclProvider = $app['acl'];
+        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
+        if ($acl) {
+            $searchableBaseIds = $acl->getSearchableBasesIds();
+            $selected_bases = $request->get('bases');
+            if (is_array($selected_bases)) {
+                $searchableBaseIds = array_intersect($searchableBaseIds, $selected_bases);
+                if (empty($searchableBaseIds)) {
+                    throw new BadRequestHttpException('No collections match your criteria');
+                }
+            }
+            $options->onBasesIds($searchableBaseIds);
 
-        $selected_bases = $request->get('bases');
-        if (is_array($selected_bases)) {
-            $searchableBaseIds = array_intersect($searchableBaseIds, $selected_bases);
+            if ($acl->has_right(\ACL::CANMODIFRECORD)) {
+                /** @var int[] $bf */
+                $bf = array_filter($searchableBaseIds, function ($baseId) use ($acl) {
+                    return $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD);
+                });
+                $options->allowBusinessFieldsOn($bf);
+            }
         }
-
-        if (empty($searchableBaseIds)) {
-            throw new BadRequestHttpException('No collections match your criteria');
-        }
-
-        $options->onBasesIds($searchableBaseIds);
-
-        if ($acl->has_right(\ACL::CANMODIFRECORD)) {
-            /** @var int[] $bf */
-            $bf = array_filter($searchableBaseIds, function ($baseId) use ($acl) {
-                return $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD);
-            });
-            $options->allowBusinessFieldsOn($bf);
+        else {
+            $options->onBasesIds([]);
         }
 
         /** @var \databox[] $databoxes */

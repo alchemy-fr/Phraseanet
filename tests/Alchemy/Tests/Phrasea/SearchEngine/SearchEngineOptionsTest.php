@@ -22,13 +22,12 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         $app = self::$DI['app'];
 
         $collection = $this->getCollection();
-        $collections = [$this->getCollectionReference()];
 
         $options = new SearchEngineOptions($app);
-        $options->onCollectionsReferences($collections);
+        $options->onBasesIds([$collection->get_base_id()]);
         $options->setRecordType(SearchEngineOptions::TYPE_ALL);
         $options->setSearchType(SearchEngineOptions::RECORD_RECORD);
-        $options->allowBusinessFieldsOn($collections);
+        $options->allowBusinessFieldsOn([$collection->get_base_id()]);
 
         foreach ($collection->get_databox()->get_meta_structure() as $field) {
             $options->setFields([$field]);
