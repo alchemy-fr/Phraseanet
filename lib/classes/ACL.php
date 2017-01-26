@@ -61,7 +61,6 @@ class ACL implements cache_cacheableInterface
     const ORDER_MASTER       = 'order_master';
     const RESTRICT_DWNLD     = 'restrict_dwnld';
 
-    const ADMIN              = 'admin';
     const TASKMANAGER        = 'taskmanager';
 
     protected static $bas_rights = [
@@ -147,7 +146,6 @@ class ACL implements cache_cacheableInterface
         self::BAS_MODIF_TH       => false,
         self::BAS_MODIFY_STRUCT  => false,
 
-        self::ADMIN              => false,
         self::TASKMANAGER        => false,
     ];
 
@@ -852,9 +850,7 @@ class ACL implements cache_cacheableInterface
 
     public function is_admin()
     {
-        $this->load_global_rights();
-
-        return $this->_global_rights[self::ADMIN];
+        return $this->user->isAdmin();
     }
 
     public function set_admin($boolean)
@@ -864,8 +860,6 @@ class ACL implements cache_cacheableInterface
         } else {
             $this->app['manipulator.user']->demote($this->user);
         }
-        $this->_global_rights[self::ADMIN] = $boolean;
-
         $this->app['dispatcher']->dispatch(
             AclEvents::SYSADMIN_CHANGED,
             new SysadminChangedEvent(
@@ -875,7 +869,6 @@ class ACL implements cache_cacheableInterface
                 )
             )
         );
-
         return $this;
     }
 
@@ -957,10 +950,7 @@ class ACL implements cache_cacheableInterface
             // no-op
         }
 
-        $sql = "SELECT u.admin, sbu.* FROM\n"
-                . "(Users AS u INNER JOIN sbasusr AS sbu ON sbu.usr_id=u.id)\n"
-                . " INNER JOIN sbas AS sb USING(sbas_id)\n"
-                . "WHERE u.id= :usr_id";
+        $sql = "SELECT sbasusr.* FROM sbasusr INNER JOIN sbas USING(sbas_id) WHERE usr_id= :usr_id";
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $this->user->getId()]);
@@ -979,9 +969,6 @@ class ACL implements cache_cacheableInterface
             foreach (self::$sbas_rights as $b) {
                 $this->_global_rights[$b] = ($this->_rights_sbas[$sbid][$b] = ($row[$b] == '1')) || $this->_global_rights[$b];
             }
-            // set multiple times but anyway it's faster than a test :
-            $this->_global_rights[self::ADMIN]       = ($row['admin'] == '1');
-            $this->_global_rights[self::TASKMANAGER] = ($row['admin'] == '1');
         }
         $this->set_data_to_cache($this->_rights_sbas, self::CACHE_RIGHTS_SBAS);
         $this->set_data_to_cache($this->_global_rights, self::CACHE_GLOBAL_RIGHTS);
@@ -1077,6 +1064,7 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
         $this->load_rights_sbas();
+        $this->_global_rights[self::TASKMANAGER] = $this->is_admin();
 
         return $this;
     }
@@ -1092,12 +1080,12 @@ class ACL implements cache_cacheableInterface
         switch ($module_name) {
             case 'admin':
                 return (
-                    ($this->has_right(self::BAS_MODIFY_STRUCT) ||
+                    $this->has_right(self::BAS_MODIFY_STRUCT) ||
                     $this->has_right(self::COLL_MODIFY_STRUCT) ||
                     $this->has_right(self::BAS_MANAGE) ||
                     $this->has_right(self::COLL_MANAGE) ||
                     $this->has_right(self::CANADMIN) ||
-                    $this->is_admin()) );
+                    $this->is_admin()) ;
                 break;
             case 'thesaurus':
                 return ($this->has_right(self::BAS_MODIF_TH) === true );
