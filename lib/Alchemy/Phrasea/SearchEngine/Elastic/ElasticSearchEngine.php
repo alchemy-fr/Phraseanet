@@ -29,6 +29,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Application;
 use Elasticsearch\Client;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -55,7 +56,16 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    /**
+     * @param Application $app
+     * @param Structure $structure
+     * @param Client $client
+     * @param $indexName
+     * @param QueryContextFactory|null $context_factory
+     * @param Closure $facetsResponseFactory
+     * @param ElasticsearchOptions $options
+     */
+    public function __construct(Application $app, Structure $structure, $client, $context_factory, $facetsResponseFactory, $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -64,11 +74,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
 
-        if ('' === trim($indexName)) {
-            throw new \InvalidArgumentException('The provided index name is invalid.');
-        }
-
-        $this->indexName = $indexName;
+        $this->indexName = $options->getIndexName();
 
     }
 
@@ -367,7 +373,34 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
+        $params = $this->createCompletionParams($query, $options);
+
+        $res = $this->client->suggest($params);
+
+        $ret = [
+            'text' => [],
+            'byField' => []
+        ];
+        foreach(array_keys($params['body']) as $fname) {
+            $t = [];
+            foreach($res[$fname] as $suggest) {    // don't know why there is a sub-array level
+                foreach($suggest['options'] as $option) {
+                    $text = $option['text'];
+                    if(!in_array($text, $ret['text'])) {
+                        $ret['text'][] = $text;
+                    }
+                    $t[] = [
+                        'label' => $text,
+                        'query' => $fname.':'.$text
+                    ];
+                }
+            }
+            if(!empty($t)) {
+                $ret['byField'][$fname] = $t;
+            }
+        }
+
+        return $ret;
     }
 
     /**
@@ -389,6 +422,40 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function clearAllCache(\DateTime $date = null)
     {
+    }
+
+    private function createCompletionParams($query, SearchEngineOptions $options)
+    {
+        $body = [];
+        $context = [
+            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
+        ];
+
+        $base_ids = $options->getBasesIds();
+        if (count($base_ids) > 0) {
+            $context['base_id'] = $base_ids;
+        }
+
+        $search_context = $this->context_factory->createContext($options);
+        $fields = $search_context->getUnrestrictedFields();
+        foreach($fields as $field) {
+            if($field->getType() == FieldMapping::TYPE_STRING) {
+                $k = '' . $field->getName();
+                $body[$k] = [
+                    'text' => $query,
+                    'completion' => [
+                        'field' => "caption." . $field->getName() . ".suggest",
+                        'context' => &$context
+                    ]
+                ];
+            }
+        }
+
+        return [
+            'index' => $this->indexName,
+            'body'  => $body
+        ];
     }
 
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
@@ -503,9 +570,9 @@ class ElasticSearchEngine implements SearchEngineInterface
             $filters[]['term']['type'] = $type;
         }
 
-        $collections = $options->getCollections();
-        if (count($collections) > 0) {
-            $filters[]['terms']['base_id'] = array_keys($collections);
+        $bases = $options->getBasesIds();
+        if (count($bases) > 0) {
+            $filters[]['terms']['base_id'] = $bases;
         }
 
         if (count($options->getStatus()) > 0) {
@@ -646,12 +713,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $filters = [];
 
-        $collections = $options->getCollections();
+        $bases = $options->getBasesIds();
 
         $collectionsWoRules = [];
         $collectionsWoRules['terms']['base_id'] = [];
         foreach ($aclRules as $baseId => $flagsRules) {
-            if(!array_key_exists($baseId, $collections)) {
+            if(!in_array($baseId, $bases)) {
                 // no need to add a filter if the collection is not searched
                 continue;
             }

@@ -46,20 +46,26 @@ final class GlobalStructure implements Structure
 
     /**
      * @param \databox[] $databoxes
+     * @param int $what     bitmask of what should be included in this structure, in fields, ...
+     *
      * @return GlobalStructure
      */
-    public static function createFromDataboxes(array $databoxes)
+    public static function createFromDataboxes(array $databoxes, $what = self::WITH_EVERYTHING)
     {
         $fields = [];
         $flags = [];
 
         foreach ($databoxes as $databox) {
-            foreach ($databox->get_meta_structure() as $fieldStructure) {
-                $fields[] = Field::createFromLegacyField($fieldStructure);
+            if($what & self::STRUCTURE_WITH_FIELDS) {
+                foreach ($databox->get_meta_structure() as $fieldStructure) {
+                    $fields[] = Field::createFromLegacyField($fieldStructure, $what);
+                }
             }
 
-            foreach ($databox->getStatusStructure() as $status) {
-                $flags[] = Flag::createFromLegacyStatus($status);
+            if($what & self::STRUCTURE_WITH_FLAGS) {
+                foreach ($databox->getStatusStructure() as $status) {
+                    $flags[] = Flag::createFromLegacyStatus($status);
+                }
             }
         }
 

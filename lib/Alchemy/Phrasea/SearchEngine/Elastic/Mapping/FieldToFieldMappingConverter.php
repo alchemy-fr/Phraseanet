@@ -30,6 +30,10 @@ class FieldToFieldMappingConverter
                 $fieldMapping->disableIndexing();
             } else {
                 $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
+
+                $child = new CompletionFieldMapping('suggest');
+                $fieldMapping->addChild($child);
+
                 $fieldMapping->addAnalyzedChildren($locales);
                 $fieldMapping->enableTermVectors(true);
             }

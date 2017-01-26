@@ -14,15 +14,109 @@ use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use unicode;
 
 class QueryController extends Controller
 {
     use SearchEngineAware;
+
+    public function completion(Request $request)
+    {
+        /** @var unicode $unicode */
+        $query = (string) $request->request->get('fake_qry');
+        $selStart = (int) $request->request->get('_selectionStart');
+        $selEnd   = (int) $request->request->get('_selectionEnd');
+
+        // move the selection back to find the begining of the "word"
+        for(;;) {
+            $c = '';
+            if($selStart>0) {
+                $c = mb_substr($query, $selStart-1, 1);
+            }
+            if(in_array($c, ['', ' ', '"'])) {
+                break;
+            }
+            $selStart--;
+        }
+
+        // move the selection up to find the end of the "word"
+        for(;;) {
+            $c = mb_substr($query, $selEnd, 1);
+            if(in_array($c, ['', ' ', '"'])) {
+                break;
+            }
+            $selEnd++;
+        }
+        $before = mb_substr($query, 0, $selStart);
+        $word = mb_substr($query, $selStart, $selEnd-$selStart);
+        $after = mb_substr($query, $selEnd);
+
+        // since the query comes from a submited form, normalize crlf,cr,lf ...
+        $word = StringHelper::crlfNormalize($word);
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
+
+        $search_engine_structure = GlobalStructure::createFromDataboxes(
+            $this->app->getDataboxes(),
+            Structure::WITH_EVERYTHING & ~(Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
+        );
+
+        $query_context_factory = new QueryContextFactory(
+            $search_engine_structure,
+            array_keys($this->app['locales.available']),
+            $this->app['locale']
+        );
+
+        $engine = new ElasticSearchEngine(
+            $this->app,
+            $search_engine_structure,
+            $this->app['elasticsearch.client'],
+            $query_context_factory,
+            $this->app['elasticsearch.facets_response.factory'],
+            $this->app['elasticsearch.options']
+        );
+
+        $autocomplete = $engine->autocomplete($word, $options);
+
+        $completions = [];
+        foreach($autocomplete['text'] as $text) {
+            $completions[] = [
+                'label' => $text,
+                'value' => [
+                    'before' => $before,
+                    'word' => $word,
+                    'after' => $after,
+                    'completion' => $text,
+                    'completed' => $before . $text . $after
+                ]
+            ];
+        }
+        foreach($autocomplete['byField'] as $fieldName=>$values) {
+            foreach($values as $value) {
+                $completions[] = [
+                    'label' => $value['query'],
+                    'value' => [
+                        'before' => $before,
+                        'word' => $word,
+                        'after' => $after,
+                        'completion' => $value['query'],
+                        'completed' => $before . $value['query'] . $after
+                    ]
+                ];
+            }
+        }
+
+        return $this->app->json($completions);
+    }
 
     /**
      * Query Phraseanet to fetch records
@@ -68,14 +162,12 @@ class QueryController extends Controller
                 $userManipulator->setUserSetting($user, 'start_page_query', $query);
             }
 
-            foreach ($options->getDataboxes() as $databox) {
-                $collections = array_map(function (\collection $collection) {
-                    return $collection->get_coll_id();
-                }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                    return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-                }));
-
-                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collections);
+            // log array of collectionIds (from $options) for each databox
+            $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+            foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+                $databox = $this->findDataboxById($sbid);
+                $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collectionsIds);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;

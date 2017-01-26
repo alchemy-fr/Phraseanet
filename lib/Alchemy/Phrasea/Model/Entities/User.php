@@ -677,7 +677,8 @@ class User
     }
 
     /**
-     * @param boolean $admin
+     * @param Boolean $admin
+     * @return $this
      */
     public function setAdmin($admin)
     {

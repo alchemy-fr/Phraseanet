@@ -18,6 +18,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\Routing\RequestContext;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 abstract class PhraseanetTestCase extends WebTestCase
 {
@@ -199,6 +200,12 @@ abstract class PhraseanetTestCase extends WebTestCase
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll']);
         });
 
+        self::$DI['collectionReference'] = self::$DI->share(function ($DI) {
+            /** @var \Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository $repo */
+            $repo = self::$DI['app']['repo.collection-references'];
+            return $repo->find(self::$fixtureIds['collection']['coll']);
+        });
+
         self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
         });
@@ -327,6 +334,14 @@ abstract class PhraseanetTestCase extends WebTestCase
     public function getCollection()
     {
         return self::$DI['collection'];
+    }
+
+    /**
+     * @return CollectionReference
+     */
+    public function getCollectionReference()
+    {
+        return self::$DI['collectionReference'];
     }
 
     public static function tearDownAfterClass()

@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Model\Manager\UserManager;
 use Alchemy\Phrasea\Model\Manipulator\ACLManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;

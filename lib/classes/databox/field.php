@@ -32,7 +32,7 @@ class databox_field implements cache_cacheableInterface
     protected $databox;
 
     /** DO NOT IMPORT, makes PHPSTORM HANG. PHPExiftool\Driver\TagInterface */
-    protected $tag;
+    private $tag;
 
     protected $name;
     protected $indexable;
@@ -79,12 +79,12 @@ class databox_field implements cache_cacheableInterface
     /**
      * @var databox_Field_DCESAbstract|null
      */
-    protected $dces_element;
+    private $dces_element;
 
     /**
      * @var ControlProviderInterface|null
      */
-    protected $Vocabulary;
+    protected $vocabulary_control;
 
     /**
      * @var string|null
@@ -95,8 +95,9 @@ class databox_field implements cache_cacheableInterface
      * @var bool
      */
     protected $VocabularyRestriction = false;
-    protected $on_error = false;
+    private   $on_error = false;
     protected $original_src;
+    protected $original_dces;
     protected $aggregable;
 
     const TYPE_TEXT = "text";
@@ -146,13 +147,12 @@ class databox_field implements cache_cacheableInterface
         $this->id = (int)$row['id'];
         $this->name = $row['name'];
         $this->original_src = $row['src'];
-        $this->tag = in_array($row['src'], ['', 'Phraseanet:no-source'], true)
-            ? new NoSource($this->name)
-            : self::loadClassFromTagName($row['src'], false);
+        $this->original_dces = $row['dces_element'];
 
-        if ($row['src'] !== '' && $row['src'] !== $this->tag->getTagname()) {
-            $this->on_error = true;
-        }
+        $this->tag = false;                  // lazy loaded on this->get_tag(), will become an object
+        $this->dces_element = false;         // loazy loaded on this->get_dces_element(), will become an object or null
+        $this->on_error = false;             // lazy calculated on this->is_on_error()
+        $this->vocabulary_control = false;   // lazy loaded
 
         foreach (['en', 'fr', 'de', 'nl'] as $code) {
             $this->labels[$code] = $row['label_' . $code];
@@ -171,16 +171,17 @@ class databox_field implements cache_cacheableInterface
         $this->VocabularyType = $row['VocabularyControlType'];
         $this->VocabularyRestriction = (bool)$row['RestrictToVocabularyControl'];
 
-        if (isset($row['dces_element'])) {
-            $class = self::$knownDCES[$row['dces_element']];
-            $this->dces_element = new $class();
-        }
-
         $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
 
         $this->thumbtitle = $row['thumbtitle'];
 
-        $this->loadVocabulary();
+        if(0) {
+            // force load, no more lazy
+            $this->tag = $this->get_tag();
+            $this->dces_element = $this->get_dces_element();
+            $this->on_error = $this->is_on_error();
+            $this->loadVocabulary();
+        }
     }
 
     /**
@@ -188,7 +189,12 @@ class databox_field implements cache_cacheableInterface
      */
     public function getVocabularyControl()
     {
-        return $this->Vocabulary;
+        // lazy load
+        if($this->vocabulary_control === false) {
+            $this->loadVocabulary();
+        }
+
+        return $this->vocabulary_control;
     }
 
     /**
@@ -322,7 +328,7 @@ class databox_field implements cache_cacheableInterface
 
         $params = [
             ':name'                  => $this->name,
-            ':source'                => $this->tag->getTagname(),
+            ':source'                => $this->get_tag()->getTagname(),
             ':indexable'             => $this->indexable ? '1' : '0',
             ':readonly'              => $this->readonly ? '1' : '0',
             ':required'              => $this->required ? '1' : '0',
@@ -335,8 +341,8 @@ class databox_field implements cache_cacheableInterface
             ':tbranch'               => $this->tbranch,
             ':position'              => $this->position,
             ':thumbtitle'            => $this->thumbtitle,
-            ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
-            ':RestrictVocab'         => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
+            ':VocabularyControlType' => $this->getVocabularyControl() ? $this->getVocabularyControl()->getType() : null,
+            ':RestrictVocab'         => $this->getVocabularyControl() ? ($this->VocabularyRestriction ? '1' : '0') : '0',
             ':id'                    => $this->id,
             ':label_en'              => isset($this->labels['en']) ? $this->labels['en'] : null,
             ':label_fr'              => isset($this->labels['fr']) ? $this->labels['fr'] : null,
@@ -374,7 +380,7 @@ class databox_field implements cache_cacheableInterface
                 $nodes_parent->item(0)->replaceChild($meta, $old_meta);
             }
         }
-        $meta->setAttribute('src', $this->tag->getTagname());
+        $meta->setAttribute('src', $this->get_tag()->getTagname());
         $meta->setAttribute('index', $this->indexable ? '1' : '0');
         $meta->setAttribute('readonly', $this->readonly ? '1' : '0');
         $meta->setAttribute('required', $this->required ? '1' : '0');
@@ -452,7 +458,7 @@ class databox_field implements cache_cacheableInterface
     {
         $previous_name = $this->name;
 
-        $name = self::generateName($name);
+        $name = self::generateName($name, $this->app['unicode']);
 
         if ($name === '') {
             throw new \Exception_InvalidArgument();
@@ -513,6 +519,13 @@ class databox_field implements cache_cacheableInterface
      */
     public function get_tag()
     {
+        // lazy loading
+        if($this->tag === false) {
+            $this->tag = in_array($this->original_src, ['', 'Phraseanet:no-source'], true)
+                ? new NoSource($this->name)
+                : self::loadClassFromTagName($this->original_src, false);
+        }
+
         return $this->tag;
     }
 
@@ -521,6 +534,17 @@ class databox_field implements cache_cacheableInterface
      */
     public function get_dces_element()
     {
+        // lazy loading
+        if($this->dces_element === false) {
+            if (array_key_exists($this->original_dces, self::$knownDCES)) {
+                $class = self::$knownDCES[$this->original_dces];
+                $this->dces_element = new $class();
+            }
+            else {
+                $this->dces_element = null;
+            }
+        }
+
         return $this->dces_element;
     }
 
@@ -570,9 +594,9 @@ class databox_field implements cache_cacheableInterface
      * @param  ControlProviderInterface $vocabulary
      * @return \databox_field
      */
-    public function setVocabularyControl(ControlProviderInterface $vocabulary = null)
+    public function setVocabularyControl(ControlProviderInterface $vocabulary_control = null)
     {
-        $this->Vocabulary = $vocabulary;
+        $this->vocabulary_control = $vocabulary_control;
 
         return $this;
     }
@@ -852,7 +876,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function is_on_error()
     {
-        return $this->on_error;
+        return $this->original_src !== '' && $this->original_src !== $this->get_tag()->getTagname();
     }
 
     public function toArray()
@@ -862,7 +886,7 @@ class databox_field implements cache_cacheableInterface
             'sbas-id'               => $this->sbas_id,
             'labels'                => $this->labels,
             'name'                  => $this->name,
-            'tag'                   => $this->tag->getTagname(),
+            'tag'                   => $this->get_tag()->getTagname(),
             'business'              => $this->Business,
             'aggregable'            => $this->aggregable,
             'type'                  => $this->type,
@@ -875,8 +899,8 @@ class databox_field implements cache_cacheableInterface
             'readonly'              => $this->readonly,
             'multi'                 => $this->multi,
             'indexable'             => $this->indexable,
-            'dces-element'          => $this->dces_element ? $this->dces_element->get_label() : null,
-            'vocabulary-type'       => $this->Vocabulary ? $this->Vocabulary->getType() : null,
+            'dces-element'          => $this->get_dces_element() ? $this->get_dces_element()->get_label() : null,
+            'vocabulary-type'       => $this->getVocabularyControl() ? $this->getVocabularyControl()->getType() : null,
             'vocabulary-restricted' => $this->VocabularyRestriction,
         ];
     }
@@ -914,7 +938,7 @@ class databox_field implements cache_cacheableInterface
           null, :multi,
           0, 0, 1, :sorter, '')";
 
-        $name = self::generateName($name);
+        $name = self::generateName($name, $app['unicode']);
 
         if ($name === '') {
             throw new \Exception_InvalidArgument();
@@ -932,10 +956,8 @@ class databox_field implements cache_cacheableInterface
         return $databox->get_meta_structure()->get_element($id);
     }
 
-    public static function generateName($name)
+    public static function generateName($name, unicode $unicode_processor)
     {
-        $unicode_processor = new unicode();
-
         $name = $unicode_processor->remove_nonazAZ09($name, false, false);
 
         return $unicode_processor->remove_first_digits($name);
@@ -1010,7 +1032,7 @@ class databox_field implements cache_cacheableInterface
         }
 
         try {
-            $this->Vocabulary = $this->app['vocabularies'][$this->VocabularyType];
+            $this->vocabulary_control = $this->app['vocabularies'][$this->VocabularyType];
         } catch (\InvalidArgumentException $e) {
             // Could not find Vocabulary
         }

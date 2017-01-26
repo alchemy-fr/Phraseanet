@@ -33,7 +33,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
     {
         $wrapped = $this->prophesize(Structure::class);
         $options = $this->prophesize(SearchEngineOptions::class);
-        $options->getBusinessFieldsOn()->willReturn([$this->getCollectionStub(2)]);
+        $options->getBusinessFieldsOn()->willReturn([2]);
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
         $wrapped->get('foo')
@@ -58,10 +58,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
     public function testGetAllFields()
     {
         $options = $this->prophesize(SearchEngineOptions::class);
-        $options->getBusinessFieldsOn()->willReturn([
-            $this->getCollectionStub(1),
-            $this->getCollectionStub(3)
-        ]);
+        $options->getBusinessFieldsOn()->willReturn([1, 3]);
         $wrapped = $this->prophesize(Structure::class);
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
@@ -87,10 +84,4 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         ], $structure->getAllFields());
     }
 
-    private function getCollectionStub($base_id)
-    {
-        $prophecy = $this->prophesize(\collection::class);
-        $prophecy->get_base_id()->willReturn($base_id);
-        return $prophecy->reveal();
-    }
 }

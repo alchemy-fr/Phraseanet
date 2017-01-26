@@ -29,6 +29,8 @@ use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 
 
 class ACL implements cache_cacheableInterface
@@ -776,6 +778,41 @@ class ACL implements cache_cacheableInterface
     }
 
     /**
+     * @return array    baseIds where user can search
+     */
+    public function getSearchableBasesIds()
+    {
+        static $ret = null;
+
+        if($ret === null) {
+            $this->load_rights_bas();
+            foreach ($this->_rights_bas as $baseId => $rights) {
+                if ($this->has_access_to_base($baseId) && !$this->is_limited($baseId)) {
+                    $ret[] = $baseId;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return CollectionReference[]    CollectionsReferences where the user can search;
+     */
+    public function getSearchableBasesReferences()
+    {
+        static $ret = null;
+
+        if($ret == null) {
+            /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+            $dbalCollectionReferenceRepository = $this->app['repo.collection-references'];
+            $ret = $dbalCollectionReferenceRepository->findMany($this->getSearchableBasesIds());
+        }
+
+        return $ret;
+    }
+
+    /**
      * Return an array of databox (key=sbas_id) which are granted, with
      * optionnal filter by rights
      *
@@ -839,7 +876,7 @@ class ACL implements cache_cacheableInterface
                 )
             )
         );
-
+        
         return $this;
     }
 
