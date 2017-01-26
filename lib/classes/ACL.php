@@ -121,6 +121,11 @@ class ACL implements cache_cacheableInterface
      */
     protected $_limited;
 
+    /**
+     * @var bool
+     */
+    protected $is_admin;
+
     protected $_global_rights = [
         self::ACTIF              => false,
         self::CANADDRECORD       => false,
@@ -154,6 +159,7 @@ class ACL implements cache_cacheableInterface
      */
     protected $app;
 
+    const CACHE_IS_ADMIN        = 'is_admin';
     const CACHE_RIGHTS_BAS      = 'rights_bas';
     const CACHE_LIMITS_BAS      = 'limits_bas';
     const CACHE_RIGHTS_SBAS     = 'rights_sbas';
@@ -860,6 +866,7 @@ class ACL implements cache_cacheableInterface
         } else {
             $this->app['manipulator.user']->demote($this->user);
         }
+
         $this->app['dispatcher']->dispatch(
             AclEvents::SYSADMIN_CHANGED,
             new SysadminChangedEvent(
@@ -869,6 +876,7 @@ class ACL implements cache_cacheableInterface
                 )
             )
         );
+        
         return $this;
     }
 
@@ -928,6 +936,7 @@ class ACL implements cache_cacheableInterface
      */
     protected function load_rights_sbas()
     {
+
         if ($this->_rights_sbas && $this->_global_rights) {
             return $this;
         }
@@ -1080,12 +1089,12 @@ class ACL implements cache_cacheableInterface
         switch ($module_name) {
             case 'admin':
                 return (
-                    $this->has_right(self::BAS_MODIFY_STRUCT) ||
+                    ($this->has_right(self::BAS_MODIFY_STRUCT) ||
                     $this->has_right(self::COLL_MODIFY_STRUCT) ||
                     $this->has_right(self::BAS_MANAGE) ||
                     $this->has_right(self::COLL_MANAGE) ||
                     $this->has_right(self::CANADMIN) ||
-                    $this->is_admin()) ;
+                    $this->is_admin()) );
                 break;
             case 'thesaurus':
                 return ($this->has_right(self::BAS_MODIF_TH) === true );
