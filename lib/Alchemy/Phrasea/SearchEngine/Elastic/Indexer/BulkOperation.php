@@ -157,7 +157,7 @@ class BulkOperation
         foreach ($response['items'] as $key => $item) {
             foreach($item as $command=>$result) {   // command may be "index" or "delete"
                 if($response['errors'] && $result['status'] >= 400) { // 4xx or 5xx error
-                    $err = array_key_exists('error', $result) ? $result['error'] : ($command . " error " . $result['status']);
+                    $err = array_key_exists('error', $result) ? var_export($result['error'], true) : ($command . " error " . $result['status']);
                     throw new Exception(sprintf('%d: %s', $key, $err));
                 }
             }
