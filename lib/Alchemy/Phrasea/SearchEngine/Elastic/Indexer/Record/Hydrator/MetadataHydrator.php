@@ -39,18 +39,13 @@ class MetadataHydrator implements HydratorInterface
 
     public function hydrateRecords(array &$records)
     {
-        $sql = <<<SQL
-            (SELECT record_id, ms.name AS `key`, m.value AS value, 'caption' AS type, ms.business AS private
-            FROM metadatas AS m
-            INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)
-            WHERE record_id IN (?))
-
-            UNION
-
-            (SELECT record_id, t.name AS `key`, t.value AS value, 'exif' AS type, 0 AS private
-            FROM technical_datas AS t
-            WHERE record_id IN (?))
-SQL;
+        $sql = "(SELECT record_id, ms.name AS `key`, m.value AS value, 'caption' AS type, ms.business AS private\n"
+             . " FROM metadatas AS m INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)\n"
+             . " WHERE record_id IN (?))\n"
+             . "UNION\n"
+             . "(SELECT record_id, t.name AS `key`, t.value AS value, 'exif' AS type, 0 AS private\n"
+             . " FROM technical_datas AS t\n"
+             . " WHERE record_id IN (?))\n";
 
         $ids = array_keys($records);
         $statement = $this->connection->executeQuery(
@@ -80,7 +75,7 @@ SQL;
                 case 'caption':
                     // Sanitize fields
                     $value = StringHelper::crlfNormalize($value);
-                    $value = $this->sanitizeValue($value, $this->structure->typeOf($key));
+                    $value = $this->helper->sanitizeValue($value, $this->structure->typeOf($key));
                     // Private caption fields are kept apart
                     $type = $metadata['private'] ? 'private_caption' : 'caption';
                     // Caption are multi-valued
@@ -103,7 +98,7 @@ SQL;
                     }
                     $tag = $this->structure->getMetadataTagByName($key);
                     if ($tag) {
-                        $value = $this->sanitizeValue($value, $tag->getType());
+                        $value = $this->helper->sanitizeValue($value, $tag->getType());
                     }
                     // EXIF data is single-valued
                     $record['metadata_tags'][$key] = $value;
@@ -116,30 +111,6 @@ SQL;
         }
 
         $this->clearGpsPositionBuffer();
-    }
-
-    private function sanitizeValue($value, $type)
-    {
-        switch ($type) {
-            case FieldMapping::TYPE_DATE:
-                return $this->helper->sanitizeDate($value);
-
-            case FieldMapping::TYPE_FLOAT:
-            case FieldMapping::TYPE_DOUBLE:
-                return (float) $value;
-
-            case FieldMapping::TYPE_INTEGER:
-            case FieldMapping::TYPE_LONG:
-            case FieldMapping::TYPE_SHORT:
-            case FieldMapping::TYPE_BYTE:
-                return (int) $value;
-
-            case FieldMapping::TYPE_BOOLEAN:
-                return (bool) $value;
-
-            default:
-                return $value;
-        }
     }
 
     private function handleGpsPosition(&$records, $id, $tag_name, $value)

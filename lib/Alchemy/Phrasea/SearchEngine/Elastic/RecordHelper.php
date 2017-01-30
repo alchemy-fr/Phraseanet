@@ -116,4 +116,32 @@ class RecordHelper
             return null;
         }
     }
+
+    public function sanitizeValue($value, $type)
+    {
+        switch ($type) {
+            case FieldMapping::TYPE_DATE:
+                return self::sanitizeDate($value);
+
+            case FieldMapping::TYPE_FLOAT:
+            case FieldMapping::TYPE_DOUBLE:
+                return (float) $value;
+
+            case FieldMapping::TYPE_INTEGER:
+            case FieldMapping::TYPE_LONG:
+            case FieldMapping::TYPE_SHORT:
+            case FieldMapping::TYPE_BYTE:
+                return (int) $value;
+
+            case FieldMapping::TYPE_BOOLEAN:
+                return (bool) $value;
+
+            case FieldMapping::TYPE_STRING:
+                return str_replace("\0", '', $value);
+
+            default:
+                return $value;
+        }
+    }
+
 }

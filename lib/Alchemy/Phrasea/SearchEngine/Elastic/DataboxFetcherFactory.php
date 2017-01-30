@@ -61,7 +61,7 @@ class DataboxFetcherFactory
         $candidateTerms = new CandidateTerms($databox);
         $fetcher = new Fetcher($databox, array(
             new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->recordHelper),
-            new TitleHydrator($connection),
+            new TitleHydrator($connection, $this->recordHelper),
             new MetadataHydrator($connection, $this->getStructure(), $this->recordHelper),
             new FlagHydrator($this->getStructure(), $databox),
             new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
