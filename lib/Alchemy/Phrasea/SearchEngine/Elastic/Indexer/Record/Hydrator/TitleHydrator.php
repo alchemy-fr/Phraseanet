@@ -50,7 +50,7 @@ SQL;
         );
 
         while ($row = $statement->fetch()) {
-            $records[$row['record_id']]['title'][$row['locale']] = $row['title'];
+            $records[$row['record_id']]['title'][$row['locale']] = trim($row['title']);
         }
     }
 }

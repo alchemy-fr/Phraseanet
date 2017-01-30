@@ -62,7 +62,7 @@ SQL;
         while ($metadata = $statement->fetch()) {
             // Store metadata value
             $key = $metadata['key'];
-            $value = $metadata['value'];
+            $value = trim($metadata['value']);
 
             // Do not keep empty values
             if ($key === '' || $value === '') {
