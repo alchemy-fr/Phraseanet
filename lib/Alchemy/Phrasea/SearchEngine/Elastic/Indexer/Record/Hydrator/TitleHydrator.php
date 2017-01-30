@@ -19,6 +19,8 @@ use Doctrine\DBAL\Driver\Connection as DriverConnection;
 class TitleHydrator implements HydratorInterface
 {
     private $connection;
+    /** @var RecordHelper */
+    private $helper;
 
     public function __construct(DriverConnection $connection, RecordHelper $helper)
     {
