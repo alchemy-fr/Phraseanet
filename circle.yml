@@ -27,7 +27,7 @@ dependencies:
     - yes '' | pecl install imagick
     - pecl install json
     - yes '' | pecl install zmq-beta
-    - sed -i 's/^\(session.cache_limiter = \).*/\1""/' ~/.phpenv/versions/$(phpenv global)/etc/php.ini
+    - sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
     - npm rebuild node-sass
   override:
     - composer install --no-progress --no-interaction --optimize-autoloader
