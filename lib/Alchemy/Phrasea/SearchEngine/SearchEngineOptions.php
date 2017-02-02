@@ -15,10 +15,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Collection\CollectionRepository;
-use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Assert\Assertion;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use databox_descriptionStructure;
 
 class SearchEngineOptions
 {
@@ -38,104 +40,25 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
-    private static $serializable_properties = [
-        'record_type',
-        'search_type',
-        'collections',
-        'fields',
-        'status',
-        'date_min',
-        'date_max',
-        'date_fields',
-        'i18n',
-        'stemming',
-        'sort_by',
-        'sort_ord',
-        'business_fields',
-        'max_results',
-        'first_result',
-    ];
-
-    /**
-     * @param Application $app
-     * @return callable[]
-     */
-    private static function getHydrateMethods(Application $app)
-    {
-        $fieldNormalizer = function ($value) use ($app) {
-            return array_map(function ($serialized) use ($app) {
-                $data = explode('_', $serialized, 2);
-
-                return $app->findDataboxById($data[0])->get_meta_structure()->get_element($data[1]);
-            }, $value);
-        };
-
-        $collectionNormalizer = function ($value) use ($app) {
-            $references = new CollectionReferenceCollection($app['repo.collection-references']->findMany($value));
-
-            $collections = [];
-
-            foreach ($references->groupByDataboxIdAndCollectionId() as $databoxId => $indexes) {
-                /** @var CollectionRepository $repository */
-                $repository = $app['repo.collections-registry']->getRepositoryByDatabox($databoxId);
-
-                foreach ($indexes as $collectionId => $index) {
-                    $coll = $repository->find($collectionId);
-                    $collections[$coll->get_base_id()] = $coll;
-                }
-            }
-
-            return $collections;
-        };
-
-        $optionSetter = function ($setter) {
-            return function ($value, SearchEngineOptions $options) use ($setter) {
-                $options->{$setter}($value);
-            };
-        };
-
-        return [
-            'record_type' => $optionSetter('setRecordType'),
-            'search_type' => $optionSetter('setSearchType'),
-            'status' => $optionSetter('setStatus'),
-            'date_min' => function ($value, SearchEngineOptions $options) {
-                $options->setMinDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
-            },
-            'date_max' => function ($value, SearchEngineOptions $options) {
-                $options->setMaxDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
-            },
-            'i18n' => function ($value, SearchEngineOptions $options) {
-                if ($value) {
-                    $options->setLocale($value);
-                }
-            },
-            'stemming' => $optionSetter('setStemming'),
-            'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
-                $options->setDateFields($fieldNormalizer($value));
-            },
-            'fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
-                $options->setFields($fieldNormalizer($value));
-            },
-            'collections' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
-                $options->onCollections($collectionNormalizer($value));
-            },
-            'business_fields' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
-                $options->allowBusinessFieldsOn($collectionNormalizer($value));
-            },
-            'first_result' => $optionSetter('setFirstResult'),
-            'max_results' => $optionSetter('setMaxResults'),
-        ];
-    }
+    /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+    private $collectionReferenceRepository;
 
     /** @var string */
     protected $record_type = self::TYPE_ALL;
 
     protected $search_type = self::RECORD_RECORD;
-    /** @var \collection[] */
-    protected $collections = [];
-    /** @var null|\databox[] */
-    private $databoxes;
+
+    /** @var null|int[]  bases ids where searching is done */
+    private $basesIds = null;
+
+    /** @var  null|CollectionReference[][] */
+    private $collectionsReferencesByDatabox = null;
+
+    /** @var null|\int[] */
+    private $databoxesIds;
+
     /** @var \databox_field[] */
+
     protected $fields = [];
     protected $status = [];
     /** @var \DateTime */
@@ -152,6 +75,8 @@ class SearchEngineOptions
 
     /** @var string */
     protected $sort_ord = self::SORT_MODE_DESC;
+
+    /** @var int[] */
     protected $business_fields = [];
 
     /**
@@ -163,6 +88,24 @@ class SearchEngineOptions
      * @var int
      */
     private $first_result = 0;
+
+    private static $serializable_properties = [
+        'record_type',
+        'search_type',
+        'basesIds',
+        'fields',
+        'status',
+        'date_min',
+        'date_max',
+        'date_fields',
+        'i18n',
+        'stemming',
+        'sort_by',
+        'sort_ord',
+        'business_fields',
+        'max_results',
+        'first_result'
+    ];
 
     /**
      * Defines locale code to use for query
@@ -205,14 +148,14 @@ class SearchEngineOptions
     }
 
     /**
-     * Allows business fields query on the given collections
+     * Allows business fields query on the given bases
      *
-     * @param \collection[] $collection An array of collection
+     * @param int[] $basesIds
      * @return $this
      */
-    public function allowBusinessFieldsOn(array $collection)
+    public function allowBusinessFieldsOn(array $basesIds)
     {
-        $this->business_fields = $collection;
+        $this->business_fields = $basesIds;
 
         return $this;
     }
@@ -230,10 +173,10 @@ class SearchEngineOptions
     }
 
     /**
-     * Returns an array of collection on which business fields are allowed to
+     * Returns an array of bases ids on which business fields are allowed to
      * search on
      *
-     * @return \collection[] An array of collection
+     * @return int[]
      */
     public function getBusinessFieldsOn()
     {
@@ -316,48 +259,33 @@ class SearchEngineOptions
     }
 
     /**
-     * Set the collections where to search for
+     * Set the bases where to search for
      *
-     * @param  \collection[] $collections An array of collection
+     * @param  int[] $basesIds An array of ids
      * @return $this
      */
-    public function onCollections(array $collections)
+    public function onBasesIds(array $basesIds)
     {
-        $this->collections = $collections;
+        $this->basesIds = $basesIds;
+
         // Defer databox retrieval
-        $this->databoxes = null;
+        $this->databoxesIds = null;
 
         return $this;
     }
 
     /**
-     * Returns the collections on which the search occurs
+     * Returns the bases ids on which the search occurs
      *
-     * @return \collection[] An array of collection
+     * @return int[]
      */
-    public function getCollections()
+    public function getBasesIds()
     {
-        return $this->collections;
-    }
-
-    /**
-     * Returns an array containing all the databoxes where the search will
-     * happen
-     *
-     * @return \databox[]
-     */
-    public function getDataboxes()
-    {
-        if (null === $this->databoxes) {
-            $databoxes = [];
-            foreach ($this->collections as $collection) {
-                $databoxes[$collection->get_databox()->get_sbas_id()] = $collection->get_databox();
-            }
-
-            $this->databoxes = array_values($databoxes);
+        if($this->basesIds === null) {
+            throw new \LogicException('onBasesIds() must be called before getBasesIds()');
         }
 
-        return $this->databoxes;
+        return $this->basesIds;
     }
 
     /**
@@ -429,13 +357,16 @@ class SearchEngineOptions
         return $this;
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function getRecordType()
     {
         return $this->record_type;
     }
 
     /**
+     * @param \DateTime $min_date
      * @return $this
      */
     public function setMinDate(\DateTime $min_date = null)
@@ -449,7 +380,8 @@ class SearchEngineOptions
         return $this;
     }
 
-    /** @return \DateTime
+    /**
+     * @return \DateTime
      */
     public function getMinDate()
     {
@@ -471,7 +403,9 @@ class SearchEngineOptions
         return $this;
     }
 
-    /** @return \DateTime */
+    /**
+     * @return \DateTime
+     */
     public function getMaxDate()
     {
         return $this->date_max;
@@ -494,89 +428,6 @@ class SearchEngineOptions
         return $this->date_fields;
     }
 
-    public function serialize()
-    {
-        $ret = [];
-        foreach (self::$serializable_properties as $key) {
-            $value = $this->{$key};
-            if ($value instanceof \DateTime) {
-                $value = $value->format(DATE_ATOM);
-            }
-            if (in_array($key, ['date_fields', 'fields'])) {
-                $value = array_map(function (\databox_field $field) {
-                    return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
-                }, $value);
-            }
-            if (in_array($key, ['collections', 'business_fields'])) {
-                $value = array_map(function (\collection $collection) {
-                    return $collection->get_base_id();
-                }, $value);
-            }
-
-            $ret[$key] = $value;
-        }
-
-        return \p4string::jsonencode($ret);
-    }
-
-    /**
-     *
-     * @param Application $app
-     * @param string      $serialized
-     *
-     * @return $this
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     */
-    public static function hydrate(Application $app, $serialized)
-    {
-        $serialized = json_decode($serialized, true);
-
-        if (!is_array($serialized)) {
-            throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
-        }
-
-        $options = new static();
-        $options->disallowBusinessFields();
-
-        $methods = self::getHydrateMethods($app);
-
-        $sort_by = null;
-        $methods['sort_by'] = function ($value) use (&$sort_by) {
-            $sort_by = $value;
-        };
-
-        $sort_ord = null;
-        $methods['sort_ord'] = function ($value) use (&$sort_ord) {
-            $sort_ord = $value;
-        };
-
-        foreach ($serialized as $key => $value) {
-            if (!isset($methods[$key])) {
-                throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
-            }
-
-            if ($value instanceof \stdClass) {
-                $value = (array)$value;
-            }
-
-            $callable = $methods[$key];
-
-            $callable($value, $options);
-        }
-
-        if ($sort_by) {
-            if ($sort_ord) {
-                $options->setSort($sort_by, $sort_ord);
-            } else {
-                $options->setSort($sort_by);
-            }
-        }
-
-        return $options;
-    }
-
     /**
      * Creates options based on a Symfony Request object
      *
@@ -587,99 +438,21 @@ class SearchEngineOptions
      */
     public static function fromRequest(Application $app, Request $request)
     {
+        /** @var Authenticator $authenticator */
+        $authenticator = $app->getAuthenticator();
+        $isAuthenticated = $authenticator->isAuthenticated();
+
         $options = new static();
+
+        $options->collectionReferenceRepository = $app['repo.collection-references'];
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
 
-        /** @var Authenticator $authenticator */
-        $authenticator = $app->getAuthenticator();
-        $isAuthenticated = $authenticator->isAuthenticated();
-        /** @var ACLProvider $aclProvider */
-        $aclProvider = $app['acl'];
-        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
-
-        $selected_bases = $request->get('bases');
-        if (is_array($selected_bases)) {
-            $bas = [];
-            foreach ($selected_bases as $bas_id) {
-                try {
-                    $bas[$bas_id] = \collection::getByBaseId($app, $bas_id);
-                } catch (\Exception_Databox_CollectionNotFound $e) {
-                    // Ignore
-                }
-            }
-        } elseif (!$isAuthenticated) {
-            $bas = $app->getOpenCollections();
-        } else {
-            $bas = $acl->get_granted_base();
-        }
-
-        // Filter out not found collections
-        $bas = array_filter($bas);
-
-        if ($acl) {
-            $filter = function (\collection $collection) use ($acl) {
-                return $acl->has_access_to_base($collection->get_base_id());
-            };
-        } else {
-            $openCollections = $app->getOpenCollections();
-
-            $filter = function (\collection $collection) use ($openCollections) {
-                return in_array($collection, $openCollections);
-            };
-        }
-
-        /** @var \collection[] $bas */
-        $bas = array_filter($bas, $filter);
-
-        if (!empty($selected_bases) && empty($bas)) {
-            throw new BadRequestHttpException('No collections match your criteria');
-        }
-
-        $options->onCollections($bas);
-
-        if ($isAuthenticated && $acl->has_right(\ACL::CANMODIFRECORD)) {
-            $bf = array_filter($bas, function (\collection $collection) use ($acl) {
-                return $acl->has_right_on_base($collection->get_base_id(), \ACL::CANMODIFRECORD);
-            });
-
-            $options->allowBusinessFieldsOn($bf);
-        }
-
-        $status = is_array($request->get('status')) ? $request->get('status') : [];
-        $fields = is_array($request->get('fields')) ? $request->get('fields') : [];
-        if (empty($fields)) {
-            // Select all fields (business included)
-            foreach ($options->getDataboxes() as $databox) {
-                foreach ($databox->get_meta_structure() as $field) {
-                    $fields[] = $field->get_name();
-                }
-            }
-            $fields = array_unique($fields);
-        }
-
-        $databoxFields = [];
-        $databoxes = $options->getDataboxes();
-        foreach ($databoxes as $databox) {
-            $metaStructure = $databox->get_meta_structure();
-            foreach ($fields as $field) {
-                try {
-                    $databoxField = $metaStructure->get_element_by_name($field);
-                } catch (\Exception $e) {
-                    continue;
-                }
-                if ($databoxField) {
-                    $databoxFields[] = $databoxField;
-                }
-            }
-        }
-
-        $options->setFields($databoxFields);
-        $options->setStatus($status);
-
         $options->setSearchType($request->get('search_type'));
         $options->setRecordType($request->get('record_type'));
+        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
+        $options->setStemming((Boolean) $request->get('stemme'));
 
         $min_date = $max_date = null;
         if ($request->get('date_min')) {
@@ -688,31 +461,104 @@ class SearchEngineOptions
         if ($request->get('date_max')) {
             $max_date = \DateTime::createFromFormat('Y/m/d H:i:s', $request->get('date_max') . ' 23:59:59');
         }
-
         $options->setMinDate($min_date);
         $options->setMaxDate($max_date);
 
+        $status = is_array($request->get('status')) ? $request->get('status') : [];
+        $options->setStatus($status);
+
+        /** @var ACLProvider $aclProvider */
+        $aclProvider = $app['acl'];
+        $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
+        if ($acl) {
+            $searchableBaseIds = $acl->getSearchableBasesIds();
+            $selected_bases = array_map(function($bid){return (int)$bid;}, $request->get('bases'));
+            if (is_array($selected_bases)) {
+                $searchableBaseIds = array_values(array_intersect($searchableBaseIds, $selected_bases));
+                if (empty($searchableBaseIds)) {
+                    throw new BadRequestHttpException('No collections match your criteria');
+                }
+            }
+            $options->onBasesIds($searchableBaseIds);
+            if ($acl->has_right(\ACL::CANMODIFRECORD)) {
+                /** @var int[] $bf */
+                $bf = array_filter($searchableBaseIds, function ($baseId) use ($acl) {
+                    return $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD);
+                });
+                $options->allowBusinessFieldsOn($bf);
+            }
+        }
+        else {
+            $options->onBasesIds([]);
+        }
+
+        /** @var \databox[] $databoxes */
+        $databoxes = [];
+        foreach($options->getCollectionsReferencesByDatabox() as $sbid=>$refs) {
+            $databoxes[] = $app->findDataboxById($sbid);
+        }
+
+        $queryFields = is_array($request->get('fields')) ? $request->get('fields') : [];
+        if (empty($queryFields)) {
+            // Select all fields (business included)
+            foreach ($databoxes as $databox) {
+                foreach ($databox->get_meta_structure() as $field) {
+                    $queryFields[] = $field->get_name();
+                }
+            }
+        }
+        $queryFields = array_unique($queryFields);
+
+        $queryDateFields = array_unique(explode('|', $request->get('date_field')));
+
+        $databoxFields = [];
         $databoxDateFields = [];
 
         foreach ($databoxes as $databox) {
             $metaStructure = $databox->get_meta_structure();
-            foreach (explode('|', $request->get('date_field')) as $field) {
+
+            foreach ($queryFields as $fieldName) {
                 try {
-                    $databoxField = $metaStructure->get_element_by_name($field);
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName, databox_descriptionStructure::STRICT_COMPARE)) ) {
+                        $databoxFields[] = $databoxField;
+                    }
                 } catch (\Exception $e) {
-                    continue;
+                    // no-op
                 }
-                if ($databoxField) {
-                    $databoxDateFields[] = $databoxField;
+            }
+
+            foreach ($queryDateFields as $fieldName) {
+                try {
+                    if( ($databoxField = $metaStructure->get_element_by_name($fieldName, databox_descriptionStructure::STRICT_COMPARE)) ) {
+                        $databoxDateFields[] = $databoxField;
+                    }
+                } catch (\Exception $e) {
+                    // no-op
                 }
             }
         }
 
+        $options->setFields($databoxFields);
         $options->setDateFields($databoxDateFields);
-        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
-        $options->setStemming((Boolean) $request->get('stemme'));
 
         return $options;
+    }
+
+    public function getCollectionsReferencesByDatabox()
+    {
+        if($this->collectionsReferencesByDatabox === null) {
+            $this->collectionsReferencesByDatabox = [];
+            $refs = $this->collectionReferenceRepository->findMany($this->getBasesIds());
+            foreach($refs as $ref) {
+                $sbid = $ref->getDataboxId();
+                if(!array_key_exists($sbid, $this->collectionsReferencesByDatabox)) {
+                    $this->collectionsReferencesByDatabox[$sbid] = [];
+                }
+                $this->collectionsReferencesByDatabox[$sbid][] = $ref;
+            }
+        }
+
+        return $this->collectionsReferencesByDatabox;
     }
 
     public function setMaxResults($max_results)
@@ -745,4 +591,133 @@ class SearchEngineOptions
     {
         return $this->first_result;
     }
+
+    /**
+     * @param Application $app
+     * @return callable[]
+     */
+    private static function getHydrateMethods(Application $app)
+    {
+        $fieldNormalizer = function ($value) use ($app) {
+            return array_map(function ($serialized) use ($app) {
+                $data = explode('_', $serialized, 2);
+                return $app->findDataboxById($data[0])->get_meta_structure()->get_element($data[1]);
+            }, $value);
+        };
+
+        $optionSetter = function ($setter) {
+            return function ($value, SearchEngineOptions $options) use ($setter) {
+                $options->{$setter}($value);
+            };
+        };
+
+        return [
+            'record_type' => $optionSetter('setRecordType'),
+            'search_type' => $optionSetter('setSearchType'),
+            'status' => $optionSetter('setStatus'),
+            'date_min' => function ($value, SearchEngineOptions $options) {
+                $options->setMinDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
+            },
+            'date_max' => function ($value, SearchEngineOptions $options) {
+                $options->setMaxDate($value ? \DateTime::createFromFormat(DATE_ATOM, $value) : null);
+            },
+            'i18n' => function ($value, SearchEngineOptions $options) {
+                if ($value) {
+                    $options->setLocale($value);
+                }
+            },
+            'stemming' => $optionSetter('setStemming'),
+            'date_fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
+                $options->setDateFields($fieldNormalizer($value));
+            },
+            'fields' => function ($value, SearchEngineOptions $options) use ($fieldNormalizer) {
+                $options->setFields($fieldNormalizer($value));
+            },
+            'basesIds' => function ($value, SearchEngineOptions $options) {
+                $options->onBasesIds($value);
+            },
+            //'business_fields' => function ($value, SearchEngineOptions $options) use ($collectionNormalizer) {
+            //    $options->allowBusinessFieldsOn($collectionNormalizer($value));
+            //},
+            'business_fields' => function ($value, SearchEngineOptions $options) {
+                $options->allowBusinessFieldsOn($value);
+            },
+            'first_result' => $optionSetter('setFirstResult'),
+            'max_results' => $optionSetter('setMaxResults'),
+        ];
+    }
+
+    public function serialize()
+    {
+        $ret = [];
+        foreach (self::$serializable_properties as $key) {
+            $value = $this->{$key};
+            if ($value instanceof \DateTime) {
+                $value = $value->format(DATE_ATOM);
+            }
+            if (in_array($key, ['date_fields', 'fields'])) {
+                $value = array_map(function (\databox_field $field) {
+                    return $field->get_databox()->get_sbas_id() . '_' . $field->get_id();
+                }, $value);
+            }
+            $ret[$key] = $value;
+        }
+
+        return \p4string::jsonencode($ret);
+    }
+
+    /**
+     *
+     * @param Application $app
+     * @param string      $serialized
+     *
+     * @return $this
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
+    public static function hydrate(Application $app, $serialized)
+    {
+        $serialized = json_decode($serialized, true);
+        if (!is_array($serialized)) {
+            throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
+        }
+
+        $options = new static();
+        $options->disallowBusinessFields();
+
+        $methods = self::getHydrateMethods($app);
+
+        $sort_by = null;
+        $methods['sort_by'] = function ($value) use (&$sort_by) {
+            $sort_by = $value;
+        };
+
+        $sort_ord = null;
+        $methods['sort_ord'] = function ($value) use (&$sort_ord) {
+            $sort_ord = $value;
+        };
+
+        foreach ($serialized as $key => $value) {
+            if (!isset($methods[$key])) {
+                throw new \RuntimeException(sprintf('Unable to handle key `%s`', $key));
+            }
+            if ($value instanceof \stdClass) {
+                $value = (array)$value;
+            }
+            $callable = $methods[$key];
+            $callable($value, $options);
+        }
+
+        if ($sort_by) {
+            if ($sort_ord) {
+                $options->setSort($sort_by, $sort_ord);
+            } else {
+                $options->setSort($sort_by);
+            }
+        }
+
+        return $options;
+    }
+
 }

@@ -888,7 +888,7 @@ class databox extends base implements ThumbnailedElement
         /** @var \Alchemy\Phrasea\Databox\Field\DataboxFieldRepository $fieldRepository */
         $fieldRepository = $this->app['repo.fields.factory']($this);
 
-        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll());
+        $this->meta_struct = new databox_descriptionStructure($fieldRepository->findAll(), $this->app['unicode']);
 
         return $this->meta_struct;
     }

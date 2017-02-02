@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -85,7 +86,6 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-
 use JMS\TranslationBundle\Annotation\Ignore;
 use League\Fractal\Resource\Item;
 use Symfony\Component\Form\Form;
@@ -1500,15 +1500,12 @@ class V1Controller extends Controller
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getUserQuery());
 
-        foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
-                return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-            }));
-
-            $this->getSearchEngineLogger()
-                ->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $colls);
+        // log array of collectionIds (from $options) for each databox
+        $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+        foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+            $databox = $this->findDataboxById($sbid);
+            $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+            $this->getSearchEngineLogger()->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();

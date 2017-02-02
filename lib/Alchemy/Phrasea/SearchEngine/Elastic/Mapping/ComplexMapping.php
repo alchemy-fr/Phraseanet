@@ -30,9 +30,9 @@ class ComplexMapping extends FieldMapping
             throw new \LogicException(sprintf('There is already a "%s" multi field.', $child->getName()));
         }
 
-        if ($child->getType() !== $this->getType() && $this->getType() !== self::TYPE_OBJECT) {
-            throw new \LogicException('Child field type must match parent type.');
-        }
+        // if ($child->getType() !== $this->getType() && $this->getType() !== self::TYPE_OBJECT) {
+        //     throw new \LogicException('Child field type must match parent type.');
+        // }
 
         return $this->children[$child->getName()] = $child;
     }

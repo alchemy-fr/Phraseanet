@@ -52,8 +52,10 @@ class RecordIndex implements MappingProvider
 
         // Database name (still indexed for facets)
         $mapping->addStringField('databox_name')->disableAnalysis();
-        // Unique collection ID
-        $mapping->addIntegerField('base_id');
+        // Unique base ID
+        //$mapping->addIntegerField('base_id')->enableIndexing();
+        $mapping->addStringField('base_id')->disableAnalysis();     // must be a string to match completion context ?
+
         // Useless collection ID (local to databox)
         $mapping->addIntegerField('collection_id')->disableIndexing();
         // Collection name (still indexed for facets)
@@ -64,6 +66,7 @@ class RecordIndex implements MappingProvider
         $mapping->addStringField('original_name')->disableIndexing();
         $mapping->addStringField('mime')->disableAnalysis();
         $mapping->addStringField('type')->disableAnalysis();
+
         $mapping->addStringField('record_type')->disableAnalysis();
 
         $mapping->addIntegerField('width')->disableIndexing();
