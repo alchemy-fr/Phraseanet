@@ -27,6 +27,8 @@ dependencies:
     - yes '' | pecl install imagick
     - pecl install json
     - yes '' | pecl install zmq-beta
+    - echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
+    - echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
     - sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
     - npm rebuild node-sass
   override:
