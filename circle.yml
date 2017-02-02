@@ -22,7 +22,13 @@ dependencies:
     - node_modules
     - ~/.composer
   pre:
-    - sudo apt-get install librabbitmq-dev
+    - git clone https://github.com/alanxz/rabbitmq-c
+    - cd rabbitmq-c
+    - git checkout tags/v0.5.2
+    - git submodule init
+    - git submodule update
+    - autoreconf -i && ./configure && make && sudo make install
+    - cd ..
     - pecl install amqp-1.6.0
     - yes '' | pecl install imagick
     - pecl install json
