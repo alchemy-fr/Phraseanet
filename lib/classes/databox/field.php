@@ -180,7 +180,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function getVocabularyControl()
     {
-        return $this->Vocabulary;
+        return $this->vocabulary_control;
     }
 
     /**
@@ -972,7 +972,7 @@ class databox_field implements cache_cacheableInterface
         $vars = [];
 
         foreach ($this as $key => $value) {
-            if (in_array($key, ['databox', 'app', 'Vocabulary']))
+            if (in_array($key, ['databox', 'app', 'vocabulary_control']))
                 continue;
             $vars[] = $key;
         }
