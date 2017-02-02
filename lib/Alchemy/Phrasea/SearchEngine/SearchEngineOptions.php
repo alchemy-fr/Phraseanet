@@ -472,8 +472,8 @@ class SearchEngineOptions
         $acl = $isAuthenticated ? $aclProvider->get($authenticator->getUser()) : null;
         if ($acl) {
             $searchableBaseIds = $acl->getSearchableBasesIds();
-            $selected_bases = array_map(function($bid){return (int)$bid;}, $request->get('bases'));
-            if (is_array($selected_bases)) {
+            if (is_array($request->get('bases'))) {
+                $selected_bases = array_map(function($bid){return (int)$bid;}, $request->get('bases'));
                 $searchableBaseIds = array_values(array_intersect($searchableBaseIds, $selected_bases));
                 if (empty($searchableBaseIds)) {
                     throw new BadRequestHttpException('No collections match your criteria');
