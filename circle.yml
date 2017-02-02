@@ -23,7 +23,7 @@ dependencies:
     - ~/.composer
   pre:
     - sudo apt-get install librabbitmq-dev
-    - pecl install amqp-1.4.0
+    - pecl install amqp-1.6.0
     - yes '' | pecl install imagick
     - pecl install json
     - sudo apt-get install libzmq-dev
