@@ -48,7 +48,8 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $this->authenticate($app);
 
         $options = new SearchEngineOptions();
-        $options->onCollections($app->getAclForUser($app->getAuthenticatedUser())->get_granted_base());
+        $searchableBasesIds = $app->getAclForUser($app->getAuthenticatedUser())->getSearchableBasesIds();
+        $options->onBasesIds($searchableBasesIds);
         $serializedOptions = $options->serialize();
 
         $response = $this->request('POST', '/prod/query/answer-train/', [

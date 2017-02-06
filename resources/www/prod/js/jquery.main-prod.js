@@ -1529,6 +1529,49 @@ $(document).ready(function () {
         }
     });
 
+    $("#EDIT_query").autocomplete({
+        delay: 200,
+        minLength: 2,
+        source: function (request, response) {
+            var inp = document.getElementById("EDIT_query");
+            var data={
+                '_selectionStart': inp.selectionStart,
+                '_selectionEnd':   inp.selectionEnd
+            };
+            var a = $("#searchForm").serializeArray();
+            for(var i=0; i<a.length; i++) {
+                var k = a[i].name;
+                var v = a[i].value;
+                if(k.substring(k.length-2) == "[]") {
+                    if(data[k] == undefined) {
+                        data[k] = [];
+                    }
+                    data[k].push(v);
+                }
+                else {
+                    data[k] = v;
+                }
+            }
+            $.ajax({
+                url: '/prod/query/completion/',
+                dataType: "json",
+                method: "post",
+                data: data,
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        focus: function(event, ui) {
+            event.preventDefault();
+        },
+        select: function (event, ui) {
+            $("#EDIT_query").val(ui.item.value.completed);
+
+            return false;
+        }
+    });
+
     $('input.input_select_copy').on('focus', function () {
         $(this).select();
     });

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Index;
@@ -76,6 +76,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
                 throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
+
             /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
 
@@ -83,7 +84,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app,
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
-                $options->getIndexName(),
                 $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
                 $options

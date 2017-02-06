@@ -17,18 +17,26 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
      */
     protected $elements = [];
 
+    /** @var  unicode */
+    private $unicode;
+
+    const STRICT_COMPARE = 1;
+    const SLUG_COMPARE = 2;
+
     /**
      * Cache array for the get element by name function
      *
-     * @var array<string,int>|null
+     * @var int[]|null
      */
     protected $cache_name_id;
 
     /**
      * @param databox_field[] $fields
+     * @param unicode $unicode
      */
-    public function __construct($fields = [])
+    public function __construct($fields, unicode $unicode)
     {
+        $this->unicode = $unicode;
         Assertion::allIsInstanceOf($fields, databox_field::class);
 
         foreach ($fields as $field) {
@@ -95,9 +103,11 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
 
     /**
      * @param  string $name
+     * @param int $compareMode      // use STRICT_COMPARE if the name already comes from phrasea (faster)
+     *
      * @return databox_field|null
      */
-    public function get_element_by_name($name)
+    public function get_element_by_name($name, $compareMode=self::SLUG_COMPARE)
     {
         if (null === $this->cache_name_id) {
             $this->cache_name_id = [];
@@ -107,7 +117,9 @@ class databox_descriptionStructure implements IteratorAggregate, Countable
             }
         }
 
-        $name = databox_field::generateName($name);
+        if($compareMode == self::SLUG_COMPARE) {
+            $name = databox_field::generateName($name, $this->unicode);
+        }
 
         return isset($this->cache_name_id[$name])
             ? $this->elements[$this->cache_name_id[$name]]
