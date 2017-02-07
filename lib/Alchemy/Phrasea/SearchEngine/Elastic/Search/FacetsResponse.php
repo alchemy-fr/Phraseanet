@@ -78,7 +78,7 @@ class FacetsResponse
             case 'Type_Name':
                 return sprintf('type:%s', $this->escaper->escapeWord($value));
             default:
-                return sprintf('field.%s = %s',
+                return sprintf('field.%s:%s',
                     $this->escaper->escapeWord($name),
                     $this->escaper->escapeWord($value));
         }
