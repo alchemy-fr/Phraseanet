@@ -7,11 +7,11 @@ class StringHelper
 {
     public static function escape($s)
     {
-        return str_replace(["\"", "\\"], ["\\\"", "\\\\"], $s);
+        return is_string($s) ? str_replace(["\"", "\\"], ["\\\"", "\\\\"], $s) : $s;
     }
 
     public static function unescape($s)
     {
-        return str_replace(["\\\"", "\\\\"], ["\"", "\\"], $s);
+        return is_string($s) ? str_replace(["\\\"", "\\\\"], ["\"", "\\"], $s) : $s;
     }
 }

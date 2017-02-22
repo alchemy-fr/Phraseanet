@@ -47,9 +47,9 @@ class RangeExpression extends Node
         Assertion::nullOrScalar($hb);
         Assertion::boolean($hi);
         $this->key = $key;
-        $this->lower_bound = is_string($lb) ? StringHelper::unescape($lb) : null;
+        $this->lower_bound = StringHelper::unescape($lb);
         $this->lower_inclusive = $li;
-        $this->higher_bound = is_string($hb) ?  StringHelper::unescape($hb) : null;
+        $this->higher_bound = StringHelper::unescape($hb);
         $this->higher_inclusive = $hi;
     }
 
