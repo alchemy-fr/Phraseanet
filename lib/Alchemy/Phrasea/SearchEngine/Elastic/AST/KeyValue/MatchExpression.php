@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\StringHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Assert\Assertion;
@@ -16,7 +17,7 @@ class MatchExpression extends Node
     {
         Assertion::string($value);
         $this->key = $key;
-        $this->value = $value;
+        $this->value = StringHelper::unescape($value);
     }
 
     public function buildQuery(QueryContext $context)

@@ -40,7 +40,7 @@ class QueryVisitor implements Visit
                 return new AST\QuotedTextNode($value);
 
             case NodeTypes::TOKEN_RAW_STRING:
-                return AST\RawNode::createFromEscaped($value);
+                return new AST\RawNode($value);
 
             default:
                 // Generic handling off other tokens for unresctricted text

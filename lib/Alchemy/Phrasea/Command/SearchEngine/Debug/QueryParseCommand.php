@@ -69,21 +69,23 @@ class QueryParseCommand extends Command
         $stopwatch = new Stopwatch();
         $stopwatch->start('parsing');
 
+        $out = [];
         if ($input->getOption('compiler-dump')) {
-            $dump = $compiler->dump($string, $postprocessing);
-        } else {
-            $query = $compiler->parse($string, $postprocessing);
-            $dump = $query->dump();
+            $out[] = $compiler->dump($string, $postprocessing);
         }
+        $query = $compiler->parse($string, $postprocessing);
+        $out[] = $query->dump();
 
         $event = $stopwatch->stop('parsing');
 
+        foreach($out as $s) {
+            $output->writeln($s);
+            if (!$raw) {
+                $output->writeln(str_repeat('-', 20));
+            }
+        }
         if (!$raw) {
-            $output->writeln($dump);
-            $output->writeln(str_repeat('-', 20));
             $output->writeln(sprintf("Took %sms", $event->getDuration()));
-        } else {
-            $output->write($dump);
         }
     }
 }
