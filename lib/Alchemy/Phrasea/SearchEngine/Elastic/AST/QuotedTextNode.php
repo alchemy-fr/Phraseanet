@@ -12,7 +12,7 @@ class QuotedTextNode extends Node
 
     public function __construct($text)
     {
-        $this->text = $text;
+        $this->text = StringHelper::unescape($text);
     }
 
     public function buildQuery(QueryContext $context)

@@ -14,10 +14,10 @@
 
 // Strings
 %token  quote_          "        -> string
-%token  string:quoted   [^"]+
+%token  string:quoted   ((\\")|[^"])+
 %token  string:_quote   "        -> default
 %token  raw_quote_      r"       -> raw
-%token  raw:raw_quoted  (?:(?>[^"\\]+)|\\.)+
+%token  raw:raw_quoted   ((\\")|[^"])+
 %token  raw:_raw_quote  "        -> default
 
 // Operators (too bad we can't use preg "i" flag)
@@ -117,6 +117,7 @@ key:
 #value:
     word_or_keyword()+
   | quoted_string()
+  | raw_quoted_string()
 
 group:
     ::space::? ::parenthese_:: ::space::? primary() ::space::? ::_parenthese:: ::space::?
@@ -183,3 +184,4 @@ symbol:
   | <bracket_>
   | <_bracket>
   | <colon>
+  | <equal>

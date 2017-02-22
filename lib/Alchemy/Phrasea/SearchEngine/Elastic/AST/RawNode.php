@@ -11,20 +11,9 @@ class RawNode extends Node
     private $text;
     private $index_fields_callback;
 
-    public static function createFromEscaped($escaped)
-    {
-        $unescaped = str_replace(
-            ['\\\\', '\\"'],
-            ['\\', '"'],
-            $escaped
-        );
-
-        return new self($unescaped);
-    }
-
     public function __construct($text)
     {
-        $this->text = $text;
+        $this->text = StringHelper::unescape($text);
     }
 
     public function buildQuery(QueryContext $context)

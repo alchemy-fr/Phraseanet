@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\AST\StringHelper;
 use Assert\Assertion;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\FieldKey;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\KeyValue\Key;
@@ -46,9 +47,9 @@ class RangeExpression extends Node
         Assertion::nullOrScalar($hb);
         Assertion::boolean($hi);
         $this->key = $key;
-        $this->lower_bound = $lb;
+        $this->lower_bound = StringHelper::unescape($lb);
         $this->lower_inclusive = $li;
-        $this->higher_bound = $hb;
+        $this->higher_bound = StringHelper::unescape($hb);
         $this->higher_inclusive = $hi;
     }
 

@@ -16,7 +16,7 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
     public function __construct($text, Context $context = null)
     {
-        $this->text = $text;
+        $this->text = StringHelper::unescape($text);
         $this->context = $context;
     }
 
