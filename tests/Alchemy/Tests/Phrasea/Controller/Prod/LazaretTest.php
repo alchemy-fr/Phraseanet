@@ -297,7 +297,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         //expect one call to substitute the documents
         self::$DI['app']['subdef.substituer']->expects($this->once())
             ->method('substituteDocument')
-            ->with($record, $this->equalTo('document'));
+            ->with($record);
 
         $databox = $this->getMock('databox', [], [], '', false);
 
