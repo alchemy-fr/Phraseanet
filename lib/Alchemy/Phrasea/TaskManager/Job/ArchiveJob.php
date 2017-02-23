@@ -1003,7 +1003,7 @@ class ArchiveJob extends AbstractJob
         }
 
         $story = \record_adapter::createStory($app, $collection);
-        $app['subdef.substituer']->substitute($story, 'document', $media);
+        $app['subdef.substituer']->substituteDocument($story, $media);
 
         $story->set_metadatas($metadatas->toMetadataArray($metadatasStructure), true);
 
