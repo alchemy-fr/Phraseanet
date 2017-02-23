@@ -114,7 +114,7 @@ class SetupController extends Controller
             'shards' => (int) $elastic_settings['shards'],
             'replicas' => (int) $elastic_settings['replicas'],
             'minScore' => (int) $elastic_settings['min_score'],
-            'highlight' => (bool) $elastic_settings['highlight']
+            'highlight' => (bool) (isset($elastic_settings['highlight']) ? $elastic_settings['highlight'] : false)
         ];
 
         $elastic_settings = ElasticsearchOptions::fromArray($elastic_settings);
