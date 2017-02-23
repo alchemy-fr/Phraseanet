@@ -193,7 +193,7 @@ class UploadController extends Controller
                         file_put_contents($fileName, $dataUri->getData());
                         $media = $this->app->getMediaFromUri($fileName);
 
-                        $this->getSubDefinitionSubstituer()->substitute($elementCreated, 'thumbnail', $media);
+                        $this->getSubDefinitionSubstituer()->substituteSubdef($elementCreated, 'thumbnail', $media);
                         $this->getDataboxLogger($elementCreated->getDatabox())
                             ->log($elementCreated, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 

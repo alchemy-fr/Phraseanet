@@ -228,8 +228,7 @@ class LazaretController extends Controller
             $media = $this->app->getMediaFromUri($lazaretFileName);
 
             $record = $lazaretFile->getCollection($this->app)->get_databox()->get_record($recordId);
-            $this->getSubDefinitionSubstituer()
-                ->substitute($record, 'document', $media);
+            $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
             $this->getDataboxLogger($record->getDatabox())->log(
                 $record,
                 \Session_Logger::EVENT_SUBSTITUTE,

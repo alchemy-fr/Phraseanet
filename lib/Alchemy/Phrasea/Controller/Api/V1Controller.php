@@ -998,7 +998,12 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing name parameter');
         }
 
-        $media = $this->app->getMediaFromUri($file->getPathname());
+        $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
+        if (false === rename($file->getPathname(), $newPathname)) {
+            $this->getBadRequestAction($request, 'Error while renaming file');
+        }
+
+        $media = $this->app->getMediaFromUri($newPathname);
         $record = $this->findDataboxById($request->get('databox_id'))->get_record($request->get('record_id'));
         $base_id = $record->getBaseId();
         $collection = \collection::getByBaseId($this->app, $base_id);
@@ -1009,7 +1014,12 @@ class V1Controller extends Controller
         }
         $adapt = ($request->get('adapt')===null || !(\p4field::isno($request->get('adapt'))));
         $ret['adapt'] = $adapt;
-        $this->getSubdefSubstituer()->substitute($record, $request->get('name'), $media, $adapt);
+        if($request->get('name') == 'document') {
+            $this->getSubdefSubstituer()->substituteDocument($record, $media, $adapt);
+        }
+        else {
+            $this->getSubdefSubstituer()->substituteSubdef($record, $request->get('name'), $media, $adapt);
+        }
         foreach ($record->get_embedable_medias() as $name => $media) {
             if ($name == $request->get('name') &&
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
@@ -2614,7 +2624,7 @@ class V1Controller extends Controller
                 continue;
             }
             $media = $this->app->getMediaFromUri($value->getRealPath());
-            $this->getSubdefSubstituer()->substitute($story, $name, $media);
+            $this->getSubdefSubstituer()->substituteSubdef($story, $name, $media);  // name = thumbnail | preview
             $this->getDataboxLogger($story->getDatabox())->log(
                 $story,
                 \Session_Logger::EVENT_SUBSTITUTE,
