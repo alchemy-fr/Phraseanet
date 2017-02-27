@@ -911,7 +911,12 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        $media = $this->app->getMediaFromUri($file->getPathname());
+        $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
+        if (false === rename($file->getPathname(), $newPathname)) {
+            return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+        }
+
+        $media = $this->app->getMediaFromUri($newPathname);
 
         $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
