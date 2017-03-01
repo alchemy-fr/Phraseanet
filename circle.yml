@@ -22,7 +22,8 @@ dependencies:
     - node_modules
     - ~/.composer
   pre:
-    - git clone -o 2ca1774489328cde71195f5fa95e17cf3a80cb8a https://github.com/alanxz/rabbitmq-c
+    - git clone https://github.com/alanxz/rabbitmq-c
+    - cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
     - cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
     - pecl install amqp-1.6.0
     - yes '' | pecl install imagick
