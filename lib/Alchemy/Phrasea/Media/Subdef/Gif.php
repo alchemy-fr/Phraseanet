@@ -13,14 +13,16 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
-class Gif extends Image
+class Gif extends Provider
 {
     const OPTION_DELAY = 'delay';
+    const OPTION_SIZE = 'size';
 
     public function __construct(TranslatorInterface $translator)
     {
-        parent::__construct($translator);
+        $this->translator = $translator;
 
+        $this->registerOption(new OptionType\Range($this->translator->trans('Dimension'), self::OPTION_SIZE, 20, 3000, 800));
         $this->registerOption(new OptionType\Range($this->translator->trans('Delay'), self::OPTION_DELAY, 50, 500, 100));
     }
 
@@ -41,13 +43,9 @@ class Gif extends Image
         }
 
         $size = $this->getOption(self::OPTION_SIZE)->getValue();
-        $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
         $this->spec->setDelay($this->getOption(self::OPTION_DELAY)->getValue());
         $this->spec->setDimensions($size, $size);
-        $this->spec->setQuality($this->getOption(self::OPTION_QUALITY)->getValue());
-        $this->spec->setStrip($this->getOption(self::OPTION_STRIP)->getValue());
-        $this->spec->setResolution($resolution, $resolution);
 
         return $this->spec;
     }
