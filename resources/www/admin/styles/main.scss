@@ -323,8 +323,56 @@ div.switch_right.unchecked {
 #admin_setup_registry .form-horizontal .controls, #admin_setup_registry .form-horizontal .help-message {
   margin-left: 300px;
 }
-.alert .close{
+.alert .close {
   text-decoration: none;
+}
+
+.subdefs [id^="box"] {
+  display: none;
+}
+
+.subdefs .subviews-submit {
+  position: fixed;
+  top: 75px;
+  right: 40px;
+  z-index: 1;
+}
+h2.subdefName {
+  display: inline-block;
+  margin-right: 1.5rem;
+}
+
+.reload, .loader, .status {
+  display: inline-block;
+}
+
+.langTab {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.langTab h3{
+  font-weight: 700;
+  font-size: 13px;
+  margin: 4px 0;
+  line-height: 11px;
+  text-align: center;
+}
+
+.toggle{
+  display: block;
+  margin: 15px 0;
+  color: #08c;
+  cursor: pointer;
+}
+.subdefTab input, .langTab input{
+  margin: 0;
+}
+
+@media screen and (max-width: 1150px) {
+  .langTab{
+    display: block;
+  }
 }
 
 @import './databases';
