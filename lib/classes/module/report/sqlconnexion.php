@@ -25,24 +25,21 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         $this->params = array_merge([], $filter['params']);
 
         if ($this->groupby == false) {
-            $this->sql = "
-                SELECT
-                 log.id,
-                 log.user,
-                 log.usrid,
-                 log.date as ddate,
-                 log.societe,
-                 log.pays,
-                 log.activite,
-                 log.fonction,
-                 log.site,
-                 log.sit_session,
-                 log.appli,
-                 log.ip
-                FROM log FORCE INDEX (date_site)
-                WHERE (" . $filter['sql'] .") AND !ISNULL(log.usrid)";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+            $this->sql = "SELECT\n"
+                        . "  log.id,\n"
+                        . "  log.user,\n"
+                        . "  log.usrid,\n"
+                        . "  log.date as ddate,\n"
+                        . "  log.societe,\n"
+                        . "  log.pays,\n"
+                        . "  log.activite,\n"
+                        . "  log.fonction,\n"
+                        . "  log.site,\n"
+                        . "  log.sit_session,\n"
+                        . "  log.appli,\n"
+                        . "  log.ip\n"
+                        . "FROM log FORCE INDEX(date)\n"
+                        . "WHERE (" . $filter['sql'] .") AND !ISNULL(log.usrid)\n";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -55,17 +52,14 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
             }
         } else {
-            $this->sql = "
-                SELECT " . $this->groupby . ", SUM(1) as nb
-                FROM (
-                    SELECT DISTINCT(log.id),  TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
-                    FROM  log FORCE INDEX (date_site)
-                    WHERE (" . $filter['sql'] .")
-                ) AS tt
-                GROUP BY " . $this->groupby. "
-                ORDER BY nb DESC";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+            $this->sql = "SELECT " . $this->groupby . ", SUM(1) as nb\n"
+                    . "FROM (\n"
+                    . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "\n"
+                    . "  FROM log FORCE INDEX(date)\n"
+                    . "  WHERE (" . $filter['sql'] .")\n"
+                    . ") AS tt\n"
+                    . "GROUP BY " . $this->groupby. "\n"
+                    . "ORDER BY nb DESC\n";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -81,13 +75,13 @@ class module_report_sqlconnexion extends module_report_sql implements module_rep
         $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
         $this->params = array_merge([], $filter['params']);
 
-        $this->sql = '
-            SELECT DISTINCT(val)
-            FROM (
-                SELECT DISTINCT(log.id), ' . $this->getTransQuery($field) . ' AS val
-                FROM log FORCE INDEX (date_site)
-                WHERE (' . $filter['sql'] . ')
-            ) AS tt ORDER BY val ASC';
+        $this->sql = "SELECT DISTINCT(val)\n"
+                . "FROM (\n"
+                . "  SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val\n"
+                . "  FROM log FORCE INDEX(date)\n"
+                . "  WHERE (" . $filter['sql'] . ")\n"
+                . ") AS tt\n"
+                . "ORDER BY val ASC\n";
 
         return ['sql' => $this->sql, 'params' => $this->params];
     }

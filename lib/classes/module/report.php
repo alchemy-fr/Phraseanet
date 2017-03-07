@@ -580,7 +580,6 @@ class module_report
                 return new module_report_sqlconnexion($this->app, $this);
                 break;
             case 'download' :
-  // no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
                 return new module_report_sqldownload($this->app, $this);
                 break;
             case 'question' :
@@ -830,8 +829,6 @@ class module_report
      */
     public function buildReport($tab = false, $groupby = false, $on = false)
     {
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
         if (sizeof($this->report) > 0) {
             return $this->report;
         }
@@ -839,11 +836,7 @@ class module_report
         $databox = $this->app->findDataboxById($this->sbas_id);
         $conn = $databox->get_connection();
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
-
         $this->buildReq($groupby, $on);
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\nreq=%s\n\n", __FILE__, __LINE__, $this->req), FILE_APPEND);
 
         try {
             try {
@@ -856,26 +849,18 @@ class module_report
                 return;
             }
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s) %s\n\n", __FILE__, __LINE__, get_class($this)), FILE_APPEND);
-
             //set request field
             $this->setChamp($rs);
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //set display
             $this->setDisplay($tab, $groupby);
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //construct results
             $this->buildResult($this->app, $rs);
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //calculate prev and next page
             $this->calculatePages();
             //do we display navigator ?
             $this->setDisplayNav();
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
             //assign all variables
             $this->setReport();
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n\n", __FILE__, __LINE__), FILE_APPEND);
 
             return $this->report;
         } catch (\Exception $e) {

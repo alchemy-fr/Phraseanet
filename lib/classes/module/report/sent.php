@@ -21,13 +21,13 @@ class module_report_sent extends module_report
         'activite'  => 'log.activite',
         'fonction'  => 'log.fonction',
         'usrid'     => 'log.usrid',
-        'getter'    => 'd.final',
-        'date'      => "DATE(d.date)",
-        'id'        => 'd.id',
-        'log_id'    => 'd.log_id',
-        'record_id' => 'd.record_id',
-        'final'     => 'd.final',
-        'comment'   => 'd.comment',
+        'getter'    => 'log_docs.final',
+        'date'      => "DATE(log_docs.date)",
+        'id'        => 'log_docs.id',
+        'log_id'    => 'log_docs.log_id',
+        'record_id' => 'log_docs.record_id',
+        'final'     => 'log_docs.final',
+        'comment'   => 'log_docs.comment',
         'size'      => 's.size'
     ];
 

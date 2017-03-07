@@ -32,11 +32,11 @@ class module_report_sqlfilter
         $this->report = $report;
     }
 
-    public static function constructDateFilter($dmin, $dmax, $dateField = 'log_date.date')
+    public static function constructDateFilter($dmin, $dmax, $dateField = 'date')
     {
         return array(
-            'sql' => ($dmin && $dmax ? ' '.$dateField.' > :date_min AND '.$dateField.' < :date_max ' : false)
-        , 'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
+            'sql' => ($dmin && $dmax ? $dateField.' >= :date_min AND '.$dateField.' <= :date_max' : false),
+            'params' => ($dmin && $dmax ? array(':date_min' => $dmin, ':date_max' => $dmax) : array())
         );
     }
 
@@ -143,10 +143,10 @@ class module_report_sqlfilter
                     $value['f'] = $this->cor_query[$value['f']];
 
                 if ($value['o'] == 'LIKE') {
-                    $filter[] = $value['f'] . ' ' . $value['o'] . ' \'%' . str_replace(["'", '%'], ["\'", '\%'], ' :user_filter' . $n) . '%\'';
-                    $params[':user_filter' . $n] = $value['v'];
+                    $filter[] = $value['f'] . " LIKE :user_filter" . $n;
+                    $params[':user_filter' . $n] = "%" . str_replace(["'", "%"], ["\\'", "\\%"], $value['v']) . "%";
                 } elseif ($value['o'] == 'OR') {
-                    $filter[] = $value['f'] . ' ' . $value['o'] . ' :user_filter' . $n;
+                    $filter[] = $value['f'] . ' OR :user_filter' . $n;
                     $params[':user_filter' . $n] = $value['v'];
                 } else {
                     $filter[] = $value['f'] . ' ' . $value['o'] . ' :user_filter' . $n;

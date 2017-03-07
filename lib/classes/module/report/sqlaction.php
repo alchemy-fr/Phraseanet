@@ -17,6 +17,7 @@ class module_report_sqlaction extends module_report_sql implements module_report
 
     public function __construct(Application $app, module_report $report)
     {
+        $report->setDateField('log_docs.date');
         parent::__construct($app, $report);
     }
 
@@ -44,26 +45,26 @@ class module_report_sqlaction extends module_report_sql implements module_report
         $this->params = array_merge([':action' => $this->action], $filter['params']);
 
         if ($this->groupby == false) {
-            $this->sql = "
-                SELECT tt.usrid, tt.user, tt.final AS getter, tt.record_id, tt.date, tt.mime, tt.file, tt.comment
-                FROM (
-                    SELECT DISTINCT(log.id), log.usrid, log.user, d.final, d.comment, d.record_id, d.date, record.mime, record.originalname as file
-                    FROM (log_docs AS d)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                    INNER JOIN record ON (record.record_id = d.record_id)
-                    WHERE (" . $filter['sql'] . ") AND (d.action = :action)
-                ) AS tt";
+            $this->sql = "SELECT tt.usrid, tt.user, tt.final AS getter, tt.record_id, tt.date, tt.mime, tt.file, tt.comment\n"
+                    . "FROM (\n"
+                    . "  SELECT DISTINCT(log.id), log.usrid, log.user,\n"
+                    . "         log_docs.final, log_docs.comment, log_docs.record_id, log_docs.date,\n"
+                    . "         record.mime, record.originalname AS file\n"
+                    . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
+                    . "    LEFT JOIN record ON record.record_id = log_docs.record_id\n"
+                    . "  WHERE (" . $filter['sql'] . ")\n"
+                    . "    AND log_docs.action = :action\n"
+                    . ") AS tt\n";
 
             $customFieldMap = [
-                'log.usrid'     => 'tt.usrid',
-                'log.user'      => 'tt.user',
-                'd.final'       => 'getter',
-                'd.record_id'   => 'tt.record_id',
-                'd.date'        => 'tt.date',
-                'record.mime'   => 'tt.mime',
-                'file'          => 'tt.file',
-                'd.comment'     => 'tt.comment'
+                'log.usrid'          => 'tt.usrid',
+                'log.user'           => 'tt.user',
+                'log_docs.final'     => 'getter',
+                'log_docs.record_id' => 'tt.record_id',
+                'log_docs.date'      => 'tt.date',
+                'record.mime'        => 'tt.mime',
+                'file'               => 'tt.file',
+                'log_docs.comment'   => 'tt.comment'
             ];
 
             $stmt = $this->getConnBas()->prepare($this->sql);
@@ -74,20 +75,18 @@ class module_report_sqlaction extends module_report_sql implements module_report
             $this->sql .= $this->filter->getOrderFilter($customFieldMap) ? : '';
             $this->sql .= $this->filter->getLimitFilter() ? : '';
         } else {
-            $this->sql = "
-                SELECT " . $this->groupby . ", SUM(1) AS nombre
-                FROM (
-                    SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . " , log.usrid , d.final,  d.record_id, d.date
-                    FROM (log_docs as d)
-                        INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                        INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                        INNER JOIN record ON (record.record_id = d.record_id)
-                        WHERE (" . $filter['sql'] . ") AND (d.action = :action)
-                ) AS tt
-                LEFT JOIN subdef AS s ON (s.record_id=tt.record_id)
-                WHERE s.name='document'
-                GROUP BY " . $this->groupby . "
-                ORDER BY nombre";
+            $this->sql = "SELECT " . $this->groupby . ", SUM(1) AS nombre\n"
+                        . "FROM (\n"
+                        . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . ",\n"
+                        . "         log.usrid, log_docs.final, log_docs.record_id, log_docs.date\n"
+                        . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
+                        . "    LEFT JOIN record ON record.record_id = log_docs.record_id\n"
+                        . "  WHERE (" . $filter['sql'] . ") AND (log_docs.action = :action)\n"
+                        . ") AS tt\n"
+                        . "LEFT JOIN subdef AS s ON (s.record_id=tt.record_id)\n"
+                        . "WHERE s.name='document'\n"
+                        . "GROUP BY " . $this->groupby . "\n"
+                        . "ORDER BY nombre\n";
 
             $stmt = $this->getConnBas()->prepare($this->sql);
             $stmt->execute($this->params);
@@ -103,18 +102,15 @@ class module_report_sqlaction extends module_report_sql implements module_report
         $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
         $this->params = array_merge([':action' => $this->action], $filter['params']);
 
-        $this->sql = "
-            SELECT DISTINCT(val)
-            FROM (
-                SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
-                FROM (log_docs as d)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = d.log_id)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log.id = log_colls.log_id)
-                    INNER JOIN record ON (record.record_id = d.record_id)
-                    LEFT JOIN subdef as s ON (s.record_id=d.record_id AND s.name='document')
-                WHERE (" . $filter['sql'] . ")
-                AND (d.action = :action)
-            ) AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '');
+        $this->sql = "SELECT DISTINCT(val)\n"
+                . "FROM (\n"
+                . "  SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val\n"
+                . "  FROM (log_docs INNER JOIN log ON log.id = log_docs.log_id)\n"
+                . "    LEFT JOIN record ON record.record_id = log_docs.record_id\n"
+                . "    LEFT JOIN subdef AS s ON s.record_id = log_docs.record_id AND s.name='document'\n"
+                . "  WHERE (" . $filter['sql'] . ")\n"
+                . "    AND log_docs.action = :action\n"
+                . ") AS tt " . ($this->filter->getOrderFilter() ? $this->filter->getOrderFilter() : '') . "\n";
 
         return ['sql' => $this->sql, 'params' => $this->params];
     }

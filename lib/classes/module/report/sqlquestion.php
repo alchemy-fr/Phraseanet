@@ -13,9 +13,9 @@ use Alchemy\Phrasea\Application;
 
 class module_report_sqlquestion extends module_report_sql implements module_report_sqlReportInterface
 {
-
     public function __construct(Application $app, module_report $report)
     {
+        $report->setDateField('log_search.date');
         parent::__construct($app, $report);
     }
 
@@ -25,12 +25,9 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
         $this->params = array_merge([], $filter['params']);
 
         if ($this->groupby == false) {
-            $this->sql =" SELECT log.id, log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction
-                FROM log_search
-                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id) AND !ISNULL(usrid)
-                WHERE (" . $filter['sql'] .")";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+            $this->sql ="SELECT log.id, log_search.date ddate, log_search.search, log.usrid, log.user, log.pays, log.societe, log.activite, log.fonction\n"
+                    . "FROM log_search INNER JOIN log ON log.id = log_search.log_id AND !ISNULL(usrid)\n"
+                    . "WHERE (" . $filter['sql'] .")\n";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -43,18 +40,14 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
                 $this->sql .= $this->filter->getLimitFilter() ? : '';
             }
         } else {
-            $this->sql = "
-                SELECT " . $this->groupby . ", SUM(1) AS nb
-                FROM (
-                    SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "
-                    FROM (`log_search`)
-                    INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                    WHERE (" . $filter['sql'] .")
-                ) AS tt
-                GROUP BY " . $this->groupby ."
-                ORDER BY nb DESC";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+            $this->sql = "SELECT " . $this->groupby . ", SUM(1) AS nb\n"
+                        . "FROM (\n"
+                        . "  SELECT DISTINCT(log.id), TRIM(" . $this->getTransQuery($this->groupby) . ") AS " . $this->groupby . "\n"
+                        . "  FROM log_search INNER JOIN log ON log.id = log_search.log_id\n"
+                        . "  WHERE (" . $filter['sql'] . ")\n"
+                        . ") AS tt\n"
+                        . "GROUP BY " . $this->groupby . "\n"
+                        . "ORDER BY nb DESC\n";
 
             $stmt = $this->connbas->prepare($this->sql);
             $stmt->execute($this->params);
@@ -70,15 +63,13 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
         $filter = $this->filter->getReportFilter() ? : ['params' => [], 'sql' => false];
         $this->params = array_merge([], $filter['params']);
 
-        $this->sql = "
-            SELECT DISTINCT(tt.val)
-            FROM (
-                SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val
-                FROM (`log_search`)
-                INNER JOIN log FORCE INDEX (date_site) ON (log.id = log_search.log_id)
-                WHERE (" . $filter['sql'] . ")
-            ) as tt
-            ORDER BY tt.val ASC";
+        $this->sql = "SELECT DISTINCT(tt.val)\n"
+                    . "FROM (\n"
+                    . "  SELECT DISTINCT(log.id), " . $this->getTransQuery($field) . " AS val\n"
+                    . "  FROM log_search INNER JOIN log ON log.id = log_search.log_id\n"
+                    . "  WHERE (" . $filter['sql'] . ")\n"
+                    . ") as tt\n"
+                    . "ORDER BY tt.val ASC\n";
 
         return ['sql' => $this->sql, 'params' => $this->params];
     }

@@ -60,12 +60,9 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = '
-            SELECT COUNT(log.id) AS total
-                FROM log FORCE INDEX (date_site)
-                WHERE ' . $report_filter['sql'] . ' AND nav != "" AND !ISNULL(usrid)';
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT COUNT(log.id) AS total\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE (" . $report_filter['sql'] . ") AND nav != '' AND !ISNULL(usrid)\n";
 
         $stmt = $sqlBuilder->getConnBas()->prepare($sql);
         $stmt->execute($params);
@@ -111,14 +108,11 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = '
-            SELECT nav, SUM(1) AS nb, ROUND((SUM(1) / ' . $this->total_pourcent . ' * 100), 1) AS pourcent
-                FROM log FORCE INDEX (date_site, nav)
-                WHERE ' . $report_filter['sql'] . ' AND nav != "" AND !ISNULL(usrid)
-            GROUP BY nav
-            ORDER BY nb DESC';
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT nav, SUM(1) AS nb, ROUND((SUM(1) / " . $this->total_pourcent . " * 100), 1) AS pourcent\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE (" . $report_filter['sql'] . ") AND nav != '' AND !ISNULL(usrid)\n"
+            . "GROUP BY nav\n"
+            . "ORDER BY nb DESC\n";
 
         $this->initialize();
 
@@ -168,16 +162,11 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = '
-            SELECT os, COUNT(os) AS nb, ROUND((COUNT(os)/' . $this->total_pourcent . '*100),1) AS pourcent
-
-                FROM log FORCE INDEX (date_site, os)
-                WHERE '. $report_filter['sql'] . ' AND os != "" AND !ISNULL(usrid)
-
-            GROUP BY os
-            ORDER BY nb DESC';
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT os, COUNT(os) AS nb, ROUND((COUNT(os)/" . $this->total_pourcent . " * 100), 1) AS pourcent\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE (" . $report_filter['sql'] . ") AND os != '' AND !ISNULL(usrid)\n"
+            . "GROUP BY os\n"
+            . "ORDER BY nb DESC\n";
 
         $this->initialize();
 
@@ -226,17 +215,12 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = '
-            SELECT res, COUNT(res) AS nb, ROUND((COUNT(res)/ ' . $this->total_pourcent . '*100),1) AS pourcent
-
-                FROM log FORCE INDEX (date_site, res)
-                WHERE '. $report_filter['sql'] . ' AND res != "" AND !ISNULL(usrid)
-
-            GROUP BY res
-            ORDER BY nb DESC
-            LIMIT 0, 10';
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT res, COUNT(res) AS nb, ROUND((COUNT(res)/ " . $this->total_pourcent . "*100),1) AS pourcent\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE (" . $report_filter['sql'] . ") AND res != '' AND !ISNULL(usrid)\n"
+            . "GROUP BY res\n"
+            . "ORDER BY nb DESC\n"
+            . "LIMIT 0, 10\n";
 
         $this->initialize();
 
@@ -286,18 +270,15 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = "
-            SELECT tt.combo, COUNT( tt.combo ) AS nb, ROUND((COUNT(tt.combo)/" . $this->total_pourcent . "*100), 1) AS pourcent
-            FROM (
-                SELECT CONCAT( nav, '-', os ) AS combo
-                FROM log FORCE INDEX (date_site, os_nav)
-                WHERE ". $report_filter['sql'] ."  AND nav != '' AND os != '' AND !ISNULL(usrid)
-            ) AS tt
-            GROUP BY tt.combo
-            ORDER BY nb DESC
-            LIMIT 0 , 10";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT tt.combo, COUNT(tt.combo) AS nb, ROUND((COUNT(tt.combo)/" . $this->total_pourcent . " * 100), 1) AS pourcent\n"
+            . "FROM (\n"
+            . "  SELECT CONCAT( nav, '-', os ) AS combo\n"
+            . "  FROM log FORCE INDEX(date)\n"
+            . "  WHERE (" . $report_filter['sql'] . ")  AND nav != '' AND os != '' AND !ISNULL(usrid)\n"
+            . ") AS tt\n"
+            . "GROUP BY tt.combo\n"
+            . "ORDER BY nb DESC\n"
+            . "LIMIT 0, 10\n";
 
         $this->initialize();
 
@@ -349,13 +330,10 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge([], $report_filter['params']);
 
-        $sql = '
-            SELECT appli
-                FROM log FORCE INDEX (date_site)
-                WHERE ' . $report_filter['sql'] . ' AND appli != \'a:0:{}\' AND !ISNULL(usrid)
-            GROUP BY appli';
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT appli\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE (" . $report_filter['sql'] . ") AND appli != 'a:0:{}' AND !ISNULL(usrid)\n"
+            . "GROUP BY appli\n";
 
         $this->initialize();
 
@@ -429,25 +407,23 @@ class module_report_nav extends module_report
                 $filter_id_datbox = implode(' OR ', $filter_id_datbox);
             }
 
-            $sql = "
-                SELECT
-                    login as identifiant,
-                    last_name as nom,
-                    email as mail,
-                    address AS adresse,
-                    phone AS tel
-                FROM Users
-                WHERE $on = :value " . (('' !== $filter_id_apbox) ? "AND (" . $filter_id_apbox . ")" : '');
+            $sql = "SELECT\n"
+                . "  login AS identifiant,\n"
+                . "  last_name AS nom,\n"
+                . "  email AS mail,\n"
+                . "  address AS adresse,\n"
+                . "  phone AS tel\n"
+                . "FROM Users\n"
+                . "WHERE " . $on . " = :value" . (('' !== $filter_id_apbox) ? " AND (" . $filter_id_apbox . ")" : '') . "\n";
         } else {
-            $sql = '
-                SELECT
-                    login AS identifiant,
-                    last_name AS nom,
-                    email AS mail,
-                    address AS adresse,
-                    phone AS tel
-                 FROM Users
-                 WHERE (id = :value)';
+            $sql = "SELECT\n"
+                . "  login AS identifiant,\n"
+                . "  last_name AS nom,\n"
+                . "  email AS mail,\n"
+                . "  address AS adresse,\n"
+                . "  phone AS tel\n"
+                . "FROM Users\n"
+                . "WHERE (id = :value)\n";
         }
 
         $params2 = [':value' => $val];
@@ -539,18 +515,15 @@ class module_report_nav extends module_report
         $report_filter = $filter->getReportFilter();
         $params = array_merge($report_filter['params'], [':browser' => $navigator]);
 
-        $sql = "
-            SELECT DISTINCT(tt.version), COUNT(tt.version) as nb
-            FROM (
-                SELECT DISTINCT (log.id), version
-                FROM log FORCE INDEX (date_site, nav, version)
-                WHERE nav = :browser
-                AND ". $report_filter['sql'] . "
-            ) AS tt
-            GROUP BY version
-            ORDER BY nb DESC";
-
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT DISTINCT(tt.version), COUNT(tt.version) as nb\n"
+            . "FROM (\n"
+            . "  SELECT DISTINCT (log.id), version\n"
+            . "  FROM log\n"
+            . "  WHERE nav = :browser\n"
+            . "    AND ". $report_filter['sql'] . "\n"
+            . ") AS tt\n"
+            . "GROUP BY version\n"
+            . "ORDER BY nb DESC\n";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);

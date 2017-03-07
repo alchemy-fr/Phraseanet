@@ -139,7 +139,7 @@ class module_report_connexion extends module_report
         $databox = $app->findDataboxById($sbas_id);
         $conn = $databox->get_connection();
 
-        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+        $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax, "log.date");
 
         $params = array_merge([
                 ':site_id' => $app['conf']->get(['main', 'key'])
@@ -148,18 +148,11 @@ class module_report_connexion extends module_report
         );
 
         $finalfilter = $datefilter['sql'] . ' AND ';
-        $finalfilter .= 'log_date.site = :site_id';
-/*
-        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb
-                FROM log as log_date FORCE INDEX (date_site)
-                    INNER JOIN log_colls FORCE INDEX (couple) ON (log_date.id = log_colls.log_id)
-                WHERE " . $finalfilter;
-*/
-        $sql = "SELECT COUNT(DISTINCT(log_date.id)) as nb\n"
-            . " FROM log as log_date FORCE INDEX (date_site)\n"
-            . " WHERE " . $finalfilter . "\n";
+        $finalfilter .= 'log.site = :site_id';
 
-// no_file_put_contents("/tmp/report.txt", sprintf("%s (%s)\n%s\n\n", __FILE__, __LINE__, $sql), FILE_APPEND);
+        $sql = "SELECT COUNT(id) as nb\n"
+            . "FROM log FORCE INDEX(date)\n"
+            . "WHERE " . $finalfilter . "\n";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
