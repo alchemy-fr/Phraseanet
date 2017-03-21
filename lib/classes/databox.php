@@ -600,6 +600,19 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
+     * @return collection|null
+     */
+    public function getTrashCollection()
+    {
+        foreach($this->get_collections() as $collection) {
+            if($collection->get_name() === '_TRASH_') {
+                return $collection;
+            }
+        }
+        return null;
+    }
+
+    /**
      *
      * @param  int            $record_id
      * @param  int            $number

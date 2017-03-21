@@ -132,6 +132,8 @@ class RecordController extends Controller
 
         $deleted = [];
 
+        $trashCollectionsBySbasId = [];
+
         $manager = $this->getEntityManager();
         foreach ($records as $record) {
             try {
@@ -148,10 +150,21 @@ class RecordController extends Controller
                     $manager->remove($attachedStory);
                 }
 
+                $sbasId = $record->getDatabox()->get_sbas_id();
+                if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                    $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+                }
                 $deleted[] = $record->getId();
-                $record->delete();
+                if($trashCollectionsBySbasId[$sbasId] !== null) {
+                    // move to trash collection
+                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export(null, true)), FILE_APPEND);
+                    $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
+                }
+                else {
+                    // delete
+                    $record->delete();
+                }
             } catch (\Exception $e) {
-
             }
         }
 
