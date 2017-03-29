@@ -47,6 +47,9 @@ class Thesaurus
      */
     public function findConceptsBulk(array $terms, $lang = null, $filter = null, $strict = false)
     {
+        if(count($terms) == 0) {
+            return [];
+        }
         $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
 
         // We use the same filter for all terms when a single one is given
