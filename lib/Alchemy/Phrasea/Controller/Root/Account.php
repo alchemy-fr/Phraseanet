@@ -343,18 +343,28 @@ class Account implements ControllerProviderInterface
     public function updateAccount(PhraseaApplication $app, Request $request)
     {
         $demands = (array) $request->request->get('demand', array());
-
+        $demandOK = array();
+        $user = $app['authentication']->getUser();
         if (0 !== count($demands)) {
             $register = new \appbox_register($app['phraseanet.appbox']);
 
             foreach ($demands as $baseId) {
                 try {
-                    $register->add_request($app['authentication']->getUser(), \collection::get_from_base_id($app, $baseId));
+                    $register->add_request($user, \collection::get_from_base_id($app, $baseId));
                     $app->addFlash('success', _('login::notification: Vos demandes ont ete prises en compte'));
+                    $demandOK[$baseId] = true;
                 } catch (\Exception $e) {
 
                 }
             }
+
+            $params = array(
+                'demand' => $demandOK,
+                'autoregister' => $user->ACL()->get_granted_base(),
+                'usr_id' => $user->get_id()
+            );
+
+            $app['events-manager']->trigger('__REGISTER_APPROVAL__', $params);
         }
 
         $accountFields = array(
