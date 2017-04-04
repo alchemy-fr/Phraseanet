@@ -527,7 +527,7 @@ class User
      */
     public function setGeonameId($geonameId)
     {
-        if (null !== $geonameId && $geonameId < 1) {
+        if ('' !== $geonameId && null !== $geonameId && $geonameId < 1) {
             throw new InvalidArgumentException(sprintf('Invalid geonameid %s.', $geonameId));
         }
 
