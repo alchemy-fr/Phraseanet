@@ -33,8 +33,8 @@
         </whitelist>
     </filter>
 
-    <!--<listeners>-->
-      <!--<listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>-->
-    <!--</listeners>-->
+    <listeners>
+      <listener class="PhraseanetPHPUnitListener" file="tests/classes/PhraseanetPHPUnitListener.php"></listener>
+    </listeners>
 </phpunit>
 
