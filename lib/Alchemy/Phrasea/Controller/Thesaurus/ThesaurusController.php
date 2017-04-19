@@ -1847,6 +1847,7 @@ class ThesaurusController extends Controller
 
                         $r = $refresh_list->appendChild($ret->createElement("refresh"));
                         $r->setAttribute("id", $pid);
+                        $r->setAttribute("id", $pid);
                         $r->setAttribute("type", "TH");
                     }
                 }
