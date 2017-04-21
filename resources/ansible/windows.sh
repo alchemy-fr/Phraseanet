@@ -25,7 +25,7 @@ sudo apt-get update
 sudo apt-get install -y ansible
 
 # Setup Ansible for Local Use and Run
-cp /vagrant/ansible/inventories/dev /etc/ansible/hosts -f
+cp /vagrant/resources/ansible/inventories/dev /etc/ansible/hosts -f
 chmod 666 /etc/ansible/hosts
-cat /vagrant/ansible/files/authorized_keys >> /home/vagrant/.ssh/authorized_keys
-sudo ansible-playbook /vagrant/ansible/playbook.yml -e hostname=$1 --connection=local
+cat /vagrant/resources/ansible/files/authorized_keys >> /home/vagrant/.ssh/authorized_keys
+sudo ansible-playbook /vagrant/resources/ansible/playbook.yml -e hostname=$1 --connection=local
