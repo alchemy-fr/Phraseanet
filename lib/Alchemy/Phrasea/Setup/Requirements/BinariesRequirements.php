@@ -105,8 +105,10 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
         $this->addRecommendation(
             null !== $unoconv && is_executable($unoconv),
             'Unoconv is required for documents (Word, Excel, etc...) support',
-            'Please install Unoconv'
+            'Please install Unoconv (or add Unoconv path to php-fpm pool settings)'
         );
+
+        putenv('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/node/bin');
 
         if (null !== $unoconv) {
             $output = null;
