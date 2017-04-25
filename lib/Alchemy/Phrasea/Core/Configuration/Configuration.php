@@ -196,7 +196,7 @@ class Configuration implements ConfigurationInterface
      */
     public function isSetup()
     {
-        return file_exists($this->config);
+        return file_exists(realpath($this->config));
     }
 
     private function isAutoReload()
@@ -220,11 +220,12 @@ class Configuration implements ConfigurationInterface
 
     private function isConfigFresh()
     {
-        return @filemtime($this->config) <= @filemtime($this->compiled);
+        return @filemtime(realpath($this->config)) <= @filemtime($this->compiled);
     }
 
     private function loadFile($file)
     {
+        $file = realpath($file);
         if (!is_file($file) || !is_readable($file)) {
             throw new RuntimeException(sprintf('Unable to read %s', $file));
         }
@@ -234,6 +235,7 @@ class Configuration implements ConfigurationInterface
 
     private function dumpFile($file, $content, $mod = 0600)
     {
+        $file = realpath($file);
         $tmpFile = tempnam(dirname($file), basename($file));
 
         if (false !== @file_put_contents($tmpFile, $content)) {
@@ -251,6 +253,7 @@ class Configuration implements ConfigurationInterface
 
     private function eraseFile($file)
     {
+        $file = realpath($file);
         if (is_file($file)) {
             unlink($file);
         }
