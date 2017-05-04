@@ -3,17 +3,17 @@ Phraseanet 4.0 - Digital Asset Management application
 
 [![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
 
-#Features :
+# Features :
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
  - Bridge to Youtube/Dailymotion/Flickr
 
-#Documentation :
+# Documentation :
 
 https://docs.phraseanet.com/
 
-#Installation :
+# Installation :
 
 You **must** not download the source from GitHub, but download a packaged version here :
 
@@ -21,12 +21,12 @@ https://www.phraseanet.com/download/
 
 And follow the install steps described at https://docs.phraseanet.com/Admin/
 
-#Development :
+# Development :
 
 For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
 
 See https://docs.phraseanet.com/Devel/
 
-#License :
+# License :
 
 Phraseanet is licensed under GPL-v3 license.
