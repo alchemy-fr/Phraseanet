@@ -41,9 +41,9 @@
 - name: mariadb | Create databases
   mysql_db: name={{ item }} state=present login_user=root login_password={{ mariadb.root_password }}
   with_items:
-    - "{{ mariadb.database }}"
+    - "{{ mariadb.appbox_db }}"
     - "{{ mariadb.databox_db }}"
-    - "{{ mariadb.alt_db }}"
+    - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
   mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}

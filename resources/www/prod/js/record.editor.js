@@ -1485,8 +1485,7 @@ function vsplit2() {
         return;
     var a = $(el).width();
     el.width(a);
-    var v = $('#EDIT_ALL').width() - a - 20;
-
+    var v = $('#EDIT_ALL').width() - a - 35;
     $("#EDIT_MID_L", p4.edit.editBox).width(v);
 }
 
@@ -1730,7 +1729,7 @@ function startThisEditing(sbas_id, what, regbasprid, ssel) {
                 setPreviewEdit();
             },
             stop: function () {
-                setPref('editing_left_box', Math.floor($('#EDIT_MID_R').width() * 100 / $('#EDIT_MID').width()));
+                setPref('editing_left_box', Math.floor(($('#EDIT_MID_R').width()) * 100 / $('#EDIT_MID').width()));
                 vsplit2();
                 setSizeLimits();
             }
