@@ -377,7 +377,7 @@
                     bottomOffset = -15;
                 } else {
                     // tooltip from workzone (basket)
-                    tooltipVerticalOffset = 0;
+                    //tooltipVerticalOffset = 0;
                     tooltipHorizontalOffset = 0;
                     topOffset = 50;
                     // fallback on original target if nothing found:
