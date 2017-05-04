@@ -3,7 +3,6 @@
 - shell: hostname
   register: current_hostname
 
-
 - name: Add MariaDB-Repository
   sudo: yes
   apt_repository: repo='deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present
