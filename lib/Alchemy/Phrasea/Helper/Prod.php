@@ -46,9 +46,17 @@ class Prod extends Helper
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
                 $bases[$sbasId]['collections'][] = array(
                     'selected' => $selected,
-                    'base_id' => $coll->get_base_id()
+                    'base_id' => $coll->get_base_id(),
+                    'name'    => $coll->get_name(),
                 );
             }
+
+            $aName = array();
+            foreach ($bases[$sbasId]['collections'] as $key => $row)
+            {
+                $aName[$key] = $row['name'];
+            }
+            array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
