@@ -57,40 +57,61 @@ class RegistrationManager
     {
         $data = $userData = [];
 
-        // Gets user data
+        // Get user data
         if (null !== $user) {
             $userData = $this->repository->getRegistrationsSummaryForUser($user);
         }
 
         foreach ($this->appbox->get_databoxes() as $databox) {
-            $data[$databox->get_sbas_id()] = [
-                // Registrations on databox by type
-                'registrations' => [
-                    'by-type' => [
-                        'inactive'  => [],
-                        'accepted'  => [],
-                        'in-time'   => [],
-                        'out-dated' => [],
-                        'pending'   => [],
-                        'rejected'  => [],
-                    ]
-                ],
+            $sbas_id = $databox->get_sbas_id();
+            $data[$sbas_id] = [
                 // Registration configuration on databox and collections that belong to the databox
-                'config' => [
-                    'db-name'       => $databox->get_dbname(),
-                    'cgu'           => $databox->get_cgus(),
-                    'can-register'  => $databox->isRegistrationEnabled(),
-                    // Configuration on collection
-                    'collections'   => [],
-                ]
+                'db-name'       => $databox->get_dbname(),
+                'cgu'           => $databox->get_cgus(),
+                'display'       => false,
+                'can-register'  => $databox->isRegistrationEnabled(),
+                // Configuration on collection
+                'collections'   => [],
+                // Registrations on databox by type
+                'registrations-by-type' => [
+                    'active'      => [],
+                    'inactive'    => [],
+                    'in-time'     => [],
+                    'out-dated'   => [],
+                    'pending'     => [],
+                    'rejected'    => [],
+                    'accepted'    => [],
+                    'registrable' => [],
+                ],
             ];
 
             foreach ($databox->get_collections() as $collection) {
-                // Sets collection info
-                $data[$databox->get_sbas_id()]['config']['collections'][$collection->get_base_id()] = $this->getCollectionSummary($collection, $userData);
+                // Set collection info
+                $base_id = $collection->get_base_id();
+                $data[$sbas_id]['collections'][$base_id] = [
+                    'coll-name'     => $collection->get_label($this->locale),
+                    // gets collection registration or fallback to databox configuration
+                    'can-register'  => $collection->isRegistrationEnabled()
+                ];
+                // add registration infos
+                $reg = igorw\get_in($userData, [$sbas_id, $base_id]);
+                foreach(['active', 'time-limited', 'in-time'] as $p) {
+                    $data[$sbas_id]['collections'][$base_id][$p] = $reg ? $reg[$p] : null;
+                }
+                $type = $data[$sbas_id]['collections'][$base_id]['type'] = $this->getRegistrationType($reg);
+
                 // Sets registration by type
-                if (null !== $registration = $this->getUserCollectionRegistration($collection, $userData)) {
-                    $data[$databox->get_sbas_id()]['registrations']['by-type'][$registration['type']][] = $registration;
+                if($type !== null) {
+                    // a 'inactive' collection is a collection where user has no access and CANT require one
+                    // a 'registrable' collection is a collection where user has no access but CAN require one
+                    if($type == 'inactive' && $collection->isRegistrationEnabled()) {
+                        $type = 'registrable';
+                    }
+                    $data[$sbas_id]['registrations-by-type'][$type][] = $base_id;
+                    // if at least on collection is displayed, the databox should be displayed
+                    if($type != 'inactive') {
+                        $data[$sbas_id]['display'] = true;
+                    }
                 }
             }
         }
@@ -99,106 +120,43 @@ class RegistrationManager
     }
 
     /**
-     * Tells whether user has ever requested a registration on collection or not.
-     *
-     * @param \collection $collection
-     * @param             $userData
-     *
-     * @return boolean
+     * @param $data
+     * @return null|string
      */
-    private function userHasRequestedARegistrationOnCollection(\collection $collection, $userData)
+    private function getRegistrationType($data)
     {
-        if (null === $userRegistration = igorw\get_in($userData, [$collection->get_sbas_id(), $collection->get_base_id()])) {
-            return false;
-        }
-
-        return !is_null($userRegistration['active']);
-    }
-
-    /**
-     * Returns a user registration for given collection or null if no registration were requested.
-     *
-     * @param \collection $collection
-     * @param             $userData
-     *
-     * @return null|array
-     */
-    private function getUserCollectionRegistration(\collection $collection, $userData)
-    {
-        if (false === $this->userHasRequestedARegistrationOnCollection($collection, $userData)) {
+        if(is_null($data)) {
             return null;
         }
-
-        $userRegistration = igorw\get_in($userData, [$collection->get_sbas_id(), $collection->get_base_id()]);
-
-        // sets collection name
-        $userRegistration['coll-name'] = $collection->get_label($this->locale);
-        // sets default type
-        $userRegistration['type'] = 'active';
-
-        // gets registration entity
-        $registration = $userRegistration['registration'];
-
-        // set registration type & return user registration
-        $registrationStillExists = !is_null($registration);
-        $registrationNoMoreExists = !$registrationStillExists;
-        $isPending = $registrationStillExists && $registration->isPending() && !$registration->isRejected();
-        $isRejected = $registrationStillExists && $registration->isRejected();
-        $isDone = ($registrationNoMoreExists) || (!$isPending && !$isRejected);
-        $isActive = (Boolean) $userRegistration['active'];
-        $isTimeLimited = (Boolean) $userRegistration['time-limited'];
-        $isNotTimeLimited = !$isTimeLimited;
-        $isOnTime = (Boolean) $userRegistration['in-time'];
-        $isOutDated = !$isOnTime;
-
-        if (!$isActive) {
-            $userRegistration['type'] = 'inactive';
-
-            return $userRegistration;
+        $type = null;
+        if($data['time-limited'] === true) {
+            // date range set
+            $type = $data['in-time'] ? "in-time" : "out-time";
+        }
+        else {
+            // no date range
+            if($data['active'] === true) {
+                $type = "active";
+            }
+            elseif($data['active'] === false) {
+                $type = "inactive";
+            }
+            elseif($data['active'] === null) {
+                if($data['registration'] === null) {
+                    $type = "inactive";
+                }
+                elseif($data['registration']->isPending()) {
+                    $type = "pending";
+                }
+                elseif(!$data['registration']->isRejected()) {
+                    $type = "accepted";
+                }
+                else {
+                    $type = "rejected";
+                }
+            }
         }
 
-        if ($isDone) {
-            $userRegistration['type'] = 'accepted';
-
-            return $userRegistration;
-        }
-
-        if ($isRejected) {
-            $userRegistration['type'] = 'rejected';
-
-            return $userRegistration;
-        }
-
-        if ($isTimeLimited && $isOnTime && $isPending) {
-            $userRegistration['type'] = 'in-time';
-
-            return $userRegistration;
-        }
-
-        if ($isTimeLimited && $isOutDated && $isPending) {
-            $userRegistration['type'] = 'out-time';
-
-            return  $userRegistration;
-        }
-
-        if ($isNotTimeLimited && $isPending) {
-            $userRegistration['type'] = 'pending';
-
-            return $userRegistration;
-        }
-
-        return $userRegistration;
-    }
-
-    private function getCollectionSummary(\collection $collection, $userData)
-    {
-        return [
-            'coll-name'     => $collection->get_label($this->locale),
-            // gets collection registration or fallback to databox configuration
-            'can-register'  => $collection->isRegistrationEnabled(),
-            'cgu'           => $collection->getTermsOfUse(),
-            // boolean to tell whether user has already requested an access to the collection
-            'registration'  => $this->userHasRequestedARegistrationOnCollection($collection, $userData)
-        ];
+        return $type;
     }
 }

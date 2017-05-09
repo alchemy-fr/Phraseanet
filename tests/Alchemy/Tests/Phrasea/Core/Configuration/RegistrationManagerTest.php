@@ -65,9 +65,8 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $rs = $service->getRegistrationSummary(self::$DI['user']);
 
         $databox = current(self::$DI['app']->getDataboxes());
-        $collection = current($databox->get_collections());
 
-        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations']['by-type'][$type]));
+        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type]));
     }
 
     public function userDataProvider()
