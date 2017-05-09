@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1dcedc4dc0dab3d1f4362114e988921",
+    "content-hash": "63398822b46fad2fdda0854fe18b70f9",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,17 +131,11 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "v0.3.3",
+            "version": "0.3.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "2eedc22e0030f6b4a166de2b93ffb108193c43dd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/2eedc22e0030f6b4a166de2b93ffb108193c43dd",
-                "reference": "2eedc22e0030f6b4a166de2b93ffb108193c43dd",
-                "shasum": ""
+                "url": "/Users/ericchaber/Documents/works/embed-bundle",
+                "reference": "3aa0d4ddf12406ebd3b3caac6963432372702f7a"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.7",
@@ -177,11 +171,7 @@
                 }
             ],
             "description": "Embed resources bundle",
-            "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/v0.3.3",
-                "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
-            },
-            "time": "2016-06-14T13:51:50+00:00"
+            "time": "2017-05-05 05:33:31"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -7888,6 +7878,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "alchemy/embed-bundle": 20,
         "alchemy/task-manager": 20,
         "doctrine/cache": 20,
         "imagine/imagine": 20,
