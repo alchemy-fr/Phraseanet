@@ -188,7 +188,7 @@ class DashboardController extends Controller
             if (is_dir($thumbnailPath))
             {
                 // thumbnails new path
-                $thumbnailNewPath = $this->app['root.path'] . '/www/thumbnails_' . time();
+                $thumbnailNewPath = $thumbnailPath . '_' . time();
                 $app['filesystem']->rename($thumbnailPath, $thumbnailNewPath);
             }
         } else
