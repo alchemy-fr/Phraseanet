@@ -122,6 +122,25 @@
 
 <div class="board_section">
     <div class="section">
+        <form id="thumbnail_reset" action="{{ path('admin_dashboard_purge_thumbnails') }}" method="post" class="form-inline" style="display:inline">
+            <fieldset>
+                <legend>{{ 'setup::Purge thumbnails' | trans }}</legend>
+                <ul class="unstyled">
+                    <li>
+                        <label class="checkbox">
+                            <input type="checkbox" name="backup" value="yes" />
+                            {{ 'setup::Backup' | trans }}
+                        </label>
+                    </li>
+                    <input type="submit" class="btn btn-warning" value="{{ 'boutton::purge thumbnails cache' | trans }}" onclick="return confirm('{{ 'confirm::Etes-vous sûre?' | trans }}');" />
+                </ul>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="board_section">
+    <div class="section">
         <form id="mail_checker" method="post" action="{{ path('admin_dashboard_test_mail') }}" target="_self" class="form-inline">
             <fieldset>
                 <legend>{{ 'setup::Tests d\'envois d\'emails' | trans }}</legend>
