@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Notification\Receiver;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -175,42 +176,29 @@ class DashboardController extends Controller
      * @param  Request $request
      * @return RedirectResponse
      */
-    public function purgeThumbnails(Request $request)
+    public function purgeThumbnails(Request $request, Application $app)
     {
         // thumbnails path
-        $thumbnailPath = $this->app['root.path'] . '/www/thumbnails';
+        $thumbnailPath = $this->app['thumbnail.path'];
         
         $backup = $request->request->get('backup');
         
-        if (!empty($backup) && $backup == 'yes') {
-            if (is_dir($thumbnailPath)) {
+        if (!empty($backup) && $backup == 'yes')
+        {
+            if (is_dir($thumbnailPath))
+            {
                 // thumbnails new path
                 $thumbnailNewPath = $this->app['root.path'] . '/www/thumbnails_' . time();
-                rename($thumbnailPath, $thumbnailNewPath);
+                $app['filesystem']->rename($thumbnailPath, $thumbnailNewPath);
             }
-        } else {
-            if (is_dir($thumbnailPath)) {
-                $this->rrmdir($thumbnailPath);
+        } else
+        {
+            if (is_dir($thumbnailPath))
+            {
+                $app['filesystem']->remove(array('symlink', 'directories', $thumbnailPath));
             }
         }
         return $this->app->redirectPath('admin_dashboard');
-    }
-
-    public function rrmdir($dir)
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir")
-                        $this->rrmdir($dir."/".$object);
-                    else unlink($dir."/".$object);
-                }
-            }
-            reset($objects);
-            rmdir($dir);
-        }
     }
 
     /**
