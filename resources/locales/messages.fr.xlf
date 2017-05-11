@@ -8943,6 +8943,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Ré-initialiser</target>
         <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="button_purge_thumbnails_cache" resname="boutton::purge thumbnails cache" approved="yes">
+        <source>boutton::purge thumbnails cache</source>
+        <target state="translated">Purge thumbnails cache</target>
+        <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="7c93f19dc5b7cef99db6fb84975ef795e3e87102" resname="boutton::remplacer" approved="yes">
         <source>boutton::remplacer</source>
         <target state="translated">Remplacer</target>
@@ -11737,6 +11742,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tests d'envois d'e-mails</target>
         <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="purge_thumbnails_cache" resname="setup::Purge thumbnails" approved="yes">
+        <source>setup::Purge thumbnails</source>
+        <target state="translated">Purger thumbnails</target>
+        <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="purge_thumbnails_cache_backup" resname="setup::Backup" approved="yes">
+        <source>setup::Backup</source>
+        <target state="translated">Backup</target>
+        <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8ab6a8a0cf069e3783c6f59163ad03a051310556" resname="sport" approved="yes">
         <source>sport</source>
         <target state="translated">sport</target>
@@ -12660,6 +12675,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>your configuration</source>
         <target state="translated">Votre configuration</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="confirm_thumbnails_cache" resname="confirm::Etes-vous sûre?" approved="yes">
+        <source>confirm::Etes-vous sûre?</source>
+        <target state="translated">Etes-vous sûre?</target>
+        <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
     </body>
   </file>

@@ -9084,6 +9084,11 @@
         <source>boutton::reinitialiser</source>
         <target state="translated">Reiniciar</target>
       </trans-unit>
+      <trans-unit id="button_purge_thumbnails_cache" resname="boutton::purge thumbnails cache" approved="yes">
+        <source>boutton::purge thumbnails cache</source>
+        <target state="translated">Purge thumbnails cache</target>
+        <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="7c93f19dc5b7cef99db6fb84975ef795e3e87102" resname="boutton::remplacer" approved="yes">
         <jms:reference-file line="226">prod/actions/edit_default.html.twig</jms:reference-file>
         <source>boutton::remplacer</source>
@@ -12158,6 +12163,16 @@
         <source>setup::Tests d'envois d'emails</source>
         <target state="translated">prueba de enviar correos</target>
       </trans-unit>
+      <trans-unit id="purge_thumbnails_cache" resname="setup::Purge thumbnails" approved="yes">
+        <source>setup::Purge thumbnails</source>
+        <target state="translated">Purger thumbnails</target>
+        <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="purge_thumbnails_cache_backup" resname="setup::Backup" approved="yes">
+        <source>setup::Backup</source>
+        <target state="translated">Backup</target>
+        <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8ab6a8a0cf069e3783c6f59163ad03a051310556" resname="sport">
         <jms:reference-file line="58">prod/results/help.html.twig</jms:reference-file>
         <source>sport</source>
@@ -13077,6 +13092,11 @@
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
         <source>your configuration</source>
         <target state="new">your configuration</target>
+      </trans-unit>
+      <trans-unit id="confirm_thumbnails_cache" resname="confirm::Etes-vous sûre?" approved="yes">
+        <source>confirm::Etes-vous sûre?</source>
+        <target state="translated">Etes-vous sûre?</target>
+        <jms:reference-file line="118">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
     </body>
   </file>
