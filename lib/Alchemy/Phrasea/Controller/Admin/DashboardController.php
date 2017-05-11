@@ -168,6 +168,50 @@ class DashboardController extends Controller
 
         return $this->app->redirectPath('admin_dashboard');
     }
+    
+    /**
+     * Grant to purge thumbnails
+     *
+     * @param  Request          $request
+     * @return RedirectResponse
+     */
+    public function purgeThumbnails(Request $request)
+    {
+        // thumbnails path
+        $thumbnailPath = $this->app['root.path'] . '/www/thumbnails';
+        
+        $backup = $request->request->get('backup');
+        
+        if (!empty($backup) && $backup == 'yes') {
+            if (is_dir($thumbnailPath)) {
+                // thumbnails new path
+                $thumbnailNewPath = $this->app['root.path'] . '/www/thumbnails_' . time();
+                rename($thumbnailPath, $thumbnailNewPath);
+            }
+        } else {
+            if (is_dir($thumbnailPath)) {
+                $this->rrmdir($thumbnailPath);
+            }
+        }
+        return $this->app->redirectPath('admin_dashboard');
+    }
+
+    public function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (filetype($dir."/".$object) == "dir")
+                        $this->rrmdir($dir."/".$object);
+                    else unlink($dir."/".$object);
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
+    }
 
     /**
      * @return UserRepository
