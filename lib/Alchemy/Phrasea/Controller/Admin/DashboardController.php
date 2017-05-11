@@ -172,7 +172,7 @@ class DashboardController extends Controller
     /**
      * Grant to purge thumbnails
      *
-     * @param  Request          $request
+     * @param  Request $request
      * @return RedirectResponse
      */
     public function purgeThumbnails(Request $request)
