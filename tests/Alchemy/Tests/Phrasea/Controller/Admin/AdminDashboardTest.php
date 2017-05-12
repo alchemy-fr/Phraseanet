@@ -132,4 +132,30 @@ class AdminDashboardTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         self::$DI['app']['manipulator.user']->delete($user);
     }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::purgeThumbnails
+     */
+    public function testPurgeThumbnails()
+    {
+        $this->setAdmin(true);
+
+        self::$DI['client']->request('POST', '/admin/dashboard/purge-thumbnails/');
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+    }
+
+    /**
+     * @covers \Alchemy\Phrasea\Controller\Admin\Dashboard::purgeThumbnails
+     */
+    public function testPurgeThumbnailsWithBackup()
+    {
+        $this->setAdmin(true);
+
+        self::$DI['client']->request('POST', '/admin/dashboard/purge-thumbnails/', [
+            'backup' => 'yes'
+        ]);
+
+        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+    }
 }
