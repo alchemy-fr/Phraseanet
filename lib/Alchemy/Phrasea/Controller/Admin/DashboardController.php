@@ -198,6 +198,8 @@ class DashboardController extends Controller
                 $app['filesystem']->remove(array('symlink', 'directories', $thumbnailPath));
             }
         }
+        $app['filesystem']->mkdir($thumbnailPath, 0755);
+        
         return $this->app->redirectPath('admin_dashboard');
     }
 
