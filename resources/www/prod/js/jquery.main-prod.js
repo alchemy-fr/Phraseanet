@@ -493,7 +493,6 @@ function initAnswerForm() {
     });
 
     searchForm.unbind('submit').bind('submit', function () {
-
         var $this = $(this),
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
@@ -518,12 +517,16 @@ function initAnswerForm() {
                 $('#answers').removeClass('loading');
             },
             success: function (datas) {
-
                 // DEBUG QUERY PARSER
                 try {
                     console.info(JSON.parse(datas.parsed_query));
                 }
                 catch(e) {}
+
+                if(datas.total_answers > 0) {
+                    console.log('saving');
+                    sessionStorage.setItem('search', JSON.stringify(datas.query));
+                }
 
                 $('#answers').empty().append(datas.results).removeClass('loading');
 
