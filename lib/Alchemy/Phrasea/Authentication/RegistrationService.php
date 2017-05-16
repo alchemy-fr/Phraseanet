@@ -279,10 +279,10 @@ class RegistrationService
 
     /**
      * @param array $selectedCollections
-     * @param array $inscriptions
+     * @param array|null $inscriptions
      * @return array
      */
-    private function getAuthorizedCollections(array $selectedCollections, $inscriptions)
+    private function getAuthorizedCollections($selectedCollections, $inscriptions)
     {
         $authorizedCollections = [];
 

@@ -99,6 +99,9 @@ class RegistrationManager
                     $data[$sbas_id]['collections'][$base_id][$p] = $reg ? $reg[$p] : null;
                 }
                 $type = $data[$sbas_id]['collections'][$base_id]['type'] = $this->getRegistrationType($reg);
+                if($type === null) {
+                    $type = 'inactive';
+                }
 
                 // Sets registration by type
                 if($type !== null) {
