@@ -78,8 +78,7 @@ class cache_databox
                     $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_TECHNICAL_DATA;
                     $databox->delete_data_from_cache($key);
 
-                    $sql = 'DELETE FROM memcached
-              WHERE site_id = :site_id AND type="record" AND value = :value';
+                    $sql = 'DELETE FROM memcached WHERE site_id = :site_id AND type="record" AND value = :value';
 
                     $params = [
                         ':site_id' => $app['conf']->get('servername')
@@ -101,8 +100,7 @@ class cache_databox
                 case 'structure':
                     $app->getApplicationBox()->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
 
-                    $sql = 'DELETE FROM memcached
-              WHERE site_id = :site_id AND type="structure" AND value = :value';
+                    $sql = 'DELETE FROM memcached WHERE site_id = :site_id AND type="structure" AND value = :value';
 
                     $params = [
                         ':site_id' => $app['conf']->get('servername')
