@@ -76,17 +76,6 @@ class MoveCollectionController extends Controller
                         }
                     }
                 }
-
-                if ($record->getCollection()->get_name() === '_TRASH_' && $collection->get_name() !== '_TRASH_')
-                {
-                    foreach($record->get_subdefs() as $subdef)
-                    {
-                        if( ($pl = $subdef->get_permalink()) )
-                        {
-                            $pl->set_is_activated(true);
-                        }
-                    }
-                }
             }
 
             $ret = [
