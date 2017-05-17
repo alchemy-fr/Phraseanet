@@ -650,8 +650,11 @@
                         <form class="form-inline">
                             {% set order_collection_by = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_collection_by') %}
                             <label class="checkbox" for="orderByName">
-                                <input onchange="if($(this).is(':checked')){setPref('order_collection_by','name');}else{setPref('order_collection_by','order');}" name="orderByName" type="checkbox" class="checkbox" value="name" {% if order_collection_by == 'name' %}checked="checked" {% endif %}/>
-                                {{ 'Trier par ordre alphabétique' | trans }}
+                                <select onchange="setPref('order_collection_by',$(this).val());" name="orderByName">
+                                    <option {% if order_collection_by == 'admin' %} selected="selected" {% endif %} value="byAdmin">Défini par l'administrateur</option>
+                                    <option {% if order_collection_by == 'SORT_ASC' %} selected="selected" {% endif %} value="SORT_ASC">Alphabétique croissant</option>
+                                    <option {% if order_collection_by == 'SORT_DESC' %} selected="selected" {% endif %} value="SORT_DESC">Alphabétique décroissant</option>
+                                </select>
                             </label>
                         </form>
                     </div>

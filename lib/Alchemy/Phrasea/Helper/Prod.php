@@ -56,11 +56,20 @@ class Prod extends Helper
             $userOrderSetting = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
             $aName = array();
+
+            if($userOrderSetting == "byAdmin" ) {
+                $ordType = "order";
+                $userOrderSetting = "SORT_ASC";
+            } else {
+                $ordType = "name";
+            }
+
             foreach ($bases[$sbasId]['collections'] as $key => $row)
             {
-                $aName[$key] = $row[$userOrderSetting];
+                $aName[$key] = $row[$ordType];
             }
-            array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
+
+            array_multisort($aName, constant($userOrderSetting), $bases[$sbasId]['collections']);
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
