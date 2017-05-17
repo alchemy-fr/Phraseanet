@@ -53,7 +53,7 @@ class Prod extends Helper
                 );
             }
 
-            $userOrderSetting = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'col_order');
+            $userOrderSetting = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
             $aName = array();
             foreach ($bases[$sbasId]['collections'] as $key => $row)
