@@ -31,6 +31,7 @@ class Prod extends Helper
 
         $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search', '{}'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
+
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($acl->get_granted_sbas() as $databox) {
             $sbasId = $databox->get_sbas_id();
@@ -46,9 +47,20 @@ class Prod extends Helper
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
                 $bases[$sbasId]['collections'][] = array(
                     'selected' => $selected,
-                    'base_id' => $coll->get_base_id()
+                    'base_id' => $coll->get_base_id(),
+                    'name'    => $coll->get_name(),
+                    'order'   => $coll->get_ord()
                 );
             }
+
+            $userOrderSetting = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+
+            $aName = array();
+            foreach ($bases[$sbasId]['collections'] as $key => $row)
+            {
+                $aName[$key] = $row[$userOrderSetting];
+            }
+            array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {

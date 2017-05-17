@@ -39,7 +39,7 @@
     $(document).ready(function(){
         var offsets = [
             {% for collection in collections|sort_collections %}
-                {% if not loop.first %},{% endif %} {{ collection.get_ord() }}
+                {% if not loop.first %},{% endif %} {{ loop.index }}
             {% endfor %}
         ];
         var select =  $("#coll-order");
@@ -68,11 +68,11 @@
         });
 
         applyButton.bind('click', function() {
+
             var $this = $(this);
             var order = [];
             // clone the array
             var appliedoffsets = offsets.slice(0);
-
             select.find('option').each(function(i, option){
                 order.push({id: $(this).val(), offset: appliedoffsets.shift()});
             });
@@ -83,7 +83,7 @@
                 data: {order: order},
                 url: '{{ path('admin_database_submit_collections_order', {'databox_id': app['request'].attributes.get('databox_id')}) }}',
                 beforeSend : function() {
-                    $this.prop('disabled',true)
+                    $this.prop('disabled',true);
                 },
                 success : function(datas) {
                     var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
