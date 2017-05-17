@@ -66,6 +66,9 @@ class RegistrationManagerTest extends \PhraseanetTestCase
 
         $databox = current(self::$DI['app']->getDataboxes());
 
+        if($value != count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type])) {
+            printf("whazaa\n");
+        }
         $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type]));
     }
 
@@ -98,8 +101,8 @@ class RegistrationManagerTest extends \PhraseanetTestCase
 
         $registrations = [
             // special type when a user has no access nor demand on a registrable-or-not collection
-            $collection->isRegistrationEnabled() ? 'registrable' : 'inactive'
-                          => null,
+    //        $collection->isRegistrationEnabled() ? 'registrable' : 'inactive'
+    //                      => null,
             // "normal" types
             'pending'     => $pendingRegistration,
             'rejected'    => $rejectedRegistration,
@@ -109,7 +112,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $ret = [];
 
         foreach($registrations as $label=>$reg) {
-            // is access is already active (true) or inactive (false), or time-limited, registration is nonsense
+            // if access is already active (true) or inactive (false), or time-limited, registration is nonsense
             $ret[] = [
                 [
                     $sbas_id => [
