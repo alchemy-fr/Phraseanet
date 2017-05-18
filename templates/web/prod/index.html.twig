@@ -649,11 +649,11 @@
                         <h1>{{ 'Collection order' | trans }}</h1>
                         <form class="form-inline">
                             {% set order_collection_by = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_collection_by') %}
-                            <label class="checkbox" for="orderByName">
+                            <label class="select" for="orderByName">
                                 <select onchange="setPref('order_collection_by',$(this).val());" name="orderByName">
-                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') }}">Defined by admin</option>
-                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">Alphabetic asc</option>
-                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">Alphabetic desc</option>
+                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') }}">{{ 'Defined by admin' | trans }}</option>
+                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                    <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
                                 </select>
                             </label>
                         </form>
