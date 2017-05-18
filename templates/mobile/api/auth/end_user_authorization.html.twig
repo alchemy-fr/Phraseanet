@@ -68,7 +68,7 @@
                             <h4>{% trans %}Autorisation d'acces{% endtrans %}</h4>
                         </div>
                         <div id="main-text-box">
-                            {% set application_name = '<span>' ~ auth.getClient.getName() ~ '</span>' %}
+                            {% set application_name = '<span>' ~ auth.getClient.getName() ~ '</span>' %} 
                             <p>
                                 {% trans with {'%application_name%' : application_name, '%home_title%' : home_title} %}Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?{% endtrans %}
                             </p>
