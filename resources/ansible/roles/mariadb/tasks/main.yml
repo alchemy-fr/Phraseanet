@@ -51,3 +51,4 @@
 
 - name: mariadb | Create users
   mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
+
