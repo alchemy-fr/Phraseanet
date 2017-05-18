@@ -39,7 +39,7 @@ class DisplaySettingService
         'client_basket_status'    => '1',
         'css'                     => '000000',
         'start_page_query'        => '',
-        'order_collection_by'     => 'ORDER_BY_ADMIN',
+        'order_collection_by'     => self::ORDER_BY_ADMIN,
         'start_page'              => 'QUERY',
         'rollover_thumbnail'      => 'caption',
         'technical_display'       => '1',
