@@ -65,6 +65,9 @@ class MoveCollectionController extends Controller
                 return $this->app->json($datas);
             }
 
+            /** @var \collection[] $trashCollectionsBySbasId */
+            $trashCollectionsBySbasId = [];
+
             foreach ($records as $record) {
                 $record->move_to_collection($collection, $this->getApplicationBox());
 
@@ -76,19 +79,44 @@ class MoveCollectionController extends Controller
                         }
                     }
                 }
-            }
-            
-            if ($record->getCollection()->get_name() === '_TRASH_' && $collection->get_name() !== '_TRASH_')
-            {
-                foreach($record->get_subdefs() as $subdef)
+
+                $sbasId = $record->getDatabox()->get_sbas_id();
+                if(!array_key_exists($sbasId, $trashCollectionsBySbasId))
                 {
-                    if( ($pl = $subdef->get_permalink()) )
+                    $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+                }
+
+                if($trashCollectionsBySbasId[$sbasId] !== null) {
+                    if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id() && $collection->get_coll_id() !== $trashCollectionsBySbasId[$sbasId]->get_coll_id())
                     {
-                        $pl->set_is_activated(true);
+                        // record is already in trash so active it
+                        foreach($record->get_subdefs() as $subdef)
+                        {
+                            if( ($pl = $subdef->get_permalink()) )
+                            {
+                                $pl->set_is_activated(true);
+                            }
+                        }
+
+                        if ($request->request->get("chg_coll_son") == "1") {
+                            /** @var \record_adapter $child */
+                            foreach ($record->getChildren() as $child) {
+                                if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), \ACL::CANDELETERECORD))
+                                {
+                                    foreach($child->get_subdefs() as $childSubdef)
+                                    {
+                                        if( ($childPl = $childSubdef->get_permalink()) )
+                                        {
+                                            $childPl->set_is_activated(true);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-
+            
             $ret = [
                 'success' => true,
                 'message' => $this->app->trans('Records have been successfuly moved'),
