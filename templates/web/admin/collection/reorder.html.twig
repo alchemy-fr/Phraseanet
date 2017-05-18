@@ -7,7 +7,7 @@
 <table id="table-order">
     <tr>
         <td valign="center" align="center">
-             <select size=16 name="coll-order" id="coll-order" style="width:140px;">
+             <select size=16 name="coll-order" id="coll-order" style="width:300px;">
                  {% for collection in collections|sort_collections %}
                      <option value="{{ collection.get_base_id() }}"> {{ collection.get_name() }}</option>
                  {% endfor %}
