@@ -59,37 +59,27 @@ class Prod extends Helper
             $settings = $this->app['settings'];
             $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
+            // a temporary array to sort the collections
             $aName = array();
-
             switch ($userOrderSetting) {
 
                 case $settings::ORDER_ALPHA_ASC :
-                    foreach ($bases[$sbasId]['collections'] as $key => $row)
-                    {
-                        $aName[$key] = $row["name"];
-                    }
-                    array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
-
+                    $ukey, $urder = list("name", SORT_ASC);
                     break;
 
                 case $settings::ORDER_ALPHA_DESC :
-                    foreach ($bases[$sbasId]['collections'] as $key => $row)
-                    {
-                        $aName[$key] = $row["name"];
-                    }
-                    array_multisort($aName, SORT_DESC, $bases[$sbasId]['collections']);
-
+                    $ukey, $urder = list("name", SORT_DESC);
                     break;
 
                 case $settings::ORDER_BY_ADMIN :
-                    foreach ($bases[$sbasId]['collections'] as $key => $row)
-                    {
-                        $aName[$key] = $row["order"];
-                    }
-                    array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
-
+                    $ukey, $urder = list("order", SORT_ASC);
                     break;
             }
+            foreach ($bases[$sbasId]['collections'] as $key => $row) {
+                $aName[$key] = $row[$ukey];
+            }
+            // sort the collections
+            array_multisort($aName, $uorder, SORT_REGULAR, $bases[$sbasId]['collections']);
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
