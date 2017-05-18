@@ -61,18 +61,14 @@ class Prod extends Helper
 
             // a temporary array to sort the collections
             $aName = array();
+            list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
             switch ($userOrderSetting) {
-
                 case $settings::ORDER_ALPHA_ASC :
-                    $ukey, $urder = list("name", SORT_ASC);
+                    list($ukey, $uorder) = ["name", SORT_ASC];
                     break;
 
                 case $settings::ORDER_ALPHA_DESC :
-                    $ukey, $urder = list("name", SORT_DESC);
-                    break;
-
-                case $settings::ORDER_BY_ADMIN :
-                    $ukey, $urder = list("order", SORT_ASC);
+                    list($ukey, $uorder) = ["name", SORT_DESC];
                     break;
             }
             foreach ($bases[$sbasId]['collections'] as $key => $row) {
