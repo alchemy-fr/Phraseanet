@@ -9,6 +9,7 @@ use MediaVorus\MediaVorusServiceProvider;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
+use PHPExiftool\Reader;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -24,6 +25,10 @@ class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
         $app->register(new MediaVorusServiceProvider());
         $app->register(new MP4BoxServiceProvider());
         $app->register(new PHPExiftoolServiceProvider());
+
+        /** @var Reader $exiftoolReader */
+        $exiftoolReader = $app['exiftool.reader'];
+        $exiftoolReader->setTimeout($app['conf']->get(['main', 'binaries', 'exiftool_timeout'], 60));
 
         $app['imagine.factory'] = $app->share(function (Application $app) {
             if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {

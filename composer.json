@@ -41,7 +41,7 @@
         "alchemy/mediavorus": "^0.4.4",
         "alchemy/oauth2php": "1.0.0",
         "alchemy/phlickr": "0.2.9",
-        "alchemy/phpexiftool": "^0.5.0",
+        "alchemy/phpexiftool": "^0.7.0",
         "alchemy/rest-bundle": "^0.0.5",
         "alchemy/symfony-cors": "^0.1.0",
         "alchemy/task-manager": "2.0.x-dev@dev",
