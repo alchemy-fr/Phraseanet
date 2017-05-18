@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Mail\MailTest;
 use Alchemy\Phrasea\Notification\Receiver;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -166,6 +167,39 @@ class DashboardController extends Controller
         $aclManipulator = $this->app['manipulator.acl'];
         $aclManipulator->resetAdminRights($admins);
 
+        return $this->app->redirectPath('admin_dashboard');
+    }
+    
+    /**
+     * Grant to purge thumbnails
+     *
+     * @param  Request $request
+     * @return RedirectResponse
+     */
+    public function purgeThumbnails(Request $request, Application $app)
+    {
+        // thumbnails path
+        $thumbnailPath = $this->app['thumbnail.path'];
+        
+        $backup = $request->request->get('backup');
+        
+        if (!empty($backup) && $backup == 'yes')
+        {
+            if (is_dir($thumbnailPath))
+            {
+                // thumbnails new path
+                $thumbnailNewPath = $thumbnailPath . '_' . time();
+                $app['filesystem']->rename($thumbnailPath, $thumbnailNewPath);
+            }
+        } else
+        {
+            if (is_dir($thumbnailPath))
+            {
+                $app['filesystem']->remove(array('symlink', 'directories', $thumbnailPath));
+            }
+        }
+        $app['filesystem']->mkdir($thumbnailPath, 0755);
+        
         return $this->app->redirectPath('admin_dashboard');
     }
 

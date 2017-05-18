@@ -60,6 +60,10 @@ class Dashboard implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/add-admins/', 'controller.admin.dashboard:addAdmins')
             ->bind('admin_dashboard_add_admins');
+        
+        /* thumbnail */
+        $controllers->post('/purge-thumbnails/', 'controller.admin.dashboard:purgeThumbnails')
+            ->bind('admin_dashboard_purge_thumbnails');
 
         return $controllers;
     }
