@@ -15,6 +15,11 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class DisplaySettingService
 {
+
+    const ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
+    const ORDER_ALPHA_DESC = "ORDER_ALPHA_DESC";
+    const ORDER_BY_ADMIN = "ORDER_BY_ADMIN";
+
     /**
      * The default user settings.
      *
@@ -34,7 +39,7 @@ class DisplaySettingService
         'client_basket_status'    => '1',
         'css'                     => '000000',
         'start_page_query'        => '',
-        'order_collection_by'     => 'byAdmin',
+        'order_collection_by'     => 'ORDER_BY_ADMIN',
         'start_page'              => 'QUERY',
         'rollover_thumbnail'      => 'caption',
         'technical_display'       => '1',

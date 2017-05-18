@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Helper;
 
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -53,23 +55,41 @@ class Prod extends Helper
                 );
             }
 
-            $userOrderSetting = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+            /** @var DisplaySettingService $settings */
+            $settings = $this->app['settings'];
+            $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
             $aName = array();
 
-            if($userOrderSetting == "byAdmin" ) {
-                $ordType = "order";
-                $userOrderSetting = "SORT_ASC";
-            } else {
-                $ordType = "name";
-            }
+            switch ($userOrderSetting) {
 
-            foreach ($bases[$sbasId]['collections'] as $key => $row)
-            {
-                $aName[$key] = $row[$ordType];
-            }
+                case $settings::ORDER_ALPHA_ASC :
+                    foreach ($bases[$sbasId]['collections'] as $key => $row)
+                    {
+                        $aName[$key] = $row["name"];
+                    }
+                    array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
 
-            array_multisort($aName, constant($userOrderSetting), $bases[$sbasId]['collections']);
+                    break;
+
+                case $settings::ORDER_ALPHA_DESC :
+                    foreach ($bases[$sbasId]['collections'] as $key => $row)
+                    {
+                        $aName[$key] = $row["name"];
+                    }
+                    array_multisort($aName, SORT_DESC, $bases[$sbasId]['collections']);
+
+                    break;
+
+                case $settings::ORDER_BY_ADMIN :
+                    foreach ($bases[$sbasId]['collections'] as $key => $row)
+                    {
+                        $aName[$key] = $row["order"];
+                    }
+                    array_multisort($aName, SORT_ASC, $bases[$sbasId]['collections']);
+
+                    break;
+            }
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
