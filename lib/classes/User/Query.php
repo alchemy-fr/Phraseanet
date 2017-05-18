@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -812,7 +811,7 @@ class User_Query
                 WHERE 1 ';
 
         if (! $this->include_special_users) {
-            $sql .= ' AND Users.login != "autoregister" AND Users.login != "invite" ';
+            $sql .= ' AND Users.login != "autoregister" AND Users.login NOT LIKE "guest%" ';
         }
 
         $sql .= ' AND Users.deleted="0" ';
