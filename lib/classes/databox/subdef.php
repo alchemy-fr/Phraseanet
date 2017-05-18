@@ -32,6 +32,7 @@ class databox_subdef
     protected $devices = [];
     protected $name;
     protected $path;
+    protected $preset;
     protected $subdef_group;
     protected $labels = [];
 
@@ -80,6 +81,7 @@ class databox_subdef
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
+        $this->preset = $sd->attributes()->presets;
 
         $this->requiresMetadataUpdate = p4field::isyes((string) $sd->meta);
 
@@ -121,6 +123,15 @@ class databox_subdef
     public function get_class()
     {
         return $this->class;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_preset()
+    {
+        return $this->preset;
     }
 
     /**

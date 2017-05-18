@@ -44,7 +44,7 @@ class SubdefsController extends Controller
 
         $databox = $this->findDataboxById((int) $sbas_id);
 
-        $add_subdef = ['class' => null, 'name'  => null, 'group' => null];
+        $add_subdef = ['class' => null, 'name'  => null, 'group' => null, 'presets' => null];
         foreach ($add_subdef as $k => $v) {
             if (!isset($toadd_subdef[$k]) || trim($toadd_subdef[$k]) === '') {
                 unset($add_subdef[$k]);
@@ -59,7 +59,7 @@ class SubdefsController extends Controller
             $name = $delete_subef[1];
             $subdefs = $databox->get_subdef_structure();
             $subdefs->delete_subdef($group, $name);
-        } elseif (count($add_subdef) === 3) {
+        } elseif (count($add_subdef) === 4) {
             $subdefs = $databox->get_subdef_structure();
 
             $group = $add_subdef['group'];
@@ -67,8 +67,9 @@ class SubdefsController extends Controller
             $unicode = $this->app['unicode'];
             $name = $unicode->remove_nonazAZ09($add_subdef['name'], false);
             $class = $add_subdef['class'];
+            $preset = $add_subdef['presets'];
 
-            $subdefs->add_subdef($group, $name, $class);
+            $subdefs->add_subdef($group, $name, $class, $preset);
         } else {
             $subdefs = $databox->get_subdef_structure();
 
@@ -80,6 +81,7 @@ class SubdefsController extends Controller
                 $group = $post_sub_ex[0];
                 $name = $post_sub_ex[1];
 
+                $preset = $request->request->get($post_sub . '_presets');
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
 
@@ -108,8 +110,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels);
+                $subdefs->set_subdef($group, $name, $class, $preset, $downloadable, $options, $labels);
             }
         }
 
