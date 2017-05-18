@@ -85,7 +85,7 @@
         "pagerfanta/pagerfanta": "^1.0",
         "php-ffmpeg/php-ffmpeg": "~0.5.0",
         "php-xpdf/php-xpdf": "~0.2.1",
-        "phpexiftool/exiftool": "10.07",
+        "phpexiftool/exiftool": "10.10",
         "ramsey/uuid": "^3.0",
         "roave/security-advisories": "dev-master",
         "silex/silex": "^1.3.0",
