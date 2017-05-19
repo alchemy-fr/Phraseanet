@@ -60,6 +60,7 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
+        exiftool_timeout: 60
     task-manager:
         status: started
         listener:
