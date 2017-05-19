@@ -10,6 +10,7 @@ use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use PHPExiftool\PHPExiftoolServiceProvider;
 use PHPExiftool\Reader;
+use PHPExiftool\Writer;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -25,10 +26,6 @@ class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
         $app->register(new MediaVorusServiceProvider());
         $app->register(new MP4BoxServiceProvider());
         $app->register(new PHPExiftoolServiceProvider());
-
-        /** @var Reader $exiftoolReader */
-        $exiftoolReader = $app['exiftool.reader'];
-        $exiftoolReader->setTimeout($app['conf']->get(['main', 'binaries', 'exiftool_timeout'], 60));
 
         $app['imagine.factory'] = $app->share(function (Application $app) {
             if ($app['conf']->get(['registry', 'executables', 'imagine-driver']) != '') {
@@ -53,6 +50,21 @@ class MediaUtilitiesMetaServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        // no-op
+        if(isset($app['exiftool.reader']) && isset($app['conf'])) {
+            try {
+                $timeout = $app['conf']->get(['main', 'binaries', 'exiftool_timeout'], 60);
+
+                /** @var Reader $exiftoolReader */
+                $exiftoolReader = $app['exiftool.reader'];
+                $exiftoolReader->setTimeout($timeout);
+
+                /** @var Writer $exiftoolWriter */
+                $exiftoolWriter = $app['exiftool.writer'];
+                $exiftoolWriter->setTimeout($timeout);
+            }
+            catch(\Exception $e) {
+                // no-nop
+            }
+        }
     }
 }
