@@ -85,15 +85,16 @@ class module_console_fieldsRename extends Command
         $start = 0;
         $quantity = 100;
 
-        $builder = $databox->get_connection()->createQueryBuilder();
-        $builder
-            ->select('r.record_id')
-            ->from('record', 'r')
-            ->orderBy('r.record_id', 'ASC')
-            ->setFirstResult($start)
-            ->setMaxResults($quantity)
-        ;
         do {
+            $builder = $databox->get_connection()->createQueryBuilder();
+            $builder
+                ->select('r.record_id')
+                ->from('record', 'r')
+                ->orderBy('r.record_id', 'ASC')
+                ->setFirstResult($start)
+                ->setMaxResults($quantity)
+            ;
+
             $output->write("\rUpdating records... <info>".min($start, $total)." / $total</info>");
 
             $stmt = $builder->execute();
