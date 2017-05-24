@@ -24,7 +24,8 @@
 
                 {% if attribute(baseInfo["cgu"], app['locale']) is defined %}
                     {% set TOU = attribute(baseInfo["cgu"], app['locale']) %}
-                    <tr>
+                    {% if(TOU['value'] != '') %}
+                        <tr>
                         <td colspan="3" style="text-align: center;">
                             <i class="icon-warning"></i>
                             <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
@@ -33,6 +34,7 @@
                     <tr>
                         <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']|raw  }}</blockquote></td>
                     </tr>
+                    {% endif %}
                 {% endif %}
 
                 {% if baseInfo["registrations-by-type"]["accepted"]|length > 0 %}
@@ -41,12 +43,12 @@
                             {{ "Allowed access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["accepted"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["accepted"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color: lightgreen;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -62,12 +64,12 @@
                             {{ "Rejected access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["rejected"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["rejected"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color: red;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -83,12 +85,12 @@
                             {{ "Pending access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["pending"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["pending"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color:orange;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -104,12 +106,12 @@
                             {{ "Temporary access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["in-time"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["in-time"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color: lightskyblue;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -125,12 +127,12 @@
                             {{ "Outdated access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["out-dated"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["out-dated"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color:darkred;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -147,12 +149,12 @@
                             {{ "Active access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["active"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["active"] %}
                         <tr>
                             <td colspan="3" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color:#00c000;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg['coll-name'] }}</b>
                                 </span>
                             </td>
                         </tr>
@@ -163,22 +165,25 @@
                     </tr>
                 {% endif %}
 
-                {% if baseInfo["registrations-by-type"]["registrable"]|length > 0 %}
+                {# too bad we must count "registrable" collections #}
+                {% set count_registrable = 0  %}
+                {% for reg in baseInfo["registrations-by-type"]["inactive"] if reg['can-register'] %}
+                    {% set count_registrable = count_registrable+1 %}
+                {% endfor %}
+                {% if count_registrable > 0 %}
                     <tr>
                         <th colspan="3" style="text-align: center">
                             {{ "You can require access to the following collections" | trans }}
                         </th>
                     </tr>
-                    {% for bid in baseInfo["registrations-by-type"]["registrable"] %}
+                    {% for reg in baseInfo["registrations-by-type"]["inactive"] if reg['can-register'] %}
                         <tr>
-                            <td colspan="2" style="text-align:center;">
-                                {{ bid }}&nbsp;
+                            <td colspan="3" style="text-align:center;">
+                                {{ reg['base-id'] }}&nbsp;
                                 <span style="color:yellow;">
-                                    <b>{{ baseInfo["collections"][bid]["coll-name"] }}</b>
+                                    <b>{{ reg["coll-name"] }}</b>
                                 </span>
-                            </td>
-                            <td class="TD_R" style="width: 200px;">
-                                <input style="width: 15px;" class="checkbox" type="checkbox" name="registrations[]" value="{{ bid }}" />
+                                <input style="width: 15px;" class="checkbox" type="checkbox" name="registrations[]" value="{{ reg['base-id'] }}" />
                                 <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
                             </td>
                         </tr>

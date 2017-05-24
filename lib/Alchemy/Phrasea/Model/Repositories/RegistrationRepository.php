@@ -92,18 +92,17 @@ class RegistrationRepository extends EntityRepository
         $rsm->addScalarResult('actif', 'actif');
 
         // nb: UNIX_TIMESTAMP will return null if date is 0000-00-00 00:00:00
-        $sql = "
-        SELECT dbname, sbas.sbas_id, time_limited,
-            UNIX_TIMESTAMP( limited_from ) AS limited_from,
-            UNIX_TIMESTAMP( limited_to ) AS limited_to,
-            bas.server_coll_id, Users.id, basusr.actif,
-            bas.base_id AS bas_id, " . $rsm->generateSelectClause(['d' => 'd',]) . "
-        FROM (Users, bas, sbas)
-            LEFT JOIN basusr ON ( Users.id = basusr.usr_id AND bas.base_id = basusr.base_id )
-            LEFT JOIN Registrations d ON ( d.user_id = Users.id AND bas.base_id = d.base_id )
-        WHERE bas.active = 1 AND bas.sbas_id = sbas.sbas_id
-        AND Users.id = ?
-        AND ISNULL(model_of)";
+        $sql = "SELECT dbname, sbas.sbas_id, time_limited,\n"
+        . "  UNIX_TIMESTAMP( limited_from ) AS limited_from,\n"
+        . "  UNIX_TIMESTAMP( limited_to ) AS limited_to,\n"
+        . "  bas.server_coll_id, Users.id, basusr.actif,\n"
+        . "  bas.base_id AS bas_id, " . $rsm->generateSelectClause(['d' => 'd',]) . "\n"
+        . "FROM (Users, bas, sbas)\n"
+        . "  LEFT JOIN basusr ON ( Users.id = basusr.usr_id AND bas.base_id = basusr.base_id )\n"
+        . "  LEFT JOIN Registrations d ON ( d.user_id = Users.id AND bas.base_id = d.base_id )\n"
+        . "WHERE bas.active = 1 AND bas.sbas_id = sbas.sbas_id\n"
+        . "  AND Users.id = ?\n"
+        . "  AND ISNULL(model_of)";
 
         $query = $this->_em->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $user->getId());

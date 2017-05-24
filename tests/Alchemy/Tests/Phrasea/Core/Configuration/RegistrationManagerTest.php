@@ -65,138 +65,119 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $rs = $service->getRegistrationSummary(self::$DI['user']);
 
         $databox = current(self::$DI['app']->getDataboxes());
+        $collection = current($databox->get_collections());
 
-        if($value != count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type])) {
-            printf("whazaa\n");
-        }
         $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type]));
     }
 
     public function userDataProvider()
     {
-        $databox = current((new \appbox(new Application(Application::ENV_TEST)))->get_databoxes());
-        /** @var \collection $collection */
-        $collection = current($databox->get_collections());
-
-        $sbas_id = $databox->get_sbas_id();
-        $base_id = $collection->get_base_id();
-
         $pendingRegistration = new Registration();
-        $pendingRegistration->setBaseId($base_id);
+        $pendingRegistration->setBaseId(1);
         $pendingRegistration->setUser(new User());
         $pendingRegistration->setPending(true);
         $pendingRegistration->setRejected(false);
 
         $rejectedRegistration = new Registration();
-        $rejectedRegistration->setBaseId($base_id);
+        $rejectedRegistration->setBaseId(1);
         $rejectedRegistration->setUser(new User());
-        $rejectedRegistration->setPending(false);
+        $rejectedRegistration->setPending(true);
         $rejectedRegistration->setRejected(true);
 
-        $acceptedRegistration = new Registration();
-        $acceptedRegistration->setBaseId($base_id);
-        $acceptedRegistration->setUser(new User());
-        $acceptedRegistration->setPending(false);
-        $acceptedRegistration->setRejected(false);
+        $databox = current((new \appbox(new Application(Application::ENV_TEST)))->get_databoxes());
+        $collection = current($databox->get_collections());
 
-        $registrations = [
-            // special type when a user has no access nor demand on a registrable-or-not collection
-    //        $collection->isRegistrationEnabled() ? 'registrable' : 'inactive'
-    //                      => null,
-            // "normal" types
-            'pending'     => $pendingRegistration,
-            'rejected'    => $rejectedRegistration,
-            'accepted'    => $acceptedRegistration
+        $noLimitedPendingRegistration = [
+            [
+                $databox->get_sbas_id() => [
+                    $collection->get_base_id() => [
+                        'base-id' => $collection->get_base_id(),
+                        'db-name' => 'toto',
+                        'active' => true,
+                        'time-limited' => false,
+                        'in-time' => null,
+                        'registration' => $pendingRegistration
+                    ]
+                ]
+            ],
+            'pending',
+            1
         ];
 
-        $ret = [];
+        $rejectedRegistration = [
+            [
+                $databox->get_sbas_id() => [
+                    $collection->get_base_id() => [
+                        'base-id' => $collection->get_base_id(),
+                        'db-name' => 'titi',
+                        'active' => true,
+                        'time-limited' => false,
+                        'in-time' => null,
+                        'registration' => $rejectedRegistration
+                    ]
+                ]
+            ],
+            'rejected',
+            1
+        ];
 
-        foreach($registrations as $label=>$reg) {
-            // if access is already active (true) or inactive (false), or time-limited, registration is nonsense
-            $ret[] = [
-                [
-                    $sbas_id => [
-                        $base_id => [
-                            'base-id' => $base_id,
-                            'db-name' => 'active_reg_'.$label,
-                            'active' => true,       // known...
-                            'time-limited' => false,
-                            'in-time' => null,
-                            'registration' => $reg
-                        ]
+        $noActiveRegistration = [
+            [
+                $databox->get_sbas_id() => [
+                    $collection->get_base_id() => [
+                        'base-id' => 1,
+                        'db-name' => 'tutu',
+                        'active' => false,
+                        'time-limited' => false,
+                        'in-time' => null,
+                        'registration' => $pendingRegistration
                     ]
-                ],
-                'active',   // ...result !
-                1
-            ];
-            $ret[] = [
-                [
-                    $sbas_id => [
-                        $base_id => [
-                            'base-id' => $base_id,
-                            'db-name' => 'inactive_reg_'.$label,
-                            'active' => false,       // known...
-                            'time-limited' => false,
-                            'in-time' => null,
-                            'registration' => $reg
-                        ]
-                    ]
-                ],
-                $collection->isRegistrationEnabled() ? 'registrable' : 'inactive',   // ...result !
-                1
-            ];
-            $ret[] = [
-                [
-                    $sbas_id => [
-                        $base_id => [
-                            'base-id' => $base_id,
-                            'db-name' => 'limited_in_reg_'.$label,
-                            'active' => false,       // known...
-                            'time-limited' => true,
-                            'in-time' => true,
-                            'registration' => $reg
-                        ]
-                    ]
-                ],
-                'in-time',   // ...result !
-                1
-            ];
-            $ret[] = [
-                [
-                    $sbas_id => [
-                        $base_id => [
-                            'base-id' => $base_id,
-                            'db-name' => 'limited_out_reg_'.$label,
-                            'active' => false,       // known...
-                            'time-limited' => true,
-                            'in-time' => false,
-                            'registration' => $reg
-                        ]
-                    ]
-                ],
-                'out-time',   // ...result !
-                1
-            ];
+                ]
+            ],
+            'inactive',
+            1
+        ];
 
-            // if no access, registration cares
-            $ret[] = [
-                [
-                    $sbas_id => [
-                        $base_id => [
-                            'base-id' => $base_id,
-                            'db-name' => 'noaccess_reg_'.$label,
-                            'active' => null,
-                            'time-limited' => false,
-                            'in-time' => null,
-                            'registration' => $reg
-                        ]
+        $limitedActiveIntimePendingRegistration = [
+            [
+                $databox->get_sbas_id() => [
+                    $collection->get_base_id() => [
+                        'base-id' => $collection->get_base_id(),
+                        'db-name' => 'tata',
+                        'active' => true,
+                        'time-limited' => true,
+                        'in-time' => true,
+                        'registration' => $pendingRegistration
                     ]
-                ],
-                $label,
-                1
-            ];
-        }
+                ]
+            ],
+            'in-time',
+            1
+        ];
 
-        return $ret;
+        $limitedActiveOutdatedPendingRegistration = [
+            [
+                $databox->get_sbas_id() => [
+                    $collection->get_base_id() => [
+                        'base-id' => $collection->get_base_id(),
+                        'db-name' => 'toutou',
+                        'active' => true,
+                        'time-limited' => true,
+                        'in-time' => false,
+                        'registration' => $pendingRegistration
+                    ]
+                ]
+            ],
+            'out-time',
+            1
+        ];
+
+        return [
+            $noLimitedPendingRegistration,
+            $noActiveRegistration,
+            $limitedActiveIntimePendingRegistration,
+            $limitedActiveOutdatedPendingRegistration,
+            $rejectedRegistration
+        ];
     }
 }
