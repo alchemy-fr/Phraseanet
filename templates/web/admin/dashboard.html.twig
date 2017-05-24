@@ -168,6 +168,23 @@
     {% endif %}
 
     <div class="section">
+        <form id="thumbnail_reset" action="{{ path('admin_dashboard_purge_thumbnails') }}" method="post" class="form-inline" style="display:inline">
+            <fieldset>
+                <legend>{{ 'setup::Purge thumbnails' | trans }}</legend>
+                <ul class="unstyled">
+                    <li>
+                        <label class="checkbox">
+                            <input type="checkbox" name="backup" value="yes" />
+                            {{ 'setup::Backup' | trans }}
+                        </label>
+                    </li>
+                    <input type="submit" class="btn btn-warning" value="{{ 'boutton::purge thumbnails cache' | trans }}" onclick="return confirm('{{ 'confirm::Etes-vous sûre?' | trans }}');" />
+                </ul>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="section">
         {% for requirements in app['phraseanet.configuration-tester'].getRequirements() %}
             {{ _self.board_sub_section(requirements) }}
         {% endfor %}
