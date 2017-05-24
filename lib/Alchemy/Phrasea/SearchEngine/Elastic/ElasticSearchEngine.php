@@ -486,6 +486,8 @@ class ElasticSearchEngine implements SearchEngineInterface
                     SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
+            $structure = $this->context_factory->getLimitedStructure($options);
+
             $range = [];
             if ($options->getMaxDate()) {
                 $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
@@ -495,7 +497,11 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
 
             foreach ($options->getDateFields() as $dateField) {
-                $filters[]['range']['caption.'.$dateField->get_name()] = $range;
+                if( ($ESField = $structure->get($dateField->get_name())) ) {
+                    $ESName = $ESField->getIndexField();
+
+                    $filters[]['range'][$ESName] = $range;
+                }
             }
         }
 
