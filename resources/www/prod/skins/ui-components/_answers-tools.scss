@@ -1,11 +1,14 @@
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
-  margin-left: -20px;
+  margin-left: -10px;
   margin-right: -20px;
   #selectCase {
     background: url('#{$iconsPath}ccoch0.gif') no-repeat center center;
     padding-left: 16px;
+  }
+  .PNB10.btn-toolbar {
+    left: 0px;
   }
   .btn-toolbar {
     margin-bottom: 0px;
