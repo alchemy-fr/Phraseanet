@@ -452,6 +452,9 @@ function afterSearch() {
     $('.previewTips').tooltip({
         fixable: true
     });
+    $('.captionRolloverTips').tooltip({
+        fixable: true
+    });
     $('.thumb .rollovable').hover(
         function () {
             $('.rollover-gif-hover', this).show();
