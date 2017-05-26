@@ -444,13 +444,15 @@ function afterSearch() {
     $('.captionTips, .captionRolloverTips').tooltip({
         delay: 0,
         isBrowsable: false,
-        extraClass: 'caption-tooltip-container',
-        fixable: true
+        extraClass: 'caption-tooltip-container'
     });
     $('.infoTips').tooltip({
         delay: 0
     });
     $('.previewTips').tooltip({
+        fixable: true
+    });
+    $('.captionRolloverTips').tooltip({
         fixable: true
     });
     $('.thumb .rollovable').hover(

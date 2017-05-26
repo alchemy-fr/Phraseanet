@@ -530,10 +530,11 @@
 
     function getCaptionHeight() {
         if($('#tooltip').height() > viewport().y) {
-            $('.caption-tooltip-container .body').css('height', '100%');
-            $('.caption-tooltip-container .popover').css('height', '100%');
-            $('.caption-tooltip-container .popover-inner').css('height', '98%');
-            $('.caption-tooltip-container .popover-inner .popover-content').css('height', '94%');
+            $('#tooltip .body').css('height', '100%');
+            $('#tooltip .popover').css('height', '100%');
+            $('#tooltip .popover-inner').css('height', '99%');
+            $('#tooltip .popover-inner .popover-content').css('height', '92%');
+            $('#tooltip .popover-inner .popover-content').css('overflow-y', 'auto');
             return viewport().y; // 13 = vertical offset
         }
         return 'auto';
