@@ -444,7 +444,8 @@ function afterSearch() {
     $('.captionTips, .captionRolloverTips').tooltip({
         delay: 0,
         isBrowsable: false,
-        extraClass: 'caption-tooltip-container'
+        extraClass: 'caption-tooltip-container',
+        fixable: true
     });
     $('.infoTips').tooltip({
         delay: 0

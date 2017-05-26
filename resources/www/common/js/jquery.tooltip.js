@@ -518,7 +518,7 @@
                 }
 
                 resizeProperties['width'] = shouldResize ? Math.round(tooltipWidth) : 'auto';
-                resizeProperties['height'] = shouldResize ? Math.round(tooltipHeight) : 'auto';
+                resizeProperties['height'] = shouldResize ? Math.round(tooltipHeight) : getCaptionHeight();
 
 
                 helper.parent.css(resizeProperties);
@@ -526,6 +526,17 @@
         }
         handle.apply($this, arguments);
         return;
+    }
+
+    function getCaptionHeight() {
+        if($('#tooltip').height() > viewport().y) {
+            $('.caption-tooltip-container .body').css('height', '100%');
+            $('.caption-tooltip-container .popover').css('height', '100%');
+            $('.caption-tooltip-container .popover-inner').css('height', '98%');
+            $('.caption-tooltip-container .popover-inner .popover-content').css('height', '94%');
+            return viewport().y; // 13 = vertical offset
+        }
+        return 'auto';
     }
 
     // delete timeout and show helper
