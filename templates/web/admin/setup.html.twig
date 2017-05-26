@@ -31,7 +31,7 @@
 
 
 
-{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
+{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'autocomplete' : 'off', 'class' : 'form-horizontal'}}) }}
 {{ form_errors(form) }}
 {% for daform in form %}
     <fieldset>

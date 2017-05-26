@@ -42,6 +42,7 @@ class EmailFormType extends AbstractType
         ]);
         $builder->add('smtp-user', 'text', [
             'label'        => 'SMTP user',
+            'attr' => array('autocomplete' => 'off'),
         ]);
         $builder->add('hidden-password', 'password', [
             'label' => '',
@@ -51,6 +52,7 @@ class EmailFormType extends AbstractType
         ]);
         $builder->add('smtp-password', 'password', [
             'label'        => 'SMTP password',
+            'attr' => array('autocomplete' => 'new-password'),
         ]);
     }
 
