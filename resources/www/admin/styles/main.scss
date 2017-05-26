@@ -369,6 +369,38 @@ h2.subdefName {
   margin: 0;
 }
 
+label[for="elasticsearch_settings_highlight"] {
+  display: inline-block;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+input[id="elasticsearch_settings_highlight"] {
+  float: left;
+}
+
+#downbutton {
+  margin: 1rem 0;
+}
+#upbutton {
+  width: 100%;
+  text-align: left;
+}
+
+#upbutton i {
+  position: relative;
+  left: -5px;
+}
+
+#downbutton i {
+  position: relative;
+  left: -5px;
+}
+
+.form-horizontal .controls + div{
+  margin-left: 180px;
+  font-style: italic;
+}
+
 @media screen and (max-width: 1150px) {
   .langTab{
     display: block;
