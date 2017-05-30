@@ -8,198 +8,10 @@
 
 {% block content_account %}
     <form name="updatingDemand" id="updatingDemand" action="{{ path("submit_update_account") }}" method="post">
-        <table style="table-layout: fixed; width:100%;">
-            <tr>
-                <td  style="width: 180px; text-align: right">&nbsp;</td>
-                <td  width="15px" style="width: 15px">&nbsp;</td>
-                <td  style="width: 180px;">&nbsp;</td>
-            </tr>
-            {% for sbasId, baseInfo in inscriptions if baseInfo["display"]%}
-                {% set sbasName = sbasId | sbas_labels(app) %}
-                <tr>
-                    <td colspan="3" style="text-align: center;">
-                        <h3 style="background: #191919;border: 1px solid #333333;color:#eee">{{ sbasName }}</h3>
-                    </td>
-                </tr>
-
-                {% if attribute(baseInfo["cgu"], app['locale']) is defined %}
-                    {% set TOU = attribute(baseInfo["cgu"], app['locale']) %}
-                    {% if(TOU['value'] != '') %}
-                        <tr>
-                        <td colspan="3" style="text-align: center;">
-                            <i class="icon-warning"></i>
-                            <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" style="text-align: center;"><blockquote class="cgu" style="width: 90%; height: 120px; text-align: left; overflow: auto;">{{ TOU['value']|raw  }}</blockquote></td>
-                    </tr>
-                    {% endif %}
-                {% endif %}
-
-                {% if baseInfo["registrations-by-type"]["accepted"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Allowed access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["accepted"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color: lightgreen;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if baseInfo["registrations-by-type"]["rejected"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Rejected access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["rejected"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color: red;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if baseInfo["registrations-by-type"]["pending"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Pending access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["pending"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color:orange;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if baseInfo["registrations-by-type"]["in-time"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Temporary access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["in-time"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color: lightskyblue;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-                {% if baseInfo["registrations-by-type"]["out-dated"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Outdated access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["out-dated"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color:darkred;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-
-                {% if baseInfo["registrations-by-type"]["active"]|length > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "Active access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["active"] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color:#00c000;">
-                                    <b>{{ reg['coll-name'] }}</b>
-                                </span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-
-                {# too bad we must count "registrable" collections #}
-                {% set count_registrable = 0  %}
-                {% for reg in baseInfo["registrations-by-type"]["inactive"] if reg['can-register'] %}
-                    {% set count_registrable = count_registrable+1 %}
-                {% endfor %}
-                {% if count_registrable > 0 %}
-                    <tr>
-                        <th colspan="3" style="text-align: center">
-                            {{ "You can require access to the following collections" | trans }}
-                        </th>
-                    </tr>
-                    {% for reg in baseInfo["registrations-by-type"]["inactive"] if reg['can-register'] %}
-                        <tr>
-                            <td colspan="3" style="text-align:center;">
-                                {{ reg['base-id'] }}&nbsp;
-                                <span style="color:yellow;">
-                                    <b>{{ reg["coll-name"] }}</b>
-                                </span>
-                                <input style="width: 15px;" class="checkbox" type="checkbox" name="registrations[]" value="{{ reg['base-id'] }}" />
-                                <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    <tr style="height: 5px;">
-                        <td>
-                        </td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-        </table>
-
         <table style="width:100%;">
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td style="white-space: nowrap; width:20px;">&nbsp;</td>
+                <td style="width:20px;">&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
             {% for sbasId, baseInfo in inscriptions if baseInfo["display"]%}
@@ -232,34 +44,42 @@
                     {% set text = '' %}
                     {% if type == 'active' %}
                         {% set text = "registration:collection.active" %}
+                        {% set color = "#00c000" %}
                     {% elseif type == 'inactive' %}
                         {% if collInfo['can-register'] %}
                             {% set type = 'registrable' %}
                             {% set text = "registration:collection.register" %}
+                            {% set color = "yellow" %}
                         {% endif %}
                     {% elseif type == 'in-time' %}
                         {% set text = "registration:collection.in-time" %}
+                        {% set color = "lightskyblue" %}
                     {% elseif type == 'out-dated' %}
                         {% set text = "registration:collection.out-dated" %}
+                        {% set color = "darkred" %}
                     {% elseif type == 'pending' %}
                         {% set text = "registration:collection.pending" %}
+                        {% set color = "orange" %}
                     {% elseif type == 'rejected' %}
                         {% set text = "registration:collection.rejected" %}
+                        {% set color = "red" %}
                     {% elseif type == 'accepted' %}
                         {% set text = "registration:collection.accepted" %}
+                        {% set color = "lightgreen" %}
                     {% endif %}
 
                     {% if text != '' %}
                     <tr>
-                        <td>
-                            {{ baseId }} &nbsp; {{ collInfo["coll-name"] }}
+                        <td style="white-space: nowrap; width:20px; padding-right:30px;">
+                            {{ collInfo["coll-name"] }}
                         </td>
-                        <td>{{ text | trans }}</td>
                         <td>
                             {% if type == 'registrable' %}
                             <input class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
-                            <span>{{ "login::register: Faire une demande d\'acces" | trans }}</span>
                             {% endif %}
+                        </td>
+                        <td style="color: {{ color }}">
+                            {{ text | trans }}
                         </td>
                     </tr>
                     {% endif %}
