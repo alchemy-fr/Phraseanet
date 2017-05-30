@@ -1,8 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% set home_title = app['conf'].get(['registry', 'general', 'title']) %}
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Phraseanet Authentication</title>
+        <title>{{ home_title }}</title>
         <meta name="author" content="Alchemy" />
 
         <!-- Mobile viewport optimized -->
@@ -23,8 +24,6 @@
         <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
     </head>
-
-    {% set home_title = app['conf'].get(['registry', 'general', 'title']) %}
 
     <body>
         <div id="page" class="container">
@@ -69,7 +68,7 @@
                             <h4>{% trans %}Autorisation d'acces{% endtrans %}</h4>
                         </div>
                         <div id="main-text-box">
-                            {% set application_name = '<span>' ~ auth.getClient.get_name() ~ '</span>' %}
+                            {% set application_name = '<span>' ~ auth.getClient.getName() ~ '</span>' %} 
                             <p>
                                 {% trans with {'%application_name%' : application_name, '%home_title%' : home_title} %}Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?{% endtrans %}
                             </p>
