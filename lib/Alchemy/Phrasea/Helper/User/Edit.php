@@ -645,6 +645,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
         $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
+        $parm['email'] = ($parm['email'] !== '') ? $parm['email'] : NULL;
+        
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
