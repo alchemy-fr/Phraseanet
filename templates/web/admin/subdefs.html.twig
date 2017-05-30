@@ -140,6 +140,24 @@
         }
     }
 
+    function subview_type(selector) {
+        var mapping = JSON.parse('{{ subviews_mapping |json_encode|raw }}'),
+                subviewType = $(selector).val();
+
+        $("#mediaType")
+                .find('option')
+                .remove()
+                .end()
+                .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
+
+        for (var key in mapping[subviewType]) {
+            $("#mediaType").append($('<option></option>')
+                    .attr("value", mapping[subviewType][key])
+                    .text(mapping[subviewType][key])
+            );
+        }
+    }
+    
     function media_type(selector){
         var config = JSON.parse('{{ config |json_encode|raw }}'),
                 defType = $(selector).val();
@@ -168,15 +186,14 @@
                 );
             }
         }
-
     }
 
     $(function() {
       // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
       $( "#dialog:ui-dialog" ).dialog( "destroy" );
 
-      var name = $( "#name" ), accessclass = $( "#accessclass" ), presets = $( "#presets" ),
-      allFields = $( [] ).add( name ).add(accessclass).add(presets),
+      var name = $( "#name" ), accessclass = $( "#accessclass" ), subviewType =$( "#subviewType" ) , mediaType = $( "#mediaType" ), presets = $( "#presets" ),
+      allFields = $( [] ).add( name ).add(accessclass).add(subviewType).add(mediaType).add(presets),
       tips = $( ".validateTips" );
 
       function updateTips( t ) {
@@ -200,14 +217,9 @@
         }
       }
 
-      function get_current_group()
-      {
-        return $('.ui-tabs-nav .ui-state-active a').html();
-      }
+      function checkPresence( mediaType, o ) {
 
-      function checkPresence( o ) {
-
-        var el = $('input[name="subdefs[]"][value="'+get_current_group()+'_'+o.val()+'"]');
+        var el = $('input[name="subdefs[]"][value="'+mediaType+'_'+o.val()+'"]');
         if ( el.length !== 0 ) {
           o.addClass( "ui-state-error" );
           updateTips( "SubdefName should be unique per group" );
@@ -236,7 +248,7 @@
 
       $( "#dialog-form" ).dialog({
         autoOpen: false,
-        height: 380,
+        height: 420,
         width: 300,
         modal: true,
         buttons: {
@@ -247,13 +259,12 @@
 
             bValid = bValid && checkLength( name, "subdef name", 3, 16 );
             bValid = bValid && checkSpecialChar( name );
-            bValid = bValid && checkPresence( name );
-
-
+            bValid = bValid && checkPresence( subviewType.val(), name );
 
             if ( bValid ) {
-              $('input[name="add_subdef[group]"]').val(get_current_group());
+              $('input[name="add_subdef[group]"]').val(subviewType.val());
               $('input[name="add_subdef[name]"]').val(name.val());
+              $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
               $('input[name="add_subdef[class]"]').val(accessclass.val());
               $('input[name="add_subdef[presets]"]').val(presets.val());
               $( this ).dialog( "close" );
@@ -331,14 +342,26 @@
                 <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
                 <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
             </select>
-            <label for="mediaType">{{ 'mediatype' | trans }}</label>
-            <select name="mediaType" onchange="media_type(this)">
+            <label for="subviewType">{{ 'subviewType' | trans }}</label>
+            <select name="subviewType" id="subviewType" onchange="subview_type(this)">
                 <option>{{ 'Choisir' | trans }}</option>
                 <option value="image">{{ 'image' | trans }}</option>
                 <option value="video">{{ 'video' | trans }}</option>
-                <option value="gif">{{ 'gif' | trans }}</option>
                 <option value="audio">{{ 'audio' | trans }}</option>
-                <option value="flexpaper">{{ 'flexpaper' | trans }}</option>
+                <option value="document">{{ 'document' | trans }}</option>
+                <option value="flash">{{ 'flash' | trans }}</option>
+            </select>
+            <label for="mediaType">{{ 'mediatype' | trans }}</label>
+            <select name="mediaType" id="mediaType" onchange="media_type(this)">
+                <option>{{ 'Choisir' | trans }}</option>
+                {% set mediaType = subdef.getSubdefType.getType() %}
+                {% for key, pressets in config[defType].definitions %}
+                    {% if pressets == null %}
+                        <option disabled="disabled">{{ key }}</option>
+                    {% else %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endif %}
+                {% endfor %}
             </select>
             <label for="presets">{{ 'Presets' | trans }}</label>
             <select name="presets" id="presets">
@@ -541,6 +564,7 @@
     <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
     <input type="hidden" name="add_subdef[group]" value=""/>
     <input type="hidden" name="add_subdef[name]" value=""/>
+    <input type="hidden" name="add_subdef[mediaType]" value=""/>
     <input type="hidden" name="add_subdef[class]" value=""/>
     <input type="hidden" name="add_subdef[presets]" value=""/>
 </form>

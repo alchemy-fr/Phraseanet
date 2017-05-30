@@ -184,10 +184,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  string $groupname
      * @param  string $name
      * @param  string $class
+     * @param  string $mediatype
      * @param  string $preset
      * @return databox_subdefsStructure
      */
-    public function add_subdef($groupname, $name, $class, $preset)
+    public function add_subdef($groupname, $name, $class, $mediatype, $preset)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -195,6 +196,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('presets', $preset);
+        $subdef->setAttribute('mediaType', $mediatype);
 
         $dom_xp = $this->databox->get_xpath_structure();
         $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
