@@ -19,6 +19,8 @@ use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
+use Alchemy\Phrasea\Core\Event\RegistrationEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -32,12 +34,15 @@ use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
+
 
 class AccountController extends Controller
 {
@@ -311,13 +316,19 @@ class AccountController extends Controller
             $this->app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
 
+        $successfulRegistrations = [];
         $user = $this->getAuthenticatedUser();
 
         if (0 !== count($registrations)) {
             foreach ($registrations as $baseId) {
                 $this->getRegistrationManipulator()
                     ->createRegistration($user, \collection::getByBaseId($this->app, $baseId));
+                $successfulRegistrations[$baseId] = \collection::getByBaseId($this->app, $baseId);;
             }
+
+            $this->getEventDispatcher()
+                ->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));
+
             $this->app->addFlash('success', $this->app->trans('Your registration requests have been taken into account.'));
         }
 
@@ -491,5 +502,13 @@ class AccountController extends Controller
     private function getEventManager()
     {
         return $this->app['events-manager'];
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }
