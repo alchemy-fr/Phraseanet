@@ -32,10 +32,30 @@
             <thead>
                 <tr>
                     <th>{{ 'Utilisateur' | trans }}</th>
-                    <th>{{ 'Date de demande' | trans }}</th>
-                    <th>{{ 'Deadline' | trans }}</th>
+                    <th>{{ 'Date de demande' | trans }}
+                        <select id='filterDateStart' style='display:inline-block; width:110px' onchange='filterByDateStart()'>
+                            <option disabled selected>Select</option>
+                            <option value='0'>This week</option>
+                            <option value='1'>Last week</option>
+                            <option value='2'>Last month</option>
+                            <option value=''>All</option>
+                        </select></th>
+                    <th>{{ 'Deadline' | trans }}
+                        <select id='filterDateEnd' style='display:inline-block; width:110px' onchange='filterByDateEnd()'>
+                            <option disabled selected>Select</option>
+                            <option value='0'>This week</option>
+                            <option value='1'>Last week</option>
+                            <option value='2'>Last month</option>
+                            <option value=''>All</option>
+                        </select></th>
                     <th>{{ 'Utilisation prevue' | trans }}</th>
-                    <th>{{ 'Statut' | trans }}</th>
+                    <th>{{ 'Statut' | trans }}
+                        <select id='filterStatus' style='display:inline-block; width:110px'>
+                            <option disabled selected>Select</option>
+                            <option value='0'>Todo</option>
+                            <option value='1'>Completed</option>
+                            <option value=''>All</option>
+                        </select></th>
                 </tr>
             </thead>
             <tbody>
@@ -77,6 +97,11 @@
 $(document).ready(function(){
 	var dialog = p4.Dialog.get(1);
 
+    var info = {};
+    info['todo'] = '';
+    info['start'] = '';
+    info['end'] = '';
+
     $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
         e.preventDefault();
         var url = $(this).attr('href');
@@ -88,6 +113,49 @@ $(document).ready(function(){
         var id = $(this).attr('id').split('_').pop();
         dialog.load('/prod/order/' + id +'/');
     }).addClass('clickable');
+
+    $('#filterDateStart').change(function() {
+        info['start'] = $('#filterDateStart').val();
+        var data_to_send = info;
+        console.log(data_to_send);
+        $.ajax({
+            type: 'POST',
+            url: '../prod/order/search/',
+            data: data_to_send,
+            success: function (data) {
+                $('#right-ajax').removeClass('loading').empty().html(data);
+            }
+        });
+    });
+
+    $('#filterDateEnd').change(function() {
+        info['end'] = $('#filterDateEnd').val();
+        var data_to_send = info;
+        console.log(data_to_send);
+        $.ajax({
+            type: 'POST',
+            url: '../prod/order/search/',
+            data: data_to_send,
+            success: function (data) {
+                $('#right-ajax').removeClass('loading').empty().html(data);
+            }
+        });
+    });
+
+    $('#filterStatus').change(function() {
+        info['todo'] = $('#filterStatus').val();
+        var data_to_send = info;
+        console.log(data_to_send);
+        $.ajax({
+            type: 'POST',
+            url: '../prod/order/search/',
+            data: data_to_send,
+            success: function (data) {
+                $('#order_manager').empty().append(data);
+            }
+        });
+    });
+
 });
 
 </script>
