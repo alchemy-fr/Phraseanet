@@ -90,6 +90,7 @@ class Indexer
         $params['index'] = $this->index->getName();
         $params['body']['settings']['number_of_shards'] = $this->index->getOptions()->getShards();
         $params['body']['settings']['number_of_replicas'] = $this->index->getOptions()->getReplicas();
+        $params['body']['settings']['max_result_window'] = $this->index->getOptions()->getMaxResultWindow();
         $params['body']['settings']['analysis'] = $this->index->getAnalysis();
 
         if ($withMapping) {
