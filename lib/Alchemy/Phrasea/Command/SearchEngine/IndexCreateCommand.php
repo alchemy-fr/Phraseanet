@@ -49,6 +49,30 @@ class IndexCreateCommand extends Command
         }
 
         $indexer->createIndex();
+
+        $options = $this->container['elasticsearch.options'];
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "http://localhost:9200/" . $options->getIndexName() . "/_settings",
+            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_POSTFIELDS => "{ \"index\" : { \"max_result_window\" : 500000 } }",
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err)
+        {
+            echo "cURL Error #:" . $err;
+        }
+        else
+        {
+            //echo $response;
+        }
+
         $output->writeln('Search index was created');
     }
 }
