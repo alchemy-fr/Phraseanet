@@ -25,6 +25,8 @@ class ElasticsearchOptions
     private $minScore;
     /** @var  bool */
     private $highlight;
+    /** @var int */
+    private $maxResultWindow;
 
     /**
      * Factory method to hydrate an instance from serialized options
@@ -41,7 +43,8 @@ class ElasticsearchOptions
             'shards' => 3,
             'replicas' => 0,
             'minScore' => 4,
-            'highlight' => true
+            'highlight' => true,
+            'max_result_window' => 500000,
         ], $options);
 
         $self = new self();
@@ -52,6 +55,7 @@ class ElasticsearchOptions
         $self->setReplicas($options['replicas']);
         $self->setMinScore($options['minScore']);
         $self->setHighlight($options['highlight']);
+        $self->setMaxResultWindow($options['max_result_window']);
 
         return $self;
     }
@@ -69,6 +73,7 @@ class ElasticsearchOptions
             'replicas' => $this->replicas,
             'minScore' => $this->minScore,
             'highlight' => $this->highlight,
+            'maxResultWindow' => $this->maxResultWindow,
         ];
     }
 
@@ -182,5 +187,21 @@ class ElasticsearchOptions
     public function setHighlight($highlight)
     {
         $this->highlight = $highlight;
+    }
+
+    /**
+     * @param int $maxResultWindow
+     */
+    public function setMaxResultWindow($maxResultWindow)
+    {
+        $this->maxResultWindow = (int)$maxResultWindow;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxResultWindow()
+    {
+        return $this->maxResultWindow;
     }
 }
