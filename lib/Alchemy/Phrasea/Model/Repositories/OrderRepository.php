@@ -56,11 +56,11 @@ class OrderRepository extends EntityRepository
                          ->andWhere('o.todo = '.$filtre['todo']);
                  }
 
-                 /*if (NULL !== $filtre['created_on'] && '' !== $filtre['created_on'])
+
+                 if (isset($filtre['created_on']) && '' !== $filtre['created_on'])
                  {
                      $createdOn = '';
-
-                     switch ($filtre['created_on'])
+                     switch ((int)$filtre['created_on'])
                      {
                          case 0:    //this week
                              $time = strtotime(date("Y-m-d 00:00:00"));
@@ -70,7 +70,7 @@ class OrderRepository extends EntityRepository
 
                          case 1:    //last week
                              $time = strtotime('last week');
-                             $lastWeekStartDate = date('Y-m-d',strtotime("last Monday", $time));
+                             $lastWeekStartDate = date('Y-m-d',strtotime("Monday", $time));
                              $createdOn = $lastWeekStartDate;
                              break;
 
@@ -85,16 +85,19 @@ class OrderRepository extends EntityRepository
 
                      if ('' !== $createdOn)
                      {
+
                          $qb
-                             ->andWhere('o.createdOn >= ' . $createdOn);
+                             ->andWhere("o.createdOn >= '" . $createdOn . "'");
+
+
                      }
                  }
 
-                 if (NULL !== $filtre['deadline'] && '' !== $filtre['deadline'])
+                /* if (NULL !== $filtre['deadline'] && '' !== $filtre['deadline'])
                  {
                      $deadline = '';
 
-                     switch ($filtre['deadline'])
+                     switch ((int)$filtre['deadline'])
                      {
                          case 0:    //this week
                              $time = strtotime(date("Y-m-d 00:00:00"));
@@ -104,7 +107,7 @@ class OrderRepository extends EntityRepository
 
                          case 1:    //last week
                              $time = strtotime('last week');
-                             $lastWeekStartDate = date('Y-m-d',strtotime("last Sunday", $time));
+                             $lastWeekStartDate = date('Y-m-d',strtotime("Sunday", $time));
                              $deadline = $lastWeekStartDate;
                              break;
 
@@ -120,9 +123,19 @@ class OrderRepository extends EntityRepository
                      if ('' !== $deadline)
                      {
                          $qb
-                             ->andWhere('o.deadline <= ' . $deadline);
+                             ->andWhere("o.deadline <= '" . $deadline . "'");
                      }
                  } */
+
+
+                 if(isset($filtre['limit'])) {
+                        $createdOn = date('Y-m-d', strtotime($filtre['limit']['date']));
+                        if($filtre['limit']['type'] == '3') { //before
+                            $qb->andWhere("o.createdOn < '" . $createdOn . "'");
+                        }else { //after
+                            $qb->andWhere("o.createdOn > '" . $createdOn . "'");
+                        }
+                  }
 
                  $qb->groupBy('o.id');
              }
