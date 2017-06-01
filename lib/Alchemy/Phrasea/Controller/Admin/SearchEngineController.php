@@ -56,29 +56,6 @@ class SearchEngineController extends Controller
         $indexer = $this->app['elasticsearch.indexer'];
         if (!$indexer->indexExists()) {
             $indexer->createIndex();
-
-            $options = $this->app['elasticsearch.options'];
-            $curl = curl_init();
-
-            curl_setopt_array($curl, [
-                CURLOPT_URL => "http://localhost:9200/" . $options->getIndexName() . "/_settings",
-                CURLOPT_CUSTOMREQUEST => "PUT",
-                CURLOPT_POSTFIELDS => "{ \"index\" : { \"max_result_window\" : 500000 } }",
-            ]);
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            if ($err)
-            {
-                echo "cURL Error #:" . $err;
-            }
-            else
-            {
-                echo $response;
-            }
         }
         return $this->app->redirectPath('admin_searchengine_form');
     }
@@ -113,36 +90,26 @@ class SearchEngineController extends Controller
 
     public function dumpResultIndexElasticsearchAction()
     {
-        $options = $this->app['elasticsearch.options'];
-        $indexName = $options->getIndexName();
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "http://localhost:9200/" . $indexName . "/_settings/index.number_*",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "GET",
-        ]);
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err)
+        $indexer = $this->app['elasticsearch.indexer'];
+        if (!$indexer->indexExists())
         {
             return $this->app->json([
                 'success' => false,
-                'message' => implode("\n", $err),
+                'message' => ("Error"),
             ]);
         }
         else
         {
-            $resultat = json_decode($response);
-
+            $index = $this->app['elasticsearch.index'];
+            $resultat = $index->getOptions();
+            $response = [
+                'number_of_shards' => $resultat->getShards(),
+                'number_of_replicas' => $resultat->getReplicas(),
+            ];
 
             return $this->app->json([
                 'success' => true,
-                'response' => $resultat->$indexName->settings->index
+                'response' => $response
             ]);
         }
     }
