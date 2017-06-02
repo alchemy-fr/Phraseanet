@@ -1,8 +1,12 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 {% set displayName = order.getUser().getDisplayName() %}
 
-<div class="page-header">
-  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
+<div class="alert">
+    {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
+</div>
+
+<div class="order-header">
+    <button class="order_launcher btn"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
 <div id="order_manager">
@@ -25,77 +29,95 @@
         </div>
     {% endif %}
 
+
     <div class="well">
         <table class="table" style="color:#333;">
             <tr>
-                <td>{{ 'Destinataire' | trans }}</td>
-                <td>{{ displayName }}({{ order.getUser().getEmail() }})</td>
+                <td>
+                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                </td>
+                <td>
+                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getDeadline()|date('d/m/Y') }}</span>
+                </td>
+                <td>
+                    <span class="text_block">Treated Documents</span>
+                    <span class="text_block_bold">0/{{ order.getTotal() }}</span>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Date de commande' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
+                <td colspan="2">
+                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Deadline' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getDeadline()) }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Utilisation prevue' | trans }}</td>
-                <td>{{ order.getOrderUsage() | nl2br }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Nombre total d\'element commandes' | trans }}</td>
-                <td>{{ order.getTotal() }}</td>
+                <td>
+                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})</span>
+                </td>
             </tr>
         </table>
-    </div>
-    <div class="alert">
-        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
-    </div>
-
-    <div class="order_list well-small">
-        <ul>
-            {% for element in order.getElements() %}
-                <li>
-                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
-                        {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
-                        {% if element.getOrderMaster() %}
-                            {% set name = element.getOrderMaster().getDisplayName() %}
-                            {% if element.getDeny() == true %}
-                                {% set title %}
-                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
-                                {% endset %}
-                                {% set title_send %}
-                                    {% trans %}Forcer l'envoi du document{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
-                            {% else %}
-                                {% set title %}
-                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                            {% endif %}
-                        {% endif %}
-                        <div style="position:absolute;bottom:4px;right:4px;">
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>
-                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>
-                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
-                        </div>
-                        <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="form-actions" style="color:#333;">
-        {{ 'Selectionnez des documents et' | trans }}
-        <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
-        <button class="btn deny">{{ 'Deny' | trans }}</button>
-        <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>
-        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+        <div class="order-list-container">
+            <div class="order_list" style="width:40%;float:left">
+                <div>
+                    <form action="">
+                        <input type="checkbox" name="select-all" value="all"/>Select all
+                    </form>
+                </div>
+                <table class="table">
+                    <tbody>
+                    {% for element in order.getElements() %}
+                        <tr>
+                            <td>
+                                {% if element.getOrderMaster() %}
+                                    {% set name = element.getOrderMaster().getDisplayName() %}
+                                    {% if element.getDeny() == true %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
+                                        {% endset %}
+                                        {% set title_send %}
+                                            {% trans %}Forcer l'envoi du document{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                        <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                                    {% else %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
+                                    {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
+                                    {#<div style="position:absolute;bottom:4px;right:4px;">#}
+                                    {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>#}
+                                    {#</div>#}
+                                    <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+                                </div>
+                            </td>
+                            <td>
+                                <span>{{element.getRecord(app).getOriginalName() }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="order_detail" style="width:60%;">
+                {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
+                <div class="form-actions" style="color:#333;">
+                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                    <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                </div>
+                {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
