@@ -282,7 +282,7 @@ $(document).ready(function(){
             url: '../prod/order/search/',
             data: info,
             success: function (data) {
-                $('#order_manager').empty().append(data);
+                $('#order_manager').parent().empty().append(data);
             }
         });
 
