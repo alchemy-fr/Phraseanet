@@ -373,8 +373,27 @@ span.ww_winTitle {
 }
 
 /******* ORDER MANAGER ITEM ***************************************************/
+.order-header {
+  overflow: auto;
+  margin-bottom: 2em;
+}
 
+.order_launcher {
+  border: 0;
+  background: #4990E2;
+  box-shadow: none;
+  border-radius: 2px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  float: right;
+  color: #FFF;
+  font-weight: 200;
+  font-size: 14px;
+}
 
+.order_launcher i {
+  margin-right: 0.6em;
+}
 
 iframe {
   border: none;
