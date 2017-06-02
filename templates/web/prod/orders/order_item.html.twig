@@ -31,7 +31,7 @@
 
 
     <div class="well">
-        <table class="table" style="color:#333;">
+        <table class="table no-border" style="color:#333;">
             <tr>
                 <td>
                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
@@ -59,16 +59,16 @@
         </table>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
-                <div>
+                <div class="top-bar">
                     <form action="">
                         <input type="checkbox" name="select-all" value="all"/>Select all
                     </form>
                 </div>
-                <table class="table">
+                <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
                         <tr>
-                            <td>
+                            <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
                                     {% if element.getDeny() == true %}
@@ -88,7 +88,7 @@
                                     {% endif %}
                                 {% endif %}
                             </td>
-                            <td>
+                            <td width="30%" align="center">
                                 <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
                                     {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
                                     {#<div style="position:absolute;bottom:4px;right:4px;">#}
@@ -99,7 +99,7 @@
                                     <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
                                 </div>
                             </td>
-                            <td>
+                            <td width="60%" align="center">
                                 <span>{{element.getRecord(app).getOriginalName() }}</span>
                             </td>
                         </tr>
@@ -108,14 +108,23 @@
                 </table>
             </div>
             <div id="order_detail" style="width:60%;">
-                {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
-                <div class="form-actions" style="color:#333;">
-                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                    <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-                    <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                <div id="wrapper-padding">
+                    {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
+                    <div id="order-action" style="color:#333;">
+                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    </div>
+                    <div id="info-header">
+                        <span class="icon-stack infoTips">
+                            <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                        <span class="info-text">Information</span>
+                    </div>
+                    {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
                 </div>
-                {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
             </div>
         </div>
     </div>
