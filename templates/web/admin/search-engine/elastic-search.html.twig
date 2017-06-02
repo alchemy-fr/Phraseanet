@@ -18,5 +18,29 @@
     var elasticSearchIndexExists = false;
     {% endif %}
     searchEngineConfigurationFormInit(elasticSearchIndexExists);
+
+    function ajaxDumpResultIndexElasticsearch() {
+        $.ajax({
+            url: "{{ path('admin_searchengine_dump_result_index_elasticsearch') }}"
+            , type: "POST"
+            , success: function (data) {
+                if (data.success) {
+                    var response = data.response;
+                    $('input[name="elasticsearch_settings[shards]"]').val(response['number_of_shards']);
+                    $('input[name="elasticsearch_settings[replicas]"]').val(response['number_of_replicas']);
+                } else {
+                    if (window.console) {
+                        console.log(data.message);
+                    }
+                    alert("{{ 'An error occured' | trans | e('js') }}" + data.message);
+                }
+            }
+            , error: function (jqXHR, textStatus, errorThrown) {
+                alert("Erreur XML:\n\n" + jqXHR.responseText);
+            }
+        });
+
+        return false;
+    }
 </script>
 {% endblock %}
