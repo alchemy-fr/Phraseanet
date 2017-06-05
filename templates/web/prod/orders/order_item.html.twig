@@ -1,15 +1,15 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 {% set displayName = order.getUser().getDisplayName() %}
 
-<div class="alert">
-    {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
-</div>
 
 <div class="order-header">
-    <button class="order_launcher btn"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
+    <div class="alert">
+        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
+    </div>
+    <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div id="order_manager">
+<div id="order_manager" class="abs">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
 
@@ -31,7 +31,7 @@
 
 
     <div class="well">
-        <table class="table no-border" style="color:#333;">
+        <table class="table no-border">
             <tr>
                 <td>
                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
@@ -47,13 +47,13 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                <td>
+                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})</span>
                 </td>
             </tr>
             <tr>
-                <td>
-                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})</span>
+                <td colspan="2">
+                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
                 </td>
             </tr>
         </table>

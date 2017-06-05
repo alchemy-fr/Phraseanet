@@ -375,7 +375,15 @@ span.ww_winTitle {
 /******* ORDER MANAGER ITEM ***************************************************/
 .order-header {
   overflow: auto;
-  margin-bottom: 2em;
+  clear: both;
+  height: 60px;
+}
+
+.order-header .alert {
+  float: left;
+  width: 70%;
+  height: 40px;
+  margin-bottom: 0px;
 }
 
 .order-header .btn {
@@ -389,6 +397,8 @@ span.ww_winTitle {
   color: #FFF !important;
   font-weight: 200 !important;
   font-size: 14px !important;
+  width: 20%;
+  float: right;
 }
 
 .order_launcher i {
@@ -399,9 +409,27 @@ span.ww_winTitle {
   border: 0;
 }
 
-.order_manager .table td h4{
+.abs {
+  position: absolute;
+  bottom: 0;
+  top: 80px;
+  right: 13px;
+  left: 13px;
+}
+
+#order_manager .table {
+  height: 20%;
+  color: #737373;
+}
+
+#order_manager .table td h4{
   margin-left: 0;
   font-weight: bold;
+  max-width: 600px;
+}
+
+#order_manager .well {
+  height: 90%;
 }
 
 .top-bar {
@@ -426,10 +454,12 @@ span.ww_winTitle {
   background-color: transparent;
   word-wrap: break-word;
   table-layout: fixed;
+  color: #737373;
 }
 
 .order-list-container {
   overflow: auto;
+  height: 75%;
 }
 
 .order-list-container .table-order tr {
@@ -443,6 +473,8 @@ span.ww_winTitle {
 .order_list {
   width: 40%;
   float: left;
+  overflow: auto;
+  height: 100%;
 }
 
 #wrapper-padding {
@@ -454,6 +486,11 @@ span.ww_winTitle {
 #order_detail {
   width: 60%;
   float: left;
+  overflow: auto;
+}
+
+#order_detail .thumb_wrapper {
+  min-height: 300px;
 }
 
 #info-header {
@@ -498,6 +535,13 @@ span.ww_winTitle {
   background: transparent;
 }
 
+#order_detail iframe {
+  min-height: 300px;
+}
+
+#order_detail dl {
+  color: #737373;
+}
 
 iframe {
   border: none;
