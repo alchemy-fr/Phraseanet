@@ -61,13 +61,13 @@
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
                     <form action="">
-                        <input type="checkbox" name="select-all" value="all"/>Select all
+                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/>Select all
                     </form>
                 </div>
                 <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
-                        <tr>
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% endif %}" order="{{ element.getRecord(app)|json_encode()|raw }}">
                             <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
@@ -89,7 +89,7 @@
                                 {% endif %}
                             </td>
                             <td width="30%" align="center">
-                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
+                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper">
                                     {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
                                     {#<div style="position:absolute;bottom:4px;right:4px;">#}
                                     {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
@@ -109,7 +109,9 @@
             </div>
             <div id="order_detail" style="width:60%;">
                 <div id="wrapper-padding">
-                    {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
+                    <div id="preview-layout">
+                        {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
+                    </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                         <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
@@ -123,7 +125,9 @@
                         </span>
                         <span class="info-text">Information</span>
                     </div>
-                    {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
+                    <div id="caption-layout">
+                        {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,7 +218,42 @@ $(document).ready(function(){
             do_send_documents(order_id, element_id, true);
         }
     });
+
+//    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
+//        e.preventDefault();
+//        var id = $(this).attr('id').split('_').pop();
+//        var el = $(this).attr('order');
+//        //id start with 1, index need to minus 1
+//        var index = id-1;
+//        console.log(el);
+//        prevAjax = $.ajax({
+//            type: "POST",
+//            url: "../prod/records/record/",
+//            dataType: 'json',
+//            data: {
+//                record: el
+//            },
+//
+//            success: function (data) {
+//                console.log(data);
+//            }
+//        });
+//    }).addClass('clickable');
+
 });
+
+
+function checkAll(element) {
+    console.log(element.checked);
+    $('.table-order tr').each(function(){
+        var el = $(this);
+        if(element.checked){
+            el.addClass('selected');
+        }else {
+            el.removeClass('selected');
+        }
+    });
+}
 
 function do_send_documents(order_id, elements_ids, force)
 {

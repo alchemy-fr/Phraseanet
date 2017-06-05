@@ -462,11 +462,16 @@ span.ww_winTitle {
   height: 75%;
 }
 
-.order-list-container .table-order tr {
-  border-bottom: 1px solid;
+.order-list-container .table-order tr:last-child {
+  border: 1px solid #000;
 }
 
 .order-list-container .table-order tr:hover {
+  border: 1px solid #4990E2;
+}
+
+#order_manager .order_list .selectable.selected {
+  background-color: transparent;
   border: 1px solid #4990E2;
 }
 
