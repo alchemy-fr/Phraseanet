@@ -87,4 +87,30 @@ class SearchEngineController extends Controller
             'action' => $this->app->url('admin_searchengine_form'),
         ]);
     }
+
+    public function dumpResultIndexElasticsearchAction()
+    {
+        $indexer = $this->app['elasticsearch.indexer'];
+        if (!$indexer->indexExists())
+        {
+            return $this->app->json([
+                'success' => false,
+                'message' => ("Error"),
+            ]);
+        }
+        else
+        {
+            $index = $this->app['elasticsearch.index'];
+            $resultat = $index->getOptions();
+            $response = [
+                'number_of_shards' => $resultat->getShards(),
+                'number_of_replicas' => $resultat->getReplicas(),
+            ];
+
+            return $this->app->json([
+                'success' => true,
+                'response' => $response
+            ]);
+        }
+    }
 }
