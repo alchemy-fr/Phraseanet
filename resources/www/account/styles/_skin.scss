@@ -818,8 +818,8 @@ form[name=registerForm] .multiselect-container li.active label {
 }
 
 form[name=registerForm] .multiselect b.caret {
-    float: right;
-
+    position: absolute;
+    right: 10px;
 }
 
 form[name=registerForm] .multiselect-group {
