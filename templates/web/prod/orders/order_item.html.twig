@@ -31,6 +31,18 @@
 
 
     <div class="well">
+        <div id="userInfoPreview">
+            <div class="userInfoName">
+                <span>{{ order.getUser().getDisplayName() }}</span>
+            </div>
+            <span class="userdetail"><strong>company : </strong>{{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>tel : </strong>{{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>addresse : </strong>{{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>country : </strong>{{ order.getUser().getCountry() }}</span>
+            <div>
+                <button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">Send email</button>
+            </div>
+        </div>
         <table class="table no-border">
             <tr>
                 <td>
@@ -48,7 +60,12 @@
             </tr>
             <tr>
                 <td>
-                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})</span>
+                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})
+                        <span class="icon-stack infoTips" id="userInfo">
+                            <i class="icon-circle icon-stack-base" style="color:#737373"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                    </span>
                 </td>
             </tr>
             <tr>
@@ -135,7 +152,10 @@
 </div>
 <script type="text/javascript">
 
+var userInfoIsVisible = false;
+
 $(document).ready(function(){
+
     if ($('#notification_box').is(':visible')) {
         $('#notification_trigger').trigger('mousedown');
     }
@@ -219,6 +239,34 @@ $(document).ready(function(){
         }
     });
 
+    $('#userInfo').hover(function() {
+        var offset = $(this).offset();
+        $('#userInfoPreview').css({
+            'left': (offset.left - $('#userInfoPreview').width()) + 22,
+            'top': (offset.top - $('#userInfoPreview').height()) + 50
+        });
+        $('#userInfoPreview').show();
+    }, function() {
+        if(!userInfoIsVisible) {
+            $('#userInfoPreview').hide();
+        }
+    });
+
+    $('#userInfo').click(function() {
+        var offset = $(this).offset();
+        if(!userInfoIsVisible) {
+            userInfoIsVisible = true;
+            $('#userInfoPreview').css({
+                'left': (offset.left - $('#userInfoPreview').width()) + 22,
+                'top': (offset.top - $('#userInfoPreview').height()) + 50
+            });
+            $('#userInfoPreview').show();
+        }else {
+            userInfoIsVisible = false;
+            $('#userInfoPreview').hide();
+        }
+    });
+
 //    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
 //        e.preventDefault();
 //        var id = $(this).attr('id').split('_').pop();
@@ -244,7 +292,6 @@ $(document).ready(function(){
 
 
 function checkAll(element) {
-    console.log(element.checked);
     $('.table-order tr').each(function(){
         var el = $(this);
         if(element.checked){
@@ -357,6 +404,12 @@ function send_documents(order_id)
     }
 
     do_send_documents(order_id, elements_ids, false);
+}
+
+function sendMail(email) {
+    if(email != null) {
+        window.open('mailto:' + email);
+    }
 }
 
 </script>
