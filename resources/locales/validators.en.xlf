@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+<<<<<<< 389099133c0963b748374f33e989f05331552762
   <file date="2017-07-04T13:28:34Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+=======
+  <file date="2017-06-06T15:49:43Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+>>>>>>> PHRAS-1407 Update wording and fix JMS extract
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9,9 +13,15 @@
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
         <target state="translated">Please provide the same passwords.</target>
+<<<<<<< 389099133c0963b748374f33e989f05331552762
         <jms:reference-file line="44">Form/Login/PhraseaRecoverPasswordForm.php</jms:reference-file>
         <jms:reference-file line="49">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
         <jms:reference-file line="36">Form/Login/PhraseaRenewPasswordForm.php</jms:reference-file>
+=======
+        <jms:reference-file line="36">Form/Login/PhraseaRenewPasswordForm.php</jms:reference-file>
+        <jms:reference-file line="49">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
+        <jms:reference-file line="44">Form/Login/PhraseaRecoverPasswordForm.php</jms:reference-file>
+>>>>>>> PHRAS-1407 Update wording and fix JMS extract
       </trans-unit>
       <trans-unit id="90b8c9717bb7ed061dbf20fe1986c8b8593d43d4" resname="The token provided is not valid anymore" approved="yes">
         <source>The token provided is not valid anymore</source>

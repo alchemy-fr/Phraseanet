@@ -1136,11 +1136,11 @@ h1, h2, h3, h4 {
   float: right;
   position: relative;
   right: 10px;
-  -webkit-transition:-webkit-transform .9s;
-  -moz-transition:-moz-transform .9s;
-  -o-transition:-o-transform .9s;
-  -ms-transition:-ms-transform .9s;
-  transition:transform .9s;
+  -webkit-transition:-webkit-transform .5s;
+  -moz-transition:-moz-transform .5s;
+  -o-transition:-o-transform .5s;
+  -ms-transition:-ms-transform .5s;
+  transition:transform .5s;
   -ms-transform: rotate(270deg);
   -webkit-transform: rotate(270deg);
   transform: rotate(270deg);
