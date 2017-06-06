@@ -430,6 +430,7 @@ span.ww_winTitle {
 
 #order_manager .well {
   height: 90%;
+  margin-bottom: 0 !important;
 }
 
 .top-bar {
@@ -495,7 +496,7 @@ span.ww_winTitle {
 }
 
 #order_detail .thumb_wrapper {
-  min-height: 300px;
+  //min-height: 300px;
 }
 
 #info-header {
@@ -600,6 +601,10 @@ span.ww_winTitle {
   border: 0;
   height: 30px;
   border-radius: 0px 0px 2px 2px;
+}
+
+.ui-widget-content a {
+  color: #4990E2 !important;
 }
 
 iframe {

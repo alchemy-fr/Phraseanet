@@ -9,7 +9,7 @@
     <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div id="order_manager" class="abs">
+<div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
 
@@ -35,12 +35,13 @@
             <div class="userInfoName">
                 <span>{{ order.getUser().getDisplayName() }}</span>
             </div>
-            <span class="userdetail"><strong>company : </strong>{{ order.getUser().getCompany() }}</span>
-            <span class="userdetail"><strong>tel : </strong>{{ order.getUser().getPhone() }}</span>
-            <span class="userdetail"><strong>addresse : </strong>{{ order.getUser().getAddress() }}</span>
-            <span class="userdetail"><strong>country : </strong>{{ order.getUser().getCountry() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }} : </strong>{{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: adresse' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
             <div>
-                <button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">Send email</button>
+                <button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">
+                    {{ 'order-manager::order-item: send-mail' | trans }}</button>
             </div>
         </div>
         <table class="table no-border">
@@ -54,7 +55,7 @@
                     <span class="text_block_bold">{{ order.getDeadline()|date('d/m/Y') }}</span>
                 </td>
                 <td>
-                    <span class="text_block">Treated Documents</span>
+                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
                     <span class="text_block_bold">0/{{ order.getTotal() }}</span>
                 </td>
             </tr>
@@ -69,8 +70,8 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                <td>
+                    <h4 class="minimize">{{ order.getOrderUsage() }}</h4>
                 </td>
             </tr>
         </table>
@@ -140,7 +141,7 @@
                             <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
                             <i class="icon-info" style="color:#FFF"></i>
                         </span>
-                        <span class="info-text">Information</span>
+                        <span class="info-text">{{ 'order-manager::order-item: information' | trans }}</span>
                     </div>
                     <div id="caption-layout">
                         {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
@@ -242,8 +243,8 @@ $(document).ready(function(){
     $('#userInfo').hover(function() {
         var offset = $(this).offset();
         $('#userInfoPreview').css({
-            'left': (offset.left - $('#userInfoPreview').width()) + 22,
-            'top': (offset.top - $('#userInfoPreview').height()) + 50
+            'left': (offset.left - $('#userInfoPreview').width()) + 35,
+            'top': offset.top - ($('#userInfo').height()*2)
         });
         $('#userInfoPreview').show();
     }, function() {
@@ -257,8 +258,8 @@ $(document).ready(function(){
         if(!userInfoIsVisible) {
             userInfoIsVisible = true;
             $('#userInfoPreview').css({
-                'left': (offset.left - $('#userInfoPreview').width()) + 22,
-                'top': (offset.top - $('#userInfoPreview').height()) + 50
+                'left': (offset.left - $('#userInfoPreview').width()) + 35,
+                'top': offset.top - ($('#userInfo').height()*2)
             });
             $('#userInfoPreview').show();
         }else {
@@ -266,6 +267,33 @@ $(document).ready(function(){
             $('#userInfoPreview').hide();
         }
     });
+
+    var minimized_elements = $('.minimize');
+
+    $('.minimize').each(function() {
+        console.log($(this).text());
+        var t = $(this).text();
+        if (t.length < 60) return;
+
+        $(this).html(
+                t.slice(0, 60) + '<span>... </span><a href="#" class="more">{{ 'order-manager::order-item: more' | trans }}</a>' +
+                '<span style="display:none;">' + t.slice(60, t.length) + ' <a href="#" class="less">{{ 'order-manager::order-item: less' | trans }}</a></span>'
+        );
+
+    });
+
+
+    $('a.more', minimized_elements).click(function(event){
+        event.preventDefault();
+        $(this).hide().prev().hide();
+        $(this).next().show();
+    });
+
+    $('a.less', minimized_elements).click(function(event) {
+        event.preventDefault();
+        $(this).parent().hide().prev().show().prev().show();
+    });
+
 
 //    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
 //        e.preventDefault();
