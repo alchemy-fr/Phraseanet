@@ -116,7 +116,7 @@ class RegistrationManager
                         if($isTimeLimited) {
                             // any time limit overrides (=automates) the 'active' value
                             $isOnTime = (Boolean) $userRegistration['in-time'];
-                            $type = $isOnTime ? 'in-time' : 'out-time';
+                            $type = $isOnTime ? 'in-time' : 'out-dated';
                         }
                         else {
                             // no time limit, use the 'active' value - but be nice if this is the result of registration
