@@ -386,17 +386,17 @@ span.ww_winTitle {
   margin-bottom: 0px;
 }
 
-.order-header .btn {
+button.order_launcher.btn {
   border: 0;
-  background: #4990E2 !important;
+  background: #4990E2;
   box-shadow: none;
   border-radius: 2px;
   padding-top: 10px;
   padding-bottom: 10px;
   float: right;
-  color: #FFF !important;
-  font-weight: 200 !important;
-  font-size: 14px !important;
+  color: #FFF;
+  font-weight: 200;
+  font-size: 14px;
   width: 20%;
   float: right;
 }
@@ -430,7 +430,11 @@ span.ww_winTitle {
 
 #order_manager .well {
   height: 90%;
-  margin-bottom: 0 !important;
+  position: relative;
+}
+
+.no-margin {
+  margin: 0;
 }
 
 .top-bar {
@@ -536,11 +540,11 @@ span.ww_winTitle {
   margin-bottom: 1.5em;
 }
 
-.deny.outline {
+button.btn.deny.outline {
   margin-right: 10px;
   box-shadow: none;
-  font-weight: 200 !important;
-  font-size: 14px !important;
+  font-weight: 200;
+  font-size: 14px;
   border: 1px solid #CCC;
   background: transparent;
 }
@@ -555,11 +559,11 @@ span.ww_winTitle {
   color: #7CD21C;
 }
 
-.send.outline {
+button.btn.btn-primary.send.outline {
   margin-right: 10px;
   box-shadow: none;
-  font-weight: 200 !important;
-  font-size: 14px !important;
+  font-weight: 200;
+  font-size: 14px;
   border: 1px solid #CCC;
   background: transparent;
 }
@@ -572,8 +576,13 @@ span.ww_winTitle {
   color: #737373;
 }
 
-.thumb_wrapper img {
-  top: 0 !important;
+.order_wrapper .thumb_wrapper img {
+  top: 0px !important;
+}
+
+#preview-layout .thumb_wrapper img {
+  top: 0px;
+  height: auto !important;
 }
 
 #userInfoPreview {
@@ -626,8 +635,8 @@ span.ww_winTitle {
   border-radius: 0px 0px 2px 2px;
 }
 
-.ui-widget-content a {
-  color: #4990E2 !important;
+a.more, a.less {
+  color: #4990E2;
 }
 
 iframe {
