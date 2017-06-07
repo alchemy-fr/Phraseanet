@@ -239,7 +239,7 @@ class Order
     }
 
 
-   public function getTreatedItem()
+   public function getTotalTreatedItems()
    {
         $count = 0;
         foreach($this->elements as $element) {
