@@ -56,7 +56,7 @@
                 </td>
                 <td>
                     <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
-                    <span class="text_block_bold">0/{{ order.getTotal() }}</span>
+                    <span class="text_block_bold">{{ order.getTreatedItem() }}/{{ order.getTotal() }}</span>
                 </td>
             </tr>
             <tr>
@@ -157,6 +157,8 @@ var userInfoIsVisible = false;
 
 $(document).ready(function(){
 
+    var count = 0;
+
     if ($('#notification_box').is(':visible')) {
         $('#notification_trigger').trigger('mousedown');
     }
@@ -176,8 +178,12 @@ $(document).ready(function(){
         {
             if($this.hasClass('selected')) {
                 $this.removeClass('selected');
+                count--;
+                console.log("-" + count);
             } else {
                 $this.addClass('selected');
+                count++;
+                console.log("+" +count);
             }
         }
         else
@@ -202,6 +208,8 @@ $(document).ready(function(){
 
                     if (first || last) {
                         $(n).addClass('selected');
+                        count++;
+                        console.log(count);
                     }
                 });
             }
@@ -209,6 +217,8 @@ $(document).ready(function(){
             {
                 $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
                 $this.addClass('selected');
+                count = 1;
+                console.log(count);
             }
         }
 

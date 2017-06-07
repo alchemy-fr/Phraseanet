@@ -49,11 +49,6 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('record_details')
             ->method('GET|POST');
 
-
-        $controllers->match('/record/', 'controller.prod.records:getSingleRecord')
-                    ->bind('record_details')
-                    ->method('GET|POST');
-
         $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
