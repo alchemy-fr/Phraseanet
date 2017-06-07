@@ -30,7 +30,7 @@
     {% endif %}
 
 
-    <div class="well">
+    <div class="well no-margin">
         <div id="userInfoPreview">
             <div class="userInfoName">
                 <span>{{ order.getUser().getDisplayName() }}</span>
@@ -266,8 +266,8 @@ $(document).ready(function(){
     $('#userInfo').hover(function() {
         var offset = $(this).offset();
         $('#userInfoPreview').css({
-            'left': (offset.left - $('#userInfoPreview').width()) + 35,
-            'top': offset.top - ($('#userInfo').height()*2)
+            'left': (offset.left - $('#userInfoPreview').width()) + 20,
+            'top': ($('#userInfoPreview').height() - offset.top) + $('#userInfo').height()
         });
         $('#userInfoPreview').show();
     }, function() {
@@ -281,8 +281,8 @@ $(document).ready(function(){
         if(!userInfoIsVisible) {
             userInfoIsVisible = true;
             $('#userInfoPreview').css({
-                'left': (offset.left - $('#userInfoPreview').width()) + 35,
-                'top': offset.top - ($('#userInfo').height()*2)
+                'left': (offset.left - $('#userInfoPreview').width()) + 20,
+                'top': ($('#userInfoPreview').height() - offset.top) + $('#userInfo').height()
             });
             $('#userInfoPreview').show();
         }else {
@@ -294,7 +294,6 @@ $(document).ready(function(){
     var minimized_elements = $('.minimize');
 
     $('.minimize').each(function() {
-        console.log($(this).text());
         var t = $(this).text();
         if (t.length < 60) return;
 
