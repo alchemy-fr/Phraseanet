@@ -484,9 +484,32 @@ span.ww_winTitle {
 }
 
 #wrapper-padding {
+  display: none;
   margin-left: 30px;
   overflow-y: auto;
   max-height: 400px;
+}
+
+#wrapper-multiple {
+  display: none;
+  text-align: center;
+}
+
+#preview-layout-multiple {
+  color: #737373;
+}
+
+#preview-layout-multiple .title {
+  font-size: 80px;
+  line-height: 80px;
+}
+
+#preview-layout-multiple h4 {
+  margin-bottom: 20px;
+}
+
+#preview-layout-multiple p {
+  margin-top: 40px;
 }
 
 #order_detail {

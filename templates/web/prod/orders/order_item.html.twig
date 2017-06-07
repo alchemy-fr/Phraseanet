@@ -147,6 +147,22 @@
                         {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
                     </div>
                 </div>
+                <div id="wrapper-multiple">
+                    <div id="preview-layout-multiple">
+                        <span class="title">0</span>
+                        <h4 class="sub-title">selected records</h4>
+                        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+                             style="width:150px;height:150px;"
+                             src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
+                        <p>For all selected records</p>
+                    </div>
+                    <div id="order-action" style="color:#333;">
+                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -154,10 +170,9 @@
 <script type="text/javascript">
 
 var userInfoIsVisible = false;
+var itemCount = 0;
 
 $(document).ready(function(){
-
-    var count = 0;
 
     if ($('#notification_box').is(':visible')) {
         $('#notification_trigger').trigger('mousedown');
@@ -178,12 +193,10 @@ $(document).ready(function(){
         {
             if($this.hasClass('selected')) {
                 $this.removeClass('selected');
-                count--;
-                console.log("-" + count);
+                itemCount--;
             } else {
                 $this.addClass('selected');
-                count++;
-                console.log("+" +count);
+                itemCount++;
             }
         }
         else
@@ -191,7 +204,7 @@ $(document).ready(function(){
             if(is_shift_key(event))
             {
                 var first = false, last = false;
-
+                itemCount = 0;
                 $('.order_list .selectable', dialog.getDomElement()).each(function(i,n){
                     if (last) {
                         first = last = false;
@@ -208,8 +221,7 @@ $(document).ready(function(){
 
                     if (first || last) {
                         $(n).addClass('selected');
-                        count++;
-                        console.log(count);
+                        itemCount++;
                     }
                 });
             }
@@ -217,13 +229,14 @@ $(document).ready(function(){
             {
                 $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
                 $this.addClass('selected');
-                count = 1;
-                console.log(count);
+                itemCount = 1;
             }
         }
 
         $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
         $this.addClass('last_selected');
+
+        setItemCount(itemCount);
     });
 
     $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
@@ -330,14 +343,17 @@ $(document).ready(function(){
 
 
 function checkAll(element) {
+    itemCount = 0;
     $('.table-order tr').each(function(){
         var el = $(this);
         if(element.checked){
             el.addClass('selected');
+            itemCount++;
         }else {
             el.removeClass('selected');
         }
     });
+    setItemCount(itemCount);
 }
 
 function do_send_documents(order_id, elements_ids, force)
@@ -449,5 +465,20 @@ function sendMail(email) {
         window.open('mailto:' + email);
     }
 }
+
+function setItemCount(countSelected) {
+    if(countSelected > 1) {
+        $('#wrapper-padding').hide();
+        $('#wrapper-multiple').show();
+    }else if(countSelected == 1) {
+        $('#wrapper-padding').show();
+        $('#wrapper-multiple').hide();
+    }else {
+        $('#wrapper-padding').hide();
+        $('#wrapper-multiple').hide();
+    }
+    $('#preview-layout-multiple .title').html(countSelected);
+}
+
 
 </script>
