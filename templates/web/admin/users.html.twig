@@ -53,6 +53,8 @@
                 <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
             </fieldset>
         </form>
+        <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
+        <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>
 
         <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">
@@ -207,8 +209,6 @@
                     {% set n_par_page = 50 %}
                     <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans with {'%n_par_page%' : n_par_page} %}%n_par_page% par page{% endtrans %}</option>
                 </select>
-                <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
-                <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>
 
                 <input type="hidden" name="total_results" value="{{users.get_total()}}"/>
                 <input type="hidden" name="page" value="{{users.get_page()}}"/>
@@ -435,7 +435,7 @@
             });
 
             $('#users tbody tr, #users tbody td').on('dblclick', function (evt) {
-                $('#users_page_form .user_modifier').trigger('click');
+                $('.user_modifier').trigger('click');
             });
 
             $('#users tbody tr, #users tbody td').on('click', function (evt) {
@@ -544,7 +544,7 @@
                 return false;
             });
 
-            $('#users_page_form .user_modifier').on('click', function () {
+            $('.user_modifier').on('click', function () {
                 var users = p4.users.sel.join(';');
                 if (users === '') {
                     return false;
@@ -565,7 +565,7 @@
                 return false;
             });
 
-            $('#users_page_form .user_deleter').on('click', function () {
+            $('.user_deleter').on('click', function () {
                 var users = p4.users.sel.join(';');
                 if (users === '') {
                     return false;
