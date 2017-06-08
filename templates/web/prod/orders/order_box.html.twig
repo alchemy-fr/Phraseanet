@@ -20,43 +20,152 @@
         </div>
     {% endif %}
 
-    <div class='well' style="color:#333">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        {% trans with {'%page%' : page} %}Page %page%{% endtrans %}
-                    </th>
-                </tr>
-            </thead>
-            <thead>
-                <tr>
-                    <th>{{ 'Utilisateur' | trans }}</th>
-                    <th>{{ 'Date de demande' | trans }}</th>
-                    <th>{{ 'Deadline' | trans }}</th>
-                    <th>{{ 'Utilisation prevue' | trans }}</th>
-                    <th>{{ 'Statut' | trans }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                    {% set deadline = app['date-formatter'].getPrettyString(order.getDeadline()) %}
-                    <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
-                        <td>{{ order.getUser().getDisplayName() }}</td>
-                        <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
-                        <td>
-                            {% if deadline != '' %}
-                                {{deadline}}
-                            {% else %}
-                                {{ 'Aucune' | trans }}
-                            {% endif %}
-                        </td>
-                        <td>{{ order.getOrderUsage() | nl2br }}</td>
-                        <td>{% if order.getTodo() == 0 %}<img src="/assets/common/images/icons/ok.png" />{% endif %}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+    <div id="ORDERPREVIEW">
+        <a id="filter-date" href="#"><span id="filter-text">{{ 'order-manager::order-list: this-week' | trans }}</span> <span class="order-indicator">&#x25bc;</span></a>
+        <div>
+            <form id="date-form">
+                <table cellspacing="0" cellpadding="0" style="display:none" id="filter_box">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <button class="toggle-button-text full-width text-align-right active"
+                                        type="button" onclick="setDateSelection(this, 0)">{{ 'order-manager:order-list: this-week' | trans }}</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="toggle-button-text full-width text-align-right"
+                                        type="button" onclick="setDateSelection(this, 1)">{{ 'order-manager:order-list: last-week' | trans }}</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="toggle-button-text full-width text-align-right"
+                                type="button" onclick="setDateSelection(this, 2)">{{ 'order-manager:order-list: last-month' | trans }}</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="toggle-button-text" type="button" onclick="setDateSelection(this, 3)">{{ 'order-manager:order-list: before' | trans }}</button>
+                                <button class="toggle-button-text" type="button" onclick="setDateSelection(this, 4)">{{ 'order-manager:order-list: after' | trans }}</button>
+                                <div class="input-prepend">
+                                    <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                    <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "-1 month"|date("Y/m/d") }}" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button id="filter-button">{{ 'order-manager:order-list: apply' | trans }}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <ul style="height:30px;bottom:auto;">
+            <li><a href="#TODO-ORDER">{{ 'order-manager:order-list: pending' | trans }}
+                    <span class="icon-stack infoTips">
+                    <i class="icon-circle icon-stack-base" style="color:#7CD11E"></i>
+                    <i class="icon-exclamation" style="color:#FFF"></i>
+                    </span></a></li>
+            <li><a href="#PROCESSED-ORDER">{{ 'order-manager:order-list: processed' | trans }}
+                    <span class="icon-stack infoTips">
+                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
+                    <i class="icon-check" style="color:#FFF"></i>
+                    </span></a></li></a></li>
+        </ul>
+        <div id="TODO-ORDER" class="order_preview_box">
+            <div id="TODOVIEW">
+                <table class="table">
+                    <tbody>
+                    {% if orders|length > 0 %}
+                        {% for order in orders %}
+                            {% set deadline = order.getDeadline()|date('d/m/Y') %}
+                            <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                                <td> <span class="icon-stack infoTips">
+                                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
+                                    <i class="icon-check" style="color:#FFF"></i>
+                                    </span></td>
+                                <td style="width: 50%">
+                                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                                    <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                                    <span class="text_block_bold">
+                                {% if deadline != '' %}
+                                    {{deadline}}
+                                {% else %}
+                                    {{ 'Aucune' | trans }}
+                                {% endif %}
+                                </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager:order-list: treated-documents' | trans }}</span>
+                                    <span class="text_block_bold">0/3</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>{{ 'order-manager:order-list: aucun-resultat' | trans }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="PROCESSED-ORDER" class="order_preview_box">
+            <div id="PROCESSEDVIEW">
+                <table class="table">
+                    <tbody>
+                    {% if orders_todo|length > 0 %}
+                        {% for order in orders_todo %}
+                            {% set deadline = order.getDeadline()|date('d/m/Y') %}
+                            <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                                <td> <span class="icon-stack infoTips">
+                                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
+                                    <i class="icon-check" style="color:#FFF"></i>
+                                    </span></td>
+                                <td style="width: 50%">
+                                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                                    <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                                    <span class="text_block_bold">
+                                {% if deadline != '' %}
+                                    {{deadline}}
+                                {% else %}
+                                    {{ 'Aucune' | trans }}
+                                {% endif %}
+                                </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager:order-list: treated-documents' | trans }}</span>
+                                    <span class="text_block_bold">0/3</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>{{ 'order-manager:order-list: aucun-resultat' | trans }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <div class='well-small'>
@@ -74,8 +183,66 @@
 
 <script type="text/javascript">
 
+    $('#datepicker').datepicker({
+        beforeShow: function() {
+            setTimeout(function(){
+                $('.ui-datepicker').css('z-index', 999999);
+            }, 0);
+        },
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'yy/mm/dd'
+    });
+
+    var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
+    setCurrentDate(date);
+    getSelectionText(dateSelection);
+
+    var element = $('#filter_box tbody tr td button:eq('+dateSelection+')');
+    setDateSelection(element, dateSelection);
+
+
+    function setCurrentDate(date) {
+        if(date != '') {
+            console.log(date);
+            $('#datepicker').val(date);
+        }
+    }
+
+    function setDateSelection(element, selection) {
+        dateSelection = selection;
+        clearAll();
+        $(element).addClass('active');
+    }
+
+    function getSelectionText(dateSelection) {
+        console.log(dateSelection);
+        if(dateSelection == '3' || dateSelection == '4') {
+            dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html() + " " + $('#datepicker').val();
+        }else {
+            dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html();
+        }
+        $('#filter-text').text(dateSelectionText);
+    }
+
+    function clearAll() {
+        $('#filter_box tbody tr td').children('button').each(function () {
+           $(this).removeClass('active');
+        });
+    }
+
 $(document).ready(function(){
+
+    $('#ORDERPREVIEW').tabs();
+
+    $('#ORDERPREVIEW').tabs("option", "active", tabSelection ? tabSelection : 0);
 	var dialog = p4.Dialog.get(1);
+    var filterDateSelected = false;
+
+    var info = {};
+    info['todo'] = '';
+    info['start'] = '';
+    info['end'] = '';
 
     $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
         e.preventDefault();
@@ -88,6 +255,55 @@ $(document).ready(function(){
         var id = $(this).attr('id').split('_').pop();
         dialog.load('/prod/order/' + id +'/');
     }).addClass('clickable');
+
+    $('#filter-date').click(function() {
+        toggleFilterDate();
+    });
+
+    $('#date-form').submit(function(e) {
+        e.preventDefault();
+        if($('#TODO-ORDER').is(':visible')){
+            info['todo'] = 0;
+        }else {
+            info['todo'] = 1;
+        }
+
+        if(dateSelection == 3 || dateSelection ==4) {
+            var obj = {};
+            info['start'] = dateSelection;
+            obj['date'] = $('#datepicker').val();
+            obj['type'] = dateSelection;
+            info['limit'] = obj;
+        }else {
+            info['start'] = dateSelection;
+        }
+        console.log(info);
+        toggleFilterDate();
+        $.ajax({
+            type: 'POST',
+            url: '../prod/order/search/',
+            data: info,
+            success: function (data) {
+                $('#order_manager').parent().empty().append(data);
+            }
+        });
+
+    });
+
+
+    function toggleFilterDate() {
+        if(!filterDateSelected) {
+            filterDateSelected = true;
+            $('#filter-date').addClass('active');
+            $('#filter_box').css('display', 'block');
+        }else {
+            filterDateSelected = false;
+            $('#filter-date').removeClass('active');
+            $('#filter_box').css('display', 'none');
+        }
+    }
+
+
 });
 
 </script>

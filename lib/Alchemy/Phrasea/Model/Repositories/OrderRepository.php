@@ -38,16 +38,120 @@ class OrderRepository extends EntityRepository
      *
      * @return Order[]
      */
-    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on")
+    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on", $filtre = null)
     {
         $qb = $this
             ->createQueryBuilder('o');
 
          if (!empty($baseIds)) {
-             $qb
-                 ->innerJoin('o.elements', 'e')
-                 ->where($qb->expr()->in('e.baseId', $baseIds))
-                 ->groupBy('o.id');
+             if (!empty($filtre))
+             {
+                 $qb
+                     ->innerJoin('o.elements', 'e')
+                     ->where($qb->expr()->in('e.baseId', $baseIds));
+
+                 if (NULL !== $filtre['todo'] && '' !== $filtre['todo'])
+                 {
+
+                    if($filtre['todo'] == 0) {
+                        $qb
+                          ->andWhere('o.todo != '.'0');
+                    }else {
+                        $qb
+                          ->andWhere('o.todo = '.'0');
+                    }
+                 }
+
+
+                 if (isset($filtre['created_on']) && '' !== $filtre['created_on'])
+                 {
+                     $createdOn = '';
+                     switch ((int)$filtre['created_on'])
+                     {
+                         case 0:    //this week
+                             $time = strtotime(date("Y-m-d 00:00:00"));
+                             $weekStartDate = date('Y-m-d',strtotime("last Monday", $time));
+                             $createdOn = $weekStartDate;
+                             break;
+
+                         case 1:    //last week
+                             $time = strtotime('last week');
+                             $lastWeekStartDate = date('Y-m-d',strtotime("Monday", $time));
+                             $createdOn = $lastWeekStartDate;
+                             break;
+
+                         case 2:    //last month
+                             $lastMonthStartDate = date("Y-m-d", strtotime("first day of previous month"));
+                             $createdOn = $lastMonthStartDate;
+                             break;
+
+                         default:
+                             break;
+                     }
+
+                     if ('' !== $createdOn)
+                     {
+
+                         $qb
+                             ->andWhere("o.createdOn >= '" . $createdOn . "'");
+
+
+                     }
+                 }
+
+                /* if (NULL !== $filtre['deadline'] && '' !== $filtre['deadline'])
+                 {
+                     $deadline = '';
+
+                     switch ((int)$filtre['deadline'])
+                     {
+                         case 0:    //this week
+                             $time = strtotime(date("Y-m-d 00:00:00"));
+                             $weekStartDate = date('Y-m-d',strtotime("last Sunday", $time));
+                             $deadline = $weekStartDate;
+                             break;
+
+                         case 1:    //last week
+                             $time = strtotime('last week');
+                             $lastWeekStartDate = date('Y-m-d',strtotime("Sunday", $time));
+                             $deadline = $lastWeekStartDate;
+                             break;
+
+                         case 2:    //last month
+                             $lastMonthStartDate = date("Y-m-d", strtotime("first day of previous month"));
+                             $deadline = $lastMonthStartDate;
+                             break;
+
+                         default:
+                             break;
+                     }
+
+                     if ('' !== $deadline)
+                     {
+                         $qb
+                             ->andWhere("o.deadline <= '" . $deadline . "'");
+                     }
+                 } */
+
+
+                 if(isset($filtre['limit'])) {
+                        $createdOn = date('Y-m-d', strtotime($filtre['limit']['date']));
+                        if($filtre['limit']['type'] == '3') { //before
+                            $qb->andWhere("o.createdOn < '" . $createdOn . "'");
+                        }else { //after
+                            $qb->andWhere("o.createdOn > '" . $createdOn . "'");
+                        }
+                  }
+
+                 $qb->groupBy('o.id');
+             }
+             else
+             {
+                 $qb
+                     ->innerJoin('o.elements', 'e')
+                     ->where($qb->expr()->in('e.baseId', $baseIds))
+                     ->groupBy('o.id');
+             }
          }
 
          if ($sort === 'user') {
@@ -61,7 +165,6 @@ class OrderRepository extends EntityRepository
          $qb
              ->setFirstResult((int) $offsetStart)
              ->setMaxResults(max(10, (int) $perPage));
-
          return $qb->getQuery()->getResult();
     }
 
