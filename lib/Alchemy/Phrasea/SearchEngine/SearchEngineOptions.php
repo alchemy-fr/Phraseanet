@@ -760,7 +760,7 @@ class SearchEngineOptions
         $options->setSort($sort, $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
         $options->setStemming((Boolean) $request->get('stemme'));
         $options->setUseTruncation((Boolean) $request->get('truncation'));
-file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($options->serialize(), true)), FILE_APPEND);
+
         return $options;
     }
 
