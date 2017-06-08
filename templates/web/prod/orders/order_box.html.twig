@@ -194,7 +194,7 @@
         dateFormat: 'yy/mm/dd'
     });
 
-    var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}';
+    var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
     setCurrentDate(date);
     getSelectionText(dateSelection);
 
@@ -234,6 +234,8 @@
 $(document).ready(function(){
 
     $('#ORDERPREVIEW').tabs();
+
+    $('#ORDERPREVIEW').tabs("option", "active", tabSelection ? tabSelection : 0);
 	var dialog = p4.Dialog.get(1);
     var filterDateSelected = false;
 
