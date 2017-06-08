@@ -132,6 +132,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
             SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
+            SearchEngineOptions::SORT_UPDATED_ON => $this->app->trans('date de modification'),
         ];
     }
 
@@ -547,10 +548,12 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['_score'] = $options->getSortOrder();
         } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
             $sort['created_on'] = $options->getSortOrder();
+        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_UPDATED_ON) {
+            $sort['updated_on'] = $options->getSortOrder();
         } elseif ($options->getSortBy() === 'recordid') {
             $sort['record_id'] = $options->getSortOrder();
         } else {
-            $sort[sprintf('caption.%s.raw', $options->getSortBy())] = $options->getSortOrder();
+            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
         }
 
         if (! array_key_exists('record_id', $sort)) {

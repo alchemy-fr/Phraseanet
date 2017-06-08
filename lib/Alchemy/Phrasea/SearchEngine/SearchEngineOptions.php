@@ -34,6 +34,7 @@ class SearchEngineOptions
     const TYPE_ALL = '';
     const SORT_RELEVANCE = 'relevance';
     const SORT_CREATED_ON = 'created_on';
+    const SORT_UPDATED_ON = 'updated_on';
     const SORT_RANDOM = 'random';
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
@@ -721,6 +722,8 @@ class SearchEngineOptions
 
         $databoxDateFields = [];
 
+        $sortType = null;
+        /** @var \databox $databox */
         foreach ($databoxes as $databox) {
             $metaStructure = $databox->get_meta_structure();
             foreach (explode('|', $request->get('date_field')) as $field) {
@@ -733,10 +736,24 @@ class SearchEngineOptions
                     $databoxDateFields[] = $databoxField;
                 }
             }
+            // the "type" is supposed to be the same on all databoxes, we set it only once
+            // from the first databox having thr field
+            if($sortType === null) {
+                $databoxField = null;
+                try {
+                    $databoxField = $metaStructure->get_element_by_name($request->get('sort'));
+                } catch (\Exception $e) {
+                    // no-op
+                }
+                if($databoxField) {
+                    $sortType = $databoxField->get_type();
+                }
+            }
         }
 
         $options->setDateFields($databoxDateFields);
-        $options->setSort($request->get('sort'), $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
+        $sort = $request->get('sort') . ($sortType===\databox_field::TYPE_STRING ? ".raw" : "");
+        $options->setSort($sort, $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
         $options->setStemming((Boolean) $request->get('stemme'));
         $options->setUseTruncation((Boolean) $request->get('truncation'));
 
