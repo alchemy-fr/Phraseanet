@@ -650,6 +650,28 @@
                     });
                 }
             });
+
+            $("#users_page_form .input-mini").keydown(function (e) {
+                if (e.which == 13) {
+                    //prevent form from being submitted
+                    e.preventDefault();
+                }
+            });
+
+            $("#users_page_form .input-mini").keyup(function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    var form = $('#users_page_form');
+                    var current_page = parseInt($('.input-mini').val());
+                    var perPage = parseInt($('select[name="per_page"]', form).val());
+                    current_page = isNaN(current_page) || current_page < 1
+                    || current_page > {{ pages|floor }} ? 1 : current_page;
+
+                    var offset_start = (current_page-1) * perPage;
+                    $('input[name="offset_start"]', form).val(offset_start);
+                    $('#users_page_form').trigger('submit');
+                }
+            });
         });
 
   function exportlist()
