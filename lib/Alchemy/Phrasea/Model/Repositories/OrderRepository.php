@@ -52,8 +52,14 @@ class OrderRepository extends EntityRepository
 
                  if (NULL !== $filtre['todo'] && '' !== $filtre['todo'])
                  {
-                     $qb
-                         ->andWhere('o.todo = '.$filtre['todo']);
+
+                    if($filtre['todo'] == 0) {
+                        $qb
+                          ->andWhere('o.todo != '.'0');
+                    }else {
+                        $qb
+                          ->andWhere('o.todo = '.'0');
+                    }
                  }
 
 
@@ -159,7 +165,6 @@ class OrderRepository extends EntityRepository
          $qb
              ->setFirstResult((int) $offsetStart)
              ->setMaxResults(max(10, (int) $perPage));
-
          return $qb->getQuery()->getResult();
     }
 
