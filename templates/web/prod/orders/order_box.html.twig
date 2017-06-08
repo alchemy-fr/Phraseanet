@@ -125,7 +125,7 @@
             <div id="PROCESSEDVIEW">
                 <table class="table">
                     <tbody>
-                    {% if orders|length > 0 %}
+                    {% if orders_todo|length > 0 %}
                         {% for order in orders_todo %}
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
