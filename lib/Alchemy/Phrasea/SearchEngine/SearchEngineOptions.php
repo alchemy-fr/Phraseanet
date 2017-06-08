@@ -689,6 +689,7 @@ class SearchEngineOptions
 
         $databoxFields = [];
         $databoxes = $options->getDataboxes();
+        /** @var \databox $databox */
         foreach ($databoxes as $databox) {
             $metaStructure = $databox->get_meta_structure();
             foreach ($fields as $field) {
@@ -752,11 +753,14 @@ class SearchEngineOptions
         }
 
         $options->setDateFields($databoxDateFields);
-        $sort = $request->get('sort') . ($sortType===\databox_field::TYPE_STRING ? ".raw" : "");
+        $sort = $request->get('sort');
+        if(is_string($sort) && $sortType == \databox_field::TYPE_STRING) {
+            $sort .= ".raw";
+        };
         $options->setSort($sort, $request->get('ord', SearchEngineOptions::SORT_MODE_DESC));
         $options->setStemming((Boolean) $request->get('stemme'));
         $options->setUseTruncation((Boolean) $request->get('truncation'));
-
+file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($options->serialize(), true)), FILE_APPEND);
         return $options;
     }
 
