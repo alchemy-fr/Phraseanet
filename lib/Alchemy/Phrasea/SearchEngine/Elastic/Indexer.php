@@ -23,13 +23,19 @@ use Psr\Log\LoggerInterface;
 use igorw;
 use Psr\Log\NullLogger;
 use record_adapter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use SplObjectStorage;
+use Symfony\Component\Validator\Constraints\DateTime;
+
 
 class Indexer
 {
     const THESAURUS = 1;
     const RECORDS   = 2;
+
+    const WITH_ALIAS = true;
+    const WITHOUT_ALIAS = false;
 
     /**
      * @var \Elasticsearch\Client
@@ -84,26 +90,69 @@ class Indexer
         $this->deleteQueue = new SplObjectStorage();
     }
 
-    public function createIndex($withMapping = true)
+    /**
+     * @return Index
+     */
+    public function getIndex()
     {
-        $params = array();
-        $params['index'] = $this->index->getName();
-        $params['body']['settings']['number_of_shards'] = $this->index->getOptions()->getShards();
-        $params['body']['settings']['number_of_replicas'] = $this->index->getOptions()->getReplicas();
-        $params['body']['settings']['max_result_window'] = $this->index->getOptions()->getMaxResultWindow();
-        $params['body']['settings']['analysis'] = $this->index->getAnalysis();
+        return $this->index;
+    }
 
-        if ($withMapping) {
-            $params['body']['mappings'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
-            $params['body']['mappings'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
+    public function createIndex($indexName = null)
+    {
+        $aliasName = $this->index->getName();
+        if($indexName === null) {
+            $indexName = $aliasName;
         }
 
+        $now = sprintf("%s.%06d", Date('YmdHis'), 1000000*explode(' ', microtime())[0]) ;
+        $indexName .=  ('_' . $now);
+
+        $params = [
+            'index' => $indexName,
+            'body'  => [
+                'settings' => [
+                    'number_of_shards'   => $this->index->getOptions()->getShards(),
+                    'number_of_replicas' => $this->index->getOptions()->getReplicas(),
+                    'analysis'           => $this->index->getAnalysis()
+                ],
+                'mappings' => [
+                    RecordIndexer::TYPE_NAME => $this->index->getRecordIndex()->getMapping()->export(),
+                    TermIndexer::TYPE_NAME   => $this->index->getTermIndex()->getMapping()->export()
+                ]
+                //    ,
+                //    'aliases' => [
+                //        $aliasName => []
+                //    ]
+            ]
+        ];
+
         $this->client->indices()->create($params);
+
+        $params = [
+            'body' => [
+                'actions' => [
+                    [
+                        'add' => [
+                            'index' => $indexName,
+                            'alias' => $aliasName
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $this->client->indices()->updateAliases($params);
+
+        return [
+            'index' => $indexName,
+            'alias' => $aliasName
+        ];
     }
 
     public function updateMapping()
     {
-        $params = array();
+        $params = [];
         $params['index'] = $this->index->getName();
         $params['type'] = RecordIndexer::TYPE_NAME;
         $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
@@ -127,36 +176,94 @@ class Indexer
         ]);
     }
 
+    public function replaceIndex($newIndexName, $newAliasName)
+    {
+        $oldIndexes = $this->client->indices()->getAlias(
+            [
+                'index' => $this->index->getName()
+            ]
+        );
+
+        // delete old alias(es), only one alias on one index should exist
+        foreach($oldIndexes as $oldIndexName => $data) {
+            foreach($data['aliases'] as $oldAliasName => $data2) {
+                $params['body']['actions'][] = [
+                    'remove' => [
+                        'index' => $oldIndexName,
+                        'alias' => $oldAliasName
+                    ]
+                ];
+            }
+        }
+        //
+        $params['body']['actions'][] = [
+            'remove' => [
+                'index' => $newIndexName,
+                'alias' => $newAliasName
+            ]
+        ];
+        // create new alias
+        $params['body']['actions'][] = [
+            'add' => [
+                'index' => $newIndexName,
+                'alias' => $this->index->getName()
+            ]
+        ];
+
+        $this->client->indices()->updateAliases($params);
+
+        // delete old index(es), only one index should exist
+        $params = [
+            'index' => []
+        ];
+        foreach($oldIndexes as $oldIndexName => $data) {
+            $params['index'][] = $oldIndexName;
+        }
+        $this->client->indices()->delete(
+            $params
+        );
+    }
+
     public function populateIndex($what, \databox $databox)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->apply(function (BulkOperation $bulk) use ($what, $databox) {
-            if ($what & self::THESAURUS) {
-                $this->termIndexer->populateIndex($bulk, $databox);
+        $this->apply(
+            function (BulkOperation $bulk) use ($what, $databox) {
+                if ($what & self::THESAURUS) {
+                    $this->termIndexer->populateIndex($bulk, $databox);
 
-                // Record indexing depends on indexed terms so we need to make
-                // everything ready to search
-                $bulk->flush();
-                $this->client->indices()->refresh();
-            }
+                    // Record indexing depends on indexed terms so we need to make
+                    // everything ready to search
+                    $bulk->flush();
+                    $this->client->indices()->refresh();
+                }
 
-            if ($what & self::RECORDS) {
-                $databox->clearCandidates();
-                $this->recordIndexer->populateIndex($bulk, $databox);
+                if ($what & self::RECORDS) {
+                    $databox->clearCandidates();
+                    $this->recordIndexer->populateIndex($bulk, $databox);
 
-                // Final flush
-                $bulk->flush();
-            }
-        }, $this->index);
+                    // Final flush
+                    $bulk->flush();
+                }
+            },
+            $this->index
+        );
 
         // Optimize index
-        $params = array('index' => $this->index->getName());
-        $this->client->indices()->optimize($params);
+        $this->client->indices()->optimize(
+            [
+                'index' => $this->index->getName()
+            ]
+        );
 
         $event = $stopwatch->stop('populate');
-        printf("Indexation finished in %s min (Mem. %s Mo)", ($event->getDuration()/1000/60), bcdiv($event->getMemory(), 1048576, 2));
+
+        return [
+            'duration' => $event->getDuration(),
+            'memory'   => $event->getMemory()
+        ];
     }
 
     public function migrateMappingForDatabox($databox)
@@ -199,9 +306,12 @@ class Indexer
      */
     public function indexScheduledRecords(\databox $databox)
     {
-        $this->apply(function(BulkOperation $bulk) use($databox) {
-            $this->recordIndexer->indexScheduled($bulk, $databox);
-        }, $this->index);
+        $this->apply(
+            function (BulkOperation $bulk) use ($databox) {
+                $this->recordIndexer->indexScheduled($bulk, $databox);
+            },
+            $this->index
+        );
     }
 
     public function flushQueue()
@@ -214,11 +324,14 @@ class Indexer
             return;
         }
 
-        $this->apply(function(BulkOperation $bulk) {
-            $this->recordIndexer->index($bulk, $this->indexQueue);
-            $this->recordIndexer->delete($bulk, $this->deleteQueue);
-            $bulk->flush();
-        }, $this->index);
+        $this->apply(
+            function (BulkOperation $bulk) {
+                $this->recordIndexer->index($bulk, $this->indexQueue);
+                $this->recordIndexer->delete($bulk, $this->deleteQueue);
+                $bulk->flush();
+            },
+            $this->index
+        );
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
