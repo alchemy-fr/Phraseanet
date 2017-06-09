@@ -540,6 +540,63 @@ button.order_launcher.btn {
   margin-bottom: 1.5em;
 }
 
+#filter_box {
+  border: 1px solid;
+  width: 200px;
+  position: absolute;
+  background: $mediumBorderHighlightColor;
+  right: 0;
+  margin-top: 30px;
+  border-radius: 2px;
+  box-shadow: 3px 2px 5px #000;
+}
+
+#filter_box tbody {
+  width: 100%;
+  display: table;
+}
+
+#filter_box tbody .toggle-button-text {
+  color: white;
+  background: transparent;
+  border: 0;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+#filter_box tr {
+  border-bottom: 1px solid;
+}
+
+#filter_box tr:last-of-type {
+  border: 0;
+}
+
+#filter_box .input-prepend {
+  text-align: center;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0;
+  white-space: nowrap;
+}
+
+#filter_box .input-prepend input {
+  font-size: 14px;
+  width: 140px;
+  margin: 0;
+  position: relative;
+  vertical-align: top;
+  border-radius: 0 3px 3px 0;
+}
+
+#filter-button {
+  width: 100%;
+  background-color: #4990E2;
+  color: #FFF;
+  border: 0;
+  height: 30px;
+}
+
 button.btn.deny.outline {
   margin-right: 10px;
   box-shadow: none;
@@ -593,7 +650,6 @@ button.btn.btn-primary.send.outline {
   background: #DDD;
   left: 25px;
   top: 70px;
-  margin-top: 30px;
   z-index: 1;
   color: #737373;
   border-radius: 2px;

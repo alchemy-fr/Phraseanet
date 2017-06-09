@@ -142,23 +142,25 @@
 
 #PROCESSED-ORDER, #TODO-ORDER {
   width: 100%;
-  //background-color: #FFF;
+  background-color: #f5f5f5;
 }
 
 #PROCESSEDVIEW, #TODOVIEW {
-  border: 1px solid;
+  border: 1px solid #e3e3e3;
   border-radius: 0px 3px 3px 3px;
 }
 
 #ORDERPREVIEW li.ui-state-default.ui-corner-top {
-  border: 1px solid;
+  border: 1px solid #e3e3e3;
   border-bottom: 0px;
-  //background-color: #bbb;
+  background-color: #f5f5f5;
 }
 
-#ORDERPREVIEW li.ui-state-default.ui-corner-top.ui-tabs-active.ui-state-active {
-  border: 1px solid;
+#ORDERPREVIEW li.ui-state-default.ui-corner-top.ui-tabs-active.ui-state-active a {
+  border: 1px solid #e3e3e3;
   border-bottom: 0px;
+  background-color: #f5f5f5;
+  color: #737373;
 }
 
 .order_preview_box td {
@@ -185,47 +187,15 @@
   margin-left: 0px;
 }
 
-.order_preview_box td span.text_block {
+td span.text_block {
   display: block;
   font-size: 12px;
 }
 
-.order_preview_box td span.text_block_bold {
+td span.text_block_bold {
   display: block;
   font-weight: bold;
   font-size: 13px;
-}
-
-#filter_box {
-  border: 1px solid;
-  width: 200px;
-  position: absolute;
-  background: #444;
-  right: 0;
-  margin-top: 30px;
-  border-radius: 2px;
-  box-shadow: 3px 2px 5px #000;
-}
-
-#filter_box tbody {
-  width: 100%;
-  display: table;
-}
-
-#filter_box tbody .toggle-button-text {
-  color: white;
-  background: transparent;
-  border: 0;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-#filter_box tr {
-  border-bottom: 1px solid;
-}
-
-#filter_box tr:last-of-type {
-  border: 0;
 }
 
 .full-width {
@@ -236,30 +206,6 @@
   text-align: right;
 }
 
-#filter-button {
-  width: 100%;
-  background-color: #4990E2;
-  color: #FFF;
-  border: 0;
-  height: 30px;
-}
-
-#filter_box .input-prepend {
-  text-align: center;
-  display: block;
-  margin-bottom: 10px;
-  font-size: 0;
-  white-space: nowrap;
-}
-
-#filter_box .input-prepend input {
-  font-size: 14px;
-  width: 140px;
-  margin: 0;
-  position: relative;
-  vertical-align: top;
-  border-radius: 0 3px 3px 0;
-}
 
 .order-indicator {
   font-size: 10px;

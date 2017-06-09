@@ -108,7 +108,7 @@
                                 </td>
                                 <td>
                                     <span class="text_block">{{ 'order-manager:order-list: treated-documents' | trans }}</span>
-                                    <span class="text_block_bold">0/3</span>
+                                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -153,7 +153,7 @@
                                 </td>
                                 <td>
                                     <span class="text_block">{{ 'order-manager:order-list: treated-documents' | trans }}</span>
-                                    <span class="text_block_bold">0/3</span>
+                                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -216,7 +216,6 @@
     }
 
     function getSelectionText(dateSelection) {
-        console.log(dateSelection);
         if(dateSelection == '3' || dateSelection == '4') {
             dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html() + " " + $('#datepicker').val();
         }else {

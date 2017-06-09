@@ -1,7 +1,6 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 {% set displayName = order.getUser().getDisplayName() %}
 
-
 <div class="order-header">
     <div class="alert">
         {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
@@ -264,10 +263,10 @@ $(document).ready(function(){
     });
 
     $('#userInfo').hover(function() {
-        var offset = $(this).offset();
+        var offset = $('#userInfo').position();
         $('#userInfoPreview').css({
-            'left': (offset.left - $('#userInfoPreview').width()) + 20,
-            'top': ($('#userInfoPreview').height() - offset.top) + $('#userInfo').height()
+            'left': (offset.left - $('#userInfoPreview').width()) + 48,
+            'top': (offset.top+$('#userInfo').height()) + 8
         });
         $('#userInfoPreview').show();
     }, function() {
@@ -277,12 +276,12 @@ $(document).ready(function(){
     });
 
     $('#userInfo').click(function() {
-        var offset = $(this).offset();
+        var offset = $('#userInfo').position();
         if(!userInfoIsVisible) {
             userInfoIsVisible = true;
             $('#userInfoPreview').css({
-                'left': (offset.left - $('#userInfoPreview').width()) + 20,
-                'top': ($('#userInfoPreview').height() - offset.top) + $('#userInfo').height()
+                'left': (offset.left - $('#userInfoPreview').width()) + 48,
+                'top': (offset.top+$('#userInfo').height()) + 8
             });
             $('#userInfoPreview').show();
         }else {
