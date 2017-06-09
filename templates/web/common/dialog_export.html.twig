@@ -794,6 +794,14 @@
                 );
             });
 
+            function displayOverlay() { 
+                $(document.body).append('<div class="spinner-loader"></div>');
+             }
+
+              function removeOverlay() { 
+                $('.spinner-loader').remove();
+            }   
+
             var submitEmailForm = function () {
                 if (!check_subdefs($('#sendmail'))) {
                     return false;
@@ -803,7 +811,10 @@
                     return false;
                 }
 
+                displayOverlay();
+
                 $.post('{{ path('export_mail') }}', $('#sendmail form').serialize(), function (response) {
+                    removeOverlay();
                     dialog.Close();
                 });
                 return false;
