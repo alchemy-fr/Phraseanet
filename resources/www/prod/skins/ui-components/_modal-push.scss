@@ -61,8 +61,8 @@
   height: 80px;
   margin: 10px;
   display: inline-block;
-  background-color: #515150;
-  border: 3px solid #515150;
+  background-color: $pushboxBadgeColor;
+  border: 3px solid $pushboxBadgeColor;
   padding: 3px;
 }
 
@@ -88,7 +88,7 @@
 
 .PushBox .user_content .badges .badge .icon {
   width: 80px;
-  background-color: #404040;
+  background-color: $darkerBorderColor;
 }
 
 .PushBox .user_content .badges .badge .infos {

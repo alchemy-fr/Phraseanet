@@ -84,7 +84,7 @@ $answersToolsBtnHoverBg: #bfbfbf;
 $answersToolsBtnHoverColor: #FFFFFF;
 
 $answersToolsBtnSettingsColor: #000; //lighten($answersToolsBtnColor, 10);
-$answersToolsBtnSettingsHoverBg: #393939;
+$answersToolsBtnSettingsHoverBg: #d6d6d6;
 $answersToolsBtnSettingsHoverColor: lighten($answersToolsBtnColor, 10);
 $answersToolsBtnSettingsBorder: #EAEAEA;
 
@@ -141,6 +141,8 @@ $uiTextTitleColor: $mediumTextColor;
 $uiLinkColor: $darkTextColor;
 $uiLinkFocusColor: $darkTextColor;
 $uiLinkActiveColor: $darkTextColor;
+
+$pushboxBadgeColor: #BFBFBF;
 
 
 /******** MAIN MENU CONFIG ********/
