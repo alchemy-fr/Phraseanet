@@ -690,6 +690,8 @@
 
                 var $this = $(this);
                 $this.prop('disabled', true).addClass('disabled');
+                
+                displayOverlay();
                 $.post("../prod/order/"
                     , options
                     , function(data){
@@ -714,8 +716,10 @@
                         if(!data.error)
                         {
                             humane.info(data.msg);
+                            removeOverlay();
                             dialog.Close();
                         } else {
+                            removeOverlay();
                             humane.error(data.msg);
                         }
 
