@@ -219,6 +219,15 @@
                         <div class="controls controls-row adv_options" style="display:none;">
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
+                                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                                    <td style="width:50%; vertical-align:top;">
+                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET">
+                                            <input onchange="setPref('facet',$(this).prop('checked'));" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
+                                            {{ 'do not show facet with one item' | trans }}
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="width:50%; vertical-align:top;">
                                         <label class="checkbox inline" for="ADVSRCH_USE_TRUNCATION">
                                             <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" name="truncation">
@@ -772,6 +781,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
+            filterFacet = ("{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}");
         });
 
         function pollNotifications(){

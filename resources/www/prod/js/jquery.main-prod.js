@@ -15,6 +15,8 @@ var bodySize = {
     y: 0
 };
 
+var filterFacet = false;
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -585,6 +587,7 @@ var selectedFacetValues = [];
 
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
+    console.log(filterFacet);
     var treeSource = _.map(facets, function(facet) {
         // Values
         var values = _.map(facet.values, function(value) {
@@ -609,7 +612,23 @@ function loadFacets(facets) {
 
     treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
 
+    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+
     return getFacetsTree().reload(treeSource);
+}
+
+function shouldFilterSingleContent(source, shouldFilter) {
+    if(shouldFilter == "true") {
+        _.forEach(source, function(facet, facetIndex) {
+            if(facet.children != undefined) {
+                if(facet.children.length <= 1) {
+                    source.splice(facetIndex, 1);
+                }
+            }
+        });
+    }
+
+    return source;
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
