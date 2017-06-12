@@ -222,8 +222,8 @@
                                     {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
                                     <td style="width:50%; vertical-align:top;">
                                         <label class="checkbox inline" for="ADVSRCH_FILTER_FACET">
-                                            <input onchange="setPref('facet',$(this).prop('checked'));" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
-                                            {{ 'do not show facet with one item' | trans }}
+                                            <input onchange="setFacet($(this).prop('checked'))" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
+                                            {{ 'index::advance_search: disable-facet' | trans }}
                                         </label>
                                     </td>
                                 </tr>

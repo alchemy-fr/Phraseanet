@@ -17,6 +17,8 @@ var bodySize = {
 
 var filterFacet = false;
 
+var facets = null;
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -540,6 +542,7 @@ function initAnswerForm() {
                 });
 
                 loadFacets(datas.facets);
+                facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -587,7 +590,7 @@ var selectedFacetValues = [];
 
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
-    console.log(filterFacet);
+    filterFacet = (filterFacet == 'true' || filterFacet == true);
     var treeSource = _.map(facets, function(facet) {
         // Values
         var values = _.map(facet.values, function(value) {
@@ -618,7 +621,7 @@ function loadFacets(facets) {
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
-    if(shouldFilter == "true") {
+    if(shouldFilter == true) {
         _.forEach(source, function(facet, facetIndex) {
             if(facet.children != undefined) {
                 if(facet.children.length <= 1) {
@@ -2837,7 +2840,11 @@ function autoorder() {
 
 }
 
-
+function setFacet(boolean) {
+    setPref("facet", boolean);
+    filterFacet = boolean;
+    loadFacets(facets);
+}
 
 
 //clear search
