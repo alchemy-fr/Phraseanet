@@ -16,26 +16,19 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\BulkOperation;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
-use appbox;
 use Closure;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use igorw;
 use Psr\Log\NullLogger;
-use record_adapter;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use SplObjectStorage;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 
 class Indexer
 {
     const THESAURUS = 1;
     const RECORDS   = 2;
-
-    const WITH_ALIAS = true;
-    const WITHOUT_ALIAS = false;
 
     /**
      * @var \Elasticsearch\Client
