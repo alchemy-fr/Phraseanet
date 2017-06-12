@@ -105,16 +105,16 @@ class IndexManipulateCommand extends Command
                 $output->writeln(sprintf('<info>Search index "%s" was created</info>', $idx));
             }
 
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) currentIndexName = %s\n", __FILE__, __LINE__, $indexer->getIndex()->getOptions()->getIndexName()), FILE_APPEND);
             $oldAliasName = $indexer->getIndex()->getName();
-            $newIndexName = null;
+            $newAliasName = $newIndexName = null;
             if($temporary) {
-                $oldIndexName = $indexer->getIndex()->getOptions()->getIndexName();
                 // change the name to create a new index
-                $indexer->getIndex()->getOptions()->setIndexName("temp_". date('YmdHis'));
+                $now = sprintf("%s.%06d", Date('YmdHis'), 1000000*explode(' ', microtime())[0]) ;
+                $indexer->getIndex()->getOptions()->setIndexName("temp_". $now);
+
                 $r = $indexer->createIndex("phraseanetjy");
                 $newIndexName = $r['index'];
-                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) newIndexName = %s\n", __FILE__, __LINE__, $newIndexName), FILE_APPEND);
+                $newAliasName = $r['alias'];
             }
 
             foreach ($this->container->getDataboxes() as $databox) {
@@ -132,7 +132,7 @@ class IndexManipulateCommand extends Command
             if($temporary) {
                 $indexer->getIndex()->getOptions()->setIndexName($oldAliasName);
 
-                $indexer->replaceIndex($newIndexName);
+                $indexer->replaceIndex($newIndexName, $newAliasName);
             }
         }
     }
