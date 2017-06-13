@@ -84,7 +84,7 @@
                 <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
-                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% endif %}" order="{{ element.getRecord(app)|json_encode()|raw }}">
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                             <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
@@ -316,26 +316,26 @@ $(document).ready(function(){
     });
 
 
-//    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
-//        e.preventDefault();
-//        var id = $(this).attr('id').split('_').pop();
-//        var el = $(this).attr('order');
-//        //id start with 1, index need to minus 1
-//        var index = id-1;
-//        console.log(el);
-//        prevAjax = $.ajax({
-//            type: "POST",
-//            url: "../prod/records/record/",
-//            dataType: 'json',
-//            data: {
-//                record: el
-//            },
-//
-//            success: function (data) {
-//                console.log(data);
-//            }
-//        });
-//    }).addClass('clickable');
+    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
+        if(itemCount>1) {
+            return;
+        }
+        var elementids = $(this).attr('elementids').split('_');
+        var sbasId = elementids[0];
+        var recordId = elementids[1];
+        prevAjax = $.ajax({
+            type: "GET",
+            url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
+            dataType: 'json',
+            success: function (data) {
+                if (data.error) {
+                    return;
+                }
+                $('#preview-layout').empty().append(data.html_preview);
+                $('#caption-layout').empty().append(data.desc);
+            }
+        });
+    }).addClass('clickable');
 
 });
 
