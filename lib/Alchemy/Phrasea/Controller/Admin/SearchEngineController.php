@@ -45,18 +45,22 @@ class SearchEngineController extends Controller
     public function dropIndexAction(Request $request)
     {
         $indexer = $this->app['elasticsearch.indexer'];
+
         if ($indexer->indexExists()) {
             $indexer->deleteIndex();
         }
+
         return $this->app->redirectPath('admin_searchengine_form');
     }
 
     public function createIndexAction(Request $request)
     {
         $indexer = $this->app['elasticsearch.indexer'];
+
         if (!$indexer->indexExists()) {
             $indexer->createIndex();
         }
+
         return $this->app->redirectPath('admin_searchengine_form');
     }
 
@@ -91,24 +95,22 @@ class SearchEngineController extends Controller
     public function dumpResultIndexElasticsearchAction()
     {
         $indexer = $this->app['elasticsearch.indexer'];
+
         if (!$indexer->indexExists())
         {
             return $this->app->json([
                 'success' => false,
-                'message' => ("Error"),
+                'message' => $this->app->trans('An error occurred'),
             ]);
         }
-        else
-        {
-            $index = $this->app['elasticsearch.index'];
-            $indexName = $index->getName();
 
-            $resultat = $indexer->getSettings();
+        $index = $this->app['elasticsearch.index'];
+        $settings = $indexer->getSettings();
 
-            return $this->app->json([
+        return $this->app->json([
                 'success' => true,
-                'response' => $resultat[$indexName]['settings']['index']
-            ]);
-        }
+                'response' => $settings[$index->getName()]['settings']['index']
+        ]);
+
     }
 }

@@ -29,14 +29,11 @@
                     $('input[name="elasticsearch_settings[shards]"]').val(response['number_of_shards']);
                     $('input[name="elasticsearch_settings[replicas]"]').val(response['number_of_replicas']);
                 } else {
-                    if (window.console) {
-                        console.log(data.message);
-                    }
                     alert("{{ 'An error occured' | trans | e('js') }}" + data.message);
                 }
             }
             , error: function (jqXHR, textStatus, errorThrown) {
-                alert("Erreur XML:\n\n" + jqXHR.responseText);
+                alert("Error XML:\n\n" + jqXHR.responseText);
             }
         });
 
