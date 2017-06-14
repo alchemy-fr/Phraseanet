@@ -111,6 +111,5 @@ class SearchEngineController extends Controller
                 'success' => true,
                 'response' => $settings[$index->getName()]['settings']['index']
         ]);
-
     }
 }
