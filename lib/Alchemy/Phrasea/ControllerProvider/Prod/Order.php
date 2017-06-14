@@ -97,10 +97,6 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
-        $controllers->post('/search/', 'controller.prod.order:searchAction')
-            ->before($ensureOrdersAdmin)
-            ->bind('prod_order_search');
-
         return $controllers;
     }
 }

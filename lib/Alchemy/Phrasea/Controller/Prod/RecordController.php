@@ -114,19 +114,17 @@ class RecordController extends Controller
 
     public function getRecordByIds($sbasId, $recordId)
     {
-    //   $manager = $this->getEntityManager();
-    //   $manager->getRepository()
         $record = new \record_adapter($this->app, $sbasId, $recordId);
 
-     return $this->app->json([
+        return $this->app->json([
                 "html_preview"  => $this->render('common/preview.html.twig', [
                     'record'        => $record
                 ]),
                 "desc"  => $this->render('common/caption.html.twig', [
-                                    'record'        => $record,
-                                    'view'          => 'preview'
+                    'record'        => $record,
+                    'view'          => 'preview'
                 ])
-            ]);
+        ]);
     }
 
     /**

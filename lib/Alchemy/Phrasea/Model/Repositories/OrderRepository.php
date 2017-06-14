@@ -35,123 +35,67 @@ class OrderRepository extends EntityRepository
      * @param integer $offsetStart
      * @param integer $perPage
      * @param string  $sort
-     *
+     * @param ArrayCollection  $filters
      * @return Order[]
      */
-    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on", $filtre = null)
+    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on", $filters = [])
     {
         $qb = $this
             ->createQueryBuilder('o');
 
          if (!empty($baseIds)) {
-             if (!empty($filtre))
-             {
+           $qb
+               ->innerJoin('o.elements', 'e')
+               ->where($qb->expr()->in('e.baseId', $baseIds));
+
+               if ($filters['todo'] == Order::STATUS_TODO) {
                  $qb
-                     ->innerJoin('o.elements', 'e')
-                     ->where($qb->expr()->in('e.baseId', $baseIds));
-
-                 if (NULL !== $filtre['todo'] && '' !== $filtre['todo'])
-                 {
-
-                    if($filtre['todo'] == 0) {
-                        $qb
-                          ->andWhere('o.todo != '.'0');
-                    }else {
-                        $qb
-                          ->andWhere('o.todo = '.'0');
-                    }
-                 }
-
-
-                 if (isset($filtre['created_on']) && '' !== $filtre['created_on'])
-                 {
-                     $createdOn = '';
-                     switch ((int)$filtre['created_on'])
-                     {
-                         case 0:    //this week
-                             $time = strtotime(date("Y-m-d 00:00:00"));
-                             $weekStartDate = date('Y-m-d',strtotime("last Monday", $time));
-                             $createdOn = $weekStartDate;
-                             break;
-
-                         case 1:    //last week
-                             $time = strtotime('last week');
-                             $lastWeekStartDate = date('Y-m-d',strtotime("Monday", $time));
-                             $createdOn = $lastWeekStartDate;
-                             break;
-
-                         case 2:    //last month
-                             $lastMonthStartDate = date("Y-m-d", strtotime("first day of previous month"));
-                             $createdOn = $lastMonthStartDate;
-                             break;
-
-                         default:
-                             break;
-                     }
-
-                     if ('' !== $createdOn)
-                     {
-
-                         $qb
-                             ->andWhere("o.createdOn >= '" . $createdOn . "'");
-
-
-                     }
-                 }
-
-                /* if (NULL !== $filtre['deadline'] && '' !== $filtre['deadline'])
-                 {
-                     $deadline = '';
-
-                     switch ((int)$filtre['deadline'])
-                     {
-                         case 0:    //this week
-                             $time = strtotime(date("Y-m-d 00:00:00"));
-                             $weekStartDate = date('Y-m-d',strtotime("last Sunday", $time));
-                             $deadline = $weekStartDate;
-                             break;
-
-                         case 1:    //last week
-                             $time = strtotime('last week');
-                             $lastWeekStartDate = date('Y-m-d',strtotime("Sunday", $time));
-                             $deadline = $lastWeekStartDate;
-                             break;
-
-                         case 2:    //last month
-                             $lastMonthStartDate = date("Y-m-d", strtotime("first day of previous month"));
-                             $deadline = $lastMonthStartDate;
-                             break;
-
-                         default:
-                             break;
-                     }
-
-                     if ('' !== $deadline)
-                     {
-                         $qb
-                             ->andWhere("o.deadline <= '" . $deadline . "'");
-                     }
-                 } */
-
-
-                 if(isset($filtre['limit'])) {
-                        $createdOn = date('Y-m-d', strtotime($filtre['limit']['date']));
-                        if($filtre['limit']['type'] == '3') { //before
-                            $qb->andWhere("o.createdOn < '" . $createdOn . "'");
-                        }else { //after
-                            $qb->andWhere("o.createdOn > '" . $createdOn . "'");
-                        }
-                  }
-
-                 $qb->groupBy('o.id');
-             }
-             else
-             {
+                   ->andWhere('o.todo != 0');
+               }elseif ($filters['todo'] == Order::STATUS_PROCESSED) {
                  $qb
-                     ->innerJoin('o.elements', 'e')
-                     ->where($qb->expr()->in('e.baseId', $baseIds))
-                     ->groupBy('o.id');
-             }
+                   ->andWhere('o.todo = 0');
+               }
+
+               $createdOn = '';
+               switch ((int)$filters['created_on']) {
+                   case Order::STATUS_CURRENT_WEEK:    //this week
+                       $time = strtotime(date("Y-m-d 00:00:00"));
+                       $weekStartDate = date('Y-m-d',strtotime("last Monday", $time));
+                       $createdOn = $weekStartDate;
+                       $qb->andWhere("o.createdOn >= '" . $createdOn . "'");
+                       break;
+
+                   case Order::STATUS_PAST_WEEK:    //last week
+                       $time = strtotime('last week');
+                       $lastWeekStartDate = date('Y-m-d',strtotime("Monday", $time));
+                       $createdOn = $lastWeekStartDate;
+                       $qb->andWhere("o.createdOn >= '" . $createdOn . "'");
+                       break;
+
+                   case Order::STATUS_PAST_MONTH:    //last month
+                       $lastMonthStartDate = date("Y-m-d", strtotime("first day of previous month"));
+                       $createdOn = $lastMonthStartDate;
+                       $qb->andWhere("o.createdOn >= '" . $createdOn . "'");
+                       break;
+
+                   case Order::STATUS_BEFORE:    //before specific date
+                       if(isset($filters['limit']['date'])) {
+                         $createdOn = date('Y-m-d', strtotime($filters['limit']['date']));
+                         $qb->andWhere("o.createdOn < '" . $createdOn . "'");
+                       }
+                       break;
+
+                   case Order::STATUS_AFTER:    //before specific date
+                       if(isset($filters['limit']['date'])) {
+                         $createdOn = date('Y-m-d', strtotime($filters['limit']['date']));
+                         $qb->andWhere("o.createdOn > '" . $createdOn . "'");
+                       }
+                       break;
+
+                   default:
+                       break;
+               }
+               $qb->groupBy('o.id');
          }
 
          if ($sort === 'user') {

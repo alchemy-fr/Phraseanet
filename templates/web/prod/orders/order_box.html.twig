@@ -30,28 +30,28 @@
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right active"
-                                        type="button" onclick="setDateSelection(this, 0)">{{ 'order-manager:order-list: this-week' | trans }}</button>
+                                        type="button" name="CURRENT_WEEK" onclick="setDateSelection(this)">{{ 'order-manager:order-list: this-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                        type="button" onclick="setDateSelection(this, 1)">{{ 'order-manager:order-list: last-week' | trans }}</button>
+                                        type="button" name="PAST_WEEK" onclick="setDateSelection(this)">{{ 'order-manager:order-list: last-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                type="button" onclick="setDateSelection(this, 2)">{{ 'order-manager:order-list: last-month' | trans }}</button>
+                                type="button" name="PAST_MONTH" onclick="setDateSelection(this)">{{ 'order-manager:order-list: last-month' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button class="toggle-button-text" type="button" onclick="setDateSelection(this, 3)">{{ 'order-manager:order-list: before' | trans }}</button>
-                                <button class="toggle-button-text" type="button" onclick="setDateSelection(this, 4)">{{ 'order-manager:order-list: after' | trans }}</button>
+                                <button class="toggle-button-text" type="button" name="BEFORE" onclick="setDateSelection(this)">{{ 'order-manager:order-list: before' | trans }}</button>
+                                <button class="toggle-button-text" type="button" name="AFTER" onclick="setDateSelection(this)">{{ 'order-manager:order-list: after' | trans }}</button>
                                 <div class="input-prepend">
                                     <span class="add-on"><i class="icon icon-calendar"></i></span>
-                                    <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "-1 month"|date("Y/m/d") }}" />
+                                    <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "today"|date("Y/m/d") }}" />
                                 </div>
                             </td>
                         </tr>
@@ -85,9 +85,9 @@
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
                                 <td> <span class="icon-stack infoTips">
-                                    <i class="icon-circle icon-stack-base" style="color:#999"></i>
-                                    <i class="icon-check" style="color:#FFF"></i>
-                                    </span></td>
+                                <i class="icon-circle icon-stack-base" style="color:#7CD11E"></i>
+                                <i class="icon-exclamation" style="color:#FFF"></i>
+                                </span></td>
                                 <td style="width: 50%">
                                     <h4>{{ order.getOrderUsage() | nl2br }}</h4>
                                     <span class="text_block">{{ order.getUser().getEmail() }}</span>
@@ -183,6 +183,18 @@
 
 <script type="text/javascript">
 
+    const FilterTodo = {
+        TODO: 0,
+        PROCESSED: 1
+    }
+    const FilterDate = {
+        CURRENT_WEEK: '0',
+        PAST_WEEK:  '1',
+        PAST_MONTH:  '2',
+        BEFORE:  '3',
+        AFTER:  '4',
+    };
+
     $('#datepicker').datepicker({
         beforeShow: function() {
             setTimeout(function(){
@@ -199,24 +211,24 @@
     getSelectionText(dateSelection);
 
     var element = $('#filter_box tbody tr td button:eq('+dateSelection+')');
-    setDateSelection(element, dateSelection);
+    setDateSelection(element);
 
 
     function setCurrentDate(date) {
-        if(date != '') {
-            console.log(date);
+        if(date !== '') {
             $('#datepicker').val(date);
         }
     }
 
-    function setDateSelection(element, selection) {
-        dateSelection = selection;
+    function setDateSelection(element) {
+        var selection = $(element).attr("name");
+        dateSelection = FilterDate[selection];
         clearAll();
         $(element).addClass('active');
     }
 
     function getSelectionText(dateSelection) {
-        if(dateSelection == '3' || dateSelection == '4') {
+        if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
             dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html() + " " + $('#datepicker').val();
         }else {
             dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html();
@@ -239,9 +251,8 @@ $(document).ready(function(){
     var filterDateSelected = false;
 
     var info = {};
-    info['todo'] = '';
-    info['start'] = '';
-    info['end'] = '';
+    info['todo'] = FilterTodo.TODO;
+    info['start'] = FilterDate.CURRENT_WEEK;
 
     $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
         e.preventDefault();
@@ -262,12 +273,12 @@ $(document).ready(function(){
     $('#date-form').submit(function(e) {
         e.preventDefault();
         if($('#TODO-ORDER').is(':visible')){
-            info['todo'] = 0;
+            info['todo'] = FilterTodo.TODO;
         }else {
-            info['todo'] = 1;
+            info['todo'] = FilterTodo.PROCESSED;
         }
 
-        if(dateSelection == 3 || dateSelection ==4) {
+        if(dateSelection === FilterDate.BEFORE || dateSelection === FilterDate.AFTER) {
             var obj = {};
             info['start'] = dateSelection;
             obj['date'] = $('#datepicker').val();
@@ -276,11 +287,10 @@ $(document).ready(function(){
         }else {
             info['start'] = dateSelection;
         }
-        console.log(info);
         toggleFilterDate();
         $.ajax({
-            type: 'POST',
-            url: '../prod/order/search/',
+            type: 'GET',
+            url: '../prod/order/',
             data: info,
             success: function (data) {
                 $('#order_manager').parent().empty().append(data);

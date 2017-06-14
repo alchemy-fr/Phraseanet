@@ -103,6 +103,10 @@ class ProdOrderController extends BaseOrderController
         $perPage = (int) $request->query->get('per-page', 10);
         $offsetStart = 0;
 
+        $todo = $request->query->get('todo', Order::STATUS_TODO);
+        $start = $request->query->get('start', Order::STATUS_CURRENT_WEEK);
+        $limit = $request->query->get('limit', []);
+
         if ($page > 0) {
             $offsetStart = ($page - 1) * $perPage;
         }
@@ -111,8 +115,10 @@ class ProdOrderController extends BaseOrderController
 
         $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
-        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort, ['todo' => '0', 'created_on' => 0]);
-        $ordersListTodo = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort, ['todo' => '1', 'created_on' => 0]);
+        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
+        ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
+        $ordersListTodo = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
+        ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
         $total = $this->getOrderRepository()->countTotalOrders($baseIds);
 
         return $this->render('prod/orders/order_box.html.twig', [
@@ -123,9 +129,9 @@ class ProdOrderController extends BaseOrderController
             'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
             'orders'       => new ArrayCollection($ordersList),
             'orders_todo'       => new ArrayCollection($ordersListTodo),
-            'todo' => '0',
-            'start' => '0',
-            'date' => null
+            'todo' => $todo,
+            'start' => $start,
+            'date' => $limit ? $limit['date'] : null
         ]);
     }
 
@@ -207,46 +213,4 @@ class ProdOrderController extends BaseOrderController
             'action'  => 'send',
         ]);
     }
-
-    public function searchAction(Request $request)
-    {
-            $todo = $request->request->get('todo');
-            $start = $request->request->get('start');
-            $limit = $request->request->get('limit');
-
-            $page = (int) $request->query->get('page', 1);
-                   $perPage = (int) $request->query->get('per-page', 10);
-                   $offsetStart = 0;
-
-                   if ($page > 0) {
-                       $offsetStart = ($page - 1) * $perPage;
-                   }
-
-                   $sort = $request->query->get('sort');
-
-                   $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
-
-                   $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
-                   ['todo' => '0', 'created_on' => $start, 'limit' => $limit]);
-                   $ordersListTodo = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
-                   ['todo' => '1', 'created_on' => $start, 'limit' => $limit]);
-                   $total = $this->getOrderRepository()->countTotalOrders($baseIds);
-
-
-                   return $this->render('prod/orders/order_box.html.twig', [
-                       'page'         => $page,
-                       'perPage'      => $perPage,
-                       'total'        => $total,
-                       'previousPage' => $page < 2 ? false : ($page - 1),
-                       'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
-                       'orders'       => new ArrayCollection($ordersList),
-                       'orders_todo'       => new ArrayCollection($ordersListTodo),
-                       'todo' => $todo,
-                       'start' => $start,
-                       'date' => $limit['date']
-                   ]);
-
-    }
-
-
 }
