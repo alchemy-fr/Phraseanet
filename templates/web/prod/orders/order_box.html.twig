@@ -30,25 +30,25 @@
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right active"
-                                        type="button" name="CURRENT_WEEK" onclick="setDateSelection(this)">{{ 'order-manager:order-list: this-week' | trans }}</button>
+                                        type="button" name="CURRENT_WEEK" onclick="setDateSelection(this);">{{ 'order-manager:order-list: this-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                        type="button" name="PAST_WEEK" onclick="setDateSelection(this)">{{ 'order-manager:order-list: last-week' | trans }}</button>
+                                        type="button" name="PAST_WEEK" onclick="setDateSelection(this);">{{ 'order-manager:order-list: last-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                type="button" name="PAST_MONTH" onclick="setDateSelection(this)">{{ 'order-manager:order-list: last-month' | trans }}</button>
+                                type="button" name="PAST_MONTH" onclick="setDateSelection(this);">{{ 'order-manager:order-list: last-month' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button class="toggle-button-text" type="button" name="BEFORE" onclick="setDateSelection(this)">{{ 'order-manager:order-list: before' | trans }}</button>
-                                <button class="toggle-button-text" type="button" name="AFTER" onclick="setDateSelection(this)">{{ 'order-manager:order-list: after' | trans }}</button>
+                                <button class="toggle-button-text" type="button" name="BEFORE" onclick="setDateSelection(this);">{{ 'order-manager:order-list: before' | trans }}</button>
+                                <button class="toggle-button-text" type="button" name="AFTER" onclick="setDateSelection(this);">{{ 'order-manager:order-list: after' | trans }}</button>
                                 <div class="input-prepend">
                                     <span class="add-on"><i class="icon icon-calendar"></i></span>
                                     <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "today"|date("Y/m/d") }}" />

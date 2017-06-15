@@ -38,10 +38,10 @@
             <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: adresse' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
-            <div>
-                <button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">
-                    {{ 'order-manager::order-item: send-mail' | trans }}</button>
-            </div>
+            {#<div>#}
+                {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
+                    {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
+            {#</div>#}
         </div>
         <table class="table no-border">
             <tr>
@@ -60,7 +60,11 @@
             </tr>
             <tr>
                 <td>
-                    <span class="text_block">{{ displayName }}({{ order.getUser().getEmail() }})
+                    <span class="text_block">{{ displayName }}(<a
+                                style="font-size: 12px;color: #4990E2;" href="#"
+                                onclick="sendMail('{{ order.getUser().getEmail() }}',
+                                        '{% trans with {'%displayName%' : order.getUser().getDisplayName()} %}%displayName% wants to place an order{% endtrans %}',
+                                        '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage() }}')">{{ order.getUser().getEmail() }}</a>)
                         <span class="icon-stack infoTips" id="userInfo">
                             <i class="icon-circle icon-stack-base" style="color:#737373"></i>
                             <i class="icon-info" style="color:#FFF"></i>
@@ -458,9 +462,9 @@ function send_documents(order_id)
     do_send_documents(order_id, elements_ids, false);
 }
 
-function sendMail(email) {
+function sendMail(email, subject, body) {
     if(email != null) {
-        window.open('mailto:' + email);
+        window.open('mailto:' + email + '?subject=' + subject + '&body=' + body);
     }
 }
 
