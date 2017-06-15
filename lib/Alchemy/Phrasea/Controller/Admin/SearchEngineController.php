@@ -92,11 +92,20 @@ class SearchEngineController extends Controller
         ]);
     }
 
-    public function dumpResultIndexElasticsearchAction()
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSettingFromIndexAction(Request $request)
     {
-        $indexer = $this->app['elasticsearch.indexer'];
+        if (!$request->isXmlHttpRequest()) {
+            $this->app->abort(400);
+        }
 
-        if (!$indexer->indexExists())
+        $indexer = $this->app['elasticsearch.indexer'];
+        $index = $request->get('index');
+
+        if (!$indexer->indexExists() || is_null($index))
         {
             return $this->app->json([
                 'success' => false,
@@ -104,12 +113,9 @@ class SearchEngineController extends Controller
             ]);
         }
 
-        $index = $this->app['elasticsearch.index'];
-        $settings = $indexer->getSettings();
-
         return $this->app->json([
                 'success' => true,
-                'response' => $settings[$index->getName()]['settings']['index']
+                'response' => $indexer->getSettings(['index' => $index])
         ]);
     }
 }

@@ -17,6 +17,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordQueuer;
 use appbox;
+use Aws\Sns\Exception\NotFoundException;
 use Closure;
 use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
@@ -238,8 +239,13 @@ class Indexer
         $bulk->flush();
     }
 
-    public function getSettings()
+    public function getSettings(array $params)
     {
-        return $this->client->indices()->getSettings();
+        try {
+            //Get setting from index
+            return $this->client->indices()->getSettings($params);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
