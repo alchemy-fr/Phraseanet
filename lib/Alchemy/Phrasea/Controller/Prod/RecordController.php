@@ -112,7 +112,7 @@ class RecordController extends Controller
         ]);
     }
 
-    public function getRecordByIds($sbasId, $recordId)
+    public function getRecordById($sbasId, $recordId)
     {
         $record = new \record_adapter($this->app, $sbasId, $recordId);
 

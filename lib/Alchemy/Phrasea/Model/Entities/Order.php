@@ -25,13 +25,13 @@ class Order
 
     const NOTIFY_WEBHOOK = 'webhook';
 
-    const STATUS_TODO = 0;
-    const STATUS_PROCESSED = 1;
-    const STATUS_CURRENT_WEEK = 0;
-    const STATUS_PAST_WEEK = 1;
-    const STATUS_PAST_MONTH = 2;
-    const STATUS_BEFORE = 3;
-    const STATUS_AFTER = 4;
+    const STATUS_TODO = 'pending';
+    const STATUS_PROCESSED = 'processed';
+    const STATUS_CURRENT_WEEK = 'current_week';
+    const STATUS_PAST_WEEK = 'past_week';
+    const STATUS_PAST_MONTH = 'past_month';
+    const STATUS_BEFORE = 'before';
+    const STATUS_AFTER = 'after';
 
     /**
      * @ORM\Column(type="integer")

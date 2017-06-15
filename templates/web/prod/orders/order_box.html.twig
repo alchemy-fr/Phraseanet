@@ -184,15 +184,15 @@
 <script type="text/javascript">
 
     const FilterTodo = {
-        TODO: 0,
-        PROCESSED: 1
+        TODO: 'pending',
+        PROCESSED: 'processed'
     }
     const FilterDate = {
-        CURRENT_WEEK: '0',
-        PAST_WEEK:  '1',
-        PAST_MONTH:  '2',
-        BEFORE:  '3',
-        AFTER:  '4',
+        CURRENT_WEEK: 'current_week',
+        PAST_WEEK:  'past_week',
+        PAST_MONTH:  'past_month',
+        BEFORE:  'before',
+        AFTER:  'after',
     };
 
     $('#datepicker').datepicker({
@@ -209,8 +209,7 @@
     var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
     setCurrentDate(date);
     getSelectionText(dateSelection);
-
-    var element = $('#filter_box tbody tr td button:eq('+dateSelection+')');
+    var element = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']');
     setDateSelection(element);
 
 
@@ -229,9 +228,9 @@
 
     function getSelectionText(dateSelection) {
         if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
-            dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html() + " " + $('#datepicker').val();
+            dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html() + " " + $('#datepicker').val();
         }else {
-            dateSelectionText = $('#filter_box tbody tr td button:eq('+dateSelection+')').html();
+            dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html();
         }
         $('#filter-text').text(dateSelectionText);
     }
@@ -246,7 +245,7 @@ $(document).ready(function(){
 
     $('#ORDERPREVIEW').tabs();
 
-    $('#ORDERPREVIEW').tabs("option", "active", tabSelection ? tabSelection : 0);
+    $('#ORDERPREVIEW').tabs("option", "active", tabSelection == FilterTodo.PROCESSED ? 1 : 0);
 	var dialog = p4.Dialog.get(1);
     var filterDateSelected = false;
 

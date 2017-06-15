@@ -125,15 +125,15 @@
                 </table>
             </div>
             <div id="order_detail" style="width:60%;">
+                <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
+                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                    <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                </div>
                 <div id="wrapper-padding">
                     <div id="preview-layout">
                         {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
-                    </div>
-                    <div id="order-action" style="color:#333;">
-                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
                     <div id="info-header">
                         <span class="icon-stack infoTips">
@@ -235,7 +235,7 @@ $(document).ready(function(){
         $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
         $this.addClass('last_selected');
 
-        setItemCount(itemCount);
+        renderOrderDetailView(itemCount);
     });
 
     $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
@@ -316,27 +316,19 @@ $(document).ready(function(){
     });
 
 
-    $('tr.order_row', dialog.getDomElement()).bind('click', function(e){
-        $('#preview-layout').empty();
-        $('#caption-layout').empty()
+    $('tr.order_row', dialog.getDomElement()).bind('click', function(){
+        if(!$(this).hasClass('selectable')) {
+            return;
+        }
         if(itemCount>1) {
             return;
         }
-        var elementids = $(this).attr('elementids').split('_');
-        var sbasId = elementids[0];
-        var recordId = elementids[1];
-        prevAjax = $.ajax({
-            type: "GET",
-            url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
-            dataType: 'json',
-            success: function (data) {
-                if (data.error) {
-                    return;
-                }
-                $('#preview-layout').append(data.html_preview);
-                $('#caption-layout').append(data.desc);
-            }
-        });
+        //disable select all checkbox if selected
+        if($('input[name="select-all"]').is(':checked')){
+            $('input[name="select-all"]').prop('checked', false);
+        }
+        //load preview and caption
+        loadPreviewAndCaption($(this));
     }).addClass('clickable');
 
 });
@@ -344,16 +336,22 @@ $(document).ready(function(){
 
 function checkAll(element) {
     itemCount = 0;
-    $('.table-order tr').each(function(){
+    var selectable =[];
+    $('.table-order .order_row').each(function(){
         var el = $(this);
-        if(element.checked){
+        if(element.checked && el.hasClass('selectable')){
             el.addClass('selected');
             itemCount++;
+            selectable.push(el);
         }else {
             el.removeClass('selected');
         }
     });
-    setItemCount(itemCount);
+    //load preview for single item selected
+    if(selectable.length == 1) {
+        loadPreviewAndCaption(selectable[0]);
+    }
+    renderOrderDetailView(itemCount);
 }
 
 function do_send_documents(order_id, elements_ids, force)
@@ -466,19 +464,41 @@ function sendMail(email) {
     }
 }
 
-function setItemCount(countSelected) {
+function renderOrderDetailView(countSelected) {
     if(countSelected > 1) {
         $('#wrapper-padding').hide();
+        $('.external-order-action').hide();
         $('#wrapper-multiple').show();
     }else if(countSelected == 1) {
         $('#wrapper-padding').show();
+        $('.external-order-action').show();
         $('#wrapper-multiple').hide();
     }else {
         $('#wrapper-padding').hide();
+        $('.external-order-action').hide();
         $('#wrapper-multiple').hide();
     }
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
+function loadPreviewAndCaption(elem) {
+    $('#preview-layout').empty();
+    $('#caption-layout').empty();
+    var elementids = elem.attr('elementids').split('_');
+    var sbasId = elementids[0];
+    var recordId = elementids[1];
+    prevAjax = $.ajax({
+        type: "GET",
+        url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
+        dataType: 'json',
+        success: function (data) {
+            if (data.error) {
+                return;
+            }
+            $('#preview-layout').append(data.html_preview);
+            $('#caption-layout').append(data.desc);
+        }
+    });
+}
 
 </script>

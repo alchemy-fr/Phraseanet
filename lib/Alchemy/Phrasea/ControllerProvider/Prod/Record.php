@@ -49,7 +49,7 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('record_details')
             ->method('GET|POST');
 
-        $controllers->get('/record/{sbasId}/{recordId}/', 'controller.prod.records:getRecordByIds')
+        $controllers->get('/record/{sbasId}/{recordId}/', 'controller.prod.records:getRecordById')
              ->bind('record_single')
              ->assert('sbasId', '\d+')
              ->assert('recordId', '\d+');

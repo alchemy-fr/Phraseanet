@@ -47,7 +47,6 @@ class OrderRepository extends EntityRepository
            $qb
                ->innerJoin('o.elements', 'e')
                ->where($qb->expr()->in('e.baseId', $baseIds));
-
                if ($filters['todo'] == Order::STATUS_TODO) {
                  $qb
                    ->andWhere('o.todo != 0');
@@ -57,7 +56,7 @@ class OrderRepository extends EntityRepository
                }
 
                $createdOn = '';
-               switch ((int)$filters['created_on']) {
+               switch ($filters['created_on']) {
                    case Order::STATUS_CURRENT_WEEK:    //this week
                        $time = strtotime(date("Y-m-d 00:00:00"));
                        $weekStartDate = date('Y-m-d',strtotime("last Monday", $time));

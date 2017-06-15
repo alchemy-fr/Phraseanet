@@ -355,7 +355,8 @@ span.ww_winTitle {
 }
 
 #order_manager .order_list .selectable.selected {
-  background-color: #404040;
+  background-color: $darkerBorderColor;
+  border: 1px solid #4990E2;
 }
 
 #order_manager .order_list .selectable {
@@ -475,10 +476,6 @@ button.order_launcher.btn {
   border: 1px solid #4990E2;
 }
 
-#order_manager .order_list .selectable.selected {
-  background-color: transparent;
-  border: 1px solid #4990E2;
-}
 
 .order_list {
   width: 40%;
