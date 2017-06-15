@@ -590,7 +590,6 @@ var selectedFacetValues = [];
 
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
-    filterFacet = (filterFacet == 'true' || filterFacet == true);
     var treeSource = _.map(facets, function(facet) {
         // Values
         var values = _.map(facet.values, function(value) {
