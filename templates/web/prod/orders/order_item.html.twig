@@ -63,7 +63,7 @@
                     <span class="text_block">{{ displayName }}(<a
                                 style="font-size: 12px;color: #4990E2;" href="#"
                                 onclick="sendMail('{{ order.getUser().getEmail() }}',
-                                        '{% trans with {'%displayName%' : order.getUser().getDisplayName()} %}%displayName% wants to place an order{% endtrans %}',
+                                        '{{ 'order-manager::mail: votre_commande_du' | trans }} {{ order.getCreatedOn()|date('d/m/Y') }}',
                                         '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage() }}')">{{ order.getUser().getEmail() }}</a>)
                         <span class="icon-stack infoTips" id="userInfo">
                             <i class="icon-circle icon-stack-base" style="color:#737373"></i>
