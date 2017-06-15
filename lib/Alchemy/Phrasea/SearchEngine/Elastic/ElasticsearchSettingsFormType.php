@@ -67,7 +67,7 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'mapped' => false,
-                'attr' => ['class' => 'margin hide']
+                'attr' => ['class' => 'dumpfield hide']
             ])
 
         ;
