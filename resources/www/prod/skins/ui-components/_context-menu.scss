@@ -56,12 +56,12 @@ Menu contextuel
 }
 
 .context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
-  color: #212121;
+  color: $darkerBackgroundColor;
 }
 
 .context-menu-theme-vista {
   background-image: none;
-  background-color: #212121;
+  background-color: $darkerBackgroundColor;
   border-bottom-left-radius: $defaultBorderRadius;
   border-bottom-right-radius: $defaultBorderRadius;
 }

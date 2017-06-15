@@ -107,7 +107,7 @@ EM {
 }
 
 .ui-widget-content.ui-autocomplete {
-  background-color: black;
+  background-color: $darkerBackgroundColor;
   background-image: none;
   z-index: 650;
 }

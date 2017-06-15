@@ -32,13 +32,13 @@ define([
             selectAllText: i18n.t("all_collections"),
             buttonText: function (options, select) {
                 if (options.length === 0) {
-                    return i18n.t("no_collection_selected") + '<b class="caret"></b>';
+                    return i18n.t("no_collection_selected");
                 } else {
                     return i18n.t(
                         options.length === 1 ? "one_collection_selected" : "collections_selected", {
                             postProcess: "sprintf",
                             sprintf: [options.length]
-                        }) + ' <b class="caret"></b>';
+                        });
                 }
             }
         });

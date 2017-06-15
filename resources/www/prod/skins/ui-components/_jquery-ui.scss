@@ -246,7 +246,7 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
 .ui-autocomplete.ui-widget-content .ui-state-focus,
 .ui-autocomplete.ui-widget-header .ui-state-focus {
   background-image:none;
-  background-color:#515151;
+  background-color: $btnBackgroundHighlight;
   border:none;
   margin:0;
   border-radius: 0;
@@ -283,5 +283,4 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
   padding:1px 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  padding-right: 20px;
 }

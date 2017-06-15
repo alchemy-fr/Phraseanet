@@ -407,6 +407,15 @@ input[id="elasticsearch_settings_highlight"] {
   font-style: italic;
 }
 
+#users_page .user_modifier {
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+#users_page .user_deleter {
+  margin-top: 5px;
+}
+
 @media screen and (max-width: 1150px) {
   .langTab{
     display: block;

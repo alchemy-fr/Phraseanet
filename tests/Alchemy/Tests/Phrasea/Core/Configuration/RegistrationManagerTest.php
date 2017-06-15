@@ -154,7 +154,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
                         ]
                     ]
                 ],
-                'out-time',
+                'out-dated',
                 1
             ];
         }
