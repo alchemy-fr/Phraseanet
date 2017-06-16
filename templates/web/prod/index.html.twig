@@ -221,7 +221,7 @@
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
                                         <label class="checkbox inline" for="ADVSRCH_USE_TRUNCATION">
-                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" name="truncation">
+                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" name="truncation" checked>
                                             {{ 'use truncation' | trans }}
                                         </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
@@ -688,6 +688,14 @@
                             </label>
                         </form>
                     </div>
+                    <div class="box">
+                        <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+                        {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
+                            <input onchange="setFacet($(this).prop('checked'))" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
+                            {{ 'index::advance_search: disable-facet' | trans }}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -802,6 +810,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
+            filterFacet = ({% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %});
         });
 
         function pollNotifications(){

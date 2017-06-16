@@ -15,6 +15,10 @@ var bodySize = {
     y: 0
 };
 
+var filterFacet = false;
+
+var facets = null;
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -538,6 +542,7 @@ function initAnswerForm() {
                 });
 
                 loadFacets(datas.facets);
+                facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -609,7 +614,23 @@ function loadFacets(facets) {
 
     treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
 
+    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+
     return getFacetsTree().reload(treeSource);
+}
+
+function shouldFilterSingleContent(source, shouldFilter) {
+    if(shouldFilter == true) {
+        _.forEach(source, function(facet, facetIndex) {
+            if(facet.children != undefined) {
+                if(facet.children.length <= 1) {
+                    source.splice(facetIndex, 1);
+                }
+            }
+        });
+    }
+
+    return source;
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
@@ -2818,7 +2839,11 @@ function autoorder() {
 
 }
 
-
+function setFacet(boolean) {
+    setPref("facet", boolean);
+    filterFacet = boolean;
+    loadFacets(facets);
+}
 
 
 //clear search
