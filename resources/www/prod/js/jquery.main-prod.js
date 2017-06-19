@@ -620,14 +620,18 @@ function loadFacets(facets) {
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
+    var filteredSource = [];
     if(shouldFilter == true) {
-        _.forEach(source, function(facet, facetIndex) {
-            if(facet.children != undefined) {
-                if(facet.children.length <= 1) {
-                    source.splice(facetIndex, 1);
-                }
+        _.forEach(source, function(facet) {
+            //close expansion for facet containing selected values
+            if(!_.isUndefined(selectedFacetValues[facet.title])) {
+                facet.expanded = false;
+            }
+            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
+                filteredSource.push(facet);
             }
         });
+        source = filteredSource;
     }
 
     return source;
