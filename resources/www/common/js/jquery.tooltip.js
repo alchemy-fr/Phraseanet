@@ -577,6 +577,15 @@
     }
 
     function fix(event) {
+        //fix on vignette should only work in "graphiste" mode
+        if($('.previewTips').length == 0) {
+            if($('#tooltip').has('.popover-content').length > 0 && $('.captionRolloverTips').length > 0) {
+                settings(this).fixable = true;
+            }else {
+                hide(event);
+                return;
+            }
+        }
         if (!settings(this).fixable) {
             hide(event);
             return;
