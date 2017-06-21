@@ -33,7 +33,11 @@
 </form>
 
 <script type="text/javascript">
-datePicker();
+
+    $(document).ready(function () {
+        $.datepicker.setDefaults(datepickerLang);
+        datePicker();
+    });
 function datePicker()
 {
   var dates = $('.dmin, .dmax');
