@@ -142,6 +142,10 @@ EM {
   bottom: 0;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
 #rightFrame {
   min-width: 660px !important;
 }
