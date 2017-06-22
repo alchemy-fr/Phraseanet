@@ -577,9 +577,11 @@
     }
 
     function fix(event) {
-        if (!settings(this).fixable) {
-            hide(event);
-            return;
+        if(!$(this).hasClass('captionTips') || !event.altKey) {
+            if (!settings(this).fixable) {
+                hide(event);
+                return;
+            }
         }
         event.cancelBubble = true;
         if (event.stopPropagation)
