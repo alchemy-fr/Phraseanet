@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2016-05-24T15:23:42Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
@@ -7997,9 +7997,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">ID de collection distante</target>
         <jms:reference-file line="32">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2b1cf96c4112d7f2d56254852724bb013b257db6" resname="admin::base:collection: numero de collection locale">
+      <trans-unit id="2b1cf96c4112d7f2d56254852724bb013b257db6" resname="admin::base:collection: numero de collection locale" approved="no">
         <source>admin::base:collection: numero de collection locale</source>
-        <target state="new">admin::base:collection: numero de collection locale</target>
+        <target state="needs-translation">Numéro de collection locale ("base_id" coté API) :</target>
         <jms:reference-file line="33">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea093555b864789074e57fea524db9414672b7b5" resname="admin::base:collection: renommer la collection" approved="yes">
