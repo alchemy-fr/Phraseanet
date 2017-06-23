@@ -312,6 +312,7 @@
             }
             else {
                 // handle captions
+                recordWidth = 340;
                 var contentHeight = $selector.get(0).offsetHeight;
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
