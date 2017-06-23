@@ -3202,9 +3202,9 @@
         <target state="translated">Creates an audio file</target>
         <jms:reference-file line="44">Media/Subdef/Audio.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image">
+      <trans-unit id="d1e6306fa0e2c34c9580854b101bc70e510bc5a3" resname="Generates an image" approved="yes">
         <source>Generates an image</source>
-        <target state="new">Generates an image</target>
+        <target state="translated">Generates an image</target>
         <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
         <jms:reference-file line="47">Media/Subdef/Unknown.php</jms:reference-file>
       </trans-unit>
