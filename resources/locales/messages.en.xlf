@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-06-23T17:47:14Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -7993,9 +7993,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Invalid XML, unable to apply changes</target>
         <jms:reference-file line="14">web/admin/structure.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d2ac37eb488617494c60906afae1ef5510ee92dc" resname="admin::base:collection:  numero de collection locale">
+      <trans-unit id="d2ac37eb488617494c60906afae1ef5510ee92dc" resname="admin::base:collection:  numero de collection locale" approved="no">
         <source>admin::base:collection:  numero de collection locale</source>
-        <target state="new">admin::base:collection:  numero de collection locale</target>
+        <target state="needs-translation">Collection id ("base_id" API side) :</target>
         <jms:reference-file line="32">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f17890a6f5675a0542b997121fc105bb6bd4466" resname="admin::base:collection: Creer une collection" approved="yes">
@@ -9342,9 +9342,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Add date</target>
         <jms:reference-file line="134">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification">
+      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="yes">
         <source>date de modification</source>
-        <target state="new">date de modification</target>
+        <target state="translated">Modification Date</target>
         <jms:reference-file line="135">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
@@ -9629,9 +9629,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Rotate</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
         <source>index::advance_search: disable-facet</source>
-        <target state="new">index::advance_search: disable-facet</target>
+        <target state="translated">Hide facette with 1 result.</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet">
@@ -10548,9 +10548,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Find</target>
         <jms:reference-file line="292">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection">
+      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection" approved="no">
         <source>prod::editing:thumbnailselection</source>
-        <target state="new">prod::editing:thumbnailselection</target>
+        <target state="needs-translation">Select one document.</target>
         <jms:reference-file line="275">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -11769,9 +11769,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Add a new order Manager</target>
         <jms:reference-file line="56">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c839f2d61feee84cc97255537945fc34cbcbf82c" resname="setup::Backup thumbnails cache">
+      <trans-unit id="c839f2d61feee84cc97255537945fc34cbcbf82c" resname="setup::Backup thumbnails cache" approved="yes">
         <source>setup::Backup thumbnails cache</source>
-        <target state="new">setup::Backup thumbnails cache</target>
+        <target state="translated">Backup thumbnails cache repository.</target>
         <jms:reference-file line="160">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9b5fafc42f6e089ae9b42825287781dffcafcdd" resname="setup::Configuration de la base de compte ApplicationBox" approved="yes">
