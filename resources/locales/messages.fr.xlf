@@ -1862,9 +1862,9 @@
         <target state="translated">Créez un compte manuellement</target>
         <jms:reference-file line="22">web/login/register.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="26a9831600fb0e895035038bcac30cc389b393e0" resname="Create index">
+      <trans-unit id="26a9831600fb0e895035038bcac30cc389b393e0" resname="Create index" approved="yes">
         <source>Create index</source>
-        <target state="new">Create index</target>
+        <target state="translated">Créer les index</target>
         <jms:reference-file line="38">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="384422e656d8a4d803155efc371754913755a4b0" resname="Create new subdef" approved="yes">
@@ -2386,9 +2386,9 @@
         <target state="translated">Droits</target>
         <jms:reference-file line="62">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4e4528018d1a0aa11f7dc17b5425174a7436d334" resname="Drop index">
+      <trans-unit id="4e4528018d1a0aa11f7dc17b5425174a7436d334" resname="Drop index" approved="yes">
         <source>Drop index</source>
-        <target state="new">Drop index</target>
+        <target state="translated">Supprimer les index</target>
         <jms:reference-file line="34">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a9c043f68c147a7c8d8c2fa14ddfaba6e05da62" resname="Duree" approved="yes">
@@ -6119,9 +6119,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Dispositif ciblé</target>
         <jms:reference-file line="238">classes/databox/subdef.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition">
+      <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition" approved="yes">
         <source>Task Edition</source>
-        <target state="new">Task Edition</target>
+        <target state="translated">Edition de la tâche</target>
         <jms:reference-file line="12">task-manager/task-editor/task.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44b242091b360ff04d1cba06fbccad177e657d51" resname="Task Scheduler" approved="yes">
@@ -8006,9 +8006,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">ID de collection distante</target>
         <jms:reference-file line="32">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2b1cf96c4112d7f2d56254852724bb013b257db6" resname="admin::base:collection: numero de collection locale" approved="no">
+      <trans-unit id="2b1cf96c4112d7f2d56254852724bb013b257db6" resname="admin::base:collection: numero de collection locale" approved="yes">
         <source>admin::base:collection: numero de collection locale</source>
-        <target state="needs-translation">Numéro de collection locale ("base_id" coté API) :</target>
+        <target state="translated">Numéro de collection locale ("base_id" côté API) :</target>
         <jms:reference-file line="33">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea093555b864789074e57fea524db9414672b7b5" resname="admin::base:collection: renommer la collection" approved="yes">
