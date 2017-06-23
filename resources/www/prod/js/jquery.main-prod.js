@@ -786,7 +786,7 @@ function linearize() {
         var diff = 28;
         var n = Math.round(fllWidth / (stdWidth));
         var w = Math.floor(fllWidth / n) - diff;
-        if (w < 360 && n > 1)
+        if (w < 460 && n > 1)
             w = Math.floor(fllWidth / (n - 1)) - diff;
         $('#answers .list').width(w);
     }
