@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-06-23T17:47:55Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -668,9 +668,9 @@
         <target state="translated">Paramètres avancés du champ</target>
         <jms:reference-file line="132">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings">
+      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings" approved="no">
         <source>Advanced settings</source>
-        <target state="new">Advanced settings</target>
+        <target state="needs-translation">Réglage Avancé.</target>
         <jms:reference-file line="409">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8f3ed663adc3f670da96cfd59f14ca2d063439" resname="Affichage" approved="yes">
@@ -1389,9 +1389,9 @@
         <jms:reference-file line="397">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="478">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9e93e3a6d74f65c2bf4380e085bd8db60f97a9c5" resname="By date field">
+      <trans-unit id="9e93e3a6d74f65c2bf4380e085bd8db60f97a9c5" resname="By date field" approved="no">
         <source>By date field</source>
-        <target state="new">By date field</target>
+        <target state="needs-translation">Champs Date.</target>
         <jms:reference-file line="280">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a9b7a5a8f68ffe693f4205fc0d2916e373e4b64" resname="By default it is available for admins" approved="yes">
@@ -1399,14 +1399,14 @@
         <target state="translated">Par défaut cette option est disponible pour les administrateurs.</target>
         <jms:reference-file line="27">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8fccc36fcf981cd94ac8af3fddfb791c9c4b040e" resname="By numeric field">
+      <trans-unit id="8fccc36fcf981cd94ac8af3fddfb791c9c4b040e" resname="By numeric field" approved="no">
         <source>By numeric field</source>
-        <target state="new">By numeric field</target>
+        <target state="needs-translation">Champs numérique</target>
         <jms:reference-file line="292">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c39590f7a37c44b4773792d4288c1d8181d3c58c" resname="By string field">
+      <trans-unit id="c39590f7a37c44b4773792d4288c1d8181d3c58c" resname="By string field" approved="yes">
         <source>By string field</source>
-        <target state="new">By string field</target>
+        <target state="translated">Par Champs texte</target>
         <jms:reference-file line="268">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6719224587fde475a67d7027b8da04a82991345d" resname="C dans l'air" approved="yes">
@@ -1702,9 +1702,9 @@
         <target state="translated">Collection vidée avec succès</target>
         <jms:reference-file line="131">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order">
+      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order" approved="no">
         <source>Collection order</source>
-        <target state="new">Collection order</target>
+        <target state="needs-translation">Ordre des collections.</target>
         <jms:reference-file line="679">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f704cc39c26f37922029d5ff58c61b607d384521" resname="Color Depth" approved="yes">
@@ -7991,9 +7991,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Le XML n'est pas valide, les changements ne seront pas appliqués</target>
         <jms:reference-file line="14">web/admin/structure.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d2ac37eb488617494c60906afae1ef5510ee92dc" resname="admin::base:collection:  numero de collection locale">
+      <trans-unit id="d2ac37eb488617494c60906afae1ef5510ee92dc" resname="admin::base:collection:  numero de collection locale" approved="yes">
         <source>admin::base:collection:  numero de collection locale</source>
-        <target state="new">admin::base:collection:  numero de collection locale</target>
+        <target state="translated">Id de Collection ("base_id" API side).</target>
         <jms:reference-file line="32">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f17890a6f5675a0542b997121fc105bb6bd4466" resname="admin::base:collection: Creer une collection" approved="yes">
@@ -9628,9 +9628,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rotation</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="no">
         <source>index::advance_search: disable-facet</source>
-        <target state="new">index::advance_search: disable-facet</target>
+        <target state="needs-translation">Ne pas afficher les facettes contenant un seul résultat.</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet">
@@ -10547,9 +10547,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rechercher</target>
         <jms:reference-file line="292">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection">
+      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection" approved="no">
         <source>prod::editing:thumbnailselection</source>
-        <target state="new">prod::editing:thumbnailselection</target>
+        <target state="needs-translation">Sélectionné un enregistrement.</target>
         <jms:reference-file line="275">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -11708,19 +11708,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rotation de 90 degrés horaire</target>
         <jms:reference-file line="187">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ae34347293abc9a106150c8db2b2a3b1b7739c0b" resname="same UUID">
+      <trans-unit id="ae34347293abc9a106150c8db2b2a3b1b7739c0b" resname="same UUID" approved="no">
         <source>same UUID</source>
-        <target state="new">same UUID</target>
+        <target state="needs-translation">Document Unique Id (UUID) identique.</target>
         <jms:reference-file line="58">Border/Checker/UUID.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9efb800c6df15d107be9c0aeb19e2d218ebfe135" resname="same checksum">
+      <trans-unit id="9efb800c6df15d107be9c0aeb19e2d218ebfe135" resname="same checksum" approved="no">
         <source>same checksum</source>
-        <target state="new">same checksum</target>
+        <target state="needs-translation">Somme de contrôle Identique.</target>
         <jms:reference-file line="59">Border/Checker/Sha256.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="99e3a652745118f0d3c79e13d81168544afe2b77" resname="same filename">
+      <trans-unit id="99e3a652745118f0d3c79e13d81168544afe2b77" resname="same filename" approved="yes">
         <source>same filename</source>
-        <target state="new">same filename</target>
+        <target state="translated">Nom de fichier Identique.</target>
         <jms:reference-file line="72">Border/Checker/Filename.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2be8dbf0a1ca487e47fe126c995102dcf17e251e" resname="scheduled status" approved="yes">
@@ -11768,9 +11768,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Ajouter un gestionnaire des commandes</target>
         <jms:reference-file line="56">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c839f2d61feee84cc97255537945fc34cbcbf82c" resname="setup::Backup thumbnails cache">
+      <trans-unit id="c839f2d61feee84cc97255537945fc34cbcbf82c" resname="setup::Backup thumbnails cache" approved="no">
         <source>setup::Backup thumbnails cache</source>
-        <target state="new">setup::Backup thumbnails cache</target>
+        <target state="needs-translation">Sauvegarder le repertoire de cache des vignettes.</target>
         <jms:reference-file line="160">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9b5fafc42f6e089ae9b42825287781dffcafcdd" resname="setup::Configuration de la base de compte ApplicationBox" approved="yes">
@@ -12612,9 +12612,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="70">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8adc0b977e7abdf06ac1974f7b58937c1cd2b0d9" resname="use truncation">
+      <trans-unit id="8adc0b977e7abdf06ac1974f7b58937c1cd2b0d9" resname="use truncation" approved="no">
         <source>use truncation</source>
-        <target state="new">use truncation</target>
+        <target state="needs-translation">Troncature activée.</target>
         <jms:reference-file line="225">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fea0574cc81b5fd40ab0537b0905cc4c3806039" resname="users rights have been reseted" approved="yes">
