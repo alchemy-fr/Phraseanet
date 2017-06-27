@@ -338,6 +338,29 @@ span.ww_winTitle {
   z-index: 10000;
 }
 
+.invisible-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  height: 80px;
+  width: 80px;
+  margin-top: -40px;
+}
+
+#right-btn {
+  right: 10px;
+}
+
+#left-btn {
+  left: 10px;
+}
+
 /******* DIALOGS **************************************************************/
 
 #dialog_dwnl h1 {
