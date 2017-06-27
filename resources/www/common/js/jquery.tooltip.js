@@ -79,14 +79,17 @@
             return this.each(function () {
                     $.data(this, "tooltip", settings);
                     // copy tooltip into its own expando and remove the title
-                    this.tooltipText = $(this).attr('title');
+                    //move title to data to be reused later
+                    $.data(this, 'title', $(this).attr('title'));
+                    this.tooltipText = $(this).data('title');
                     this.tooltipSrc = $(this).attr('tooltipsrc');
 
                     this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
                     this.ajaxTimeout;
 
                     this.orEl = $(this);
-                    $(this).removeAttr("title");
+                    //if(!$(this).hasClass('captionRolloverTips'))
+                        $(this).removeAttr("title");
                     // also remove alt attribute to prevent default tooltip in IE
                     this.alt = "";
                 })
