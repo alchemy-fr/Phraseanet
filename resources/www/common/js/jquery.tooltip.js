@@ -88,8 +88,7 @@
                     this.ajaxTimeout;
 
                     this.orEl = $(this);
-                    //if(!$(this).hasClass('captionRolloverTips'))
-                        $(this).removeAttr("title");
+                    $(this).removeAttr("title");
                     // also remove alt attribute to prevent default tooltip in IE
                     this.alt = "";
                 })
