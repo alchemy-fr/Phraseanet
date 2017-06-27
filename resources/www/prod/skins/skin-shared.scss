@@ -11,7 +11,7 @@ $pluginsColor: #FFF;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
   border-radius: 0;
 }
 
@@ -140,10 +140,6 @@ EM {
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
 }
 
 #rightFrame {
