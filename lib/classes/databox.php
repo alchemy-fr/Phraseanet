@@ -623,17 +623,20 @@ class databox extends base implements ThumbnailedElement
         return new record_adapter($this->app, $this->id, $record_id, $number);
     }
 
-    public function get_label($code, $substitute = true)
+    public function get_label($code)
     {
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
-        if ($substitute) {
-            return isset($this->labels[$code]) ? $this->labels[$code] : $this->get_viewname();
-        } else {
-            return $this->labels[$code];
+        if( ($r = trim($this->labels[$code])) != '') {
+            return $r;
         }
+        if( ($r = trim($this->get_viewname())) != '') {
+            return $r;
+        }
+
+        return $this->get_dbname();
     }
 
     public function get_viewname()

@@ -644,10 +644,16 @@ class DataboxTest extends \PhraseanetAuthenticatedWebTestCase
 
         $base = $this->getApplication()->findDataboxById($base->get_sbas_id());
 
-        $this->assertEquals('frenchy label', $base->get_label('fr', false));
-        $this->assertEquals('', $base->get_label('en', false));
-        $this->assertEquals('Jaja label', $base->get_label('de', false));
-        $this->assertEquals('dutch label', $base->get_label('nl', false));
+        $base->set_viewname("viewname");
+
+        $this->assertEquals('frenchy label',       $base->get_label('fr'));
+        $this->assertEquals($base->get_viewname(), $base->get_label('en'));
+        $this->assertEquals('Jaja label',          $base->get_label('de'));
+        $this->assertEquals('dutch label',         $base->get_label('nl'));
+
+        $base->set_viewname("");
+
+        $this->assertEquals($base->get_dbname(),   $base->get_label('en'));
     }
 
     /**
