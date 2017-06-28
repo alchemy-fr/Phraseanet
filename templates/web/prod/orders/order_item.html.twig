@@ -1,11 +1,14 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 {% set displayName = order.getUser().getDisplayName() %}
 
-<div class="page-header">
-  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
+<div class="order-header">
+    <div class="alert">
+        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
+    </div>
+    <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div id="order_manager">
+<div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
 
@@ -25,82 +28,155 @@
         </div>
     {% endif %}
 
-    <div class="well">
-        <table class="table" style="color:#333;">
+
+    <div class="well no-margin">
+        <div id="userInfoPreview">
+            <div class="userInfoName">
+                <span>{{ order.getUser().getDisplayName() }}</span>
+            </div>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }} : </strong>{{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: adresse' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
+            {#<div>#}
+                {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
+                    {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
+            {#</div>#}
+        </div>
+        <table class="table no-border">
             <tr>
-                <td>{{ 'Destinataire' | trans }}</td>
-                <td>{{ displayName }}({{ order.getUser().getEmail() }})</td>
+                <td>
+                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                </td>
+                <td>
+                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getDeadline()|date('d/m/Y') }}</span>
+                </td>
+                <td>
+                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Date de commande' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
+                <td>
+                    <span class="text_block">{{ displayName }}(<a
+                                style="font-size: 12px;color: #4990E2;" href="#"
+                                onclick="sendMail('{{ order.getUser().getEmail() }}',
+                                        '{{ 'order-manager::mail: votre_commande_du' | trans }} {{ order.getCreatedOn()|date('d/m/Y') }}',
+                                        '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage() }}')">{{ order.getUser().getEmail() }}</a>)
+                        <span class="icon-stack infoTips" id="userInfo">
+                            <i class="icon-circle icon-stack-base" style="color:#737373"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                    </span>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Deadline' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getDeadline()) }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Utilisation prevue' | trans }}</td>
-                <td>{{ order.getOrderUsage() | nl2br }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Nombre total d\'element commandes' | trans }}</td>
-                <td>{{ order.getTotal() }}</td>
+                <td>
+                    <h4 class="minimize">{{ order.getOrderUsage() }}</h4>
+                </td>
             </tr>
         </table>
-    </div>
-    <div class="alert">
-        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
-    </div>
-
-    <div class="order_list well-small">
-        <ul>
-            {% for element in order.getElements() %}
-                <li>
-                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
-                        {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
-                        {% if element.getOrderMaster() %}
-                            {% set name = element.getOrderMaster().getDisplayName() %}
-                            {% if element.getDeny() == true %}
-                                {% set title %}
-                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
-                                {% endset %}
-                                {% set title_send %}
-                                    {% trans %}Forcer l'envoi du document{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
-                            {% else %}
-                                {% set title %}
-                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                            {% endif %}
-                        {% endif %}
-                        <div style="position:absolute;bottom:4px;right:4px;">
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>
-                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>
-                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
-                        </div>
-                        <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+        <div class="order-list-container">
+            <div class="order_list" style="width:40%;float:left">
+                <div class="top-bar">
+                    <form action="">
+                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/>Select all
+                    </form>
+                </div>
+                <table class="table-order">
+                    <tbody>
+                    {% for element in order.getElements() %}
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                            <td width="10%" align="center">
+                                {% if element.getOrderMaster() %}
+                                    {% set name = element.getOrderMaster().getDisplayName() %}
+                                    {% if element.getDeny() == true %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
+                                        {% endset %}
+                                        {% set title_send %}
+                                            {% trans %}Forcer l'envoi du document{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                        <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                                    {% else %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td width="30%" align="center">
+                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper">
+                                    {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
+                                    {#<div style="position:absolute;bottom:4px;right:4px;">#}
+                                    {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>#}
+                                    {#</div>#}
+                                    <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+                                </div>
+                            </td>
+                            <td width="60%" align="center">
+                                <span>{{element.getRecord(app).getOriginalName() }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="order_detail" style="width:60%;">
+                <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
+                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                    <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                </div>
+                <div id="wrapper-padding">
+                    <div id="preview-layout">
+                        {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
                     </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="form-actions" style="color:#333;">
-        {{ 'Selectionnez des documents et' | trans }}
-        <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
-        <button class="btn deny">{{ 'Deny' | trans }}</button>
-        <button class="order_launcher btn">{{ 'Retour aux commandes' | trans }}</button>
-        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    <div id="info-header">
+                        <span class="icon-stack infoTips">
+                            <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                        <span class="info-text">{{ 'order-manager::order-item: information' | trans }}</span>
+                    </div>
+                    <div id="caption-layout">
+                        {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
+                    </div>
+                </div>
+                <div id="wrapper-multiple">
+                    <div id="preview-layout-multiple">
+                        <span class="title">0</span>
+                        <h4 class="sub-title">selected records</h4>
+                        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+                             style="width:150px;height:150px;"
+                             src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
+                        <p>For all selected records</p>
+                    </div>
+                    <div id="order-action" style="color:#333;">
+                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
 
+var userInfoIsVisible = false;
+var itemCount = 0;
+
 $(document).ready(function(){
+
     if ($('#notification_box').is(':visible')) {
         $('#notification_trigger').trigger('mousedown');
     }
@@ -120,8 +196,10 @@ $(document).ready(function(){
         {
             if($this.hasClass('selected')) {
                 $this.removeClass('selected');
+                itemCount--;
             } else {
                 $this.addClass('selected');
+                itemCount++;
             }
         }
         else
@@ -129,7 +207,7 @@ $(document).ready(function(){
             if(is_shift_key(event))
             {
                 var first = false, last = false;
-
+                itemCount = 0;
                 $('.order_list .selectable', dialog.getDomElement()).each(function(i,n){
                     if (last) {
                         first = last = false;
@@ -146,6 +224,7 @@ $(document).ready(function(){
 
                     if (first || last) {
                         $(n).addClass('selected');
+                        itemCount++;
                     }
                 });
             }
@@ -153,11 +232,14 @@ $(document).ready(function(){
             {
                 $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
                 $this.addClass('selected');
+                itemCount = 1;
             }
         }
 
         $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
         $this.addClass('last_selected');
+
+        renderOrderDetailView(itemCount);
     });
 
     $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
@@ -183,7 +265,98 @@ $(document).ready(function(){
             do_send_documents(order_id, element_id, true);
         }
     });
+
+    $('#userInfo').hover(function() {
+        var offset = $('#userInfo').position();
+        $('#userInfoPreview').css({
+            'left': (offset.left - $('#userInfoPreview').width()) + 48,
+            'top': (offset.top+$('#userInfo').height()) + 8
+        });
+        $('#userInfoPreview').show();
+    }, function() {
+        if(!userInfoIsVisible) {
+            $('#userInfoPreview').hide();
+        }
+    });
+
+    $('#userInfo').click(function() {
+        var offset = $('#userInfo').position();
+        if(!userInfoIsVisible) {
+            userInfoIsVisible = true;
+            $('#userInfoPreview').css({
+                'left': (offset.left - $('#userInfoPreview').width()) + 48,
+                'top': (offset.top+$('#userInfo').height()) + 8
+            });
+            $('#userInfoPreview').show();
+        }else {
+            userInfoIsVisible = false;
+            $('#userInfoPreview').hide();
+        }
+    });
+
+    var minimized_elements = $('.minimize');
+
+    $('.minimize').each(function() {
+        var t = $(this).text();
+        if (t.length < 60) return;
+
+        $(this).html(
+                t.slice(0, 60) + '<span>... </span><a href="#" class="more">{{ 'order-manager::order-item: more' | trans }}</a>' +
+                '<span style="display:none;">' + t.slice(60, t.length) + ' <a href="#" class="less">{{ 'order-manager::order-item: less' | trans }}</a></span>'
+        );
+
+    });
+
+
+    $('a.more', minimized_elements).click(function(event){
+        event.preventDefault();
+        $(this).hide().prev().hide();
+        $(this).next().show();
+    });
+
+    $('a.less', minimized_elements).click(function(event) {
+        event.preventDefault();
+        $(this).parent().hide().prev().show().prev().show();
+    });
+
+
+    $('tr.order_row', dialog.getDomElement()).bind('click', function(){
+        if(!$(this).hasClass('selectable')) {
+            return;
+        }
+        if(itemCount>1) {
+            return;
+        }
+        //disable select all checkbox if selected
+        if($('input[name="select-all"]').is(':checked')){
+            $('input[name="select-all"]').prop('checked', false);
+        }
+        //load preview and caption
+        loadPreviewAndCaption($(this));
+    }).addClass('clickable');
+
 });
+
+
+function checkAll(element) {
+    itemCount = 0;
+    var selectable =[];
+    $('.table-order .order_row').each(function(){
+        var el = $(this);
+        if(element.checked && el.hasClass('selectable')){
+            el.addClass('selected');
+            itemCount++;
+            selectable.push(el);
+        }else {
+            el.removeClass('selected');
+        }
+    });
+    //load preview for single item selected
+    if(selectable.length == 1) {
+        loadPreviewAndCaption(selectable[0]);
+    }
+    renderOrderDetailView(itemCount);
+}
 
 function do_send_documents(order_id, elements_ids, force)
 {
@@ -287,6 +460,49 @@ function send_documents(order_id)
     }
 
     do_send_documents(order_id, elements_ids, false);
+}
+
+function sendMail(email, subject, body) {
+    if(email != null) {
+        window.open('mailto:' + email + '?subject=' + subject + '&body=' + body);
+    }
+}
+
+function renderOrderDetailView(countSelected) {
+    if(countSelected > 1) {
+        $('#wrapper-padding').hide();
+        $('.external-order-action').hide();
+        $('#wrapper-multiple').show();
+    }else if(countSelected == 1) {
+        $('#wrapper-padding').show();
+        $('.external-order-action').show();
+        $('#wrapper-multiple').hide();
+    }else {
+        $('#wrapper-padding').hide();
+        $('.external-order-action').hide();
+        $('#wrapper-multiple').hide();
+    }
+    $('#preview-layout-multiple .title').html(countSelected);
+}
+
+function loadPreviewAndCaption(elem) {
+    $('#preview-layout').empty();
+    $('#caption-layout').empty();
+    var elementids = elem.attr('elementids').split('_');
+    var sbasId = elementids[0];
+    var recordId = elementids[1];
+    prevAjax = $.ajax({
+        type: "GET",
+        url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
+        dataType: 'json',
+        success: function (data) {
+            if (data.error) {
+                return;
+            }
+            $('#preview-layout').append(data.html_preview);
+            $('#caption-layout').append(data.desc);
+        }
+    });
 }
 
 </script>

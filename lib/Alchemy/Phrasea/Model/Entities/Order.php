@@ -25,6 +25,14 @@ class Order
 
     const NOTIFY_WEBHOOK = 'webhook';
 
+    const STATUS_TODO = 'pending';
+    const STATUS_PROCESSED = 'processed';
+    const STATUS_CURRENT_WEEK = 'current_week';
+    const STATUS_PAST_WEEK = 'past_week';
+    const STATUS_PAST_MONTH = 'past_month';
+    const STATUS_BEFORE = 'before';
+    const STATUS_AFTER = 'after';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -237,6 +245,18 @@ class Order
     {
         return count($this->elements);
     }
+
+
+   public function getTotalTreatedItems()
+   {
+        $count = 0;
+        foreach($this->elements as $element) {
+             if(!is_null($element->getDeny())) {
+                $count++;
+             }
+        }
+        return $count;
+   }
 
     /**
      * Set order_usage
