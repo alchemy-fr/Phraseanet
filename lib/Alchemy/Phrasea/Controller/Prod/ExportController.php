@@ -173,10 +173,11 @@ class ExportController extends Controller
 
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
         $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", "")));
+        $listEmails = preg_replace('/\;{2,}/', ';', $list['email']);
 
         $destMails = [];
         //get destination mails
-        foreach (explode(";", $list['email']) as $mail) {
+        foreach (explode(";", $listEmails) as $mail) {
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
@@ -189,7 +190,6 @@ class ExportController extends Controller
                 ));
             }
         }
-
         $token = $this->getTokenManipulator()->createEmailExportToken(serialize($list));
 
         if (count($destMails) > 0) {
