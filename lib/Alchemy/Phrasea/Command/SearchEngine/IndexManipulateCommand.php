@@ -27,7 +27,7 @@ class IndexManipulateCommand extends Command
         //$options = $indexer->getIndex()->getOptions();
 
         $this
-            ->setName('searchengine:index:manipulate')
+            ->setName('searchengine:index')
             ->setDescription('Manipulates search index')
             ->addOption('drop',      'd', InputOption::VALUE_NONE, 'Drops the index.')
             ->addOption('create',    'c', InputOption::VALUE_NONE, 'Creates the index.')
@@ -68,7 +68,6 @@ class IndexManipulateCommand extends Command
         $populate     = $input->getOption('populate');
         $temporary    = $input->getOption('temporary');
         $databoxes_id = $input->getOption('databox_id');
-
 
         if($temporary && (!$populate || $databoxes_id)) {
             $output->writeln(sprintf('<error>temporary must be used to populate all databoxes</error>', $idx));
