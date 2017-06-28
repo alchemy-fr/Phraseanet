@@ -393,6 +393,13 @@ span.ww_winTitle {
 
 #order_manager tr.order_row {
   height: 28px;
+  img {
+    width: 16px;
+    display: block;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    border: none;
+  }
 }
 
 #order_manager .order_row.odd {
