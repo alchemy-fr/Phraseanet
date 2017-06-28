@@ -114,8 +114,6 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($databox->get_dbname(), $databox->get_label('en'));
         $this->assertEquals('dutch label', $databox->get_label('nl'));
         $this->assertEquals('german label', $databox->get_label('de'));
-        $this->assertEquals($databox->get_dbname(), $databox->get_label('nl'));
-        $this->assertEquals($databox->get_dbname(), $databox->get_label('de'));
     }
 
     /**
