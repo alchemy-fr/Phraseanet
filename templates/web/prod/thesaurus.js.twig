@@ -489,8 +489,8 @@ function Xclick(e)
             var zurl = "/xmlhttp/openbranch_prod.j.php?type="+type+"&sbid="+sbid+"&id=" + encodeURIComponent(tids.join('.'));
             if(li.hasClass('last'))
               zurl += "&last=1";
-            if(type=='T')
-              zurl += "&sortsy=1";
+            //if(type=='T')
+            zurl += "&sortsy=1";
             $.get(zurl, [], function(j)
             {
               ul.replaceWith(j.html);
