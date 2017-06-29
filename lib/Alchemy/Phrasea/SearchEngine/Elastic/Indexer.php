@@ -343,4 +343,9 @@ class Indexer
         // Flush just in case, it's a noop when already done
         $bulk->flush();
     }
+
+    public function getSettings()
+    {
+        return $this->client->indices()->getSettings();
+    }
 }

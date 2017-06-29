@@ -55,6 +55,12 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'required' => false
             ])
             ->add('save', 'submit')
+            ->add('dumpResultIndexElasticsearch', 'button', [
+                'label' => 'Dump result index elasticsearch',
+                'attr' => [
+                    'onClick' => 'ajaxDumpResultIndexElasticsearch()'
+                ]
+            ])
         ;
     }
 
