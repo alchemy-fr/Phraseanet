@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-06-28T12:49:29Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-06-29T13:03:28Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8945,7 +8945,6 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <jms:reference-file line="6">lightbox/IE6/sc_options_box.html.twig</jms:reference-file>
         <jms:reference-file line="3">web/lightbox/sc_options_box.html.twig</jms:reference-file>
         <jms:reference-file line="6">web/lightbox/sc_options_box.html.twig</jms:reference-file>
-        <jms:reference-file line="53">prod/preview/basket_train.html.twig</jms:reference-file>
         <jms:reference-file line="431">web/setup/step2.html.twig</jms:reference-file>
         <jms:reference-file line="519">web/setup/step2.html.twig</jms:reference-file>
         <jms:reference-file line="625">web/setup/step2.html.twig</jms:reference-file>
@@ -9024,7 +9023,6 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <jms:reference-file line="18">lightbox/IE6/sc_options_box.html.twig</jms:reference-file>
         <jms:reference-file line="15">web/lightbox/sc_options_box.html.twig</jms:reference-file>
         <jms:reference-file line="18">web/lightbox/sc_options_box.html.twig</jms:reference-file>
-        <jms:reference-file line="62">prod/preview/basket_train.html.twig</jms:reference-file>
         <jms:reference-file line="370">web/setup/step2.html.twig</jms:reference-file>
         <jms:reference-file line="434">web/setup/step2.html.twig</jms:reference-file>
         <jms:reference-file line="522">web/setup/step2.html.twig</jms:reference-file>
@@ -9837,6 +9835,100 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">or</target>
         <jms:reference-file line="91">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="c63be34306e4a9f792a8ee15b97659affe4ad97e" resname="order-manager::mail: your-order-of">
+        <source>order-manager::mail: your-order-of</source>
+        <target state="new">order-manager::mail: your-order-of</target>
+        <jms:reference-file line="66">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address">
+        <source>order-manager::order-item: address</source>
+        <target state="new">order-manager::order-item: address</target>
+        <jms:reference-file line="39">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="de345f3a0427b33975ce221ddcc4f08845b4806a" resname="order-manager::order-item: company">
+        <source>order-manager::order-item: company</source>
+        <target state="new">order-manager::order-item: company</target>
+        <jms:reference-file line="37">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="921d2c6089de1f55580380f2ab3c72b4b889d4cc" resname="order-manager::order-item: country">
+        <source>order-manager::order-item: country</source>
+        <target state="new">order-manager::order-item: country</target>
+        <jms:reference-file line="40">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b786dbafa0169df2b396330702e8208972b2f807" resname="order-manager::order-item: information">
+        <source>order-manager::order-item: information</source>
+        <target state="new">order-manager::order-item: information</target>
+        <jms:reference-file line="147">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less">
+        <source>order-manager::order-item: less</source>
+        <target state="new">order-manager::order-item: less</target>
+        <jms:reference-file line="305">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1e36dd7d8c459e9eef3c001d10406670a23f4640" resname="order-manager::order-item: more">
+        <source>order-manager::order-item: more</source>
+        <target state="new">order-manager::order-item: more</target>
+        <jms:reference-file line="304">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7742dc07f1103d1ac92c252a722d6fe23d86b055" resname="order-manager::order-item: tel">
+        <source>order-manager::order-item: tel</source>
+        <target state="new">order-manager::order-item: tel</target>
+        <jms:reference-file line="38">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="27d568c298be87e2132752baab3eb7f06e874e5e" resname="order-manager::order-list: after">
+        <source>order-manager::order-list: after</source>
+        <target state="new">order-manager::order-list: after</target>
+        <jms:reference-file line="51">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4c4bf237d1b2efb20473ccae5be180ff5fb91db5" resname="order-manager::order-list: apply">
+        <source>order-manager::order-list: apply</source>
+        <target state="new">order-manager::order-list: apply</target>
+        <jms:reference-file line="60">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="99487c73642a88e01f436b844e33956777a32f42" resname="order-manager::order-list: before">
+        <source>order-manager::order-list: before</source>
+        <target state="new">order-manager::order-list: before</target>
+        <jms:reference-file line="50">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bc9e19b544fb8202137342708ae492825ba0e905" resname="order-manager::order-list: last-month">
+        <source>order-manager::order-list: last-month</source>
+        <target state="new">order-manager::order-list: last-month</target>
+        <jms:reference-file line="45">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4f6ea65fbb623bd9dad64a5176ad252d10636c1a" resname="order-manager::order-list: last-week">
+        <source>order-manager::order-list: last-week</source>
+        <target state="new">order-manager::order-list: last-week</target>
+        <jms:reference-file line="39">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result">
+        <source>order-manager::order-list: no-result</source>
+        <target state="new">order-manager::order-list: no-result</target>
+        <jms:reference-file line="117">prod/orders/order_box.html.twig</jms:reference-file>
+        <jms:reference-file line="162">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="85dd044f6bfaedfb215f44715b2a7844a60616d3" resname="order-manager::order-list: pending">
+        <source>order-manager::order-list: pending</source>
+        <target state="new">order-manager::order-list: pending</target>
+        <jms:reference-file line="68">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9f0df71de6ae901cdd73ff15677ac96827737017" resname="order-manager::order-list: processed">
+        <source>order-manager::order-list: processed</source>
+        <target state="new">order-manager::order-list: processed</target>
+        <jms:reference-file line="73">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7fdc2f3af800b4587aa9dd498b9a51150c6261c8" resname="order-manager::order-list: this-week">
+        <source>order-manager::order-list: this-week</source>
+        <target state="new">order-manager::order-list: this-week</target>
+        <jms:reference-file line="25">prod/orders/order_box.html.twig</jms:reference-file>
+        <jms:reference-file line="33">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="398bb708881cde918ccfafcd722d621727e47211" resname="order-manager::order-list: treated-documents">
+        <source>order-manager::order-list: treated-documents</source>
+        <target state="new">order-manager::order-list: treated-documents</target>
+        <jms:reference-file line="110">prod/orders/order_box.html.twig</jms:reference-file>
+        <jms:reference-file line="155">prod/orders/order_box.html.twig</jms:reference-file>
+        <jms:reference-file line="57">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="5898fc860300e228dcd54c0b1045b5fa0dcda502" resname="oui" approved="yes">
         <source>oui</source>
         <target state="translated">Yes</target>
@@ -10310,7 +10402,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       <trans-unit id="f9c61385964471a1171066ba2ba3622a98ffb84b" resname="preview:: arreter le diaporama" approved="yes">
         <source>preview:: arreter le diaporama</source>
         <target state="translated">Stop</target>
-        <jms:reference-file line="59">prod/preview/basket_train.html.twig</jms:reference-file>
+        <jms:reference-file line="56">prod/preview/basket_train.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/preview/feed_train.html.twig</jms:reference-file>
         <jms:reference-file line="87">prod/preview/reg_train.html.twig</jms:reference-file>
         <jms:reference-file line="50">prod/preview/result_train.html.twig</jms:reference-file>
@@ -10319,7 +10411,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       <trans-unit id="77a36033b8fdccc947d744ae8e3120c7d8dafa46" resname="preview:: demarrer le diaporama" approved="yes">
         <source>preview:: demarrer le diaporama</source>
         <target state="translated">Slideshow</target>
-        <jms:reference-file line="56">prod/preview/basket_train.html.twig</jms:reference-file>
+        <jms:reference-file line="55">prod/preview/basket_train.html.twig</jms:reference-file>
         <jms:reference-file line="53">prod/preview/feed_train.html.twig</jms:reference-file>
         <jms:reference-file line="86">prod/preview/reg_train.html.twig</jms:reference-file>
         <jms:reference-file line="49">prod/preview/result_train.html.twig</jms:reference-file>

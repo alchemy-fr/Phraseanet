@@ -152,14 +152,14 @@
                                 </span>
                                 </td>
                                 <td>
-                                    <span class="text_block">{{ 'order-manager:order-list: treated-documents' | trans }}</span>
+                                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
                                     <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
                                 </td>
                             </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td>{{ 'order-manager:order-list: no-result' | trans }}</td>
+                            <td>{{ 'order-manager::order-list: no-result' | trans }}</td>
                         </tr>
                     {% endif %}
                     </tbody>
