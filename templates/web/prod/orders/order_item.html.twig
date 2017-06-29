@@ -188,19 +188,22 @@ $(document).ready(function(){
         dialog.load('{{ path('prod_orders') }}')
     });
 
-    $('.order_list .selectable', dialog.getDomElement()).bind('click',function(event){
+    $('.order_list .order_row', dialog.getDomElement()).bind('click',function(event){
 
         var $this = $(this);
 
         if(is_ctrl_key(event))
         {
-            if($this.hasClass('selected')) {
+            if(!$this.hasClass('selectable')) {
+                return;
+            } else if($this.hasClass('selected')) {
                 $this.removeClass('selected');
                 itemCount--;
             } else {
                 $this.addClass('selected');
                 itemCount++;
             }
+
         }
         else
         {
@@ -231,7 +234,13 @@ $(document).ready(function(){
             else
             {
                 $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
-                $this.addClass('selected');
+                $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
+                if($this.hasClass('selectable')) {
+                    $this.addClass('selected');
+                }else {
+                    $this.addClass('clicked');
+                }
+
                 itemCount = 1;
             }
         }
@@ -239,6 +248,9 @@ $(document).ready(function(){
         $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
         $this.addClass('last_selected');
 
+        if(itemCount == 1) {
+            loadPreviewAndCaption($this);
+        }
         renderOrderDetailView(itemCount);
     });
 
@@ -320,20 +332,21 @@ $(document).ready(function(){
     });
 
 
-    $('tr.order_row', dialog.getDomElement()).bind('click', function(){
-        if(!$(this).hasClass('selectable')) {
-            return;
-        }
-        if(itemCount>1) {
-            return;
-        }
-        //disable select all checkbox if selected
-        if($('input[name="select-all"]').is(':checked')){
-            $('input[name="select-all"]').prop('checked', false);
-        }
-        //load preview and caption
-        loadPreviewAndCaption($(this));
-    }).addClass('clickable');
+//    $('tr.order_row', dialog.getDomElement()).bind('click', function(){
+//        if(itemCount>1) {
+//            return;
+//        }
+//        if(!$(this).hasClass('selectable')) {
+//            $(this).addClass('clicked')
+//            //return;
+//        }
+//        //disable select all checkbox if selected
+//        if($('input[name="select-all"]').is(':checked')){
+//            $('input[name="select-all"]').prop('checked', false);
+//        }
+//        //load preview and caption
+//        loadPreviewAndCaption($(this));
+//    }).addClass('clickable');
 
 });
 
