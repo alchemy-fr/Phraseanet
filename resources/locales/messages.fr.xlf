@@ -9836,51 +9836,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">ou bien</target>
         <jms:reference-file line="91">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="81d715a992aa2ea3463362c991bb0097ef80d646" resname="order-manager::mail: votre_commande_du">
-        <source>order-manager::mail: votre_commande_du</source>
-        <target state="new">order-manager::mail: votre_commande_du</target>
-        <jms:reference-file line="66">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="de6298772dbdeeae166b9189232e34a9b7b4b0a4" resname="order-manager::order-item: adresse">
-        <source>order-manager::order-item: adresse</source>
-        <target state="new">order-manager::order-item: adresse</target>
-        <jms:reference-file line="39">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="de345f3a0427b33975ce221ddcc4f08845b4806a" resname="order-manager::order-item: company">
-        <source>order-manager::order-item: company</source>
-        <target state="new">order-manager::order-item: company</target>
-        <jms:reference-file line="37">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="921d2c6089de1f55580380f2ab3c72b4b889d4cc" resname="order-manager::order-item: country">
-        <source>order-manager::order-item: country</source>
-        <target state="new">order-manager::order-item: country</target>
-        <jms:reference-file line="40">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="b786dbafa0169df2b396330702e8208972b2f807" resname="order-manager::order-item: information">
-        <source>order-manager::order-item: information</source>
-        <target state="new">order-manager::order-item: information</target>
-        <jms:reference-file line="147">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less">
-        <source>order-manager::order-item: less</source>
-        <target state="new">order-manager::order-item: less</target>
-        <jms:reference-file line="305">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="1e36dd7d8c459e9eef3c001d10406670a23f4640" resname="order-manager::order-item: more">
-        <source>order-manager::order-item: more</source>
-        <target state="new">order-manager::order-item: more</target>
-        <jms:reference-file line="304">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7742dc07f1103d1ac92c252a722d6fe23d86b055" resname="order-manager::order-item: tel">
-        <source>order-manager::order-item: tel</source>
-        <target state="new">order-manager::order-item: tel</target>
-        <jms:reference-file line="38">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="398bb708881cde918ccfafcd722d621727e47211" resname="order-manager::order-list: treated-documents">
-        <source>order-manager::order-list: treated-documents</source>
-        <target state="new">order-manager::order-list: treated-documents</target>
-        <jms:reference-file line="57">prod/orders/order_item.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="5898fc860300e228dcd54c0b1045b5fa0dcda502" resname="oui" approved="yes">
         <source>oui</source>
         <target state="translated">Oui</target>

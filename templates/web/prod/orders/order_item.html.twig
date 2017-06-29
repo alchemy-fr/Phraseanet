@@ -36,7 +36,7 @@
             </div>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }} : </strong>{{ order.getUser().getCompany() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: adresse' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: addresse' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
             {#<div>#}
                 {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
@@ -63,7 +63,7 @@
                     <span class="text_block">{{ displayName }}(<a
                                 style="font-size: 12px;color: #4990E2;" href="#"
                                 onclick="sendMail('{{ order.getUser().getEmail() }}',
-                                        '{{ 'order-manager::mail: votre_commande_du' | trans }} {{ order.getCreatedOn()|date('d/m/Y') }}',
+                                        '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y') }}',
                                         '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage() }}')">{{ order.getUser().getEmail() }}</a>)
                         <span class="icon-stack infoTips" id="userInfo">
                             <i class="icon-circle icon-stack-base" style="color:#737373"></i>
