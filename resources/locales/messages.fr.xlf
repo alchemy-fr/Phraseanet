@@ -826,9 +826,9 @@
         <target state="new">Alphabetic asc</target>
         <jms:reference-file line="685">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc">
+      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc" approved="no">
         <source>Alphabetic desc</source>
-        <target state="new">Alphabetic desc</target>
+        <target state="needs-translation">Alphabétique desc</target>
         <jms:reference-file line="686">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebd447ea09611b090d7b8a12835ffaf79ea17e47" resname="Also delete records that rely on groupings." approved="yes">
@@ -1385,9 +1385,9 @@
         <jms:reference-file line="397">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="478">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9e93e3a6d74f65c2bf4380e085bd8db60f97a9c5" resname="By date field">
+      <trans-unit id="9e93e3a6d74f65c2bf4380e085bd8db60f97a9c5" resname="By date field" approved="yes">
         <source>By date field</source>
-        <target state="needs-translation">Champs Date.</target>
+        <target state="translated">Champs Date</target>
         <jms:reference-file line="280">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a9b7a5a8f68ffe693f4205fc0d2916e373e4b64" resname="By default it is available for admins" approved="yes">
@@ -1999,9 +1999,9 @@
         <target state="translated">Entrée/Sortie Dublin Core</target>
         <jms:reference-file line="115">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !">
+      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !" approved="no">
         <source>Danger zone !</source>
-        <target state="new">Danger zone !</target>
+        <target state="needs-translation">Danger ! Sables mouvant</target>
         <jms:reference-file line="5">admin/fields/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61074f1c958d6cdd32dad889b3d58a2d0704cbe3" resname="Database" approved="yes">
@@ -2073,7 +2073,7 @@
       </trans-unit>
       <trans-unit id="ae5ac088b6ef50c2a9e1ccf96d6f3c6d65cc4c05" resname="Date Updated" approved="no">
         <source>Date Updated</source>
-        <target state="needs-translation">Date mise à jour</target>
+        <target state="needs-translation">Date de modification</target>
         <jms:reference-file line="263">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="910c2f8e114bda3eef68b7f17eee5e864be52dc4" resname="Date de connexion" approved="yes">
@@ -5585,7 +5585,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="a377f0dd2a261c8e46358dc8d0e8d9868bc6094f" resname="See documentation about structure manipulation." approved="no">
         <source>See documentation about structure manipulation.</source>
-        <target state="needs-translation">Lire la documentation sur les manipulations de la structure (nécessite souvent une récréation de l'index ElasticSearch).
+        <target state="needs-translation">Lire la documentation sur les manipulations de la structure (nécessite souvent une récréation de l'index ElasticSearch).    
 https://docs.phraseanet.com/4.0/fr/Admin/MoteurDeRecherche.html#operations-sur-les-index</target>
         <jms:reference-file line="6">admin/fields/index.html.twig</jms:reference-file>
       </trans-unit>
@@ -9594,9 +9594,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rotation</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="no">
         <source>index::advance_search: disable-facet</source>
-        <target state="needs-translation">Ne pas afficher les facettes contenant un seul résultat.</target>
+        <target state="needs-translation">Ne pas afficher les facettes contenant un seul résultat (expérimental).</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="no">
@@ -9835,9 +9835,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">ou bien</target>
         <jms:reference-file line="91">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c63be34306e4a9f792a8ee15b97659affe4ad97e" resname="order-manager::mail: your-order-of" approved="no">
+      <trans-unit id="c63be34306e4a9f792a8ee15b97659affe4ad97e" resname="order-manager::mail: your-order-of" approved="yes">
         <source>order-manager::mail: your-order-of</source>
-        <target state="needs-translation">Votre commande du:</target>
+        <target state="translated">Votre commande du :</target>
         <jms:reference-file line="66">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address" approved="no">
