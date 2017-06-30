@@ -183,7 +183,9 @@ $(document).ready(function(){
 
     var dialog = p4.Dialog.get(1);
     var order_id = $('input[name=order_id]').val();
-
+    var trs = $('.order_list .order_row', dialog.getDomElement());
+    var lastSelectedRow;
+;
     $('.order_launcher', dialog.getDomElement()).bind('click',function(){
         dialog.load('{{ path('prod_orders') }}')
     });
@@ -192,11 +194,23 @@ $(document).ready(function(){
 
         var $this = $(this);
 
+        //disable select all checkbox if selected
+        if($('input[name="select-all"]').is(':checked')){
+            $('input[name="select-all"]').prop('checked', false);
+        }
+
+        //if unselectable item is clicked for preview, unselected it
+        if($('.order_list .clicked', dialog.getDomElement()).length>0){
+            $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
+            itemCount--;
+        }
+
         if(is_ctrl_key(event))
         {
             if(!$this.hasClass('selectable')) {
                 return;
-            } else if($this.hasClass('selected')) {
+            }
+            if($this.hasClass('selected')) {
                 $this.removeClass('selected');
                 itemCount--;
             } else {
@@ -205,54 +219,45 @@ $(document).ready(function(){
             }
 
         }
+        else if(is_shift_key(event))
+        {
+            var currentIndex = $this.index('.order_list .order_row');
+            var prevIndex = lastSelectedRow.index('.order_list .order_row');
+            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
+            itemCount = 0;
+            selectRowsBetweenIndexes([prevIndex, currentIndex])
+        }
         else
         {
-            if(is_shift_key(event))
-            {
-                var first = false, last = false;
-                itemCount = 0;
-                $('.order_list .selectable', dialog.getDomElement()).each(function(i,n){
-                    if (last) {
-                        first = last = false;
-                    }
-
-                    if ($(n).attr('id') == $this.attr('id') || $(n).hasClass('last_selected'))
-                    {
-                        if (first) {
-                            last = true;
-                        }
-
-                        first = true;
-                    }
-
-                    if (first || last) {
-                        $(n).addClass('selected');
-                        itemCount++;
-                    }
-                });
+            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
+            $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
+            if($this.hasClass('selectable')) {
+                $this.addClass('selected');
+                lastSelectedRow = $this;
+            }else {
+                $this.addClass('clicked');
             }
-            else
-            {
-                $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
-                $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
-                if($this.hasClass('selectable')) {
-                    $this.addClass('selected');
-                }else {
-                    $this.addClass('clicked');
-                }
-
-                itemCount = 1;
-            }
+            itemCount = 1;
         }
 
-        $('.order_list .selectable.last_selected', dialog.getDomElement()).removeClass('last_selected');
-        $this.addClass('last_selected');
-
         if(itemCount == 1) {
-            loadPreviewAndCaption($this);
+            var selected = $('.order_list .selected, .order_list .clicked', dialog.getDomElement());
+            loadPreviewAndCaption(selected);
         }
         renderOrderDetailView(itemCount);
     });
+
+    function selectRowsBetweenIndexes(indexes) {
+        indexes.sort(function(a, b) {
+            return a - b;
+        });
+        for (var i = indexes[0]; i <= indexes[1]; i++) {
+            if ($(trs[i]).hasClass('selectable')) {
+                $(trs[i]).addClass('selected');
+                itemCount++;
+            }
+        }
+    }
 
     $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
         delay:0
@@ -330,23 +335,6 @@ $(document).ready(function(){
         event.preventDefault();
         $(this).parent().hide().prev().show().prev().show();
     });
-
-
-//    $('tr.order_row', dialog.getDomElement()).bind('click', function(){
-//        if(itemCount>1) {
-//            return;
-//        }
-//        if(!$(this).hasClass('selectable')) {
-//            $(this).addClass('clicked')
-//            //return;
-//        }
-//        //disable select all checkbox if selected
-//        if($('input[name="select-all"]').is(':checked')){
-//            $('input[name="select-all"]').prop('checked', false);
-//        }
-//        //load preview and caption
-//        loadPreviewAndCaption($(this));
-//    }).addClass('clickable');
 
 });
 
