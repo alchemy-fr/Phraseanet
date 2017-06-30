@@ -429,7 +429,12 @@ span.ww_winTitle {
   border: 1px solid #4990E2;
 }
 
-#order_manager .order_list .selectable {
+#order_manager .order_list .clicked {
+  background-color: $darkTextColor;
+  border: 1px solid #4990E2;
+}
+
+#order_manager .order_list .order_row {
   cursor: pointer;
 }
 
