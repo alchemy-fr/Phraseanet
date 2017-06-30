@@ -124,6 +124,18 @@ class Fetcher
     private function getExecutedStatement()
     {
         if (!$this->statement) {
+            $where = '';
+            if($this->databox->getLimit()){
+                $limitParams = explode(",",$this->databox->getLimit());
+                $where = "WHERE updated_on BETWEEN DATE_SUB(NOW(), INTERVAL ".$limitParams[1]." ".strtoupper($limitParams[0]).") AND NOW() ";
+            }
+            if($this->databox->getOrderType()){
+                $orderParams = explode(",",$this->databox->getOrderType());
+                $orderBy = "ORDER BY ".$orderParams[0]." ".strtoupper($orderParams[1]);
+            }else{
+                $orderBy = "ORDER BY r.record_id DESC";
+            }
+
             $sql = "SELECT r.record_id"
                  . ", r.coll_id AS collection_id"
                  . ", c.asciiname AS collection_name"
@@ -136,7 +148,8 @@ class Fetcher
                  . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
                  . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
-                 . " ORDER BY r.record_id DESC"
+                 . $where
+                 . $orderBy
                  . " LIMIT :offset, :limit";
 
             $where = $this->delegate->buildWhereClause();
