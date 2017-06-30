@@ -9594,9 +9594,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Rotate</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="no">
         <source>index::advance_search: disable-facet</source>
-        <target state="translated">Hide facette with 1 result.</target>
+        <target state="needs-translation">Hide facette with 1 result (experimental).</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="yes">
