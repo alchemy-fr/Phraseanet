@@ -9857,7 +9857,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       </trans-unit>
       <trans-unit id="b786dbafa0169df2b396330702e8208972b2f807" resname="order-manager::order-item: information" approved="no">
         <source>order-manager::order-item: information</source>
-        <target state="needs-translation">Information</target>
+        <target state="needs-translation">Media Informations</target>
         <jms:reference-file line="147">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less" approved="yes">
@@ -9900,9 +9900,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Last Week</target>
         <jms:reference-file line="39">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result" approved="yes">
+      <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result" approved="no">
         <source>order-manager::order-list: no-result</source>
-        <target state="translated">No Result</target>
+        <target state="needs-translation">No Pending Order.</target>
         <jms:reference-file line="117">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="162">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
@@ -9911,9 +9911,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Pending Order</target>
         <jms:reference-file line="68">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9f0df71de6ae901cdd73ff15677ac96827737017" resname="order-manager::order-list: processed" approved="no">
+      <trans-unit id="9f0df71de6ae901cdd73ff15677ac96827737017" resname="order-manager::order-list: processed" approved="yes">
         <source>order-manager::order-list: processed</source>
-        <target state="needs-translation">Processed</target>
+        <target state="translated">Processed Order.</target>
         <jms:reference-file line="73">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7fdc2f3af800b4587aa9dd498b9a51150c6261c8" resname="order-manager::order-list: this-week" approved="yes">
@@ -10607,9 +10607,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Find</target>
         <jms:reference-file line="292">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection">
+      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection" approved="no">
         <source>prod::editing:thumbnailselection</source>
-        <target state="needs-translation">Select one document.</target>
+        <target state="needs-translation">Select one Record.</target>
         <jms:reference-file line="275">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
