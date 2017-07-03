@@ -563,7 +563,6 @@ button.order_launcher.btn {
   display: none;
   margin-left: 30px;
   overflow-y: auto;
-  max-height: 400px;
 }
 
 #wrapper-multiple {
@@ -707,6 +706,12 @@ button.btn.btn-primary.send.outline {
 
 .order_wrapper .thumb_wrapper img {
   top: 0px !important;
+}
+
+#preview-layout {
+  max-width: 600px;
+  display: block;
+  margin: auto;
 }
 
 #preview-layout .thumb_wrapper img {
