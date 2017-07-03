@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
-use Alchemy\Phrasea\ControllerProvider\Admin\Databox;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

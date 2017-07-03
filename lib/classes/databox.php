@@ -48,8 +48,6 @@ class databox extends base implements ThumbnailedElement
     const CACHE_STRUCTURE = 'structure';
     const PIC_PDF = 'logopdf';
     const CACHE_CGUS = 'cgus';
-//    const ORDER_DESC = 'DESC';
-//    const ORDER_ASC = 'ASC';
 
     /** @var array */
     protected static $_xpath_thesaurus = [];

@@ -127,11 +127,21 @@ class Fetcher
             $where = '';
             if($this->databox->getLimit()){
                 $limitParams = explode(",",$this->databox->getLimit());
-                $where = "WHERE updated_on BETWEEN DATE_SUB(NOW(), INTERVAL ".$limitParams[1]." ".strtoupper($limitParams[0]).") AND NOW() ";
+                if (count($limitParams) !== 2) {
+                    throw new \RuntimeException('An error into limit parameter.');
+                } else {
+                    list($intervalType, $intervalNumber) = $limitParams;
+                }
+                $where = "WHERE r.moddate BETWEEN DATE_SUB(NOW(), INTERVAL ".$intervalNumber." ".strtoupper($intervalType).") AND NOW() ";
             }
             if($this->databox->getOrderType()){
                 $orderParams = explode(",",$this->databox->getOrderType());
-                $orderBy = "ORDER BY ".$orderParams[0]." ".strtoupper($orderParams[1]);
+                if (count($orderParams) !== 2) {
+                    throw new \RuntimeException('An error into order parameter.');
+                } else {
+                    list($orderColumn,$orderType) = $orderParams;
+                }
+                $orderBy = "ORDER BY ".$orderColumn." ".strtoupper($orderType);
             }else{
                 $orderBy = "ORDER BY r.record_id DESC";
             }
