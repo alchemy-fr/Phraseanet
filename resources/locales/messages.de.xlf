@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-07-04T13:18:06Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2017-07-04T13:27:49Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9880,6 +9880,11 @@
         <source>order-manager::order-item: more</source>
         <target state="new">order-manager::order-item: more</target>
         <jms:reference-file line="323">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="28e4d811c253e486863413d17d1fcdc3f2cbfc42" resname="order-manager::order-item: refused-previously">
+        <source>order-manager::order-item: refused-previously</source>
+        <target state="new">order-manager::order-item: refused-previously</target>
+        <jms:reference-file line="131">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records">
         <source>order-manager::order-item: selected-records</source>
