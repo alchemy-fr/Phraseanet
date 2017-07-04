@@ -575,7 +575,7 @@
       </trans-unit>
       <trans-unit id="c4a4f00323184bd750ee72b5c05e6e17d1584bfd" resname="Activate highlight" approved="yes">
         <source>Activate highlight</source>
-        <target state="translated">Activate highlight</target>
+        <target state="translated">Activate highlight on full text (experimental). Impact the time performance of search.</target>
         <jms:reference-file line="54">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a733b809d2f1233496ab516eed0f3ef75cf3791a" resname="Active" approved="yes">
@@ -4437,14 +4437,14 @@
       </trans-unit>
       <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied" approved="yes">
         <source>Order has been denied</source>
-        <target state="translated">The order has been denied.</target>
+        <target state="translated">The Record has been denied.</target>
         <jms:reference-file line="194">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="18">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="yes">
         <source>Order has been sent</source>
-        <target state="translated">The order has been sent.</target>
+        <target state="translated">The record has been sent.</target>
         <jms:reference-file line="162">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="16">prod/orders/order_item.html.twig</jms:reference-file>
