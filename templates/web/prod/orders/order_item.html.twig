@@ -62,9 +62,7 @@
                 <td>
                     <span class="text_block">{{ displayName }}(<a
                                 style="font-size: 12px;color: #4990E2;" href="#"
-                                onclick="sendMail('{{ order.getUser().getEmail() }}',
-                                        '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y') }}',
-                                        '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage() }}')">{{ order.getUser().getEmail() }}</a>)
+                                onclick="sendMail()">{{ order.getUser().getEmail() }}</a>)
                         <span class="icon-stack infoTips" id="userInfo">
                             <i class="icon-circle icon-stack-base" style="color:#737373"></i>
                             <i class="icon-info" style="color:#FFF"></i>
@@ -463,9 +461,12 @@ function send_documents(order_id)
     do_send_documents(order_id, elements_ids, false);
 }
 
-function sendMail(email, subject, body) {
+function sendMail() {
+    var email = '{{ order.getUser().getEmail() }}';
+    var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
+    var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
     if(email != null) {
-        window.open('mailto:' + email + '?subject=' + subject + '&body=' + body);
+        window.open("mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body));
     }
 }
 
