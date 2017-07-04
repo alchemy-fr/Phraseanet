@@ -34,10 +34,10 @@
             <div class="userInfoName">
                 <span>{{ order.getUser().getDisplayName() }}</span>
             </div>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }} : </strong>{{ order.getUser().getCompany() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }}</strong> {{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }}</strong> {{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }}</strong> {{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }}</strong> {{ order.getUser().getCountry() }}</span>
             {#<div>#}
                 {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
                     {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
@@ -60,7 +60,7 @@
             </tr>
             <tr>
                 <td>
-                    <span class="text_block">{{ displayName }}(<a
+                    <span class="text_block">{{ displayName }} (<a
                                 style="font-size: 12px;color: #4990E2;" href="#"
                                 onclick="sendMail()">{{ order.getUser().getEmail() }}</a>)
                         <span class="icon-stack infoTips" id="userInfo">
@@ -86,7 +86,7 @@
                 <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
-                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}denied{% else %}validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                             <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
@@ -128,6 +128,7 @@
             </div>
             <div id="order_detail" style="width:60%;">
                 <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
+                    <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
                     <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                     <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
@@ -151,11 +152,11 @@
                 <div id="wrapper-multiple">
                     <div id="preview-layout-multiple">
                         <span class="title">0</span>
-                        <h4 class="sub-title">selected records</h4>
+                        <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
                         <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                              style="width:150px;height:150px;"
                              src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
-                        <p>For all selected records</p>
+                        <p>{{ 'order-manager::order-item: for-all-selected-records' | trans }}</p>
                     </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
@@ -219,6 +220,9 @@ $(document).ready(function(){
         }
         else if(is_shift_key(event))
         {
+            if(!$this.hasClass('selectable')) {
+                return;
+            }
             var currentIndex = $this.index('.order_list .order_row');
             var prevIndex = lastSelectedRow.index('.order_list .order_row');
             $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
@@ -449,6 +453,15 @@ function send_documents(order_id)
     var dialog = p4.Dialog.get(1);
     var elements_ids = [];
 
+    //check if force send of document is required
+    if($('.order_list .clicked.denied', dialog.getDomElement().length > 0)) {
+        $('.order_list .clicked.denied', dialog.getDomElement()).each(function(i,n){
+            elements_ids.push($(n).find('input[name=order_element_id]').val());
+            do_send_documents(order_id, elements_ids, true);
+            return;
+        });
+    }
+
     $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
         elements_ids.push($(n).find('input[name=order_element_id]').val());
     });
@@ -466,7 +479,9 @@ function sendMail() {
     var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
     var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
     if(email != null) {
-        window.open("mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body));
+        var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        window.location.href = link;
+
     }
 }
 
@@ -487,9 +502,26 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
+function updateButtonStatus(element) {
+    if($(element).hasClass('validated')) {
+        $('.external-order-action button.send').prop('disabled', true);
+        $('.external-order-action button.deny').hide();
+        $('.external-order-action span.action-text').hide();
+    }else if($(element).hasClass('denied')) {
+        $('.external-order-action button.send').prop('disabled', false);
+        $('.external-order-action button.deny').hide();
+        $('.external-order-action span.action-text').show();
+    }else {
+        $('.external-order-action button.send, .external-order-action button.deny').prop('disabled', false);
+        $('.external-order-action button.send, .external-order-action button.deny').show();
+        $('.external-order-action span.action-text').hide();
+    }
+}
+
 function loadPreviewAndCaption(elem) {
     $('#preview-layout').empty();
     $('#caption-layout').empty();
+    updateButtonStatus(elem);
     var elementids = elem.attr('elementids').split('_');
     var sbasId = elementids[0];
     var recordId = elementids[1];
