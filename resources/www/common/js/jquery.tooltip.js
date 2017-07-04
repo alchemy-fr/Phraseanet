@@ -312,8 +312,8 @@
             }
             else {
                 // handle captions
-                recordWidth = 340;
-                var contentHeight = $selector.get(0).offsetHeight;
+                recordWidth = parseInt($selector.find('.popover')[0].style.width, 10);
+                var contentHeight = $selector.height();
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
                 recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
@@ -391,6 +391,10 @@
                 var totalViewportWidth = viewportDimensions.x;
                 var totalViewportHeight = viewportDimensions.y;
 
+                //for basket
+                if(recordPosition.left < 30) {
+                    leftOffset = $('.insidebloc').width();
+                }
                 var leftAvailableSpace = recordPosition.left + leftOffset;
                 var topAvailableSpace = recordPosition.top + topOffset;
                 var rightAvailableSpace = (totalViewportWidth - leftAvailableSpace - recordWidthOffset) - rightOffset;
