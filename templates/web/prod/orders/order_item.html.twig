@@ -128,6 +128,7 @@
             </div>
             <div id="order_detail" style="width:60%;">
                 <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
+                    <span class="action-text">{{ 'order-manager::order-item: refused-previously' }}</span>
                     <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                     <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
@@ -151,11 +152,11 @@
                 <div id="wrapper-multiple">
                     <div id="preview-layout-multiple">
                         <span class="title">0</span>
-                        <h4 class="sub-title">selected records</h4>
+                        <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
                         <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                              style="width:150px;height:150px;"
                              src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
-                        <p>For all selected records</p>
+                        <p>{{ 'order-manager::order-item: for-all-selected-records' | trans }}</p>
                     </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
@@ -503,12 +504,15 @@ function updateButtonStatus(element) {
     if($(element).hasClass('validated')) {
         $('.external-order-action button.send').prop('disabled', true);
         $('.external-order-action button.deny').hide();
+        $('.external-order-action span.action-text').hide();
     }else if($(element).hasClass('denied')) {
         $('.external-order-action button.send').prop('disabled', false);
         $('.external-order-action button.deny').hide();
+        $('.external-order-action span.action-text').show();
     }else {
         $('.external-order-action button.send, .external-order-action button.deny').prop('disabled', false);
         $('.external-order-action button.send, .external-order-action button.deny').show();
+        $('.external-order-action span.action-text').hide();
     }
 }
 

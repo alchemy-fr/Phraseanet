@@ -696,6 +696,14 @@ button.btn.btn-primary.send.outline {
   background: transparent;
 }
 
+span.action-text {
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #737373;
+  margin-right: 10px;
+}
+
 #order_detail iframe {
   min-height: 300px;
 }
