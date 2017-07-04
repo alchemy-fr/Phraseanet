@@ -30,19 +30,19 @@
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right active"
-                                        type="button" name="CURRENT_WEEK" onclick="setDateSelection(this);">{{ 'order-manager::order-list: this-week' | trans }}</button>
+                                        type="button" name="CURRENT_WEEK" onclick="applyFilter(this);">{{ 'order-manager::order-list: this-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                        type="button" name="PAST_WEEK" onclick="setDateSelection(this);">{{ 'order-manager::order-list: last-week' | trans }}</button>
+                                        type="button" name="PAST_WEEK" onclick="applyFilter(this);">{{ 'order-manager::order-list: last-week' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <button class="toggle-button-text full-width text-align-right"
-                                type="button" name="PAST_MONTH" onclick="setDateSelection(this);">{{ 'order-manager::order-list: last-month' | trans }}</button>
+                                type="button" name="PAST_MONTH" onclick="applyFilter(this);">{{ 'order-manager::order-list: last-month' | trans }}</button>
                             </td>
                         </tr>
                         <tr>
@@ -207,13 +207,13 @@
     });
 
     var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
-    setCurrentDate(date);
-    getSelectionText(dateSelection);
+    setDateInPicker(date);
+    setSelectionText(dateSelection);
     var element = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']');
     setDateSelection(element);
 
 
-    function setCurrentDate(date) {
+    function setDateInPicker(date) {
         if(date !== '') {
             $('#datepicker').val(date);
         }
@@ -226,7 +226,14 @@
         $(element).addClass('active');
     }
 
-    function getSelectionText(dateSelection) {
+    function applyFilter(element) {
+        setDateSelection(element);
+        //trigger request immediately
+        $('#date-form').trigger('submit');
+
+    }
+
+    function setSelectionText(dateSelection) {
         if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
             dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html() + " " + $('#datepicker').val();
         }else {
