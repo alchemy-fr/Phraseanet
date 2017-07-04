@@ -663,9 +663,9 @@
         <target state="translated">Paramètres avancés du champ</target>
         <jms:reference-file line="132">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings">
+      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings" approved="yes">
         <source>Advanced settings</source>
-        <target state="needs-translation">Réglage Avancé.</target>
+        <target state="translated">Réglage Avancé.</target>
         <jms:reference-file line="409">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8f3ed663adc3f670da96cfd59f14ca2d063439" resname="Affichage" approved="yes">
@@ -821,14 +821,14 @@
         <target state="translated">Autoriser à faire des diffusions</target>
         <jms:reference-file line="417">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc">
+      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc" approved="yes">
         <source>Alphabetic asc</source>
-        <target state="new">Alphabetic asc</target>
+        <target state="translated">Alphabétique ascendant</target>
         <jms:reference-file line="685">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc">
+      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc" approved="yes">
         <source>Alphabetic desc</source>
-        <target state="needs-translation">Alphabétique desc</target>
+        <target state="translated">Alphabétique descendant</target>
         <jms:reference-file line="686">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebd447ea09611b090d7b8a12835ffaf79ea17e47" resname="Also delete records that rely on groupings." approved="yes">
@@ -1699,9 +1699,9 @@
         <target state="translated">Collection vidée avec succès</target>
         <jms:reference-file line="131">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order">
+      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order" approved="yes">
         <source>Collection order</source>
-        <target state="needs-translation">Ordre des collections.</target>
+        <target state="translated">Ordre des collections.</target>
         <jms:reference-file line="679">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f704cc39c26f37922029d5ff58c61b607d384521" resname="Color Depth" approved="yes">
@@ -4493,9 +4493,9 @@
         <jms:reference-file line="13">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="21">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
+      <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="yes">
         <source>Order has been sent</source>
-        <target state="needs-translation">Le record a été envoyé</target>
+        <target state="translated">Le record a été envoyé.</target>
         <jms:reference-file line="173">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="19">prod/orders/order_item.html.twig</jms:reference-file>
@@ -4794,9 +4794,9 @@
         <target state="translated">Présentation des vignettes de panier</target>
         <jms:reference-file line="774">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e709e76ff5425bd59879423588e80e67d778fa57" resname="Presets">
+      <trans-unit id="e709e76ff5425bd59879423588e80e67d778fa57" resname="Presets" approved="yes">
         <source>Presets</source>
-        <target state="needs-translation">Réglage prédéfinit</target>
+        <target state="translated">Réglage prédéfinit</target>
         <jms:reference-file line="368">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="50f94286ba30706a19070d3ec0a0c8d34d6cf6eb" resname="Previous" approved="yes">
@@ -9871,19 +9871,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Informations sur le média :</target>
         <jms:reference-file line="146">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less">
+      <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less" approved="no">
         <source>order-manager::order-item: less</source>
-        <target state="new">order-manager::order-item: less</target>
+        <target state="needs-translation">Voir moins</target>
         <jms:reference-file line="324">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e36dd7d8c459e9eef3c001d10406670a23f4640" resname="order-manager::order-item: more">
+      <trans-unit id="1e36dd7d8c459e9eef3c001d10406670a23f4640" resname="order-manager::order-item: more" approved="yes">
         <source>order-manager::order-item: more</source>
-        <target state="new">order-manager::order-item: more</target>
+        <target state="translated">Voir plus.</target>
         <jms:reference-file line="323">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="28e4d811c253e486863413d17d1fcdc3f2cbfc42" resname="order-manager::order-item: refused-previously">
+      <trans-unit id="28e4d811c253e486863413d17d1fcdc3f2cbfc42" resname="order-manager::order-item: refused-previously" approved="yes">
         <source>order-manager::order-item: refused-previously</source>
-        <target state="new">order-manager::order-item: refused-previously</target>
+        <target state="translated">Précédemment refusé</target>
         <jms:reference-file line="131">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records">
@@ -9921,9 +9921,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Semaine dernière</target>
         <jms:reference-file line="39">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result">
+      <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result" approved="yes">
         <source>order-manager::order-list: no-result</source>
-        <target state="needs-translation">Pas de commande en attente.</target>
+        <target state="translated">Pas de commande visible en attente. (vous pouvez modifié le filtre pour voir plus de commandes).</target>
         <jms:reference-file line="117">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="162">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
