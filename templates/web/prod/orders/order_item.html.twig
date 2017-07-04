@@ -34,10 +34,10 @@
             <div class="userInfoName">
                 <span>{{ order.getUser().getDisplayName() }}</span>
             </div>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }} : </strong>{{ order.getUser().getCompany() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }} : </strong>{{ order.getUser().getPhone() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }} : </strong>{{ order.getUser().getAddress() }}</span>
-            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }} : </strong>{{ order.getUser().getCountry() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }}</strong> {{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }}</strong> {{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }}</strong> {{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }}</strong> {{ order.getUser().getCountry() }}</span>
             {#<div>#}
                 {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
                     {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
@@ -479,7 +479,9 @@ function sendMail() {
     var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
     var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
     if(email != null) {
-        window.open("mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body));
+        var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+        window.location.href = link;
+
     }
 }
 
