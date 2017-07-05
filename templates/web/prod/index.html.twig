@@ -720,8 +720,12 @@
                         <div id="PREVIEWCURRENTGLOB" style=""></div>
                     </div>
                     <div class="PNB10" style="top:146px;">
-                        <button id="left-btn" class="invisible-btn" onclick="getPrevious();"></button>
-                        <button id="right-btn" class="invisible-btn" onclick="getNext();"></button>
+                        <button id="left-btn" class="invisible-btn" onclick="getPrevious();">
+                            <i class="icon-caret-left"></i>
+                        </button>
+                        <button id="right-btn" class="invisible-btn" onclick="getNext();">
+                            <i class="icon-caret-right"></i>
+                        </button>
                     </div>
                     <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>
                 </div>
@@ -815,6 +819,16 @@
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
             filterFacet = ({% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %});
+
+            $('#right-btn').mouseenter(function() {
+                $('#right-btn i').fadeIn(200).delay(500).hide(0);
+
+            });
+
+            $('#left-btn').mouseenter(function() {
+                $('#left-btn i').fadeIn(200).delay(500).hide(0);
+
+            });
         });
 
         function pollNotifications(){
