@@ -347,6 +347,17 @@ span.ww_winTitle {
   height: 320px;
   width: 150px;
   margin-top: -160px;
+  i {
+    display: none;
+    font-size: 120px;
+    color: #4d4d4d;
+    text-shadow:
+            -1px -1px 1px #888,
+            1px -1px 1px #888,
+            -1px 1px 1px #888,
+            1px 1px 1px #888;
+    opacity: .8;
+  }
 }
 
 #right-btn {
