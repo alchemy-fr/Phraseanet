@@ -763,7 +763,7 @@
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
-            <div id="PREVIEWOTHERS" style="top:66px;" class="PNB10 ui-corner-all">
+            <div id="PREVIEWOTHERS" style="top:95px;" class="PNB10 ui-corner-all">
                 <div id="PREVIEWOTHERSINNER" style=""></div>
             </div>
         </div>
@@ -821,13 +821,11 @@
             filterFacet = ({% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %});
 
             $('#right-btn').mouseenter(function() {
-                $('#right-btn i').fadeIn(200).delay(500).hide(0);
-
+                $('#right-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
             });
 
             $('#left-btn').mouseenter(function() {
-                $('#left-btn i').fadeIn(200).delay(500).hide(0);
-
+                $('#left-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
             });
         });
 
