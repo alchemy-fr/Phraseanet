@@ -48,13 +48,21 @@ class BasketController extends Controller
         ]);
     }
 
+    /**
+     * @return EntityManagerInterface
+     */
+    private function getEntityManager()
+    {
+        return $this->app['orm.em'];
+    }
+
     public function createBasket(Request $request)
     {
         $basket = new Basket();
 
         $basket->setName($request->request->get('name', ''));
         $basket->setUser($this->getAuthenticatedUser());
-        $basket->setDescription($request->request->get('desc'));
+        $basket->setDescription($request->request->get('description'));
 
         $records = RecordsRequest::fromRequest($this->app, $request, true);
 
@@ -75,6 +83,14 @@ class BasketController extends Controller
         }
 
         return $this->app->redirectPath('prod_baskets_basket', ['basket' => $basket->getId()]);
+    }
+
+    /**
+     * @return BasketManipulator
+     */
+    private function getBasketManipulator()
+    {
+        return $this->app['manipulator.basket'];
     }
 
     public function deleteBasket(Request $request, Basket $basket)
@@ -254,21 +270,5 @@ class BasketController extends Controller
     public function displayCreateForm()
     {
         return $this->render('prod/Baskets/Create.html.twig');
-    }
-
-    /**
-     * @return EntityManagerInterface
-     */
-    private function getEntityManager()
-    {
-        return $this->app['orm.em'];
-    }
-
-    /**
-     * @return BasketManipulator
-     */
-    private function getBasketManipulator()
-    {
-        return $this->app['manipulator.basket'];
     }
 }
