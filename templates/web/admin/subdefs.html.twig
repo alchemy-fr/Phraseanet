@@ -39,6 +39,7 @@
     }
 
     function fillCheckbox(section, name, defType, fieldname, values) {
+
         $("[name='"+section+"_"+name+"_"+defType+"["+fieldname+"][]']").each(function(){
             $(this).removeAttr("checked");
 
@@ -75,19 +76,18 @@
             return;
         }
 
-
         for (var input in config[defType].form) {
             if(config[defType].form[input] == "slide"){
-                fillSlide(section, name, defType, input, config[defType].definitions[preset][i]);
+                fillSlide(section, name, defType, input, config[defType].definitions[preset][input]);
             }
             if(config[defType].form[input] == "radio"){
-                fillRadio(section, name, defType, input, config[defType].definitions[preset][i]);
+                fillRadio(section, name, defType, input, config[defType].definitions[preset][input]);
             }
             if(config[defType].form[input] == "select"){
-                fillSelect(section, name, defType, input, config[defType].definitions[preset][i]);
+                fillSelect(section, name, defType, input, config[defType].definitions[preset][input]);
             }
             if(config[defType].form[input] == "checkbox"){
-                fillCheckbox(section, name, defType, input, config[defType].definitions[preset][i]);
+                fillCheckbox(section, name, defType, input, config[defType].definitions[preset][input]);
             }
             i++;
         }
