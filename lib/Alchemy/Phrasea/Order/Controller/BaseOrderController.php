@@ -248,4 +248,76 @@ class BaseOrderController extends Controller
             }
         }
     }
+
+    /**
+     * @param $order_id
+     * @param $elementIds
+     * @param User $acceptor
+     * @param null $basketOptions
+     * @return BasketElement[]
+     */
+    protected function doBasketFromElements($order_id, $elementIds, User $acceptor,$basketOptions = null)
+    {
+
+        $order = $this->findOr404($order_id);
+
+        $basket = $this->orderBasketProvider->provideBasketForOrderAndUser($order, $acceptor,$basketOptions);
+
+        $elements = $this->findRequestedOrderElements($order_id,$elementIds);
+
+        $partialOrder = new PartialOrder($order, $elements);
+        $orderValidator = $this->getOrderValidator();
+
+        $basketElements = $orderValidator->createBasketElements($partialOrder);
+
+        try {
+            $manager = $this->getEntityManager();
+
+            if (!empty($basketElements)) {
+                foreach ($basketElements as $element) {
+                    $basket->addElement($element);
+                    $manager->persist($element);
+                }
+
+                $delivery = new OrderDelivery($order, $acceptor, count($basketElements));
+
+                $this->dispatch(PhraseaEvents::ORDER_CREATE, new OrderDeliveryEvent($delivery));
+            }
+
+            $manager->persist($basket);
+            $manager->persist($order);
+            $manager->flush();
+        } catch (\Exception $e) {
+            // I don't know why only basket persistence is not checked
+        }
+
+        return $basketElements;
+    }
+
+    /**
+     * @param $order_id
+     * @param $elementIds
+     * @return array
+     */
+    protected function findRequestedOrderElements($order_id,$elementIds)
+    {
+        $elements = [];
+        foreach ($elementIds as $elementId){
+            $orderElement = $this->getOrderElementRepository()->findOneBy([
+                'id' => $elementId,
+                'order' => $order_id,
+            ]);
+
+            if(!$orderElement instanceof OrderElement){
+                continue;
+            }
+            $elements[] = $orderElement;
+        }
+
+        if (count($elements) !== count($elementIds)) {
+            throw new NotFoundHttpException(sprintf('At least one requested element does not exists or does not belong to order "%s"', $order_id));
+        }
+
+        return $elements;
+    }
 }
