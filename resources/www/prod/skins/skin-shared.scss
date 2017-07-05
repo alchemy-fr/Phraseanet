@@ -238,11 +238,10 @@ span.ww_winTitle {
 
 .wrapper_diaspo {
   position: absolute;
-  bottom: 10px;
-  top: 10px;
+  bottom: 0px;
+  top: 0px;
   width: 130px;
   right: 0px;
-  padding-top: 6px;
   .cont_infos {
     text-align: center;
     width: 100%;
@@ -254,23 +253,27 @@ span.ww_winTitle {
     span {
       cursor: pointer;
       font-size: $smallFontSize;
-    }
-    img {
-      width: 20px;
-    }
-  }
-  #PREVIEWTOOL {
-    position: absolute;
-    width: 84px;
-    right: 0;
-    left: 0;
-    margin: 10px auto 0 auto;
-    bottom: initial;
-    img {
-      width: 20px;
       padding: 4px;
     }
+    img {
+      width: 20px;
+    }
+    button {
+      background: transparent;
+      border: 0;
+      font-size: 50px;
+      color: #474747;
+      display: inline-block;
+      margin: 0px 16px;
+      padding: 0px;
+      border: none !important;
+      outline: none !important;
+    }
   }
+}
+
+.edit_button img {
+  width: 20px;
 }
 
 //.cont_infos {
