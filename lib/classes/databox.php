@@ -1029,9 +1029,10 @@ class databox extends base implements ThumbnailedElement
                 WHERE prop='cterms'";
 
         $this->cterms = $dom_cterms->saveXML();
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) save cterms l=%s\n", __FILE__, __LINE__, strlen($this->cterms)), FILE_APPEND);
         $params = [
-            ':xml'  => $this->cterms
-            , ':date' => $now
+            ':xml'  => $this->cterms,
+            ':date' => $now
         ];
 
         $stmt = $this->get_connection()->prepare($sql);
@@ -1211,13 +1212,14 @@ class databox extends base implements ThumbnailedElement
 
     public function clearCandidates()
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) clearCandidates\n", __FILE__, __LINE__), FILE_APPEND);
         try {
             $domct = $this->get_dom_cterms();
 
             if ($domct !== false) {
                 $nodesToDel = [];
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if(!($n->getAttribute('delbranch'))){
+                    if($n->nodeType != XML_ELEMENT_NODE || !($n->getAttribute('delbranch'))){
                         $nodesToDel[] = $n;
                     }
                 }
@@ -1228,7 +1230,8 @@ class databox extends base implements ThumbnailedElement
                     $this->saveCterms($domct);
                 }
             }
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
         }
     }
@@ -1300,9 +1303,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_dom_cterms()
     {
-        if ($this->_dom_cterms) {
-            return $this->_dom_cterms;
-        }
+        //if ($this->_dom_cterms) {
+        //    return $this->_dom_cterms;
+        //}
 
         $cterms = $this->get_cterms();
 
@@ -1326,9 +1329,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_cterms()
     {
-        if ($this->cterms) {
-            return $this->cterms;
-        }
+        //if ($this->cterms) {
+        //    return $this->cterms;
+        //}
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
         $stmt = $this->get_connection()->prepare($sql);

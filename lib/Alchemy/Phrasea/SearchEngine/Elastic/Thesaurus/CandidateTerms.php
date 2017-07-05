@@ -20,8 +20,12 @@ use Transliterator;
 
 class CandidateTerms
 {
+    const FORCE_RELOAD = true;
+    const DONT_FORCE_RELOAD = false;
+
     private $databox;
-    private $new_candidates = array();
+    private $new_candidates = [];
+    /** @var  CandidateTermVisitor */
     private $visitor;
     private $document;
 
@@ -50,7 +54,8 @@ class CandidateTerms
 
     public function save()
     {
-        $this->ensureDocumentLoaded();
+        $this->ensureDocumentLoaded(self::FORCE_RELOAD);
+        $n = 0;
         foreach ($this->new_candidates as $raw_value => $field) {
             $term = Term::parse($raw_value);
             $norm_value = StringUtils::asciiLowerFold($term->getValue());
@@ -58,15 +63,18 @@ class CandidateTerms
             $element = $this->createElement($raw_value, $norm_value, $norm_context);
             $container = $this->findOrCreateFieldNode($field);
             $this->insertElement($container, $element);
+            $n++;
         }
-
-        $this->databox->saveCterms($this->document);
+        if($n > 0) {
+            $this->databox->saveCterms($this->document);
+        }
     }
 
-    private function ensureDocumentLoaded()
+    private function ensureDocumentLoaded($forceReload = self::DONT_FORCE_RELOAD)
     {
-        if (!$this->document) {
+        if (!$this->document || $forceReload == self::FORCE_RELOAD) {
             $this->document = Helper::candidatesFromDatabox($this->databox);
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) read cterms l=%s\n", __FILE__, __LINE__, strlen($this->document->saveXML())), FILE_APPEND);
         }
     }
 
