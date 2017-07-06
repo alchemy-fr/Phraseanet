@@ -95,7 +95,7 @@
                 <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
-                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}denied{% else %}validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                             <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
@@ -135,6 +135,8 @@
                     </tbody>
                 </table>
             </div>
+
+
             <div id="order_detail" style="width:60%;">
                 <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
                     <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
@@ -459,8 +461,9 @@ function updateValidation(order_id, newState) {
             elementsForValidation.push(order);
             $(n).toggleClass('waitingForValidation');
             $(n).toggleClass('selected');
+            $(n).find('td:first-child').empty();
+            $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
             updateButtonStatus($(n));
-            updateItemStatus($(n), 'waitingForValidation');
         }
         if($(n).hasClass('clicked') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
             var order = {};
@@ -473,8 +476,9 @@ function updateValidation(order_id, newState) {
             elementsForValidation.push(order);
             $(n).toggleClass('waitingForValidation');
             $(n).toggleClass('clicked');
+            $(n).find('td:first-child').empty();
+            $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
             updateButtonStatus($(n));
-            updateItemStatus($(n), 'waitingForValidation');
         }
     });
 
@@ -639,6 +643,11 @@ function renderOrderDetailView(countSelected) {
         $('#wrapper-padding').hide();
         $('.external-order-action').hide();
         $('#wrapper-multiple').show();
+        var dialog = p4.Dialog.get(1);
+        debugger;
+        $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
+            updateButtonStatus($(n));
+        });
     }else if(countSelected == 1) {
         $('#wrapper-padding').show();
         $('.external-order-action').show();
@@ -651,24 +660,19 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
-function updateItemStatus(element, type) {
-    element.find('td:first-child').empty();
-    element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-}
-
 function updateButtonStatus(element) {
     if($(element).hasClass('validated') || $(element).hasClass('waitingForValidation')) {
-        $('.external-order-action button.send').prop('disabled', true);
-        $('.external-order-action button.deny').hide();
-        $('.external-order-action span.action-text').hide();
+        $('#order-action button.send').prop('disabled', true);
+        $('#order-action button.deny').hide();
+        $('#order-action span.action-text').hide();
     }else if($(element).hasClass('denied')) {
-        $('.external-order-action button.send').prop('disabled', false);
-        $('.external-order-action button.deny').hide();
-        $('.external-order-action span.action-text').show();
+        $('#order-action button.send').prop('disabled', false);
+        $('#order-action button.deny').hide();
+        $('#order-action span.action-text').show();
     }else {
-        $('.external-order-action button.send, .external-order-action button.deny').prop('disabled', false);
-        $('.external-order-action button.send, .external-order-action button.deny').show();
-        $('.external-order-action span.action-text').hide();
+        $('#order-action button.send, #order-action button.deny').prop('disabled', false);
+        $('#order-action button.send, #order-action button.deny').show();
+        $('#order-action span.action-text').hide();
     }
 }
 
