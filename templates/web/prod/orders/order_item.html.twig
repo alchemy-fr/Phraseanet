@@ -8,6 +8,14 @@
     <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
+<div style="display:none;position:relative;" id="validate_dialog" title="{{ 'order-manager::order-item:Validation' | trans }}" >
+    <div class="box">
+        <div class="validation-item-box" style="float:left; width:100%;margin-top:20px;">
+
+        </div>
+    </div>
+</div>
+
 <div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
@@ -43,6 +51,7 @@
                     {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
             {#</div>#}
         </div>
+        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>Validate</button>
         <table class="table no-border">
             <tr>
                 <td>
@@ -173,6 +182,8 @@
 
 var userInfoIsVisible = false;
 var itemCount = 0;
+var elementsForValidation = [];
+var readyForValidation = false;
 
 $(document).ready(function(){
 
@@ -269,19 +280,22 @@ $(document).ready(function(){
     });
 
     $('button.send', dialog.getDomElement()).bind('click',function(){
-        send_documents(order_id);
+        updateValidation(order_id, 'validated');
+        //send_documents(order_id);
     });
 
     $('button.deny', dialog.getDomElement()).bind('click',function(){
-        deny_documents(order_id);
+        updateValidation(order_id, 'denied');
+        //deny_documents(order_id);
     });
 
     $('.force_sender', dialog.getDomElement()).bind('click',function(){
         if(confirm(language.forceSendDocument))
         {
-            var element_id = [];
-            element_id.push($(this).closest('.order_wrapper').find('input[name=order_element_id]').val());
-            do_send_documents(order_id, element_id, true);
+            updateValidation(order_id, 'validated');
+//            var element_id = [];
+//            element_id.push($(this).closest('.order_wrapper').find('input[name=order_element_id]').val());
+//            do_send_documents(order_id, element_id, true);
         }
     });
 
@@ -338,8 +352,119 @@ $(document).ready(function(){
         $(this).parent().hide().prev().show().prev().show();
     });
 
+    $('button.validate', dialog.getDomElement()).bind('click',function(){
+        openDialog(this,event);
+        return false;
+    });
+
 });
 
+function openDialog(el, event) {
+    $("#validate_dialog").dialog({
+        open: function (event, ui) {
+            $('.ui-dialog').css('z-index', 100000);
+            $(".ui-widget-overlay").css('z-index', 100000);
+        },
+        closeOnEscape: true,
+        resizable: false,
+        width: 450,
+        height: 500,
+        modal: true,
+        draggable: false,
+        stack: false,
+        buttons: {
+            "SUBMIT": function() {
+               //submit documents
+            },
+            "CANCEL": function() {
+                $(this).dialog("close");
+            }
+        },
+        overlay: {
+            backgroundColor: '#000',
+            opacity: 0.7
+        }
+    }).dialog('open');
+    createValidationTable();
+}
+
+function createValidationTable() {
+    $('.validation-item-box').empty();
+    var validatedArray = _.filter(elementsForValidation, function(elem) {
+        return elem.newState === 'validated';
+    });
+    var deniedArray = _.filter(elementsForValidation, function(elem) {
+        return elem.newState === 'denied';
+    });
+
+    if(validatedArray.length > 0) {
+        var html = '';
+        html += '<p>Vous avez validé ' + (validatedArray.length == 1 ? validatedArray.length + ' item' :  validatedArray.length + ' items') + '</p>';
+        html += '<table>';
+        _.each(validatedArray, function(elem) {
+            html += '<tr>';
+            html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
+            html += '<td>' + elem.elementTitle[0].outerHTML + '</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+        $('.validation-item-box').append(html);
+    }
+
+    if(deniedArray.length > 0) {
+        var html = '';
+        html += '<p>Vous avez refusé ' + (deniedArray.length == 1 ? deniedArray.length + ' item' :  deniedArray.length + ' items') + '</p>';
+        html += '<table>';
+        _.each(deniedArray, function(elem) {
+            html += '<tr>';
+            html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
+            html += '<td>' + elem.elementTitle[0].outerHTML + '</td>';
+            html += '</tr>';
+        });
+        html += '</table>';
+        $('.validation-item-box').append(html);
+    }
+
+}
+
+function updateValidation(order_id, newState) {
+    var dialog = p4.Dialog.get(1);
+    $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
+        if($(n).hasClass('selectable') && $(n).hasClass('selected') && !$(n).hasClass('waitingForValidation')){
+            var order = {};
+            order.elementTitle = $(n).find('span');
+            order.elementPreview = $(n).find('.order_wrapper');
+            order.elementIds = $(n).find('input[name=order_element_id]').val();
+            order.oldState = 'selectable';
+            order.newState = newState;
+            elementsForValidation.push(order);
+            $(n).addClass('waitingForValidation');
+            updateButtonStatus($(n));
+            updateItemStatus($(n));
+        }
+        if($(n).hasClass('clicked') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
+            var order = {};
+            order.elementTitle = $(n).find('span');
+            order.elementPreview = $(n).find('.order_wrapper');
+            order.elementIds = $(n).find('input[name=order_element_id]').val();
+            order.oldState = 'denied';
+            order.newState = newState;
+            elementsForValidation.push(order);
+            $(n).addClass('waitingForValidation');
+            updateButtonStatus($(n));
+            updateItemStatus($(n));
+        }
+    });
+
+    readyForValidation = true;
+    toggleValidationButton();
+}
+
+function toggleValidationButton() {
+    if(readyForValidation) {
+        $('button.validate').show();
+    }
+}
 
 function checkAll(element) {
     itemCount = 0;
@@ -502,8 +627,13 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
+function updateItemStatus(element) {
+    element.find('td:first-child').empty();
+    element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
+}
+
 function updateButtonStatus(element) {
-    if($(element).hasClass('validated')) {
+    if($(element).hasClass('validated') || $(element).hasClass('waitingForValidation')) {
         $('.external-order-action button.send').prop('disabled', true);
         $('.external-order-action button.deny').hide();
         $('.external-order-action span.action-text').hide();
