@@ -20,9 +20,6 @@ use Transliterator;
 
 class CandidateTerms
 {
-    const FORCE_RELOAD = true;
-    const DONT_FORCE_RELOAD = false;
-
     private $databox;
     private $new_candidates = [];
     /** @var  CandidateTermVisitor */
@@ -54,7 +51,7 @@ class CandidateTerms
 
     public function save()
     {
-        $this->ensureDocumentLoaded(self::FORCE_RELOAD);
+        $this->ensureDocumentLoaded();
         $n = 0;
         foreach ($this->new_candidates as $raw_value => $field) {
             $term = Term::parse($raw_value);
@@ -70,11 +67,11 @@ class CandidateTerms
         }
     }
 
-    private function ensureDocumentLoaded($forceReload = self::DONT_FORCE_RELOAD)
+    private function ensureDocumentLoaded()
     {
-        if (!$this->document || $forceReload == self::FORCE_RELOAD) {
+        // if (!$this->document) {
             $this->document = Helper::candidatesFromDatabox($this->databox);
-        }
+        // }
     }
 
     private function createElement($raw_value, $value, $context)
