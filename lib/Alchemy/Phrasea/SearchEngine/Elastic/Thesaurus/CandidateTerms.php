@@ -74,7 +74,6 @@ class CandidateTerms
     {
         if (!$this->document || $forceReload == self::FORCE_RELOAD) {
             $this->document = Helper::candidatesFromDatabox($this->databox);
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) read cterms l=%s\n", __FILE__, __LINE__, strlen($this->document->saveXML())), FILE_APPEND);
         }
     }
 
