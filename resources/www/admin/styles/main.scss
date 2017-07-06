@@ -233,9 +233,6 @@ div.switch_right.unchecked {
 .board_section {
   margin: 0 0 30px;
 }
-.board_section ul {
-  margin: 0 0 20px 15px;
-}
 .board_section div[class="section"] {
   height: auto;
 }
@@ -402,7 +399,7 @@ input[id="elasticsearch_settings_highlight"] {
   left: -5px;
 }
 
-.form-horizontal .controls + div{
+.form-horizontal .controls + div {
   margin-left: 180px;
   font-style: italic;
 }
@@ -414,6 +411,15 @@ input[id="elasticsearch_settings_highlight"] {
 
 #users_page .user_deleter {
   margin-top: 5px;
+}
+
+.ui-dialog .ui-dialog-content {
+  position: relative;
+  border: 0;
+  padding: .5em 1em;
+  background: none;
+  margin-bottom: 7rem;
+  overflow: visible;
 }
 
 @media screen and (max-width: 1150px) {

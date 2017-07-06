@@ -189,12 +189,15 @@
 
 #PREVIEWTOOL {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  text-align: right;
-  width: 56px;
-  height: 60px;
-  top: auto;
+  width: 84px;
+  right: 0;
+  left: 0;
+  margin: 10px auto 0 auto;
+  bottom: 4px;
+  img {
+    width: 20px;
+    padding: 4px;
+  }
 }
 
 

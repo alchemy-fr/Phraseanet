@@ -15,6 +15,8 @@ use MediaAlchemyst\Specification\SpecificationInterface;
 
 interface Subdef
 {
+    const OPTION_DEVICE = 'devices';
+
     const TYPE_IMAGE = 'image';
     const TYPE_ANIMATION = 'gif';
     const TYPE_VIDEO = 'video';

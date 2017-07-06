@@ -30,7 +30,7 @@
             $(box).toggle("500");
         });
 
-        $("input, select").on("change", activeSubmit);
+        $("input, select").one("change", activeSubmit);
     });
 
     function activeSubmit() {
@@ -67,8 +67,8 @@
         var config = JSON.parse('{{ config |json_encode|raw }}'),
                 i = 0,
                 defType = $('[name="'+section+'_'+name+'_mediatype"]').val(),
-                quality = $('[name="'+section+'_'+name+'_quality"]').val(),
-                optionValue = $('[name="'+section+'_'+name+'_quality"] option:selected').attr("value");
+                preset = $('[name="'+section+'_'+name+'_presets"]').val(),
+                optionValue = $('[name="'+section+'_'+name+'_presets"] option:selected').attr("value");
 
         if(typeof optionValue === 'undefined'){
 
@@ -78,16 +78,16 @@
 
         for (var input in config[defType].form) {
             if(config[defType].form[input] == "slide"){
-                fillSlide(section, name, defType, input, config[defType].definitions[quality][i]);
+                fillSlide(section, name, defType, input, config[defType].definitions[preset][i]);
             }
             if(config[defType].form[input] == "radio"){
-                fillRadio(section, name, defType, input, config[defType].definitions[quality][i]);
+                fillRadio(section, name, defType, input, config[defType].definitions[preset][i]);
             }
             if(config[defType].form[input] == "select"){
-                fillSelect(section, name, defType, input, config[defType].definitions[quality][i]);
+                fillSelect(section, name, defType, input, config[defType].definitions[preset][i]);
             }
             if(config[defType].form[input] == "checkbox"){
-                fillCheckbox(section, name, defType, input, config[defType].definitions[quality][i]);
+                fillCheckbox(section, name, defType, input, config[defType].definitions[preset][i]);
             }
             i++;
         }
@@ -96,7 +96,7 @@
     function select_mediatype(type, name, selector)
     {
         var config = JSON.parse('{{ config |json_encode|raw }}'),
-                inputPresets = '[name="'+type+'_'+name+'_quality"]',
+                inputPresets = '[name="'+type+'_'+name+'_presets"]',
                 defType = $(selector).val();
 
 
@@ -118,7 +118,7 @@
             .find('option')
             .remove()
             .end()
-            .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
+            .append($("<option value='custom'></option>").text('{{ 'Custom' | trans }}'));
 
         if(typeof config[defType] === 'undefined'){
 
@@ -140,12 +140,60 @@
         }
     }
 
+    function subview_type(selector) {
+        var mapping = JSON.parse('{{ subviews_mapping |json_encode|raw }}'),
+                subviewType = $(selector).val();
+
+        $("#mediaType")
+                .find('option')
+                .remove()
+                .end()
+                .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
+
+        for (var key in mapping[subviewType]) {
+            $("#mediaType").append($('<option></option>')
+                    .attr("value", mapping[subviewType][key])
+                    .text(mapping[subviewType][key])
+            );
+        }
+    }
+    
+    function media_type(selector){
+        var config = JSON.parse('{{ config |json_encode|raw }}'),
+                defType = $(selector).val();
+
+        $("#presets")
+                .find('option')
+                .remove()
+                .end()
+                .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
+
+        if(typeof config[defType] === 'undefined'){
+
+            return;
+        }
+
+        for (var key in config[defType].definitions) {
+            if (config[defType].definitions[key] == null){
+                $("#presets").append($("<option></option>")
+                        .attr("disabled", "disabled")
+                        .text(key)
+                );
+            }else{
+                $("#presets").append($('<option></option>')
+                        .attr("value", key)
+                        .text(key)
+                );
+            }
+        }
+    }
+
     $(function() {
       // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
       $( "#dialog:ui-dialog" ).dialog( "destroy" );
 
-      var name = $( "#name" ), accessclass = $( "#accessclass" ),
-      allFields = $( [] ).add( name ).add(accessclass),
+      var name = $( "#name" ), accessclass = $( "#accessclass" ), subviewType =$( "#subviewType" ) , mediaType = $( "#mediaType" ), presets = $( "#presets" ),
+      allFields = $( [] ).add( name ).add(accessclass).add(subviewType).add(mediaType).add(presets),
       tips = $( ".validateTips" );
 
       function updateTips( t ) {
@@ -169,14 +217,9 @@
         }
       }
 
-      function get_current_group()
-      {
-        return $('.ui-tabs-nav .ui-state-active a').html();
-      }
+      function checkPresence( mediaType, o ) {
 
-      function checkPresence( o ) {
-
-        var el = $('input[name="subdefs[]"][value="'+get_current_group()+'_'+o.val()+'"]');
+        var el = $('input[name="subdefs[]"][value="'+mediaType+'_'+o.val()+'"]');
         if ( el.length !== 0 ) {
           o.addClass( "ui-state-error" );
           updateTips( "SubdefName should be unique per group" );
@@ -205,8 +248,8 @@
 
       $( "#dialog-form" ).dialog({
         autoOpen: false,
-        height: 250,
-        width: 350,
+        height: 420,
+        width: 300,
         modal: true,
         buttons: {
           "Create a Subdef": function() {
@@ -216,14 +259,14 @@
 
             bValid = bValid && checkLength( name, "subdef name", 3, 16 );
             bValid = bValid && checkSpecialChar( name );
-            bValid = bValid && checkPresence( name );
-
-
+            bValid = bValid && checkPresence( subviewType.val(), name );
 
             if ( bValid ) {
-              $('input[name="add_subdef[group]"]').val(get_current_group());
+              $('input[name="add_subdef[group]"]').val(subviewType.val());
               $('input[name="add_subdef[name]"]').val(name.val());
+              $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
               $('input[name="add_subdef[class]"]').val(accessclass.val());
+              $('input[name="add_subdef[presets]"]').val(presets.val());
               $( this ).dialog( "close" );
               $('form.subdefs').submit();
             }
@@ -299,6 +342,39 @@
                 <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
                 <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
             </select>
+            <label for="subviewType">{{ 'subviewType' | trans }}</label>
+            <select name="subviewType" id="subviewType" onchange="subview_type(this)">
+                <option>{{ 'Choisir' | trans }}</option>
+                <option value="image">{{ 'image' | trans }}</option>
+                <option value="video">{{ 'video' | trans }}</option>
+                <option value="audio">{{ 'audio' | trans }}</option>
+                <option value="document">{{ 'document' | trans }}</option>
+                <option value="flash">{{ 'flash' | trans }}</option>
+            </select>
+            <label for="mediaType">{{ 'mediatype' | trans }}</label>
+            <select name="mediaType" id="mediaType" onchange="media_type(this)">
+                <option>{{ 'Choisir' | trans }}</option>
+                {% set mediaType = subdef.getSubdefType.getType() %}
+                {% for key, pressets in config[defType].definitions %}
+                    {% if pressets == null %}
+                        <option disabled="disabled">{{ key }}</option>
+                    {% else %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <label for="presets">{{ 'Presets' | trans }}</label>
+            <select name="presets" id="presets">
+                <option>{{ 'Choisir' | trans }}</option>
+                {% set defType = subdef.getSubdefType.getType() %}
+                {% for key, pressets in config[defType].definitions %}
+                    {% if pressets == null %}
+                        <option disabled="disabled">{{ key }}</option>
+                    {% else %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
         </fieldset>
     </form>
 </div>
@@ -342,15 +418,6 @@
                         </tr>
                         <tr>
                             <td>
-                            Path
-                            </td>
-                            <td>
-                            <input class="path_testable test_writeable" type="text" value="{{subdef.get_path()}}" name="{{subdefgroup}}_{{subdefname}}_path"/>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
                                 {{ 'mediatype' | trans }}
                             </td>
                             <td>
@@ -368,17 +435,26 @@
                                 {{ 'Presets' | trans }}
                             </td>
                             <td>
-                                <select onchange="populate_values('{{subdefgroup}}', '{{subdefname}}');" name="{{subdefgroup}}_{{subdefname}}_quality">
-                                    <option>{{ 'Choisir' | trans }}</option>
+                                <select onchange="populate_values('{{subdefgroup}}', '{{subdefname}}');" name="{{subdefgroup}}_{{subdefname}}_presets">
+                                    <option value="custom">{{ 'Custom' | trans }}</option>
                                     {% set defType = subdef.getSubdefType.getType() %}
                                     {% for key, pressets in config[defType].definitions %}
                                         {% if pressets == null %}
                                             <option disabled="disabled">{{ key }}</option>
                                         {% else %}
-                                            <option value="{{ key }}">{{ key }}</option>
+                                            <option value="{{ key }}" {% if subdef.get_preset() == key %}selected="selected"{% endif %}>{{ key }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 </select>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Path
+                            </td>
+                            <td>
+                                <input class="path_testable test_writeable" type="text" value="{{subdef.get_path()}}" name="{{subdefgroup}}_{{subdefname}}_path"/>
                             </td>
                             <td></td>
                         </tr>
@@ -430,7 +506,9 @@
                                             {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
                                             slide: function( event, ui ) {
                                                 $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
-                                                activeSubmit();
+                                                jQuery('[name={{subdefgroup}}_{{subdefname}}_presets]').val("custom");
+                                                if(jQuery(".subviews-submit").attr("disabled"))
+                                                    activeSubmit();
                                             },
                                             create: function (event, ui) {
                                                 {# add no-ajax class to slider link to prevent page load in IE7 #}
@@ -473,6 +551,12 @@
                 </div>
                 {% endfor %}
             </div>
+            <script>
+                {% set defType = subdef.getSubdefType.getType() %}
+                jQuery('#box{{subdefgroup}}{{subdefname}}{{ defType }} input, #box{{subdefgroup}}{{subdefname}}{{ defType }} select').change(function(){
+                    jQuery('[name={{subdefgroup}}_{{subdefname}}_presets]').val("custom");
+                });
+            </script>
             {% endfor %}
         </div>
         {% endfor %}
@@ -480,7 +564,9 @@
     <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
     <input type="hidden" name="add_subdef[group]" value=""/>
     <input type="hidden" name="add_subdef[name]" value=""/>
+    <input type="hidden" name="add_subdef[mediaType]" value=""/>
     <input type="hidden" name="add_subdef[class]" value=""/>
+    <input type="hidden" name="add_subdef[presets]" value=""/>
 </form>
 
 <div style="display:none;">
