@@ -368,6 +368,10 @@ function openDialog(el, event) {
             $('.ui-dialog').css('z-index', 100000);
             $(".ui-widget-overlay").css('z-index', 100000);
         },
+        close: function () {
+            resetValidation();
+            toggleValidationButton();
+        },
         closeOnEscape: true,
         resizable: false,
         width: 450,
@@ -380,8 +384,6 @@ function openDialog(el, event) {
                //submit documents
             },
             "CANCEL": function() {
-                resetValidation();
-                toggleValidationButton();
                 $(this).dialog("close");
             }
         },
