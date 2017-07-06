@@ -1029,7 +1029,6 @@ class databox extends base implements ThumbnailedElement
                 WHERE prop='cterms'";
 
         $this->cterms = $dom_cterms->saveXML();
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) save cterms l=%s\n", __FILE__, __LINE__, strlen($this->cterms)), FILE_APPEND);
         $params = [
             ':xml'  => $this->cterms,
             ':date' => $now
@@ -1212,7 +1211,6 @@ class databox extends base implements ThumbnailedElement
 
     public function clearCandidates()
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) clearCandidates\n", __FILE__, __LINE__), FILE_APPEND);
         try {
             $domct = $this->get_dom_cterms();
 
