@@ -178,6 +178,7 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
 
 var userInfoIsVisible = false;
@@ -377,6 +378,8 @@ function openDialog(el, event) {
                //submit documents
             },
             "CANCEL": function() {
+                resetValidation();
+                toggleValidationButton();
                 $(this).dialog("close");
             }
         },
@@ -427,6 +430,21 @@ function createValidationTable() {
 
 }
 
+function resetValidation() {
+    var dialog = p4.Dialog.get(1);
+    $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
+        var elementId = $(n).find('input[name=order_element_id]').val();
+        var found = _.where(elementsForValidation, {elementId: elementId});
+        if(found.length > 0) {
+            $(n).removeClass('waitingForValidation');
+            $(n)[0].innerHTML = found[0].element[0].innerHTML;
+            updateButtonStatus($(n));
+        }
+    });
+    readyForValidation = false;
+    elementsForValidation = [];
+}
+
 function updateValidation(order_id, newState) {
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
@@ -434,25 +452,29 @@ function updateValidation(order_id, newState) {
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
-            order.elementIds = $(n).find('input[name=order_element_id]').val();
+            order.elementId = $(n).find('input[name=order_element_id]').val();
+            order.element = $(n).clone( true );
             order.oldState = 'selectable';
             order.newState = newState;
             elementsForValidation.push(order);
-            $(n).addClass('waitingForValidation');
+            $(n).toggleClass('waitingForValidation');
+            $(n).toggleClass('selected');
             updateButtonStatus($(n));
-            updateItemStatus($(n));
+            updateItemStatus($(n), 'waitingForValidation');
         }
         if($(n).hasClass('clicked') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
-            order.elementIds = $(n).find('input[name=order_element_id]').val();
+            order.elementId = $(n).find('input[name=order_element_id]').val();
+            order.element = $(n).clone( true );
             order.oldState = 'denied';
             order.newState = newState;
             elementsForValidation.push(order);
-            $(n).addClass('waitingForValidation');
+            $(n).toggleClass('waitingForValidation');
+            $(n).toggleClass('clicked');
             updateButtonStatus($(n));
-            updateItemStatus($(n));
+            updateItemStatus($(n), 'waitingForValidation');
         }
     });
 
@@ -463,6 +485,8 @@ function updateValidation(order_id, newState) {
 function toggleValidationButton() {
     if(readyForValidation) {
         $('button.validate').show();
+    }else {
+        $('button.validate').hide();
     }
 }
 
@@ -627,7 +651,7 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
-function updateItemStatus(element) {
+function updateItemStatus(element, type) {
     element.find('td:first-child').empty();
     element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
 }
