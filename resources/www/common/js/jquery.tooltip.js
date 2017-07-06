@@ -256,7 +256,7 @@
             var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
 
             // get image or video original dimensions
-            var recordWidth = 260;
+            var recordWidth = 400;
             var recordHeight = 0;
             var tooltipVerticalOffset = 75;
             var tooltipHorizontalOffset = 35;
@@ -312,7 +312,7 @@
             }
             else {
                 // handle captions
-                recordWidth = parseInt($selector.find('.popover')[0].style.width, 10);
+                recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
                 var contentHeight = $selector.height();
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
