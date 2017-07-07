@@ -447,12 +447,12 @@ function createValidationTable() {
 
     if(validatedArray.length > 0) {
         var html = '';
-        html += '<p>Vous avez validé ' + (validatedArray.length == 1 ? validatedArray.length + ' item' :  validatedArray.length + ' items') + '</p>';
+        html += '<h5>Vous avez validé ' + (validatedArray.length == 1 ? validatedArray.length + ' item' :  validatedArray.length + ' items') + '</h5>';
         html += '<table class="validation-table">';
         _.each(validatedArray, function(elem) {
             html += '<tr>';
-            html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
-            html += '<td>' + elem.elementTitle[0].outerHTML + '</td>';
+            html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
+            html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
             html += '</tr>';
         });
         html += '</table>';
@@ -461,12 +461,12 @@ function createValidationTable() {
 
     if(deniedArray.length > 0) {
         var html = '';
-        html += '<p>Vous avez refusé ' + (deniedArray.length == 1 ? deniedArray.length + ' item' :  deniedArray.length + ' items') + '</p>';
+        html += '<h5>Vous avez refusé ' + (deniedArray.length == 1 ? deniedArray.length + ' item' :  deniedArray.length + ' items') + '</h5>';
         html += '<table class="validation-table">';
         _.each(deniedArray, function(elem) {
             html += '<tr>';
-            html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
-            html += '<td>' + elem.elementTitle[0].outerHTML + '</td>';
+            html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
+            html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
             html += '</tr>';
         });
         html += '</table>';
