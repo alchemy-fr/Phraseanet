@@ -30,6 +30,11 @@ class IndexManipulateCommand extends Command
         'ASC',
         'DESC'
     ];
+    const ORDER_LIMIT_TYPE = [
+        'DAY',
+        'MINUTE',
+        'HOUR'
+    ];
 
     protected function configure()
     {
@@ -47,7 +52,8 @@ class IndexManipulateCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'index name', null)
             ->addOption('host', null, InputOption::VALUE_REQUIRED, 'host', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'port', null)
-            ->addOption('order', null, InputOption::VALUE_REQUIRED, 'order (record_id|updated_on)[.asc|.desc]', null)
+            ->addOption('order', null, InputOption::VALUE_OPTIONAL, 'order (record_id|updated_on)[.asc|.desc]', null)
+            ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'limit (day|hour|minute|).(1|n)', null)
             ->addOption(
                 'databox_id',
                 null,
@@ -103,6 +109,27 @@ class IndexManipulateCommand extends Command
                 }
             }else{
                 throw new RuntimeException($this->suggestionMessage());
+            }
+        }
+        if($input->getOption('limit')){
+            $limit = explode('.', $input->getOption('limit'));
+
+            $limitNumberParameter = count($limit);
+            if($limitNumberParameter != 2){
+                throw new RuntimeException($this->suggestionMessage('limit'));
+            }
+
+            list($populateLimitType,$populateLimitDuration) = $limit;
+            if(!in_array(strtoupper($populateLimitType),self::ORDER_LIMIT_TYPE) || is_int($populateLimitDuration)){
+                throw new RuntimeException($this->suggestionMessage('limit'));
+            }
+
+            try{
+                $options->setPopulateLimitType($populateLimitType);
+                $options->setPopulateLimitDuration($populateLimitDuration);
+
+            }catch(\Exception $e){
+                throw new RuntimeException($this->suggestionMessage('limit'));
             }
 
         }
@@ -183,11 +210,22 @@ class IndexManipulateCommand extends Command
     }
 
     /**
-     * @return string       suggestion_message
+     * @param string $type
+     * @return string
      */
-    private function suggestionMessage()
+    private function suggestionMessage($type = 'order')
     {
-        $suggestion = 'Bad paramaters value for --order retry with : ('.$this->transformMessage(self::ORDER_COLUMN).')['.$this->transformMessage(self::ORDER_DIRECTION).']';
+        $suggestion = 'Bad paramaters value for --'.$type.' retry with : (';
+
+        switch ($type){
+            case 'order':
+                $suggestion .= $this->transformMessage(self::ORDER_COLUMN).')['.$this->transformMessage(self::ORDER_DIRECTION).']';
+                break;
+            case 'limit':
+                $suggestion .= $this->transformMessage(self::ORDER_LIMIT_TYPE).').[1..n]';
+                break;
+        }
+
 
         return $suggestion;
     }
@@ -199,13 +237,12 @@ class IndexManipulateCommand extends Command
     private function transformMessage(array $type)
     {
         switch ($type){
-            case self::ORDER_COLUMN:
-                $typeTransformer = strtolower(implode('|',$type));
-                break;
             case self::ORDER_DIRECTION:
                 $directionTransform = array_map(function($item) { return "." . $item; },$type);
                 $typeTransformer = strtolower(implode('|', $directionTransform));
                 break;
+            default:
+                $typeTransformer = strtolower(implode('|',$type));
         }
 
         return $typeTransformer;

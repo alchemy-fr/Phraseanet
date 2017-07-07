@@ -140,6 +140,7 @@ class Fetcher
                  . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
                  . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
+                 . $this->options->getPopulateLimitAsSQL()
                  . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL()
                  . " LIMIT :offset, :limit";
 
