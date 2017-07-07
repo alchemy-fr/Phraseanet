@@ -462,7 +462,7 @@ function createValidationTable() {
     if(deniedArray.length > 0) {
         var html = '';
         html += '<p>Vous avez refusé ' + (deniedArray.length == 1 ? deniedArray.length + ' item' :  deniedArray.length + ' items') + '</p>';
-        html += '<table>';
+        html += '<table class="validation-table">';
         _.each(deniedArray, function(elem) {
             html += '<tr>';
             html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
@@ -482,17 +482,14 @@ function resetValidation() {
         var found = _.where(elementsForValidation, {elementId: elementId});
         if(found.length > 0) {
             $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+            //replace content or row with original content
             $(n)[0].innerHTML = found[0].element[0].innerHTML;
-            var dialog = p4.Dialog.get(1);
-            var elementArrayType = [];
-            $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
-                elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
-            });
-            updateButtonStatus(elementArrayType);
         }
+        updateButtonStatus($(n).attr('class').split(/\s+/));
     });
     readyForValidation = false;
     elementsForValidation = [];
+    renderOrderDetailView(0);
 }
 
 function updateValidation(newState) {
@@ -500,40 +497,32 @@ function updateValidation(newState) {
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
         if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
             && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
-            var order = {};
-            order.elementTitle = $(n).find('span');
-            order.elementPreview = $(n).find('.order_wrapper');
-            order.elementId = $(n).find('input[name=order_element_id]').val();
-            order.element = $(n).clone( true );
-            order.oldState = ELEMENT_TYPE.SELECTABLE;
-            order.newState = newState;
-            elementsForValidation.push(order);
-            $(n).toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-            $(n).toggleClass(ELEMENT_TYPE.SELECTED);
-            $(n).find('td:first-child').empty();
-            $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-            updateButtonStatus($(n).attr('class').split(/\s+/));
+            createItemForValidation($(n), ELEMENT_TYPE.SELECTABLE, newState);
         }
         else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && $(n).hasClass(ELEMENT_TYPE.DENIED)
             && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
-            var order = {};
-            order.elementTitle = $(n).find('span');
-            order.elementPreview = $(n).find('.order_wrapper');
-            order.elementId = $(n).find('input[name=order_element_id]').val();
-            order.element = $(n).clone( true );
-            order.oldState = ELEMENT_TYPE.DENIED;
-            order.newState = newState;
-            elementsForValidation.push(order);
-            $(n).toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-            $(n).toggleClass(ELEMENT_TYPE.SELECTED);
-            $(n).find('td:first-child').empty();
-            $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-            updateButtonStatus($(n).attr('class').split(/\s+/));
+            createItemForValidation($(n), ELEMENT_TYPE.DENIED, newState);
         }
     });
 
     readyForValidation = true;
     toggleValidationButton();
+}
+
+function createItemForValidation(element, oldState, newState) {
+    var order = {};
+    order.elementTitle = element.find('span');
+    order.elementPreview = element.find('.order_wrapper');
+    order.elementId = element.find('input[name=order_element_id]').val();
+    order.element = element.clone( true );
+    order.oldState = oldState;
+    order.newState = newState;
+    elementsForValidation.push(order);
+    element.toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+    element.toggleClass(ELEMENT_TYPE.SELECTED);
+    element.find('td:first-child').empty();
+    element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
+    updateButtonStatus(element.attr('class').split(/\s+/));
 }
 
 function toggleValidationButton() {
