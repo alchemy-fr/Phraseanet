@@ -188,6 +188,15 @@ var itemCount = 0;
 var elementsForValidation = [];
 var readyForValidation = false;
 
+const ELEMENT_TYPE = {
+    VALIDATED: 'validated',
+    DENIED: 'denied',
+    SELECTABLE: 'selectable',
+    SELECTED: 'selected',
+    CLICKED: 'clicked',
+    WAITINGFORVALIDATION: 'waitingForValidation'
+}
+
 $(document).ready(function(){
 
     if ($('#notification_box').is(':visible')) {
@@ -214,44 +223,44 @@ $(document).ready(function(){
 
         //if unselectable item is clicked for preview, unselected it
         if($('.order_list .clicked', dialog.getDomElement()).length>0){
-            $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
+            $('.order_list .clicked', dialog.getDomElement()).removeClass(ELEMENT_TYPE.CLICKED);
             itemCount--;
         }
 
         if(is_ctrl_key(event))
         {
-            if(!$this.hasClass('selectable')) {
+            if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
                 return;
             }
-            if($this.hasClass('selected')) {
-                $this.removeClass('selected');
+            if($this.hasClass(ELEMENT_TYPE.SELECTED)) {
+                $this.removeClass(ELEMENT_TYPE.SELECTED);
                 itemCount--;
             } else {
-                $this.addClass('selected');
+                $this.addClass(ELEMENT_TYPE.SELECTED);
                 itemCount++;
             }
 
         }
         else if(is_shift_key(event))
         {
-            if(!$this.hasClass('selectable')) {
+            if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
                 return;
             }
             var currentIndex = $this.index('.order_list .order_row');
             var prevIndex = lastSelectedRow.index('.order_list .order_row');
-            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
+            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
             itemCount = 0;
             selectRowsBetweenIndexes([prevIndex, currentIndex])
         }
         else
         {
-            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass('selected');
-            $('.order_list .clicked', dialog.getDomElement()).removeClass('clicked');
-            if($this.hasClass('selectable')) {
-                $this.addClass('selected');
+            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
+            $('.order_list .clicked', dialog.getDomElement()).removeClass(ELEMENT_TYPE.CLICKED);
+            if($this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                $this.addClass(ELEMENT_TYPE.SELECTED);
                 lastSelectedRow = $this;
             }else {
-                $this.addClass('clicked');
+                $this.addClass(ELEMENT_TYPE.CLICKED);
             }
             itemCount = 1;
         }
@@ -268,8 +277,8 @@ $(document).ready(function(){
             return a - b;
         });
         for (var i = indexes[0]; i <= indexes[1]; i++) {
-            if ($(trs[i]).hasClass('selectable')) {
-                $(trs[i]).addClass('selected');
+            if ($(trs[i]).hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                $(trs[i]).addClass(ELEMENT_TYPE.SELECTED);
                 itemCount++;
             }
         }
@@ -283,12 +292,12 @@ $(document).ready(function(){
     });
 
     $('button.send', dialog.getDomElement()).bind('click',function(){
-        updateValidation('validated');
+        updateValidation(ELEMENT_TYPE.VALIDATED);
         //send_documents(order_id);
     });
 
     $('button.deny', dialog.getDomElement()).bind('click',function(){
-        updateValidation('denied');
+        updateValidation(ELEMENT_TYPE.DENIED);
         //deny_documents(order_id);
     });
 
@@ -399,19 +408,19 @@ function openDialog(el, event) {
 function submitDocuments() {
     var order_id = $('input[name=order_id]').val();
     var validatedArrayNoForceIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === 'validated' && elem.oldState !== 'denied';
+        return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState !== ELEMENT_TYPE.DENIED;
     }).map(function(elem) {
         return elem.elementId;
     });
 
     var validatedArrayWithForceIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === 'validated' && elem.oldState === 'denied';
+        return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState === ELEMENT_TYPE.DENIED;
     }).map(function(elem) {
         return elem.elementId;
     });
 
     var deniedArrayIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === 'denied';
+        return elem.newState === ELEMENT_TYPE.DENIED;
     }).map(function(elem) {
         return elem.elementId;
     });
@@ -430,10 +439,10 @@ function submitDocuments() {
 function createValidationTable() {
     $('.validation-content').empty();
     var validatedArray = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === 'validated';
+        return elem.newState === ELEMENT_TYPE.VALIDATED;
     });
     var deniedArray = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === 'denied';
+        return elem.newState === ELEMENT_TYPE.DENIED;
     });
 
     if(validatedArray.length > 0) {
@@ -472,7 +481,7 @@ function resetValidation() {
         var elementId = $(n).find('input[name=order_element_id]').val();
         var found = _.where(elementsForValidation, {elementId: elementId});
         if(found.length > 0) {
-            $(n).removeClass('waitingForValidation');
+            $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
             $(n)[0].innerHTML = found[0].element[0].innerHTML;
             var dialog = p4.Dialog.get(1);
             var elementArrayType = [];
@@ -489,32 +498,34 @@ function resetValidation() {
 function updateValidation(newState) {
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        if($(n).hasClass('selected') && !$(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
+        if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
+            && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
             order.elementId = $(n).find('input[name=order_element_id]').val();
             order.element = $(n).clone( true );
-            order.oldState = 'selectable';
+            order.oldState = ELEMENT_TYPE.SELECTABLE;
             order.newState = newState;
             elementsForValidation.push(order);
-            $(n).toggleClass('waitingForValidation');
-            $(n).toggleClass('selected');
+            $(n).toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+            $(n).toggleClass(ELEMENT_TYPE.SELECTED);
             $(n).find('td:first-child').empty();
             $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
             updateButtonStatus($(n).attr('class').split(/\s+/));
         }
-        else if($(n).hasClass('selected') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
+        else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && $(n).hasClass(ELEMENT_TYPE.DENIED)
+            && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
             order.elementId = $(n).find('input[name=order_element_id]').val();
             order.element = $(n).clone( true );
-            order.oldState = 'denied';
+            order.oldState = ELEMENT_TYPE.DENIED;
             order.newState = newState;
             elementsForValidation.push(order);
-            $(n).toggleClass('waitingForValidation');
-            $(n).toggleClass('selected');
+            $(n).toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+            $(n).toggleClass(ELEMENT_TYPE.SELECTED);
             $(n).find('td:first-child').empty();
             $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
             updateButtonStatus($(n).attr('class').split(/\s+/));
@@ -538,12 +549,12 @@ function checkAll(element) {
     var selectable =[];
     $('.table-order .order_row').each(function(){
         var el = $(this);
-        if(element.checked && el.hasClass('selectable')){
-            el.addClass('selected');
+        if(element.checked && el.hasClass(ELEMENT_TYPE.SELECTABLE) && !el.hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
+            el.addClass(ELEMENT_TYPE.SELECTED);
             itemCount++;
             selectable.push(el);
         }else {
-            el.removeClass('selected');
+            el.removeClass(ELEMENT_TYPE.SELECTED);
         }
     });
     //load preview for single item selected
@@ -734,12 +745,16 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
+/* *
+* function to update status of send and deny button
+* params - array of type for each button selected
+*/
 function updateButtonStatus(elementArrayType) {
-    if(_.contains(elementArrayType, 'validated') || _.contains(elementArrayType, 'waitingForValidation')) {
+    if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED) || _.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
         $('#order-action button.send').prop('disabled', true);
         $('#order-action button.deny').hide();
         $('#order-action span.action-text').hide();
-    }else if (_.contains(elementArrayType, 'denied')) {
+    }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
         $('#order-action button.send').prop('disabled', false);
         $('#order-action button.deny').hide();
         $('#order-action span.action-text').show();
