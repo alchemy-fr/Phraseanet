@@ -149,7 +149,7 @@ class SubdefsController extends Controller
                         break;
                 }
 
-                $subdefs->set_subdef($group, $name, $class, $preset, false, $options, []);
+                $subdefs->set_subdef($group, $name, $class, false, $options, [], $preset);
             }
 
         } else {
@@ -191,7 +191,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $preset, $downloadable, $options, $labels);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $preset);
             }
         }
 
