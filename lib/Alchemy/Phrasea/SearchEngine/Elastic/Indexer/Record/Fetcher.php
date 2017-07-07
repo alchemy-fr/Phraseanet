@@ -20,10 +20,12 @@ use databox;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 
 class Fetcher
 {
     private $databox;
+    private $options;
     private $connection;
     private $statement;
     private $delegate;
@@ -36,9 +38,10 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(databox $databox, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
+        $this->options = $options;
         $this->connection = $databox->get_connection();;
         $this->hydrators  = $hydrators;
         $this->delegate   = $delegate ?: new FetcherDelegate();
@@ -124,6 +127,7 @@ class Fetcher
     private function getExecutedStatement()
     {
         if (!$this->statement) {
+
             $sql = "SELECT r.record_id"
                  . ", r.coll_id AS collection_id"
                  . ", c.asciiname AS collection_name"
@@ -136,7 +140,7 @@ class Fetcher
                  . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
                  . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
-                 . " ORDER BY r.record_id DESC"
+                 . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL()
                  . " LIMIT :offset, :limit";
 
             $where = $this->delegate->buildWhereClause();

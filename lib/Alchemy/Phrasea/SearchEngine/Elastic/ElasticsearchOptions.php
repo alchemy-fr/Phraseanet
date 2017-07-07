@@ -27,7 +27,15 @@ class ElasticsearchOptions
     private $highlight;
     /** @var int */
     private $maxResultWindow;
+    /** @var string */
+    private $populateOrder;
+    /** @var string */
+    private $populateDirection;
 
+    const POPULATE_ORDER_RID  = "RECORD_ID";
+    const POPULATE_ORDER_MODDATE = "UPDATED_ON";
+    const POPULATE_DIRECTION_ASC  = "ASC";
+    const POPULATE_DIRECTION_DESC = "DESC";
     /**
      * Factory method to hydrate an instance from serialized options
      *
@@ -45,6 +53,8 @@ class ElasticsearchOptions
             'minScore' => 4,
             'highlight' => true,
             'max_result_window' => 500000,
+            'populate_order' => self::POPULATE_ORDER_RID,
+            'populate_direction' => self::POPULATE_DIRECTION_DESC,
         ], $options);
 
         $self = new self();
@@ -56,6 +66,8 @@ class ElasticsearchOptions
         $self->setMinScore($options['minScore']);
         $self->setHighlight($options['highlight']);
         $self->setMaxResultWindow($options['max_result_window']);
+        $self->setPopulateOrder($options['populate_order']);
+        $self->setPopulateDirection($options['populate_direction']);
 
         return $self;
     }
@@ -74,7 +86,63 @@ class ElasticsearchOptions
             'minScore' => $this->minScore,
             'highlight' => $this->highlight,
             'maxResultWindow' => $this->maxResultWindow,
+            'populate_order' => $this->populateOrder,
+            'populate_direction' => $this->populateDirection,
         ];
+    }
+
+    /**
+     * @param string $order
+     * @return bool returns false if order is invalid
+     */
+    public function setPopulateOrder($order)
+    {
+        $order = strtoupper($order);
+        if(in_array($order, [self::POPULATE_ORDER_RID, self::POPULATE_ORDER_MODDATE])) {
+            $this->populateOrder = $order;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $direction
+     * @return bool returns false if direction is invalid
+     */
+    public function setPopulateDirection($direction)
+    {
+        $direction = strtoupper($direction);
+        if(in_array($direction, [self::POPULATE_DIRECTION_DESC, self::POPULATE_DIRECTION_ASC])) {
+            $this->populateDirection = $direction;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopulateOrderAsSQL()
+    {
+        static $orderAsColumn = [
+            self::POPULATE_ORDER_RID     => "`record_id`",
+            self::POPULATE_ORDER_MODDATE => "`moddate`",
+        ];
+        // populateOrder IS one of the keys (ensured by setPopulateOrder)
+        return $orderAsColumn[$this->populateOrder];
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopulateDirectionAsSQL()
+    {
+        // already a SQL word
+        return $this->populateDirection;
     }
 
     /**

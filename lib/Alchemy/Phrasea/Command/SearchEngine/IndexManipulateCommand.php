@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexManipulateCommand extends Command
 {
+    const ORDER_COLUMN = [
+        'updated_on',
+        'record_id'
+        ];
+
+    const ORDER_DIRECTION = [
+        'ASC',
+        'DESC'
+    ];
+
     protected function configure()
     {
         /** @var Indexer $indexer */
@@ -36,6 +47,7 @@ class IndexManipulateCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'index name', null)
             ->addOption('host', null, InputOption::VALUE_REQUIRED, 'host', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'port', null)
+            ->addOption('order', null, InputOption::VALUE_REQUIRED, 'order (record_id|updated_on)[.asc|.desc]', null)
             ->addOption(
                 'databox_id',
                 null,
@@ -59,6 +71,40 @@ class IndexManipulateCommand extends Command
         }
         if($input->getOption('port')) {
             $options->setPort($input->getOption('port'));
+        }
+        if($input->getOption('order')) {
+            $order = explode('.', $input->getOption('order'));
+
+            list($populateOrder) = $order;
+            if(!in_array($populateOrder,self::ORDER_COLUMN)){
+               throw new RuntimeException($this->suggestionMessage());
+            }
+
+            $ordersNumberParameter = count($order);
+            if ($ordersNumberParameter == 2) {
+                list($populateOrder,$populateDirection) = $order;
+
+                if(!in_array(strtoupper($populateDirection),self::ORDER_DIRECTION)){
+                    throw new RuntimeException($this->suggestionMessage());
+                }
+
+                try{
+                    $options->setPopulateDirection($populateDirection);
+                    $options->setPopulateOrder($populateOrder);
+                }catch(\Exception $e){
+                    throw new RuntimeException($this->suggestionMessage());
+                }
+
+            }elseif ($ordersNumberParameter == 1){
+                try{
+                    $options->setPopulateOrder($populateOrder);
+                }catch(\Exception $e){
+                    throw new RuntimeException($this->suggestionMessage());
+                }
+            }else{
+                throw new RuntimeException($this->suggestionMessage());
+            }
+
         }
 
         $idx = sprintf("%s@%s:%s", $options->getIndexName(), $options->getHost(), $options->getPort());
@@ -134,5 +180,34 @@ class IndexManipulateCommand extends Command
                 $indexer->replaceIndex($newIndexName, $newAliasName);
             }
         }
+    }
+
+    /**
+     * @return string       suggestion_message
+     */
+    private function suggestionMessage()
+    {
+        $suggestion = 'Bad paramaters value for --order retry with : ('.$this->transformMessage(self::ORDER_COLUMN).')['.$this->transformMessage(self::ORDER_DIRECTION).']';
+
+        return $suggestion;
+    }
+
+    /**
+     * @param array $type   ORDER_COLUMN|ORDER_DIRECTION
+     * @return string
+     */
+    private function transformMessage(array $type)
+    {
+        switch ($type){
+            case self::ORDER_COLUMN:
+                $typeTransformer = strtolower(implode('|',$type));
+                break;
+            case self::ORDER_DIRECTION:
+                $directionTransform = array_map(function($item) { return "." . $item; },$type);
+                $typeTransformer = strtolower(implode('|', $directionTransform));
+                break;
+        }
+
+        return $typeTransformer;
     }
 }
