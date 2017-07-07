@@ -84,7 +84,7 @@
                 </td>
             </tr>
         </table>
-        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>Validate</button>
+        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
@@ -209,7 +209,14 @@ $(document).ready(function(){
     var lastSelectedRow;
 ;
     $('.order_launcher', dialog.getDomElement()).bind('click',function(){
-        dialog.load('{{ path('prod_orders') }}')
+        if(readyForValidation) {
+            if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
+                dialog.load('{{ path('prod_orders') }}');
+            }
+        }else {
+            dialog.load('{{ path('prod_orders') }}');
+        }
+
     });
 
     $('.order_list .order_row', dialog.getDomElement()).bind('click',function(event){
@@ -387,14 +394,16 @@ function openDialog(el, event) {
         draggable: false,
         stack: false,
         buttons: {
-            "SUBMIT": function() {
+            "{{ 'order-manager::order-item: submit' |trans }}": function() {
                //submit documents
                 submitDocuments();
             },
-            "CANCEL": function() {
-                resetValidation();
-                toggleValidationButton();
-                $(this).dialog("close");
+            "{{ 'order-manager::order-item: reset' |trans }}": function() {
+                if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
+                    resetValidation();
+                    toggleValidationButton();
+                    $(this).dialog("close");
+                }
             }
         },
         overlay: {
@@ -447,7 +456,7 @@ function createValidationTable() {
 
     if(validatedArray.length > 0) {
         var html = '';
-        html += '<h5>Vous avez validé ' + (validatedArray.length == 1 ? validatedArray.length + ' item' :  validatedArray.length + ' items') + '</h5>';
+        html += '<h5>' + '{{ 'order-manager::order-item: you-have-validated' |trans }}' + " " + (validatedArray.length == 1 ? validatedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  validatedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
         html += '<table class="validation-table">';
         _.each(validatedArray, function(elem) {
             html += '<tr>';
@@ -461,7 +470,7 @@ function createValidationTable() {
 
     if(deniedArray.length > 0) {
         var html = '';
-        html += '<h5>Vous avez refusé ' + (deniedArray.length == 1 ? deniedArray.length + ' item' :  deniedArray.length + ' items') + '</h5>';
+        html += '<h5>' + '{{ 'order-manager::order-item: you-have-denied' |trans }}' + " " + (deniedArray.length == 1 ? deniedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  deniedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
         html += '<table class="validation-table">';
         _.each(deniedArray, function(elem) {
             html += '<tr>';
