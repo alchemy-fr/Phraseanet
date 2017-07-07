@@ -8,10 +8,9 @@
     <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div style="display:none;position:relative;" id="validate_dialog" title="{{ 'order-manager::order-item:Validation' | trans }}" >
+<div style="display:none;position:relative;" id="validation_dialog" title="{{ 'order-manager::order-item:Validation' | trans }}" >
     <div class="box">
-        <div class="validation-item-box" style="float:left; width:100%;margin-top:20px;">
-
+        <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
         </div>
     </div>
 </div>
@@ -51,7 +50,7 @@
                     {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
             {#</div>#}
         </div>
-        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>Validate</button>
+
         <table class="table no-border">
             <tr>
                 <td>
@@ -85,6 +84,7 @@
                 </td>
             </tr>
         </table>
+        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>Validate</button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
@@ -195,7 +195,7 @@ $(document).ready(function(){
     }
 
     var dialog = p4.Dialog.get(1);
-    var order_id = $('input[name=order_id]').val();
+    //var order_id = $('input[name=order_id]').val();
     var trs = $('.order_list .order_row', dialog.getDomElement());
     var lastSelectedRow;
 ;
@@ -283,22 +283,24 @@ $(document).ready(function(){
     });
 
     $('button.send', dialog.getDomElement()).bind('click',function(){
-        updateValidation(order_id, 'validated');
+        updateValidation('validated');
         //send_documents(order_id);
     });
 
     $('button.deny', dialog.getDomElement()).bind('click',function(){
-        updateValidation(order_id, 'denied');
+        updateValidation('denied');
         //deny_documents(order_id);
     });
 
     $('.force_sender', dialog.getDomElement()).bind('click',function(){
         if(confirm(language.forceSendDocument))
         {
-            updateValidation(order_id, 'validated');
-//            var element_id = [];
-//            element_id.push($(this).closest('.order_wrapper').find('input[name=order_element_id]').val());
-//            do_send_documents(order_id, element_id, true);
+            //updateValidation('validated');
+            var element_id = [];
+            element_id.push($(this).closest('.order_row').find('input[name=order_element_id]').val());
+            var order_id = $('input[name=order_id]').val();
+            debugger;
+            do_send_documents(order_id, element_id, true);
         }
     });
 
@@ -363,14 +365,10 @@ $(document).ready(function(){
 });
 
 function openDialog(el, event) {
-    $("#validate_dialog").dialog({
+    $("#validation_dialog").dialog({
         open: function (event, ui) {
             $('.ui-dialog').css('z-index', 100000);
             $(".ui-widget-overlay").css('z-index', 100000);
-        },
-        close: function () {
-            resetValidation();
-            toggleValidationButton();
         },
         closeOnEscape: true,
         resizable: false,
@@ -382,8 +380,11 @@ function openDialog(el, event) {
         buttons: {
             "SUBMIT": function() {
                //submit documents
+                submitDocuments();
             },
             "CANCEL": function() {
+                resetValidation();
+                toggleValidationButton();
                 $(this).dialog("close");
             }
         },
@@ -395,8 +396,39 @@ function openDialog(el, event) {
     createValidationTable();
 }
 
+function submitDocuments() {
+    var order_id = $('input[name=order_id]').val();
+    var validatedArrayNoForceIds = _.filter(elementsForValidation, function(elem) {
+        return elem.newState === 'validated' && elem.oldState !== 'denied';
+    }).map(function(elem) {
+        return elem.elementId;
+    });
+
+    var validatedArrayWithForceIds = _.filter(elementsForValidation, function(elem) {
+        return elem.newState === 'validated' && elem.oldState === 'denied';
+    }).map(function(elem) {
+        return elem.elementId;
+    });
+
+    var deniedArrayIds = _.filter(elementsForValidation, function(elem) {
+        return elem.newState === 'denied';
+    }).map(function(elem) {
+        return elem.elementId;
+    });
+
+    if(validatedArrayNoForceIds.length > 0) {
+        do_send_documents(order_id, validatedArrayNoForceIds, false);
+    }
+    if(validatedArrayWithForceIds.length > 0) {
+        do_send_documents(order_id, validatedArrayWithForceIds, true);
+    }
+    if(deniedArrayIds.length > 0) {
+        do_deny_documents(order_id, deniedArrayIds);
+    }
+}
+
 function createValidationTable() {
-    $('.validation-item-box').empty();
+    $('.validation-content').empty();
     var validatedArray = _.filter(elementsForValidation, function(elem) {
         return elem.newState === 'validated';
     });
@@ -407,7 +439,7 @@ function createValidationTable() {
     if(validatedArray.length > 0) {
         var html = '';
         html += '<p>Vous avez validé ' + (validatedArray.length == 1 ? validatedArray.length + ' item' :  validatedArray.length + ' items') + '</p>';
-        html += '<table>';
+        html += '<table class="validation-table">';
         _.each(validatedArray, function(elem) {
             html += '<tr>';
             html += '<td>' + elem.elementPreview[0].outerHTML + '</td>';
@@ -415,7 +447,7 @@ function createValidationTable() {
             html += '</tr>';
         });
         html += '</table>';
-        $('.validation-item-box').append(html);
+        $('.validation-content').append(html);
     }
 
     if(deniedArray.length > 0) {
@@ -429,7 +461,7 @@ function createValidationTable() {
             html += '</tr>';
         });
         html += '</table>';
-        $('.validation-item-box').append(html);
+        $('.validation-content').append(html);
     }
 
 }
@@ -442,17 +474,22 @@ function resetValidation() {
         if(found.length > 0) {
             $(n).removeClass('waitingForValidation');
             $(n)[0].innerHTML = found[0].element[0].innerHTML;
-            updateButtonStatus($(n));
+            var dialog = p4.Dialog.get(1);
+            var elementArrayType = [];
+            $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
+                elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
+            });
+            updateButtonStatus(elementArrayType);
         }
     });
     readyForValidation = false;
     elementsForValidation = [];
 }
 
-function updateValidation(order_id, newState) {
+function updateValidation(newState) {
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        if($(n).hasClass('selectable') && $(n).hasClass('selected') && !$(n).hasClass('waitingForValidation')){
+        if($(n).hasClass('selected') && !$(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
@@ -465,9 +502,9 @@ function updateValidation(order_id, newState) {
             $(n).toggleClass('selected');
             $(n).find('td:first-child').empty();
             $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-            updateButtonStatus($(n));
+            updateButtonStatus($(n).attr('class').split(/\s+/));
         }
-        if($(n).hasClass('clicked') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
+        else if($(n).hasClass('selected') && $(n).hasClass('denied') && !$(n).hasClass('waitingForValidation')){
             var order = {};
             order.elementTitle = $(n).find('span');
             order.elementPreview = $(n).find('.order_wrapper');
@@ -477,10 +514,10 @@ function updateValidation(order_id, newState) {
             order.newState = newState;
             elementsForValidation.push(order);
             $(n).toggleClass('waitingForValidation');
-            $(n).toggleClass('clicked');
+            $(n).toggleClass('selected');
             $(n).find('td:first-child').empty();
             $(n).find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-            updateButtonStatus($(n));
+            updateButtonStatus($(n).attr('class').split(/\s+/));
         }
     });
 
@@ -541,6 +578,40 @@ function do_send_documents(order_id, elements_ids, force)
             }
 
             dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=send');
+        },
+        error: function(){
+            $('button.deny, button.send', cont).prop('disabled', false);
+            $('.activity_indicator', cont).hide();
+        },
+        timeout: function(){
+            $('button.deny, button.send', cont).prop('disabled', false);
+            $('.activity_indicator', cont).hide();
+        }
+    });
+}
+
+function do_deny_documents(order_id, element_ids) {
+    var dialog = p4.Dialog.get(1);
+    var cont = dialog.getDomElement();
+    $('button.deny, button.send', cont).prop('disabled', true);
+    $('.activity_indicator', cont).show();
+
+    $.ajax({
+        type: "POST",
+        url: "../prod/order/"+ order_id +"/deny/",
+        dataType:'json',
+        data: {
+            'elements[]':elements_ids
+        },
+        success: function(data){
+            var success = '0';
+
+            if(data.success)
+            {
+                success = '1';
+            }
+
+            dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=deny');
         },
         error: function(){
             $('button.deny, button.send', cont).prop('disabled', false);
@@ -646,10 +717,11 @@ function renderOrderDetailView(countSelected) {
         $('.external-order-action').hide();
         $('#wrapper-multiple').show();
         var dialog = p4.Dialog.get(1);
-        debugger;
+        var elementArrayType = [];
         $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
-            updateButtonStatus($(n));
+            elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
         });
+        updateButtonStatus(elementArrayType);
     }else if(countSelected == 1) {
         $('#wrapper-padding').show();
         $('.external-order-action').show();
@@ -662,12 +734,12 @@ function renderOrderDetailView(countSelected) {
     $('#preview-layout-multiple .title').html(countSelected);
 }
 
-function updateButtonStatus(element) {
-    if($(element).hasClass('validated') || $(element).hasClass('waitingForValidation')) {
+function updateButtonStatus(elementArrayType) {
+    if(_.contains(elementArrayType, 'validated') || _.contains(elementArrayType, 'waitingForValidation')) {
         $('#order-action button.send').prop('disabled', true);
         $('#order-action button.deny').hide();
         $('#order-action span.action-text').hide();
-    }else if($(element).hasClass('denied')) {
+    }else if (_.contains(elementArrayType, 'denied')) {
         $('#order-action button.send').prop('disabled', false);
         $('#order-action button.deny').hide();
         $('#order-action span.action-text').show();
@@ -681,7 +753,7 @@ function updateButtonStatus(element) {
 function loadPreviewAndCaption(elem) {
     $('#preview-layout').empty();
     $('#caption-layout').empty();
-    updateButtonStatus(elem);
+    updateButtonStatus(elem.attr('class').split(/\s+/));
     var elementids = elem.attr('elementids').split('_');
     var sbasId = elementids[0];
     var recordId = elementids[1];
