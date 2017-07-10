@@ -315,7 +315,6 @@ $(document).ready(function(){
             var element_id = [];
             element_id.push($(this).closest('.order_row').find('input[name=order_element_id]').val());
             var order_id = $('input[name=order_id]').val();
-            debugger;
             do_send_documents(order_id, element_id, true);
         }
     });
@@ -435,15 +434,12 @@ function submitDocuments(dialogElem) {
     });
 
     if(validatedArrayNoForceIds.length > 0) {
-        console.log('send doc');
         do_send_documents(order_id, validatedArrayNoForceIds, false);
     }
     if(validatedArrayWithForceIds.length > 0) {
-        console.log('send doc force');
         do_send_documents(order_id, validatedArrayWithForceIds, true);
     }
     if(deniedArrayIds.length > 0) {
-        console.log('deny doc');
         do_deny_documents(order_id, deniedArrayIds);
     }
     dialogElem.dialog("close");
