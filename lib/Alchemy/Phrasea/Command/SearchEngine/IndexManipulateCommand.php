@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,6 +37,7 @@ class IndexManipulateCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'index name', null)
             ->addOption('host', null, InputOption::VALUE_REQUIRED, 'host', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'port', null)
+            ->addOption('order', null, InputOption::VALUE_REQUIRED, 'order (record_id|modification_date)[.asc|.desc]', null)
             ->addOption(
                 'databox_id',
                 null,
@@ -49,6 +51,7 @@ class IndexManipulateCommand extends Command
     {
         /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
+        /** @var ElasticsearchOptions $options */
         $options = $indexer->getIndex()->getOptions();
 
         if($input->getOption('name')) {
@@ -59,6 +62,22 @@ class IndexManipulateCommand extends Command
         }
         if($input->getOption('port')) {
             $options->setPort($input->getOption('port'));
+        }
+
+        if($input->getOption('order')) {
+            $order = explode('.', $input->getOption('order'));
+            if (!$options->setPopulateOrder($order[0])) {
+                $output->writeln(sprintf('<error>bad order value for --order</error>'));
+
+                return 1;
+            }
+            if (count($order) > 1) {
+                if (!$options->setPopulateDirection($order[1])) {
+                    $output->writeln(sprintf('<error>bad direction value for --order</error>'));
+
+                    return 1;
+                }
+            }
         }
 
         $idx = sprintf("%s@%s:%s", $options->getIndexName(), $options->getHost(), $options->getPort());
