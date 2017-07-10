@@ -65,8 +65,8 @@ class ElasticsearchOptions
             'max_result_window' => 500000,
             'populate_order' => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
-            'populate_limit_type' => self::POPULATE_LIMIT_TYPE_DAY,
-            'populate_limit_duration' => self::POPULATE_LIMIT_DURATION,
+            'populate_limit_type' => null,
+            'populate_limit_duration' => null,
         ], $options);
 
         $self = new self();
@@ -183,6 +183,7 @@ class ElasticsearchOptions
     public function getPopulateLimitAsSQL()
     {
         if($this->populateLimitType){
+
             $where = "WHERE `updated_on` BETWEEN DATE_SUB(NOW(), INTERVAL ".$this->populateLimitDuration." ".strtoupper($this->populateLimitType).") AND NOW() ";
 
             return  $where;
