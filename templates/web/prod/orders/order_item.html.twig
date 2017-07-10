@@ -396,7 +396,7 @@ function openDialog(el, event) {
         buttons: {
             "{{ 'order-manager::order-item: submit' |trans }}": function() {
                //submit documents
-                submitDocuments();
+                submitDocuments($(this));
             },
             "{{ 'order-manager::order-item: reset' |trans }}": function() {
                 if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
@@ -414,7 +414,7 @@ function openDialog(el, event) {
     createValidationTable();
 }
 
-function submitDocuments() {
+function submitDocuments(dialogElem) {
     var order_id = $('input[name=order_id]').val();
     var validatedArrayNoForceIds = _.filter(elementsForValidation, function(elem) {
         return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState !== ELEMENT_TYPE.DENIED;
@@ -435,14 +435,18 @@ function submitDocuments() {
     });
 
     if(validatedArrayNoForceIds.length > 0) {
+        console.log('send doc');
         do_send_documents(order_id, validatedArrayNoForceIds, false);
     }
     if(validatedArrayWithForceIds.length > 0) {
+        console.log('send doc force');
         do_send_documents(order_id, validatedArrayWithForceIds, true);
     }
     if(deniedArrayIds.length > 0) {
+        console.log('deny doc');
         do_deny_documents(order_id, deniedArrayIds);
     }
+    dialogElem.dialog("close");
 }
 
 function createValidationTable() {
@@ -599,7 +603,7 @@ function do_send_documents(order_id, elements_ids, force)
     });
 }
 
-function do_deny_documents(order_id, element_ids) {
+function do_deny_documents(order_id, elements_ids) {
     var dialog = p4.Dialog.get(1);
     var cont = dialog.getDomElement();
     $('button.deny, button.send', cont).prop('disabled', true);
