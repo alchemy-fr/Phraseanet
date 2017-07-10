@@ -230,7 +230,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @return databox_subdefsStructure
      * @throws Exception
      */
-    public function set_subdef($group, $name, $class, $preset, $downloadable, $options, $labels)
+    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $preset = "Custom")
     {
         $dom_struct = $this->databox->get_dom_structure();
 
