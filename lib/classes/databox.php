@@ -267,6 +267,41 @@ class databox extends base implements ThumbnailedElement
     private $ord;
     /** @var string */
     private $viewname;
+    /** @var string */
+    private $orderType;
+    /** @var string */
+    private $limit;
+
+    /**
+     * @return string
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param string $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+    }
+    /**
+     * @return mixed
+     */
+    public function getOrderType()
+    {
+        return $this->orderType;
+    }
+
+    /**
+     * @param mixed $orderType
+     */
+    public function setOrderType($orderType)
+    {
+        $this->orderType = $orderType;
+    }
 
     /**
      * @param Application $app

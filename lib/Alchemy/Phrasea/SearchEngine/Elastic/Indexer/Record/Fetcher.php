@@ -124,6 +124,28 @@ class Fetcher
     private function getExecutedStatement()
     {
         if (!$this->statement) {
+            $where = '';
+            if($this->databox->getLimit()){
+                $limitParams = explode(",",$this->databox->getLimit());
+                if (count($limitParams) !== 2) {
+                    throw new \RuntimeException('An error into limit parameter.');
+                } else {
+                    list($intervalType, $intervalNumber) = $limitParams;
+                }
+                $where = "WHERE r.moddate BETWEEN DATE_SUB(NOW(), INTERVAL ".$intervalNumber." ".strtoupper($intervalType).") AND NOW() ";
+            }
+            if($this->databox->getOrderType()){
+                $orderParams = explode(",",$this->databox->getOrderType());
+                if (count($orderParams) !== 2) {
+                    throw new \RuntimeException('An error into order parameter.');
+                } else {
+                    list($orderColumn,$orderType) = $orderParams;
+                }
+                $orderBy = "ORDER BY ".$orderColumn." ".strtoupper($orderType);
+            }else{
+                $orderBy = "ORDER BY r.record_id DESC";
+            }
+
             $sql = "SELECT r.record_id"
                  . ", r.coll_id AS collection_id"
                  . ", c.asciiname AS collection_name"
@@ -136,7 +158,8 @@ class Fetcher
                  . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
                  . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
-                 . " ORDER BY r.record_id DESC"
+                 . $where
+                 . $orderBy
                  . " LIMIT :offset, :limit";
 
             $where = $this->delegate->buildWhereClause();

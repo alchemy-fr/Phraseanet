@@ -41,7 +41,9 @@ class IndexManipulateCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Only populate chosen databox'
-            );
+            )
+            ->addOption('order', null,InputOption::VALUE_OPTIONAL | InputArgument::IS_ARRAY,'Order',null)
+            ->addOption('limit', null,InputOption::VALUE_OPTIONAL | InputArgument::IS_ARRAY,'Limit populate by minute or hours or day',null);
 
     }
 
@@ -68,6 +70,9 @@ class IndexManipulateCommand extends Command
         $populate     = $input->getOption('populate');
         $temporary    = $input->getOption('temporary');
         $databoxes_id = $input->getOption('databox_id');
+        $order = $input->getOption('order');
+        $limit = $input->getOption('limit');
+
 
         if($temporary && (!$populate || $databoxes_id)) {
             $output->writeln(sprintf('<error>temporary must be used to populate all databoxes</error>', $idx));
@@ -82,8 +87,6 @@ class IndexManipulateCommand extends Command
             $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
         }
 
-        $indexExists = $indexer->indexExists();
-
         if ($create) {
             if($indexExists) {
                 $output->writeln(sprintf('<error>The search index "%s" already exists.</error>', $idx));
@@ -95,8 +98,6 @@ class IndexManipulateCommand extends Command
                 $output->writeln(sprintf('<info>Search index "%s" was created</info>', $idx));
             }
         }
-
-        $indexExists = $indexer->indexExists();
 
         if($populate) {
             if(!$indexExists) {
@@ -118,6 +119,8 @@ class IndexManipulateCommand extends Command
 
             foreach ($this->container->getDataboxes() as $databox) {
                 if (!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
+                    $databox->setOrderType($order);
+                    $databox->setLimit($limit);
                     $r = $indexer->populateIndex(Indexer::THESAURUS | Indexer::RECORDS, $databox, false); // , $temporary);
                     $output->writeln(sprintf(
                         "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
