@@ -231,7 +231,7 @@ class IndexManipulateCommand extends Command
     }
 
     /**
-     * @param array $type   ORDER_COLUMN|ORDER_DIRECTION
+     * @param array $type   ORDER_COLUMN|ORDER_DIRECTION|ORDER_LIMIT_TYPE
      * @return string
      */
     private function transformMessage(array $type)
