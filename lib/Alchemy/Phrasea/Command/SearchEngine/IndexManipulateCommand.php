@@ -21,20 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexManipulateCommand extends Command
 {
-    const ORDER_COLUMN = [
-        'updated_on',
-        'record_id'
-        ];
-
-    const ORDER_DIRECTION = [
-        'ASC',
-        'DESC'
-    ];
-    const ORDER_LIMIT_TYPE = [
-        'DAY',
-        'MINUTE',
-        'HOUR'
-    ];
+    const ORDER_COLUMN_UPDATE_ON = 'updated_on';
+    const ORDER_COLUMN_RECORD_ID = 'record_id';
+    const ORDER_DIRECTION_ASC    = 'ASC';
+    const ORDER_DIRECTION_DESC   = 'DESC';
+    const ORDER_LIMIT_TYPE_DAY   = 'DAY';
+    const ORDER_LIMIT_TYPE_MINUTE   = 'MINUTE';
+    const ORDER_LIMIT_TYPE_HOUR   = 'HOUR';
 
     protected function configure()
     {
@@ -82,7 +75,7 @@ class IndexManipulateCommand extends Command
             $order = explode('.', $input->getOption('order'));
 
             list($populateOrder) = $order;
-            if(!in_array($populateOrder,self::ORDER_COLUMN)){
+            if(!in_array($populateOrder,[self::ORDER_COLUMN_UPDATE_ON,self::ORDER_COLUMN_RECORD_ID])){
                throw new RuntimeException($this->suggestionMessage());
             }
 
@@ -90,7 +83,7 @@ class IndexManipulateCommand extends Command
             if ($ordersNumberParameter == 2) {
                 list($populateOrder,$populateDirection) = $order;
 
-                if(!in_array(strtoupper($populateDirection),self::ORDER_DIRECTION)){
+                if(!in_array(strtoupper($populateDirection),[self::ORDER_DIRECTION_ASC,self::ORDER_DIRECTION_DESC])){
                     throw new RuntimeException($this->suggestionMessage());
                 }
 
@@ -120,7 +113,7 @@ class IndexManipulateCommand extends Command
             }
 
             list($populateLimitType,$populateLimitDuration) = $limit;
-            if(!in_array(strtoupper($populateLimitType),self::ORDER_LIMIT_TYPE) || is_int($populateLimitDuration)){
+            if(!in_array(strtoupper($populateLimitType),[self::ORDER_LIMIT_TYPE_DAY,self::ORDER_LIMIT_TYPE_HOUR,self::ORDER_LIMIT_TYPE_MINUTE]) || is_int($populateLimitDuration)){
                 throw new RuntimeException($this->suggestionMessage('limit'));
             }
 
@@ -219,10 +212,10 @@ class IndexManipulateCommand extends Command
 
         switch ($type){
             case 'order':
-                $suggestion .= $this->transformMessage(self::ORDER_COLUMN).')['.$this->transformMessage(self::ORDER_DIRECTION).']';
+                $suggestion .= $this->transformMessage([self::ORDER_COLUMN_RECORD_ID,self::ORDER_COLUMN_UPDATE_ON]).')['.$this->transformMessage([self::ORDER_DIRECTION_DESC,self::ORDER_DIRECTION_ASC],'direction').']';
                 break;
             case 'limit':
-                $suggestion .= $this->transformMessage(self::ORDER_LIMIT_TYPE).').[1..n]';
+                $suggestion .= $this->transformMessage([self::ORDER_LIMIT_TYPE_DAY,self::ORDER_LIMIT_TYPE_MINUTE,self::ORDER_LIMIT_TYPE_HOUR]).').[1..n]';
                 break;
         }
 
@@ -234,10 +227,10 @@ class IndexManipulateCommand extends Command
      * @param array $type   ORDER_COLUMN|ORDER_DIRECTION|ORDER_LIMIT_TYPE
      * @return string
      */
-    private function transformMessage(array $type)
+    private function transformMessage(array $type,$what = '')
     {
-        switch ($type){
-            case self::ORDER_DIRECTION:
+        switch ($what){
+            case 'direction':
                 $directionTransform = array_map(function($item) { return "." . $item; },$type);
                 $typeTransformer = strtolower(implode('|', $directionTransform));
                 break;
