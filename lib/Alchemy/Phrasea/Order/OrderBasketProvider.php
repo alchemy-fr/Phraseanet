@@ -34,20 +34,27 @@ class OrderBasketProvider
         $this->translator = $translator;
     }
 
-    public function provideBasketForOrderAndUser(Order $order, User $acceptor)
+    public function provideBasketForOrderAndUser(Order $order, User $acceptor, $options = null)
     {
         $basket = $order->getBasket();
 
         if (null === $basket) {
             $basket = new Basket();
-            $basket->setName($this->translator->trans('Commande du %date%', [
-                '%date%' => $order->getCreatedOn()->format('Y-m-d'),
-            ]));
+
+            if ($options) {
+                $basket->setName($options['title']);
+                $basket->setDescription($options['description']);
+            } else {
+                $basket->setName($this->translator->trans('Commande du %date%', [
+                    '%date%' => $order->getCreatedOn()->format('Y-m-d'),
+                ]));
+                $basket->setPusher($acceptor);
+            }
 
             $order->setBasket($basket);
 
             $basket->setUser($order->getUser());
-            $basket->setPusher($acceptor);
+
 
             $this->manager->persist($basket);
             $this->manager->flush($basket);

@@ -97,6 +97,11 @@ class Order implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('prod_order_deny')
             ->assert('order_id', '\d+');
 
+        $controllers->post('/{order_id}/basket-order/', 'controller.prod.order:createBasketFromItems')
+            ->before($ensureOrdersAdmin)
+            ->bind('prod_order_create_basket_from_items')
+            ->assert('order_id', '\d+');
+
         return $controllers;
     }
 }
