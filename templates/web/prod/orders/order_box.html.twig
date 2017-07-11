@@ -80,8 +80,8 @@
             <div id="TODOVIEW">
                 <table class="table">
                     <tbody>
-                    {% if orders|length > 0 %}
-                        {% for order in orders %}
+                    {% if orders_todo|length > 0 %}
+                        {% for order in orders_todo %}
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
                                 <td> <span class="icon-stack infoTips">
@@ -125,8 +125,8 @@
             <div id="PROCESSEDVIEW">
                 <table class="table">
                     <tbody>
-                    {% if orders_todo|length > 0 %}
-                        {% for order in orders_todo %}
+                    {% if orders_processed|length > 0 %}
+                        {% for order in orders_processed %}
                             {% set deadline = order.getDeadline()|date('d/m/Y') %}
                             <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
                                 <td> <span class="icon-stack infoTips">
@@ -168,15 +168,34 @@
         </div>
     </div>
 
-    <div class='well-small'>
+    <div class='well-small pager-todo'>
         <ul class="pager">
+            {% set previousPage = page < 2 ? false : (page - 1) %}
+            {% set nextPage = page >= (totalTodo / perPage)|ceil ? false : (page + 1) %}
+
           {% if previousPage %}
-              <li  class="previous"><a class="self-ajax btn btn-inverse" href="{{ path('prod_orders', {'page': previousPage, 'per-page': perPage}) }}">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
+              <li  class="previous"><a class="btn btn-inverse" onclick="goToPreviousPage({{ previousPage }}, {{ perPage }})" href="#">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
           {% endif %}
 
           {% if nextPage %}
-              <li class="next"><a class="self-ajax btn btn-inverse" href="{{ path('prod_orders', {'page': nextPage, 'per-page': perPage}) }}"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+              <li class="next"><a class="btn btn-inverse" onclick="goToNextPage({{ nextPage }}, {{ perPage }})" href="#"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
           {% endif %}
+        </ul>
+    </div>
+
+    <div class='well-small pager-processed'>
+        <ul class="pager">
+            {% set previousPage = page < 2 ? false : (page - 1) %}
+            {% set nextPage = page >= (totalProcessed / perPage)|ceil ? false : (page + 1) %}
+
+            {% if previousPage %}
+                <li  class="previous"><a class="btn btn-inverse" onclick="goToPreviousPage({{ previousPage }}, {{ perPage }}, '{{ start }}')" href="#">{{ 'Previous' | trans }}&nbsp;<i class="icon-arrow-left"></i></a></li>
+            {% endif %}
+
+            {% if nextPage %}
+                <li class="next"><a class="btn btn-inverse" onclick="goToNextPage({{ nextPage }}, {{ perPage }}, '{{ start }}')" href="#"><i class="icon-arrow-right"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+            {% endif %}
+        </ul>
         </ul>
     </div>
 </div>
@@ -194,6 +213,8 @@
         BEFORE:  'before',
         AFTER:  'after',
     };
+
+    var info = {};
 
     $('#datepicker').datepicker({
         beforeShow: function() {
@@ -248,17 +269,64 @@
         });
     }
 
+    function goToNextPage(nextPage, perPage) {
+        info['page'] = nextPage;
+        info['per-page'] = perPage;
+        performRequest();
+    }
+
+    function goToPreviousPage(previousPage, perPage) {
+        info['page'] = previousPage;
+        info['per-page'] = perPage;
+        performRequest();
+    }
+
+    function performRequest() {
+        if(dateSelection === FilterDate.BEFORE || dateSelection === FilterDate.AFTER) {
+            var obj = {};
+            info['start'] = dateSelection;
+            obj['date'] = $('#datepicker').val();
+            obj['type'] = dateSelection;
+            info['limit'] = obj;
+        }else {
+            info['start'] = dateSelection;
+        }
+        $.ajax({
+            type: 'GET',
+            url: '../prod/order/',
+            data: info,
+            success: function (data) {
+                $('#order_manager').parent().empty().append(data);
+            }
+        });
+    }
+
 $(document).ready(function(){
 
-    $('#ORDERPREVIEW').tabs();
-
-    $('#ORDERPREVIEW').tabs("option", "active", tabSelection == FilterTodo.PROCESSED ? 1 : 0);
-	var dialog = p4.Dialog.get(1);
+    var dialog = p4.Dialog.get(1);
     var filterDateSelected = false;
 
-    var info = {};
     info['todo'] = FilterTodo.TODO;
     info['start'] = FilterDate.CURRENT_WEEK;
+
+    $('#ORDERPREVIEW').tabs({
+        activate: function(event, ui) {
+           if(ui.newPanel.selector == '#PROCESSED-ORDER') {
+               $('.pager-processed').show();
+               $('.pager-todo').hide();
+               info['todo'] = FilterTodo.PROCESSED;
+               console.log(info['todo']);
+           }else {
+               $('.pager-processed').hide();
+               $('.pager-todo').show();
+               info['todo'] = FilterTodo.TODO;
+               console.log(info['todo']);
+           }
+        }
+    });
+
+    $('#ORDERPREVIEW').tabs("option", "active", tabSelection == FilterTodo.PROCESSED ? 1 : 0);
+    $('.pager-processed').hide();
 
     $('a.self-ajax', dialog.getDomElement()).bind('click', function(e){
         e.preventDefault();
@@ -278,33 +346,10 @@ $(document).ready(function(){
 
     $('#date-form').submit(function(e) {
         e.preventDefault();
-        if($('#TODO-ORDER').is(':visible')){
-            info['todo'] = FilterTodo.TODO;
-        }else {
-            info['todo'] = FilterTodo.PROCESSED;
-        }
-
-        if(dateSelection === FilterDate.BEFORE || dateSelection === FilterDate.AFTER) {
-            var obj = {};
-            info['start'] = dateSelection;
-            obj['date'] = $('#datepicker').val();
-            obj['type'] = dateSelection;
-            info['limit'] = obj;
-        }else {
-            info['start'] = dateSelection;
-        }
+        performRequest();
         toggleFilterDate();
-        $.ajax({
-            type: 'GET',
-            url: '../prod/order/',
-            data: info,
-            success: function (data) {
-                $('#order_manager').parent().empty().append(data);
-            }
-        });
 
     });
-
 
     function toggleFilterDate() {
         if(!filterDateSelected) {
