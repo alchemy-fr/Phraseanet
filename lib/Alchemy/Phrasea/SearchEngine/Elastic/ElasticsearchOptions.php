@@ -31,7 +31,6 @@ class ElasticsearchOptions
     private $populateOrder;
     /** @var string */
     private $populateDirection;
-
     /** @var string */
     private $populateLimitType;
     /** @var int */
