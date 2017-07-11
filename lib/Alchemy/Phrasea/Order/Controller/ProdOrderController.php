@@ -213,4 +213,41 @@ class ProdOrderController extends BaseOrderController
             'action'  => 'send',
         ]);
     }
+
+    /**
+     * Create basket from item into order
+     *
+     * @param  Request                       $request
+     * @param  integer                       $order_id
+     * @return RedirectResponse|JsonResponse
+     */
+    public function createBasketFromItems(Request $request,$order_id)
+    {
+        $elementIds = $request->request->get('elements', []);
+        $title = $request->request->get('title');
+        $description = $request->request->get('description');
+        $acceptor = $this->getAuthenticatedUser();
+        $basketOptions = [
+            'title' => $title,
+            'description' => $description,
+        ];
+
+        $basketElements = $this->doBasketFromElements($order_id,$elementIds,$acceptor,$basketOptions);
+
+        $success = !empty($basketElements);
+        if ('json' === $request->getRequestFormat()) {
+            return $this->app->json([
+                'success'  => $success,
+                'msg'      => $success
+                    ? $this->app->trans('Order has been sent')
+                    : $this->app->trans('An error occured while sending, please retry  or contact an admin if problem persists'),
+                'order_id' => $order_id,
+            ]);
+        }
+
+        return $this->app->redirectPath('prod_orders', [
+            'success' => (int) $success,
+            'action'  => 'send',
+        ]);
+    }
 }
