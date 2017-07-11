@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,6 +61,7 @@ class IndexManipulateCommand extends Command
     {
         /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
+        /** @var ElasticsearchOptions $options */
         $options = $indexer->getIndex()->getOptions();
 
         if($input->getOption('name')) {

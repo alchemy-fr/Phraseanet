@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record;
 
 use Alchemy\Phrasea\Core\PhraseaTokens;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
@@ -20,7 +21,7 @@ use databox;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+
 
 class Fetcher
 {

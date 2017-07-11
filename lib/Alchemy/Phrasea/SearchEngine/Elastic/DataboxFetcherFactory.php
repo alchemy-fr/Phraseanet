@@ -40,14 +40,15 @@ class DataboxFetcherFactory
 
     /**
      * @param RecordHelper $recordHelper
+     * @param ElasticsearchOptions $options
      * @param \ArrayAccess $container
      * @param string $structureKey
      * @param string $thesaurusKey
      */
-    public function __construct(RecordHelper $recordHelper,ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
+
+    public function __construct(RecordHelper $recordHelper, ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
     {
         $this->recordHelper = $recordHelper;
-        $this->container = $container;
         $this->options      = $options;
         $this->container    = $container;
         $this->structureKey = $structureKey;
@@ -64,16 +65,21 @@ class DataboxFetcherFactory
         $connection = $databox->get_connection();
 
         $candidateTerms = new CandidateTerms($databox);
-        $fetcher = new Fetcher($databox,
-            $this->options
-            , array(
-            new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->recordHelper),
-            new TitleHydrator($connection, $this->recordHelper),
-            new MetadataHydrator($connection, $this->getStructure(), $this->recordHelper),
-            new FlagHydrator($this->getStructure(), $databox),
-            new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
-            new SubDefinitionHydrator($connection)
-        ), $fetcherDelegate);
+
+        $fetcher = new Fetcher(
+            $databox,
+            $this->options,
+            [
+                new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->recordHelper),
+                new TitleHydrator($connection, $this->recordHelper),
+                new MetadataHydrator($connection, $this->getStructure(), $this->recordHelper),
+                new FlagHydrator($this->getStructure(), $databox),
+                new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
+                new SubDefinitionHydrator($connection)
+            ],
+            $fetcherDelegate
+        );
+
 
         $fetcher->setBatchSize(200);
         $fetcher->onDrain(function() use ($candidateTerms) {

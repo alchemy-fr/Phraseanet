@@ -31,6 +31,7 @@ class ElasticsearchOptions
     private $populateOrder;
     /** @var string */
     private $populateDirection;
+
     /** @var string */
     private $populateLimitType;
     /** @var int */
@@ -45,6 +46,7 @@ class ElasticsearchOptions
     const POPULATE_LIMIT_TYPE_HOUR = 'HOUR';
     const POPULATE_LIMIT_TYPE_MINUTE = 'MINUTE';
     const POPULATE_LIMIT_DURATION = 1;
+
 
     /**
      * Factory method to hydrate an instance from serialized options
@@ -67,6 +69,7 @@ class ElasticsearchOptions
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
             'populate_limit_type' => null,
             'populate_limit_duration' => null,
+
         ], $options);
 
         $self = new self();
@@ -105,6 +108,60 @@ class ElasticsearchOptions
             'populate_limit_type' => $this->populateLimitType,
             'populate_limit_duration' => $this->populateLimitDuration,
         ];
+    }
+
+    /**
+     * @param string $order
+     * @return bool returns false if order is invalid
+     */
+    public function setPopulateOrder($order)
+    {
+        $order = strtoupper($order);
+        if(in_array($order, [self::POPULATE_ORDER_RID, self::POPULATE_ORDER_MODDATE])) {
+            $this->populateOrder = $order;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $direction
+     * @return bool returns false if direction is invalid
+     */
+    public function setPopulateDirection($direction)
+    {
+        $direction = strtoupper($direction);
+        if(in_array($direction, [self::POPULATE_DIRECTION_DESC, self::POPULATE_DIRECTION_ASC])) {
+            $this->populateDirection = $direction;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopulateOrderAsSQL()
+    {
+        static $orderAsColumn = [
+            self::POPULATE_ORDER_RID     => "`record_id`",
+            self::POPULATE_ORDER_MODDATE => "`moddate`",
+        ];
+        // populateOrder IS one of the keys (ensured by setPopulateOrder)
+        return $orderAsColumn[$this->populateOrder];
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopulateDirectionAsSQL()
+    {
+        // already a SQL word
+        return $this->populateDirection;
     }
 
     /**
@@ -148,38 +205,10 @@ class ElasticsearchOptions
         $this->populateLimitDuration = $populateLimitDuration;
     }
 
-    /**
-     * @param string $order
-     * @return bool returns false if order is invalid
-     */
-    public function setPopulateOrder($order)
-    {
-        $order = strtoupper($order);
-        if(in_array($order, [self::POPULATE_ORDER_RID, self::POPULATE_ORDER_MODDATE])) {
-            $this->populateOrder = $order;
-
-            return true;
-        }
-
-        return false;
-    }
 
     /**
-     * @param string $direction
-     * @return bool returns false if direction is invalid
+     * @return string
      */
-    public function setPopulateDirection($direction)
-    {
-        $direction = strtoupper($direction);
-        if(in_array($direction, [self::POPULATE_DIRECTION_DESC, self::POPULATE_DIRECTION_ASC])) {
-            $this->populateDirection = $direction;
-
-            return true;
-        }
-
-        return false;
-    }
-
     public function getPopulateLimitAsSQL()
     {
         if($this->populateLimitType){
@@ -192,27 +221,7 @@ class ElasticsearchOptions
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getPopulateOrderAsSQL()
-    {
-        static $orderAsColumn = [
-            self::POPULATE_ORDER_RID     => "`record_id`",
-            self::POPULATE_ORDER_MODDATE => "`moddate`",
-        ];
-        // populateOrder IS one of the keys (ensured by setPopulateOrder)
-        return $orderAsColumn[$this->populateOrder];
-    }
 
-    /**
-     * @return string
-     */
-    public function getPopulateDirectionAsSQL()
-    {
-        // already a SQL word
-        return $this->populateDirection;
-    }
 
     /**
      * @param string $host
