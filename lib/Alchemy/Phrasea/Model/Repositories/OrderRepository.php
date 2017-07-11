@@ -123,10 +123,10 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * Returns the total number of orders from an array of base_id
+     * Returns the total number of orders from an array of base_id and filters
      *
      * @param array $baseIds
-     *
+     * @param array $filters
      * @return int
      */
     public function countTotalOrders(array $baseIds = [], $filters = [])
