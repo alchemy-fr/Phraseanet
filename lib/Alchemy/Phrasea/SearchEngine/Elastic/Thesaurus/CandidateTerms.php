@@ -21,8 +21,7 @@ use Transliterator;
 class CandidateTerms
 {
     private $databox;
-    private $new_candidates = [];
-    /** @var  CandidateTermVisitor */
+    private $new_candidates = array();
     private $visitor;
     private $document;
 
@@ -52,7 +51,6 @@ class CandidateTerms
     public function save()
     {
         $this->ensureDocumentLoaded();
-        $n = 0;
         foreach ($this->new_candidates as $raw_value => $field) {
             $term = Term::parse($raw_value);
             $norm_value = StringUtils::asciiLowerFold($term->getValue());
@@ -60,18 +58,16 @@ class CandidateTerms
             $element = $this->createElement($raw_value, $norm_value, $norm_context);
             $container = $this->findOrCreateFieldNode($field);
             $this->insertElement($container, $element);
-            $n++;
         }
-        if($n > 0) {
-            $this->databox->saveCterms($this->document);
-        }
+
+        $this->databox->saveCterms($this->document);
     }
 
     private function ensureDocumentLoaded()
     {
-        // if (!$this->document) {
+        if (!$this->document) {
             $this->document = Helper::candidatesFromDatabox($this->databox);
-        // }
+        }
     }
 
     private function createElement($raw_value, $value, $context)

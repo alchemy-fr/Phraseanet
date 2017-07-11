@@ -1030,8 +1030,8 @@ class databox extends base implements ThumbnailedElement
 
         $this->cterms = $dom_cterms->saveXML();
         $params = [
-            ':xml'  => $this->cterms,
-            ':date' => $now
+            ':xml'  => $this->cterms
+            , ':date' => $now
         ];
 
         $stmt = $this->get_connection()->prepare($sql);
@@ -1217,7 +1217,7 @@ class databox extends base implements ThumbnailedElement
             if ($domct !== false) {
                 $nodesToDel = [];
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if($n->nodeType != XML_ELEMENT_NODE || !($n->getAttribute('delbranch'))){
+                    if(!($n->getAttribute('delbranch'))){
                         $nodesToDel[] = $n;
                     }
                 }
@@ -1228,8 +1228,7 @@ class databox extends base implements ThumbnailedElement
                     $this->saveCterms($domct);
                 }
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
 
         }
     }
@@ -1301,9 +1300,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_dom_cterms()
     {
-        //if ($this->_dom_cterms) {
-        //    return $this->_dom_cterms;
-        //}
+        if ($this->_dom_cterms) {
+            return $this->_dom_cterms;
+        }
 
         $cterms = $this->get_cterms();
 
@@ -1327,9 +1326,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_cterms()
     {
-        //if ($this->cterms) {
-        //    return $this->cterms;
-        //}
+        if ($this->cterms) {
+            return $this->cterms;
+        }
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
         $stmt = $this->get_connection()->prepare($sql);
