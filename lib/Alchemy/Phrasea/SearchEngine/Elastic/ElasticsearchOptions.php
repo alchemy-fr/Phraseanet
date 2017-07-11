@@ -31,11 +31,21 @@ class ElasticsearchOptions
     private $populateOrder;
     /** @var string */
     private $populateDirection;
+    /** @var string */
+    private $populateLimitType;
+    /** @var int */
+    private $populateLimitDuration;
+
 
     const POPULATE_ORDER_RID  = "RECORD_ID";
-    const POPULATE_ORDER_MODDATE = "MODIFICATION_DATE";
+    const POPULATE_ORDER_MODDATE = "UPDATED_ON";
     const POPULATE_DIRECTION_ASC  = "ASC";
     const POPULATE_DIRECTION_DESC = "DESC";
+    const POPULATE_LIMIT_TYPE_DAY = 'DAY';
+    const POPULATE_LIMIT_TYPE_HOUR = 'HOUR';
+    const POPULATE_LIMIT_TYPE_MINUTE = 'MINUTE';
+    const POPULATE_LIMIT_DURATION = 1;
+
 
     /**
      * Factory method to hydrate an instance from serialized options
@@ -56,6 +66,9 @@ class ElasticsearchOptions
             'max_result_window' => 500000,
             'populate_order' => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
+            'populate_limit_type' => null,
+            'populate_limit_duration' => null,
+
         ], $options);
 
         $self = new self();
@@ -69,6 +82,8 @@ class ElasticsearchOptions
         $self->setMaxResultWindow($options['max_result_window']);
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
+        $self->setPopulateLimitType($options['populate_limit_type']);
+        $self->setPopulateLimitDuration($options['populate_limit_duration']);
 
         return $self;
     }
@@ -89,6 +104,8 @@ class ElasticsearchOptions
             'maxResultWindow' => $this->maxResultWindow,
             'populate_order' => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
+            'populate_limit_type' => $this->populateLimitType,
+            'populate_limit_duration' => $this->populateLimitDuration,
         ];
     }
 
@@ -145,6 +162,65 @@ class ElasticsearchOptions
         // already a SQL word
         return $this->populateDirection;
     }
+
+    /**
+     * @return string
+     */
+    public function getPopulateLimitType()
+    {
+        return $this->populateLimitType;
+    }
+
+
+    /**
+     * @param $populateLimit
+     * @return bool
+     */
+    public function setPopulateLimitType($populateLimit)
+    {
+        $limitType = strtoupper($populateLimit);
+        if(in_array($limitType, [self::POPULATE_LIMIT_TYPE_DAY,self::POPULATE_LIMIT_TYPE_HOUR,self::POPULATE_LIMIT_TYPE_MINUTE])) {
+            $this->populateLimitType = $limitType;
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
+     * @return int
+     */
+    public function getPopulateLimitDuration()
+    {
+        return $this->populateLimitDuration;
+    }
+
+    /**
+     * @param $populateLimitDuration
+     */
+    public function setPopulateLimitDuration($populateLimitDuration)
+    {
+        $this->populateLimitDuration = $populateLimitDuration;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPopulateLimitAsSQL()
+    {
+        if($this->populateLimitType){
+
+            $where = "WHERE `updated_on` BETWEEN DATE_SUB(NOW(), INTERVAL ".$this->populateLimitDuration." ".strtoupper($this->populateLimitType).") AND NOW() ";
+
+            return  $where;
+        }
+
+        return '';
+    }
+
+
 
     /**
      * @param string $host

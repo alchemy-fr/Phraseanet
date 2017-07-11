@@ -45,6 +45,7 @@ class DataboxFetcherFactory
      * @param string $structureKey
      * @param string $thesaurusKey
      */
+
     public function __construct(RecordHelper $recordHelper, ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
     {
         $this->recordHelper = $recordHelper;
@@ -64,6 +65,7 @@ class DataboxFetcherFactory
         $connection = $databox->get_connection();
 
         $candidateTerms = new CandidateTerms($databox);
+
         $fetcher = new Fetcher(
             $databox,
             $this->options,
@@ -77,6 +79,7 @@ class DataboxFetcherFactory
             ],
             $fetcherDelegate
         );
+
 
         $fetcher->setBatchSize(200);
         $fetcher->onDrain(function() use ($candidateTerms) {

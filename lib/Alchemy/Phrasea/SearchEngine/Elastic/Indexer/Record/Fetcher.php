@@ -22,6 +22,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
 
+
 class Fetcher
 {
     private $databox;
@@ -127,6 +128,7 @@ class Fetcher
     private function getExecutedStatement()
     {
         if (!$this->statement) {
+
             $sql = "SELECT r.record_id"
                  . ", r.coll_id AS collection_id"
                  . ", c.asciiname AS collection_name"
@@ -139,6 +141,7 @@ class Fetcher
                  . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
                  . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
                  . " -- WHERE"
+                 . $this->options->getPopulateLimitAsSQL()
                  . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL()
                  . " LIMIT :offset, :limit";
 

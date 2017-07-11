@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +22,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexManipulateCommand extends Command
 {
+    const ORDER_COLUMN_UPDATE_ON = 'updated_on';
+    const ORDER_COLUMN_RECORD_ID = 'record_id';
+    const ORDER_DIRECTION_ASC    = 'ASC';
+    const ORDER_DIRECTION_DESC   = 'DESC';
+    const ORDER_LIMIT_TYPE_DAY   = 'DAY';
+    const ORDER_LIMIT_TYPE_MINUTE   = 'MINUTE';
+    const ORDER_LIMIT_TYPE_HOUR   = 'HOUR';
+
     protected function configure()
     {
         /** @var Indexer $indexer */
@@ -37,7 +46,8 @@ class IndexManipulateCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'index name', null)
             ->addOption('host', null, InputOption::VALUE_REQUIRED, 'host', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'port', null)
-            ->addOption('order', null, InputOption::VALUE_REQUIRED, 'order (record_id|modification_date)[.asc|.desc]', null)
+            ->addOption('order', null, InputOption::VALUE_OPTIONAL, 'order (record_id|updated_on)[.asc|.desc]', null)
+            ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'limit (day|hour|minute|).(1|n)', null)
             ->addOption(
                 'databox_id',
                 null,
@@ -63,21 +73,60 @@ class IndexManipulateCommand extends Command
         if($input->getOption('port')) {
             $options->setPort($input->getOption('port'));
         }
-
         if($input->getOption('order')) {
             $order = explode('.', $input->getOption('order'));
-            if (!$options->setPopulateOrder($order[0])) {
-                $output->writeln(sprintf('<error>bad order value for --order</error>'));
 
-                return 1;
+            list($populateOrder) = $order;
+            if(!in_array($populateOrder,[self::ORDER_COLUMN_UPDATE_ON,self::ORDER_COLUMN_RECORD_ID])){
+               throw new RuntimeException($this->suggestionMessage());
             }
-            if (count($order) > 1) {
-                if (!$options->setPopulateDirection($order[1])) {
-                    $output->writeln(sprintf('<error>bad direction value for --order</error>'));
 
-                    return 1;
+            $ordersNumberParameter = count($order);
+            if ($ordersNumberParameter == 2) {
+                list($populateOrder,$populateDirection) = $order;
+
+                if(!in_array(strtoupper($populateDirection),[self::ORDER_DIRECTION_ASC,self::ORDER_DIRECTION_DESC])){
+                    throw new RuntimeException($this->suggestionMessage());
                 }
+
+                try{
+                    $options->setPopulateDirection($populateDirection);
+                    $options->setPopulateOrder($populateOrder);
+                }catch(\Exception $e){
+                    throw new RuntimeException($this->suggestionMessage());
+                }
+
+            }elseif ($ordersNumberParameter == 1){
+                try{
+                    $options->setPopulateOrder($populateOrder);
+                }catch(\Exception $e){
+                    throw new RuntimeException($this->suggestionMessage());
+                }
+            }else{
+                throw new RuntimeException($this->suggestionMessage());
             }
+        }
+        if($input->getOption('limit')){
+            $limit = explode('.', $input->getOption('limit'));
+
+            $limitNumberParameter = count($limit);
+            if($limitNumberParameter != 2){
+                throw new RuntimeException($this->suggestionMessage('limit'));
+            }
+
+            list($populateLimitType,$populateLimitDuration) = $limit;
+            if(!in_array(strtoupper($populateLimitType),[self::ORDER_LIMIT_TYPE_DAY,self::ORDER_LIMIT_TYPE_HOUR,self::ORDER_LIMIT_TYPE_MINUTE]) || is_int($populateLimitDuration)){
+                throw new RuntimeException($this->suggestionMessage('limit'));
+            }
+
+            try{
+                $options->setPopulateLimitType($populateLimitType);
+                $options->setPopulateLimitDuration($populateLimitDuration);
+
+            }catch(\Exception $e){
+                throw new RuntimeException($this->suggestionMessage('limit'));
+            }
+
         }
 
         $idx = sprintf("%s@%s:%s", $options->getIndexName(), $options->getHost(), $options->getPort());
@@ -153,5 +202,45 @@ class IndexManipulateCommand extends Command
                 $indexer->replaceIndex($newIndexName, $newAliasName);
             }
         }
+    }
+
+    /**
+     * @param string $type
+     * @return string
+     */
+    private function suggestionMessage($type = 'order')
+    {
+        $suggestion = 'Bad paramaters value for --'.$type.' retry with : (';
+
+        switch ($type){
+            case 'order':
+                $suggestion .= $this->transformMessage([self::ORDER_COLUMN_RECORD_ID,self::ORDER_COLUMN_UPDATE_ON]).')['.$this->transformMessage([self::ORDER_DIRECTION_DESC,self::ORDER_DIRECTION_ASC],'direction').']';
+                break;
+            case 'limit':
+                $suggestion .= $this->transformMessage([self::ORDER_LIMIT_TYPE_DAY,self::ORDER_LIMIT_TYPE_MINUTE,self::ORDER_LIMIT_TYPE_HOUR]).').[1..n]';
+                break;
+        }
+
+
+        return $suggestion;
+    }
+
+    /**
+     * @param array $type
+     * @param string $what
+     * @return string
+     */
+    private function transformMessage(array $type,$what = '')
+    {
+        switch ($what){
+            case 'direction':
+                $directionTransform = array_map(function($item) { return "." . $item; },$type);
+                $typeTransformer = strtolower(implode('|', $directionTransform));
+                break;
+            default:
+                $typeTransformer = strtolower(implode('|',$type));
+        }
+
+        return $typeTransformer;
     }
 }
