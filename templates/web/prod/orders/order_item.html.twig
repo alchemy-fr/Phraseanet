@@ -372,7 +372,7 @@ $(document).ready(function(){
         $(this).parent().hide().prev().show().prev().show();
     });
 
-    $('button.validate', dialog.getDomElement()).bind('click',function(){
+    $('button.validate', dialog.getDomElement()).bind('click',function(event){
         openDialog(this,event);
         return false;
     });
