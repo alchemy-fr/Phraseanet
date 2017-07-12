@@ -1025,8 +1025,7 @@ class databox extends base implements ThumbnailedElement
     {
         $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
 
-        $sql = "UPDATE pref SET value = :xml, updated_on = :date
-                WHERE prop='cterms'";
+        $sql = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='cterms'";
 
         $this->cterms = $dom_cterms->saveXML();
         $params = [
@@ -1300,9 +1299,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_dom_cterms()
     {
-        if ($this->_dom_cterms) {
+        //if ($this->_dom_cterms) {
             return $this->_dom_cterms;
-        }
+        //}
 
         $cterms = $this->get_cterms();
 
@@ -1326,9 +1325,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_cterms()
     {
-        if ($this->cterms) {
+        //if ($this->cterms) {
             return $this->cterms;
-        }
+        //}
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
         $stmt = $this->get_connection()->prepare($sql);
