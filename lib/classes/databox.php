@@ -1300,7 +1300,7 @@ class databox extends base implements ThumbnailedElement
     public function get_dom_cterms()
     {
         //if ($this->_dom_cterms) {
-            return $this->_dom_cterms;
+        //    return $this->_dom_cterms;
         //}
 
         $cterms = $this->get_cterms();
@@ -1326,7 +1326,7 @@ class databox extends base implements ThumbnailedElement
     public function get_cterms()
     {
         //if ($this->cterms) {
-            return $this->cterms;
+        //    return $this->cterms;
         //}
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
