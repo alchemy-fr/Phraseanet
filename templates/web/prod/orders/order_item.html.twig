@@ -107,21 +107,21 @@
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
                     <form action="">
-                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/><span>Select all</span>
+                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/><span>{{ 'order-manager::order-item: select-all' |trans }}</span>
                     </form>
                     <div class="btn-group">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">Create basket<span class="caret"></span></button>
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">{{ 'order-manager::order-item: create-basket' |trans }}<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li type="validated" class="basket-btn">
-                                <a>with validated items</a>
+                                <a>{{ 'order-manager::order-item: with-validated-items' |trans }}</a>
                             </li>
                             <li class="divider"></li>
                             <li type="denied" class="basket-btn">
-                                <a>with denied items</a>
+                                <a>{{ 'order-manager::order-item: with-denied-items' |trans }}</a>
                             </li>
                             <li class="divider"></li>
                             <li type="selected" class="basket-btn">
-                                <a>with selected items</a>
+                                <a>{{ 'order-manager::order-item: with-selected-items' |trans }}</a>
                             </li>
                         </ul>
                     </div>
