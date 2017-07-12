@@ -8,9 +8,9 @@
     <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div style="display:none;position:relative;" id="validation_dialog" title="{{ 'order-manager::order-item:Validation' | trans }}" >
+<div style="display:none;position:relative;" id="dialog-window" >
     <div class="box">
-        <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
+        <div class="dialog-content" style="float:left; width:100%;margin-top:10px;">
         </div>
     </div>
 </div>
@@ -18,6 +18,7 @@
 <div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
+    {% set message = app['request'].query.get('message') %}
 
     {% if  success == '1' %}
         <div class="alert alert-success">
@@ -26,6 +27,8 @@
                 {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
                 {{ 'Order has been denied' | trans }}
+             {% elseif action == 'basket' %}
+                 {{ message }}
             {% endif %}
         </div>
     {% elseif   success == '0' %}
@@ -91,6 +94,22 @@
                     <form action="">
                         <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/>Select all
                     </form>
+                    <div class="btn-group">
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">Create basket<span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li type="validated" class="basket-btn">
+                                <a>with validated items</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li type="denied" class="basket-btn">
+                                <a>with denied items</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li type="selected" class="basket-btn">
+                                <a>with selected items</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <table class="table-order">
                     <tbody>
@@ -373,14 +392,126 @@ $(document).ready(function(){
     });
 
     $('button.validate', dialog.getDomElement()).bind('click',function(event){
-        openDialog(this,event);
+        openValidationDialog(this,event);
         return false;
+    });
+
+    $('.basket-btn').click(function(event) {
+        var type = $(this).attr('type');
+        var $dialog = $("#dialog-window").dialog({
+            open: function (event, ui) {
+                $('.ui-dialog').css('z-index', 100000);
+                $(".ui-widget-overlay").css('z-index', 100000);
+            },
+            closeOnEscape: true,
+            width: 450,
+            height: 300,
+            modal: true,
+            draggable: false,
+            stack: false,
+            title: '{{ 'order-manager::order-item:Create-Basket' | trans }}',
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            buttons: {
+                "{{ 'order-manager::order-item: create' |trans }}": function () {
+                    //create basket
+                    createBasket($dialog);
+                    $(this).dialog('close');
+                }
+            }
+        }).dialog('open');
+
+        $.ajax({
+            type: "GET",
+            url: "../prod/baskets/create/",
+            dataType: 'html',
+            success: function (data) {
+                populateBasketDialog($dialog, data, type);
+            }
+        });
+    return false;
     });
 
 });
 
-function openDialog(el, event) {
-    $("#validation_dialog").dialog({
+function createBasket($dialog) {
+    var $form = $('form', $dialog);
+    var dialog = $dialog.closest('.ui-dialog');
+    var buttonPanel = dialog.find('.ui-dialog-buttonpane');
+
+    $.ajax({
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serializeArray(),
+        dataType: 'json',
+        beforeSend:function(){
+            $(":button:contains('" + language.create + "')", buttonPanel)
+                .attr("disabled", true).addClass("ui-state-disabled");
+        },
+        success: function(data){
+            var order_id = $('input[name=order_id]').val();
+            var success = '0';
+            if(data.success)
+            {
+                success = '1';
+            }
+            var dialog = p4.Dialog.get(1);
+            dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=basket' + '&message='
+                + encodeURIComponent(data.message));
+            p4.WorkZone.refresh(data.basket.id);
+        },
+        error: function(){
+            $(":button:contains('" + language.create + "')", buttonPanel)
+                .attr("disabled", false).removeClass("ui-state-disabled");
+        },
+        timeout: function(){
+
+        }
+    });
+}
+
+function populateBasketDialog($dialog, data, type) {
+    var lst = [];
+    var dialog = p4.Dialog.get(1);
+    $dialog.html(data);
+    //set checkbox to true and disable it
+    $('input[name="lst"]', $dialog).prop('checked', true);
+    $('.checkbox', $dialog).css("visibility","hidden");
+    //set default name
+    var name = '{{ 'order-manager::order-item: CMD' |trans }}' + ' {{ order.getCreatedOn()|date('d/m/Y') }} '
+        + '{{ 'order-manager::order-item: by' |trans }}'
+        + ' {{ order.getUser().getDisplayName() }}';
+    $('input[name="name"]', $dialog).val(name);
+    var description = '';
+    var elements_ids = [];
+    switch (type){
+        case 'denied':
+            description = '{{ 'order-manager::order-item: rejected-item' |trans }}';
+            $('.order_list .order_row.' + type, dialog.getDomElement()).each(function(i,n) {
+                elements_ids.push($(n).attr('elementids'));
+            });
+            break;
+        case 'validated':
+            description = '{{ 'order-manager::order-item: accepted-item' |trans }}';
+            $('.order_list .order_row.' + type, dialog.getDomElement()).each(function(i,n) {
+                elements_ids.push($(n).attr('elementids'));
+            });
+            break;
+        default :
+            //selected elements;
+            description = '{{ 'order-manager::order-item: selected-item' |trans }}';
+            $('.order_list .order_row.' + type, dialog.getDomElement()).each(function(i,n) {
+                elements_ids.push($(n).attr('elementids'));
+            });
+    }
+    $('textarea[name="description"]', $dialog).val(description);
+    $('input[name="lst"]', $dialog).val(elements_ids.join('; '));
+}
+
+function openValidationDialog(el, event) {
+    $("#dialog-window").dialog({
         open: function (event, ui) {
             $('.ui-dialog').css('z-index', 100000);
             $(".ui-widget-overlay").css('z-index', 100000);
@@ -392,6 +523,7 @@ function openDialog(el, event) {
         modal: true,
         draggable: false,
         stack: false,
+        title: '{{ 'order-manager::order-item:Validation' | trans }}',
         buttons: {
             "{{ 'order-manager::order-item: submit' |trans }}": function() {
                //submit documents
@@ -446,7 +578,7 @@ function submitDocuments(dialogElem) {
 }
 
 function createValidationTable() {
-    $('.validation-content').empty();
+    $('.dialog-content').empty();
     var validatedArray = _.filter(elementsForValidation, function(elem) {
         return elem.newState === ELEMENT_TYPE.VALIDATED;
     });
@@ -465,7 +597,7 @@ function createValidationTable() {
             html += '</tr>';
         });
         html += '</table>';
-        $('.validation-content').append(html);
+        $('.dialog-content').append(html);
     }
 
     if(deniedArray.length > 0) {
@@ -479,7 +611,7 @@ function createValidationTable() {
             html += '</tr>';
         });
         html += '</table>';
-        $('.validation-content').append(html);
+        $('.dialog-content').append(html);
     }
 
 }

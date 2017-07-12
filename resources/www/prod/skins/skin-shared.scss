@@ -426,7 +426,7 @@ span.ww_winTitle {
   margin: 10px;
 }
 
-#order_manager .order_list li {
+#order_manager .order_list .table-order li {
   display: inline-block;
   border-radius: $defaultBorderRadius;
   border: 1px solid #FFFFFF;
@@ -535,6 +535,7 @@ button.order_launcher.btn {
 
 .top-bar form {
   margin: 0;
+  display: inline-block;
 }
 
 .top-bar form input[type="checkbox"] {
