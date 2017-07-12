@@ -102,17 +102,22 @@ class IndexManipulateCommand extends Command
         $indexExists = $indexer->indexExists();
 
         if ($drop && $indexExists) {
-            $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
+
             if ($input->getOption('force')) {
                 $confirmation = true;
-            } else {
+            }
+            else {
+                $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
                 $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
             }
             if ($confirmation) {
                 $indexer->deleteIndex();
                 $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
-            } else {
+            }
+            else {
                 $output->writeln('Canceled.');
+
+                return 0;
             }
         }
 
