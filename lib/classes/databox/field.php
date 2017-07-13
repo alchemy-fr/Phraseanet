@@ -716,7 +716,7 @@ class databox_field implements cache_cacheableInterface
     {
         $this->thumbtitle = $value;
 
-        if (!$this->thumbtitle) {
+        if (!$this->thumbtitle && !$this->Business) {
             $this->Business = false;
         }
 
