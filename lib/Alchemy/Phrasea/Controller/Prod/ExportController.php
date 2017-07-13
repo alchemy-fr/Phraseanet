@@ -172,12 +172,12 @@ class ExportController extends Controller
         $separator = '/\\' . implode('|\\', $separator) . '/';
 
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
-        $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", "")));
-        $listEmails = preg_replace('/\;{2,}/', ';', $list['email']);
+        // add PREG_SPLIT_NO_EMPTY to only return non-empty values
+        $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", ""), -1, PREG_SPLIT_NO_EMPTY));
 
         $destMails = [];
         //get destination mails
-        foreach (explode(";", $listEmails) as $mail) {
+        foreach (explode(";", $list['email']) as $mail) {
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
