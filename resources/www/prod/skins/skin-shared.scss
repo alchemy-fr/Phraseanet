@@ -426,7 +426,7 @@ span.ww_winTitle {
   margin: 10px;
 }
 
-#order_manager .order_list li {
+#order_manager .order_list .table-order li {
   display: inline-block;
   border-radius: $defaultBorderRadius;
   border: 1px solid #FFFFFF;
@@ -444,7 +444,7 @@ span.ww_winTitle {
 }
 
 #order_manager .order_list .clicked {
-  background-color: $darkTextColor;
+  background-color: $btnBackgroundHighlight;
   border: 1px solid #4990E2;
 }
 
@@ -528,13 +528,61 @@ button.order_launcher.btn {
 }
 
 .top-bar {
-  background: #ccc;
+  background: $answersToolsBtnHoverBg;
   vertical-align: middle;
   padding: 4px;
+  .btn-group.open .btn.dropdown-toggle {
+    background-color: $answersToolsBtnHoverBg;
+    &:hover {
+      background-color: $answersToolsBtnHoverBg;
+    }
+  }
+  .btn.dropdown-toggle {
+    border-radius: 0;
+    border: 1px #fff;
+    border-style: none none none solid;
+    margin-left: 10px;
+    height: 30px;
+    background: none;
+    box-shadow: none;
+    font-weight: 400;
+    color: $highlightTextColor;
+    .caret {
+      margin-left: 5px;
+      border-top: 4px solid $highlightTextColor;
+    }
+    &:focus {
+      outline:0;
+    }
+  }
+  .dropdown-menu {
+    min-width: 95px;
+    background-color: $answersToolsBtnHoverBg;
+    *border: 1px solid $answersToolsBtnBorder;
+    a {
+      padding: 3px 10px;
+      font-size: $mediumFontSize;
+      color: $highlightTextColor;
+      cursor: pointer;
+      &:hover {
+        background-color: $answersToolsBtnHoverBg;
+        color: $highlightTextColor; //$answersToolsBtnHoverColor;
+      }
+    }
+    img {
+      margin-right: 5px;
+      color: #fff;
+    }
+  }
 }
 
 .top-bar form {
   margin: 0;
+  display: inline-block;
+  span {
+    vertical-align: middle;
+    color: $highlightTextColor;
+  }
 }
 
 .top-bar form input[type="checkbox"] {
