@@ -72,20 +72,24 @@
         <table class="table no-border">
             <tr>
                 <td>
+                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getId() }}</span>
+                </td>
+                <td width="20%">
                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
                     <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
                 </td>
-                <td>
+                <td width="20%">
                     <span class="text_block">{{ 'Deadline' | trans }}</span>
                     <span class="text_block_bold">{{ order.getDeadline()|date('d/m/Y') }}</span>
                 </td>
-                <td>
+                <td width="20%">
                     <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
                     <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
                 </td>
             </tr>
             <tr>
-                <td>
+                <td colspan="2">
                     <span class="text_block">{{ displayName }} (<a
                                 style="font-size: 12px;color: #4990E2;" href="#"
                                 onclick="sendMail()">{{ order.getUser().getEmail() }}</a>)
@@ -97,7 +101,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td colspan="2">
                     <h4 class="minimize">{{ order.getOrderUsage() }}</h4>
                 </td>
             </tr>
