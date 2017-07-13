@@ -43,6 +43,11 @@ class IndexManipulateCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Only populate chosen databox'
+            )->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                "Don't ask for for the dropping of the index, but force the operation to run."
             );
 
     }
@@ -97,8 +102,23 @@ class IndexManipulateCommand extends Command
         $indexExists = $indexer->indexExists();
 
         if ($drop && $indexExists) {
-            $indexer->deleteIndex();
-            $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
+            if ($input->getOption('force')) {
+                $confirmation = true;
+            }
+            else {
+                $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
+                $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+            }
+            
+            if ($confirmation) {
+                $indexer->deleteIndex();
+                $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
+            }
+            else {
+                $output->writeln('Canceled.');
+
+                return 0;
+            }
         }
 
         $indexExists = $indexer->indexExists();
