@@ -168,13 +168,11 @@ class ExportController extends Controller
             $request->request->get('businessfields')
         );
 
-        $separator = preg_split('//', ' ;,', -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        $separator = '/\\' . implode('|\\', $separator) . '/';
-
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());
+
+        $separator = '/\ |\;|\,/';
         // add PREG_SPLIT_NO_EMPTY to only return non-empty values
         $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", ""), -1, PREG_SPLIT_NO_EMPTY));
-
         $destMails = [];
         //get destination mails
         foreach (explode(";", $list['email']) as $mail) {
