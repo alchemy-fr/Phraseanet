@@ -810,14 +810,19 @@ function renderOrderDetailView(countSelected) {
 * params - array of type for each button selected
 */
 function updateButtonStatus(elementArrayType) {
-    if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED) || _.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
-        $('#order-action button.send').prop('disabled', true);
-        $('#order-action button.deny').hide();
-        $('#order-action span.action-text').hide();
-    }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
-        $('#order-action button.send').prop('disabled', false);
-        $('#order-action button.deny').hide();
+    if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED)) {
+        $('#order-action button.deny, #order-action button.send').hide();
+        $('#order-action span.action-text').html('{{ 'order-manager::order-item: already-validated' | trans }}' + '<i class="icon-ok"></i>');
         $('#order-action span.action-text').show();
+    }else if (_.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
+        $('#order-action button.deny, #order-action span.action-text').hide();
+        $('#order-action button.send').show();
+        $('#order-action button.send').prop('disabled', true);
+    }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
+        $('#order-action button.deny').hide();
+        $('#order-action span.action-text').html('{{ 'order-manager::order-item: refused-previously' | trans }}');
+        $('#order-action button.send').prop('disabled', false);
+        $('#order-action button.send, #order-action span.action-text').show();
     }else {
         $('#order-action button.send, #order-action button.deny').prop('disabled', false);
         $('#order-action button.send, #order-action button.deny').show();
