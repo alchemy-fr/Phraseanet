@@ -15,7 +15,8 @@ function thesauShowWizard(wizard, refreshFilter)
   {
     $("#THPD_WIZARDS DIV.wizard", p4.thesau.tabs).hide();
     $("#THPD_WIZARDS ." + wizard, p4.thesau.tabs).show();
-    $("#THPD_T_treeBox", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height());
+    $("#THPD_T", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
+      + $("#THPD_T", p4.thesau.tabs).position().top);
 
     p4.thesau.currentWizard = wizard;
 
@@ -1048,7 +1049,15 @@ function startThesaurus(){
   p4.thesau.lastClickedCandidate = null;
 
   p4.thesau.tabs = $("#THPD_tabs");
-  p4.thesau.tabs.tabs();
+  p4.thesau.tabs.tabs({
+      activate: function(event, ui) {
+          if (ui.newPanel.selector == '#THPD_T') {
+              $("#THPD_WIZARDS", p4.thesau.tabs).show();
+          }else {
+              $("#THPD_WIZARDS", p4.thesau.tabs).hide();
+          }
+      }
+  });
 
   trees = {
     'T':{
