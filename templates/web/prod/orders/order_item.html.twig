@@ -71,11 +71,11 @@
 
         <table class="table no-border">
             <tr>
-                <td width="15%">
+                <td>
                     <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
                     <span class="text_block_bold">{{ order.getId() }}</span>
                 </td>
-                <td>
+                <td width="20%">
                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
                     <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
                 </td>
