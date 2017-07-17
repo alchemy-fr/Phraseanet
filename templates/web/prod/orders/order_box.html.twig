@@ -207,6 +207,7 @@
         PROCESSED: 'processed'
     }
     const FilterDate = {
+        NO_FILTER: 'no_filter',
         CURRENT_WEEK: 'current_week',
         PAST_WEEK:  'past_week',
         PAST_MONTH:  'past_month',
@@ -234,7 +235,7 @@
 
     setDateInPicker(date);
     setSelectionText(dateSelection);
-    if(dateSelection != '') {
+    if(dateSelection != FilterDate.NO_FILTER) {
         var element = $('#filter_box tbody tr td button[name=' + dateSelection.toUpperCase() + ']');
         setDateSelection(element);
     }
@@ -263,7 +264,7 @@
 
     function setSelectionText(dateSelection) {
         $('.reset-btn').remove();
-        if(dateSelection != '') {
+        if(dateSelection != FilterDate.NO_FILTER) {
             if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
                 dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html() + " " + $('#datepicker').val();
                 var obj = {};
@@ -307,6 +308,7 @@
     }
 
     function performRequest() {
+        console.log(info);
         $.ajax({
             type: 'GET',
             url: '../prod/order/',
@@ -318,8 +320,8 @@
     }
 
     function reset(){
-        info['start'] = '';
-        setSelectionText('');
+        info['start'] = FilterDate.NO_FILTER;
+        setSelectionText(FilterDate.NO_FILTER);
         $('#date-form').trigger('submit');
     }
 

@@ -115,6 +115,10 @@ class OrderRepository extends EntityRepository
                     }
                     break;
 
+                case Order::STATUS_NO_FILTER:
+                    //no filtering by date
+                    break;
+
                 default:
                     break;
             }

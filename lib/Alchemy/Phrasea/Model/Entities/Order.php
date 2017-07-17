@@ -27,6 +27,7 @@ class Order
 
     const STATUS_TODO = 'pending';
     const STATUS_PROCESSED = 'processed';
+    const STATUS_NO_FILTER = 'no_filter';
     const STATUS_CURRENT_WEEK = 'current_week';
     const STATUS_PAST_WEEK = 'past_week';
     const STATUS_PAST_MONTH = 'past_month';
@@ -105,6 +106,14 @@ class Order
     }
 
     /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * @param User $user
      *
      * @return Order
@@ -117,11 +126,13 @@ class Order
     }
 
     /**
-     * @return User
+     * Get deadline
+     *
+     * @return \DateTime
      */
-    public function getUser()
+    public function getDeadline()
     {
-        return $this->user;
+        return $this->deadline;
     }
 
     /**
@@ -138,13 +149,13 @@ class Order
     }
 
     /**
-     * Get deadline
+     * Get created_on
      *
      * @return \DateTime
      */
-    public function getDeadline()
+    public function getCreatedOn()
     {
-        return $this->deadline;
+        return $this->createdOn;
     }
 
     /**
@@ -158,16 +169,6 @@ class Order
         $this->createdOn = $createdOn;
 
         return $this;
-    }
-
-    /**
-     * Get created_on
-     *
-     * @return \DateTime
-     */
-    public function getCreatedOn()
-    {
-        return $this->createdOn;
     }
 
     /**
@@ -206,6 +207,16 @@ class Order
     }
 
     /**
+     * Get todo
+     *
+     * @return integer
+     */
+    public function getTodo()
+    {
+        return $this->todo;
+    }
+
+    /**
      * Set todo
      *
      * @param  integer $todo
@@ -216,16 +227,6 @@ class Order
         $this->todo = $todo;
 
         return $this;
-    }
-
-    /**
-     * Get todo
-     *
-     * @return integer
-     */
-    public function getTodo()
-    {
-        return $this->todo;
     }
 
     /**
@@ -259,6 +260,16 @@ class Order
    }
 
     /**
+     * Get order_usage
+     *
+     * @return string
+     */
+    public function getOrderUsage()
+    {
+        return $this->orderUsage;
+    }
+
+    /**
      * Set order_usage
      *
      * @param  string $orderUsage
@@ -272,13 +283,13 @@ class Order
     }
 
     /**
-     * Get order_usage
+     * Get basket
      *
-     * @return string
+     * @return Basket
      */
-    public function getOrderUsage()
+    public function getBasket()
     {
-        return $this->orderUsage;
+        return $this->basket;
     }
 
     /**
@@ -300,16 +311,6 @@ class Order
         }
 
         return $this;
-    }
-
-    /**
-     * Get basket
-     *
-     * @return Basket
-     */
-    public function getBasket()
-    {
-        return $this->basket;
     }
 
     /**

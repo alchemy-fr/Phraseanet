@@ -104,7 +104,7 @@ class ProdOrderController extends BaseOrderController
         $offsetStart = 0;
 
         $todo = $request->query->get('todo', Order::STATUS_TODO);
-        $start = $request->query->get('start', '');
+        $start = $request->query->get('start', Order::STATUS_NO_FILTER);
         $limit = $request->query->get('limit', []);
 
         if ($page > 0) {
