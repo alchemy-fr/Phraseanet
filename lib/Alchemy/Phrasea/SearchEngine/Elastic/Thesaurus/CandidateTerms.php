@@ -49,6 +49,13 @@ class CandidateTerms
         }
     }
 
+    private function ensureDocumentLoaded()
+    {
+        if (!$this->document) {
+            $this->document = Helper::candidatesFromDatabox($this->databox);
+        }
+    }
+
     public function save()
     {
         $this->ensureDocumentLoaded();
@@ -67,13 +74,6 @@ class CandidateTerms
 
             $this->new_candidates = [];
             $this->document = null; // enforce reload
-        }
-    }
-
-    private function ensureDocumentLoaded()
-    {
-        if (!$this->document) {
-            $this->document = Helper::candidatesFromDatabox($this->databox);
         }
     }
 
