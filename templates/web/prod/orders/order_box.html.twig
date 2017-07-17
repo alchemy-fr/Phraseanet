@@ -215,6 +215,7 @@
     };
 
     var info = {};
+    var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
 
     $('#datepicker').datepicker({
         beforeShow: function() {
@@ -224,10 +225,13 @@
         },
         changeYear: true,
         changeMonth: true,
-        dateFormat: 'yy/mm/dd'
+        dateFormat: 'yy/mm/dd',
+        onSelect: function(value) {
+            date = value;
+            setSelectionText(dateSelection);
+        }
     });
 
-    var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
     setDateInPicker(date);
     setSelectionText(dateSelection);
     if(dateSelection != '') {
