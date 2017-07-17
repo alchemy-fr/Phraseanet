@@ -38,7 +38,7 @@ class OrderRepository extends EntityRepository
      * @param ArrayCollection  $filters
      * @return Order[]
      */
-    public function listOrders($baseIds, $offsetStart = 0, $perPage = 100, $sort = "created_on", $filters = [])
+    public function listOrders($baseIds, $offsetStart = 0, $perPage = 10, $sort = "created_on", $filters = [])
     {
         $qb = $this
             ->createQueryBuilder('o');
@@ -57,7 +57,6 @@ class OrderRepository extends EntityRepository
          $qb
              ->setFirstResult((int) $offsetStart)
              ->setMaxResults(max(10, (int) $perPage));
-
          return $qb->getQuery()->getResult();
     }
 

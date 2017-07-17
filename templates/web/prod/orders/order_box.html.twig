@@ -22,14 +22,14 @@
 
 
     <div id="ORDERPREVIEW">
-        <a id="filter-date" href="#"><span id="filter-text">{{ 'order-manager::order-list: this-week' | trans }}</span> <span class="order-indicator">&#x25bc;</span></a>
+        <a id="filter-date" href="#"><span id="filter-text">{{ 'order-manager::order-list: no-filter' | trans }}</span> <span class="order-indicator">&#x25bc;</span></a>
         <div>
             <form id="date-form">
                 <table cellspacing="0" cellpadding="0" style="display:none" id="filter_box">
                     <tbody>
                         <tr>
                             <td>
-                                <button class="toggle-button-text full-width text-align-right active"
+                                <button class="toggle-button-text full-width text-align-right"
                                         type="button" name="CURRENT_WEEK" onclick="applyFilter(this);">{{ 'order-manager::order-list: this-week' | trans }}</button>
                             </td>
                         </tr>
@@ -230,8 +230,10 @@
     var dateSelection = '{{ start }}', dateSelectionText = '', date = '{{ date }}', tabSelection = '{{ todo }}';
     setDateInPicker(date);
     setSelectionText(dateSelection);
-    var element = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']');
-    setDateSelection(element);
+    if(dateSelection != '') {
+        var element = $('#filter_box tbody tr td button[name=' + dateSelection.toUpperCase() + ']');
+        setDateSelection(element);
+    }
 
 
     function setDateInPicker(date) {
@@ -243,6 +245,7 @@
     function setDateSelection(element) {
         var selection = $(element).attr("name");
         dateSelection = FilterDate[selection];
+        setSelectionText(dateSelection);
         clearAll();
         $(element).addClass('active');
     }
@@ -255,12 +258,26 @@
     }
 
     function setSelectionText(dateSelection) {
-        if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
-            dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html() + " " + $('#datepicker').val();
+        $('.reset-btn').remove();
+        if(dateSelection != '') {
+            if(dateSelection == FilterDate.BEFORE || dateSelection == FilterDate.AFTER) {
+                dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html() + " " + $('#datepicker').val();
+                var obj = {};
+                obj['date'] = $('#datepicker').val();
+                obj['type'] = dateSelection;
+                info['limit'] = obj;
+            }else {
+                dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html();
+                info['limit'] = null;
+            }
+            $('#filter-text').text(dateSelectionText);
+            $('#filter-date').append('<i class="icon-remove-sign reset-btn" onclick="reset()"></i>');
         }else {
-            dateSelectionText = $('#filter_box tbody tr td button[name='+dateSelection.toUpperCase()+']').html();
+            $('#filter-text').text("{{ 'order-manager::order-list: no-filter' | trans }}");
+            info['limit'] = null;
         }
-        $('#filter-text').text(dateSelectionText);
+        info['todo'] = tabSelection;
+        info['start'] = dateSelection;
     }
 
     function clearAll() {
@@ -270,27 +287,22 @@
     }
 
     function goToNextPage(nextPage, perPage) {
+        info['todo'] = tabSelection;
+        info['start'] = dateSelection;
         info['page'] = nextPage;
         info['per-page'] = perPage;
         performRequest();
     }
 
     function goToPreviousPage(previousPage, perPage) {
+        info['todo'] = tabSelection;
+        info['start'] = dateSelection;
         info['page'] = previousPage;
         info['per-page'] = perPage;
         performRequest();
     }
 
     function performRequest() {
-        if(dateSelection === FilterDate.BEFORE || dateSelection === FilterDate.AFTER) {
-            var obj = {};
-            info['start'] = dateSelection;
-            obj['date'] = $('#datepicker').val();
-            obj['type'] = dateSelection;
-            info['limit'] = obj;
-        }else {
-            info['start'] = dateSelection;
-        }
         $.ajax({
             type: 'GET',
             url: '../prod/order/',
@@ -301,26 +313,30 @@
         });
     }
 
+    function reset(){
+        info['start'] = '';
+        setSelectionText('');
+        $('#date-form').trigger('submit');
+    }
+
 $(document).ready(function(){
 
     var dialog = p4.Dialog.get(1);
     var filterDateSelected = false;
 
-    info['todo'] = FilterTodo.TODO;
-    info['start'] = FilterDate.CURRENT_WEEK;
+    //info['todo'] = FilterTodo.TODO;
+    //info['start'] = FilterDate.CURRENT_WEEK;
 
     $('#ORDERPREVIEW').tabs({
         activate: function(event, ui) {
            if(ui.newPanel.selector == '#PROCESSED-ORDER') {
                $('.pager-processed').show();
                $('.pager-todo').hide();
-               info['todo'] = FilterTodo.PROCESSED;
-               console.log(info['todo']);
+               tabSelection = FilterTodo.PROCESSED;
            }else {
                $('.pager-processed').hide();
                $('.pager-todo').show();
-               info['todo'] = FilterTodo.TODO;
-               console.log(info['todo']);
+               tabSelection = FilterTodo.TODO;
            }
         }
     });
