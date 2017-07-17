@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-07-17T10:04:34Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2017-07-17T12:18:01Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10054,6 +10054,12 @@
         <target state="new">order-manager::order-list: last-week</target>
         <jms:reference-file line="39">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="e02cbf71df404107dc19b34dbbbc68d3db98423b" resname="order-manager::order-list: no-filter">
+        <source>order-manager::order-list: no-filter</source>
+        <target state="new">order-manager::order-list: no-filter</target>
+        <jms:reference-file line="25">prod/orders/order_box.html.twig</jms:reference-file>
+        <jms:reference-file line="281">prod/orders/order_box.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="3e4c2488452205da3415085062f9b6e71fed22f6" resname="order-manager::order-list: no-result">
         <source>order-manager::order-list: no-result</source>
         <target state="new">order-manager::order-list: no-result</target>
@@ -10078,7 +10084,6 @@
       <trans-unit id="7fdc2f3af800b4587aa9dd498b9a51150c6261c8" resname="order-manager::order-list: this-week">
         <source>order-manager::order-list: this-week</source>
         <target state="new">order-manager::order-list: this-week</target>
-        <jms:reference-file line="25">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="33">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="398bb708881cde918ccfafcd722d621727e47211" resname="order-manager::order-list: treated-documents">
