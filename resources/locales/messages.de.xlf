@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-07-13T11:42:14Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2017-07-17T10:02:04Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9880,6 +9880,11 @@
         <target state="new">order-manager::order-item: address</target>
         <jms:reference-file line="64">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="530b4df69dfc7f1d4aabbc829da9dd1c8b0935a6" resname="order-manager::order-item: already-validated">
+        <source>order-manager::order-item: already-validated</source>
+        <target state="new">order-manager::order-item: already-validated</target>
+        <jms:reference-file line="819">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="1633622f5312fb56598ca36a584cc877d15ce6b3" resname="order-manager::order-item: by">
         <source>order-manager::order-item: by</source>
         <target state="new">order-manager::order-item: by</target>
@@ -9941,6 +9946,7 @@
         <source>order-manager::order-item: refused-previously</source>
         <target state="new">order-manager::order-item: refused-previously</target>
         <jms:reference-file line="180">prod/orders/order_item.html.twig</jms:reference-file>
+        <jms:reference-file line="827">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item">
         <source>order-manager::order-item: rejected-item</source>
