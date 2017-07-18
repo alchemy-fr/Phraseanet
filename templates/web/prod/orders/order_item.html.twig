@@ -491,9 +491,11 @@ function populateBasketDialog($dialog, type) {
     $('input[name="lst"]', $dialog).prop('checked', true);
     $('.checkbox', $dialog).css("visibility","hidden");
     //set default name
-    var name = '{{ 'order-manager::order-item: CMD' |trans }}' + ' {{ order.getCreatedOn()|date('d/m/Y') }} '
-        + '{{ 'order-manager::order-item: by' |trans }}'
-        + ' {{ order.getUser().getDisplayName() }}';
+    var name = '{{ 'order-manager::order-list: order-id' | trans }} '
+        + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+        + '{{ order.getCreatedOn()|date('d/m/Y') }}'
+        + ' {{ 'order-manager::order-item: by' |trans }} '
+        + '{{ order.getUser().getDisplayName() }}';
     $('input[name="name"]', $dialog).val(name);
     var description = '';
     var elements_ids = [];
@@ -778,7 +780,9 @@ function do_deny_documents(order_id, elements_ids) {
 
 function sendMail() {
     var email = '{{ order.getUser().getEmail() }}';
-    var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }} ({{ 'order-manager::order-list: order-id' | trans }} : {{ order.getId() }})';
+    var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} '
+            + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+            + '{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
     var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
     if(email != null) {
         var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
