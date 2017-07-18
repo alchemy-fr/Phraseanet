@@ -9943,6 +9943,17 @@
         <target state="new">order-manager::order-item: more</target>
         <jms:reference-file line="396">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="6a94ff8b85f20f5eb7aec10f853f62d4c070e739" resname="order-manager::order-item: number">
+        <source>order-manager::order-item: number</source>
+        <target state="new">order-manager::order-item: number</target>
+        <jms:reference-file line="783">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of">
+        <source>order-manager::order-item: of</source>
+        <target state="new">order-manager::order-item: of</target>
+        <jms:reference-file line="495">prod/orders/order_item.html.twig</jms:reference-file>
+        <jms:reference-file line="784">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="28e4d811c253e486863413d17d1fcdc3f2cbfc42" resname="order-manager::order-item: refused-previously">
         <source>order-manager::order-item: refused-previously</source>
         <target state="new">order-manager::order-item: refused-previously</target>
@@ -10073,6 +10084,7 @@
         <jms:reference-file line="96">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="145">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/orders/order_item.html.twig</jms:reference-file>
+        <jms:reference-file line="494">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85dd044f6bfaedfb215f44715b2a7844a60616d3" resname="order-manager::order-list: pending">
         <source>order-manager::order-list: pending</source>
