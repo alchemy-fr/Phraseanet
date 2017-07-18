@@ -1999,9 +1999,9 @@
         <target state="translated">Session en cours</target>
         <jms:reference-file line="43">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="081ae3fdc403609cf6e760849ebb14117b7a50cb" resname="Custom">
+      <trans-unit id="081ae3fdc403609cf6e760849ebb14117b7a50cb" resname="Custom" approved="yes">
         <source>Custom</source>
-        <target state="new">Custom</target>
+        <target state="translated">Custom</target>
         <jms:reference-file line="121">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="423">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -2010,9 +2010,9 @@
         <target state="translated">Entrée/Sortie Dublin Core</target>
         <jms:reference-file line="115">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !">
+      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !" approved="yes">
         <source>Danger zone !</source>
-        <target state="needs-translation">Danger ! Sables mouvant</target>
+        <target state="translated">Danger !</target>
         <jms:reference-file line="5">admin/fields/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61074f1c958d6cdd32dad889b3d58a2d0704cbe3" resname="Database" approved="yes">
@@ -9869,9 +9869,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Votre commande du :</target>
         <jms:reference-file line="787">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item">
+      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item" approved="no">
         <source>order-manager::order-item: accepted-item</source>
-        <target state="new">order-manager::order-item: accepted-item</target>
+        <target state="needs-translation">Document(s) délivré(s)</target>
         <jms:reference-file line="500">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address">
@@ -9956,9 +9956,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">order-manager::order-item: number</target>
         <jms:reference-file line="787">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of">
+      <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of" approved="yes">
         <source>order-manager::order-item: of</source>
-        <target state="new">order-manager::order-item: of</target>
+        <target state="translated">of de</target>
         <jms:reference-file line="485">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="788">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
@@ -9973,9 +9973,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Enregistrements refusé</target>
         <jms:reference-file line="494">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset">
+      <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="yes">
         <source>order-manager::order-item: reset</source>
-        <target state="new">order-manager::order-item: reset</target>
+        <target state="translated">Annulé</target>
         <jms:reference-file line="535">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fc248486bb79f2b1af418f84134be121e6eed80" resname="order-manager::order-item: select-all" approved="yes">
@@ -9983,9 +9983,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tous sélectionner</target>
         <jms:reference-file line="115">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item">
+      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item" approved="yes">
         <source>order-manager::order-item: selected-item</source>
-        <target state="new">order-manager::order-item: selected-item</target>
+        <target state="translated">Elements sélectionné(s)</target>
         <jms:reference-file line="507">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records">
@@ -10024,9 +10024,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Avec la selection</target>
         <jms:reference-file line="129">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b48ee9984c39d284c1fc5f4f2a0e95308a42eb1" resname="order-manager::order-item: with-validated-items">
+      <trans-unit id="1b48ee9984c39d284c1fc5f4f2a0e95308a42eb1" resname="order-manager::order-item: with-validated-items" approved="no">
         <source>order-manager::order-item: with-validated-items</source>
-        <target state="needs-translation">Avec les enregistrements envoyés.</target>
+        <target state="needs-translation">Avec les document(s) envoyé(s).</target>
         <jms:reference-file line="121">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afb6c177210671e3a6a0a089685fc2a3c4bd3b28" resname="order-manager::order-item: you-have-denied">
@@ -10815,9 +10815,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rechercher</target>
         <jms:reference-file line="292">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection">
+      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection" approved="yes">
         <source>prod::editing:thumbnailselection</source>
-        <target state="needs-translation">Sélectionné un enregistrement.</target>
+        <target state="translated">Sélectionné un enregistrement.</target>
         <jms:reference-file line="275">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -12928,9 +12928,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="70">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8adc0b977e7abdf06ac1974f7b58937c1cd2b0d9" resname="use truncation">
+      <trans-unit id="8adc0b977e7abdf06ac1974f7b58937c1cd2b0d9" resname="use truncation" approved="yes">
         <source>use truncation</source>
-        <target state="needs-translation">Troncature activée.</target>
+        <target state="translated">Troncature activée.</target>
         <jms:reference-file line="225">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fea0574cc81b5fd40ab0537b0905cc4c3806039" resname="users rights have been reseted" approved="yes">
