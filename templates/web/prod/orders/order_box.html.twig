@@ -88,9 +88,13 @@
                                 <i class="icon-circle icon-stack-base" style="color:#7CD11E"></i>
                                 <i class="icon-exclamation" style="color:#FFF"></i>
                                 </span></td>
-                                <td style="width: 50%">
+                                <td style="width: 40%">
                                     <h4>{{ order.getOrderUsage() | nl2br }}</h4>
                                     <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getId() }}</span>
                                 </td>
                                 <td>
                                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
@@ -133,9 +137,13 @@
                                     <i class="icon-circle icon-stack-base" style="color:#999"></i>
                                     <i class="icon-check" style="color:#FFF"></i>
                                     </span></td>
-                                <td style="width: 50%">
+                                <td style="width: 40%">
                                     <h4>{{ order.getOrderUsage() | nl2br }}</h4>
                                     <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getId() }}</span>
                                 </td>
                                 <td>
                                     <span class="text_block">{{ 'Date de demande' | trans }}</span>
