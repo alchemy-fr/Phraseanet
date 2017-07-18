@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-07-27T11:09:55Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -1397,9 +1397,9 @@
         <target state="translated">Par défaut cette option est disponible pour les administrateurs.</target>
         <jms:reference-file line="27">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8fccc36fcf981cd94ac8af3fddfb791c9c4b040e" resname="By numeric field">
+      <trans-unit id="8fccc36fcf981cd94ac8af3fddfb791c9c4b040e" resname="By numeric field" approved="yes">
         <source>By numeric field</source>
-        <target state="needs-translation">Champs numérique</target>
+        <target state="translated">Champs numérique</target>
         <jms:reference-file line="292">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c39590f7a37c44b4773792d4288c1d8181d3c58c" resname="By string field" approved="yes">
@@ -2666,9 +2666,9 @@
         <target state="translated">Activer la substitution de documents sources</target>
         <jms:reference-file line="28">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="344fc3edd6987653de543b2ecd2d31aec2f3cca0" resname="Enable Phraseanet Web API">
+      <trans-unit id="344fc3edd6987653de543b2ecd2d31aec2f3cca0" resname="Enable Phraseanet Web API" approved="yes">
         <source>Enable Phraseanet Web API</source>
-        <target state="needs-translation">Autoriser l'accès par l'API</target>
+        <target state="translated">Autoriser l'accès par l'API</target>
         <jms:reference-file line="22">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee98e71194d6f532c3c777fa20a957c3ba490089" resname="Enable SMTP authentication" approved="yes">
@@ -3219,9 +3219,9 @@
         <target state="translated">Obtenir une notification quand un export par e-mail échoue</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index">
+      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
         <source>Get setting form index</source>
-        <target state="new">Get setting form index</target>
+        <target state="translated">Obtenir les données de l'index Elasticsearch</target>
         <jms:reference-file line="35">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
@@ -9622,9 +9622,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rotation</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
         <source>index::advance_search: disable-facet</source>
-        <target state="needs-translation">Ne pas afficher les facettes contenant un seul résultat (expérimental).</target>
+        <target state="translated">Ne pas afficher les facettes contenant un seul résultat (expérimental).</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet">
