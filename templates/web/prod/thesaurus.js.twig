@@ -11,12 +11,13 @@ function thesauCancelWizard()
 
 function thesauShowWizard(wizard, refreshFilter)
 {
+  var offsetTabHeight = $("#THPD_tabs .ui-tabs-nav")[0].offsetHeight;
   if(wizard != p4.thesau.currentWizard)
   {
     $("#THPD_WIZARDS DIV.wizard", p4.thesau.tabs).hide();
     $("#THPD_WIZARDS ." + wizard, p4.thesau.tabs).show();
     $("#THPD_T", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
-      + $("#THPD_T", p4.thesau.tabs).position().top);
+      + offsetTabHeight);
 
     p4.thesau.currentWizard = wizard;
 

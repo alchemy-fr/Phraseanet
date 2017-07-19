@@ -198,6 +198,24 @@ dans l'onglet thesaurus : arbres, menus contextuels
         margin: 0;
       }
       .th_ok {
+        display: none;
+        width: 15%;
+        line-height: 50px;
+        vertical-align: middle;
+        padding: 0;
+        border-radius: 0;
+        background-color: $mediumBackgroundColor;
+        color: $mediumTextColor;
+        border: none;
+        margin: 0;
+        outline: none;
+        float: left;
+        box-shadow: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+      }
+      .th_cancel {
+        display: none;
         width: 15%;
         line-height: 50px;
         vertical-align: middle;
