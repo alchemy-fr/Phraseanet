@@ -1,8 +1,8 @@
+{#
 <pre>
-    {{ dump(record.getStatistics(30)) }}
+  {{ dump(record.getStatistics(30)) }}
 </pre>
-
-
+#}
 {% if record.get_view_popularity() %}
     <br>
     {{ 'preview::statistiques de visualisation pour le lien' | trans }}
