@@ -18,6 +18,9 @@ function thesauShowWizard(wizard, refreshFilter)
     $("#THPD_T", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
       + $("#THPD_T", p4.thesau.tabs).position().top);
 
+    $("#THPD_C", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
+      + 46);
+
     p4.thesau.currentWizard = wizard;
 
     if(refreshFilter)
@@ -99,11 +102,23 @@ function T_filter_delayed2(f, delay, mode)
   {
     if(mode=='ALL')
     {
+        var type, id, z = "";
+        if($(".ui-tabs-nav li.ui-state-active a", p4.thesau.tabs).attr('href') === '#THPD_T') {
+            //thesaurus
+            type = "TH";
+            id = 'T';
+        }else {
+            //candidate
+            type = "CT";
+            id = 'C';
+        }
       // search in every base, everywhere
       for(i in sbas)
       {
         var zurl = "/xmlhttp/search_th_term_prod.j.php"
           + "?sbid=" + sbas[i].sbid
+          + "&typ=" + type
+          + "&id=" + id
           + "&t=" + encodeURIComponent(f);
 
         sbas[i].seeker = $.ajax({
@@ -113,7 +128,11 @@ function T_filter_delayed2(f, delay, mode)
           dataType:'json',
           success: function(j)
           {
-            var z = '#TX_P\\.' + j.parm['sbid'] + '\\.T';
+              if(type === 'TH') {
+                  z = '#TX_P\\.' + j.parm['sbid'] + '\\.' + id;
+              }else {
+                  z = '#CX_P\\.' + j.parm['sbid'] + '\\.' + id;
+              }
 
             var o = $(z);
             var isLast = o.hasClass('last');
@@ -138,7 +157,9 @@ function T_filter_delayed2(f, delay, mode)
       for(i in sbas)
       {
         var zurl = "/xmlhttp/search_th_term_prod.j.php"
-          + "?sbid=" + sbas[i].sbid;
+          + "?sbid=" + sbas[i].sbid
+            + "&typ=TH"
+            + "&id=T";
 
         if(sbas[i].sbid == trees.C._selInfos.sbas)
         {
@@ -1049,15 +1070,7 @@ function startThesaurus(){
   p4.thesau.lastClickedCandidate = null;
 
   p4.thesau.tabs = $("#THPD_tabs");
-  p4.thesau.tabs.tabs({
-      activate: function(event, ui) {
-          if (ui.newPanel.selector == '#THPD_T') {
-              $("#THPD_WIZARDS", p4.thesau.tabs).show();
-          }else {
-              $("#THPD_WIZARDS", p4.thesau.tabs).hide();
-          }
-      }
-  });
+  p4.thesau.tabs.tabs({});
 
   trees = {
     'T':{
