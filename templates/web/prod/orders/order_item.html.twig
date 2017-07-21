@@ -134,7 +134,7 @@
                 <table class="table-order">
                     <tbody>
                     {% for element in order.getElements() %}
-                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                             <td width="10%" align="center">
                                 {% if element.getOrderMaster() %}
                                     {% set name = element.getOrderMaster().getDisplayName() %}
@@ -206,7 +206,7 @@
                         <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                              style="width:150px;height:150px;"
                              src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
-                        <p>{{ 'order-manager::order-item: for-all-selected-records' | trans }}</p>
+                        <div id="text-content"></div>
                     </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
@@ -647,20 +647,35 @@ function resetValidation() {
 }
 
 function updateValidation(newState) {
+    var count = 0;
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
+        if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
             && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
             createItemForValidation($(n), ELEMENT_TYPE.SELECTABLE, newState);
+            count++;
         }
-        else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && $(n).hasClass(ELEMENT_TYPE.DENIED)
+        else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED)
             && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
             createItemForValidation($(n), ELEMENT_TYPE.DENIED, newState);
+            count++;
         }
+        $(n).removeClass(ELEMENT_TYPE.SELECTED);
     });
 
     readyForValidation = true;
     toggleValidationButton();
+    //disable select all checkbox if selected
+    if($('input[name="select-all"]').is(':checked')){
+        $('input[name="select-all"]').prop('checked', false);
+    }
+
+    //multiple items selected
+    if(count > 1) {
+        $('#wrapper-padding').hide();
+        $('.external-order-action').hide();
+        $('#wrapper-multiple').hide();
+    }
 }
 
 function createItemForValidation(element, oldState, newState) {
@@ -673,7 +688,6 @@ function createItemForValidation(element, oldState, newState) {
     order.newState = newState;
     elementsForValidation.push(order);
     element.toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-    element.toggleClass(ELEMENT_TYPE.SELECTED);
     element.find('td:first-child').empty();
     element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
     updateButtonStatus(element.attr('class').split(/\s+/));
@@ -692,7 +706,7 @@ function checkAll(element) {
     var selectable =[];
     $('.table-order .order_row').each(function(){
         var el = $(this);
-        if(element.checked && el.hasClass(ELEMENT_TYPE.SELECTABLE) && !el.hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
+        if(element.checked && el.hasClass(ELEMENT_TYPE.SELECTABLE)){
             el.addClass(ELEMENT_TYPE.SELECTED);
             itemCount++;
             selectable.push(el);
@@ -799,9 +813,11 @@ function renderOrderDetailView(countSelected) {
         var dialog = p4.Dialog.get(1);
         var elementArrayType = [];
         $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
-            elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
+            //elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
+            elementArrayType.push($(n).attr('class').split(/\s+/));
         });
-        updateButtonStatus(elementArrayType);
+        updateButtonStatusMultiple(elementArrayType);
+        //updateButtonStatus(elementArrayType);
     }else if(countSelected == 1) {
         $('#wrapper-padding').show();
         $('.external-order-action').show();
@@ -812,6 +828,39 @@ function renderOrderDetailView(countSelected) {
         $('#wrapper-multiple').hide();
     }
     $('#preview-layout-multiple .title').html(countSelected);
+}
+
+function updateButtonStatusMultiple(elementArrayType) {
+    $('#order-action button.deny, #order-action button.send').hide();
+    var countObj = elementArrayType.reduce(function(m,v){
+        for (var k in m) {
+            if (~v.indexOf(k)) m[k]++;
+        }
+        return m;
+    },{validated:0, selectable: 0, waitingForValidation: 0});
+
+    var html = "";
+    if(countObj.validated > 0) {
+        html += '<p>{{ 'order-manager::order-item: items-already-sent' | trans }}: '
+            + countObj.validated + '</p>';
+    }
+
+    if(countObj.waitingForValidation > 0) {
+        html += '<p>{{ 'order-manager::order-item: items-waiting-validation' | trans }}: '
+            + countObj.waitingForValidation + '</p>';
+    }
+
+    //for the remaining items
+    var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
+    if(remaining > 0) {
+        html += '<p> {{ 'order-manager::order-item: for-non-sent-items' | trans }}: '
+            + remaining + '</p>';
+        $('#order-action button.deny, #order-action button.send').prop('disabled', false);
+        $('#order-action button.deny, #order-action button.send').show();
+    }
+
+    $('#wrapper-multiple #text-content').empty();
+    $('#wrapper-multiple #text-content').append(html);
 }
 
 /* *
