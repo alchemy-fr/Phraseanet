@@ -116,7 +116,7 @@ function T_filter_delayed2(f, delay, mode)
       // search in every base, everywhere
       for(i in sbas)
       {
-        var zurl = "/xmlhttp/search_th_term_prod.j.php"
+        var zurl = "/xmlhttp/search_term_prod.j.php"
           + "?sbid=" + sbas[i].sbid
           + "&typ=" + type
           + "&id=" + id
@@ -157,7 +157,7 @@ function T_filter_delayed2(f, delay, mode)
       // search only on the good base and the good branch(es)
       for(i in sbas)
       {
-        var zurl = "/xmlhttp/search_th_term_prod.j.php"
+        var zurl = "/xmlhttp/search_term_prod.j.php"
           + "?sbid=" + sbas[i].sbid
             + "&typ=TH"
             + "&id=T";
