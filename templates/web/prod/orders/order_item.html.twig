@@ -232,7 +232,6 @@ const ELEMENT_TYPE = {
     DENIED: 'denied',
     SELECTABLE: 'selectable',
     SELECTED: 'selected',
-    CLICKED: 'clicked',
     WAITINGFORVALIDATION: 'waitingForValidation'
 }
 
@@ -267,12 +266,6 @@ $(document).ready(function(){
             $('input[name="select-all"]').prop('checked', false);
         }
 
-        //if unselectable item is clicked for preview, unselected it
-        if($('.order_list .clicked', dialog.getDomElement()).length>0){
-            $('.order_list .clicked', dialog.getDomElement()).removeClass(ELEMENT_TYPE.CLICKED);
-            itemCount--;
-        }
-
         if(is_ctrl_key(event))
         {
             if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
@@ -301,18 +294,15 @@ $(document).ready(function(){
         else
         {
             $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
-            $('.order_list .clicked', dialog.getDomElement()).removeClass(ELEMENT_TYPE.CLICKED);
             if($this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
                 $this.addClass(ELEMENT_TYPE.SELECTED);
                 lastSelectedRow = $this;
-            }else {
-                $this.addClass(ELEMENT_TYPE.CLICKED);
             }
             itemCount = 1;
         }
 
         if(itemCount == 1) {
-            var selected = $('.order_list .selected, .order_list .clicked', dialog.getDomElement());
+            var selected = $('.order_list .selected', dialog.getDomElement());
             loadPreviewAndCaption(selected);
         }
         renderOrderDetailView(itemCount);
