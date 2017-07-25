@@ -114,7 +114,7 @@
                     <form action="">
                         <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/><span>{{ 'order-manager::order-item: select-all' |trans }}</span>
                     </form>
-                    <div class="btn-group">
+                    <div class="btn-group" id="myDropdown">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">{{ 'order-manager::order-item: create-basket' |trans }}<span class="caret"></span></button>
                         <ul class="dropdown-menu">
                             <li type="validated" class="basket-btn">
@@ -125,7 +125,7 @@
                                 <a>{{ 'order-manager::order-item: with-denied-items' |trans }}</a>
                             </li>
                             <li class="divider"></li>
-                            <li type="selected" class="basket-btn">
+                            <li type="selected" class="basket-btn disabled">
                                 <a>{{ 'order-manager::order-item: with-selected-items' |trans }}</a>
                             </li>
                         </ul>
@@ -446,6 +446,21 @@ $(document).ready(function(){
     return false;
     });
 
+    $('#myDropdown').on('click', function(){
+        if($('#myDropdown').hasClass('open')) {
+            return;
+        }
+        var dialog = p4.Dialog.get(1);
+        if($('.order_list .selected', dialog.getDomElement()).length > 0) {
+            $('li[type="selected"]').removeClass('disabled');
+        }else {
+            //no selected item
+            if(!$('li[type="selected"]').hasClass('disabled')) {
+                $('li[type="selected"]').addClass('disabled');
+            }
+        }
+    });
+
 });
 
 function createBasket($dialog) {
@@ -497,24 +512,21 @@ function populateBasketDialog($dialog, type) {
         + ' {{ 'order-manager::order-item: by' |trans }} '
         + '{{ order.getUser().getDisplayName() }}';
     $('input[name="name"]', $dialog).val(name);
-    var description = '';
+    var description = '{{ order.getOrderUsage()|e('js')|raw }}';
     var elements_ids = [];
     switch (type){
         case 'denied':
-            description = '{{ 'order-manager::order-item: rejected-item' |trans }}';
             $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
                 elements_ids.push($(n).attr('elementids'));
             });
             break;
         case 'validated':
-            description = '{{ 'order-manager::order-item: accepted-item' |trans }}';
             $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
                 elements_ids.push($(n).attr('elementids'));
             });
             break;
         default :
             //selected elements;
-            description = '{{ 'order-manager::order-item: selected-item' |trans }}';
             $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
                 elements_ids.push($(n).attr('elementids'));
             });
