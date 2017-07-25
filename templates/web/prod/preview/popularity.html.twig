@@ -1,23 +1,157 @@
-{#
-<pre>
-  {{ dump(record.getStatistics(30)) }}
-</pre>
-#}
-{% if record.get_view_popularity() %}
-    <br>
-    {{ 'preview::statistiques de visualisation pour le lien' | trans }}
-    <br/>
-    <img src="{{record.get_view_popularity().get_url()}}" />
-  {% endif %}
+{{ 'preview::statistiques de visualisation pour le lien' | trans }}
+<div id="chart_visualisation" style="width: 100%; min-width: 150px; min-height: 250px;"></div>
+<br/>
+<div id="chart_pie" style="width: 100%; min-height: 200px;"></div>
+<br/>
+{{ 'preview::statistiques de telechargement' | trans }}
+<div id="chart_download" style="width: 100%; min-width: 150px; min-height: 250px;"></div>
+<br/>
 
-  {% if record.get_refferer_popularity() %}
-    <br>
-    <img src="{{record.get_refferer_popularity().get_url()}}" />
-  {% endif %}
+  <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart', 'bar']});
 
-  {% if record.get_download_popularity() %}
-    <br>
-    {{ 'preview::statistiques de telechargement' | trans }}
-    <br>
-    <img src="{{record.get_download_popularity().get_url()}}" />
-  {% endif %}
+      var statistics = {{ record.getStatistics(30)|json_encode()|raw }};
+
+      if(statistics != null) {
+          var arrayViews = [], arrayDownloads = [], arrayReferrers = [];
+
+          var statisticsArrayByDay = Object.values(statistics.by_day);
+          statisticsArrayByDay.map(function(objByDay) {
+              //[new Date(2017, 0, 1), 5],
+              arrayViews.push([new Date(objByDay.label), objByDay.views]);
+              arrayDownloads.push([new Date(objByDay.label), objByDay.downloads]);
+          });
+
+          //add header for piechart
+          arrayReferrers.push(['Liens', 'Visualisation']);
+          var statisticsReferrers = Object.values(statistics.referrers);
+          statisticsReferrers.map(function(objReferrers) {
+              arrayReferrers.push([objReferrers.label, objReferrers.count]);
+          });
+
+          if(arrayViews.length > 0) {
+              google.charts.setOnLoadCallback(drawChartVisualisation);
+          }
+
+          if(arrayDownloads.length > 0) {
+              google.charts.setOnLoadCallback(drawChartDownload);
+          }
+
+          if(arrayReferrers.length > 0) {
+              google.charts.setOnLoadCallback(drawPieChart);
+          }
+      }
+
+
+      function drawChartVisualisation() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('date', 'Date');
+          data.addColumn('number', 'Visualisation');
+
+          data.addRows(arrayViews);
+
+          var options = {
+              titleTextStyle: {
+                  color: 'white',
+                  fontSize: 13
+              },
+              colors: ['#FF9900'],
+              'backgroundColor': 'transparent',
+              hAxis: {
+                  title: 'Date',
+                  titleTextStyle: {
+                      color: 'white',
+                      fontSize: 11
+                  },
+                  textStyle:{color: '#FFF'},
+                  format: 'd/M/yy',
+                  gridlines: {color: 'none'},
+                  min: new Date(statistics.from),
+                  max: new Date(statistics.to),
+                  baselineColor: '#FFF'
+              },
+              vAxis: {
+                  title: 'Visualisation',
+                  titleTextStyle: {
+                      color: 'white',
+                      fontSize: 11
+                  },
+                  textStyle:{color: '#FFF'},
+                  minValue: 0,
+                  maxValue: statistics.max_views,
+                  baselineColor: '#FFF'
+              },
+              legend: {position: 'top', textStyle: {color: 'white'}},
+          };
+
+          var chart = new google.visualization.ColumnChart(
+              document.getElementById('chart_visualisation'));
+
+          chart.draw(data, options);
+      }
+
+
+      function drawChartDownload() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('date', 'Date');
+          data.addColumn('number', 'Downloads');
+
+          data.addRows(arrayDownloads);
+
+          var options = {
+              titleTextStyle: {
+                  color: 'white',
+                  fontSize: 13
+              },
+              colors: ['#FF9900'],
+              'backgroundColor': 'transparent',
+              hAxis: {
+                  title: 'Date',
+                  titleTextStyle: {
+                      color: 'white',
+                      fontSize: 11
+                  },
+                  textStyle:{color: '#FFF'},
+                  format: 'd/M/yy',
+                  gridlines: {color: 'none'},
+                  min: new Date(statistics.from),
+                  max: new Date(statistics.to),
+                  baselineColor: '#FFF'
+              },
+              vAxis: {
+                  title: 'Visualisation',
+                  titleTextStyle: {
+                      color: 'white',
+                      fontSize: 11
+                  },
+                  textStyle:{color: '#FFF'},
+                  minValue: 0,
+                  maxValue: statistics.max_downloads,
+                  baselineColor: '#FFF'
+              },
+              legend: {position: 'top', textStyle: {color: 'white'}},
+          };
+
+          var chart = new google.visualization.ColumnChart(
+              document.getElementById('chart_download'));
+
+          chart.draw(data, options);
+      }
+
+      function drawPieChart() {
+          var data = google.visualization.arrayToDataTable(arrayReferrers);
+
+          var options = {
+              'backgroundColor': 'transparent',
+              is3D: true,
+              colors:['#FF9900','#FADFAD', '#FFA500', '#FAD6A5', '#F28500'],
+              legend: {position: 'right', textStyle: {color: 'white'}},
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
+
+          chart.draw(data, options);
+      }
+
+
+  </script>
