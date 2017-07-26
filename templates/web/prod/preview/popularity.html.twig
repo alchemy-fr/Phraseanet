@@ -1,19 +1,19 @@
 <div id="visualisation-chart-div" class="chart">
     {{ 'preview::statistiques de visualisation pour le lien' | trans }}
-    <div id="chart_visualisation" style="width: 100%; min-width: 150px;"></div>
+    <div id="chart_visualisation" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
 </div>
 <div id="pie-chart-div" class="chart">
-    <div id="chart_pie" style="width: 100%; min-width: 150px;"></div>
+    <div id="chart_pie" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
 </div>
 <div id="download-chart-div" class="chart">
 {{ 'preview::statistiques de telechargement' | trans }}
-<div id="chart_download" style="width: 100%; min-width: 150px;"></div>
+<div id="chart_download" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
 </div>
 <br/>
 
   <script type="text/javascript">
     $(document).ready(function() {
-        
+
         var referrersValues = [];
         var statistics = {{ record.getStatistics(30)|json_encode()|raw }};
         if(statistics != null) {
@@ -35,7 +35,6 @@
             });
 
             if(arrayViews.length > 0) {
-                debugger;
                 $('#visualisation-chart-div').show();
                 google.charts.setOnLoadCallback(drawChartVisualisation);
             }else {
@@ -168,16 +167,30 @@
             var options = {
                 'backgroundColor': 'transparent',
                 is3D: true,
-                colors:['#FF9900','#FADFAD', '#FFA500', '#FAD6A5', '#F28500'],
+                colors:['#FF9900','#3FDFFD', '#14CAB5', '#CAA514', '#97853C'],
                 legend: {position: 'right', textStyle: {color: 'white'}},
-                chartArea: {width:'90%',height:'70%'},
+                chartArea: {width:'90%',height:'70%'}
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
             chart.draw(data, options);
         }
-    });
 
+        //redrawing charts when container is resized
+        $('.gui_vsplitter.gui_vsplitter2.ui-draggable').bind('drag', function() {
+            drawChartVisualisation();
+            drawChartDownload();
+            drawPieChart();
+        });
+
+        $(window).resize(function() {
+            console.log('jere');
+            drawChartVisualisation();
+            drawChartDownload();
+            drawPieChart();
+        });
+
+    });
 
 
   </script>
