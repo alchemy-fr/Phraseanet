@@ -1447,7 +1447,12 @@ class ThesaurusXmlHttpController extends Controller
                 $html .= $tab . '<UL style="display:none">' . "\n";
                 $html .= $tab . '</UL>' . "\n";
             } else {
-                $html .= $tab . '<UL>' . "\n";
+                $field0 = $srcnode->getAttribute('field');
+                if ($field0) {
+                    $field0 = 'field="' . $field0 . '"';
+                }
+
+                $html .= $tab . '<UL ' . $field0 . '>' . "\n";
                 // dump every ts
                 /** @var DOMElement[] $ts */
                 foreach ($tts as $ts) {
