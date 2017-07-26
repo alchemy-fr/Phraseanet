@@ -23,6 +23,7 @@
         <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
             $.widget.bridge('uitooltip', $.ui.tooltip);
         </script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
