@@ -255,9 +255,8 @@ function T_acceptCandidates_OK()
         var zurl = "/xmlhttp/openbranch_prod.j.php"
           + "?type=" + result.refresh[i].type
           + "&sbid=" + result.refresh[i].sbid
+          + "&sortsy=1"
           + "&id="   + encodeURIComponent(result.refresh[i].id);
-        if(result.refresh[i].type=='T')
-          zurl += "&sortsy=1" ;
 
         $.get(zurl
         , []
