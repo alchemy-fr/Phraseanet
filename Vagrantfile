@@ -46,7 +46,12 @@ end
 
 # By default, the name of the VM is the project's directory name
 $hostname = File.basename($root).downcase
-$hostIps = `ip addr show | grep inet | grep -v inet6 | cut -d' ' -f6 | cut -d'/' -f1`.split("\n");
+if which('ip')
+    # $hostIps = `ip addr show | grep inet | grep -v inet6 | cut -d' ' -f6 | cut -d'/' -f1`.split("\n");
+    $hostIps = `ip addr show | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+else
+    $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+end
 
 Vagrant.configure("2") do |config|
 
