@@ -1,19 +1,198 @@
-
-  {% if record.get_view_popularity() %}
-    <br>
+<div id="visualisation-chart-div" class="chart">
     {{ 'preview::statistiques de visualisation pour le lien' | trans }}
-    <br/>
-    <img src="{{record.get_view_popularity().get_url()}}" />
-  {% endif %}
-
-  {% if record.get_refferer_popularity() %}
-    <br>
-    <img src="{{record.get_refferer_popularity().get_url()}}" />
-  {% endif %}
-
-  {% if record.get_download_popularity() %}
-    <br>
+    <div id="chart_visualisation" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
+</div>
+<div id="download-chart-div" class="chart">
     {{ 'preview::statistiques de telechargement' | trans }}
-    <br>
-    <img src="{{record.get_download_popularity().get_url()}}" />
-  {% endif %}
+    <div id="chart_download" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
+</div>
+<div id="pie-chart-div" class="chart">
+    <div id="chart_pie" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
+</div>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+        var referrersValues = [];
+        var statistics = {{ record.getStatistics(30)|json_encode()|raw }};
+        if(statistics != null) {
+            var arrayViews = [], arrayDownloads = [], arrayReferrers = [];
+
+            var statisticsArrayByDay = Object.values(statistics.by_day);
+            statisticsArrayByDay.map(function(objByDay) {
+                //[new Date(2017, 0, 1), 5],
+                arrayViews.push([new Date(objByDay.label), objByDay.views]);
+                arrayDownloads.push([new Date(objByDay.label), objByDay.downloads]);
+            });
+
+            //add header for piechart
+            arrayReferrers.push(['Links', 'Visualisation']);
+            var statisticsReferrers = Object.values(statistics.referrers);
+
+            //sort array in descending order - referrers count
+            statisticsReferrers = _.sortBy(statisticsReferrers, "count").reverse();
+            statisticsReferrers.map(function(objReferrers) {
+                referrersValues.push(objReferrers.count);
+                arrayReferrers.push([objReferrers.label, objReferrers.count]);
+            });
+
+            if(arrayViews.length > 0) {
+                $('#visualisation-chart-div').show();
+                google.charts.setOnLoadCallback(drawChartVisualisation);
+            }else {
+                $('#visualisation-chart-div').hide();
+            }
+
+            if(arrayDownloads.length > 0) {
+                $('#download-chart-div').show();
+                google.charts.setOnLoadCallback(drawChartDownload);
+            }else {
+                $('#download-chart-div').hide();
+            }
+
+            //check if all values are equals to zero to hide piechart if true
+            var allZeros = referrersValues.every(function(element) {
+                return element === 0;
+            });
+            if(arrayReferrers.length > 0 && !allZeros) {
+                $('#pie-chart-div').show();
+                google.charts.setOnLoadCallback(drawPieChart);
+            }else {
+                $('#pie-chart-div').hide();
+            }
+        }
+
+
+        function drawChartVisualisation() {
+            var maxValue = statistics.max_views < 4 ? 4 : statistics.max_views;
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', '{{ 'preview::date' | trans }}');
+            data.addColumn('number', '{{ 'preview::visualisation' | trans }}');
+
+            data.addRows(arrayViews);
+
+            var options = {
+                titleTextStyle: {
+                    color: 'white',
+                    fontSize: 13
+                },
+                colors: ['#FF9900'],
+                'backgroundColor': 'transparent',
+                chartArea: {width:'70%',height:'70%'},
+                hAxis: {
+                    title: '{{ 'preview::date' | trans }}',
+                    titleTextStyle: {
+                        color: 'white',
+                        fontSize: 11
+                    },
+                    textStyle:{color: '#FFF'},
+                    format: 'd/M/yy',
+                    gridlines: {color: 'none'},
+                    min: new Date(statistics.from),
+                    max: new Date(statistics.to),
+                    baselineColor: '#FFF'
+                },
+                vAxis: {
+                    title: '{{ 'preview::visualisation' | trans }}',
+                    titleTextStyle: {
+                        color: 'white',
+                        fontSize: 11
+                    },
+                    textStyle:{color: '#FFF'},
+                    minValue: 0,
+                    maxValue: maxValue,
+                    baselineColor: '#FFF'
+                },
+                legend: {position: 'top', textStyle: {color: 'white'}},
+            };
+
+            var chart = new google.visualization.ColumnChart(
+                document.getElementById('chart_visualisation'));
+
+            chart.draw(data, options);
+        }
+
+
+        function drawChartDownload() {
+            var maxValue = statistics.max_downloads < 4 ? 4 : statistics.max_downloads;
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', '{{ 'preview::date' | trans }}');
+            data.addColumn('number', '{{ 'preview::downloads' | trans }}');
+
+            data.addRows(arrayDownloads);
+
+            var options = {
+                titleTextStyle: {
+                    color: 'white',
+                    fontSize: 13
+                },
+                colors: ['#FF9900'],
+                'backgroundColor': 'transparent',
+                chartArea: {width:'70%',height:'70%'},
+                hAxis: {
+                    title: '{{ 'preview::date' | trans }}',
+                    titleTextStyle: {
+                        color: 'white',
+                        fontSize: 11
+                    },
+                    textStyle:{color: '#FFF'},
+                    format: 'd/M/yy',
+                    gridlines: {color: 'none'},
+                    min: new Date(statistics.from),
+                    max: new Date(statistics.to),
+                    baselineColor: '#FFF'
+                },
+                vAxis: {
+                    title: '{{ 'preview::downloads' | trans }}',
+                    titleTextStyle: {
+                        color: 'white',
+                        fontSize: 11
+                    },
+                    textStyle:{color: '#FFF'},
+                    minValue: 0,
+                    maxValue: maxValue,
+                    baselineColor: '#FFF',
+                    format: '0'
+                },
+                legend: {position: 'top', textStyle: {color: 'white'}},
+            };
+
+            var chart = new google.visualization.ColumnChart(
+                document.getElementById('chart_download'));
+
+            chart.draw(data, options);
+        }
+
+        function drawPieChart() {
+            var data = google.visualization.arrayToDataTable(arrayReferrers);
+
+            var options = {
+                'backgroundColor': 'transparent',
+                is3D: true,
+                colors:['#FF9900','#3FDFFD', '#14CAB5', '#CAA514', '#97853C'],
+                legend: {position: 'right', textStyle: {color: 'white'}},
+                chartArea: {width:'90%',height:'70%'},
+                sliceVisibilityThreshold: 0
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
+            chart.draw(data, options);
+        }
+
+        //redrawing charts when container is resized
+        $('.gui_vsplitter.gui_vsplitter2.ui-draggable').bind('drag', function() {
+            drawChartVisualisation();
+            drawChartDownload();
+            drawPieChart();
+        });
+
+        $(window).resize(function() {
+            drawChartVisualisation();
+            drawChartDownload();
+            drawPieChart();
+        });
+
+    });
+
+
+  </script>

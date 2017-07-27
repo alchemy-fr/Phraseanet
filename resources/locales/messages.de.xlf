@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-07-25T05:16:42Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2017-07-27T11:08:26Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8467,7 +8467,9 @@
         <target state="translated">Client</target>
         <jms:reference-file line="116">Controller/Admin/ConnectedUsersController.php</jms:reference-file>
         <jms:reference-file line="80">lib/classes/phrasea.php</jms:reference-file>
-        <jms:reference-file line="489">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="416">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="533">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="685">classes/record/preview.php</jms:reference-file>
         <jms:reference-file line="53">web/admin/connected-users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b3cef115b3050d151f5a5ba7ee76b4bbaa553d5" resname="admin::monitor: module comparateur" approved="yes">
@@ -8487,7 +8489,9 @@
         <target state="translated">Prod</target>
         <jms:reference-file line="115">Controller/Admin/ConnectedUsersController.php</jms:reference-file>
         <jms:reference-file line="79">lib/classes/phrasea.php</jms:reference-file>
-        <jms:reference-file line="487">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="412">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="530">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="683">classes/record/preview.php</jms:reference-file>
         <jms:reference-file line="49">web/admin/connected-users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8e0c217096d84bac92fec38c4fd72265de65306" resname="admin::monitor: module report" approved="yes">
@@ -8851,7 +8855,7 @@
         <jms:reference-file line="177">lib/classes/queries.php</jms:reference-file>
         <jms:reference-file line="53">web/admin/users.html.twig</jms:reference-file>
         <jms:reference-file line="83">actions/Feedback/list.html.twig</jms:reference-file>
-        <jms:reference-file line="1077">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="1090">web/prod/thesaurus.js.twig</jms:reference-file>
         <jms:reference-file line="574">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="1073">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -9071,7 +9075,7 @@
         <jms:reference-file line="35">Bridge/Youtube/actionelements.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/results/entry.html.twig</jms:reference-file>
         <jms:reference-file line="24">prod/results/feeds_entry.html.twig</jms:reference-file>
-        <jms:reference-file line="1174">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="1187">web/prod/thesaurus.js.twig</jms:reference-file>
         <jms:reference-file line="6">web/thesaurus/presets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68b702f13ff62025c57948bf5c4a5b47af10dee9" resname="boutton::telecharger" approved="yes">
@@ -9236,8 +9240,8 @@
       <trans-unit id="c1fefe0703a7135f9b653282635e17cf62f7ce50" resname="chargement" approved="yes">
         <source>chargement</source>
         <target state="translated">Verladung</target>
-        <jms:reference-file line="46">web/prod/tab_thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="65">web/prod/tab_thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="45">web/prod/tab_thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="64">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="32695a262bc4d37e94a66ade996fad510fa21a1a" resname="charger d'avantage de publications" approved="yes">
         <source>charger d'avantage de publications</source>
@@ -10601,15 +10605,35 @@
         <jms:reference-file line="53">prod/preview/result_train.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/preview/result_train_options.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="a5cc2b2cd9b0421d131185277e9005d8e616582c" resname="preview::date">
+        <source>preview::date</source>
+        <target state="new">preview::date</target>
+        <jms:reference-file line="69">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="83">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="119">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="133">prod/preview/popularity.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0cbda44654b686e66bae8ec061748385d8b13de0" resname="preview::downloads">
+        <source>preview::downloads</source>
+        <target state="new">preview::downloads</target>
+        <jms:reference-file line="120">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="146">prod/preview/popularity.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="688566b835a97bcfbbdb83fb85b59c7c2aa5893d" resname="preview::statistiques de telechargement" approved="yes">
         <source>preview::statistiques de telechargement</source>
         <target state="translated">Herunterladen Statistiken</target>
-        <jms:reference-file line="16">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="6">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d13b57d29dead4c958ba718da41de8c1c906d499" resname="preview::statistiques de visualisation pour le lien" approved="yes">
         <source>preview::statistiques de visualisation pour le lien</source>
         <target state="translated">Ansicht Statistiken</target>
-        <jms:reference-file line="4">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="2">prod/preview/popularity.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation">
+        <source>preview::visualisation</source>
+        <target state="new">preview::visualisation</target>
+        <jms:reference-file line="70">prod/preview/popularity.html.twig</jms:reference-file>
+        <jms:reference-file line="96">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel">
         <source>previewLinkLabel</source>
@@ -10824,37 +10848,37 @@
       <trans-unit id="af6ac0ffd98331207767dd35226bb76465d88be4" resname="prod::thesaurusTab:cmenu:Accepter en %lng_code%" approved="yes">
         <source>prod::thesaurusTab:cmenu:Accepter en %lng_code%</source>
         <target state="translated">in %lng_code% annehmen</target>
-        <jms:reference-file line="1165">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="1178">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="36ff5f310aa6baf4877a51fdd9ee0e611e1700e2" resname="prod::thesaurusTab:dlg:Acceptation en cours." approved="yes">
         <source>prod::thesaurusTab:dlg:Acceptation en cours.</source>
         <target state="translated">Annahme...</target>
-        <jms:reference-file line="187">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="208">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85b6c20ae112b72dabc4bc0f41e59849d00244f7" resname="prod::thesaurusTab:dlg:Suppression en cours." approved="yes">
         <source>prod::thesaurusTab:dlg:Suppression en cours.</source>
         <target state="translated">Löschen...</target>
-        <jms:reference-file line="270">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="291">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27810e2a525948061c8b88e13ebc6b61a4c5f6dc" resname="prod::thesaurusTab:dlg:accepter le terme candidat &quot;%s&quot; ?">
         <source>prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?</source>
         <target state="new">prod::thesaurusTab:dlg:accepter le terme candidat "%s" ?</target>
-        <jms:reference-file line="334">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="355">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e830416a4a3e31b8a9f7eeac671ac325acb40e51" resname="prod::thesaurusTab:dlg:accepter les %d termes candidats ?" approved="yes">
         <source>prod::thesaurusTab:dlg:accepter les %d termes candidats ?</source>
         <target state="translated">die %d möglichen Begriffe annehmen?</target>
-        <jms:reference-file line="337">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="358">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ac56f5ec088fb0e25000f95fb7b65ef9acb8720" resname="prod::thesaurusTab:dlg:supprimer le terme &quot;%s&quot; des fiches ?">
         <source>prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?</source>
         <target state="new">prod::thesaurusTab:dlg:supprimer le terme "%s" des fiches ?</target>
-        <jms:reference-file line="430">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="451">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="54305ad394121fd6fde852983ee48c9f2af14978" resname="prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?" approved="yes">
         <source>prod::thesaurusTab:dlg:supprimer les %d termes des fiches ?</source>
         <target state="translated">%d Begriffe von der Beschreibung(en) löschen?</target>
-        <jms:reference-file line="433">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="454">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f6ab998dc34b364aa453a71a312e13df837849c" resname="prod::thesaurusTab:thesaurus" approved="yes">
         <source>prod::thesaurusTab:thesaurus</source>
@@ -10864,18 +10888,18 @@
       <trans-unit id="12176a0cf72405ab4663df7501e4f156c69c7e84" resname="prod::thesaurusTab:tmenu:Accepter comme synonyme" approved="yes">
         <source>prod::thesaurusTab:tmenu:Accepter comme synonyme</source>
         <target state="translated">als Synonym annehmen</target>
-        <jms:reference-file line="1091">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="1104">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2d85b9c2da4738055b0d030be20bc0c0e8a6ebc5" resname="prod::thesaurusTab:tmenu:Accepter comme terme specifique" approved="yes">
         <source>prod::thesaurusTab:tmenu:Accepter comme terme specifique</source>
         <target state="translated">als bestimmter Begriff annehmen</target>
-        <jms:reference-file line="1084">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="1097">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="78f0cb0a0ea3d8cde53f4c16e6f455d37561a3c0" resname="prod::thesaurusTab:tree:loading" approved="yes">
         <source>prod::thesaurusTab:tree:loading</source>
         <target state="translated">wird geladen</target>
-        <jms:reference-file line="483">web/prod/thesaurus.js.twig</jms:reference-file>
-        <jms:reference-file line="739">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="504">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="760">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4bb65f5a0911b26f79b6a82857c349f2ea637363" resname="prod::thesaurusTab:wizard:accepter le terme candidat" approved="yes">
         <source>prod::thesaurusTab:wizard:accepter le terme candidat</source>
@@ -10885,12 +10909,12 @@
       <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;">
         <source>prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"</source>
         <target state="new">prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat "%s"</target>
-        <jms:reference-file line="402">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="423">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c168c3ca1b5c31a68c5a17e18c1d8e78c155c80e" resname="prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats" approved="yes">
         <source>prod::thesaurusTab:wizard:clic-droit / accepter les %s termes candidats</source>
         <target state="translated">Rechtsclick / %s mögliche Begriffe annehmen</target>
-        <jms:reference-file line="405">web/prod/thesaurus.js.twig</jms:reference-file>
+        <jms:reference-file line="426">web/prod/thesaurus.js.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3009458af61e2865e3a52fa8eb95fbfce4057a6" resname="prod::thesaurusTab:wizard:remplacer par le terme" approved="yes">
         <source>prod::thesaurusTab:wizard:remplacer par le terme</source>
@@ -11540,7 +11564,9 @@
       <trans-unit id="07c06c0cac8bd3e3507a72d6cb7fa1ee23a6bf13" resname="report:: page d'accueil" approved="yes">
         <source>report:: page d'accueil</source>
         <target state="translated">Hautpseite</target>
-        <jms:reference-file line="491">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="420">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="539">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="687">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c6437e45ebaf5f63fbae739087ecb91b58c0503" resname="report:: par %user_infos%" approved="yes">
         <source>report:: par %user_infos%</source>
@@ -11787,7 +11813,9 @@
       <trans-unit id="1d900ae5b08909338f17350122691995bf9174b9" resname="report:: visualiseur cooliris" approved="yes">
         <source>report:: visualiseur cooliris</source>
         <target state="translated">Cooliris Viewer</target>
-        <jms:reference-file line="493">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="424">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="536">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="689">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3d0f1bc2eac01fb560464a3e0d29bfc30989f7a" resname="report::Changement de collection vers : %coll_name%" approved="yes">
         <source>report::Changement de collection vers : %coll_name%</source>
@@ -11873,9 +11901,13 @@
       <trans-unit id="b0bc571e46ae3a3e050fabf9a0d3e0986078f14d" resname="report::acces direct" approved="yes">
         <source>report::acces direct</source>
         <target state="translated">Direkt Zugriff</target>
-        <jms:reference-file line="485">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="496">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="499">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="408">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="527">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="542">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="545">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="681">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="692">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="695">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b016472d3524eaba8f84067035fa12b502762058" resname="report::activite" approved="yes">
         <source>report::activite</source>
@@ -11935,7 +11967,7 @@
       <trans-unit id="55655edb5e7b23c00fe3fe0509be09e674138da6" resname="resultat numero %number%">
         <source>resultat numero %number%</source>
         <target state="new">resultat numero %number%</target>
-        <jms:reference-file line="266">classes/record/preview.php</jms:reference-file>
+        <jms:reference-file line="269">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c6548f49ad54d65a5add4b639443bb3f514494b1" resname="retourne &quot;automobile&quot;, &quot;automate&quot;, &quot;autoroute&quot;, ...">
         <source>retourne "automobile", "automate", "autoroute", ...</source>
