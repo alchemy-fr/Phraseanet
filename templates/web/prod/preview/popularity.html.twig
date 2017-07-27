@@ -28,6 +28,9 @@
             //add header for piechart
             arrayReferrers.push(['Links', 'Visualisation']);
             var statisticsReferrers = Object.values(statistics.referrers);
+
+            //sort array in descending order - referrers count
+            statisticsReferrers = _.sortBy(statisticsReferrers, "count").reverse();
             statisticsReferrers.map(function(objReferrers) {
                 referrersValues.push(objReferrers.count);
                 arrayReferrers.push([objReferrers.label, objReferrers.count]);
@@ -168,7 +171,8 @@
                 is3D: true,
                 colors:['#FF9900','#3FDFFD', '#14CAB5', '#CAA514', '#97853C'],
                 legend: {position: 'right', textStyle: {color: 'white'}},
-                chartArea: {width:'90%',height:'70%'}
+                chartArea: {width:'90%',height:'70%'},
+                sliceVisibilityThreshold: 0
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
