@@ -13,12 +13,12 @@
   <script type="text/javascript">
     $(document).ready(function() {
 
-        var referrersValues = [];
-        var statistics = {{ record.getStatistics(30)|json_encode()|raw }};
+        var referrersValues = [], statistics = null;
+        statistics = {{ record.getStatistics(30)|json_encode()|raw }};
         if(statistics != null) {
             var arrayViews = [], arrayDownloads = [], arrayReferrers = [];
 
-            var statisticsArrayByDay = Object.values(statistics.by_day);
+            var statisticsArrayByDay = _(statistics.by_day).toArray();
             statisticsArrayByDay.map(function(objByDay) {
                 //[new Date(2017, 0, 1), 5],
                 arrayViews.push([new Date(objByDay.label), objByDay.views]);
@@ -27,7 +27,7 @@
 
             //add header for piechart
             arrayReferrers.push(['Links', 'Visualisation']);
-            var statisticsReferrers = Object.values(statistics.referrers);
+            var statisticsReferrers = _(statistics.referrers).toArray();
 
             //sort array in descending order - referrers count
             statisticsReferrers = _.sortBy(statisticsReferrers, "count").reverse();
