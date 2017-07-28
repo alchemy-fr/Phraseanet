@@ -53,7 +53,7 @@ $thesaurusTabHeight: $subTabHeight !default;
   }
 }
 
-#THPD_T_treeBox {
+#THPD_T_treeBox, #THPD_C_treeBox {
   font-size: $xmediumFontSize;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -66,12 +66,12 @@ $thesaurusTabHeight: $subTabHeight !default;
   }
 }
 
-#THPD_T_treeBox::-webkit-scrollbar-track {
+#THPD_T_treeBox::-webkit-scrollbar-track, #THPD_C_treeBox::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: #1f1f1f;
 }
 
-#THPD_T_treeBox::-webkit-scrollbar {
+#THPD_T_treeBox::-webkit-scrollbar, #THPD_C_treeBox::-webkit-scrollbar {
   width: 6px;
   background-color: #474747;
   display: none;
@@ -98,10 +98,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
       &.th_tab {
         height: $thesaurusTabHeight; // in order to display bottom border
         margin: 0;
-        border-bottom: 1px solid transparent;
-        box-sizing: border-box;
-        .ui-state-active {
-          border-bottom: 1px solid $thesaurusColor;
+        //border-bottom: 1px solid transparent;
+        //box-sizing: border-box;
+        &.ui-state-active {
+          border-bottom: 3px solid $thesaurusColor;
         }
         a {
           height: $thesaurusTabHeight;
@@ -111,6 +111,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
           padding: 0 20px;
           display: block;
           text-decoration: none;
+          box-sizing: border-box;
+          border-bottom: 1px solid #303030;
         }
       }
     }
@@ -190,7 +192,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
       input.input-medium {
         width: 80%;
         border-radius: 0;
-        height: 50px;
+        height: 40px;
         padding: 0 2.5%;
         background: $thesaurusInputBackground;
         border: none;
@@ -200,7 +202,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
       .th_ok {
         display: none;
         width: 15%;
-        line-height: 50px;
+        line-height: 40px;
         vertical-align: middle;
         padding: 0;
         border-radius: 0;
@@ -217,7 +219,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
       .th_cancel {
         display: none;
         width: 15%;
-        line-height: 50px;
+        line-height: 40px;
         vertical-align: middle;
         padding: 0;
         border-radius: 0;
@@ -235,10 +237,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
         position: relative;
         z-index: 1000;
         float: right;
-        margin: -50px 15% 0 0;
+        margin: -40px 15% 0 0;
         display: none;
         width: 30px;
-        line-height: 50px;
+        line-height: 40px;
         padding: 0;
         border-radius: 0;
         background: url('#{$iconsPath}icon_clear_search.png') 50% no-repeat;
