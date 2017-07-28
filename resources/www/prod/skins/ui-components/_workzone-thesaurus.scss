@@ -53,7 +53,7 @@ $thesaurusTabHeight: $subTabHeight !default;
   }
 }
 
-#THPD_T_treeBox {
+#THPD_T_treeBox, #THPD_C_treeBox {
   font-size: $xmediumFontSize;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -66,12 +66,12 @@ $thesaurusTabHeight: $subTabHeight !default;
   }
 }
 
-#THPD_T_treeBox::-webkit-scrollbar-track {
+#THPD_T_treeBox::-webkit-scrollbar-track, #THPD_C_treeBox::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: #1f1f1f;
 }
 
-#THPD_T_treeBox::-webkit-scrollbar {
+#THPD_T_treeBox::-webkit-scrollbar, #THPD_C_treeBox::-webkit-scrollbar {
   width: 6px;
   background-color: #474747;
   display: none;
