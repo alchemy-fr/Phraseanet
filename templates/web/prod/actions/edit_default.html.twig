@@ -406,6 +406,14 @@
 </div>
 
 <script type="text/javascript">
+    $('.tabs').tabs({
+        activate: function(event, ui) {
+            if(ui.newPanel.selector === '#TH_Opreview') {
+                //reinitialize preview window
+                setPreviewEdit();
+            }
+        }
+    });
     {% if multipleDataboxes or recordsRequest|length == 0 %}
         $('#EDITWINDOW').hide();
         hideOverlay(2);
