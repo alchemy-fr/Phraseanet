@@ -5975,9 +5975,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Nom de la sous résolution</target>
         <jms:reference-file line="185">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2dacf65959849884a011f36f76a04eebea94c5ea" resname="Submit">
+      <trans-unit id="2dacf65959849884a011f36f76a04eebea94c5ea" resname="Submit" approved="no">
         <source>Submit</source>
-        <target state="new">Submit</target>
+        <target state="needs-translation">Envoyé</target>
         <jms:reference-file line="118">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8017bd7de9961cf42f59abc587d0495a9d25c2a9" resname="Substitute" approved="yes">
