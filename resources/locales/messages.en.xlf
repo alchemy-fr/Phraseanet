@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-07-27T11:09:07Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -1999,9 +1999,9 @@
         <target state="translated">Current session</target>
         <jms:reference-file line="43">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="081ae3fdc403609cf6e760849ebb14117b7a50cb" resname="Custom">
+      <trans-unit id="081ae3fdc403609cf6e760849ebb14117b7a50cb" resname="Custom" approved="yes">
         <source>Custom</source>
-        <target state="new">Custom</target>
+        <target state="translated">Custom</target>
         <jms:reference-file line="121">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="423">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -3219,9 +3219,9 @@
         <target state="translated">Get notification when e-mail export fails</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index">
+      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="yes">
         <source>Get setting form index</source>
-        <target state="new">Get setting form index</target>
+        <target state="translated">Get setting form index</target>
         <jms:reference-file line="35">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
@@ -9622,9 +9622,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Rotate</target>
         <jms:reference-file line="45">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
         <source>index::advance_search: disable-facet</source>
-        <target state="needs-translation">Hide facette with 1 result (experimental).</target>
+        <target state="translated">Hide facette with 1 result (experimental).</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="yes">
@@ -9869,9 +9869,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Your Order Of :</target>
         <jms:reference-file line="787">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item">
+      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item" approved="no">
         <source>order-manager::order-item: accepted-item</source>
-        <target state="new">order-manager::order-item: accepted-item</target>
+        <target state="needs-translation">Sended documents</target>
         <jms:reference-file line="500">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address" approved="yes">
@@ -9909,9 +9909,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="needs-translation">Create basket</target>
         <jms:reference-file line="118">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a02a5f853e42ecebff385b0d98315959fea3a2c0" resname="order-manager::order-item: for-non-sent-items">
+      <trans-unit id="a02a5f853e42ecebff385b0d98315959fea3a2c0" resname="order-manager::order-item: for-non-sent-items" approved="yes">
         <source>order-manager::order-item: for-non-sent-items</source>
-        <target state="new">order-manager::order-item: for-non-sent-items</target>
+        <target state="translated">For no sent documents:</target>
         <jms:reference-file line="846">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b786dbafa0169df2b396330702e8208972b2f807" resname="order-manager::order-item: information">
@@ -9919,26 +9919,26 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="needs-translation">Media Informations</target>
         <jms:reference-file line="196">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="352a40ba97d63b316dce7541b84d9894c8641929" resname="order-manager::order-item: item">
+      <trans-unit id="352a40ba97d63b316dce7541b84d9894c8641929" resname="order-manager::order-item: item" approved="no">
         <source>order-manager::order-item: item</source>
-        <target state="needs-translation">Record</target>
+        <target state="needs-translation">Document</target>
         <jms:reference-file line="594">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="608">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c9a43add6ec9c78f579eb9e54e895743c8b9cfe0" resname="order-manager::order-item: items">
+      <trans-unit id="c9a43add6ec9c78f579eb9e54e895743c8b9cfe0" resname="order-manager::order-item: items" approved="no">
         <source>order-manager::order-item: items</source>
-        <target state="needs-translation">Records</target>
+        <target state="needs-translation">Document(s)</target>
         <jms:reference-file line="594">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="608">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="30d5cba970aca4d150bf55644c53287d5f8facd4" resname="order-manager::order-item: items-already-sent">
+      <trans-unit id="30d5cba970aca4d150bf55644c53287d5f8facd4" resname="order-manager::order-item: items-already-sent" approved="no">
         <source>order-manager::order-item: items-already-sent</source>
-        <target state="new">order-manager::order-item: items-already-sent</target>
+        <target state="needs-translation">Sended Document(s)</target>
         <jms:reference-file line="834">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7df93a875a748ab89e866718267855d1f15a15e5" resname="order-manager::order-item: items-waiting-validation">
+      <trans-unit id="7df93a875a748ab89e866718267855d1f15a15e5" resname="order-manager::order-item: items-waiting-validation" approved="yes">
         <source>order-manager::order-item: items-waiting-validation</source>
-        <target state="new">order-manager::order-item: items-waiting-validation</target>
+        <target state="translated">Documents waiting for validation</target>
         <jms:reference-file line="839">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8f51b8181b36ab58c1ef9a786a66bbdefc417d2" resname="order-manager::order-item: less" approved="yes">
@@ -9951,14 +9951,14 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">More</target>
         <jms:reference-file line="386">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a94ff8b85f20f5eb7aec10f853f62d4c070e739" resname="order-manager::order-item: number">
+      <trans-unit id="6a94ff8b85f20f5eb7aec10f853f62d4c070e739" resname="order-manager::order-item: number" approved="no">
         <source>order-manager::order-item: number</source>
-        <target state="new">order-manager::order-item: number</target>
+        <target state="needs-translation">number</target>
         <jms:reference-file line="787">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of">
+      <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of" approved="yes">
         <source>order-manager::order-item: of</source>
-        <target state="new">order-manager::order-item: of</target>
+        <target state="translated">of</target>
         <jms:reference-file line="485">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="788">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
@@ -9968,14 +9968,14 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <jms:reference-file line="181">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="871">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item">
+      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item" approved="yes">
         <source>order-manager::order-item: rejected-item</source>
-        <target state="needs-translation">Rejected record(s)</target>
+        <target state="translated">Rejected document(s)</target>
         <jms:reference-file line="494">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset">
+      <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="no">
         <source>order-manager::order-item: reset</source>
-        <target state="new">order-manager::order-item: reset</target>
+        <target state="needs-translation">Cancel</target>
         <jms:reference-file line="535">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fc248486bb79f2b1af418f84134be121e6eed80" resname="order-manager::order-item: select-all">
@@ -9988,9 +9988,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Selected Record</target>
         <jms:reference-file line="507">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records">
+      <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records" approved="no">
         <source>order-manager::order-item: selected-records</source>
-        <target state="needs-translation">Selected records</target>
+        <target state="needs-translation">Selected document(s)</target>
         <jms:reference-file line="205">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="43e2047dc48e5fbcd5691716d6517e3cdca907ef" resname="order-manager::order-item: submit">
@@ -10014,19 +10014,19 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <jms:reference-file line="251">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="536">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="412326b12cbc19049f939d4843ad83bb9de75a03" resname="order-manager::order-item: with-denied-items">
+      <trans-unit id="412326b12cbc19049f939d4843ad83bb9de75a03" resname="order-manager::order-item: with-denied-items" approved="yes">
         <source>order-manager::order-item: with-denied-items</source>
-        <target state="needs-translation">With denied items</target>
+        <target state="translated">With denied document(s)</target>
         <jms:reference-file line="125">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7528a81f45ff8c45a7b89264ba6604d576446f5f" resname="order-manager::order-item: with-selected-items">
+      <trans-unit id="7528a81f45ff8c45a7b89264ba6604d576446f5f" resname="order-manager::order-item: with-selected-items" approved="no">
         <source>order-manager::order-item: with-selected-items</source>
-        <target state="needs-translation">With selected items</target>
+        <target state="needs-translation">With selected document(s)</target>
         <jms:reference-file line="129">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b48ee9984c39d284c1fc5f4f2a0e95308a42eb1" resname="order-manager::order-item: with-validated-items">
+      <trans-unit id="1b48ee9984c39d284c1fc5f4f2a0e95308a42eb1" resname="order-manager::order-item: with-validated-items" approved="no">
         <source>order-manager::order-item: with-validated-items</source>
-        <target state="needs-translation">With validated items</target>
+        <target state="needs-translation">With validated document(s)</target>
         <jms:reference-file line="121">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afb6c177210671e3a6a0a089685fc2a3c4bd3b28" resname="order-manager::order-item: you-have-denied">
@@ -10605,17 +10605,17 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <jms:reference-file line="53">prod/preview/result_train.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/preview/result_train_options.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a5cc2b2cd9b0421d131185277e9005d8e616582c" resname="preview::date">
+      <trans-unit id="a5cc2b2cd9b0421d131185277e9005d8e616582c" resname="preview::date" approved="yes">
         <source>preview::date</source>
-        <target state="new">preview::date</target>
+        <target state="translated">Date</target>
         <jms:reference-file line="69">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="83">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="119">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="133">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cbda44654b686e66bae8ec061748385d8b13de0" resname="preview::downloads">
+      <trans-unit id="0cbda44654b686e66bae8ec061748385d8b13de0" resname="preview::downloads" approved="no">
         <source>preview::downloads</source>
-        <target state="new">preview::downloads</target>
+        <target state="needs-translation">Download(s) count.</target>
         <jms:reference-file line="120">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="146">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
@@ -10629,9 +10629,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">View statistics</target>
         <jms:reference-file line="2">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation">
+      <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation" approved="no">
         <source>preview::visualisation</source>
-        <target state="new">preview::visualisation</target>
+        <target state="needs-translation">Visualisation count.</target>
         <jms:reference-file line="70">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="96">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
@@ -10815,9 +10815,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Find</target>
         <jms:reference-file line="292">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection">
+      <trans-unit id="cfe2959d3e166782067714e2f9a30266f5d1911c" resname="prod::editing:thumbnailselection" approved="yes">
         <source>prod::editing:thumbnailselection</source>
-        <target state="needs-translation">Select one Record.</target>
+        <target state="translated">Select one Record.</target>
         <jms:reference-file line="275">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -11031,39 +11031,39 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Recreate subviews</target>
         <jms:reference-file line="29">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c8c491587b0dfb9bab18afb7694a0bb14665e7de" resname="registration:collection.accepted">
+      <trans-unit id="c8c491587b0dfb9bab18afb7694a0bb14665e7de" resname="registration:collection.accepted" approved="no">
         <source>registration:collection.accepted</source>
-        <target state="new">registration:collection.accepted</target>
+        <target state="needs-translation">Accepted</target>
         <jms:reference-file line="68">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8feaff2c61f3573c1aaaaa16de3df1ef8758f28f" resname="registration:collection.active">
+      <trans-unit id="8feaff2c61f3573c1aaaaa16de3df1ef8758f28f" resname="registration:collection.active" approved="no">
         <source>registration:collection.active</source>
-        <target state="new">registration:collection.active</target>
+        <target state="needs-translation">Active</target>
         <jms:reference-file line="56">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9a5d8160431e85e0ecbe21dfcb2017543a8f7268" resname="registration:collection.in-time">
+      <trans-unit id="9a5d8160431e85e0ecbe21dfcb2017543a8f7268" resname="registration:collection.in-time" approved="yes">
         <source>registration:collection.in-time</source>
-        <target state="new">registration:collection.in-time</target>
+        <target state="translated">in-time</target>
         <jms:reference-file line="60">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8e154460c434c2beb7dc268aac77c5b8b52c4abb" resname="registration:collection.out-dated">
+      <trans-unit id="8e154460c434c2beb7dc268aac77c5b8b52c4abb" resname="registration:collection.out-dated" approved="yes">
         <source>registration:collection.out-dated</source>
-        <target state="new">registration:collection.out-dated</target>
+        <target state="translated">Out dated</target>
         <jms:reference-file line="62">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ec1982774689f302e8d8549a12d99a3e41525648" resname="registration:collection.pending">
+      <trans-unit id="ec1982774689f302e8d8549a12d99a3e41525648" resname="registration:collection.pending" approved="yes">
         <source>registration:collection.pending</source>
-        <target state="new">registration:collection.pending</target>
+        <target state="translated">Pending</target>
         <jms:reference-file line="64">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fcaffe2361d5da4c38aaf4c02d2b944c29db7da1" resname="registration:collection.registrable">
+      <trans-unit id="fcaffe2361d5da4c38aaf4c02d2b944c29db7da1" resname="registration:collection.registrable" approved="no">
         <source>registration:collection.registrable</source>
-        <target state="new">registration:collection.registrable</target>
+        <target state="needs-translation">Registrable</target>
         <jms:reference-file line="58">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7abb365333a7902838022d4bfc560f41323abb7c" resname="registration:collection.rejected">
+      <trans-unit id="7abb365333a7902838022d4bfc560f41323abb7c" resname="registration:collection.rejected" approved="no">
         <source>registration:collection.rejected</source>
-        <target state="new">registration:collection.rejected</target>
+        <target state="needs-translation">Refuse</target>
         <jms:reference-file line="66">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="20de9f9f6ca10877415fac4611f5edd2e898c4f0" resname="reponses:: %available% Resultats rappatries sur un total de %total% trouves" approved="yes">
@@ -12160,9 +12160,9 @@ Pushed documents are also available in a received basket within Phraseanet Produ
         <target state="translated">Thumbnail substitution</target>
         <jms:reference-file line="255">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ae16309f31e285a4018dcc59a69f8cfb76676249" resname="subviewType">
+      <trans-unit id="ae16309f31e285a4018dcc59a69f8cfb76676249" resname="subviewType" approved="yes">
         <source>subviewType</source>
-        <target state="new">subviewType</target>
+        <target state="translated">subview Type</target>
         <jms:reference-file line="345">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="07b0b3ea9599114481aba18af40b06317614a879" resname="take a screenshot" approved="yes">
