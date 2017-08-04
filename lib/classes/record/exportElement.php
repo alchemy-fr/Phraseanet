@@ -121,6 +121,26 @@ class record_exportElement extends record_adapter
 
         $go_cmd = (count($masters) > 0 && $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($this->getBaseId(), \ACL::CANCMD));
 
+        $xml = $this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML);
+
+        if ($xml) {
+            $localizedLabel = $this->app->trans('caption YAML');
+            $downloadable['caption-yaml'] = [
+                'class' => 'caption',
+                /** @Ignore */
+                'label' => $localizedLabel,
+            ];  
+            $this->add_count('caption-yaml', strlen(strip_tags($xml)));
+
+            $localizedLabel = $this->app->trans('caption XML');
+            $downloadable['caption'] = [
+                'class' => 'caption',
+                /** @Ignore */
+                'label' => $localizedLabel,
+            ];
+            $this->add_count('caption', strlen($xml));
+        }
+
         $orderable['document'] = false;
         $downloadable['document'] = false;
 
@@ -205,26 +225,6 @@ class record_exportElement extends record_adapter
                     $this->add_count($name, $sd[$name]->get_size());
                 }
             }
-        }
-
-        $xml = $this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML);
-
-        if ($xml) {
-            $localizedLabel = $this->app->trans('caption XML');
-            $downloadable['caption'] = [
-                'class' => 'caption',
-                /** @Ignore */
-                'label' => $localizedLabel,
-            ];
-            $this->add_count('caption', strlen($xml));
-
-            $localizedLabel = $this->app->trans('caption YAML');
-            $downloadable['caption-yaml'] = [
-                'class' => 'caption',
-                /** @Ignore */
-                'label' => $localizedLabel,
-            ];
-            $this->add_count('caption-yaml', strlen(strip_tags($xml)));
         }
 
         $this->downloadable = $downloadable;
