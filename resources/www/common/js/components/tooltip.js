@@ -284,8 +284,9 @@
             }
 
             else if ($documentTips[0] && shouldResize) {
-                recordWidth = $documentTips.data('original-width');
-                recordHeight = $documentTips.data('original-height');
+                //add min width and height of 400 and 600 respectively
+                recordWidth = $documentTips.data('original-width') > 400 ? $documentTips.data('original-width') : 400;
+                recordHeight = $documentTips.data('original-width') > 400 ? $documentTips.data('original-height') : 600;
                 $documentTips.css({display: 'block', margin: '0 auto'});
                 $selector = $documentTips;
             }
@@ -377,7 +378,7 @@
                     bottomOffset = -15;
                 } else {
                     // tooltip from workzone (basket)
-                    tooltipVerticalOffset = 0;
+                    //tooltipVerticalOffset = 0;
                     tooltipHorizontalOffset = 0;
                     topOffset = 50;
                     // fallback on original target if nothing found:
