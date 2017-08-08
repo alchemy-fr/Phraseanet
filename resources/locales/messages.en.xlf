@@ -217,7 +217,7 @@
       </trans-unit>
       <trans-unit id="3d850bddc9385d23589a2204c4583dcc0d62ffe5" resname="%total_count% results" approved="yes">
         <source>%total_count% results</source>
-        <target state="translated">%total_count% results.</target>
+        <target state="translated">%total_count% results</target>
         <jms:reference-file line="35">web/report/generate_tab.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="99d2e1a7e8d0ba4a7132282b53b15e503b91c2cb" resname="%user% a envoye son rapport de validation de %title%" approved="yes">
@@ -1071,7 +1071,7 @@
       </trans-unit>
       <trans-unit id="e90e84223fc3bab6b936ce4506b3924b21f3d0be" resname="Attention !" approved="yes">
         <source>Attention !</source>
-        <target state="translated">Warning!</target>
+        <target state="translated">Warning !</target>
         <jms:reference-file line="113">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0328b7d39137eaa443590c8c1d693a1611354951" resname="Attention, certain documents ont des sous-definitions substituees" approved="yes">
@@ -1091,7 +1091,7 @@
       </trans-unit>
       <trans-unit id="3f9f7ad2bc75b4c34160ea51aeff9a273da06c1f" resname="Aucun bridge disponible. Veuillez contacter un administrateur." approved="yes">
         <source>Aucun bridge disponible. Veuillez contacter un administrateur.</source>
-        <target state="translated">There is no Bridge Available . Please contact Administrator.</target>
+        <target state="translated">There is no Bridge Available . Please contact your Administrator.</target>
         <jms:reference-file line="72">actions/Bridge/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1f891614ef0359cd670f6940a2b9f095b8691d9" resname="Aucun document selectionne" approved="yes">
@@ -1781,7 +1781,7 @@
       </trans-unit>
       <trans-unit id="15f217a259ee031d3ee19967da004804bb726307" resname="Confirm reset users rights before applying template" approved="yes">
         <source>Confirm reset users rights before applying template</source>
-        <target state="translated">Confirm the reset of selected users'rights before applying the template</target>
+        <target state="translated">Confirm the reset of selected users' rights before applying the template</target>
         <jms:reference-file line="47">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b1f3b86f9ebe885dcf2acdfae26c37dd6da4de5" resname="Confirmation de votre mot de passe" approved="yes">
@@ -1847,7 +1847,7 @@
       </trans-unit>
       <trans-unit id="9a1757945390259d3dbb7c551d01c23638463d39" resname="Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :" approved="yes">
         <source>Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :</source>
-        <target state="translated">Copy the code below, go to your application then paste-it as needed:</target>
+        <target state="translated">Copy the code below, go to your application then paste it as needed:</target>
         <jms:reference-file line="66">api/auth/native_app_access_token.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f2db26b4864bd92ed4b00721b056068ddd526b6" resname="Copy the code below, return to your application and paste the code to the right place." approved="yes">
@@ -1862,7 +1862,7 @@
       </trans-unit>
       <trans-unit id="2d4f012e5f06719ae9bbd6de1696d7502474ba2d" resname="Could not perform request, please contact an administrator." approved="yes">
         <source>Could not perform request, please contact an administrator.</source>
-        <target state="translated">Resquest can't be performed. Please contact an administrator.</target>
+        <target state="translated">Request can't be performed. Please contact an administrator.</target>
         <jms:reference-file line="92">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c183d160b24ba4d8cd1a39ffb5ceed69be38ee51" resname="Could not retrieve the file ID, please retry or contact an admin if problem persist" approved="yes">
@@ -2391,7 +2391,7 @@
       </trans-unit>
       <trans-unit id="cf25d8937160da72080fc8842d6b68764fe829ab" resname="Document refuse par %name%" approved="yes">
         <source>Document refuse par %name%</source>
-        <target state="translated">Document refused by %name%</target>
+        <target state="translated">Document denied by %name%</target>
         <jms:reference-file line="143">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3859bdaa8c6ffa767307d2ebc130439c543819c8" resname="Document title" approved="yes">
@@ -2424,7 +2424,7 @@
       </trans-unit>
       <trans-unit id="43c28b73145b678d5a0d4838f2890dfcce8b0eea" resname="Download of documents" approved="yes">
         <source>Download of documents</source>
-        <target state="translated">Documents downloads.</target>
+        <target state="translated">Documents downloads</target>
         <jms:reference-file line="13">actions/Download/prepare.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e9069dbb48837c11e9c74fe440ccfd5d1cd6b0b" resname="Droits" approved="yes">
@@ -2610,7 +2610,7 @@
       </trans-unit>
       <trans-unit id="acb59e182fe4ddc3ab0004f6eff18948f7119aa9" resname="Empty quarantine will remove all items, are you sure you want to continue ?" approved="yes">
         <source>Empty quarantine will remove all items, are you sure you want to continue ?</source>
-        <target state="translated">Empty quanrantine will delete all its contents. This action is irreversible. Are you sure you want to continue?</target>
+        <target state="translated">Empty quarantine will delete all its contents. This action is irreversible. Are you sure you want to continue?</target>
         <jms:reference-file line="118">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b21b69f5882b80aa94dde1b4b588cc884758d886" resname="Empty the collection before removing" approved="yes">
@@ -2626,7 +2626,7 @@
       </trans-unit>
       <trans-unit id="b57d5bc1b9fe7cad10b4430bb653d24306262fe4" resname="En cliquant sur &quot;ajouter&quot; vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%" approved="yes">
         <source>En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%</source>
-        <target state="translated">By clicking on Add you certify that you own the rights on the content or that you are authorized by the owner to make the content accessible to public on YouTube. This content comply with the YouTube Terms of use: %lien_term_youtube%</target>
+        <target state="translated">By clicking on "Add", you certify that you own the rights on the content or that you are authorized by the owner to make the content accessible to public on YouTube. This content complies with the YouTube Terms of use: %lien_term_youtube%</target>
         <jms:reference-file line="107">Bridge/Youtube/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0413c20ae2fd31e0a1eef73e7768c8e1c68558d9" resname="En cours d'encodage" approved="yes">
@@ -2775,7 +2775,7 @@
       </trans-unit>
       <trans-unit id="90aa6d11f451da9eab381da74e349cb9d7f53647" resname="Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas" approved="yes">
         <source>Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas</source>
-        <target state="translated">Either invalid settings , either distant server is not responding</target>
+        <target state="translated">Either the settings are invalid, either distant server is not responding</target>
         <jms:reference-file line="75">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2622fb6aa1e7cbd0eef2a99aa01f8c67d893c8b" resname="Erreur YouTube a rencontré une erreur lors du traitement de la requête." approved="yes">
@@ -3574,7 +3574,7 @@
       </trans-unit>
       <trans-unit id="feed3517f845bc792002627ad5585e4a70fb952b" resname="It stores users datas, rights, and references to DataBoxes where records are stored." approved="yes">
         <source>It stores users datas, rights, and references to DataBoxes where records are stored.</source>
-        <target state="translated">ApplicationBox stores users datas, rights, and references to DataBoxes where records are stored.</target>
+        <target state="translated">ApplicationBox stores users datas, rights and references to DataBoxes where records are stored.</target>
         <jms:reference-file line="603">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="30c8cb83b9acd93beaa32086336c36cb77c065d9" resname="Job" approved="yes">
@@ -4180,7 +4180,7 @@
       </trans-unit>
       <trans-unit id="611ce61a8afa84c06dd4ae06d9405b50d7cadc70" resname="Ne pas autoriser" approved="yes">
         <source>Ne pas autoriser</source>
-        <target state="translated">Do not Authorize</target>
+        <target state="translated">Do not authorize</target>
         <jms:reference-file line="91">api/auth/end_user_authorization.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5a3032fbde245ea35d8fa654d628809a9a448fc" resname="Ne pas creer de DataBox maintenant" approved="yes">
@@ -4405,7 +4405,7 @@
       </trans-unit>
       <trans-unit id="b60af374cd884ac6a6ae5b76829ba6efa085f0f7" resname="Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations" approved="yes">
         <source>Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations</source>
-        <target state="translated">We remind you that it is under your responsability to make sure that the video content you are about to put online is compliant to service the Terms of Use</target>
+        <target state="translated">We remind you that it is under your responsability to make sure that the video content you are about to put online is compliant to service the Terms of Use.</target>
         <jms:reference-file line="93">Bridge/Dailymotion/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5adb390fce6f3244aad5b7fe1ea342302f07d81a" resname="Nouveau modele" approved="yes">
@@ -4936,16 +4936,12 @@
       </trans-unit>
       <trans-unit id="dcf907ccbbcda0c0a828ef73ff1e6320748c1fad" resname="Push::une validation est une demande d'appreciation a d'autres personnes" approved="yes">
         <source>Push::une validation est une demande d'appreciation a d'autres personnes</source>
-        <target state="translated">Click on the Send buton to forward a feedback request on a selection of documents to recipients.
-They will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents, leave feedbacks and possibly download them.
-Feedbacks are also available as a Feedback request basket within Phraseanet Production for registered users.</target>
+        <target state="translated">Click on the "Send" button to forward a feedback request on a selection of documents to recipients. They will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents, leave feedbacks and possibly download them. Feedbacks are also available as a Feedback request basket within Phraseanet Production for registered users.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3e45857148ed08b19a425b5f4a2775e30dd346a7" resname="Push::unpush permet d'envoyer un lot d'image a des destinataires" approved="yes">
         <source>Push::unpush permet d'envoyer un lot d'image a des destinataires</source>
-        <target state="translated">Use Push to send a selection of documents to recipients.
-Recipients will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents and possibly download them.
-Pushed documents are also available in a received basket within Phraseanet Production for registered users.</target>
+        <target state="translated">Use "Push" to send a selection of documents to recipients. Recipients will receive an e-mail with a link to launch Phraseanet Lightbox, a dedicated interface for displaying documents and possibly download them. Pushed documents are also available in a received basket within Phraseanet Production for registered users.</target>
         <jms:reference-file line="157">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a60f2c73604f623449f263e78f5857849ad5e429" resname="Quality" approved="yes">
@@ -5279,7 +5275,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       </trans-unit>
       <trans-unit id="ced7b308a348567fbf21dd775ee496dd01207f24" resname="Remember me" approved="yes">
         <source>Remember me</source>
-        <target state="translated">Remember me.</target>
+        <target state="translated">Remember me</target>
         <jms:reference-file line="51">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8005b356e3a4dba94a532df1deec4ebce882d13" resname="Reminder : validate '%title%'" approved="yes">
