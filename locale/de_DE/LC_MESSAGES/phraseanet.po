@@ -3,15 +3,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-18 15:33+0100\n"
-"PO-Revision-Date: 2015-11-18 15:40+0100\n"
-"Last-Translator: Benoît Burnichon <bburnichon@alchemy.fr>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-08-08 15:51+0200\n"
+"Last-Translator: Jennifer <jguerin@alchemy.fr>\n"
+"Language-Team: German <http://weblate.preprod.alchemyasp.com/projects/phrasea"
+"net/phraseanet-38-main/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.4\n"
 "X-Launchpad-Export-Date: 2011-10-31 17:00+0000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
@@ -1293,9 +1294,8 @@ msgid "Terms of use"
 msgstr "Nutzungsbedingungen"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:70
-#, fuzzy
 msgid "prod::tools: document"
-msgstr "Dokument"
+msgstr "Dokumente"
 
 #: lib/Alchemy/Phrasea/Controller/Prod/Tools.php:207
 msgid "Document has been successfully substitued"
@@ -2112,7 +2112,7 @@ msgstr "Passwort"
 
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaAuthenticationForm.php:51
 msgid "Remember me"
-msgstr "Mich erinnern"
+msgstr "Angemeldet bleiben"
 
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaForgotPasswordForm.php:23
 #: lib/Alchemy/Phrasea/Form/Login/PhraseaRegisterForm.php:38
@@ -3724,14 +3724,12 @@ msgid "task::ftp:proxy port"
 msgstr "Proxy Port"
 
 #: lib/classes/task/period/ftp.php:166
-#, fuzzy
 msgid "task::proxy user"
-msgstr "Proxy Port"
+msgstr "Benutzer"
 
 #: lib/classes/task/period/ftp.php:172
-#, fuzzy
 msgid "task::ftp:proxy password"
-msgstr "Proxy Port"
+msgstr "Passwort"
 
 #: lib/classes/task/period/ftp.php:367
 #, php-format
@@ -4903,24 +4901,20 @@ msgstr "eine Kollektion erstellen"
 msgid "admin::base:collection: supprimer le logo"
 msgstr "Logo löschen"
 
-#, fuzzy
 msgid "admin::plugins: about"
-msgstr "Objekt"
+msgstr "Über"
 
-#, fuzzy
 msgid "admin::plugins: name"
-msgstr "Anzahl"
+msgstr "Name "
 
-#, fuzzy
 msgid "admin::plugins: plugins"
-msgstr "Alias"
+msgstr "Plugins"
 
 msgid "admin::plugins: retrieveConfigurationError"
 msgstr ""
 
-#, fuzzy
 msgid "admin::plugins: version"
-msgstr "Version"
+msgstr "Version "
 
 msgid "base:: re-indexer"
 msgstr ""
@@ -4937,7 +4931,7 @@ msgid "par mois"
 msgstr "pro Monat"
 
 msgid "plugin.name"
-msgstr ""
+msgstr "Name"
 
 msgid "%n_par_page% par page"
 msgstr "%n_par_page% pro Seite"
@@ -5397,6 +5391,8 @@ msgid ""
 "                     inacessible. Nous vous invitons si vous le souhaitez à "
 "utiliser production dés maintenant."
 msgstr ""
+"Phraseanet Classic Schnittstelle wird nicht mehr gepflegt und unzgänglich "
+"sein. Von nun an benutzen Sie bitte die Phraseanet Produktion Anwendung."
 
 msgid "Production "
 msgstr "Produktion"
@@ -6872,7 +6868,7 @@ msgid "Deselect all"
 msgstr "Alle abwählen"
 
 msgid "Disable document type sharing"
-msgstr ""
+msgstr "Deaktivieren: Permalink teilen"
 
 msgid "Display technical data"
 msgstr "Technische Daten anzeigen"
