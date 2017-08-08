@@ -518,7 +518,7 @@
       </trans-unit>
       <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="yes">
         <source>Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</source>
-        <target state="translated">[WRONG] Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</target>
+        <target state="translated">Pour accéder aux bases ci-dessus, vous devez d'abord accepter les conditions générales d'utilisation.</target>
         <jms:reference-file line="161">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9db7fb32c517586a4123d511613b492d910aecaa" resname="Access user have readonly access" approved="yes">
@@ -908,7 +908,7 @@
       </trans-unit>
       <trans-unit id="98a5e115c36d45b5c1cb4ed3537f847a5210d1e7" resname="An error occurred" approved="yes">
         <source>An error occurred</source>
-        <target state="translated">Un erreur est survenue</target>
+        <target state="translated">Une erreur est survenue</target>
         <jms:reference-file line="1900">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="2346">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="145">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -929,7 +929,7 @@
       </trans-unit>
       <trans-unit id="2063ba5ce348f48f77284c961f2291da1fdd79a5" resname="An upload on %bridge_adapter% failed, the resaon is : %reason%" approved="yes">
         <source>An upload on %bridge_adapter% failed, the resaon is : %reason%</source>
-        <target state="translated">Un chargement sur le %bridge_adapter% a échoué par la raison suivante : %reason%</target>
+        <target state="translated">Un chargement sur le %bridge_adapter% a échoué pour la raison suivante : %reason%</target>
         <jms:reference-file line="63">Notification/Mail/MailInfoBridgeUploadFailed.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ad56f9f5a406f1c69267d4ac341168e3affa3e7" resname="Anonymous report" approved="yes">
@@ -989,7 +989,7 @@
       </trans-unit>
       <trans-unit id="27d917e81d7d1b082f84bbfac7c6eeb2d82a059f" resname="ApplicationBox is a Mysql database." approved="yes">
         <source>ApplicationBox is a Mysql database.</source>
-        <target state="translated">l'ApplicationBox est une base de données  Mysql .</target>
+        <target state="translated">L'ApplicationBox est une base de données Mysql.</target>
         <jms:reference-file line="604">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="76c74bd071dd73f01696fddbbffc77712a479faf" resname="Applications" approved="yes">
@@ -2239,7 +2239,7 @@
       </trans-unit>
       <trans-unit id="85cce1e14782f67cb830f74002ebe5603783c674" resname="Deselect all" approved="yes">
         <source>Deselect all</source>
-        <target state="translated">Tout desélectionner</target>
+        <target state="translated">Tout désélectionner</target>
         <jms:reference-file line="193">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="27">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
@@ -3133,7 +3133,7 @@
       </trans-unit>
       <trans-unit id="08b45ed74896581d98b812794a2753e1572291dc" resname="General settings" approved="yes">
         <source>General settings</source>
-        <target state="translated">Paramètre généraux</target>
+        <target state="translated">Paramètres généraux</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc45f9b7a9a6e8b48f0e28821ec1981804dd1eb6" resname="Generate" approved="yes">
@@ -3183,7 +3183,7 @@
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
         <source>Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side.</source>
-        <target state="translated">Donne la possibilité à votre application de communiquer avec Phraseanet . Ce Webhook peut être utilisé pour déclencher des actions sur l'application distante.</target>
+        <target state="translated">Donne la possibilité à votre application de communiquer avec Phraseanet. Ce Webhook peut être utilisé pour déclencher des actions sur l'application distante.</target>
         <jms:reference-file line="75">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61dedcf053ff33692baacbf7789c5d7195d9acbe" resname="Good" approved="yes">
@@ -3922,7 +3922,7 @@
       </trans-unit>
       <trans-unit id="9f846b4bd423107e5593efb647a04d208aee278d" resname="Manage collection" approved="yes">
         <source>Manage collection</source>
-        <target state="translated">Autoriser a gérer les paramètres de collection</target>
+        <target state="translated">Autoriser à gérer les paramètres de collection</target>
         <jms:reference-file line="421">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7ee3c4dd0a46c8618da4ec41c685dff32c86d6e" resname="Manage users" approved="yes">
@@ -4334,7 +4334,7 @@
       </trans-unit>
       <trans-unit id="18ee7ad22bf04f818fd95599481303c7f7d1b29f" resname="Notify third party application when an event occurs in Phraseanet" approved="yes">
         <source>Notify third party application when an event occurs in Phraseanet</source>
-        <target state="translated">Notifier l'application tierce lorsqu'un événement de produit dans Phraseanet</target>
+        <target state="translated">Notifier l'application tierce lorsqu'un événement se produit dans Phraseanet</target>
         <jms:reference-file line="74">TaskManager/Job/WebhookJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ccc3824ae2ffdfea7482564cbc8cf35de78766d" resname="Notify users about this publication" approved="yes">
@@ -4683,7 +4683,7 @@
       </trans-unit>
       <trans-unit id="a845af798646902aeb0d49cd0e7efed858d74ec8" resname="Please provide the same emails." approved="yes">
         <source>Please provide the same emails.</source>
-        <target state="translated">Veuillez indiquer les mêmes adresses e-mails.</target>
+        <target state="translated">Veuillez indiquer les mêmes adresses e-mail.</target>
         <jms:reference-file line="143">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
@@ -6438,7 +6438,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="34c6d5d40f46508994dd884386a0ea63970f2e34" resname="Thumbnail has been successfully substitued" approved="yes">
         <source>Thumbnail has been successfully substitued</source>
-        <target state="translated">La vignette a été substitué</target>
+        <target state="translated">La vignette a été substituée</target>
         <jms:reference-file line="268">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56972a74c8bd7510e5ca07b4d56bf31fdc495aa5" resname="Thumbnails directory is mounted to be accessible via HTTP, while other files are not." approved="yes">
@@ -7107,7 +7107,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="150bc8f4e8e0665adb7e938871ad71280390272e" resname="Vous etes authentifie avec succes" approved="yes">
         <source>Vous etes authentifie avec succes</source>
-        <target state="translated">Vous êtes authentifié avec succès</target>
+        <target state="translated">Vous êtes authentifié(e) avec succès</target>
         <jms:reference-file line="23">actions/Bridge/callback.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d3d97ffc6b526aad5b5c5e4f99df4298a48ce0b" resname="Vous etes maintenant deconnecte. A bientot." approved="yes">
@@ -7949,7 +7949,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="3d84e19b243dea8a79762b90a3086d96e5cc2c00" resname="admin::base:collection: activer la collection" approved="yes">
         <source>admin::base:collection: activer la collection</source>
-        <target state="translated">Collection activé</target>
+        <target state="translated">Collection activée</target>
         <jms:reference-file line="34">admin/collection/collection.html.twig</jms:reference-file>
         <jms:reference-file line="122">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
@@ -11680,7 +11680,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="4dad4c5a6197e99672c6874d0f98be7cc6e0c2fb" resname="rotation 90 degres anti-horaires" approved="yes">
         <source>rotation 90 degres anti-horaires</source>
-        <target state="translated">Rotation de 90 degrés anti-horaires</target>
+        <target state="translated">Rotation de 90 degrés anti-horaire</target>
         <jms:reference-file line="192">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6dc920f883ae4f5315f948bda35ef66573caf4bd" resname="rotation 90 degres horaire" approved="yes">
