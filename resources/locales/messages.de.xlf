@@ -18,7 +18,7 @@
                     This avoids anonymous users to access to the content of the push if they were able to get the display
                     url through a forwarded mail for example.
                 </source>
-        <target state="translated">Parameter "Authentifizierung erzwingen" erzwingt den Push Empfänger, ein Phraseanet Konto zu haben, um den Inhalt anzuschauen. Es vermeidet, unautorisierte Benutzer den Push Inhalt zuzugreifen, falls sie die URL bekämen (Email wurde weitergeleitet, zum Beispiel).</target>
+        <target state="translated">Parameter "Authentifizierung erzwingen" erzwingt den Push Empfänger, ein Phraseanet Konto zu haben, um den Inhalt anzuschauen. Es vermeidet, unautorisierte Benutzer dem Push Inhalt zuzugreifen, falls sie die URL bekämen (Email wurde weitergeleitet, zum Beispiel).</target>
         <jms:reference-file line="168">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9378053eb7743587671aa830ffd2c9f1b13ad1a" resname="%ElementsCount% records" approved="yes">
@@ -197,7 +197,7 @@
       </trans-unit>
       <trans-unit id="4d90df6ce9691d4bc172b9129250a5af4bef4b7f" resname="%record_count% records match the unique identifier :" approved="yes">
         <source>%record_count% records match the unique identifier :</source>
-        <target state="translated">%record_count% Datensätze entsprechen dem eindeutigen Bezeichner :</target>
+        <target state="translated">%record_count% Datensätze entsprechen dem eindeutigen Bezeichner:</target>
         <jms:reference-file line="379">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1d847e60f4e92e438c94f0eb3176ce96113c63e5" resname="%s field has been created with success." approved="yes">
@@ -1591,7 +1591,7 @@
       </trans-unit>
       <trans-unit id="c7ac0481e24696875efead10fd077a8425f1719e" resname="Chargement" approved="yes">
         <source>Chargement</source>
-        <target state="translated">Ladend</target>
+        <target state="translated">Bitte warten...</target>
         <jms:reference-file line="94">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dcaef5e63af73ecdc461619402f8d13754ec5718" resname="Chercher" approved="yes">
@@ -3887,7 +3887,7 @@
       </trans-unit>
       <trans-unit id="8f26c6520d61588a9757bc182157c4497628e871" resname="Loading" approved="yes">
         <source>Loading</source>
-        <target state="translated">Ladend</target>
+        <target state="translated">Bitte warten...</target>
         <jms:reference-file line="324">actions/Bridge/index.html.twig</jms:reference-file>
         <jms:reference-file line="142">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
@@ -4734,7 +4734,7 @@
       </trans-unit>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
-        <target state="translated">Bitte geben Sie die selbe Passwörter ein</target>
+        <target state="translated">Bitte geben Sie diesselbe Passwörter ein.</target>
         <jms:reference-file line="142">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="909937ac0774309e683ebb56a623ec8218c96e14" resname="Please select at least %s choice." approved="yes">
@@ -5275,7 +5275,7 @@
       </trans-unit>
       <trans-unit id="ced7b308a348567fbf21dd775ee496dd01207f24" resname="Remember me" approved="yes">
         <source>Remember me</source>
-        <target state="translated">Mich erinnern</target>
+        <target state="translated">Angemeldet bleiben</target>
         <jms:reference-file line="51">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8005b356e3a4dba94a532df1deec4ebce882d13" resname="Reminder : validate '%title%'" approved="yes">
@@ -10006,7 +10006,7 @@
       </trans-unit>
       <trans-unit id="e77f2b48e4de1e7776765dacd6b6c49434f57fdd" resname="order-manager::order-item: warning-message-close" approved="yes">
         <source>order-manager::order-item: warning-message-close</source>
-        <target state="translated">Ihre anhängige Auswahlen abbrechen?</target>
+        <target state="translated">Ihre anstehende Auswahlen abbrechen?</target>
         <jms:reference-file line="251">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="536">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
@@ -10391,7 +10391,7 @@
       </trans-unit>
       <trans-unit id="9628f29074afd5c9bb42bb0b4c896f8bc32c192e" resname="phraseanet::chargement" approved="yes">
         <source>phraseanet::chargement</source>
-        <target state="translated">ladend</target>
+        <target state="translated">Bitte warten...</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="34">admin/collection/suggested_value.html.twig</jms:reference-file>
         <jms:reference-file line="263">prod/actions/edit_default.html.twig</jms:reference-file>
@@ -10627,13 +10627,13 @@
       </trans-unit>
       <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation" approved="yes">
         <source>preview::visualisation</source>
-        <target state="translated">Anzahl von Vorschauen</target>
+        <target state="translated">Anzahl von Ansichten</target>
         <jms:reference-file line="70">prod/preview/popularity.html.twig</jms:reference-file>
         <jms:reference-file line="96">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="yes">
         <source>previewLinkLabel</source>
-        <target state="translated">vorschauen</target>
+        <target state="translated">ansichten</target>
         <jms:reference-file line="27">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
@@ -11280,7 +11280,7 @@
       </trans-unit>
       <trans-unit id="449ab664cb3a86585e7942d12693cfe75ca80e9b" resname="report:: Les questions les plus posees" approved="yes">
         <source>report:: Les questions les plus posees</source>
-        <target state="translated">häufigsten gestellten Fragen</target>
+        <target state="translated">Meist gestellten Fragen</target>
         <jms:reference-file line="67">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
         <jms:reference-file line="181">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
@@ -11299,7 +11299,7 @@
       </trans-unit>
       <trans-unit id="89e1f53ec411b155207ca8489388aafffe430392" resname="report:: Volumetrie des questions posees sur %home_title%" approved="yes">
         <source>report:: Volumetrie des questions posees sur %home_title%</source>
-        <target state="translated">häufigsten Suchabfragen in %home_title%</target>
+        <target state="translated">Meist Suchabfragen in %home_title%</target>
         <jms:reference-file line="41">web/report/dashboard_macro.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0deee30b968da91f95a0daf3b988fb8613bcf4f5" resname="report:: activite" approved="yes">
@@ -11624,7 +11624,7 @@
       </trans-unit>
       <trans-unit id="14ea0ad72add93f38be10e87f3b4b08c58e31936" resname="report:: preview les plus telecharges" approved="yes">
         <source>report:: preview les plus telecharges</source>
-        <target state="translated">Meist heruntergeladene Vorschauen</target>
+        <target state="translated">Meist heruntergeladene Ansichten</target>
         <jms:reference-file line="61">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59bf65358205d118e78e021aa3a14a066612beb3" resname="report:: pushe" approved="yes">
@@ -11657,7 +11657,7 @@
       </trans-unit>
       <trans-unit id="83b439b333a9de48c78ee319e3134769e9f808d3" resname="report:: questions les plus posees" approved="yes">
         <source>report:: questions les plus posees</source>
-        <target state="translated">Häufigsten gestellten Fragen</target>
+        <target state="translated">Meist gestellten Fragen</target>
         <jms:reference-file line="212">module/report/activity.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a2da7dd0ee15016ebcb910397e431e37571bcdc7" resname="report:: questions sans reponses" approved="yes">
