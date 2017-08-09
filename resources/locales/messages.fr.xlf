@@ -3323,7 +3323,7 @@
       </trans-unit>
       <trans-unit id="78860a4e5b33556e6a8947485d8b042d9e58234e" resname="Hide information about users" approved="yes">
         <source>Hide information about users</source>
-        <target state="translated">Masquer les informations à propos des utilisateurs.</target>
+        <target state="translated">Masquer les informations à propos des utilisateurs</target>
         <jms:reference-file line="35">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="70f8bb9a8a5393ef080507a89e4b98d139000d65" resname="Home" approved="yes">
@@ -9623,7 +9623,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
         <source>index::advance_search: disable-facet</source>
-        <target state="translated">Ne pas afficher les facettes contenant un seul résultat (expérimental).</target>
+        <target state="translated">Ne pas afficher les facettes contenant un seul résultat (expérimental)</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="yes">
