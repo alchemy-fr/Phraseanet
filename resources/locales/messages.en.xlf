@@ -3323,7 +3323,7 @@
       </trans-unit>
       <trans-unit id="78860a4e5b33556e6a8947485d8b042d9e58234e" resname="Hide information about users" approved="yes">
         <source>Hide information about users</source>
-        <target state="translated">Hide information about users.</target>
+        <target state="translated">Hide information about users</target>
         <jms:reference-file line="35">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="70f8bb9a8a5393ef080507a89e4b98d139000d65" resname="Home" approved="yes">
@@ -9620,12 +9620,12 @@
       </trans-unit>
       <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
         <source>index::advance_search: disable-facet</source>
-        <target state="translated">Hide facette with 1 result (experimental).</target>
+        <target state="translated">Hide facets with 1 result (experimental)</target>
         <jms:reference-file line="696">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="yes">
         <source>index::advance_search: facet</source>
-        <target state="translated">Facette Preferences</target>
+        <target state="translated">Facets Preferences</target>
         <jms:reference-file line="692">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
@@ -12077,7 +12077,7 @@
       </trans-unit>
       <trans-unit id="c839f2d61feee84cc97255537945fc34cbcbf82c" resname="setup::Backup thumbnails cache" approved="yes">
         <source>setup::Backup thumbnails cache</source>
-        <target state="translated">Backup thumbnails cache repository.</target>
+        <target state="translated">Backup thumbnails cache repository</target>
         <jms:reference-file line="160">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9b5fafc42f6e089ae9b42825287781dffcafcdd" resname="setup::Configuration de la base de compte ApplicationBox" approved="yes">
