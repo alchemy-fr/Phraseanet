@@ -3280,7 +3280,7 @@
       </trans-unit>
       <trans-unit id="78860a4e5b33556e6a8947485d8b042d9e58234e" resname="Hide information about users" approved="yes">
         <source>Hide information about users</source>
-        <target state="translated">Hide information about users.</target>
+        <target state="translated">Hide information about users</target>
         <jms:reference-file line="35">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="70f8bb9a8a5393ef080507a89e4b98d139000d65" resname="Home" approved="yes">
