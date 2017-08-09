@@ -19,11 +19,8 @@
         <div id="phraseanet-embed-frame" class="documentTips"
              data-original-width="{{original_w}}"
              data-original-height="{{original_h}}"
-             data-kind="document">
-
-        </div>
-
-
+             data-kind="document"
+             data-src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"></div>
     {% elseif record_type == 'AUDIO_MP3' %}
         <div id="phraseanet-embed-frame" class="audioTips"
              data-original-width="{{original_w}}"
