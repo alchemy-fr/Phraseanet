@@ -1,4 +1,7 @@
 /** override hardcoded value in bootstrap2 */
 .dropdown-menu {
   @include border-radius($borderRadiusSmall);
+  margin: $marginDropdown;
+  border-top: $borderTopDropdown;
+  padding: $paddingDropdown;
 }

@@ -136,39 +136,43 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="dialog small-dialog" href="{{ path('prod_baskets_create') }}">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
-                                {{ 'action:: nouveau panier' | trans }}
+                               <span class="context-menu-item-img" ><img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" /></span>
+                               <span class="context-menu-item-text">{{ 'action:: nouveau panier' | trans }}</span>
                             </a>
                         </div>
                         <div class="context-menu-item-inner">
                             <a title="{{ 'Browse Baskets' | trans }}" class="dialog" href="{{ path('prod_workzone_browse') }}">
-                                {{ 'Browse Baskets' | trans }}
+                                <span class="context-menu-item-img" ></span>
+                                <span class="context-menu-item-text">{{ 'Browse Baskets' | trans }}</span>
                             </a>
                         </div>
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
                             <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="dialog small-dialog" href="{{ path('prod_stories_create') }}">
-                                    <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
-                                    {{ 'action:: nouveau reportage' | trans }}
+                                    <span class="context-menu-item-img"> <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" /></span>
+                                    <span class="context-menu-item-text">{{ 'action:: nouveau reportage' | trans }}</span>
                                 </a>
                             </div>
                        {% endif %}
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
-                            <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
-                            {{ 'phraseanet:: tri par date' | trans }}
+                            <span class="context-menu-item-img"><img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}"/></span>
+                            <span class="context-menu-item-text">{{ 'phraseanet:: tri par date' | trans }}</span>
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
-                            <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
-                            {{ 'phraseanet:: tri par nom' | trans }}
+                            <span class="context-menu-item-img"><img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" /></span>
+                            <span class="context-menu-item-text">{{ 'phraseanet:: tri par nom' | trans }}</span>
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner" onclick="basketPrefs();">
+                            <span class="context-menu-item-img"></span>
+                            <span class="context-menu-item-text">
                             {{ 'Preferences' | trans }}
+                            </span>
                         </div>
                     </li>
                 </ul>

@@ -44,7 +44,7 @@ Menu contextuel
 /******* DROPDOWN MENU ********************************************************/
 
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
-  padding: 4px 20px;
+  padding: 2px 20px 2px 10px;
   margin-left: 0;
   color: #75ABFF;
 }
@@ -53,6 +53,17 @@ Menu contextuel
   background-image: none;
   background-color: #75ABFF;
   border: none;
+  a {
+     color: #212121;
+  }
+}
+
+.context-menu-theme-vista .context-menu-item .context-menu-item-inner:hover{
+  background-color: #75ABFF;
+  color: #212121;
+  a {
+     color: #212121;
+  }
 }
 
 .context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
@@ -72,11 +83,12 @@ Menu contextuel
   background-position: 5px center;
 }
 
+span.context-menu-item-img{
+    display: inline-block;
+    width: 22px;
+}       
+
 
 .context-menu-item a {
   color: #75ABFF;
-}
-
-.context-menu-item-hover a {
-  color: #212121;
 }

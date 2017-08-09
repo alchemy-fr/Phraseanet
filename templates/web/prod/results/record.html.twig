@@ -109,7 +109,8 @@
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
-                                                    {{ 'action : ajouter au panier' | trans }}
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/basket_push.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : ajouter au panier' | trans }}</span>
                                                 </div>
                                             </div>
                                         {% endif %}
@@ -117,14 +118,16 @@
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
-                                                    {{ 'action : exporter' | trans }}
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : exporter' | trans }}</span>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner"
                                                  onclick="evt_print('{{record.id}}');return(false);">
-                                                {{ 'action : print' | trans }}
+                                                <span class="context-menu-item-img"><img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                                <span class="context-menu-item-text">{{ 'action : print' | trans }}</span>
                                             </div>
                                         </div>
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
@@ -134,7 +137,8 @@
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"
                                                          onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
-                                                        {{ 'reponses:: partager' | trans }}
+                                                        <span class="context-menu-item-img"></span>
+                                                        <span class="context-menu-item-text">{{ 'reponses:: partager' | trans }}</span>
                                                     </div>
                                                 </div>
                                             {% endif %}
