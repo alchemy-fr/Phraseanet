@@ -145,13 +145,13 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                            <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank"><span class="context-menu-item-img" ></span> Lightbox</a>
+                            <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank"><span class="context-menu-item-img" ><img src="/assets/common/images/icons/lightbox.png" height="16" width="16" /></span> Lightbox</a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog small-dialog" title="{{ 'action::renommer' | trans }}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
-                              <span class="context-menu-item-img" ></span> {{ 'action::renommer' | trans }}
+                              <span class="context-menu-item-img" ><img src="/assets/common/images/icons/rename.png" height="16" width="16" /></span> {{ 'action::renommer' | trans }}
                           </a>
                         </div>
                       </div>
@@ -160,7 +160,7 @@
                         <div title="" class="context-menu-item">
                           <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
-                                <span class="context-menu-item-img" ></span> {{ 'action::Valider' | trans }}
+                                <span class="context-menu-item-img" ><img src="/assets/common/images/icons/validate.png" height="16" width="16" /></span> {{ 'action::Valider' | trans }}
                             </div>
                           </a>
                         </div>
@@ -169,7 +169,7 @@
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
                              onclick="archiveBasket({{ basket.getId() }});return false;">
-                            <span class="context-menu-item-img" ></span> {{ 'Archive' | trans }}
+                            <span class="context-menu-item-img" ><img src="/assets/common/images/icons/archive.png" height="16" width="16" /></span> {{ 'Archive' | trans }}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
@@ -182,7 +182,7 @@
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
-                              <span class="context-menu-item-img" ></span> {{ 'Re-ordonner' | trans }}
+                              <span class="context-menu-item-img" ><img src="/assets/common/images/icons/reorder.png" height="16" width="16" /></span> {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
                       </div>
