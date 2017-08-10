@@ -245,6 +245,13 @@ span.ww_winTitle {
   .cont_infos {
     text-align: center;
     width: 100%;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     div {
       line-height: 20px;
       font-size: $smallFontSize;

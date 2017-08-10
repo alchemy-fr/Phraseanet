@@ -28,3 +28,54 @@
 
     </div>
 {% endif %}
+
+{# Override #}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+    <div onclick="editThis('IMGT','{{ record.get_serialize_key }}');return(false);">
+        <img src="/assets/common/images/icons/ppen_history.png"/>
+    </div>
+{% endif %}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+    <div onclick="propretieThis('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+        <img src="/assets/common/images/icons/chgstatus_history.png"/>
+    </div>
+{% endif %}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
+    <div onclick="chgCollThis('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+        <img src="/assets/common/images/icons/chgcoll_history.png"/>
+    </div>
+{% endif %}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+    <div onclick="pushThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
+        <img src="/assets/common/images/icons/push16.png"/>
+    </div>
+{% endif %}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+    <div onclick="feedbackThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
+        <img src="/assets/common/images/icons/feedback16.png"/>
+    </div>
+{% endif %}
+{% set dataBridge = {'lst': record.get_serialize_key } %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+    <div onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ dataBridge| json_encode() }});return(false);">
+    <img src="/assets/common/images/icons/door.png"/>
+    </div>
+    <div onclick="publicationModule.publishRecords('IMGT','{{ record.get_serialize_key }}');return(false);">
+        <img src="/assets/common/images/icons/rss16.png"/>
+    </div>
+{% endif %}
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+<div onclick="toolREFACTOR({{ dataBridge| json_encode() }});return(false);">
+         <img src="/assets/common/images/icons/imgtools_history.png"/>
+     </div>
+{% endif %}
+<div onclick="checkDeleteThis('IMGT','{{ record.get_serialize_key }}');return(false);">
+    <img src="/assets/common/images/icons/delete.png"/>
+</div>
+
+
