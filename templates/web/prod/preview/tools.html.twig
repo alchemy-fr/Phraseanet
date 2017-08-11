@@ -19,7 +19,6 @@
     </div>
 {% endif %}
 
-{# Override #}
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
     <div class="inline-div" onclick="editThis('IMGT','{{ record.get_serialize_key }}');return(false);">
         <img src="/assets/common/images/icons/ppen_history.png" title="{{ 'action : editer' | trans }}" height="16" width="16" class="btn-image" />
