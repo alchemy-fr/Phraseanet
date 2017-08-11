@@ -1,28 +1,18 @@
-
+{% set dataBridge = {'lst': record.get_serialize_key } %}
 {% if (record.is_from_basket is empty) and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANPUTINALBUM')) %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
-       class="baskAdder" title="{{ 'action : ajouter au panier' | trans }}"
+       class="baskAdder inline-div" title="{{ 'action : ajouter au panier' | trans }}"
        onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);">
       <img src="/assets/common/images/icons/basket.png" height="16" width="16" class="btn-image">
   </div>
 {% endif %}
 
-{% if record.is_from_basket() %}
-    <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
-       class="WorkZoneElementRemover"
-       data-context="reg_train_basket"
-       onclick="remove_from_basket($(this), false);return false;"
-       href="{{ path('prod_baskets_basket_element_remove', { 'basket' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
-        <img src="/assets/common/images/icons/delete.png" height="16" width="16" class="btn-image" title="{{ 'Remove from basket' | trans }}">
-    </a>
-{% endif %}
-
-  <div onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
-      <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image" title="'{{ 'action : print' | trans }}">
+  <div class="inline-div" onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+      <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image" title="{{ 'action : print' | trans }}">
   </div>
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDHD')) or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDPREVIEW')) %}
-    <div onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+    <div class="inline-div" onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
         <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image" title="{{ 'action : exporter' | trans }}">
        {# <img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
@@ -31,51 +21,58 @@
 
 {# Override #}
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-    <div onclick="editThis('IMGT','{{ record.get_serialize_key }}');return(false);">
-        <img src="/assets/common/images/icons/ppen_history.png"/>
+    <div class="inline-div" onclick="editThis('IMGT','{{ record.get_serialize_key }}');return(false);">
+        <img src="/assets/common/images/icons/ppen_history.png" title="{{ 'action : editer' | trans }}" height="16" width="16" class="btn-image" />
     </div>
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
-    <div onclick="propretieThis('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
-        <img src="/assets/common/images/icons/chgstatus_history.png"/>
+    <div class="inline-div" onclick="evt_properties('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+        <img src="/assets/common/images/icons/chgstatus_history.png" title="{{ 'action : status' | trans }}" height="16" width="16" class="btn-image" />
     </div>
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-    <div onclick="chgCollThis('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
-        <img src="/assets/common/images/icons/chgcoll_history.png"/>
+    <div class="inline-div" onclick="chgCollThis({{ dataBridge| json_encode() }});return(false);">
+        <img src="/assets/common/images/icons/chgcoll_history.png" title="{{ 'action : collection' | trans }}" height="16" width="16" class="btn-image"/>
     </div>
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-    <div onclick="pushThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
-        <img src="/assets/common/images/icons/push16.png"/>
+    <div class="inline-div" onclick="pushThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
+        <img src="/assets/common/images/icons/push16.png" title="{{ 'action : push' | trans }}" height="16" width="16" class="btn-image"/>
     </div>
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
-    <div onclick="feedbackThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
-        <img src="/assets/common/images/icons/feedback16.png"/>
+    <div class="inline-div" onclick="feedbackThis('{{record.get_sbas_id()}}','{{record.get_record_id()}}','');return(false);">
+        <img src="/assets/common/images/icons/feedback16.png" title="{{ 'Feedback' | trans }}" height="16" width="16" class="btn-image"/>
     </div>
 {% endif %}
-{% set dataBridge = {'lst': record.get_serialize_key } %}
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
-    <div onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ dataBridge| json_encode() }});return(false);">
-    <img src="/assets/common/images/icons/door.png"/>
+    <div class="inline-div" onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ dataBridge| json_encode() }});return(false);">
+    <img src="/assets/common/images/icons/door.png" title="{{ 'action : bridge' | trans }}" height="16" width="16" class="btn-image"/>
     </div>
-    <div onclick="publicationModule.publishRecords('IMGT','{{ record.get_serialize_key }}');return(false);">
-        <img src="/assets/common/images/icons/rss16.png"/>
+    <div class="inline-div" onclick="publicationModule.publishRecords('IMGT','{{ record.get_serialize_key }}');return(false);">
+        <img src="/assets/common/images/icons/rss16.png" title="{{ 'action : publier' | trans }}" height="16" width="16" class="btn-image"/>
     </div>
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
-<div onclick="toolREFACTOR({{ dataBridge| json_encode() }});return(false);">
-         <img src="/assets/common/images/icons/imgtools_history.png"/>
+    <div class="inline-div" onclick="toolREFACTOR({{ dataBridge| json_encode() }});return(false);">
+         <img src="/assets/common/images/icons/imgtools_history.png" title="{{ 'action : outils' | trans }}" height="16" width="16" class="btn-image"/>
      </div>
 {% endif %}
-<div onclick="checkDeleteThis('IMGT','{{ record.get_serialize_key }}');return(false);">
-    <img src="/assets/common/images/icons/delete.png"/>
-</div>
+
+{% if record.is_from_basket() %}
+    <a sbas="{{record.get_sbas_id()}}" id="PREV_BASKDEL_{{record.get_serialize_key}}"
+       class="WorkZoneElementRemover inline-div"
+       data-context="reg_train_basket"
+       onclick="remove_from_basket($(this), false);return false;"
+       href="{{ path('prod_baskets_basket_element_remove', { 'basket' :  record.get_container().getId(), 'basket_element_id' : record.get_original_item().getId()}) }}">
+        <img src="/assets/common/images/icons/delete.png" height="16" width="16" class="btn-image" title="{{ 'Remove from basket' | trans }}">
+    </a>
+{% endif %}
+
 
 
