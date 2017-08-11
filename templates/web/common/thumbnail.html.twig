@@ -33,14 +33,13 @@
         {"width":box_w, "height":box_h}
         )%}
 
-        <img class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" data-kind="image" oncontextMenu="return(false);"
+        <img data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" data-kind="image" oncontextMenu="return(false);"
              style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
              src="{% if lazyload %}/assets/common/images/grey.gif{% else %}{{ url|trim }}{% endif %}" data-original="{{ url|trim }}" ondragstart="return false;">
-        <input type="hidden" name="width" value="{{original_w}}"/>
-        <input type="hidden" name="height" value="{{original_h}}"/>
 
     {% endif %}
-
     {% if wrap %}
         </div>
     {% endif %}
