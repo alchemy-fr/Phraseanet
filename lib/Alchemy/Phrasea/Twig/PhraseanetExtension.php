@@ -386,10 +386,11 @@ class PhraseanetExtension extends \Twig_Extension
         $metadatasInformation = [];
         foreach ($metadatas as $key => $value) {
             $tagname = $value->getTag()->getTagname();
+            $isBinaryString =  $this->isbinary($value->getValue()->asString());
             // Skip system information if user not admin or binary value
             if((!$this->app->getAuthenticatedUser()->isAdmin() &&
                 preg_match("#^(System|ExifTool):#", $tagname))
-            || preg_match("#TRC#",$tagname)){
+            || $isBinaryString){
                 continue;
             }
 
@@ -397,6 +398,29 @@ class PhraseanetExtension extends \Twig_Extension
         }
 
         return $metadatasInformation;
+    }
+
+    /**
+     * 
+     * @param $input
+     * @return int
+     */
+    private function isbinary($input)
+    {
+        /* This simple function returns true if there's any
+           non-standard Ascii characters */
+        $isbinary = 0;
+        for($x=0;$x < strlen($input); $x++) {
+            $c = substr($input,$x,1);
+            if($c < chr(32) or $c > chr(127)) {
+                /* add expected european extended characters */
+                if($c != chr(10) or $c != chr(13) or $c != chr(9)) {
+                    $isbinary = 1;
+                    break;
+                }
+            }
+        }
+        return $isbinary;
     }
 
 }
