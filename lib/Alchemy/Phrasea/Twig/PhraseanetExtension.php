@@ -51,6 +51,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
+            new \Twig_SimpleFunction('metadatas_information', array($this, 'getMetadatasInformation')),
         );
     }
 
@@ -375,4 +376,27 @@ class PhraseanetExtension extends \Twig_Extension
             'business' => $businessOrder,
         ];
     }
+
+    /**
+     * @param $metadatas
+     * @return array
+     */
+    public function getMetadatasInformation($metadatas)
+    {
+        $metadatasInformation = [];
+        foreach ($metadatas as $key => $value) {
+            $tagname = $value->getTag()->getTagname();
+            // Skip system information if user not admin or binary value
+            if((!$this->app->getAuthenticatedUser()->isAdmin() &&
+                preg_match("#^(System|ExifTool):#", $tagname))
+            || preg_match("/TRC/",$tagname)){
+                continue;
+            }
+
+            $metadatasInformation[$tagname] = $value->getValue()->asString();
+        }
+
+        return $metadatasInformation;
+    }
+
 }

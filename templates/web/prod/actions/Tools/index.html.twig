@@ -293,13 +293,13 @@
                         <td></td>
                         <td></td>
                     </tr>
-                {% for metadata in metadatas %}
+                {% for key,value in metadatas_information(metadatas)  %}
                     <tr>
                         <td>
-                            {{ metadata.getTag().getTagname() }}
+                            {{ key }}
                         </td>
                         <td>
-                            {{ metadata.getValue().asString() }}
+                            {{ value }}
                         </td>
                     </tr>
                 {% endfor %}
