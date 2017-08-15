@@ -389,7 +389,7 @@ class PhraseanetExtension extends \Twig_Extension
             // Skip system information if user not admin or binary value
             if((!$this->app->getAuthenticatedUser()->isAdmin() &&
                 preg_match("#^(System|ExifTool):#", $tagname))
-            || preg_match("/TRC/",$tagname)){
+            || preg_match("#TRC#",$tagname)){
                 continue;
             }
 
