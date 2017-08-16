@@ -384,17 +384,21 @@ class PhraseanetExtension extends \Twig_Extension
     public function getMetadatasInformation($metadatas)
     {
         $metadatasInformation = [];
+        $isAdmin = $this->app->getAuthenticatedUser()->isAdmin();
+
         foreach ($metadatas as $key => $value) {
             $tagname = $value->getTag()->getTagname();
-            $isBinaryString =  $this->isbinary($value->getValue()->asString());
+            $metadataValueAsString = $value->getValue()->asString();
+            $isBinaryString =  $this->isbinary($metadataValueAsString);
+
             // Skip system information if user not admin or binary value
-            if((!$this->app->getAuthenticatedUser()->isAdmin() &&
+            if((!$isAdmin &&
                 preg_match("#^(System|ExifTool):#", $tagname))
             || $isBinaryString){
                 continue;
             }
 
-            $metadatasInformation[$tagname] = $value->getValue()->asString();
+            $metadatasInformation[$tagname] = $metadataValueAsString;
         }
 
         return $metadatasInformation;
