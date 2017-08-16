@@ -51,6 +51,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
+            new \Twig_SimpleFunction('metadatas_information', array($this, 'getMetadatasInformation')),
         );
     }
 
@@ -375,4 +376,55 @@ class PhraseanetExtension extends \Twig_Extension
             'business' => $businessOrder,
         ];
     }
+
+    /**
+     * @param $metadatas
+     * @return array
+     */
+    public function getMetadatasInformation($metadatas)
+    {
+        $metadatasInformation = [];
+        $isAdmin = $this->app->getAuthenticatedUser()->isAdmin();
+
+        foreach ($metadatas as $metadata) {
+            $tagname = $metadata->getTag()->getTagname();
+            $metadataValueAsString = $metadata->getValue()->asString();
+            $isBinaryString =  $this->isbinary($metadataValueAsString);
+
+            // Skip system information if user not admin or binary value
+            if((!$isAdmin &&
+                preg_match("#^(System|ExifTool):#", $tagname))
+            || $isBinaryString){
+                continue;
+            }
+
+            $metadatasInformation[$tagname] = $metadataValueAsString;
+        }
+
+        return $metadatasInformation;
+    }
+
+    /**
+     * 
+     * @param $input
+     * @return int
+     */
+    private function isbinary($input)
+    {
+        /* This simple function returns true if there's any
+           non-standard Ascii characters */
+        $isbinary = 0;
+        for($x=0;$x < strlen($input); $x++) {
+            $c = substr($input,$x,1);
+            if($c < chr(32) or $c > chr(127)) {
+                /* add expected european extended characters */
+                if($c != chr(10) or $c != chr(13) or $c != chr(9)) {
+                    $isbinary = 1;
+                    break;
+                }
+            }
+        }
+        return $isbinary;
+    }
+
 }
