@@ -1,21 +1,49 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 {% set displayName = order.getUser().getDisplayName() %}
 
-<div class="page-header">
-  <h1>{% trans with {'%displayName%' : displayName} %}%displayName% wants to place an order{% endtrans %}</h1>
+<div class="order-header">
+    <div class="alert">
+        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
+    </div>
+    <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
-<div id="order_manager">
+<div style="display:none;position:relative;" id="basket-window" >
+    <form method="POST" action="{{ path('prod_baskets') }}">
+        <label>{{ 'Nom du nouveau panier' | trans }}</label>
+        <input name="name" class="input-block-level" value="" type="text"/>
+
+        <label>{{ 'paniers::description du nouveau panier' | trans }}</label>
+        <textarea name="description" class="input-block-level" ></textarea>
+
+        <label for="new_basket_add_sel" class="checkbox">
+            <input type="checkbox" name="lst" value="" id="new_basket_add_sel"/>
+            {{ 'Ajouter ma selection courrante' | trans }}
+        </label>
+    </form>
+</div>
+
+<div style="display:none;position:relative;" id="validation-window" >
+    <div class="box">
+        <div class="validation-content" style="float:left; width:100%;margin-top:10px;">
+        </div>
+    </div>
+</div>
+
+<div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
+    {% set message = app['request'].query.get('message') %}
 
     {% if  success == '1' %}
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
-             {% if action == 'send' %}
+            {% if action == 'send' %}
                 {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
                 {{ 'Order has been denied' | trans }}
+            {% elseif action == 'basket' %}
+                {{ message }}
             {% endif %}
         </div>
     {% elseif   success == '0' %}
@@ -25,76 +53,851 @@
         </div>
     {% endif %}
 
-    <div class="well">
-        <table class="table" style="color:#333;">
+
+    <div class="well no-margin">
+        <div id="userInfoPreview">
+            <div class="userInfoName">
+                <span>{{ order.getUser().getDisplayName() }}</span>
+            </div>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: company' | trans }}</strong> {{ order.getUser().getCompany() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }}</strong> {{ order.getUser().getPhone() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }}</strong> {{ order.getUser().getAddress() }}</span>
+            <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }}</strong> {{ order.getUser().getCountry() }}</span>
+            {#<div>#}
+            {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
+            {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
+            {#</div>#}
+        </div>
+
+        <table class="table no-border">
             <tr>
-                <td>{{ 'Destinataire' | trans }}</td>
-                <td>{{ displayName }}({{ order.getUser().getEmail() }})</td>
+                <td>
+                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getId() }}</span>
+                </td>
+                <td width="20%">
+                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                </td>
+                <td width="20%">
+                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getDeadline()|date('d/m/Y') }}</span>
+                </td>
+                <td width="20%">
+                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
+                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Date de commande' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getCreatedOn()) }}</td>
+                <td colspan="2">
+                    <span class="text_block">{{ displayName }} (<a
+                                style="font-size: 12px;color: #4990E2;" href="#"
+                                onclick="sendMail()">{{ order.getUser().getEmail() }}</a>)
+                        <span class="icon-stack infoTips" id="userInfo">
+                            <i class="icon-circle icon-stack-base" style="color:#737373"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                    </span>
+                </td>
             </tr>
             <tr>
-                <td>{{ 'Deadline' | trans }}</td>
-                <td>{{ app['date-formatter'].getPrettyString(order.getDeadline()) }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Utilisation prevue' | trans }}</td>
-                <td>{{ order.getOrderUsage() | nl2br }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'Nombre total d\'element commandes' | trans }}</td>
-                <td>{{ order.getTotal() }}</td>
+                <td colspan="2">
+                    <span class="text_block">{{ 'commande::utilisation prevue' | trans }}</span>
+                    <h4 class="minimize">{{ order.getOrderUsage() }}</h4>
+                </td>
             </tr>
         </table>
-    </div>
-    <div class="alert">
-        {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
-    </div>
-
-    <div class="order_list well-small">
-        <ul>
-            {% for element in order.getElements() %}
-                <li>
-                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper {% if element.getOrderMaster() is none %}selectable{% endif %}">
-                        {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
-                        {% if element.getOrderMaster() %}
-                            {% set name = element.getOrderMaster().getDisplayName() %}
-                            {% if element.getDeny() == true %}
-                                {% set title %}
-                                     {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
-                                {% endset %}
-                                {% set title_send %}
-                                    {% trans %}Forcer l'envoi du document{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" height="16" width="16" class="btn-image"/>
-                                <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" height="16" width="16" class="btn-image"/>
-                            {% else %}
-                                {% set title %}
-                                    {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
-                                {% endset %}
-                                <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                            {% endif %}
-                        {% endif %}
-                        <div style="position:absolute;bottom:4px;right:4px;">
-                            <img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>
-                            <div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>
-                            <div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>
-                        </div>
-                        <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
+        <div class="order-list-container">
+            <div class="order_list" style="width:40%;float:left">
+                <div class="top-bar">
+                    <form action="">
+                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/><span>{{ 'order-manager::order-item: select-all' |trans }}</span>
+                    </form>
+                    <div class="btn-group">
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">{{ 'order-manager::order-item: create-basket' |trans }}<span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li type="validated" class="basket-btn">
+                                <a>{{ 'order-manager::order-item: with-validated-items' |trans }}</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li type="denied" class="basket-btn">
+                                <a>{{ 'order-manager::order-item: with-denied-items' |trans }}</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li type="selected" class="basket-btn">
+                                <a>{{ 'order-manager::order-item: with-selected-items' |trans }}</a>
+                            </li>
+                        </ul>
                     </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+                </div>
+                <table class="table-order">
+                    <tbody>
+                    {% for element in order.getElements() %}
+                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                            <td width="10%" align="center">
+                                {% if element.getOrderMaster() %}
+                                    {% set name = element.getOrderMaster().getDisplayName() %}
+                                    {% if element.getDeny() == true %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
+                                        {% endset %}
+                                        {% set title_send %}
+                                            {% trans %}Forcer l'envoi du document{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                        <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                                    {% else %}
+                                        {% set title %}
+                                            {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
+                                        {% endset %}
+                                        <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td width="30%" align="center">
+                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper">
+                                    {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
+                                    {#<div style="position:absolute;bottom:4px;right:4px;">#}
+                                    {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>#}
+                                    {#<div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>#}
+                                    {#</div>#}
+                                    <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+                                </div>
+                            </td>
+                            <td width="60%" align="center">
+                                <span>{{element.getRecord(app).getOriginalName() }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="form-actions" style="color:#333;">
-        {{ 'Selectionnez des documents et' | trans }}
-        <button class="btn btn-primary send">{{ 'Send' | trans }}</button>
-        <button class="btn deny">{{ 'Deny' | trans }}</button>
-        <button class="order-open-action btn">{{ 'Retour aux commandes' | trans }}</button>
-        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
-        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+
+            <div id="order_detail" style="width:60%;">
+                <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
+                    <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
+                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                    <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                </div>
+                <div id="wrapper-padding">
+                    <div id="preview-layout">
+                        {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
+                    </div>
+                    <div id="info-header">
+                        <span class="icon-stack infoTips">
+                            <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
+                            <i class="icon-info" style="color:#FFF"></i>
+                        </span>
+                        <span class="info-text">{{ 'order-manager::order-item: information' | trans }}</span>
+                    </div>
+                    <div id="caption-layout">
+                        {% include 'common/caption.html.twig' with {'record': order.getElements()[0].getRecord(app), 'view': 'preview' }%}
+                    </div>
+                </div>
+                <div id="wrapper-multiple">
+                    <div id="preview-layout-multiple">
+                        <span class="title">0</span>
+                        <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
+                        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+                             style="width:150px;height:150px;"
+                             src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
+                        <div id="text-content"></div>
+                    </div>
+                    <div id="order-action" style="color:#333;">
+                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+                        <input name="order_id" type="hidden" value="{{ order.getId() }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    var userInfoIsVisible = false;
+    var itemCount = 0;
+    var elementsForValidation = [];
+    var readyForValidation = false;
+
+    const ELEMENT_TYPE = {
+        VALIDATED: 'validated',
+        DENIED: 'denied',
+        SELECTABLE: 'selectable',
+        SELECTED: 'selected',
+        WAITINGFORVALIDATION: 'waitingForValidation'
+    }
+
+    $(document).ready(function(){
+
+        if ($('#notification_box').is(':visible')) {
+            $('#notification_trigger').trigger('mousedown');
+        }
+
+        var dialog = p4.Dialog.get(1);
+        //var order_id = $('input[name=order_id]').val();
+        var trs = $('.order_list .order_row', dialog.getDomElement());
+        var lastSelectedRow;
+        ;
+        $('.order_launcher', dialog.getDomElement()).bind('click',function(){
+            if(readyForValidation) {
+                if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
+                    dialog.load('{{ path('prod_orders') }}');
+                }
+            }else {
+                dialog.load('{{ path('prod_orders') }}');
+            }
+
+        });
+
+        $('.order_list .order_row', dialog.getDomElement()).bind('click',function(event){
+
+            var $this = $(this);
+
+            //disable select all checkbox if selected
+            if($('input[name="select-all"]').is(':checked')){
+                $('input[name="select-all"]').prop('checked', false);
+            }
+
+            if(is_ctrl_key(event))
+            {
+                if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                    return;
+                }
+                if($this.hasClass(ELEMENT_TYPE.SELECTED)) {
+                    $this.removeClass(ELEMENT_TYPE.SELECTED);
+                    itemCount--;
+                } else {
+                    $this.addClass(ELEMENT_TYPE.SELECTED);
+                    itemCount++;
+                }
+
+            }
+            else if(is_shift_key(event))
+            {
+                if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                    return;
+                }
+                var currentIndex = $this.index('.order_list .order_row');
+                var prevIndex = lastSelectedRow.index('.order_list .order_row');
+                $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
+                itemCount = 0;
+                selectRowsBetweenIndexes([prevIndex, currentIndex])
+            }
+            else
+            {
+                $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
+                if($this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                    $this.addClass(ELEMENT_TYPE.SELECTED);
+                    lastSelectedRow = $this;
+                }
+                itemCount = 1;
+            }
+
+            if(itemCount == 1) {
+                var selected = $('.order_list .selected', dialog.getDomElement());
+                loadPreviewAndCaption(selected);
+            }
+            renderOrderDetailView(itemCount);
+        });
+
+        function selectRowsBetweenIndexes(indexes) {
+            indexes.sort(function(a, b) {
+                return a - b;
+            });
+            for (var i = indexes[0]; i <= indexes[1]; i++) {
+                if ($(trs[i]).hasClass(ELEMENT_TYPE.SELECTABLE)) {
+                    $(trs[i]).addClass(ELEMENT_TYPE.SELECTED);
+                    itemCount++;
+                }
+            }
+        }
+
+        $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
+            delay:0
+        });
+        $('.previewTips', dialog.getDomElement()).tooltip({
+            fixable:true
+        });
+
+        $('button.send', dialog.getDomElement()).bind('click',function(){
+            updateValidation(ELEMENT_TYPE.VALIDATED);
+            //send_documents(order_id);
+        });
+
+        $('button.deny', dialog.getDomElement()).bind('click',function(){
+            updateValidation(ELEMENT_TYPE.DENIED);
+            //deny_documents(order_id);
+        });
+
+        $('.force_sender', dialog.getDomElement()).bind('click',function(){
+            if(confirm(language.forceSendDocument))
+            {
+                //updateValidation('validated');
+                var element_id = [];
+                element_id.push($(this).closest('.order_row').find('input[name=order_element_id]').val());
+                var order_id = $('input[name=order_id]').val();
+                do_send_documents(order_id, element_id, true);
+            }
+        });
+
+        $('#userInfo').hover(function() {
+            var offset = $('#userInfo').position();
+            $('#userInfoPreview').css({
+                'left': (offset.left - $('#userInfoPreview').width()) + 48,
+                'top': (offset.top+$('#userInfo').height()) + 8
+            });
+            $('#userInfoPreview').show();
+        }, function() {
+            if(!userInfoIsVisible) {
+                $('#userInfoPreview').hide();
+            }
+        });
+
+        $('#userInfo').click(function() {
+            var offset = $('#userInfo').position();
+            if(!userInfoIsVisible) {
+                userInfoIsVisible = true;
+                $('#userInfoPreview').css({
+                    'left': (offset.left - $('#userInfoPreview').width()) + 48,
+                    'top': (offset.top+$('#userInfo').height()) + 8
+                });
+                $('#userInfoPreview').show();
+            }else {
+                userInfoIsVisible = false;
+                $('#userInfoPreview').hide();
+            }
+        });
+
+        var minimized_elements = $('.minimize');
+
+        $('.minimize').each(function() {
+            var t = $(this).text();
+            if (t.length < 60) return;
+
+            $(this).html(
+                t.slice(0, 60) + '<span>... </span><a href="#" class="more">{{ 'order-manager::order-item: more' | trans }}</a>' +
+                '<span style="display:none;">' + t.slice(60, t.length) + ' <a href="#" class="less">{{ 'order-manager::order-item: less' | trans }}</a></span>'
+            );
+
+        });
+
+
+        $('a.more', minimized_elements).click(function(event){
+            event.preventDefault();
+            $(this).hide().prev().hide();
+            $(this).next().show();
+        });
+
+        $('a.less', minimized_elements).click(function(event) {
+            event.preventDefault();
+            $(this).parent().hide().prev().show().prev().show();
+        });
+
+        $('button.validate', dialog.getDomElement()).bind('click',function(event){
+            openValidationDialog(this,event);
+            return false;
+        });
+
+        $('.basket-btn').click(function(event) {
+            var type = $(this).attr('type');
+            var $dialog = $("#basket-window").dialog({
+                open: function (event, ui) {
+                    $('.ui-dialog').css('z-index', 100000);
+                    $(".ui-widget-overlay").css('z-index', 100000);
+                },
+                closeOnEscape: true,
+                width: 450,
+                height: 300,
+                modal: true,
+                draggable: false,
+                stack: false,
+                title: '{{ 'order-manager::order-item:Create-Basket' | trans }}',
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                buttons: {
+                    "{{ 'order-manager::order-item: create' |trans }}": function () {
+                        //create basket
+                        createBasket($dialog);
+                        $(this).dialog('close');
+                    }
+                }
+            }).dialog('open');
+            populateBasketDialog($dialog, type);
+            return false;
+        });
+
+    });
+
+    function createBasket($dialog) {
+        var $form = $('form', $dialog);
+        var dialog = $dialog.closest('.ui-dialog');
+        var buttonPanel = dialog.find('.ui-dialog-buttonpane');
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serializeArray(),
+            dataType: 'json',
+            beforeSend:function(){
+                $(":button:contains('" + language.create + "')", buttonPanel)
+                    .attr("disabled", true).addClass("ui-state-disabled");
+            },
+            success: function(data){
+                var order_id = $('input[name=order_id]').val();
+                var success = '0';
+                if(data.success)
+                {
+                    success = '1';
+                }
+                var dialog = p4.Dialog.get(1);
+                dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=basket' + '&message='
+                    + encodeURIComponent(data.message));
+                p4.WorkZone.refresh(data.basket.id);
+            },
+            error: function(){
+                $(":button:contains('" + language.create + "')", buttonPanel)
+                    .attr("disabled", false).removeClass("ui-state-disabled");
+            },
+            timeout: function(){
+
+            }
+        });
+    }
+
+    function populateBasketDialog($dialog, type) {
+        var lst = [];
+        var orderDialog = p4.Dialog.get(1);
+        //set checkbox to true and disable it
+        $('input[name="lst"]', $dialog).prop('checked', true);
+        $('.checkbox', $dialog).css("visibility","hidden");
+        //set default name
+        var name = '{{ 'order-manager::order-list: order-id' | trans }} '
+            + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+            + '{{ order.getCreatedOn()|date('d/m/Y') }}'
+            + ' {{ 'order-manager::order-item: by' |trans }} '
+            + '{{ order.getUser().getDisplayName() }}';
+        $('input[name="name"]', $dialog).val(name);
+        var description = '';
+        var elements_ids = [];
+        switch (type){
+            case 'denied':
+                description = '{{ 'order-manager::order-item: rejected-item' |trans }}';
+                $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
+                    elements_ids.push($(n).attr('elementids'));
+                });
+                break;
+            case 'validated':
+                description = '{{ 'order-manager::order-item: accepted-item' |trans }}';
+                $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
+                    elements_ids.push($(n).attr('elementids'));
+                });
+                break;
+            default :
+                //selected elements;
+                description = '{{ 'order-manager::order-item: selected-item' |trans }}';
+                $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
+                    elements_ids.push($(n).attr('elementids'));
+                });
+        }
+        $('textarea[name="description"]', $dialog).val(description);
+        $('input[name="lst"]', $dialog).val(elements_ids.join('; '));
+    }
+
+    function openValidationDialog(el, event) {
+        $("#validation-window").dialog({
+            open: function (event, ui) {
+                $('.ui-dialog').css('z-index', 100000);
+                $(".ui-widget-overlay").css('z-index', 100000);
+            },
+            closeOnEscape: true,
+            resizable: false,
+            width: 450,
+            height: 500,
+            modal: true,
+            draggable: false,
+            stack: false,
+            title: '{{ 'order-manager::order-item:Validation' | trans }}',
+            buttons: {
+                "{{ 'order-manager::order-item: submit' |trans }}": function() {
+                    //submit documents
+                    submitDocuments($(this));
+                },
+                "{{ 'order-manager::order-item: reset' |trans }}": function() {
+                    if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
+                        resetValidation();
+                        toggleValidationButton();
+                        $(this).dialog("close");
+                    }
+                }
+            },
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            }
+        }).dialog('open');
+        createValidationTable();
+    }
+
+    function submitDocuments(dialogElem) {
+        var order_id = $('input[name=order_id]').val();
+        var validatedArrayNoForceIds = _.filter(elementsForValidation, function(elem) {
+            return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState !== ELEMENT_TYPE.DENIED;
+        }).map(function(elem) {
+            return elem.elementId;
+        });
+
+        var validatedArrayWithForceIds = _.filter(elementsForValidation, function(elem) {
+            return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState === ELEMENT_TYPE.DENIED;
+        }).map(function(elem) {
+            return elem.elementId;
+        });
+
+        var deniedArrayIds = _.filter(elementsForValidation, function(elem) {
+            return elem.newState === ELEMENT_TYPE.DENIED;
+        }).map(function(elem) {
+            return elem.elementId;
+        });
+
+        if(validatedArrayNoForceIds.length > 0) {
+            do_send_documents(order_id, validatedArrayNoForceIds, false);
+        }
+        if(validatedArrayWithForceIds.length > 0) {
+            do_send_documents(order_id, validatedArrayWithForceIds, true);
+        }
+        if(deniedArrayIds.length > 0) {
+            do_deny_documents(order_id, deniedArrayIds);
+        }
+        dialogElem.dialog("close");
+    }
+
+    function createValidationTable() {
+        $('.validation-content').empty();
+        var validatedArray = _.filter(elementsForValidation, function(elem) {
+            return elem.newState === ELEMENT_TYPE.VALIDATED;
+        });
+        var deniedArray = _.filter(elementsForValidation, function(elem) {
+            return elem.newState === ELEMENT_TYPE.DENIED;
+        });
+
+        if(validatedArray.length > 0) {
+            var html = '';
+            html += '<h5>' + '{{ 'order-manager::order-item: you-have-validated' |trans }}' + " " + (validatedArray.length == 1 ? validatedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  validatedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
+            html += '<table class="validation-table">';
+            _.each(validatedArray, function(elem) {
+                html += '<tr>';
+                html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
+                html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
+                html += '</tr>';
+            });
+            html += '</table>';
+            $('.validation-content').append(html);
+        }
+
+        if(deniedArray.length > 0) {
+            var html = '';
+            html += '<h5>' + '{{ 'order-manager::order-item: you-have-denied' |trans }}' + " " + (deniedArray.length == 1 ? deniedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  deniedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
+            html += '<table class="validation-table">';
+            _.each(deniedArray, function(elem) {
+                html += '<tr>';
+                html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
+                html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
+                html += '</tr>';
+            });
+            html += '</table>';
+            $('.validation-content').append(html);
+        }
+
+    }
+
+    function resetValidation() {
+        var dialog = p4.Dialog.get(1);
+        $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
+            var elementId = $(n).find('input[name=order_element_id]').val();
+            var found = _.where(elementsForValidation, {elementId: elementId});
+            if(found.length > 0) {
+                $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+                //replace content or row with original content
+                $(n)[0].innerHTML = found[0].element[0].innerHTML;
+            }
+            updateButtonStatus($(n).attr('class').split(/\s+/));
+        });
+        readyForValidation = false;
+        elementsForValidation = [];
+        renderOrderDetailView(0);
+    }
+
+    function updateValidation(newState) {
+        var count = 0;
+        var dialog = p4.Dialog.get(1);
+        $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
+            if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
+                && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
+                createItemForValidation($(n), ELEMENT_TYPE.SELECTABLE, newState);
+                count++;
+            }
+            else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED)
+                && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
+                createItemForValidation($(n), ELEMENT_TYPE.DENIED, newState);
+                count++;
+            }
+            $(n).removeClass(ELEMENT_TYPE.SELECTED);
+        });
+
+        readyForValidation = true;
+        toggleValidationButton();
+        //disable select all checkbox if selected
+        if($('input[name="select-all"]').is(':checked')){
+            $('input[name="select-all"]').prop('checked', false);
+        }
+
+        //multiple items selected
+        if(count > 1) {
+            $('#wrapper-padding').hide();
+            $('.external-order-action').hide();
+            $('#wrapper-multiple').hide();
+        }
+    }
+
+    function createItemForValidation(element, oldState, newState) {
+        var order = {};
+        order.elementTitle = element.find('span');
+        order.elementPreview = element.find('.order_wrapper');
+        order.elementId = element.find('input[name=order_element_id]').val();
+        order.element = element.clone( true );
+        order.oldState = oldState;
+        order.newState = newState;
+        elementsForValidation.push(order);
+        element.toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+        element.find('td:first-child').empty();
+        element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
+        updateButtonStatus(element.attr('class').split(/\s+/));
+    }
+
+    function toggleValidationButton() {
+        if(readyForValidation) {
+            $('button.validate').show();
+        }else {
+            $('button.validate').hide();
+        }
+    }
+
+    function checkAll(element) {
+        itemCount = 0;
+        var selectable =[];
+        $('.table-order .order_row').each(function(){
+            var el = $(this);
+            if(element.checked && el.hasClass(ELEMENT_TYPE.SELECTABLE)){
+                el.addClass(ELEMENT_TYPE.SELECTED);
+                itemCount++;
+                selectable.push(el);
+            }else {
+                el.removeClass(ELEMENT_TYPE.SELECTED);
+            }
+        });
+        //load preview for single item selected
+        if(selectable.length == 1) {
+            loadPreviewAndCaption(selectable[0]);
+        }
+        renderOrderDetailView(itemCount);
+    }
+
+    function do_send_documents(order_id, elements_ids, force)
+    {
+        var dialog = p4.Dialog.get(1);
+        var cont = dialog.getDomElement();
+
+        $('button.deny, button.send', cont).prop('disabled', true);
+        $('.activity_indicator', cont).show();
+
+        $.ajax({
+            type: "POST",
+            url: "../prod/order/"+order_id+"/send/",
+            dataType:'json',
+            data: {
+                'elements[]':elements_ids,
+                force:(force?1:0)
+            },
+            success: function(data){
+                var success = '0';
+
+                if(data.success)
+                {
+                    success = '1';
+                }
+
+                dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=send');
+            },
+            error: function(){
+                $('button.deny, button.send', cont).prop('disabled', false);
+                $('.activity_indicator', cont).hide();
+            },
+            timeout: function(){
+                $('button.deny, button.send', cont).prop('disabled', false);
+                $('.activity_indicator', cont).hide();
+            }
+        });
+    }
+
+    function do_deny_documents(order_id, elements_ids) {
+        var dialog = p4.Dialog.get(1);
+        var cont = dialog.getDomElement();
+        $('button.deny, button.send', cont).prop('disabled', true);
+        $('.activity_indicator', cont).show();
+
+        $.ajax({
+            type: "POST",
+            url: "../prod/order/"+ order_id +"/deny/",
+            dataType:'json',
+            data: {
+                'elements[]':elements_ids
+            },
+            success: function(data){
+                var success = '0';
+
+                if(data.success)
+                {
+                    success = '1';
+                }
+
+                dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=deny');
+            },
+            error: function(){
+                $('button.deny, button.send', cont).prop('disabled', false);
+                $('.activity_indicator', cont).hide();
+            },
+            timeout: function(){
+                $('button.deny, button.send', cont).prop('disabled', false);
+                $('.activity_indicator', cont).hide();
+            }
+        });
+    }
+
+    function sendMail() {
+        var email = '{{ order.getUser().getEmail() }}';
+        var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} '
+            + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+            + '{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
+        var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
+        if(email != null) {
+            var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+            window.location.href = link;
+
+        }
+    }
+
+    function renderOrderDetailView(countSelected) {
+        if(countSelected > 1) {
+            $('#wrapper-padding').hide();
+            $('.external-order-action').hide();
+            $('#wrapper-multiple').show();
+            var dialog = p4.Dialog.get(1);
+            var elementArrayType = [];
+            $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
+                //elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
+                elementArrayType.push($(n).attr('class').split(/\s+/));
+            });
+            updateButtonStatusMultiple(elementArrayType);
+            //updateButtonStatus(elementArrayType);
+        }else if(countSelected == 1) {
+            $('#wrapper-padding').show();
+            $('.external-order-action').show();
+            $('#wrapper-multiple').hide();
+        }else {
+            $('#wrapper-padding').hide();
+            $('.external-order-action').hide();
+            $('#wrapper-multiple').hide();
+        }
+        $('#preview-layout-multiple .title').html(countSelected);
+    }
+
+    function updateButtonStatusMultiple(elementArrayType) {
+        $('#order-action button.deny, #order-action button.send').hide();
+        var countObj = elementArrayType.reduce(function(m,v){
+            for (var k in m) {
+                if (~v.indexOf(k)) m[k]++;
+            }
+            return m;
+        },{validated:0, selectable: 0, waitingForValidation: 0});
+
+        var html = "";
+        if(countObj.validated > 0) {
+            html += '<p>{{ 'order-manager::order-item: items-already-sent' | trans }}: '
+                + countObj.validated + '</p>';
+        }
+
+        if(countObj.waitingForValidation > 0) {
+            html += '<p>{{ 'order-manager::order-item: items-waiting-validation' | trans }}: '
+                + countObj.waitingForValidation + '</p>';
+        }
+
+        //for the remaining items
+        var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
+        if(remaining > 0) {
+            html += '<p> {{ 'order-manager::order-item: for-non-sent-items' | trans }}: '
+                + remaining + '</p>';
+            $('#order-action button.deny, #order-action button.send').prop('disabled', false);
+            $('#order-action button.deny, #order-action button.send').show();
+        }
+
+        $('#wrapper-multiple #text-content').empty();
+        $('#wrapper-multiple #text-content').append(html);
+    }
+
+    /* *
+     * function to update status of send and deny button
+     * params - array of type for each button selected
+     */
+    function updateButtonStatus(elementArrayType) {
+        if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED)) {
+            $('#order-action button.deny, #order-action button.send').hide();
+            $('#order-action span.action-text').html('{{ 'order-manager::order-item: already-validated' | trans }}' + '<i class="icon-ok"></i>');
+            $('#order-action span.action-text').show();
+        }else if (_.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
+            $('#order-action button.deny, #order-action span.action-text').hide();
+            $('#order-action button.send').show();
+            $('#order-action button.send').prop('disabled', true);
+        }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
+            $('#order-action button.deny').hide();
+            $('#order-action span.action-text').html('{{ 'order-manager::order-item: refused-previously' | trans }}');
+            $('#order-action button.send').prop('disabled', false);
+            $('#order-action button.send, #order-action span.action-text').show();
+        }else {
+            $('#order-action button.send, #order-action button.deny').prop('disabled', false);
+            $('#order-action button.send, #order-action button.deny').show();
+            $('#order-action span.action-text').hide();
+        }
+    }
+
+
+    function loadPreviewAndCaption(elem) {
+        $('#preview-layout').empty();
+        $('#caption-layout').empty();
+        updateButtonStatus(elem.attr('class').split(/\s+/));
+        var elementids = elem.attr('elementids').split('_');
+        var sbasId = elementids[0];
+        var recordId = elementids[1];
+        prevAjax = $.ajax({
+            type: "GET",
+            url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
+            dataType: 'json',
+            success: function (data) {
+                if (data.error) {
+                    return;
+                }
+                $('#preview-layout').append(data.html_preview);
+                $('#caption-layout').append(data.desc);
+            }
+        });
+    }
+
+</script>
