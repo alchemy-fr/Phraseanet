@@ -33,7 +33,11 @@
                             />
                       </td>
                       <td>
-                          <a class="contextMenuTrigger"></a>
+                          {#<a class="contextMenuTrigger"></a>#}
+                          <span class="icon-stack contextMenuTrigger">
+                              <i class="icon-circle icon-stack-base" style="color: #FFFFFF"></i>
+                              <i class="icon-ellipsis-horizontal icon-light" style="color: #3B3B3B !important;"></i>
+                          </span>
                       </td>
                   </tr>
               </table>
@@ -127,7 +131,11 @@
                         {% endif %}
                       -->
                         <td>
-                            <a class="contextMenuTrigger"></a>
+                            {#<a class="contextMenuTrigger"></a>#}
+                            <span class="icon-stack contextMenuTrigger">
+                              <i class="icon-circle icon-stack-base" style="color: #FFFFFF"></i>
+                              <i class="icon-ellipsis-horizontal icon-light" style="color: #3B3B3B !important;"></i>
+                            </span>
                         </td>
                   </tr>
             </table>
@@ -143,6 +151,91 @@
                             <span class="context-menu-item-img" > <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" /></span> {{ 'action::exporter' | trans }}
                         </div>
                       </div>
+                        {% set tabElements = [] %}
+                        {% for basket_element in basket.getElements  %}
+                            {% set tabElements = tabElements|merge([basket_element.getRecord(app).get_serialize_key()]) %}
+                        {% endfor %}
+                        {% set elements = tabElements|join(';') %}
+                        {% set lst = {"lst": elements } %}
+                        {% set ssel = {"ssel": basket.getId() } %}
+
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="evt_print('{{ elements }}');return(false);">
+                                <span class="context-menu-item-img"><img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                <span class="context-menu-item-text">{{ 'action : print' | trans }}</span>
+                            </div>
+                        </div>
+                          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                              <div title="" class="context-menu-item">
+                                  <div class="context-menu-item-inner"
+                                       onclick="editThis('IMGT','{{ elements }}');return(false);">
+                                      <span class="context-menu-item-img"><img src="/assets/common/images/icons/ppen_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                      <span class="context-menu-item-text">{{ 'action : editer' | trans }}</span>
+                                  </div>
+                              </div>
+                          {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="evt_properties('{{basket.getId()}}','SSTT');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgstatus_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : status' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and  app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="chgCollThis({{ lst|json_encode() }});return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgcoll_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : collection' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="pushThis('','{{ elements }}','');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/push16.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : push' | trans }}</span>
+                                </div>
+                            </div>
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="feedbackThis('','{{ elements }}','');;return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/feedback16.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text"> {{ 'Feedback' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ lst| json_encode() }});return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/door.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text"> {{ 'action : bridge' | trans }}</span>
+                                </div>
+                            </div>
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="publicationModule.publishRecords('SSTT','{{basket.getId()}}');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/rss16.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text">  {{ 'action : publier' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% set basketId =  basket.getId() %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="toolREFACTOR({{ ssel | json_encode() }},'');return(false);">
+                                <span class="context-menu-item-img"><img src="/assets/common/images/icons/imgtools_history.png" height="16" width="16" /></span>
+                                <span class="context-menu-item-text"> {{ 'action : outils' | trans }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank"><span class="context-menu-item-img" ><img src="/assets/common/images/icons/lightbox.png" height="16" width="16" /></span> Lightbox</a>
@@ -173,19 +266,18 @@
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
-                             onclick="checkDeleteThis('SSTT',this);return false;">
-                            <span class="context-menu-item-img" ><img src="/assets/common/images/icons/delete.png" height="16" width="16" /></span> {{ 'action : supprimer' | trans }}
-                        </div>
-                      </div>
-
-                      <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
                               <span class="context-menu-item-img" ><img src="/assets/common/images/icons/reorder.png" height="16" width="16" /></span> {{ 'Re-ordonner' | trans }}
                           </a>
                         </div>
                       </div>
+                      <div title="" class="context-menu-item">
+                         <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
+                                 onclick="checkDeleteThis('SSTT',this);return false;">
+                                <span class="context-menu-item-img" ><img src="/assets/common/images/icons/delete.png" height="16" width="16" /></span> {{ 'action : supprimer' | trans }}
+                         </div>
+                       </div>
 
                       </div>
                   </td>
@@ -216,43 +308,122 @@
               <table>
                   <tr>
                       <td>
-                          <a class="contextMenuTrigger"></a>
+                          {#<a class="contextMenuTrigger"></a>#}
+                          <span class="icon-stack contextMenuTrigger">
+                              <i class="icon-circle icon-stack-base" style="color: #FFFFFF"></i>
+                              <i class="icon-ellipsis-horizontal icon-light" style="color: #3B3B3B !important;"></i>
+                           </span>
                       </td>
                   </tr>
               </table>
 
             <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+                {% set lst = {"lst" : story.getRecord(app).get_serialize_key()} %}
+                {% set storyTab = {"story" : story.getId() } %}
               <tbody>
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-vista">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">
+                                <span class="context-menu-item-img" > <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" /></span> {{ 'action::exporter' | trans }}
+                            </div>
                         </div>
-                      </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
-                             class="context-menu-item-inner">{{ 'action::editer' | trans }}
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="evt_print('{{story.getRecord(app).get_serialize_key()}}');return(false);">
+                                <span class="context-menu-item-img"><img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                <span class="context-menu-item-text">{{ 'action : print' | trans }}</span>
+                            </div>
                         </div>
-                      </div>
+                        {#PHRAS-1513 todo action not work#}
+                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                          <div title="" class="context-menu-item">
+                              <div class="context-menu-item-inner"
+                                   onclick="editThis('STORY','{{story.getId()}}');return false;">
+                                  <span class="context-menu-item-img" > <img src="/assets/common/images/icons/ppen_history.png" height="16" width="16" /></span> {{ 'action::editer' | trans }}
+                              </div>
+                          </div>
+                      {% endif %}
+                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="evt_properties('{{story.getId()}}','STORY');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgstatus_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : status' | trans }}</span>
+                                </div>
+                            </div>
                         {% endif %}
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div class="context-menu-item-inner">
-                          <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
-                            {{ 'action::detacher' | trans }}
-                          </a>
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div class="context-menu-item-inner">
-                          <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
-                            {{ 'Re-ordonner' | trans }}
-                          </a>
-                        </div>
-                      </div>
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and  app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
 
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="chgCollThis({{ storyTab| json_encode() }});return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgcoll_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : collection' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="pushThis('','','{{ story.getId() }}');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/push16.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                    <span class="context-menu-item-text">{{ 'action : push' | trans }}</span>
+                                </div>
+                            </div>
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="feedbackThis('','','{{ story.getId() }}');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/feedback16.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text"> {{ 'Feedback' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ storyTab| json_encode() }});return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/door.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text"> {{ 'action : bridge' | trans }}</span>
+                                </div>
+                            </div>
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="publicationModule.publishRecords('STORY','{{ story.getId() }}');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/rss16.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text">  {{ 'action : publier' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner"
+                                     onclick="toolREFACTOR({{ storyTab| json_encode() }},'');return(false);">
+                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/imgtools_history.png" height="16" width="16" /></span>
+                                    <span class="context-menu-item-text"> {{ 'action : outils' | trans }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="$(this).next('a').trigger('click');return false;">
+                                <span class="context-menu-item-img" > <img src="/assets/common/images/icons/detach_story.png" height="16" width="16" /></span> {{ 'action::detacher' | trans }}
+                            </div>
+                            <a class="story_unfix hide" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
+                                {{ 'action::detacher' | trans }}
+                            </a>
+                        </div>
+                        <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner"
+                                 onclick="$(this).next('a.dialog').trigger('click');return false;">
+                                <span class="context-menu-item-img" ><img src="/assets/common/images/icons/reorder.png" height="16" width="16" /></span> {{ 'Re-ordonner' | trans }}
+                            </div>
+                            <a class="dialog hide" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                                {{ 'Re-ordonner' | trans }}
+                            </a>
+                        </div>
                     </div>
                   </td>
                 </tr>

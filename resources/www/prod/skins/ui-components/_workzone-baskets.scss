@@ -108,17 +108,17 @@
         margin-right: 9px;
       }
     }
-    .menu {
-      .contextMenuTrigger {
-        cursor: pointer;
-        display: block;
-        padding: 0;
-        margin: 0;
-        background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
-        height: 45px;
-        width: 13px;
-      }
-    }
+    //.menu {
+    //  .contextMenuTrigger {
+    //    cursor: pointer;
+    //    display: block;
+    //    padding: 0;
+    //    margin: 0;
+    //    background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
+    //    height: 45px;
+    //    width: 13px;
+    //  }
+    //}
     .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
       color: $textPrimaryActiveColor;
       //font-size: 1em;
