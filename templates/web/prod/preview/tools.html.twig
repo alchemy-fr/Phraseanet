@@ -26,7 +26,7 @@
 {% endif %}
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
-    <div class="inline-div" onclick="evt_properties('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);">
+    <div class="inline-div" onclick="evt_properties('{{record.get_sbas_id()}}_{{record.get_record_id()}}','IMGT');return(false);">
         <img src="/assets/common/images/icons/chgstatus_history.png" title="{{ 'action : status' | trans }}" height="16" width="16" class="btn-image" />
     </div>
 {% endif %}
