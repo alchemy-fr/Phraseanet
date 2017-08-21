@@ -6,19 +6,19 @@
   {% if can_edit %}
     <div class="edit_button" style="text-align:right">
         <a href="#" class="edit-record-action" data-kind="record" data-id="{{ record.get_serialize_key }}">
-        <img style="vertical-align:middle" src="/assets/common/images/icons/ppen_history.png" width="16" class="btn-image"/>
-        {{ 'action : editer' | trans }}
+        <img style="vertical-align:middle" src="/assets/common/images/icons/ppen_history.png" />
+        <span style="vertical-align: middle">{{ 'action : editer' | trans }}</span>
       </a>
     </div>
   {% endif %}
-  <div style="text-align:center;">
+<div style="text-align:center;">
     {% for flag in record_flags(record) %}
       <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
     {% endfor %}
-  </div>
+</div>
 
-  {% if record.is_from_reg()  %}
+{% if record.is_from_reg()  %}
     {{macro.caption(record, can_see_business)}}
-  {% else %}
+{% else %}
     {{macro.caption(record, can_see_business)}}
-  {% endif %}
+{% endif %}
