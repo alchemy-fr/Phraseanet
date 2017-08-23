@@ -81,7 +81,7 @@
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
-                            <span class="icon-stack captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
+                            <span class="icon-stack captionRolloverTips" title="{{ macro.caption(record, can_see_business, false) | e }}">
                               <i class="icon-circle icon-stack-base"></i>
                               <i class="icon-list icon-light"></i>
                             </span>

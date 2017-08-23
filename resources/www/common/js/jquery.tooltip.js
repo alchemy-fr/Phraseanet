@@ -79,7 +79,9 @@
             return this.each(function () {
                     $.data(this, "tooltip", settings);
                     // copy tooltip into its own expando and remove the title
-                    this.tooltipText = $(this).attr('title');
+                    //move title to data to be reused later
+                    $.data(this, 'title', $(this).attr('title'));
+                    this.tooltipText = $(this).data('title');
                     this.tooltipSrc = $(this).attr('tooltipsrc');
 
                     this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
@@ -312,8 +314,10 @@
             }
             else {
                 // handle captions
-                recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
-                var contentHeight = $selector.height();
+                recordWidth = 400;
+                var contentHeight = $selector.get(0).offsetHeight;
+                // recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
+                // var contentHeight = $selector.height();
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
                 recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
