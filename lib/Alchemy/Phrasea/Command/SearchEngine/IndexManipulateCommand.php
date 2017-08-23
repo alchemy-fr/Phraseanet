@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\SearchEngine;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,7 +28,7 @@ class IndexManipulateCommand extends Command
         //$options = $indexer->getIndex()->getOptions();
 
         $this
-            ->setName('searchengine:index:manipulate')
+            ->setName('searchengine:index')
             ->setDescription('Manipulates search index')
             ->addOption('drop',      'd', InputOption::VALUE_NONE, 'Drops the index.')
             ->addOption('create',    'c', InputOption::VALUE_NONE, 'Creates the index.')
@@ -36,11 +37,17 @@ class IndexManipulateCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'index name', null)
             ->addOption('host', null, InputOption::VALUE_REQUIRED, 'host', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'port', null)
+            ->addOption('order', null, InputOption::VALUE_REQUIRED, 'order (record_id|modification_date)[.asc|.desc]', null)
             ->addOption(
                 'databox_id',
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Only populate chosen databox'
+            )->addOption(
+                'force',
+                null,
+                InputOption::VALUE_NONE,
+                "Don't ask for for the dropping of the index, but force the operation to run."
             );
 
     }
@@ -49,6 +56,7 @@ class IndexManipulateCommand extends Command
     {
         /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
+        /** @var ElasticsearchOptions $options */
         $options = $indexer->getIndex()->getOptions();
 
         if($input->getOption('name')) {
@@ -61,6 +69,22 @@ class IndexManipulateCommand extends Command
             $options->setPort($input->getOption('port'));
         }
 
+        if($input->getOption('order')) {
+            $order = explode('.', $input->getOption('order'));
+            if (!$options->setPopulateOrder($order[0])) {
+                $output->writeln(sprintf('<error>bad order value for --order</error>'));
+
+                return 1;
+            }
+            if (count($order) > 1) {
+                if (!$options->setPopulateDirection($order[1])) {
+                    $output->writeln(sprintf('<error>bad direction value for --order</error>'));
+
+                    return 1;
+                }
+            }
+        }
+
         $idx = sprintf("%s@%s:%s", $options->getIndexName(), $options->getHost(), $options->getPort());
 
         $drop         = $input->getOption('drop');
@@ -68,7 +92,6 @@ class IndexManipulateCommand extends Command
         $populate     = $input->getOption('populate');
         $temporary    = $input->getOption('temporary');
         $databoxes_id = $input->getOption('databox_id');
-
 
         if($temporary && (!$populate || $databoxes_id)) {
             $output->writeln(sprintf('<error>temporary must be used to populate all databoxes</error>', $idx));
@@ -79,8 +102,23 @@ class IndexManipulateCommand extends Command
         $indexExists = $indexer->indexExists();
 
         if ($drop && $indexExists) {
-            $indexer->deleteIndex();
-            $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
+            if ($input->getOption('force')) {
+                $confirmation = true;
+            }
+            else {
+                $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
+                $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
+            }
+            
+            if ($confirmation) {
+                $indexer->deleteIndex();
+                $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
+            }
+            else {
+                $output->writeln('Canceled.');
+
+                return 0;
+            }
         }
 
         $indexExists = $indexer->indexExists();

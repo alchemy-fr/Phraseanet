@@ -43,10 +43,10 @@ $answersInfoLabelColor: #949494 !default;
       .dl-horizontal {
         margin-bottom: 0;
         dt {
-          width: 70px; //100
+          max-width: 90px; //100
         }
         dd {
-          margin-left: 90px; //120
+          margin-left: 100px; //120
         }
       }
     }

@@ -11,11 +11,16 @@ function thesauCancelWizard()
 
 function thesauShowWizard(wizard, refreshFilter)
 {
+  var offsetTabHeight = $("#THPD_tabs .ui-tabs-nav")[0].offsetHeight;
   if(wizard != p4.thesau.currentWizard)
   {
     $("#THPD_WIZARDS DIV.wizard", p4.thesau.tabs).hide();
     $("#THPD_WIZARDS ." + wizard, p4.thesau.tabs).show();
-    $("#THPD_T_treeBox", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height());
+    $("#THPD_T", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
+      + offsetTabHeight);
+
+    $("#THPD_C", p4.thesau.tabs).css('top', $("#THPD_WIZARDS", p4.thesau.tabs).height()
+      + offsetTabHeight);
 
     p4.thesau.currentWizard = wizard;
 
@@ -98,11 +103,23 @@ function T_filter_delayed2(f, delay, mode)
   {
     if(mode=='ALL')
     {
+        var type, id, z = "";
+        if($(".ui-tabs-nav li.ui-state-active a", p4.thesau.tabs).attr('href') === '#THPD_T') {
+            //thesaurus
+            type = "TH";
+            id = 'T';
+        }else {
+            //candidate
+            type = "CT";
+            id = 'C';
+        }
       // search in every base, everywhere
       for(i in sbas)
       {
-        var zurl = "/xmlhttp/search_th_term_prod.j.php"
+        var zurl = "/xmlhttp/search_term_prod.j.php"
           + "?sbid=" + sbas[i].sbid
+          + "&typ=" + type
+          + "&id=" + id
           + "&t=" + encodeURIComponent(f);
 
         sbas[i].seeker = $.ajax({
@@ -112,7 +129,11 @@ function T_filter_delayed2(f, delay, mode)
           dataType:'json',
           success: function(j)
           {
-            var z = '#TX_P\\.' + j.parm['sbid'] + '\\.T';
+              if(type === 'TH') {
+                  z = '#TX_P\\.' + j.parm['sbid'] + '\\.' + id;
+              }else {
+                  z = '#CX_P\\.' + j.parm['sbid'] + '\\.' + id;
+              }
 
             var o = $(z);
             var isLast = o.hasClass('last');
@@ -136,8 +157,10 @@ function T_filter_delayed2(f, delay, mode)
       // search only on the good base and the good branch(es)
       for(i in sbas)
       {
-        var zurl = "/xmlhttp/search_th_term_prod.j.php"
-          + "?sbid=" + sbas[i].sbid;
+        var zurl = "/xmlhttp/search_term_prod.j.php"
+          + "?sbid=" + sbas[i].sbid
+            + "&typ=TH"
+            + "&id=T";
 
         if(sbas[i].sbid == trees.C._selInfos.sbas)
         {
@@ -232,9 +255,8 @@ function T_acceptCandidates_OK()
         var zurl = "/xmlhttp/openbranch_prod.j.php"
           + "?type=" + result.refresh[i].type
           + "&sbid=" + result.refresh[i].sbid
+          + "&sortsy=1"
           + "&id="   + encodeURIComponent(result.refresh[i].id);
-        if(result.refresh[i].type=='T')
-          zurl += "&sortsy=1" ;
 
         $.get(zurl
         , []
@@ -489,8 +511,8 @@ function Xclick(e)
             var zurl = "/xmlhttp/openbranch_prod.j.php?type="+type+"&sbid="+sbid+"&id=" + encodeURIComponent(tids.join('.'));
             if(li.hasClass('last'))
               zurl += "&last=1";
-            if(type=='T')
-              zurl += "&sortsy=1";
+            //if(type=='T')
+            zurl += "&sortsy=1";
             $.get(zurl, [], function(j)
             {
               ul.replaceWith(j.html);
@@ -1048,7 +1070,7 @@ function startThesaurus(){
   p4.thesau.lastClickedCandidate = null;
 
   p4.thesau.tabs = $("#THPD_tabs");
-  p4.thesau.tabs.tabs();
+  p4.thesau.tabs.tabs({});
 
   trees = {
     'T':{

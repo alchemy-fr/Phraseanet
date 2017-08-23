@@ -189,7 +189,7 @@
                     <li>
                         <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
                             {{ baseId|bas_labels(app) }}
-                            <a href="#" class="btn btn-mini submiter">{{ "Activer" | trans }}></a>
+                            <a href="#" class="btn btn-mini reload submiter">{{ "Activer" | trans }}></a>
                         </form>
                     </li>
                 {% endfor %}
@@ -375,6 +375,11 @@
                         } else if(submitLink.hasClass('reload-tree')) {
                             AdminApp.LeftView.reloadTree('bases:bases', true);
                         }
+
+                        if ("undefined" !== typeof datas.msg) {
+                            alert(datas.msg);
+                        }
+
                     } else {
                         alert(datas.msg);
                     }

@@ -453,9 +453,19 @@ table th i {
   }
 }
 
+.basket_wrapper .thumb_wrapper {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  .thumb {
+    position: static;
+  }
+}
+
 #sc_wrapper .thumb_wrapper {
   position: absolute;
   top: 28px;
+  left: 0px;
+  right: 0px;
 }
 
 .record_display_box {

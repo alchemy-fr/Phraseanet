@@ -1,4 +1,5 @@
 var p4 = p4 || {};
+var datepickerLang = [];
 
 $(document).ready(function () {
     $('input.input-button').hover(
@@ -12,7 +13,7 @@ $(document).ready(function () {
 
     var locale = $.cookie('locale');
 
-    var jq_date = p4.lng = typeof locale !== "undefined" ? locale.split('_').reverse().pop() : 'en';
+    var jq_date = p4.lng = typeof locale !== "undefined" ? locale.split('_').reverse().pop() : $('html').attr('lang');
 
     if (jq_date == 'en') {
         jq_date = 'en-GB';
@@ -20,6 +21,7 @@ $(document).ready(function () {
 
     $.datepicker.setDefaults({showMonthAfterYear: false});
     $.datepicker.setDefaults($.datepicker.regional[jq_date]);
+    datepickerLang = $.datepicker.regional[jq_date];
 
     $('body').on('click', '.infoDialog', function (event) {
         infoDialog($(this));

@@ -103,7 +103,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         unset($data['version']);
 
         foreach ($version as $prop => $value) {
-            $data['version:'.$prop] = $value;
+            $data['version:' . $prop] = $value;
         }
 
         $ret = [];
@@ -130,7 +130,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableSort()
     {
         return [
-            SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
+            SearchEngineOptions::SORT_RELEVANCE  => $this->app->trans('pertinence'),
             SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
             SearchEngineOptions::SORT_UPDATED_ON => $this->app->trans('date de modification'),
         ];
@@ -283,7 +283,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $params['body']['from'] = $options->getFirstResult();
         $params['body']['size'] = $options->getMaxResults();
-        if($this->options->getHighlight()) {
+        if ($this->options->getHighlight()) {
             $params['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
@@ -339,7 +339,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                     $highlighted_fields[$index_field] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
                         'matched_fields' => [$index_field, $raw_index_field],
-                        'type' => 'fvh'
+                        'type'           => 'fvh'
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
@@ -356,10 +356,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return [
-            'pre_tags' =>  ['[[em]]'],
-            'post_tags' =>  ['[[/em]]'],
-            'order' => 'score',
-            'fields' => $highlighted_fields
+            'pre_tags'  => ['[[em]]'],
+            'post_tags' => ['[[/em]]'],
+            'order'     => 'score',
+            'fields'    => $highlighted_fields
         ];
     }
 
@@ -398,7 +398,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             'index' => $this->indexName,
             'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
-                'sort'   => $this->createSortQueryParams($options),
+                'sort' => $this->createSortQueryParams($options),
             ]
         ];
 
@@ -425,17 +425,17 @@ class ElasticSearchEngine implements SearchEngineInterface
         $aggs = [];
 
         // We always want a collection facet right now
-        $collection_facet_agg = array();
+        $collection_facet_agg = [];
         $collection_facet_agg['terms']['field'] = 'collection_name';
         $aggs['Collection_Name'] = $collection_facet_agg;
 
         // We always want a base facet right now
-        $base_facet_agg = array();
+        $base_facet_agg = [];
         $base_facet_agg['terms']['field'] = 'databox_name';
         $aggs['Base_Name'] = $base_facet_agg;
 
         // We always want a type facet right now
-        $base_facet_agg = array();
+        $base_facet_agg = [];
         $base_facet_agg['terms']['field'] = 'type';
         $aggs['Type_Name'] = $base_facet_agg;
 
@@ -484,7 +484,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $filters = [];
 
         $filters[]['term']['record_type'] = $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
-                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
+            SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $structure = $this->context_factory->getLimitedStructure($options);
@@ -498,7 +498,8 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
 
             foreach ($options->getDateFields() as $dateField) {
-                if( ($ESField = $structure->get($dateField->get_name())) ) {
+                $ESField = $structure->get($dateField->get_name());
+                if ($ESField) {
                     $ESName = $ESField->getIndexField();
 
                     $filters[]['range'][$ESName] = $range;
@@ -520,7 +521,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
 
             foreach ($options->getStatus() as $databoxId => $status) {
-                $status_filter = $databox_status =[];
+                $status_filter = $databox_status = [];
                 $status_filter[] = ['term' => ['databox_id' => $databoxId]];
                 foreach ($status as $n => $v) {
                     if (!isset($flagNamesMap[$databoxId][$n])) {
@@ -528,7 +529,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                     }
 
                     $label = $flagNamesMap[$databoxId][$n];
-                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool) $v]];
+                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool)$v]];
                 };
                 $status_filter[] = $databox_status;
 
@@ -546,17 +547,21 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
             $sort['_score'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
             $sort['created_on'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_UPDATED_ON) {
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_UPDATED_ON) {
             $sort['updated_on'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === 'recordid') {
+        }
+        elseif ($options->getSortBy() === 'recordid') {
             $sort['record_id'] = $options->getSortOrder();
-        } else {
+        }
+        else {
             $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
         }
 
-        if (! array_key_exists('record_id', $sort)) {
+        if (!array_key_exists('record_id', $sort)) {
             $sort['record_id'] = $options->getSortOrder();
         }
 
@@ -569,7 +574,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         foreach ($appbox->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
             $statusStructure = $databox->getStatusStructure();
-            foreach($statusStructure as $bit => $status) {
+            foreach ($statusStructure as $bit => $status) {
                 $flags[$databoxId][$bit] = Flag::normalizeName($status['labelon']);
             }
         }
@@ -660,7 +665,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $collectionsWoRules = [];
         $collectionsWoRules['terms']['base_id'] = [];
         foreach ($aclRules as $baseId => $flagsRules) {
-            if(!array_key_exists($baseId, $collections)) {
+            if (!array_key_exists($baseId, $collections)) {
                 // no need to add a filter if the collection is not searched
                 continue;
             }
@@ -685,7 +690,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 $ruleFilter['bool']['must'][] = $flagFilter;
             }
 
-            if(count($ruleFilter['bool']['must']) > 1) {
+            if (count($ruleFilter['bool']['must']) > 1) {
                 // some rules found, add the filter
                 $filters[] = $ruleFilter;
             }
@@ -696,12 +701,12 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
         if (count($collectionsWoRules['terms']['base_id']) > 0) {
             // collections w/o rules : add a simple list ?
-            if(count($filters) > 0) {   // no need to add a big 'should' filter only on collections
+            if (count($filters) > 0) {   // no need to add a big 'should' filter only on collections
                 $filters[] = $collectionsWoRules;
             }
         }
 
-        if(count($filters) > 0) {
+        if (count($filters) > 0) {
             return ['bool' => ['should' => $filters]];
         }
         else {

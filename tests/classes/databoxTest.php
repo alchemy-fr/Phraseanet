@@ -92,6 +92,7 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testSet_label()
     {
+        /** @var \databox $databox */
         $databox = self::$DI['record_1']->get_databox();
 
         $databox->set_viewname('pretty name');
@@ -103,8 +104,6 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals('english label', $databox->get_label('en'));
         $this->assertEquals('pretty name', $databox->get_label('nl'));
         $this->assertEquals('pretty name', $databox->get_label('de'));
-        $this->assertNull($databox->get_label('nl', false));
-        $this->assertNull($databox->get_label('de', false));
 
         $databox->set_viewname(null);
         $databox->set_label('fr', null);
@@ -115,8 +114,6 @@ class databoxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertEquals($databox->get_dbname(), $databox->get_label('en'));
         $this->assertEquals('dutch label', $databox->get_label('nl'));
         $this->assertEquals('german label', $databox->get_label('de'));
-        $this->assertNull($databox->get_label('fr', false));
-        $this->assertNull($databox->get_label('en', false));
     }
 
     /**

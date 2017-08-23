@@ -256,7 +256,7 @@
             var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
 
             // get image or video original dimensions
-            var recordWidth = 260;
+            var recordWidth = 400;
             var recordHeight = 0;
             var tooltipVerticalOffset = 75;
             var tooltipHorizontalOffset = 35;
@@ -312,7 +312,8 @@
             }
             else {
                 // handle captions
-                var contentHeight = $selector.get(0).offsetHeight;
+                recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
+                var contentHeight = $selector.height();
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
                 recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
@@ -390,6 +391,10 @@
                 var totalViewportWidth = viewportDimensions.x;
                 var totalViewportHeight = viewportDimensions.y;
 
+                //for basket
+                if(recordPosition.left < 30) {
+                    leftOffset = $('.insidebloc').width();
+                }
                 var leftAvailableSpace = recordPosition.left + leftOffset;
                 var topAvailableSpace = recordPosition.top + topOffset;
                 var rightAvailableSpace = (totalViewportWidth - leftAvailableSpace - recordWidthOffset) - rightOffset;
@@ -577,9 +582,11 @@
     }
 
     function fix(event) {
-        if (!settings(this).fixable) {
-            hide(event);
-            return;
+        if(!$(this).hasClass('captionTips') || !event.altKey) {
+            if (!settings(this).fixable) {
+                hide(event);
+                return;
+            }
         }
         event.cancelBubble = true;
         if (event.stopPropagation)

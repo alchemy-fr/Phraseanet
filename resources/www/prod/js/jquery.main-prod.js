@@ -15,6 +15,10 @@ var bodySize = {
     y: 0
 };
 
+var filterFacet = false;
+
+var facets = null;
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -538,6 +542,7 @@ function initAnswerForm() {
                 });
 
                 loadFacets(datas.facets);
+                facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -609,7 +614,27 @@ function loadFacets(facets) {
 
     treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
 
+    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+
     return getFacetsTree().reload(treeSource);
+}
+
+function shouldFilterSingleContent(source, shouldFilter) {
+    var filteredSource = [];
+    if(shouldFilter == true) {
+        _.forEach(source, function(facet) {
+            //close expansion for facet containing selected values
+            if(!_.isUndefined(selectedFacetValues[facet.title])) {
+                facet.expanded = false;
+            }
+            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
+                filteredSource.push(facet);
+            }
+        });
+        source = filteredSource;
+    }
+
+    return source;
 }
 
 function sortByPredefinedFacets(source, field, predefinedFieldOrder) {
@@ -761,7 +786,7 @@ function linearize() {
         var diff = 28;
         var n = Math.round(fllWidth / (stdWidth));
         var w = Math.floor(fllWidth / n) - diff;
-        if (w < 360 && n > 1)
+        if (w < 460 && n > 1)
             w = Math.floor(fllWidth / (n - 1)) - diff;
         $('#answers .list').width(w);
     }
@@ -2818,7 +2843,11 @@ function autoorder() {
 
 }
 
-
+function setFacet(boolean) {
+    setPref("facet", boolean);
+    filterFacet = boolean;
+    loadFacets(facets);
+}
 
 
 //clear search

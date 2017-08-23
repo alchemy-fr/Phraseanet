@@ -146,6 +146,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         $app['elasticsearch.indexer.databox_fetcher_factory'] = $app->share(function ($app) {
             return new DataboxFetcherFactory(
                 $app['elasticsearch.record_helper'],
+                $app['elasticsearch.options'],
                 $app,
                 'search_engine.structure',
                 'thesaurus'
