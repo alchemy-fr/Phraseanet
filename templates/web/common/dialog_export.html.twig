@@ -690,6 +690,8 @@
 
                 var $this = $(this);
                 $this.prop('disabled', true).addClass('disabled');
+                
+                displayOverlay();
                 $.post("../prod/order/"
                     , options
                     , function(data){
@@ -714,8 +716,10 @@
                         if(!data.error)
                         {
                             humane.info(data.msg);
+                            removeOverlay();
                             dialog.Close();
                         } else {
+                            removeOverlay();
                             humane.error(data.msg);
                         }
 
@@ -794,6 +798,14 @@
                 );
             });
 
+            function displayOverlay() { 
+                $(document.body).append('<div class="spinner-loader"></div>');
+             }
+
+              function removeOverlay() { 
+                $('.spinner-loader').remove();
+            }   
+
             var submitEmailForm = function () {
                 if (!check_subdefs($('#sendmail'))) {
                     return false;
@@ -803,7 +815,10 @@
                     return false;
                 }
 
+                displayOverlay();
+
                 $.post('{{ path('export_mail') }}', $('#sendmail form').serialize(), function (response) {
+                    removeOverlay();
                     dialog.Close();
                 });
                 return false;
