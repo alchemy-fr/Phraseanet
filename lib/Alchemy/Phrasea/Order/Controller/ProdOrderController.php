@@ -103,6 +103,10 @@ class ProdOrderController extends BaseOrderController
         $perPage = (int) $request->query->get('per-page', 10);
         $offsetStart = 0;
 
+        $todo = $request->query->get('todo', Order::STATUS_TODO);
+        $start = $request->query->get('start', Order::STATUS_NO_FILTER);
+        $limit = $request->query->get('limit', []);
+
         if ($page > 0) {
             $offsetStart = ($page - 1) * $perPage;
         }
@@ -111,16 +115,23 @@ class ProdOrderController extends BaseOrderController
 
         $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
-        $ordersList = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort);
-        $total = $this->getOrderRepository()->countTotalOrders($baseIds);
+        $ordersListTodo = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
+        ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
+        $ordersListProcessed = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
+        ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
+        $totalTodo = $this->getOrderRepository()->countTotalOrders($baseIds, ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
+        $totalProcessed = $this->getOrderRepository()->countTotalOrders($baseIds, ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
 
         return $this->render('prod/orders/order_box.html.twig', [
             'page'         => $page,
             'perPage'      => $perPage,
-            'total'        => $total,
-            'previousPage' => $page < 2 ? false : ($page - 1),
-            'nextPage'     => $page >= ceil($total / $perPage) ? false : $page + 1,
-            'orders'       => new ArrayCollection($ordersList),
+            'totalTodo'        => $totalTodo,
+            'totalProcessed' => $totalProcessed,
+            'orders_todo'       => new ArrayCollection($ordersListTodo),
+            'orders_processed'       => new ArrayCollection($ordersListProcessed),
+            'todo' => $todo,
+            'start' => $start,
+            'date' => $limit ?  $limit['date']: null
         ]);
     }
 
@@ -202,6 +213,4 @@ class ProdOrderController extends BaseOrderController
             'action'  => 'send',
         ]);
     }
-
-
 }

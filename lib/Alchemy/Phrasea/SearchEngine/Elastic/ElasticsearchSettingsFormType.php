@@ -29,6 +29,14 @@ class ElasticsearchSettingsFormType extends AbstractType
             ->add('indexName', 'text', [
                 'label' => 'ElasticSearch index name',
                 'constraints' => new NotBlank(),
+                'attr' =>['data-class'=>'inline']
+            ])
+            ->add('esSettingFromIndex', 'button', [
+                'label' => 'Get setting form index',
+                'attr' => [
+                    'onClick' => 'esSettingFromIndex()',
+                    'data-class' => 'inline',
+                ]
             ])
             ->add('esSettingsDropIndexButton', 'button', [
                 'label' => "Drop index",
@@ -55,6 +63,13 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'required' => false
             ])
             ->add('save', 'submit')
+            ->add('dumpField', 'textarea', [
+                'label' => false,
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['class' => 'dumpfield hide']
+            ])
+
         ;
     }
 

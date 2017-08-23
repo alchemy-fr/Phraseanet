@@ -58,186 +58,6 @@ class databox extends base implements ThumbnailedElement
 
     /** @var SimpleXMLElement */
     protected static $_sxml_thesaurus = [];
-
-    /**
-     * @param Application $app
-     * @param Connection  $databoxConnection
-     * @param SplFileInfo $data_template
-     * @return databox
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
-    {
-        if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
-        }
-
-        $host = $databoxConnection->getHost();
-        $port = $databoxConnection->getPort();
-        $dbname = $databoxConnection->getDatabase();
-        $user = $databoxConnection->getUsername();
-        $password = $databoxConnection->getPassword();
-
-        $appbox = $app->getApplicationBox();
-
-        try {
-            $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
-            $stmt = $databoxConnection->prepare($sql);
-            $stmt->execute();
-            $stmt->closeCursor();
-        } catch (\Exception $e) {
-
-        }
-
-        $sql = 'USE `' . $dbname . '`';
-        $stmt = $databoxConnection->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
-
-        $app['orm.add']([
-            'host'     => $host,
-            'port'     => $port,
-            'dbname'   => $dbname,
-            'user'     => $user,
-            'password' => $password
-        ]);
-
-        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
-
-        /** @var DataboxRepository $databoxRepository */
-        $databoxRepository = $app['repo.databoxes'];
-        $databox = $databoxRepository->create($host, $port, $user, $password, $dbname);
-
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        $databox->insert_datas();
-        $databox->setNewStructure(
-            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
-        );
-
-        $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
-
-        return $databox;
-    }
-
-    /**
-     *
-     * @param  Application $app
-     * @param  string      $host
-     * @param  int         $port
-     * @param  string      $user
-     * @param  string      $password
-     * @param  string      $dbname
-     * @return databox
-     */
-    public static function mount(Application $app, $host, $port, $user, $password, $dbname)
-    {
-        $app['db.provider']([
-            'host'     => $host,
-            'port'     => $port,
-            'user'     => $user,
-            'password' => $password,
-            'dbname'   => $dbname,
-        ])->connect();
-
-        /** @var DataboxRepository $databoxRepository */
-        $databoxRepository = $app['repo.databoxes'];
-        $databox = $databoxRepository->mount($host, $port, $user, $password, $dbname);
-
-        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
-        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
-
-        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
-        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
-
-        $app['dispatcher']->dispatch(DataboxEvents::MOUNTED, new MountedEvent($databox));
-
-        return $databox;
-    }
-
-    public static function get_available_dcfields()
-    {
-        return [
-            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor(),
-            databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage(),
-            databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator(),
-            databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date(),
-            databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description(),
-            databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format(),
-            databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier(),
-            databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language(),
-            databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher(),
-            databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation(),
-            databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights(),
-            databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source(),
-            databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject(),
-            databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title(),
-            databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
-        ];
-    }
-
-    /**
-     *
-     * @param  int $sbas_id
-     * @return string
-     */
-    public static function getPrintLogo($sbas_id)
-    {
-        $out = '';
-        if (is_file(($filename = __DIR__ . '/../../config/minilogos/'.\databox::PIC_PDF.'_' . $sbas_id . '.jpg')))
-            $out = file_get_contents($filename);
-
-        return $out;
-    }
-
-    /**
-     * @param TranslatorInterface $translator
-     * @param  string             $structure
-     * @return Array
-     */
-    public static function get_structure_errors(TranslatorInterface $translator, $structure)
-    {
-        $sx_structure = simplexml_load_string($structure);
-
-        $subdefgroup = $sx_structure->subdefs[0];
-        $AvSubdefs = [];
-
-        $errors = [];
-
-        foreach ($subdefgroup as $k => $subdefs) {
-            $subdefgroup_name = trim((string) $subdefs->attributes()->name);
-
-            if ($subdefgroup_name == '') {
-                $errors[] = $translator->trans('ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name');
-                continue;
-            }
-
-            if ( ! isset($AvSubdefs[$subdefgroup_name]))
-                $AvSubdefs[$subdefgroup_name] = [];
-
-            foreach ($subdefs as $sd) {
-                $sd_name = trim(mb_strtolower((string) $sd->attributes()->name));
-                $sd_class = trim(mb_strtolower((string) $sd->attributes()->class));
-                if ($sd_name == '' || isset($AvSubdefs[$subdefgroup_name][$sd_name])) {
-                    $errors[] = $translator->trans('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
-                    continue;
-                }
-                if ( ! in_array($sd_class, ['thumbnail', 'preview', 'document'])) {
-                    $errors[] = $translator->trans('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
-                    continue;
-                }
-                $AvSubdefs[$subdefgroup_name][$sd_name] = $sd;
-            }
-        }
-
-        return $errors;
-    }
-
-    public static function purge()
-    {
-        self::$_xpath_thesaurus = self::$_dom_thesaurus = self::$_thesaurus = self::$_sxml_thesaurus = [];
-    }
-
     /** @var int */
     protected $id;
     /** @var string */
@@ -304,6 +124,80 @@ class databox extends base implements ThumbnailedElement
         parent::__construct($app, $connection, $connectionSettings, $versionRepository);
 
         $this->loadFromRow($row);
+    }
+
+    /**
+     * @param array $row
+     */
+    private function loadFromRow(array $row)
+    {
+        $this->ord = $row['ord'];
+        $this->viewname = $row['viewname'];
+        $this->labels['fr'] = $row['label_fr'];
+        $this->labels['en'] = $row['label_en'];
+        $this->labels['de'] = $row['label_de'];
+        $this->labels['nl'] = $row['label_nl'];
+    }
+
+    /**
+     * @param Application $app
+     * @param Connection  $databoxConnection
+     * @param SplFileInfo $data_template
+     * @return databox
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
+    {
+        if ( ! file_exists($data_template->getRealPath())) {
+            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
+        }
+
+        $host = $databoxConnection->getHost();
+        $port = $databoxConnection->getPort();
+        $dbname = $databoxConnection->getDatabase();
+        $user = $databoxConnection->getUsername();
+        $password = $databoxConnection->getPassword();
+
+        $appbox = $app->getApplicationBox();
+
+        try {
+            $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
+            $stmt = $databoxConnection->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+        } catch (\Exception $e) {
+
+        }
+
+        $sql = 'USE `' . $dbname . '`';
+        $stmt = $databoxConnection->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $app['orm.add']([
+            'host'     => $host,
+            'port'     => $port,
+            'dbname'   => $dbname,
+            'user'     => $user,
+            'password' => $password
+        ]);
+
+        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+
+        /** @var DataboxRepository $databoxRepository */
+        $databoxRepository = $app['repo.databoxes'];
+        $databox = $databoxRepository->create($host, $port, $user, $password, $dbname);
+
+        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        $databox->insert_datas();
+        $databox->setNewStructure(
+            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
+        );
+
+        $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
+
+        return $databox;
     }
 
     public function setNewStructure(\SplFileInfo $data_template, $path_doc)
@@ -418,6 +312,61 @@ class databox extends base implements ThumbnailedElement
         return $this->structure;
     }
 
+    protected function retrieve_structure()
+    {
+        try {
+            $data = $this->get_data_from_cache(self::CACHE_STRUCTURE);
+            if (is_array($data)) {
+                return $data;
+            }
+        } catch (\Exception $e) {
+
+        }
+
+        $structure = null;
+        $sql = "SELECT value FROM pref WHERE prop='structure'";
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if ($row)
+            $structure = $row['value'];
+        $this->set_data_to_cache($structure, self::CACHE_STRUCTURE);
+
+        return $structure;
+    }
+
+    /**
+     * @return appbox
+     */
+    public function get_appbox()
+    {
+        return $this->app->getApplicationBox();
+    }
+
+    public function delete_data_from_cache($option = null)
+    {
+        switch ($option) {
+            case self::CACHE_CGUS:
+                $this->cgus = null;
+                break;
+            case self::CACHE_META_STRUCT:
+                $this->meta_struct = null;
+                break;
+            case self::CACHE_STRUCTURE:
+                $this->_dom_structure = $this->_xpath_structure = $this->structure = $this->_sxml_structure = null;
+                break;
+            case self::CACHE_THESAURUS:
+                $this->thesaurus = null;
+                unset(self::$_dom_thesaurus[$this->id]);
+                break;
+            default:
+                break;
+        }
+        parent::delete_data_from_cache($option);
+    }
+
     public function feed_meta_fields()
     {
         $sxe = $this->get_sxml_structure();
@@ -513,6 +462,134 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
+     *
+     * @param  Application $app
+     * @param  string      $host
+     * @param  int         $port
+     * @param  string      $user
+     * @param  string      $password
+     * @param  string      $dbname
+     * @return databox
+     */
+    public static function mount(Application $app, $host, $port, $user, $password, $dbname)
+    {
+        $app['db.provider']([
+            'host'     => $host,
+            'port'     => $port,
+            'user'     => $user,
+            'password' => $password,
+            'dbname'   => $dbname,
+        ])->connect();
+
+        /** @var DataboxRepository $databoxRepository */
+        $databoxRepository = $app['repo.databoxes'];
+        $databox = $databoxRepository->mount($host, $port, $user, $password, $dbname);
+
+        $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
+        $app->getApplicationBox()->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+
+        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+        cache_databox::update($app, $databox->get_sbas_id(), 'structure');
+
+        $app['dispatcher']->dispatch(DataboxEvents::MOUNTED, new MountedEvent($databox));
+
+        return $databox;
+    }
+
+    /**
+     * Returns current sbas_id
+     *
+     * @return int
+     */
+    public function get_sbas_id()
+    {
+        return $this->id;
+    }
+
+    public static function get_available_dcfields()
+    {
+        return [
+            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor(),
+            databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage(),
+            databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator(),
+            databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date(),
+            databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description(),
+            databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format(),
+            databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier(),
+            databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language(),
+            databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher(),
+            databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation(),
+            databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights(),
+            databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source(),
+            databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject(),
+            databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title(),
+            databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
+        ];
+    }
+
+    /**
+     *
+     * @param  int $sbas_id
+     * @return string
+     */
+    public static function getPrintLogo($sbas_id)
+    {
+        $out = '';
+        if (is_file(($filename = __DIR__ . '/../../config/minilogos/'.\databox::PIC_PDF.'_' . $sbas_id . '.jpg')))
+            $out = file_get_contents($filename);
+
+        return $out;
+    }
+
+    /**
+     * @param TranslatorInterface $translator
+     * @param  string             $structure
+     * @return Array
+     */
+    public static function get_structure_errors(TranslatorInterface $translator, $structure)
+    {
+        $sx_structure = simplexml_load_string($structure);
+
+        $subdefgroup = $sx_structure->subdefs[0];
+        $AvSubdefs = [];
+
+        $errors = [];
+
+        foreach ($subdefgroup as $k => $subdefs) {
+            $subdefgroup_name = trim((string) $subdefs->attributes()->name);
+
+            if ($subdefgroup_name == '') {
+                $errors[] = $translator->trans('ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name');
+                continue;
+            }
+
+            if ( ! isset($AvSubdefs[$subdefgroup_name]))
+                $AvSubdefs[$subdefgroup_name] = [];
+
+            foreach ($subdefs as $sd) {
+                $sd_name = trim(mb_strtolower((string) $sd->attributes()->name));
+                $sd_class = trim(mb_strtolower((string) $sd->attributes()->class));
+                if ($sd_name == '' || isset($AvSubdefs[$subdefgroup_name][$sd_name])) {
+                    $errors[] = $translator->trans('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
+                    continue;
+                }
+                if ( ! in_array($sd_class, ['thumbnail', 'preview', 'document'])) {
+                    $errors[] = $translator->trans('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
+                    continue;
+                }
+                $AvSubdefs[$subdefgroup_name][$sd_name] = $sd;
+            }
+        }
+
+        return $errors;
+    }
+
+    public static function purge()
+    {
+        self::$_xpath_thesaurus = self::$_dom_thesaurus = self::$_thesaurus = self::$_sxml_thesaurus = [];
+    }
+
+    /**
      * @return RecordRepository
      */
     public function getRecordRepository()
@@ -534,41 +611,9 @@ class databox extends base implements ThumbnailedElement
         return $this->get_sbas_id();
     }
 
-    /**
-     * Returns current sbas_id
-     *
-     * @return int
-     */
-    public function get_sbas_id()
-    {
-        return $this->id;
-    }
-
     public function updateThumbnail($thumbnailType, File $file = null)
     {
         $this->delete_data_from_cache('printLogo');
-    }
-
-    public function delete_data_from_cache($option = null)
-    {
-        switch ($option) {
-            case self::CACHE_CGUS:
-                $this->cgus = null;
-                break;
-            case self::CACHE_META_STRUCT:
-                $this->meta_struct = null;
-                break;
-            case self::CACHE_STRUCTURE:
-                $this->_dom_structure = $this->_xpath_structure = $this->structure = $this->_sxml_structure = null;
-                break;
-            case self::CACHE_THESAURUS:
-                $this->thesaurus = null;
-                unset(self::$_dom_thesaurus[$this->id]);
-                break;
-            default:
-                break;
-        }
-        parent::delete_data_from_cache($option);
     }
 
     /**
@@ -623,17 +668,20 @@ class databox extends base implements ThumbnailedElement
         return new record_adapter($this->app, $this->id, $record_id, $number);
     }
 
-    public function get_label($code, $substitute = true)
+    public function get_label($code)
     {
         if (!array_key_exists($code, $this->labels)) {
             throw new InvalidArgumentException(sprintf('Code %s is not defined', $code));
         }
 
-        if ($substitute) {
-            return isset($this->labels[$code]) ? $this->labels[$code] : $this->get_viewname();
-        } else {
-            return $this->labels[$code];
+        if( ($r = trim($this->labels[$code])) != '') {
+            return $r;
         }
+        if( ($r = trim($this->get_viewname())) != '') {
+            return $r;
+        }
+
+        return $this->get_dbname();
     }
 
     public function get_viewname()
@@ -656,14 +704,6 @@ class databox extends base implements ThumbnailedElement
         $this->databoxRepository->save($this);
 
         return $this;
-    }
-
-    /**
-     * @return appbox
-     */
-    public function get_appbox()
-    {
-        return $this->app->getApplicationBox();
     }
 
     public function set_label($code, $label)
@@ -1018,28 +1058,6 @@ class databox extends base implements ThumbnailedElement
         return $base_ids;
     }
 
-    public function saveCterms(DOMDocument $dom_cterms)
-    {
-        $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
-
-        $sql = "UPDATE pref SET value = :xml, updated_on = :date
-                WHERE prop='cterms'";
-
-        $this->cterms = $dom_cterms->saveXML();
-        $params = [
-            ':xml'  => $this->cterms
-            , ':date' => $now
-        ];
-
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute($params);
-        $stmt->closeCursor();
-
-        $this->databoxRepository->save($this);
-
-        return $this;
-    }
-
     public function saveThesaurus(DOMDocument $dom_thesaurus)
     {
         $old_thesaurus = $this->get_dom_thesaurus();
@@ -1206,6 +1224,28 @@ class databox extends base implements ThumbnailedElement
         return $this;
     }
 
+    public function reindex()
+    {
+        $this->clearCandidates();
+        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
+
+        // Set TO_INDEX flag on all records
+        $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':token_and', PhraseaTokens::INDEXING, PDO::PARAM_INT);
+        $stmt->bindValue(':token_or',  PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $this->app['dispatcher']->dispatch(
+            DataboxEvents::REINDEX_ASKED,
+            new ReindexAskedEvent(
+                $this
+            )
+        );
+
+        return $this;
+    }
+
     public function clearCandidates()
     {
         try {
@@ -1230,24 +1270,70 @@ class databox extends base implements ThumbnailedElement
         }
     }
 
-    public function reindex()
+    /**
+     * @return DOMDocument
+     */
+    public function get_dom_cterms()
     {
-        $this->clearCandidates();
-        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
+        //if ($this->_dom_cterms) {
+        //    return $this->_dom_cterms;
+        //}
 
-        // Set TO_INDEX flag on all records
-        $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(':token_and', PhraseaTokens::INDEXING, PDO::PARAM_INT);
-        $stmt->bindValue(':token_or',  PhraseaTokens::TO_INDEX, PDO::PARAM_INT);
+        $cterms = $this->get_cterms();
+
+        $dom = new DOMDocument();
+
+        $dom->standalone = true;
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+
+        if ($cterms && $dom->loadXML($cterms) !== false)
+            $this->_dom_cterms = $dom;
+        else
+            $this->_dom_cterms = false;
+
+        return $this->_dom_cterms;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_cterms()
+    {
+        //if ($this->cterms) {
+        //    return $this->cterms;
+        //}
+
+        $sql = "SELECT value FROM pref WHERE prop='cterms'";
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-        $this->app['dispatcher']->dispatch(
-            DataboxEvents::REINDEX_ASKED,
-            new ReindexAskedEvent(
-                $this
-            )
-        );
+        if ($row)
+            $this->cterms = $row['value'];
+
+        return $this->cterms;
+    }
+
+    public function saveCterms(DOMDocument $dom_cterms)
+    {
+        $dom_cterms->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
+
+        $sql = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='cterms'";
+
+        $this->cterms = $dom_cterms->saveXML();
+        $params = [
+            ':xml'  => $this->cterms
+            , ':date' => $now
+        ];
+
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        $this->databoxRepository->save($this);
 
         return $this;
     }
@@ -1292,53 +1378,6 @@ class databox extends base implements ThumbnailedElement
         return self::$_sxml_thesaurus[$sbas_id];
     }
 
-    /**
-     * @return DOMDocument
-     */
-    public function get_dom_cterms()
-    {
-        if ($this->_dom_cterms) {
-            return $this->_dom_cterms;
-        }
-
-        $cterms = $this->get_cterms();
-
-        $dom = new DOMDocument();
-
-        $dom->standalone = true;
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = true;
-
-        if ($cterms && $dom->loadXML($cterms) !== false)
-            $this->_dom_cterms = $dom;
-        else
-            $this->_dom_cterms = false;
-
-        return $this->_dom_cterms;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_cterms()
-    {
-        if ($this->cterms) {
-            return $this->cterms;
-        }
-
-        $sql = "SELECT value FROM pref WHERE prop='cterms'";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row)
-            $this->cterms = $row['value'];
-
-        return $this->cterms;
-    }
-
     public function update_cgus($locale, $terms, $reset_date)
     {
         $old_tou = $this->get_cgus();
@@ -1379,6 +1418,54 @@ class databox extends base implements ThumbnailedElement
         $this->load_cgus();
 
         return $this->cgus;
+    }
+
+    protected function load_cgus()
+    {
+        try {
+            $this->cgus = $this->get_data_from_cache(self::CACHE_CGUS);
+
+            return $this;
+        } catch (\Exception $e) {
+
+        }
+
+        $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';
+        $stmt = $this->get_connection()->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row) {
+            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
+        }
+
+        $missing_locale = [];
+
+        $avLanguages = $this->app['locales.available'];
+        foreach ($avLanguages as $code => $language) {
+            if (!isset($TOU[$code])) {
+                $missing_locale[] = $code;
+            }
+        }
+
+        $TOU = array_intersect_key($TOU, $avLanguages);
+
+        $date_obj = new DateTime();
+        $date = $this->app['date-formatter']->format_mysql($date_obj);
+        $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
+              VALUES (null, 'ToU', '', :locale, :date, NOW())";
+        $stmt = $this->get_connection()->prepare($sql);
+        foreach ($missing_locale as $v) {
+            $stmt->execute([':locale' => $v, ':date' => $date]);
+            $TOU[$v] = ['updated_on' => $date, 'value' => ''];
+        }
+        $stmt->closeCursor();
+        $this->cgus = $TOU;
+
+        $this->set_data_to_cache($TOU, self::CACHE_CGUS);
+
+        return $this;
     }
 
     public function __sleep()
@@ -1436,91 +1523,5 @@ class databox extends base implements ThumbnailedElement
             'label_de' => $this->labels['de'],
             'label_nl' => $this->labels['nl'],
         ];
-    }
-
-    protected function retrieve_structure()
-    {
-        try {
-            $data = $this->get_data_from_cache(self::CACHE_STRUCTURE);
-            if (is_array($data)) {
-                return $data;
-            }
-        } catch (\Exception $e) {
-
-        }
-
-        $structure = null;
-        $sql = "SELECT value FROM pref WHERE prop='structure'";
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ($row)
-            $structure = $row['value'];
-        $this->set_data_to_cache($structure, self::CACHE_STRUCTURE);
-
-        return $structure;
-    }
-
-    protected function load_cgus()
-    {
-        try {
-            $this->cgus = $this->get_data_from_cache(self::CACHE_CGUS);
-
-            return $this;
-        } catch (\Exception $e) {
-
-        }
-
-        $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';
-        $stmt = $this->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        foreach ($rs as $row) {
-            $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
-        }
-
-        $missing_locale = [];
-
-        $avLanguages = $this->app['locales.available'];
-        foreach ($avLanguages as $code => $language) {
-            if (!isset($TOU[$code])) {
-                $missing_locale[] = $code;
-            }
-        }
-
-        $TOU = array_intersect_key($TOU, $avLanguages);
-
-        $date_obj = new DateTime();
-        $date = $this->app['date-formatter']->format_mysql($date_obj);
-        $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
-              VALUES (null, 'ToU', '', :locale, :date, NOW())";
-        $stmt = $this->get_connection()->prepare($sql);
-        foreach ($missing_locale as $v) {
-            $stmt->execute([':locale' => $v, ':date' => $date]);
-            $TOU[$v] = ['updated_on' => $date, 'value' => ''];
-        }
-        $stmt->closeCursor();
-        $this->cgus = $TOU;
-
-        $this->set_data_to_cache($TOU, self::CACHE_CGUS);
-
-        return $this;
-    }
-
-    /**
-     * @param array $row
-     */
-    private function loadFromRow(array $row)
-    {
-        $this->ord = $row['ord'];
-        $this->viewname = $row['viewname'];
-        $this->labels['fr'] = $row['label_fr'];
-        $this->labels['en'] = $row['label_en'];
-        $this->labels['de'] = $row['label_de'];
-        $this->labels['nl'] = $row['label_nl'];
     }
 }

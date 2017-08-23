@@ -138,24 +138,15 @@ var p4 = p4 || {};
                         var carouselItemLength = $('li', carousel).length;
                         var selectedItem = $("li.prevTrainCurrent.selected", carousel);
                         var selectedItemIndex = $('li', carousel).index(selectedItem);
-
-                        // item is first and list has at least 2 items
-                        if (selectedItemIndex === 0 && carouselItemLength > 1) {
-                            // click next item
-                            selectedItem.next().find("img").trigger("click");
-                            // item is last item and list has at least 2 items
-                        } else if (carouselItemLength > 1 && selectedItemIndex === (carouselItemLength - 1)) {
-                            // click previous item
-                            selectedItem.prev().find("img").trigger("click");
-                            // Basket is empty
-                        } else if (carouselItemLength > 1) {
-                            // click next item
-                            selectedItem.next().find("img").trigger("click");
-                        } else {
+                        var basketId = $('#baskets .content:visible').attr('id').split('_').pop();
+                        if(carouselItemLength === 1){
                             closePreview();
+                            p4.WorkZone.reloadCurrent();
+                            return;
                         }
+                        openPreview(this, 'BASK',selectedItemIndex+1,basketId,true);
+                        p4.WorkZone.reloadCurrent();
 
-                        selectedItem.remove();
                     } else {
                         return p4.WorkZone.reloadCurrent();
                     }

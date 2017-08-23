@@ -343,4 +343,14 @@ class Indexer
         // Flush just in case, it's a noop when already done
         $bulk->flush();
     }
+
+    public function getSettings(array $params)
+    {
+        try {
+            //Get setting from index
+            return $this->client->indices()->getSettings($params);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }
