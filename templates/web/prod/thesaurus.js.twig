@@ -27,14 +27,16 @@ function thesauShowWizard(wizard, refreshFilter)
     if(refreshFilter)
       T_Gfilter_delayed($('#THPD_WIZARDS .gform', p4.thesau.tabs).eq(0).val(), 0);
 
-    if(wizard == "wiz_0")	// browse
-      $("#THPD_WIZARDS .th_cancel", p4.thesau.tabs).hide();
-    else
-      $("#THPD_WIZARDS .th_cancel", p4.thesau.tabs).show();
+    {#if(wizard == "wiz_0")	// browse#}
+      {#$("#THPD_WIZARDS .th_cancel", p4.thesau.tabs).hide();#}
+    {#else#}
+      {#$("#THPD_WIZARDS .th_cancel", p4.thesau.tabs).show();#}
 
-    if(wizard == "wiz_1")	// accept
-      $("#THPD_WIZARDS .th_ok", p4.thesau.tabs).hide();
-    else
+    {#if(wizard == "wiz_1")	// accept#}
+      {#$("#THPD_WIZARDS .th_ok", p4.thesau.tabs).hide();#}
+    {#else#}
+      {#$("#THPD_WIZARDS .th_ok", p4.thesau.tabs).show();#}
+
       $("#THPD_WIZARDS .th_ok", p4.thesau.tabs).show();
 
     $("#THPD_WIZARDS FORM :text")[0].focus();
@@ -433,9 +435,11 @@ function C_MenuOption(menuItem, menu, option, parm)
       {
         msg = $.sprintf("{{ messageMany | e('js') }}", trees.C._selInfos.n);
       }
+        
+      var cancelBtn = '<button class="btn btn-inverse" onclick="startThesaurus();thesauCancelWizard();return(false);" type="button">{{ "Cancel" | trans }}</button>';
 
       // set the content of the wizard
-      $("#THPD_WIZARDS .wiz_1 .txt").html(msg);
+      $("#THPD_WIZARDS .wiz_1 .txt").html(msg+cancelBtn);
       // ... and switch to the thesaurus tab
       p4.thesau.tabs.tabs('option', 'active', 0);
       thesauShowWizard("wiz_1", true);
