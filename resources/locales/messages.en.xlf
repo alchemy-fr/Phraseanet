@@ -9199,7 +9199,7 @@ Pushed documents are also available in a received basket within Phraseanet Produ
       </trans-unit>
       <trans-unit id="f028c914f99c0a53ff40c1e7c59632363769fb79" resname="caption YAML" approved="yes">
         <source>caption YAML</source>
-        <target state="translated">YAML Caption</target>
+        <target state="translated">Caption as TXT</target>
         <jms:reference-file line="221">classes/record/exportElement.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c071dc277993ce1e921c0330a4ee8d358c12c792" resname="cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces" approved="yes">

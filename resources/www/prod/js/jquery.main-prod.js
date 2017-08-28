@@ -2423,6 +2423,16 @@ function evt_properties(value,type){
     dialog.load('../prod/records/property/', 'GET', options);
 }
 
+function evt_properties(params){
+    var datas = {};
+    datas.lst = params;
+    var dialog = p4.Dialog.Create({
+        title: language['share']
+    });
+
+    dialog.load('../prod/records/property/', 'GET', datas);
+}
+
 function evt_dwnl(value) {
     downloadThis("lst=" + value);
 }
