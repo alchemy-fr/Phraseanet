@@ -392,7 +392,7 @@ class set_export extends set_abstract
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields,$optionStamp = null)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
@@ -508,12 +508,15 @@ class set_export extends set_abstract
                             'path' => $sd[$subdefName]->get_path(),
                             'file' => $sd[$subdefName]->get_file()
                         ];
-                        $path = \recordutils_image::stamp($this->app , $sd[$subdefName]);
-                        if (file_exists($path)) {
-                            $tmp_pathfile = [
-                                'path' => dirname($path),
-                                'file' => basename($path)
-                            ];
+
+                        if(is_null($optionStamp)){
+                            $path = \recordutils_image::stamp($this->app , $sd[$subdefName]);
+                            if (file_exists($path)) {
+                                $tmp_pathfile = [
+                                    'path' => dirname($path),
+                                    'file' => basename($path)
+                                ];
+                            }
                         }
                         break;
                     case 'preview':
@@ -775,5 +778,28 @@ class set_export extends set_abstract
 
             $stmt->closeCursor();
         }
+    }
+
+    public function has_stamp_option()
+    {
+        if ($this->total_download == 0) {
+            return false;
+        }
+
+        $domprefs = new DOMDocument();
+        foreach ($this->elements as $download_element) {
+            if (false === $domprefs->loadXML($download_element->getCollection()->get_prefs())) {
+                continue;
+            }
+            $xpprefs = new DOMXPath($domprefs);
+            $stampNodes = $xpprefs->query('/baseprefs/stamp');
+            if ($stampNodes->length != 0) {
+                
+                return true;
+            }
+
+        }
+
+        return false;
     }
 }
