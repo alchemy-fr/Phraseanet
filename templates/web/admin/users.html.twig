@@ -80,45 +80,45 @@
         <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
             <thead>
                 <tr>
-                    <th style="text-align: center;" class="sortable {{ parm.srt == 'usr_id' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th style="text-align: center;" class="sortable {{ parm.srt == 'id' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur id utilisateur' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="usr_id" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="id" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'usr_login' ? 'sorted' :  '' }} ">
+                    <th class="sortable {{ parm.srt == 'login' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur identifiant' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="usr_login" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="login" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'first_name' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'First/Last Name' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="usr_nom" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="first_name" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'societe' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'company' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur societe' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="societe" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="company" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'usr_mail' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'email' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur email' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="usr_mail" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="email" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'pays' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'country' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur pays' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="pays" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="country" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'lastModel' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'last_model' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur dernier modele applique' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="lastModel" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="last_model" />
                     </th>
-                    <th class="sortable {{ parm.srt == 'usr_creationdate' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+                    <th class="sortable {{ parm.srt == 'created' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
                         <span>{{ 'admin::compte-utilisateur date de creation' | trans }}</span>
-                        <span class="ord_notifier">{{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}</span>
-                        <input type="hidden" name="srt" value="usr_creationdate" />
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="created" />
                     </th>
                 </tr>
             </thead>
@@ -269,11 +269,11 @@
                 var sort = $('input', $this).val();
 
                 if ((sort == $('#users_page_form input[name="srt"]').val())
-                        && ($('#users_page_form input[name="ord"]').val() == 'asc')) {
-                    var ord = 'desc';
+                        && ($('#users_page_form input[name="ord"]').val() == 'ASC')) {
+                    var ord = 'DESC';
                 }
                 else {
-                    var ord = 'asc';
+                    var ord = 'ASC';
                 }
 
                 $('#users_page_form input[name="srt"]').val(sort);
