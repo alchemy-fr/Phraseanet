@@ -189,11 +189,11 @@
 
 #PREVIEWTOOL {
   position: absolute;
-  width: 84px;
-  right: 0;
-  left: 0;
-  margin: 10px auto 0 auto;
-  bottom: 4px;
+  width: 100%;
+  top: 130px;
+  height: 28px;
+  text-align: right;
+  margin-left: -6px;
   img {
     width: 20px;
     padding: 4px;
@@ -205,6 +205,10 @@
   float: left;
 }
 
+.inline-div{
+  display: inline-block;
+  margin: 0px 0px 0px -6px;
+}
 .prevTrainCurrent .doc_infos, .diapo .doc_infos {
   position: absolute;
   float: left;
