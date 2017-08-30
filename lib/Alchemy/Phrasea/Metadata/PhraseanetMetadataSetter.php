@@ -65,7 +65,7 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                if (\DateTime::createFromFormat('Y:m:d G:i:s', $value) !== FALSE) {
+                if (\DateTime::createFromFormat('Y:m:d H:i:s', $value) !== FALSE) {
                     $dateValue = new \DateTime($value);
                     $data['value'] = $dateValue->format('Y/m/d');
                 }
