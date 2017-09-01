@@ -45,7 +45,7 @@ class DownloadController extends Controller
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
             $request->request->get('businessfields'),
-            $request->request->get('option_stamp')
+            $request->request->get('stamp_choice')
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());

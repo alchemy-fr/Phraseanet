@@ -392,7 +392,7 @@ class set_export extends set_abstract
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields,$optionStamp = null)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields,$stampChoice = null)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
@@ -509,7 +509,7 @@ class set_export extends set_abstract
                             'file' => $sd[$subdefName]->get_file()
                         ];
 
-                        if(is_null($optionStamp)){
+                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || is_null($stampChoice) ){
                             $path = \recordutils_image::stamp($this->app , $sd[$subdefName]);
                             if (file_exists($path)) {
                                 $tmp_pathfile = [
@@ -794,7 +794,7 @@ class set_export extends set_abstract
             $xpprefs = new DOMXPath($domprefs);
             $stampNodes = $xpprefs->query('/baseprefs/stamp');
             if ($stampNodes->length != 0) {
-                
+
                 return true;
             }
 

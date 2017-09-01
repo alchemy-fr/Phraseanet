@@ -164,10 +164,10 @@
                                 </label>
                             </div>
                         {% endif %}
-                        {% if  download.has_stamp_option() %}
-                        <div id="download_option_stamp" class="well-small hide" style="margin-left: 20px;" >
+                        {% if app['conf'].get(['registry', 'actions', 'export-stamp-choice']) == true and download.has_stamp_option() == true %}
+                        <div id="download_stamp_choice" class="well-small hide" style="margin-left: 20px;" >
                             <label for="option_stamp" class="checkbox">
-                                <input class="" type="checkbox" id="option_stamp" name="option_stamp"  />
+                                <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice"  />
                                 {{ 'prod::download: delete-marking-stamp' | trans }}
                             </label>
                         </div>
@@ -865,9 +865,9 @@
 
         $('#download_document').click(function(){
             if($(this).is(':checked')){
-                $('#download_option_stamp').show();
+                $('#download_stamp_choice').show();
             } else{
-                $('#download_option_stamp').hide();
+                $('#download_stamp_choice').hide();
             }
         });
     </script>
