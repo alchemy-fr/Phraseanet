@@ -122,6 +122,7 @@ class RegistryFormManipulator
                 'enable-push-authentication' => false,
                 'force-push-authentication' => false,
                 'enable-feed-notification' => true,
+                'export-stamp-choice' => false,
             ],
             'ftp' => [
                 'ftp-enabled' => false,
