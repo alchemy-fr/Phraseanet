@@ -2423,27 +2423,6 @@ function evt_properties(value,type){
     dialog.load('../prod/records/property/', 'GET', options);
 }
 
-function evt_properties(value,type){
-    options = {};
-    switch (type) {
-        case "IMGT":
-            options.lst = value;
-            break;
-            
-        case "SSTT":
-            options.ssel = value;
-            break;
-        case "STORY":
-            options.story = value;
-            break;
-    }
-    
-    var dialog = p4.Dialog.Create({
-        title: language['share']
-    });
-    
-    dialog.load('../prod/records/property/', 'GET', options);
-}
 
 function evt_dwnl(value) {
     downloadThis("lst=" + value);
