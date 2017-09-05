@@ -23,7 +23,7 @@ class ListPlugin extends AbstractPluginCommand
         parent::__construct('plugins:list');
 
         $this
-            ->setDescription('Lists installed plugins')
+            ->setDescription('Lists installed plugins <fg=yellow;>(Deprecated use bin/setup plugins command instead)</>')
             ->addOption('json', 'j', InputOption::VALUE_NONE, 'Output result in JSON');
     }
 
