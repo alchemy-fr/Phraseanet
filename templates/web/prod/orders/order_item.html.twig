@@ -236,7 +236,6 @@ const ELEMENT_TYPE = {
 }
 
 $(document).ready(function(){
-
     if ($('#notification_box').is(':visible')) {
         $('#notification_trigger').trigger('mousedown');
     }
@@ -245,6 +244,20 @@ $(document).ready(function(){
     //var order_id = $('input[name=order_id]').val();
     var trs = $('.order_list .order_row', dialog.getDomElement());
     var lastSelectedRow;
+    debugger;
+
+    dialog.getDomElement().dialog({
+        beforeClose: function() {
+            if(readyForValidation) {
+                if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
+                    dialog.load('{{ path('prod_orders') }}');
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+    });
 ;
     $('.order_launcher', dialog.getDomElement()).bind('click',function(){
         if(readyForValidation) {
