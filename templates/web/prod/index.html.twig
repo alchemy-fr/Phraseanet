@@ -220,8 +220,9 @@
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
+                                        {% set useTruncation = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'use_truncation') %}
                                         <label class="checkbox inline" for="ADVSRCH_USE_TRUNCATION">
-                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" name="truncation" checked>
+                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" onchange="setPref('use_truncation',$(this).prop('checked')?'1' : '0')" name="truncation" {% if useTruncation == '1' or useTruncation == NULL %}checked="checked"{% endif %}>
                                             {{ 'use truncation' | trans }}
                                         </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
