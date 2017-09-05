@@ -234,10 +234,18 @@ class RecordController extends Controller
 
         $goingToTrash = $this->goingToTrash($records);
 
-        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-            'records'   => $records,
+//        return $this->render('prod/actions/delete_records_confirm.html.twig', [
+//            'records'   => $records,
+//            'goingToTrash' => $goingToTrash
+//        ]);
+
+        return $this->app->json([
+            'renderView' => $this->render('prod/actions/delete_records_confirm.html.twig', [
+                'records'   => $records,
+                'goingToTrash' => $goingToTrash
+             ]),
             'goingToTrash' => $goingToTrash
-        ]);
+            ]);
     }
 
     private function goingToTrash(RecordsRequest $records) {

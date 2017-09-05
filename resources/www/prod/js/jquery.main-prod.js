@@ -1712,7 +1712,11 @@ function deleteThis(lst) {
         dataType: 'html',
         data: {lst: lst},
         success: function (data) {
-            $dialog.setContent(data);
+            var response = JSON.parse(data);
+            if(response.goingToTrash) {
+                $dialog.setOption('title', language.moveToTrash);
+            }
+            $dialog.setContent(response.renderView);
         }
     });
 
