@@ -22,7 +22,7 @@ class RemovePlugin extends AbstractPluginCommand
         parent::__construct('plugins:remove');
 
         $this
-            ->setDescription('Removes a plugin given its name')
+            ->setDescription('Removes a plugin given its name <fg=yellow;>(Deprecated use bin/setup plugins command instead)</>')
             ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
     }
 
