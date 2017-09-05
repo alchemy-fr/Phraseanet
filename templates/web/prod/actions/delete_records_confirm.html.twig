@@ -10,10 +10,17 @@
 
     <form method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
-        <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
-            <span class="ui-icon ui-icon-alert" ></span>
-            {{ "These records will be definitely deleted and can not be recovered" | trans }}
-        </div>
+        {% if goingToTrash %}
+            <div class="well-small label-important" style="background-color: orange;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
+                <span class="ui-icon ui-icon-alert" ></span>
+                { "prod:app trash: move-to-trash" | trans }}
+            </div>
+        {% else %}
+            <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
+                <span class="ui-icon ui-icon-alert" ></span>
+                {{ "These records will be definitely deleted and can not be recovered" | trans }}
+            </div>
+        {% endif %}
         {% if records.stories().count() %}
             <label class="checkbox">
             <input type="checkbox" id="del_children" name="del_children" value="1"> {{ "Also delete records that rely on groupings." | trans }}

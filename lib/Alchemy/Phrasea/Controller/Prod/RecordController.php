@@ -201,6 +201,22 @@ class RecordController extends Controller
     }
 
     /**
+     * @return BasketElementRepository
+     */
+    private function getBasketElementRepository()
+    {
+        return $this->app['repo.basket-elements'];
+    }
+
+    /**
+     * @return StoryWZRepository
+     */
+    private function getStoryWorkZoneRepository()
+    {
+        return $this->app['repo.story-wz'];
+    }
+
+    /**
      *  Delete a record or a list of records
      *
      * @param  Request $request
@@ -215,10 +231,49 @@ class RecordController extends Controller
             [\ACL::CANDELETERECORD]
         );
 
-        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-            'records'   => $records,
-        ]);
+
+        $goingToTrash = $this->goingToTrash($records);
+
+//        return $this->render('prod/actions/delete_records_confirm.html.twig', [
+//            'records'   => $records,
+//            'goingToTrash' => $goingToTrash
+//        ]);
+
+        return $this->app->json([
+            'renderView' => $this->render('prod/actions/delete_records_confirm.html.twig', [
+                'records'   => $records,
+                'goingToTrash' => $goingToTrash
+             ]),
+            'goingToTrash' => $goingToTrash
+            ]);
     }
+
+    private function goingToTrash(RecordsRequest $records) {
+    $trashCollectionsBySbasId = [];
+    $goingToTrash = [];
+    foreach($records as $record) {
+        $sbasId = $record->getDatabox()->get_sbas_id();
+        if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+            $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+        }
+        if($trashCollectionsBySbasId[$sbasId] !== null) {
+            if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                // record is already in trash
+                $goingToTrash[] = false;
+            }else {
+                // will be moved to trash
+                $goingToTrash[] = true;
+            }
+        }else {
+            // trash does not exist
+            $goingToTrash[] = false;
+        }
+    }
+
+    //check if all values in array are true
+    return (!in_array(false, $goingToTrash, true));
+
+}
 
     /**
      *  Renew url list of records
@@ -237,21 +292,5 @@ class RecordController extends Controller
         };
 
         return $this->app->json($renewed);
-    }
-
-    /**
-     * @return BasketElementRepository
-     */
-    private function getBasketElementRepository()
-    {
-        return $this->app['repo.basket-elements'];
-    }
-
-    /**
-     * @return StoryWZRepository
-     */
-    private function getStoryWorkZoneRepository()
-    {
-        return $this->app['repo.story-wz'];
     }
 }
