@@ -314,10 +314,15 @@
             }
             else {
                 // handle captions
-                recordWidth = 400;
-                var contentHeight = $selector.get(0).offsetHeight;
-                // recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
-                // var contentHeight = $selector.height();
+                recordWidth = parseInt($selector.find('.popover')[0].style.width || recordWidth, 10);
+                if ($selector.find('popover').length > 0) {
+                    recordWidth =
+                        parseInt(
+                            $selector.find('.popover')[0].style.width,
+                            10
+                        ) || recordWidth;
+                }
+                var contentHeight = $selector.height();
                 shouldResize = false;
                 tooltipVerticalOffset = 13;
                 recordHeight = contentHeight > maxHeightAllowed ? maxHeightAllowed : contentHeight;
