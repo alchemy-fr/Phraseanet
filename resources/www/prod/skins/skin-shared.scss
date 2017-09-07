@@ -410,6 +410,13 @@ span.ww_winTitle {
 
 /******* ORDER MANAGER ********************************************************/
 
+#order_manager {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 0px;
+  top: 60px;
+}
+
 #order_manager tr.order_row {
   height: 28px;
   img {
@@ -594,6 +601,11 @@ button.order_launcher.btn {
   margin: 0 10px 0 4px;
 }
 
+.scrollable-table {
+  height: 100%;
+  overflow-y: scroll;
+}
+
 .order-list-container .table-order {
   border-collapse:collapse;
   border: 1px inset;
@@ -606,8 +618,8 @@ button.order_launcher.btn {
 }
 
 .order-list-container {
-  overflow: auto;
-  height: 75%;
+  //overflow: auto;
+  height: 70%;
 }
 
 .order-list-container .table-order tr {
@@ -626,14 +638,14 @@ button.order_launcher.btn {
 .order_list {
   width: 40%;
   float: left;
-  overflow: auto;
+  overflow: hidden;
   height: 100%;
 }
 
 #wrapper-padding {
   display: none;
   margin-left: 30px;
-  overflow-y: auto;
+  //overflow-y: auto;
 }
 
 #wrapper-multiple {
@@ -666,6 +678,7 @@ button.order_launcher.btn {
   width: 60%;
   float: left;
   overflow: auto;
+  height:100%;
 }
 
 #order_detail .thumb_wrapper {
