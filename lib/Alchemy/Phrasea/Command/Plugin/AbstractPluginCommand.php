@@ -51,4 +51,13 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
     }
+
+    protected function showDeprecatedMessage($invoker,$type)
+    {
+        if($invoker == 'console'){
+            return "<fg=yellow;>(Deprecated use bin/setup $type command instead)</>";
+        }
+
+        return '';
+    }
 }

@@ -67,9 +67,9 @@ if ($configurationTester->isInstalled()) {
     $app->command(new ConfigurationEditor('system:config'));
 }
 
-$app->command(new AddPlugin());
-$app->command(new ListPlugin());
-$app->command(new RemovePlugin());
+$app->command(new AddPlugin('setup'));
+$app->command(new ListPlugin('setup'));
+$app->command(new RemovePlugin('setup'));
 $app->command(new PluginsReset());
 $app->command(new EnablePlugin());
 $app->command(new DisablePlugin());

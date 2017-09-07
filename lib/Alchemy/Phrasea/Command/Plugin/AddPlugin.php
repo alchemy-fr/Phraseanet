@@ -17,12 +17,12 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class AddPlugin extends AbstractPluginCommand
 {
-    public function __construct()
+    public function __construct($invoker = 'console')
     {
         parent::__construct('plugins:add');
 
         $this
-            ->setDescription('Installs a plugin to Phraseanet <fg=yellow;>(Deprecated use bin/setup plugins command instead)</>')
+            ->setDescription("Installs a plugin to Phraseanet {$this->showDeprecatedMessage($invoker,'plugins:add')}")
             ->addArgument('source', InputArgument::REQUIRED, 'The source is a folder');
     }
 
