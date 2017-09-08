@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div id="order_manager" style="margin-top: 15px">
+<div id="order_manager" style="margin-top: 15px;">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
     {% set message = app['request'].query.get('message') %}
@@ -107,7 +107,7 @@
                 </td>
             </tr>
         </table>
-        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
+        <button class="btn validate outline" disabled><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
@@ -711,9 +711,11 @@ function createItemForValidation(element, oldState, newState) {
 
 function toggleValidationButton() {
     if(readyForValidation) {
-        $('button.validate').show();
+        $('button.validate').prop('disabled', false);
+        $('button.validate').css('color', '#7CD21C');
     }else {
-        $('button.validate').hide();
+        $('button.validate').prop('disabled', true);
+        $('button.validate').css('color', '#737373');
     }
 }
 
