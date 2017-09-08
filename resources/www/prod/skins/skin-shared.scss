@@ -754,7 +754,7 @@ button.order_launcher.btn {
   vertical-align: middle;
 }
 
-button.btn.deny.outline {
+button.btn.deny.outline, button.btn.reset.outline {
   margin-right: 10px;
   box-shadow: none;
   font-weight: 200;
@@ -771,6 +771,10 @@ button.btn.deny.outline {
 .send.outline i {
   margin-right: 0.6em;
   color: #7CD21C;
+}
+
+.reset.outline i {
+  margin-right: 0.6em;
 }
 
 button.btn.btn-primary.send.outline {
