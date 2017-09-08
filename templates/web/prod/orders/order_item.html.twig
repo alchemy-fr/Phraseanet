@@ -183,6 +183,7 @@
                     <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
                     <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                     <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                     <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                 </div>
@@ -213,6 +214,7 @@
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                         <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
                         <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
@@ -349,6 +351,15 @@ $(document).ready(function(){
     $('button.deny', dialog.getDomElement()).bind('click',function(){
         updateValidation(ELEMENT_TYPE.DENIED);
         //deny_documents(order_id);
+    });
+
+    $('button.reset', dialog.getDomElement()).bind('click',function(){
+        if($('.order_list .order_row.selected.waitingForValidation').length == 0) {
+            alert(language.nodocselected);
+            return;
+        }
+        resetItemForValidation();
+        toggleValidationButton();
     });
 
     $('.force_sender', dialog.getDomElement()).bind('click',function(){
@@ -645,6 +656,26 @@ function createValidationTable() {
 
 }
 
+function resetItemForValidation() {
+    var dialog = p4.Dialog.get(1);
+    $('.order_list .order_row.selected.waitingForValidation', dialog.getDomElement()).each(function(i,n){
+        var elementId = $(n).find('input[name=order_element_id]').val();
+        var found = _.where(elementsForValidation, {elementId: elementId});
+        if(found.length > 0) {
+            $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+            //replace content or row with original content
+            $(n)[0].innerHTML = found[0].element[0].innerHTML;
+            //remove from array
+            elementsForValidation = _.without(elementsForValidation, found[0]);
+        }
+        updateButtonStatus($(n).attr('class').split(/\s+/));
+    });
+    if(elementsForValidation.length == 0) {
+        readyForValidation = false;
+    }
+    renderOrderDetailView(0);
+}
+
 function resetValidation() {
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
@@ -654,11 +685,12 @@ function resetValidation() {
             $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
             //replace content or row with original content
             $(n)[0].innerHTML = found[0].element[0].innerHTML;
+            //remove from array
+            elementsForValidation = _.without(elementsForValidation, found[0]);
         }
         updateButtonStatus($(n).attr('class').split(/\s+/));
     });
     readyForValidation = false;
-    elementsForValidation = [];
     renderOrderDetailView(0);
 }
 
@@ -705,7 +737,11 @@ function createItemForValidation(element, oldState, newState) {
     elementsForValidation.push(order);
     element.toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
     element.find('td:first-child').empty();
-    element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
+    if(newState == 'denied') {
+        element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-remove-circle">');
+    }else {
+        element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
+    }
     updateButtonStatus(element.attr('class').split(/\s+/));
 }
 
@@ -849,7 +885,7 @@ function renderOrderDetailView(countSelected) {
 }
 
 function updateButtonStatusMultiple(elementArrayType) {
-    $('#order-action button.deny, #order-action button.send').hide();
+    $('#order-action button.deny, #order-action button.send, #order-action button.reset').hide();
     var countObj = elementArrayType.reduce(function(m,v){
         for (var k in m) {
             if (~v.indexOf(k)) m[k]++;
@@ -876,6 +912,10 @@ function updateButtonStatusMultiple(elementArrayType) {
         $('#order-action button.deny, #order-action button.send').prop('disabled', false);
         $('#order-action button.deny, #order-action button.send').show();
     }
+    //contains only items waiting for validation
+    if(countObj.waitingForValidation === countObj.selectable) {
+        $('#order-action button.reset').show();
+    }
 
     $('#wrapper-multiple #text-content').empty();
     $('#wrapper-multiple #text-content').append(html);
@@ -887,22 +927,23 @@ function updateButtonStatusMultiple(elementArrayType) {
 */
 function updateButtonStatus(elementArrayType) {
     if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED)) {
-        $('#order-action button.deny, #order-action button.send').hide();
+        $('#order-action button.deny, #order-action button.send, #order-action button.reset').hide();
         $('#order-action span.action-text').html('{{ 'order-manager::order-item: already-validated' | trans }}' + '<i class="icon-ok"></i>');
         $('#order-action span.action-text').show();
     }else if (_.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
-        $('#order-action button.deny, #order-action span.action-text').hide();
-        $('#order-action button.send').show();
-        $('#order-action button.send').prop('disabled', true);
+        $('#order-action button.deny, #order-action button.send, #order-action span.action-text').hide();
+        $('#order-action button.reset').show();
+        //$('#order-action button.send').show();
+        //$('#order-action button.send').prop('disabled', true);
     }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
-        $('#order-action button.deny').hide();
+        $('#order-action button.deny, #order-action button.reset').hide();
         $('#order-action span.action-text').html('{{ 'order-manager::order-item: refused-previously' | trans }}');
-        $('#order-action button.send').prop('disabled', false);
+        //$('#order-action button.send').prop('disabled', false);
         $('#order-action button.send, #order-action span.action-text').show();
     }else {
-        $('#order-action button.send, #order-action button.deny').prop('disabled', false);
+       // $('#order-action button.send, #order-action button.deny').prop('disabled', false);
         $('#order-action button.send, #order-action button.deny').show();
-        $('#order-action span.action-text').hide();
+        $('#order-action span.action-text, #order-action button.reset').hide();
     }
 }
 
