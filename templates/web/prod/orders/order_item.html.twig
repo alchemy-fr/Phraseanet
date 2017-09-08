@@ -673,7 +673,11 @@ function resetItemForValidation() {
     if(elementsForValidation.length == 0) {
         readyForValidation = false;
     }
-    renderOrderDetailView(0);
+    toggleValidationButton();
+    //disable select all checkbox if selected
+    if($('input[name="select-all"]').is(':checked')){
+        $('input[name="select-all"]').prop('checked', false);
+    }
 }
 
 function resetValidation() {
