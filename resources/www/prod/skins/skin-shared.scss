@@ -410,13 +410,6 @@ span.ww_winTitle {
 
 /******* ORDER MANAGER ********************************************************/
 
-#order_manager {
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 0px;
-  top: 60px;
-}
-
 #order_manager tr.order_row {
   height: 28px;
   img {
@@ -522,6 +515,7 @@ button.order_launcher.btn {
 #order_manager .table {
   height: 20%;
   color: #737373;
+  margin-bottom: 15px;
 }
 
 #order_manager .table td h4{
@@ -531,7 +525,6 @@ button.order_launcher.btn {
 }
 
 #order_manager .well {
-  height: 90%;
   position: relative;
 }
 
@@ -602,8 +595,8 @@ button.order_launcher.btn {
 }
 
 .scrollable-table {
-  height: 100%;
-  overflow-y: scroll;
+  max-height:450px;  
+  overflow-y: auto;
 }
 
 .order-list-container .table-order {
@@ -618,8 +611,8 @@ button.order_launcher.btn {
 }
 
 .order-list-container {
-  //overflow: auto;
-  height: 70%;
+  max-height: 450px;
+  overflow: hidden;
 }
 
 .order-list-container .table-order tr {
@@ -639,7 +632,7 @@ button.order_launcher.btn {
   width: 40%;
   float: left;
   overflow: hidden;
-  height: 100%;
+  max-height:450px;
 }
 
 #wrapper-padding {
@@ -678,7 +671,7 @@ button.order_launcher.btn {
   width: 60%;
   float: left;
   overflow: auto;
-  height:100%;
+  max-height:450px;
 }
 
 #order_detail .thumb_wrapper {
@@ -892,7 +885,7 @@ span.action-text {
 button.btn.validate {
   margin-bottom: 10px;
   font-size: 14px;
-  border: 2px solid #F00;
+  //border: 2px solid #F00;
   i {
     margin-right: 0.6em;
     font-size: 14px;
