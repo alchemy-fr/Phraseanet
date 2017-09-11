@@ -219,6 +219,9 @@
                         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
                 </div>
+                <div id="wrapper-no-item">
+                   <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_png.png">
+                </div>
             </div>
         </div>
     </div>
@@ -230,6 +233,7 @@ var userInfoIsVisible = false;
 var itemCount = 0;
 var elementsForValidation = [];
 var readyForValidation = false;
+var lastItemChosen = null;
 
 const ELEMENT_TYPE = {
     VALIDATED: 'validated',
@@ -276,6 +280,7 @@ $(document).ready(function(){
     $('.order_list .order_row', dialog.getDomElement()).bind('click',function(event){
 
         var $this = $(this);
+        lastItemChosen = $this;
 
         //disable select all checkbox if selected
         if($('input[name="select-all"]').is(':checked')){
@@ -354,11 +359,17 @@ $(document).ready(function(){
     });
 
     $('button.reset', dialog.getDomElement()).bind('click',function(){
-        if($('.order_list .order_row.selected.waitingForValidation').length == 0) {
-            alert(language.nodocselected);
-            return;
+        var dialog = p4.Dialog.get(1);
+        var itemsToBeReset = [];
+        $('.order_list .order_row.selected.waitingForValidation', dialog.getDomElement()).each(function(i,n){
+            itemsToBeReset.push($(n));
+        });
+        //if item is not selected, delete item being previewed
+        if(itemsToBeReset.length == 0 && lastItemChosen) {
+            itemsToBeReset.push(lastItemChosen);
         }
-        resetItemForValidation();
+
+        resetItemForValidation(itemsToBeReset);
         toggleValidationButton();
     });
 
@@ -571,7 +582,7 @@ function openValidationDialog(el, event) {
             },
             "{{ 'order-manager::order-item: reset' |trans }}": function() {
                 if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
-                    resetValidation();
+                    resetAllItemForValidation();
                     toggleValidationButton();
                     $(this).dialog("close");
                 }
@@ -656,42 +667,41 @@ function createValidationTable() {
 
 }
 
-function resetItemForValidation() {
-    var dialog = p4.Dialog.get(1);
-    $('.order_list .order_row.selected.waitingForValidation', dialog.getDomElement()).each(function(i,n){
-        var elementId = $(n).find('input[name=order_element_id]').val();
-        var found = _.where(elementsForValidation, {elementId: elementId});
-        if(found.length > 0) {
-            $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-            //replace content or row with original content
-            $(n)[0].innerHTML = found[0].element[0].innerHTML;
-            //remove from array
-            elementsForValidation = _.without(elementsForValidation, found[0]);
-        }
-        updateButtonStatus($(n).attr('class').split(/\s+/));
+function removeItemFromArray(item) {
+    var elementId = item.find('input[name=order_element_id]').val();
+    var found = _.where(elementsForValidation, {elementId: elementId});
+    if(found.length > 0) {
+        item.removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
+        //replace content or row with original content
+        item[0].innerHTML = found[0].element[0].innerHTML;
+        //remove from array
+        elementsForValidation = _.without(elementsForValidation, found[0]);
+    }
+}
+
+function resetItemForValidation(itemsToBeReset) {
+    var elementArrayType = [];
+    itemsToBeReset.forEach(function(item){
+        removeItemFromArray(item);
+        updateButtonStatus(item.attr('class').split(/\s+/));
+        elementArrayType.push(item.attr('class').split(/\s+/));
     });
     if(elementsForValidation.length == 0) {
         readyForValidation = false;
     }
+    updateButtonStatusMultiple(elementArrayType);
     toggleValidationButton();
     //disable select all checkbox if selected
     if($('input[name="select-all"]').is(':checked')){
         $('input[name="select-all"]').prop('checked', false);
     }
+
 }
 
-function resetValidation() {
+function resetAllItemForValidation() {
     var dialog = p4.Dialog.get(1);
     $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        var elementId = $(n).find('input[name=order_element_id]').val();
-        var found = _.where(elementsForValidation, {elementId: elementId});
-        if(found.length > 0) {
-            $(n).removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-            //replace content or row with original content
-            $(n)[0].innerHTML = found[0].element[0].innerHTML;
-            //remove from array
-            elementsForValidation = _.without(elementsForValidation, found[0]);
-        }
+        removeItemFromArray($(n));
         updateButtonStatus($(n).attr('class').split(/\s+/));
     });
     readyForValidation = false;
@@ -715,6 +725,12 @@ function updateValidation(newState) {
         $(n).removeClass(ELEMENT_TYPE.SELECTED);
     });
 
+    //if item is not selected, delete item being previewed
+    if(count == 0 && lastItemChosen) {
+        createItemForValidation(lastItemChosen, ELEMENT_TYPE.SELECTABLE, newState);
+        count++;
+    }
+
     readyForValidation = true;
     toggleValidationButton();
     //disable select all checkbox if selected
@@ -727,6 +743,7 @@ function updateValidation(newState) {
         $('#wrapper-padding').hide();
         $('.external-order-action').hide();
         $('#wrapper-multiple').hide();
+        $('#wrapper-no-item').show();
     }
 }
 
@@ -868,6 +885,7 @@ function renderOrderDetailView(countSelected) {
         $('#wrapper-padding').hide();
         $('.external-order-action').hide();
         $('#wrapper-multiple').show();
+        $('#wrapper-no-item').hide();
         var dialog = p4.Dialog.get(1);
         var elementArrayType = [];
         $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
@@ -880,10 +898,12 @@ function renderOrderDetailView(countSelected) {
         $('#wrapper-padding').show();
         $('.external-order-action').show();
         $('#wrapper-multiple').hide();
+        $('#wrapper-no-item').hide();
     }else {
         $('#wrapper-padding').hide();
         $('.external-order-action').hide();
         $('#wrapper-multiple').hide();
+        $('#wrapper-no-item').show();
     }
     $('#preview-layout-multiple .title').html(countSelected);
 }

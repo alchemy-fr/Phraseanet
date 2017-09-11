@@ -646,6 +646,20 @@ button.order_launcher.btn {
   text-align: center;
 }
 
+#wrapper-no-item {
+  height: 450px;
+  position: relative;
+  img {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -75px;
+  }
+}
+
 #preview-layout-multiple {
   color: #737373;
 }
@@ -814,6 +828,7 @@ span.action-text {
   max-width: 600px;
   display: block;
   margin: auto;
+  text-align: center;
 }
 
 #preview-layout .thumb_wrapper img {
