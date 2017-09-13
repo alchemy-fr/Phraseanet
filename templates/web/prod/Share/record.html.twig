@@ -21,9 +21,9 @@
                 <form action="#">
                     <div class="form-group clearfix">
                         <label style="display:inline-block;">{% trans %}Resource URL{% endtrans %}</label>
-                        <select name="resource_type" id="resource_type_sel" class="input-small">
+                        <select name="resource_type" id="resource_type_sel" style="width:170px" class="input-small">
                             {% for key,value in subdefList %}
-                                <option value={{ key }} {% if key == defKey %}selected{% endif %}>{{ key }}</option>
+                                <option value={{ key }} {% if key == defKey %}selected{% endif %}>{{ value.label }}</option>
                             {% endfor %}
                         </select>
                         <input class="input-block-level" readonly="readonly" type="text" value="{{ subdefList[defKey].permalinkUrl }}"
@@ -64,11 +64,7 @@
             $(document).ready(function(){
                 var subdefList = JSON.parse('{{ subdefList | json_encode | escape('js') }}');
 
-                //load appropriate permalink based on default selection
-                //this.assignPermalinks($('#resource_type_sel').val());
-
                 $('#resource_type_sel').on('change', function() {
-                    console.log(this.value);
                     assignPermalinks(this.value);
                 });
 

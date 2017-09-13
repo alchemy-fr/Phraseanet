@@ -44,52 +44,66 @@ class ShareController extends Controller
 
         $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
 
-        $databox = $this->app->findDataboxById($record->getDataboxId());
-        $subdefGroup = $databox->get_subdef_structure()->getSubdefGroup($record->getType());
+        //get list of subdefs
+        $subdefs = $record->get_subdefs();
+
+        $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
+        $acl = $this->getAclForUser();
 
         $subdefList = array();
-        if ($subdefGroup) {
-            foreach ($subdefGroup as $subdefObj) {
-                $value = $subdefObj->get_class();
-                if (!in_array($value, $subdefList))
-                {
-                    if (!$this->getAclForUser()->has_access_to_subdef($record, $value)) {
-                        return;
-                    }
-                    $preview = $record->get_subdef($value);
-                    if (null !== $previewLink = $preview->get_permalink()) {
-                        $permalinkUrl = $previewLink->get_url()->__toString();
-                        $permaviewUrl = $previewLink->get_page();
-                        $previewWidth = $preview->get_width();
-                        $previewHeight = $preview->get_height();
 
-                        $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
-                        $previewData = [
-                            'permalinkUrl' => $permalinkUrl,
-                            'permaviewUrl' => $permaviewUrl,
-                            'embedUrl'     => $embedUrl,
-                            'width'        => $previewWidth,
-                            'height'       => $previewHeight
-                        ];
-                        $subdefList[$value] = $previewData;
-                    }
+        foreach ($subdefs as $subdef) {
+            $label = $subdefName = $subdef->get_name();
+
+            if ('document' == $subdefName) {
+                if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
+                    continue;
                 }
+                $label = $this->app->trans('prod::tools: document');
+            }
+            elseif ($databoxSubdefs->hasSubdef($subdefName)) {
+                if (!$acl->has_access_to_subdef($record, $subdefName)) {
+                    continue;
+                }
+
+                $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
             }
 
-            //set default key
-            if (array_key_exists("preview",$subdefList)) {
-                $defaultKey = 'preview';
-            }else if(array_key_exists("thumbnail",$subdefList)) {
-                $defaultKey = 'thumbnail';
-            }
+            $value = $subdef->get_name();
+            $preview = $record->get_subdef($value);
 
-            $outputVars = [
-                'isAvailable' => true,
-                'subdefList' => $subdefList,
-                'defaultKey' => $defaultKey
-            ];
+            if (null !== $previewLink = $preview->get_permalink()) {
+                $permalinkUrl = $previewLink->get_url()->__toString();
+                $permaviewUrl = $previewLink->get_page();
+                $previewWidth = $preview->get_width();
+                $previewHeight = $preview->get_height();
+
+                $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
+                $previewData = [
+                    'label'        => $label,
+                    'permalinkUrl' => $permalinkUrl,
+                    'permaviewUrl' => $permaviewUrl,
+                    'embedUrl'     => $embedUrl,
+                    'width'        => $previewWidth,
+                    'height'       => $previewHeight
+                ];
+                $subdefList[$value] = $previewData;
+            }
         }
 
+        //set default key to preview or thumbnail
+        if (array_key_exists("preview",$subdefList)) {
+            $defaultKey = 'preview';
+        }else if(array_key_exists("thumbnail",$subdefList)) {
+            $defaultKey = 'thumbnail';
+        }
+
+        $outputVars = [
+            'isAvailable' => true,
+            'subdefList' => $subdefList,
+            'defaultKey' => $defaultKey
+        ];
 
 //        if (!$this->getAclForUser()->has_access_to_subdef($record, 'thumbnail')) {
 //            $this->app->abort(403);
