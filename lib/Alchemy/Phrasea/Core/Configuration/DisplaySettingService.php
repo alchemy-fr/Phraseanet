@@ -124,7 +124,7 @@ class DisplaySettingService
      *
      * @return mixed
      */
-    public function getUserNotificationSetting(User $user, $name, $default = false)
+    public function getUserNotificationSetting(User $user, $name, $default = true)
     {
         if (false === $user->getNotificationSettings()->containsKey($name)) {
             return $default;
