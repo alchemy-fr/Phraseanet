@@ -92,10 +92,9 @@ class ShareController extends Controller
             }
         }
 
-        //set default key to preview or thumbnail
-        if (array_key_exists("preview",$subdefList)) {
-            $defaultKey = 'preview';
-        }else if(array_key_exists("thumbnail",$subdefList)) {
+        $defaultKey = 'preview';
+        //set default key to thumbnail if preview does not exist
+        if (!array_key_exists("preview",$subdefList)) {
             $defaultKey = 'thumbnail';
         }
 
