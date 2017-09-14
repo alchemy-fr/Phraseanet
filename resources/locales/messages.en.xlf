@@ -4321,7 +4321,7 @@
       </trans-unit>
       <trans-unit id="978c0865f6eafe1285d685b7b3b85ef5855c1996" resname="Nom des fichiers a l'export" approved="yes">
         <source>Nom des fichiers a l'export</source>
-        <target state="translated">FIles name to use for Download</target>
+        <target state="translated">Filename to use for downloads</target>
         <jms:reference-file line="67">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c2788209a60bf1ad55eb769fe0532798f2755db" resname="Nom du nouveau modele" approved="yes">
