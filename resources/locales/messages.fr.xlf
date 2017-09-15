@@ -7238,7 +7238,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="b0b39c7242ec17b1126ffe19d3e377337b26d6c9" resname="Warning, this database is not empty" approved="yes">
         <source>Warning, this database is not empty</source>
-        <target state="translated">Attention cette base n'est pas vide</target>
+        <target state="translated">Attention cette base n'est pas vide, l'installeur EFFACERA le contenus de la databox. 
+La base de compte sera définitivement perdus.</target>
         <jms:reference-file line="246">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6757e48da7a5a3de6e28f4b827526f0275f928e" resname="Watch it online" approved="yes">
@@ -9331,9 +9332,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Date d'ajout</target>
         <jms:reference-file line="134">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification">
+      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="yes">
         <source>date de modification</source>
-        <target state="new">date de modification</target>
+        <target state="translated">date de modification</target>
         <jms:reference-file line="135">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
