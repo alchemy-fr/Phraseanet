@@ -7191,7 +7191,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="b0b39c7242ec17b1126ffe19d3e377337b26d6c9" resname="Warning, this database is not empty" approved="yes">
         <source>Warning, this database is not empty</source>
-        <target state="translated">Attention cette base n'est pas vide</target>
+        <target state="translated">Attention cette base n'est pas vide, l'installeur EFFACERA le contenus de la databox. 
+La base de compte sera définitivement perdus.</target>
         <jms:reference-file line="239">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6757e48da7a5a3de6e28f4b827526f0275f928e" resname="Watch it online" approved="yes">
