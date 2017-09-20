@@ -21,7 +21,7 @@ services:
   - redis
 
 before_install:
-  - nvm install 0.12.0
+  - nvm install stable
   - phpenv config-rm xdebug.ini
   - composer self-update --no-progress --no-interaction
   - sudo apt-get purge elasticsearch
