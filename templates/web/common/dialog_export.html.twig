@@ -122,7 +122,7 @@
                             {% if values.available > 0 %}
                                 <div class="well-small">
                                     <label for="download_{{name}}" class="checkbox">
-                                        <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                                        <input class="{{ values.class}} download_items" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
                                         <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
                                         <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
                                         {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
@@ -863,10 +863,19 @@
             });
         });
 
-        $('#download_document').click(function(){
-            if($(this).is(':checked')){
+        $("input:checkbox.download_items.document").change(function() {
+
+            var checked = false;
+            $("input:checkbox.download_items.document").each(function() {
+                if ($(this).is(':checked')) {
+                    checked = true;
+                    return false;
+                }
+            });
+            
+            if (checked) {
                 $('#download_stamp_choice').show();
-            } else{
+            } else {
                 $('#download_stamp_choice').hide();
             }
         });
