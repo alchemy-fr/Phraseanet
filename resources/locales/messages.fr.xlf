@@ -1199,7 +1199,7 @@
       </trans-unit>
       <trans-unit id="d5f364d5d9a0a95fdba37f29a65a9ba61d6329ef" resname="Authorize *Phraseanet Navigator*" approved="yes">
         <source>Authorize *Phraseanet Navigator*</source>
-        <target state="translated">Autoriser *Phraseanet Navigator*</target>
+        <target state="translated">OBSOLETE Autoriser *Phraseanet Navigator*</target>
         <jms:reference-file line="27">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e1ead524b95ba3b45281df7ba45d2addbbf1a79" resname="Authorize Microsoft Office Plugin to connect." approved="yes">
@@ -2134,7 +2134,7 @@
       </trans-unit>
       <trans-unit id="7f4c92d36ad39747b7393498e20a21e3898d5ea6" resname="Default TTL in seconds of sub-definition url" approved="yes">
         <source>Default TTL in seconds of sub-definition url</source>
-        <target state="translated">Durée de validité, en secondes, de l'URL de la sous-définition</target>
+        <target state="translated">Durée de validité, en secondes, des URL JWT pour les sous-définition et documents</target>
         <jms:reference-file line="55">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="21cec17f6cd9c992f10804a71ea6d286a56c456a" resname="Default basket" approved="yes">
@@ -2708,7 +2708,7 @@
       </trans-unit>
       <trans-unit id="56848224e379e98e9a4cbcad0b51a0e99f7980f0" resname="Enable this setting to share on Facebook and Twitter" approved="yes">
         <source>Enable this setting to share on Facebook and Twitter</source>
-        <target state="translated">Activer le partage sur Facebook et Twitter</target>
+        <target state="translated">Activer le partage par permalien et ou sur les reseaux sociaux  Facebook et Twitter etc ...</target>
         <jms:reference-file line="47">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8c91cee722569eccd85bf170aff83c6b8e3b4d1" resname="Enable thumbnail substitution" approved="yes">
@@ -11036,9 +11036,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Accepté</target>
         <jms:reference-file line="68">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8feaff2c61f3573c1aaaaa16de3df1ef8758f28f" resname="registration:collection.active" approved="no">
+      <trans-unit id="8feaff2c61f3573c1aaaaa16de3df1ef8758f28f" resname="registration:collection.active" approved="yes">
         <source>registration:collection.active</source>
-        <target state="needs-translation">Active</target>
+        <target state="translated">Active</target>
         <jms:reference-file line="56">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9a5d8160431e85e0ecbe21dfcb2017543a8f7268" resname="registration:collection.in-time" approved="no">
@@ -11046,9 +11046,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">in-time</target>
         <jms:reference-file line="60">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8e154460c434c2beb7dc268aac77c5b8b52c4abb" resname="registration:collection.out-dated" approved="no">
+      <trans-unit id="8e154460c434c2beb7dc268aac77c5b8b52c4abb" resname="registration:collection.out-dated" approved="yes">
         <source>registration:collection.out-dated</source>
-        <target state="needs-translation">Date dépassée</target>
+        <target state="translated">Date dépassée</target>
         <jms:reference-file line="62">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ec1982774689f302e8d8549a12d99a3e41525648" resname="registration:collection.pending" approved="yes">
@@ -11056,9 +11056,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">En attente</target>
         <jms:reference-file line="64">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fcaffe2361d5da4c38aaf4c02d2b944c29db7da1" resname="registration:collection.registrable" approved="no">
+      <trans-unit id="fcaffe2361d5da4c38aaf4c02d2b944c29db7da1" resname="registration:collection.registrable" approved="yes">
         <source>registration:collection.registrable</source>
-        <target state="needs-translation">Faire une demande</target>
+        <target state="translated">Faire une demande</target>
         <jms:reference-file line="58">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7abb365333a7902838022d4bfc560f41323abb7c" resname="registration:collection.rejected" approved="yes">
@@ -12160,9 +12160,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Substitution de la vignette thumbnail</target>
         <jms:reference-file line="255">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ae16309f31e285a4018dcc59a69f8cfb76676249" resname="subviewType" approved="no">
+      <trans-unit id="ae16309f31e285a4018dcc59a69f8cfb76676249" resname="subviewType" approved="yes">
         <source>subviewType</source>
-        <target state="needs-translation">Type de sous définition</target>
+        <target state="translated">Type de sous définition</target>
         <jms:reference-file line="345">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="07b0b3ea9599114481aba18af40b06317614a879" resname="take a screenshot" approved="yes">
