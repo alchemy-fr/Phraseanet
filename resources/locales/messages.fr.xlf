@@ -1197,7 +1197,7 @@
       </trans-unit>
       <trans-unit id="d5f364d5d9a0a95fdba37f29a65a9ba61d6329ef" resname="Authorize *Phraseanet Navigator*" approved="yes">
         <source>Authorize *Phraseanet Navigator*</source>
-        <target state="translated">Autoriser *Phraseanet Navigator*</target>
+        <target state="translated">OBSOLETE Autoriser *Phraseanet Navigator*</target>
         <jms:reference-file line="22">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e1ead524b95ba3b45281df7ba45d2addbbf1a79" resname="Authorize Microsoft Office Plugin to connect." approved="yes">
@@ -2101,7 +2101,7 @@
       </trans-unit>
       <trans-unit id="7f4c92d36ad39747b7393498e20a21e3898d5ea6" resname="Default TTL in seconds of sub-definition url" approved="yes">
         <source>Default TTL in seconds of sub-definition url</source>
-        <target state="translated">Durée de validité, en secondes, de l'URL de la sous-définition</target>
+        <target state="translated">Durée de validité, en secondes, des URL JWT pour les sous-définition et documents</target>
         <jms:reference-file line="55">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="21cec17f6cd9c992f10804a71ea6d286a56c456a" resname="Default basket" approved="yes">
@@ -2673,7 +2673,7 @@
       </trans-unit>
       <trans-unit id="56848224e379e98e9a4cbcad0b51a0e99f7980f0" resname="Enable this setting to share on Facebook and Twitter" approved="yes">
         <source>Enable this setting to share on Facebook and Twitter</source>
-        <target state="translated">Activer le partage sur Facebook et Twitter</target>
+        <target state="translated">Activer le partage par permalien et ou sur les reseaux sociaux  Facebook et Twitter etc ...</target>
         <jms:reference-file line="47">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8c91cee722569eccd85bf170aff83c6b8e3b4d1" resname="Enable thumbnail substitution" approved="yes">
