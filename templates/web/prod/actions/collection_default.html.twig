@@ -38,7 +38,7 @@
 
             <div class="well-small">
                 <select name="base_id">
-                    {% for collection in collections %}
+                    {% for collection in collections|sort_collections %}
                         <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
                     {% endfor %}
                 </select>
