@@ -620,9 +620,9 @@
         <jms:reference-file line="42">admin/fields/templates.html.twig</jms:reference-file>
         <jms:reference-file line="45">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b70680b4c250c9244d3f2caf9e57f001e0f19657" resname="Add a position">
+      <trans-unit id="b70680b4c250c9244d3f2caf9e57f001e0f19657" resname="Add a position" approved="yes">
         <source>Add a position</source>
-        <target state="new">Add a position</target>
+        <target state="translated">Ort hinzufügen</target>
         <jms:reference-file line="115">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18a7d7025f09d8fd494b56d81e5208ec96510c99" resname="Add an admin" approved="yes">
