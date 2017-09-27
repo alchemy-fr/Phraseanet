@@ -66,21 +66,6 @@ class CrossDomainDumperTest extends \PHPUnit_Framework_TestCase
 	<allow-http-request-headers-from domain="*.bar.com" headers="SOAPAction, X-Foo*" secure="true"/>
 	<allow-http-request-headers-from domain="foo.example.com" headers="Authorization,X-Foo*" secure="false"/>
 </cross-domain-policy>'
-            ),
-            array(
-                array(
-                    'allow-access-from' => array(
-                        array(
-                            'domain'=> '*.cooliris.com',
-                            'secure'=> 'false'
-                        )
-                    )
-                ),
-                '<?xml version="1.0"?>
-<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
-<cross-domain-policy>
-	<allow-access-from domain="*.cooliris.com" secure="false"/>
-</cross-domain-policy>'
             )
         );
     }

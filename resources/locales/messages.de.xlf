@@ -1840,11 +1840,6 @@
         <target state="translated">Benutzer</target>
         <jms:reference-file line="32">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da54a34bad5b32178cd5a344200f3beb72b8b214" resname="Cooliris" approved="yes">
-        <source>Cooliris</source>
-        <target state="translated">Cooliris</target>
-        <jms:reference-file line="49">Form/Configuration/GeneralFormType.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="9a1757945390259d3dbb7c551d01c23638463d39" resname="Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :" approved="yes">
         <source>Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :</source>
         <target state="translated">Kopieren Sie bitte einfach die Kode unten und einfügen Sie sie in der Anwendung an entsprechend Stelle:</target>
@@ -11805,13 +11800,6 @@
         <source>report:: valide</source>
         <target state="translated">Bestätigt</target>
         <jms:reference-file line="198">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="1d900ae5b08909338f17350122691995bf9174b9" resname="report:: visualiseur cooliris" approved="yes">
-        <source>report:: visualiseur cooliris</source>
-        <target state="translated">Cooliris Viewer</target>
-        <jms:reference-file line="424">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="536">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="689">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3d0f1bc2eac01fb560464a3e0d29bfc30989f7a" resname="report::Changement de collection vers : %coll_name%" approved="yes">
         <source>report::Changement de collection vers : %coll_name%</source>

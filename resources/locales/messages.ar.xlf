@@ -11906,11 +11906,6 @@
         <source>report:: valide</source>
         <target>report:: valide</target>
       </trans-unit>
-      <trans-unit id="1d900ae5b08909338f17350122691995bf9174b9" resname="report:: visualiseur cooliris" approved="yes">
-        <jms:reference-file line="534">classes/record/preview.php</jms:reference-file>
-        <source>report:: visualiseur cooliris</source>
-        <target state="translated">Cooliris مشاهد</target>
-      </trans-unit>
       <trans-unit id="c3d0f1bc2eac01fb560464a3e0d29bfc30989f7a" resname="report::Changement de collection vers : %coll_name%">
         <jms:reference-file line="27">prod/preview/short_history.html.twig</jms:reference-file>
         <source>report::Changement de collection vers : %coll_name%</source>

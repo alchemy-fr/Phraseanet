@@ -213,7 +213,7 @@ class Migration31 implements MigrationInterface
                 [
                     'type'      => 'string',
                     'name'      => 'GV_home_publi',
-                    'default'   => 'COOLIRIS',
+                    'default'   => 'GALLERIA',
                 ],
                 [
                     'type'    => 'integer',

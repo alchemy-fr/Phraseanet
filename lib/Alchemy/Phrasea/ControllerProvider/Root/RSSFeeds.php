@@ -58,8 +58,6 @@ class RSSFeeds implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('feed_public_aggregated')
             ->assert('format', '(rss|atom)');
 
-        $controllers->get('/cooliris/', 'controller.rss-feeds:showCoolirisPublicFeedAction')
-            ->bind('feed_public_cooliris');
 
         return $controllers;
     }

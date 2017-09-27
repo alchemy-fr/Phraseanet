@@ -61,14 +61,7 @@ class patch_386alpha2a implements patchInterface
         try {
             $crossDomainConfig = $parser->parse($app['root.path'].'/www/crossdomain.xml');
         } catch (RuntimeException $e) {
-            $crossDomainConfig = array(
-                'allow-access-from' => array(
-                    array(
-                        'domain' => '*.cooliris.com',
-                        'secure' => 'false',
-                    )
-                )
-            );
+            $crossDomainConfig = '';
         }
 
         $config['crossdomain'] = $crossDomainConfig;

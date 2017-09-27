@@ -64,15 +64,6 @@ class RSSFeedController extends Controller
         return $this->createFormattedFeedResponse($format, $aggregate, $page, $user);
     }
 
-    public function showCoolirisPublicFeedAction(Request $request)
-    {
-        $feed = Aggregate::getPublic($this->app);
-
-        $page = (int) $request->query->get('page');
-
-        return $this->createFormattedFeedResponse('cooliris', $feed, $page);
-    }
-
     public function showAggregatedPublicFeedAction(Request $request, $format) {
         $feed = Aggregate::getPublic($this->app);
 

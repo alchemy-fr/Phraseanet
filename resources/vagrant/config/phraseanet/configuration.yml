@@ -200,7 +200,4 @@ session:
   # 1 week
   lifetime: 604800
 crossdomain:
-  allow-access-from:
-    -
-      domain: '*.cooliris.com'
-      secure: 'false'
+  allow-access-from: ''

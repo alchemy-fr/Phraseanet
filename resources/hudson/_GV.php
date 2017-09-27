@@ -44,7 +44,7 @@ define('GV_view_bas_and_coll', true);
 define('GV_choose_export_title', false);
 define('GV_default_export_title', 'support@alchemy.fr');
 define('GV_social_tools', 'none');
-define('GV_home_publi', 'COOLIRIS');
+define('GV_home_publi', 'GALLERIA');
 define('GV_min_letters_truncation', '1');
 define('GV_defaultQuery', 'all');
 define('GV_defaultQuery_type', '0');
