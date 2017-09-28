@@ -10646,9 +10646,9 @@
         <target state="translated">Move also Stories linked documents ?</target>
         <jms:reference-file line="50">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
+      <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp" approved="yes">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="needs-translation">Do not add notice stamp</target>
+        <target state="translated">Do not add notice stamp</target>
         <jms:reference-file line="171">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="063431f63e0c593c52fffb55f390d1d9c216ee4a" resname="prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes" approved="yes">
