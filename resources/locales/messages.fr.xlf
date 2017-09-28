@@ -9522,7 +9522,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9be1244ce3eb4b1de4abe01d696f2ab14effa5ca" resname="help::help-section-bullet: default-operator-between-terms" approved="yes">
         <source>help::help-section-bullet: default-operator-between-terms</source>
-        <target state="translated">L’opérateur mis en oeuvre par défaut entre les termes de la recherche est le ET</target>
+        <target state="translated">L'opérateur mis en oeuvre par défaut entre les termes de la recherche est le ET</target>
         <jms:reference-file line="26">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a939bc9799c52952fd10a0a4c27520ffb080abf8" resname="help::help-section-bullet: expand search" approved="yes">
@@ -9557,7 +9557,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="f1705105cd12c7037b4a27b97b9453602ac45ebd" resname="help::help-section-bullet: use-OR-between-terms" approved="yes">
         <source>help::help-section-bullet: use-OR-between-terms</source>
-        <target state="translated">L’opérateur OU permet de rechercher plusieurs termes contenus dans les notices des médias</target>
+        <target state="translated">L'opérateur OU permet de rechercher plusieurs termes contenus dans les notices des médias</target>
         <jms:reference-file line="27">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c012913adefe76f9285c687ed30146a950f95c2c" resname="help::help-section-title: search-tips" approved="yes">
