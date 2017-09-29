@@ -450,6 +450,23 @@ input[id="elasticsearch_settings_highlight"] {
   }
 }
 
+#elasticsearch_settings_esSettingsDropIndexButton, #elasticsearch_settings_esSettingsCreateIndexButton {
+  margin-bottom: 20px;
+}
+
+#elasticsearch_settings_save {
+  padding: 15px;
+  &::before {
+    content: "\F0A0";
+    font-family: "FontAwesome";
+    margin-right: 5px;
+  }
+}
+
+#elasticsearch_settings_esSettingFromIndex {
+  margin-top: 20px;
+}
+
 @media screen and (max-width: 1150px) {
   .langTab{
     display: block;
