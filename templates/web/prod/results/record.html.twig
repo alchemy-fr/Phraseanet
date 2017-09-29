@@ -1,6 +1,8 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
 {% import 'common/macros.html.twig' as macro %}
 
+{% set record_serialised = record.baseId~'_'~record.recordId %}
+{% set lst = {'lst': record_serialised } %}
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
@@ -109,7 +111,8 @@
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
-                                                    {{ 'action : ajouter au panier' | trans }}
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/basket_push.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : ajouter au panier' | trans }}</span>
                                                 </div>
                                             </div>
                                         {% endif %}
@@ -117,16 +120,94 @@
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
-                                                    {{ 'action : exporter' | trans }}
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : exporter' | trans }}</span>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner"
                                                  onclick="evt_print('{{record.id}}');return(false);">
-                                                {{ 'action : print' | trans }}
+                                                <span class="context-menu-item-img"><img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="context-menu-item-img"/></span>
+                                                <span class="context-menu-item-text">{{ 'action : print' | trans }}</span>
                                             </div>
                                         </div>
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::CANMODIFRECORD')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="editThis('IMGT','{{ record_serialised }}');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/ppen_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : editer' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::CHGSTATUS')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="evt_properties('{{ record_serialised }}','IMGT');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgstatus_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : status' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::CANDELETERECORD')]) and granted_on_collection(record.baseId,[constant('\\ACL::CANADDRECORD')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="chgCollThis({{ lst | json_encode() }});return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/chgcoll_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : collection' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::CANPUSH')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="pushThis('','{{record_serialised}}','');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/push16.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">{{ 'action : push' | trans }}</span>
+                                                </div>
+                                            </div>
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="feedbackThis('','{{record_serialised}}','');;return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/feedback16.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text"> {{ 'Feedback' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="init_publicator('{{ path("prod_bridge_manager") }}',{{ lst| json_encode() }});return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/door.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text"> {{ 'action : bridge' | trans }}</span>
+                                                </div>
+                                            </div>
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="publicationModule.publishRecords('IMGT','{{record_serialised}}');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/rss16.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text">  {{ 'action : publier' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::IMGTOOLS')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="toolREFACTOR({{ lst| json_encode() }},'');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/imgtools_history.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text"> {{ 'action : outils' | trans }}</span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        {% if granted_on_collection(record.baseId,[constant('\\ACL::CANDELETERECORD')]) %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner"
+                                                     onclick="deleteThis('{{ record_serialised }}');return(false);">
+                                                    <span class="context-menu-item-img"><img src="/assets/common/images/icons/delete.png" height="16" width="16" /></span>
+                                                    <span class="context-menu-item-text"> {{ 'action : supprimer' | trans }}</span>
+                                                </div>
+                                            </div>                                        {% endif %}
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
                                         or (app['conf'].get(['registry', 'actions', 'social-tools']) == 'publishers'
                                         and granted_on_databox(record.databoxId, constant('\\ACL::BAS_CHUPUB'))) %}
@@ -134,7 +215,8 @@
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"
                                                          onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
-                                                        {{ 'reponses:: partager' | trans }}
+                                                        <span class="context-menu-item-img"><img src="/assets/common/images/icons/share.png" height="16" width="16" /></span>
+                                                        <span class="context-menu-item-text">{{ 'reponses:: partager' | trans }}</span>
                                                     </div>
                                                 </div>
                                             {% endif %}

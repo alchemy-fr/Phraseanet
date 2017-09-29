@@ -10,31 +10,26 @@
                         {{ 'reponses:: selectionner tout' | trans }}
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a class="answer_selector none_selector">
                         {{ 'reponses:: selectionner rien' | trans }}
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a class="answer_selector image_selector">
                         {{ 'phraseanet::type:: images' | trans }}
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a class="answer_selector document_selector">
                         {{ 'phraseanet::type:: documents' | trans }}
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a class="answer_selector video_selector">
                         {{ 'phraseanet::type:: videos' | trans }}
                     </a>
                 </li>
-                <li class="divider"></li>
                 <li>
                     <a class="answer_selector audio_selector">
                         {{ 'phraseanet::type:: audios' | trans }}
@@ -104,9 +99,6 @@
                                     {{ action.label }}
                                 </a>
                             </li>
-                            {% if not loop.last %}
-                                <li class="divider"></li>
-                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -139,14 +131,12 @@
                             {{ 'Feedback' | trans }}
                         </a>
                     </li>
-                    <li class="divider"></li>
                     <li>
                         <a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}">
                             <img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/>
                             {{ 'action : bridge' | trans }}
                         </a>
                     </li>
-                    <li class="divider"></li>
                     <li>
                         <a class="TOOL_publish_btn results_window">
                             <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
@@ -155,7 +145,6 @@
                     </li>
                     {% if plugins.actionbar is not empty %}
                         {% for plugin in plugins.actionbar %}
-                            <li class="divider"></li>
                             {% for key, action in plugin.getActionBar().push|default([]) %}
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
@@ -190,7 +179,6 @@
                     </li>
                     {% if plugins.actionbar is not empty %}
                         {% for plugin in plugins.actionbar %}
-                            <li class="divider"></li>
                             {% for key, action in plugin.getActionBar().push|default([]) %}
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
@@ -225,7 +213,6 @@
                     </li>
                     {% if plugins.actionbar is not empty %}
                         {% for plugin in plugins.actionbar %}
-                            <li class="divider"></li>
                             {% for key, action in plugin.getActionBar().push|default([]) %}
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
@@ -263,7 +250,6 @@
                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                 <ul class="submenu dropdown-menu">
                     {% endif %}
-                    {% if not loop.first %}<li class="divider"></li>{% endif %}
                     {% if not firstButton %}
                         <li>
                             <a class="results_window {{ action.classes|default('') }}">
