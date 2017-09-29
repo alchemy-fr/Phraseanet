@@ -566,7 +566,7 @@
       </trans-unit>
       <trans-unit id="c4a4f00323184bd750ee72b5c05e6e17d1584bfd" resname="Activate highlight" approved="yes">
         <source>Activate highlight</source>
-        <target state="translated">Activer le surlignage</target>
+        <target state="translated">Activer le surlignage ( experimental). impact les performances de recherche</target>
         <jms:reference-file line="62">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
         <jms:reference-file line="679">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
