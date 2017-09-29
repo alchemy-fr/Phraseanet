@@ -55,46 +55,50 @@
                         <div class='settings-box'>
                             <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                             {# collections list #}
-                            {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
-                            <select onchange="setPref('upload_last_used_collection', $(this).val());" name="base_id" class="span3" style="margin-left: 10px;">
-                            {% for  sbasId, availableCollections in collections %}
-                                <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
-                                {% for collection in availableCollections['databox_collections'] %}
-                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %} value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                            {% if collections|length > 0 %}
+                                {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
+                                <select onchange="setPref('upload_last_used_collection', $(this).val());" name="base_id" class="span3" style="margin-left: 10px;">
+                                {% for  sbasId, availableCollections in collections %}
+                                    <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
+                                    {% for collection in availableCollections['databox_collections'] %}
+                                        <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %} value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                    {% endfor %}
+                                    </optgroup>
                                 {% endfor %}
-                                </optgroup>
-                            {% endfor %}
-                            </select>
-                            {# collections status #}
-                            {% for availableCollections in collections %}
-                                {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
-                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
-                                        <table class="status-tab">
-                                            <tbody>
-                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
-                                                <tr>
-                                                    <td class="status-tab-left">
-                                                        {% if status['img_off'] is not empty %}
-                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
-                                                    </td>
-                                                    <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
-                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                        {% if status['img_on'] is not empty %}
-                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                </select>
+                                {# collections status #}
+                                {% for availableCollections in collections %}
+                                    {% for collection in availableCollections['databox_collections'] %}
+                                        <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                            <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                            <table class="status-tab">
+                                                <tbody>
+                                                {% for bit, status in availableCollections['databox'].getStatusStructure() %}
+                                                    <tr>
+                                                        <td class="status-tab-left">
+                                                            {% if status['img_off'] is not empty %}
+                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                        </td>
+                                                        <td class="status-tab-right">
+                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                            {% if status['img_on'] is not empty %}
+                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
+                            {% else %}
+                                {{ 'You can not upload files' | trans }}
+                            {% endif %}
                         </div>
 
                         {# upload box #}
