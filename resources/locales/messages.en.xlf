@@ -10994,7 +10994,7 @@
       </trans-unit>
       <trans-unit id="9a5d8160431e85e0ecbe21dfcb2017543a8f7268" resname="registration:collection.in-time" approved="yes">
         <source>registration:collection.in-time</source>
-        <target state="translated">in-time</target>
+        <target state="translated">Access is time limited (active)</target>
         <jms:reference-file line="60">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e154460c434c2beb7dc268aac77c5b8b52c4abb" resname="registration:collection.out-dated" approved="yes">
