@@ -812,9 +812,41 @@
 
               function removeOverlay() { 
                 $('.spinner-loader').remove();
-            }   
+            }
+
+            function validateEmail(email) {
+                var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
+            }
+
+            function validEmail(emailList) {
+                //split emailList by ; , or whitespace and filter empty element
+                var emails = emailList.split(/[ ,;]+/).filter(Boolean);
+                for(var i=0; i < emails.length; i++) {
+                    if (!validateEmail(emails[i])) {
+                        {% set alert_message %}
+                        {{ 'export::export-email: email-invalid' | trans }}
+                        {% endset %}
+
+                        var alert = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true,
+                            title : '{{ "Warning !" | trans | e('js') }}'
+                        }, 2);
+
+                        alert.setContent("{{ alert_message | e('js') }}");
+                       return false;
+                    }
+                }
+                return true;
+            }
 
             var submitEmailForm = function () {
+                if(!validEmail($('input[name="destmail"]', $('#sendmail')).val())) {
+                    return false;
+                }
+
                 if (!check_subdefs($('#sendmail'))) {
                     return false;
                 }
