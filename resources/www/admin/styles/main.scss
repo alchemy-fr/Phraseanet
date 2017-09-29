@@ -422,6 +422,34 @@ input[id="elasticsearch_settings_highlight"] {
   overflow: visible;
 }
 
+/******* SEARCH ENGINE SETTINGS ***************************************************/
+.search-engine-tabs {
+  background: 0;
+  border: 0;
+  .top-bar-shadow {
+    margin-top: 1px;
+    background: #aaa8a5; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* Standard syntax */
+    height: 4px;
+  }
+  .ui-tabs-active {
+    background: #9EA09D !important;
+    a {
+      color: #FFFFFF !important;
+    }
+  }
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+    background: #EFF0F0;
+    a {
+      color: #9EA09D;
+    }
+  }
+}
+
 @media screen and (max-width: 1150px) {
   .langTab{
     display: block;
