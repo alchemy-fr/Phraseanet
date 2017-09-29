@@ -9913,7 +9913,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6d1a6d2945cb66b8fa680daa0a6d3f2f61e348f7" resname="order-manager::order-item: of" approved="yes">
         <source>order-manager::order-item: of</source>
-        <target state="translated">de</target>
+        <target state="translated">du</target>
         <jms:reference-file line="536">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="873">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
