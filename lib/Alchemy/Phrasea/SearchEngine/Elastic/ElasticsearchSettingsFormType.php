@@ -31,20 +31,18 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'constraints' => new NotBlank(),
                 'attr' =>['data-class'=>'inline']
             ])
-            ->add('esSettingFromIndex', 'button', [
-                'label' => 'Get setting form index',
-                'attr' => [
-                    'onClick' => 'esSettingFromIndex()',
-                    'data-class' => 'inline',
-                ]
-            ])
             ->add('esSettingsDropIndexButton', 'button', [
                 'label' => "Drop index",
-                'attr' => ['data-id' => "esSettingsDropIndexButton"]
+                'attr' => [
+                    'data-id' => 'esSettingsDropIndexButton',
+                    'class' => 'btn btn-danger'
+                ]
             ])
             ->add('esSettingsCreateIndexButton', 'button', [
                 'label' => "Create index",
-                'attr' => ['data-id' => "esSettingsCreateIndexButton"]
+                'attr' => ['data-id' => "esSettingsCreateIndexButton",
+                           'class' => 'btn btn-success'
+                ]
             ])
             ->add('shards', 'integer', [
                 'label' => 'Number of shards',
@@ -62,7 +60,16 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => 'Activate highlight',
                 'required' => false
             ])
-            ->add('save', 'submit')
+            ->add('save', 'submit', [
+                'attr' => ['class' => 'btn btn-primary']
+            ])
+            ->add('esSettingFromIndex', 'button', [
+                'label' => 'Get setting form index',
+                'attr' => [
+                    'onClick' => 'esSettingFromIndex()',
+                    'class' => 'btn'
+                ]
+            ])
             ->add('dumpField', 'textarea', [
                 'label' => false,
                 'required' => false,

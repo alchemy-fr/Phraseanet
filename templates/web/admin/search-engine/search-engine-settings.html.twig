@@ -1,0 +1,18 @@
+<div class="search-engine-tabs">
+    <ul>
+        <li><a href="#elastic-search">{{ 'ElasticSearch configuration' | trans }}</a></li>
+    </ul>
+    <div class="top-bar-shadow"></div>
+    <div id="elastic-search">
+        {% include 'admin/search-engine/elastic-search.html.twig'%}
+    </div>
+</div>
+
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.search-engine-tabs').tabs();
+        });
+    </script>
+{% endblock %}
