@@ -55,11 +55,12 @@
                         <div class='settings-box'>
                             <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                             {# collections list #}
-                            <select name="base_id" class="span3" style="margin-left: 10px;">
+                            {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
+                            <select onchange="setPref('upload_last_used_collection', $(this).val());" name="base_id" class="span3" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %} value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
