@@ -78,6 +78,25 @@ class DisplaySettingService
     }
 
     /**
+     * Merge default user settings and configuration customisation.
+     */
+    private function loadUsersSettings()
+    {
+        if (null !== $this->usersSettings) {
+            return;
+        }
+
+        $this->usersSettings = array_replace(
+            self::$defaultUserSettings,
+            // removes undefined keys in default settings
+            array_intersect_key(
+                $this->conf->get(['user-settings'], []),
+                self::$defaultUserSettings
+            )
+        );
+    }
+
+    /**
      * Return a user setting given a user.
      *
      * @param User   $user
@@ -110,7 +129,6 @@ class DisplaySettingService
         if (false === $user->getNotificationSettings()->containsKey($name)) {
             return $default;
         }
-
         return $user->getNotificationSettings()->get($name)->getValue();
     }
 
@@ -125,24 +143,5 @@ class DisplaySettingService
     public function getApplicationSetting($props, $default = null)
     {
         return $this->conf->get(array_merge(['registry'], is_array($props) ? $props : [$props]), $default);
-    }
-
-    /**
-     * Merge default user settings and configuration customisation.
-     */
-    private function loadUsersSettings()
-    {
-        if (null !== $this->usersSettings) {
-            return;
-        }
-
-        $this->usersSettings = array_replace(
-            self::$defaultUserSettings,
-            // removes undefined keys in default settings
-            array_intersect_key(
-                $this->conf->get(['user-settings'], []),
-                self::$defaultUserSettings
-            )
-        );
     }
 }
