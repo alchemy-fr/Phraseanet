@@ -23,43 +23,113 @@ class ShareController extends Controller
      */
     public function shareRecord($base_id, $record_id)
     {
+//        $outputVars = [
+//            'isAvailable' => false,
+//            'subdefList' => [],
+//            'defaultKey' => 'preview',
+//            'preview' => [
+//              'permalinkUrl' => '',
+//              'permaviewUrl' => '',
+//              'embedUrl' => '',
+//              'width' => '',
+//              'height' => ''
+//            ]
+//        ];
+
         $outputVars = [
             'isAvailable' => false,
-            'preview' => [
-              'permalinkUrl' => '',
-              'permaviewUrl' => '',
-              'embedUrl' => '',
-              'width' => '',
-              'height' => ''
-            ]
+            'subdefList' => [],
+            'defaultKey' => 'preview',
         ];
+
         $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
 
-        if (!$this->getAclForUser()->has_access_to_subdef($record, 'preview')) {
-            $this->app->abort(403);
-        }
+        //get list of subdefs
+        $subdefs = $record->get_subdefs();
 
-        $preview = $record->get_preview();
+        $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-        if (null !== $previewLink = $preview->get_permalink()) {
-            $permalinkUrl = $previewLink->get_url();
-            $permaviewUrl = $previewLink->get_page();
-            $previewWidth = $preview->get_width();
-            $previewHeight = $preview->get_height();
+        $acl = $this->getAclForUser();
 
-            $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
+        $subdefList = array();
 
-            $outputVars = [
-                'isAvailable' => true,
-                'preview' => [
+        foreach ($subdefs as $subdef) {
+            $label = $subdefName = $subdef->get_name();
+
+            if ('document' == $subdefName) {
+                if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
+                    continue;
+                }
+                $label = $this->app->trans('prod::tools: document');
+            }
+            elseif ($databoxSubdefs->hasSubdef($subdefName)) {
+                if (!$acl->has_access_to_subdef($record, $subdefName)) {
+                    continue;
+                }
+
+                $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
+            }
+
+            $value = $subdef->get_name();
+            $preview = $record->get_subdef($value);
+
+            if (null !== $previewLink = $preview->get_permalink()) {
+                $permalinkUrl = $previewLink->get_url()->__toString();
+                $permaviewUrl = $previewLink->get_page();
+                $previewWidth = $preview->get_width();
+                $previewHeight = $preview->get_height();
+
+                $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
+                $previewData = [
+                    'label'        => $label,
                     'permalinkUrl' => $permalinkUrl,
                     'permaviewUrl' => $permaviewUrl,
-                    'embedUrl' => $embedUrl,
-                    'width' => $previewWidth,
-                    'height' => $previewHeight
-                ]
-            ];
+                    'embedUrl'     => $embedUrl,
+                    'width'        => $previewWidth,
+                    'height'       => $previewHeight
+                ];
+                $subdefList[$value] = $previewData;
+            }
         }
+
+        $defaultKey = 'preview';
+        //set default key to thumbnail if preview does not exist
+        if (!array_key_exists("preview",$subdefList)) {
+            $defaultKey = 'thumbnail';
+        }
+
+        $outputVars = [
+            'isAvailable' => true,
+            'subdefList' => $subdefList,
+            'defaultKey' => $defaultKey
+        ];
+
+//        if (!$this->getAclForUser()->has_access_to_subdef($record, 'thumbnail')) {
+//            $this->app->abort(403);
+//        }
+
+//        $preview = $record->get_preview();
+//
+//        if (null !== $previewLink = $preview->get_permalink()) {
+//            $permalinkUrl = $previewLink->get_url();
+//            $permaviewUrl = $previewLink->get_page();
+//            $previewWidth = $preview->get_width();
+//            $previewHeight = $preview->get_height();
+//
+//            $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
+//
+//            $outputVars = [
+//                'isAvailable' => true,
+//                'subdefList' => $subdefList,
+//                'preview' => [
+//                    'permalinkUrl' => $permalinkUrl,
+//                    'permaviewUrl' => $permaviewUrl,
+//                    'embedUrl' => $embedUrl,
+//                    'width' => $previewWidth,
+//                    'height' => $previewHeight
+//                ]
+//            ];
+//        }
 
         return $this->renderResponse('prod/Share/record.html.twig', $outputVars);
     }

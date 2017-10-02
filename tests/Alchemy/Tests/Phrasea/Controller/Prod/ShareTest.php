@@ -37,12 +37,12 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
         $stubbedACL = $this->stubACL();
 
         //has_right_on_base return true
-        $stubbedACL->expects($this->once())
+        $stubbedACL->expects($this->any())
             ->method('has_right_on_sbas')
             ->will($this->returnValue(true));
 
         //has_access_to_subdef return true
-        $stubbedACL->expects($this->once())
+        $stubbedACL->expects($this->any())
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
@@ -66,39 +66,34 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($response->isOk());
     }
 
+
+    /* --------- WE ARE NOT RETURNING AN ERROR ANYMORE IF USER DOES NOT HAVE ACCESS ----------*/
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Share::shareRecord
      */
-    public function testShareRecordBadAccess()
-    {
-        $share = new ShareController(self::$DI['app']);
-
-        $stubbedACL = $this->getMockBuilder('\ACL')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        //has_access_to_subdef return false
-        $stubbedACL->expects($this->once())
-            ->method('has_access_to_subdef')
-            ->will($this->returnValue(false));
-
-        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $aclProvider->expects($this->any())
-            ->method('get')
-            ->will($this->returnValue($stubbedACL));
-
-        self::$DI['app']['acl'] = $aclProvider;
-
-        try {
-            $share->shareRecord(self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
-        } catch (HttpException $exception) {
-            $this->assertEquals(403, $exception->getStatusCode());
-
-            return;
-        }
-
-        $this->fail('An access denied exception should have been thrown.');
-    }
+//    public function testShareRecordBadAccess()
+//    {
+//        $share = new ShareController(self::$DI['app']);
+//        $stubbedACL = $this->getMockBuilder('\ACL')
+//            ->disableOriginalConstructor()
+//            ->getMock();
+//        //has_access_to_subdef return false
+//        $stubbedACL->expects($this->once())
+//            ->method('has_access_to_subdef')
+//            ->will($this->returnValue(false));
+//        $aclProvider = $this->getMockBuilder('Alchemy\Phrasea\Authentication\ACLProvider')
+//            ->disableOriginalConstructor()
+//            ->getMock();
+//        $aclProvider->expects($this->any())
+//            ->method('get')
+//            ->will($this->returnValue($stubbedACL));
+//        self::$DI['app']['acl'] = $aclProvider;
+//        try {
+//            $share->shareRecord(self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+//        } catch (HttpException $exception) {
+//            $this->assertEquals(403, $exception->getStatusCode());
+//            return;
+//        }
+//        $this->fail('An access denied exception should have been thrown.');
+//    }
 }
