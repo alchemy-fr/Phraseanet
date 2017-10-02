@@ -2688,7 +2688,7 @@
       </trans-unit>
       <trans-unit id="56848224e379e98e9a4cbcad0b51a0e99f7980f0" resname="Enable this setting to share on Facebook and Twitter" approved="yes">
         <source>Enable this setting to share on Facebook and Twitter</source>
-        <target state="translated">Activer le partage par permalien et/ou sur les reseaux sociaux Facebook, Twitter etc ...</target>
+        <target state="translated">Activer le partage par permalien et/ou sur les reseaux sociaux (Facebook, Twitter etc ...) Pour les utilisateurs  possedant le droit :</target>
         <jms:reference-file line="47">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8c91cee722569eccd85bf170aff83c6b8e3b4d1" resname="Enable thumbnail substitution" approved="yes">
