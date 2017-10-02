@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-10-02T04:49:20Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9379,9 +9379,9 @@
         <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="117">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fcf5093722566a47fe3e773296cc63fac7190dac" resname="export::export-email: email-invalid">
+      <trans-unit id="fcf5093722566a47fe3e773296cc63fac7190dac" resname="export::export-email: email-invalid" approved="yes">
         <source>export::export-email: email-invalid</source>
-        <target state="new">export::export-email: email-invalid</target>
+        <target state="translated">Incorrect Email adress format</target>
         <jms:reference-file line="828">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
