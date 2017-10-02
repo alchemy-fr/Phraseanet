@@ -10876,9 +10876,9 @@
         <target state="translated">Document</target>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c8c3f04906cfc03bfe06b53496b5f7802c6e3a89" resname="prod:app trash: move-to-trash">
+      <trans-unit id="c8c3f04906cfc03bfe06b53496b5f7802c6e3a89" resname="prod:app trash: move-to-trash" approved="yes">
         <source>prod:app trash: move-to-trash</source>
-        <target state="new">prod:app trash: move-to-trash</target>
+        <target state="translated">Move to Trash Collection</target>
         <jms:reference-file line="16">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
