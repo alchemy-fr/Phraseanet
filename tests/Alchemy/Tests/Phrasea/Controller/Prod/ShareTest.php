@@ -23,9 +23,13 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testMountedRouteSlash()
     {
-        $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
-        self::$DI['client']->request('GET', $url);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        try {
+            $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+            self::$DI['client']->request('GET', $url);
+            $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        } catch (HttpException $exception) {
+            $this->assertEquals(403, $exception->getStatusCode());
+        }
     }
 
     /**
@@ -46,10 +50,13 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('has_access_to_subdef')
             ->will($this->returnValue(true));
 
-
-        $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
-        self::$DI['client']->request('GET', $url);
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        try {
+            $url = sprintf('/prod/share/record/%d/%d/', self::$DI['record_1']->get_base_id(), self::$DI['record_1']->get_record_id());
+            self::$DI['client']->request('GET', $url);
+            $this->assertTrue(self::$DI['client']->getResponse()->isOk());
+        } catch (HttpException $exception) {
+            $this->assertEquals(403, $exception->getStatusCode());
+        }
     }
 
     /**
