@@ -7,6 +7,8 @@
             <option value="">{{ 'Choisir' | trans }}</option>
             <option value="default">{{ 'Re-initialiser' | trans }}</option>
             <option value="title">{{ 'Titre' | trans }}</option>
+            <option value="date_created">{{ 'Date de création' | trans }}</option>
+            <option value="date_updated">{{ 'Date de modification' | trans }}</option>
         </select>
         <button type="button" class="autoorder btn btn-inverse">{{ 'Re-ordonner' | trans }}</button>
         <button type="button" class="reverseorder btn btn-inverse">{{ 'Inverser' | trans }}</button>
@@ -22,13 +24,15 @@
     {% for element in basket.getElements() %}
         <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
             <div class="title" title="{{ element.getRecord(app).get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:hidden;text-align:center;text-overflow: ellipsis; line-height: 15px;">
-                {{ element.getRecord(app).get_title() }} {{ element.getRecord(app).get_title() }}{{ element.getRecord(app).get_title() }}
+                {{ element.getRecord(app).get_title() }}
             </div>
             {{ thumbnail.format(element.getRecord(app).get_thumbnail(), 80, 80, '', false, false) }}
             <form style="display:none;">
                 <input type="hidden" name="id" value="{{ element.getId() }}"/>
                 <input type="hidden" name="title" value="{{ element.getRecord(app).get_title() }}"/>
                 <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
+                <input type="hidden" name="date_created" value="{{ element.getRecord(app).getCreated() | date('Y-m-dTH:i:s') }}"/>
+                <input type="hidden" name="date_updated" value="{{ element.getRecord(app).getUpdated() | date('Y-m-dTH:i:s') }}"/>
             </form>
         </div>
     {% endfor %}
@@ -48,33 +52,42 @@
             return false;
         });
 
-        function autoorder()
-        {
+        function autoorder() {
             var val = $.trim($('#auto_order').val());
 
-            if(val == '') {
+            if (val == '') {
                 return;
             }
 
             var diapos = [];
-            $('#reorder_box .diapo form').each(function(i,n){
+            $('#reorder_box .diapo form').each(function (i, n) {
                 diapos.push({
-                    "title": $('input[name=title]',n).val(),
-                    "order" : parseInt($('input[name=default]',n).val()),
-                    "id"  : $('input[name=id]',n).val()
+                    "title": $('input[name=title]', n).val(),
+                    "order": parseInt($('input[name=default]', n).val()),
+                    "id": $('input[name=id]', n).val(),
+                    "date_created": new Date($('input[name=date_created]', n).val()),
+                    "date_updated": new Date($('input[name=date_updated]', n).val()),
                 });
             });
 
             var sorterCallback;
+            if (val === "default") {
+                sorterCallback = function (diapo) {
+                    return diapo.order;
+                };
+            }else if(val == 'date_updated' || val == 'date_created'){
+                sorterCallback = function(diapo) {
+                    if(val == 'date_created') {
+                        return diapo.date_created;
+                    }
 
-            if (val === "default")  {
-                sorterCallback = function(diapo) {return diapo.order;};
-            } else {
+                    return diapo.date_updated;
+                };
+            }else {
                 sorterCallback = function(diapo) {return diapo.title;};
             }
 
             var elements = [];
-
             _.chain(diapos)
             .sortBy(sorterCallback)
             .each(function(diapo) {
