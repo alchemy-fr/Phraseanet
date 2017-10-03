@@ -2402,9 +2402,9 @@
         <target state="translated">Télécharger</target>
         <jms:reference-file line="37">Notification/Mail/MailRecordsExport.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="43c28b73145b678d5a0d4838f2890dfcce8b0eea" resname="Download of documents" approved="yes">
+      <trans-unit id="43c28b73145b678d5a0d4838f2890dfcce8b0eea" resname="Download of documents" approved="no">
         <source>Download of documents</source>
-        <target state="translated">Téléchargement de documents</target>
+        <target state="needs-translation">Donner droit de téléchargement de documents</target>
         <jms:reference-file line="13">actions/Download/prepare.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e9069dbb48837c11e9c74fe440ccfd5d1cd6b0b" resname="Droits" approved="yes">
