@@ -37,7 +37,7 @@ class ShareTest extends \PhraseanetAuthenticatedWebTestCase
         $stubbedACL = $this->stubACL();
 
         //has_right_on_base return true
-        $stubbedACL->expects($this->once())
+        $stubbedACL->expects($this->any())
             ->method('has_right_on_sbas')
             ->will($this->returnValue(true));
 
