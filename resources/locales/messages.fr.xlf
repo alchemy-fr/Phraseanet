@@ -2686,9 +2686,9 @@
         <target state="translated">Activer le thésaurus</target>
         <jms:reference-file line="22">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="56848224e379e98e9a4cbcad0b51a0e99f7980f0" resname="Enable this setting to share on Facebook and Twitter" approved="yes">
+      <trans-unit id="56848224e379e98e9a4cbcad0b51a0e99f7980f0" resname="Enable this setting to share on Facebook and Twitter" approved="no">
         <source>Enable this setting to share on Facebook and Twitter</source>
-        <target state="translated">Activer le partage par permalien et/ou sur les reseaux sociaux (Facebook, Twitter etc ...) Pour les utilisateurs  possedant le droit :</target>
+        <target state="needs-translation">Partage par permalien et reseaux sociaux (Facebook, Twitter etc ...)</target>
         <jms:reference-file line="47">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8c91cee722569eccd85bf170aff83c6b8e3b4d1" resname="Enable thumbnail substitution" approved="yes">
@@ -4838,9 +4838,9 @@
         <jms:reference-file line="123">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="40">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="107e7fab79b95c8f34990d625dd309e15996acba" resname="Publishers" approved="yes">
+      <trans-unit id="107e7fab79b95c8f34990d625dd309e15996acba" resname="Publishers" approved="no">
         <source>Publishers</source>
-        <target state="translated">Editeurs</target>
+        <target state="needs-translation">Droits de publication</target>
         <jms:reference-file line="48">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="yes">
