@@ -23,25 +23,6 @@ class ShareController extends Controller
      */
     public function shareRecord($base_id, $record_id)
     {
-//        $outputVars = [
-//            'isAvailable' => false,
-//            'subdefList' => [],
-//            'defaultKey' => 'preview',
-//            'preview' => [
-//              'permalinkUrl' => '',
-//              'permaviewUrl' => '',
-//              'embedUrl' => '',
-//              'width' => '',
-//              'height' => ''
-//            ]
-//        ];
-
-        $outputVars = [
-            'isAvailable' => false,
-            'subdefList' => [],
-            'defaultKey' => 'preview',
-        ];
-
         $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
 
         //get list of subdefs
@@ -51,12 +32,13 @@ class ShareController extends Controller
 
         $acl = $this->getAclForUser();
 
-        $subdefList = array();
+        $subdefList = [];
+        $defaultKey =  null;
 
         foreach ($subdefs as $subdef) {
-            $label = $subdefName = $subdef->get_name();
+            $subdefName = $subdef->get_name();
 
-            if ('document' == $subdefName) {
+            if ($subdefName == 'document') {
                 if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
                     continue;
                 }
@@ -69,11 +51,16 @@ class ShareController extends Controller
 
                 $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
             }
+            else {
+                // this subdef does no exists anymore in databox structure ?
+                continue;   // don't publish it
+            }
 
             $value = $subdef->get_name();
             $preview = $record->get_subdef($value);
+            $defaultKey = $value;   // will set a default option if neither preview,thumbnail or document is present
 
-            if (null !== $previewLink = $preview->get_permalink()) {
+            if ( ($previewLink = $preview->get_permalink()) !== null ) {
                 $permalinkUrl = $previewLink->get_url()->__toString();
                 $permaviewUrl = $previewLink->get_page();
                 $previewWidth = $preview->get_width();
@@ -92,14 +79,18 @@ class ShareController extends Controller
             }
         }
 
-        $defaultKey = 'preview';
-        //set default key to thumbnail if preview does not exist
-        if (!array_key_exists("preview",$subdefList)) {
-            $defaultKey = 'thumbnail';
+        // candidates as best default selected option
+        foreach(["preview", "thumbnail", "document"] as $k) {
+            if (array_key_exists($k, $subdefList)) {
+                $defaultKey = $k;
+                break;
+            }
         }
 
+        // if no subdef was sharable, subdefList is empty and defaultKey is null
+        // the twig MUST handle that
         $outputVars = [
-            'isAvailable' => true,
+            'isAvailable' => !empty($subdefList),
             'subdefList' => $subdefList,
             'defaultKey' => $defaultKey
         ];
