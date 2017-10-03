@@ -111,17 +111,15 @@ class Firewall
         return $this;
     }
 
-    public function canShare($sbas_id, $right) {
-        //if social tools is equal to 'all' everyone can publish
-        if($this->app['conf']->get(['registry', 'actions', 'social-tools']) === 'all') {
-            return $this;
-        }
-        //social tools is propably equal to 'publisher'. Check his/her right
-        if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbas_id, $right)) {
+    public function canShare($sbas_id) {
+        if($this->app['conf']->get(['registry', 'actions', 'social-tools']) === 'none'
+            || ($this->app['conf']->get(['registry', 'actions', 'social-tools']) === 'publishers'
+                && !$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbas_id, \ACL::BAS_CHUPUB))) {
             $this->app->abort(403, 'You do not have required rights');
         }
 
         return $this;
+
     }
 
     public function requireAuthentication(Request $request = null)
