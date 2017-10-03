@@ -75,9 +75,9 @@
                 sorterCallback = function (diapo) {
                     return diapo.order;
                 };
-            }else if(val == 'date_updated' || val == 'date_created'){
+            }else if(val === 'date_updated' || val === 'date_created'){
                 sorterCallback = function(diapo) {
-                    if(val == 'date_created') {
+                    if(val === 'date_created') {
                         return diapo.date_created;
                     }
 
