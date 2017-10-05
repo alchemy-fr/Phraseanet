@@ -467,6 +467,53 @@ input[id="elasticsearch_settings_highlight"] {
   margin-top: 20px;
 }
 
+.general-aggregation-layout {
+  margin-top: 20px;
+  width: 450px;
+  button.btn-primary {
+    margin-left: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    width: 180px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+.aggregation-collection {
+  li {
+    border: 1px solid #ccc;
+    background: #FFF;
+    color: #000;
+    height: 30px;
+    margin: 4px;
+    padding: 20px;
+    table {
+      width: 100%;
+      display: inline-table;
+      vertical-align: middle;
+      height: 100%;
+      table-layout: fixed;
+    }
+  }
+  .label-aggregation {
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+  select {
+    float: right;
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 1150px) {
   .langTab{
     display: block;
