@@ -211,36 +211,34 @@
     {% elseif acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
         <span class="dropdownButton">
             <div class="btn-group">
-                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}
+                {#<button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">#}
+                    {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}#}
+                {#</button>#}
+                <button class="TOOL_publish_btn results_window btn btn-inverse">
+                    <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
+                    {{ 'action : publier' | trans }}
                 </button>
-                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
-                            class="caret"></span></button>
-                <ul class="submenu dropdown-menu">
-                    <li>
-                        <a class="TOOL_publish_btn results_window">
-                            <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
-                            {{ 'action : publier' | trans }}
-                        </a>
-                    </li>
-                    {% if plugins.actionbar is not empty %}
-                        {% for plugin in plugins.actionbar %}
-                            <li class="divider"></li>
-                            {% for key, action in plugin.getActionBar().push|default([]) %}
-                                <li>
-                                    <a class="results_window {{ action.classes|default('') }}">
-                                        {% if action.icon %}
-                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
-                                        {% endif %}
+                {% if plugins.actionbar is not empty %}
+                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                                class="caret"></span></button>
+                    <ul class="submenu dropdown-menu">
+                            {% for plugin in plugins.actionbar %}
+                                <li class="divider"></li>
+                                {% for key, action in plugin.getActionBar().push|default([]) %}
+                                    <li>
+                                        <a class="results_window {{ action.classes|default('') }}">
+                                            {% if action.icon %}
+                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                            {% endif %}
 
-                                        {% set label = action.label %}
-                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
-                                    </a>
-                                </li>
+                                            {% set label = action.label %}
+                                            {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                        </a>
+                                    </li>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                    {% endif %}
-                </ul>
+                    </ul>
+                {% endif %}
             </div>
         </span>
     {% elseif plugins.actionbar is not empty %}
