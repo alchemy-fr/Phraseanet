@@ -122,7 +122,7 @@
                             {% if values.available > 0 %}
                                 <div class="well-small">
                                     <label for="download_{{name}}" class="checkbox">
-                                        <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                                        <input class="{{ values.class}} download_items" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
                                         <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
                                         <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
                                         {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
@@ -812,9 +812,41 @@
 
               function removeOverlay() { 
                 $('.spinner-loader').remove();
-            }   
+            }
+
+            function validateEmail(email) {
+                var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
+            }
+
+            function validEmail(emailList) {
+                //split emailList by ; , or whitespace and filter empty element
+                var emails = emailList.split(/[ ,;]+/).filter(Boolean);
+                for(var i=0; i < emails.length; i++) {
+                    if (!validateEmail(emails[i])) {
+                        {% set alert_message %}
+                        {{ 'export::export-email: email-invalid' | trans }}
+                        {% endset %}
+
+                        var alert = p4.Dialog.Create({
+                            size : 'Alert',
+                            closeOnEscape : true,
+                            closeButton:true,
+                            title : '{{ "Warning !" | trans | e('js') }}'
+                        }, 2);
+
+                        alert.setContent("{{ alert_message | e('js') }}");
+                       return false;
+                    }
+                }
+                return true;
+            }
 
             var submitEmailForm = function () {
+                if(!validEmail($('input[name="destmail"]', $('#sendmail')).val())) {
+                    return false;
+                }
+
                 if (!check_subdefs($('#sendmail'))) {
                     return false;
                 }
@@ -863,10 +895,19 @@
             });
         });
 
-        $('#download_document').click(function(){
-            if($(this).is(':checked')){
+        $("input:checkbox.download_items.document").change(function() {
+
+            var checked = false;
+            $("input:checkbox.download_items.document").each(function() {
+                if ($(this).is(':checked')) {
+                    checked = true;
+                    return false;
+                }
+            });
+            
+            if (checked) {
                 $('#download_stamp_choice').show();
-            } else{
+            } else {
                 $('#download_stamp_choice').hide();
             }
         });

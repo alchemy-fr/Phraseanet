@@ -1077,6 +1077,21 @@ h4 {
   color: #a1a1a1;
 }
 
+/********* record **************/
+#advance-share {
+  font-style: italic;
+  line-height: 30px;
+}
+
+#shared-def {
+  display: none;
+  margin-left: 10px;
+  #resource_type_sel {
+    width: 170px;
+    margin-left: 10px;
+  }
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';

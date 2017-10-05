@@ -87,12 +87,12 @@ select {
 }
 li.selected,
 div.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 li.selected a,
 div.selected a {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 .treeview ul {
@@ -120,7 +120,7 @@ div.finder div.content div.title {
 /******* MAIN MENU ************************************************************/
 
 
-$mainMenuBackgroundColor: #fceb3f;
+$mainMenuBackgroundColor: #ffe000;
 $mainMenuLinkColor: #333333;
 $mainMenuLinkHoverColor: #000000;
 $mainMenuLinkActiveColor: #000000;
@@ -134,14 +134,14 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 
 /******* LEFT SIDE ************************************************************/
 #left {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
   overflow: auto;
 }
 #FNDR {
   overflow: auto;
 }
 #FNDR li.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 #FNDR a {
@@ -259,7 +259,7 @@ div.switch_right.unchecked {
   background-size: 16px;
 }
 .board_section div[class="section"] ul.setup li:hover {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
 }
 /******* PUBLICATIONS *********************************************************/
 #pub_icon {
@@ -420,6 +420,98 @@ input[id="elasticsearch_settings_highlight"] {
   background: none;
   margin-bottom: 7rem;
   overflow: visible;
+}
+
+/******* SEARCH ENGINE SETTINGS ***************************************************/
+.search-engine-tabs {
+  background: 0;
+  border: 0;
+  .top-bar-shadow {
+    margin-top: 1px;
+    background: #aaa8a5; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* Standard syntax */
+    height: 4px;
+  }
+  .ui-tabs-active {
+    background: #9EA09D !important;
+    a {
+      color: #FFFFFF !important;
+    }
+  }
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+    background: #EFF0F0;
+    a {
+      color: #9EA09D;
+    }
+  }
+}
+
+#elasticsearch_settings_esSettingsDropIndexButton, #elasticsearch_settings_esSettingsCreateIndexButton {
+  margin-bottom: 20px;
+}
+
+#elasticsearch_settings_save {
+  padding: 15px;
+  &::before {
+    content: "\F0A0";
+    font-family: "FontAwesome";
+    margin-right: 5px;
+  }
+}
+
+#elasticsearch_settings_esSettingFromIndex {
+  margin-top: 20px;
+}
+
+.general-aggregation-layout {
+  margin-top: 20px;
+  width: 450px;
+  button.btn-primary {
+    margin-left: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    width: 180px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+.aggregation-collection {
+  li {
+    border: 1px solid #ccc;
+    background: #FFF;
+    color: #000;
+    height: 30px;
+    margin: 4px;
+    padding: 20px;
+    table {
+      width: 100%;
+      display: inline-table;
+      vertical-align: middle;
+      height: 100%;
+      table-layout: fixed;
+    }
+  }
+  .label-aggregation {
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+  select {
+    float: right;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1150px) {

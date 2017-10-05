@@ -25,6 +25,35 @@ class MoveCollectionController extends Controller
 
         $collections = $this->getAclForUser()->get_granted_base([\ACL::CANADDRECORD], $sbas_ids);
 
+
+        /** @var DisplaySettingService $settings */
+        $settings = $this->app['settings'];
+        $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+
+        // a temporary array to sort the collections
+        $aName = array();
+        list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
+        switch ($userOrderSetting) {
+            case $settings::ORDER_ALPHA_ASC :
+                list($ukey, $uorder) = ["name", SORT_ASC];
+                break;
+
+            case $settings::ORDER_ALPHA_DESC :
+                list($ukey, $uorder) = ["name", SORT_DESC];
+                break;
+        }
+
+        foreach ($collections as $key => $row) {
+            if($ukey == "order") {
+                $aName[$key] = $row->get_ord();
+            }else {
+                $aName[$key] = $row->get_name();
+            }
+        }
+
+        // sort the collections
+        array_multisort($aName, $uorder, SORT_REGULAR, $collections);
+
         $parameters = [
             'records'     => $records,
             'message'     => '',

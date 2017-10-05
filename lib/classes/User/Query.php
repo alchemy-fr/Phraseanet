@@ -514,7 +514,8 @@ class User_Query
         $activities = new ArrayCollection();
 
         foreach ($req_activities as $activity) {
-            if ($activity = trim($activity) === '') {
+            $activity = trim($activity);
+            if ($activity === '') {
                 continue;
             }
 
@@ -544,7 +545,8 @@ class User_Query
         $positions = new ArrayCollection();
 
         foreach ($req_positions as $position) {
-            if ($position = trim($position) === '') {
+            $position = trim($position);
+            if ($position === '') {
                 continue;
             }
             if ($positions->contains($position)) {
@@ -573,13 +575,13 @@ class User_Query
         $countries = new ArrayCollection();
 
         foreach ($req_countries as $country) {
-            if ($country = trim($country) === '') {
+            $country = trim($country);
+            if ($country === '') {
                 continue;
             }
             if ($countries->contains($country)) {
                 continue;
             }
-
             $countries->add($country);
         }
 
@@ -602,7 +604,8 @@ class User_Query
         $companies = new ArrayCollection();
 
         foreach ($req_companies as $company) {
-            if ($company = trim($company) === '') {
+            $company = trim($company);
+            if ($company === '') {
                 continue;
             }
             if ($companies->contains($company)) {
@@ -630,7 +633,8 @@ class User_Query
         $templates = new ArrayCollection();
 
         foreach ($req_templates as $template) {
-            if ($template = trim($template) === '') {
+            $template = trim($template);
+            if ($template === '') {
                 continue;
             }
             if ($templates->contains($template)) {
@@ -838,19 +842,19 @@ class User_Query
         }
 
         if ($this->activities) {
-            $sql .= $this->generate_field_constraints('activite', $this->activities);
+            $sql .= $this->generate_field_constraints('activity', $this->activities);
         }
 
         if ($this->positions) {
-            $sql .= $this->generate_field_constraints('fonction', $this->positions);
+            $sql .= $this->generate_field_constraints('job', $this->positions);
         }
 
         if ($this->countries) {
-            $sql .= $this->generate_field_constraints('pays', $this->countries);
+            $sql .= $this->generate_field_constraints('country', $this->countries);
         }
 
         if ($this->companies) {
-            $sql .= $this->generate_field_constraints('societe', $this->companies);
+            $sql .= $this->generate_field_constraints('company', $this->companies);
         }
 
         if ($this->templates) {

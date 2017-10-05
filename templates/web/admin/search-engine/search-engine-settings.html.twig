@@ -1,0 +1,22 @@
+<div class="search-engine-tabs">
+    <ul>
+        <li><a href="#elastic-search">{{ 'ElasticSearch configuration' | trans }}</a></li>
+        <li><a href="#general-aggregation">{{ 'admin::search-engine: general-aggregation' | trans }}</a></li>
+    </ul>
+    <div class="top-bar-shadow"></div>
+    <div id="elastic-search">
+        {% include 'admin/search-engine/elastic-search.html.twig'%}
+    </div>
+    <div id="general-aggregation">
+        {% include 'admin/search-engine/general-aggregation.html.twig'%}
+    </div>
+</div>
+
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.search-engine-tabs').tabs();
+        });
+    </script>
+{% endblock %}
