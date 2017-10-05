@@ -48,6 +48,15 @@ class Firewall
         return $this;
     }
 
+    public function requireNotGuest()
+    {
+        if ($this->app->getAuthenticatedUser()->isGuest()) {
+            $this->app->abort(403, 'Guests do not have admin role');
+        }
+
+        return $this;
+    }
+
     public function requireAccessToModule($module)
     {
         if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_access_to_module($module)) {
@@ -102,13 +111,15 @@ class Firewall
         return $this;
     }
 
-    public function requireNotGuest()
-    {
-        if ($this->app->getAuthenticatedUser()->isGuest()) {
-            $this->app->abort(403, 'Guests do not have admin role');
+    public function canShare($sbas_id) {
+        if($this->app['conf']->get(['registry', 'actions', 'social-tools']) === 'none'
+            || ($this->app['conf']->get(['registry', 'actions', 'social-tools']) === 'publishers'
+                && !$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($sbas_id, \ACL::BAS_CHUPUB))) {
+            $this->app->abort(403, 'You do not have required rights');
         }
 
         return $this;
+
     }
 
     public function requireAuthentication(Request $request = null)

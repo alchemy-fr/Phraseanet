@@ -47,10 +47,8 @@ class Share implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
             ->before(function (Request $request) use ($app, $firewall) {
-                $firewall->requireRightOnSbas(
-                    \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
-                    \ACL::BAS_CHUPUB
-                );
+                $firewall
+                    ->canShare(\phrasea::sbasFromBas($app, $request->attributes->get('base_id')));
             })
             ->bind('share_record');
 
