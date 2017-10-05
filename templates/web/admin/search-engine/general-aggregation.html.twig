@@ -1,0 +1,72 @@
+<div class="general-aggregation-layout">
+    <ul class="unstyled aggregation-collection">
+        <li>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <span class="label-aggregation">{{ "Base" | trans }}</span>
+                    </td>
+                    <td>
+                        <select id="aggregable">
+                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'%>{% trans %}Not aggregated{% endtrans %}</option>
+                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
+                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
+                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
+                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
+                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+        <li>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <span class="label-aggregation">{{ "Document" | trans }}</span>
+                    </td>
+                    <td>
+                        <select id="aggregable">
+                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'%>{% trans %}Not aggregated{% endtrans %}</option>
+                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
+                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
+                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
+                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
+                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+        <li>
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        <span class="label-aggregation">{{ "admin::general-aggregation: document-type" | trans }}</span>
+                    </td>
+                    <td>
+                        <select id="aggregable">
+                            <option <%= field['aggregable'] == "0" ? 'selected' : '' %> value='0'%>{% trans %}Not aggregated{% endtrans %}</option>
+                            <option <%= field['aggregable'] == "10" ? 'selected' : '' %> value='10'>10 values</option>
+                            <option <%= field['aggregable'] == "20" ? 'selected' : '' %> value='20'>20 values</option>
+                            <option <%= field['aggregable'] == "50" ? 'selected' : '' %> value='50'>50 values</option>
+                            <option <%= field['aggregable'] == "100" ? 'selected' : '' %> value='100'>100 values</option>
+                            <option <%= field['aggregable'] == "-1" ? 'selected' : '' %> value='-1'>{% trans %}All values{% endtrans %}</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    </ul>
+</div>
+
+{% block javascript %}
+    <script type="text/javascript">
+    </script>
+{% endblock %}
