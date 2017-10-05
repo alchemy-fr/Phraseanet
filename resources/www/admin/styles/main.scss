@@ -469,6 +469,16 @@ input[id="elasticsearch_settings_highlight"] {
 
 .general-aggregation-layout {
   margin-top: 20px;
+  width: 450px;
+  button.btn-primary {
+    margin-left: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    width: 180px;
+    i {
+      margin-right: 5px;
+    }
+  }
 }
 
 .aggregation-collection {
@@ -477,7 +487,6 @@ input[id="elasticsearch_settings_highlight"] {
     background: #FFF;
     color: #000;
     height: 30px;
-    width: 375px;
     margin: 4px;
     padding: 20px;
     table {
@@ -495,9 +504,13 @@ input[id="elasticsearch_settings_highlight"] {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
   }
-  #aggregable {
+  select {
     float: right;
+    width: 100%;
   }
 }
 
