@@ -31,6 +31,12 @@ class ElasticsearchOptions
     private $populateOrder;
     /** @var string */
     private $populateDirection;
+    /** @var int */
+    private $baseAggregateLimit;
+    /** @var int */
+    private $collectionAggregateLimit;
+    /** @var int */
+    private $doctypeAggregateLimit;
 
     const POPULATE_ORDER_RID  = "RECORD_ID";
     const POPULATE_ORDER_MODDATE = "MODIFICATION_DATE";
@@ -56,6 +62,9 @@ class ElasticsearchOptions
             'max_result_window' => 500000,
             'populate_order' => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
+            'base_aggregate_limit' => 0,
+            'collection_aggregate_limit' => 0,
+            'doctype_aggregate_limit' => 0,
         ], $options);
 
         $self = new self();
@@ -69,6 +78,9 @@ class ElasticsearchOptions
         $self->setMaxResultWindow($options['max_result_window']);
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
+        $self->setBaseAggregateLimit($options['base_aggregate_limit']);
+        $self->setCollectionAggregateLimit($options['collection_aggregate_limit']);
+        $self->setDoctypeAggregateLimit($options['doctype_aggregate_limit']);
 
         return $self;
     }
@@ -89,6 +101,9 @@ class ElasticsearchOptions
             'maxResultWindow' => $this->maxResultWindow,
             'populate_order' => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
+            'base_aggregate_limit' => $this->baseAggregateLimit,
+            'collection_aggregate_limit' => $this->collectionAggregateLimit,
+            'doctype_aggregate_limit' => $this->doctypeAggregateLimit
         ];
     }
 
@@ -273,4 +288,54 @@ class ElasticsearchOptions
     {
         return $this->maxResultWindow;
     }
+
+    /**
+     * @param int $baseAggregateLimit
+     */
+    public function setBaseAggregateLimit($baseAggregateLimit)
+    {
+        $this->baseAggregateLimit = (int)$baseAggregateLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBaseAggregateLimit()
+    {
+        return $this->baseAggregateLimit;
+    }
+
+    /**
+     * @param int $collectionAggregateLimit
+     */
+    public function setCollectionAggregateLimit($collectionAggregateLimit)
+    {
+        $this->collectionAggregateLimit = (int)$collectionAggregateLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCollectionAggregateLimit()
+    {
+        return $this->collectionAggregateLimit;
+    }
+
+    /**
+     * @param int $doctypeAggregateLimit
+     */
+    public function setDoctypeAggregateLimit($doctypeAggregateLimit)
+    {
+        $this->doctypeAggregateLimit = (int)$doctypeAggregateLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDoctypeAggregateLimit()
+    {
+        return $this->doctypeAggregateLimit;
+    }
+
+
 }

@@ -18,6 +18,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -28,6 +29,7 @@ use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Application;
+use databox_field;
 use Elasticsearch\Client;
 
 class ElasticSearchEngine implements SearchEngineInterface
@@ -424,29 +426,60 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $aggs = [];
 
-        // We always want a collection facet right now
-        $collection_facet_agg = [];
-        $collection_facet_agg['terms']['field'] = 'collection_name';
-        $aggs['Collection_Name'] = $collection_facet_agg;
+        // technical aggregates (enable + optional limit)
 
-        // We always want a base facet right now
-        $base_facet_agg = [];
-        $base_facet_agg['terms']['field'] = 'databox_name';
-        $aggs['Base_Name'] = $base_facet_agg;
+        $size = $this->options->getBaseAggregateLimit();
+        if ($size !== databox_field::FACET_DISABLED) {
+            if ($size === databox_field::FACET_NO_LIMIT) {
+                $size = ESField::FACET_NO_LIMIT;
+            }
+            $aggs['Base_Name'] = [
+                'terms' => [
+                    'field' => 'databox_name',
+                    'size'  => $size
+                ]
+            ];
+        }
 
-        // We always want a type facet right now
-        $base_facet_agg = [];
-        $base_facet_agg['terms']['field'] = 'type';
-        $aggs['Type_Name'] = $base_facet_agg;
+        $size = $this->options->getCollectionAggregateLimit();
+        if ($size !== databox_field::FACET_DISABLED) {
+            if ($size === databox_field::FACET_NO_LIMIT) {
+                $size = ESField::FACET_NO_LIMIT;
+            }
+            $aggs['Collection_Name'] = [
+                'terms' => [
+                    'field' => 'collection_name',
+                    'size'  => $size
+                ]
+            ];
+        }
+
+        $size = $this->options->getDoctypeAggregateLimit();
+        if ($size !== databox_field::FACET_DISABLED) {
+            if ($size === databox_field::FACET_NO_LIMIT) {
+                $size = ESField::FACET_NO_LIMIT;
+            }
+            $aggs['Type_Name'] = [
+                'terms' => [
+                    'field' => 'type',
+                    'size'  => $size
+                ]
+            ];
+        }
+
+        // fields aggregates
 
         $structure = $this->context_factory->getLimitedStructure($options);
         foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $agg = [];
-            $agg['terms']['field'] = $field->getIndexField(true);
-            $agg['terms']['size'] = $field->getFacetValuesLimit();
+            $agg = [
+                'terms' => [
+                    'field' => $field->getIndexField(true),
+                    'size' => $field->getFacetValuesLimit()
+                ]
+            ];
             $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
