@@ -56,6 +56,18 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => 'Thesaurus Min score',
                 'constraints' => new Range(['min' => 0]),
             ])
+            ->add('baseAggregateLimit', 'integer', [
+                'label' => 'Base aggregate limit',
+                'constraints' => new Range(['min' => -1]),
+            ])
+            ->add('collectionAggregateLimit', 'integer', [
+                'label' => 'Collection aggregate limit',
+                'constraints' => new Range(['min' => -1]),
+            ])
+            ->add('doctypeAggregateLimit', 'integer', [
+                'label' => 'Doc type aggregate limit',
+                'constraints' => new Range(['min' => -1]),
+            ])
             ->add('highlight', 'checkbox', [
                 'label' => 'Activate highlight',
                 'required' => false
