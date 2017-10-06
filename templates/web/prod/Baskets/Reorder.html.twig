@@ -70,11 +70,13 @@
                 });
             });
 
+            var elements = [];
             var sorterCallback;
             if (val === "default") {
                 sorterCallback = function (diapo) {
                     return diapo.order;
                 };
+                elements = sorting(sorterCallback, diapos, false);
             }else if(val === 'date_updated' || val === 'date_created'){
                 sorterCallback = function(diapo) {
                     if(val === 'date_created') {
@@ -83,18 +85,33 @@
 
                     return diapo.date_updated;
                 };
+                elements = sorting(sorterCallback, diapos, true);
             }else {
-                sorterCallback = function(diapo) {return diapo.title;};
+                sorterCallback = function(diapo) {return diapo.title.toLowerCase();};
+                elements = sorting(sorterCallback, diapos, false);
             }
 
-            var elements = [];
-            _.chain(diapos)
-            .sortBy(sorterCallback)
-            .each(function(diapo) {
-                elements.push($('#ORDER_'+ diapo.id));
-            });
 
             $('#reorder_box .elements').append(elements);
+        }
+
+        function sorting(sorterCallback, diapos, reverse) {
+            var elements = [];
+            if(reverse == true) {
+                _.chain(diapos)
+                    .sortBy(sorterCallback)
+                    .reverse()
+                    .each(function(diapo) {
+                        elements.push($('#ORDER_'+ diapo.id));
+                    });
+            }else {
+                _.chain(diapos)
+                    .sortBy(sorterCallback)
+                    .each(function(diapo) {
+                        elements.push($('#ORDER_'+ diapo.id));
+                    });
+            }
+            return elements;
         }
 
         function reverse_order() {
@@ -103,6 +120,11 @@
                 $(this).prependTo($container);
             });
         }
+
+        $('.elements div', container).bind('click', function(){
+            $(this).addClass("selected").siblings().removeClass("selected");
+            return false;
+        });
 
         $('.elements', container).sortable({
             appendTo : container,
@@ -184,7 +206,6 @@
                     n--;
                 }
             }
-
         }).disableSelection();
 
         var OrderSelection = new Selectable($('.elements', container), {
