@@ -8546,9 +8546,9 @@
         <target state="translated">A new user has registered</target>
         <jms:reference-file line="29">Notification/Mail/MailInfoSomebodyAutoregistered.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation">
+      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation" approved="no">
         <source>admin::search-engine: general-aggregation</source>
-        <target state="new">admin::search-engine: general-aggregation</target>
+        <target state="needs-translation">Agregat setting</target>
         <jms:reference-file line="4">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
@@ -12062,9 +12062,9 @@
         <target state="needs-translation">Advance setting</target>
         <jms:reference-file line="9">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def">
+      <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def" approved="no">
         <source>share::share-record: select-shared-def</source>
-        <target state="needs-translation">Select which subdefinition is share</target>
+        <target state="needs-translation">Select a sub-definition to share</target>
         <jms:reference-file line="11">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="98693e37d002821e032bfc91ffc5091c3b6d76da" resname="status:: Affichable pour tous" approved="yes">
