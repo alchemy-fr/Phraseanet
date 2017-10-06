@@ -8386,11 +8386,6 @@
         <jms:reference-file line="457">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="324">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cefbe7c474d98af4502107d066ea8705b5f0016" resname="admin::general-aggregation: document-type">
-        <source>admin::general-aggregation: document-type</source>
-        <target state="new">admin::general-aggregation: document-type</target>
-        <jms:reference-file line="50">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
         <source>admin::monitor: bases sur lesquelles l'utilisateur est connecte :</source>
         <target state="translated">eingeloggte Datenbanken</target>
