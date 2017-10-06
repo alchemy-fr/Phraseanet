@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-10-05T11:41:54Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-10-06T11:51:53Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -2077,12 +2077,22 @@
         <target state="translated">Login date</target>
         <jms:reference-file line="22">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="d5e8d1af5f3c137fb998b7afa347eeea683a7229" resname="Date de création">
+        <source>Date de création</source>
+        <target state="new">Date de création</target>
+        <jms:reference-file line="10">prod/Baskets/Reorder.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="3a13dfa9c55746372090d1ffbd465703786b7f90" resname="Date de demande" approved="yes">
         <source>Date de demande</source>
         <target state="translated">Request date</target>
         <jms:reference-file line="101">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="151">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="79">prod/orders/order_item.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c004345fde85bded2c74513e29c8cd58d74b594f" resname="Date de modification">
+        <source>Date de modification</source>
+        <target state="new">Date de modification</target>
+        <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b98c9b528241fc8135fb9fd472c7db12ec14964" resname="De" approved="yes">
         <source>De</source>
@@ -3544,7 +3554,7 @@
       <trans-unit id="8606f0ad87b5f92e01e46416cad301829571b7a7" resname="Inverser" approved="yes">
         <source>Inverser</source>
         <target state="translated">Reverse</target>
-        <jms:reference-file line="12">prod/Baskets/Reorder.html.twig</jms:reference-file>
+        <jms:reference-file line="14">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="11">prod/Story/Reorder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3067f6d77794b736024c9a5594c1823612581e07" resname="It is not recommended to install Phraseanet without HTTPS support" approved="yes">
@@ -4141,7 +4151,6 @@
         <jms:reference-file line="48">admin/fields/templates.html.twig</jms:reference-file>
         <jms:reference-file line="13">Bridge/Dailymotion/playlist_createcontainer.html.twig</jms:reference-file>
         <jms:reference-file line="38">actions/Download/prepare.html.twig</jms:reference-file>
-        <jms:reference-file line="144">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="994e92a6f1e83337ca0193b7fa44cf6b3e9287e5" resname="Name or email" approved="yes">
         <source>Name or email</source>
@@ -5042,7 +5051,7 @@
       <trans-unit id="ca2a6abfc98ae1a46c15a6f8bbdc5fac25531462" resname="Re-ordonner" approved="yes">
         <source>Re-ordonner</source>
         <target state="translated">Set order</target>
-        <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
+        <jms:reference-file line="13">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/Story/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="183">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="184">prod/WorkZone/Macros.html.twig</jms:reference-file>
@@ -9075,7 +9084,7 @@
         <jms:reference-file line="27">Bridge/Youtube/video_moveinto_playlist.html.twig</jms:reference-file>
         <jms:reference-file line="343">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="360">prod/actions/edit_default.html.twig</jms:reference-file>
-        <jms:reference-file line="18">prod/Baskets/Reorder.html.twig</jms:reference-file>
+        <jms:reference-file line="20">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="7">prod/Baskets/Update.html.twig</jms:reference-file>
         <jms:reference-file line="676">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Story/Reorder.html.twig</jms:reference-file>
@@ -10802,6 +10811,11 @@
         <source>prod::facet:doctype_label</source>
         <target state="translated">Document type</target>
         <jms:reference-file line="194">Controller/Prod/QueryController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f611129119015b9983fe9c9ee7d6d3f2263ae0ee" resname="prod::feedback:feedbacktitle">
+        <source>prod::feedback:feedbacktitle</source>
+        <target state="new">prod::feedback:feedbacktitle</target>
+        <jms:reference-file line="144">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
