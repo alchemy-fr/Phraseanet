@@ -10810,9 +10810,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Types de documents</target>
         <jms:reference-file line="194">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f611129119015b9983fe9c9ee7d6d3f2263ae0ee" resname="prod::feedback:feedbacktitle">
+      <trans-unit id="f611129119015b9983fe9c9ee7d6d3f2263ae0ee" resname="prod::feedback:feedbacktitle" approved="yes">
         <source>prod::feedback:feedbacktitle</source>
-        <target state="new">prod::feedback:feedbacktitle</target>
+        <target state="translated">Titre</target>
         <jms:reference-file line="144">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
