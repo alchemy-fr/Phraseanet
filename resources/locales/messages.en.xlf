@@ -8546,9 +8546,9 @@
         <target state="translated">A new user has registered</target>
         <jms:reference-file line="29">Notification/Mail/MailInfoSomebodyAutoregistered.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation" approved="no">
+      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation" approved="yes">
         <source>admin::search-engine: general-aggregation</source>
-        <target state="needs-translation">Agregat setting</target>
+        <target state="translated">Aggregate setting</target>
         <jms:reference-file line="4">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
