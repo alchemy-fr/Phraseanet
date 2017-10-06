@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2017-10-06T11:51:53Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -2077,9 +2077,9 @@
         <target state="translated">Login date</target>
         <jms:reference-file line="22">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d5e8d1af5f3c137fb998b7afa347eeea683a7229" resname="Date de création">
+      <trans-unit id="d5e8d1af5f3c137fb998b7afa347eeea683a7229" resname="Date de création" approved="yes">
         <source>Date de création</source>
-        <target state="new">Date de création</target>
+        <target state="translated">Creation date</target>
         <jms:reference-file line="10">prod/Baskets/Reorder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a13dfa9c55746372090d1ffbd465703786b7f90" resname="Date de demande" approved="yes">
