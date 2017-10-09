@@ -330,12 +330,12 @@ class ElasticsearchOptions
             'doctype_aggregate' => [
                 'label' => 'prod::facet:doctype_label',
                 'field' => 'type',
-                'query' => 'type=%s',
+                'query' => 'type:%s',
             ],
             'camera_model_aggregate' => [
                 'label' => 'Camera Model',
                 'field' => 'metadata_tags.CameraModel.raw',
-                'query' => 'meta.CameraModel=%s',
+                'query' => 'meta.CameraModel:%s',
             ],
             'iso_aggregate' => [
                 'label' => 'ISO',
@@ -373,12 +373,12 @@ class ElasticsearchOptions
             'videocodec_aggregate' => [
                 'label' => 'Video codec',
                 'field' => 'metadata_tags.VideoCodec',
-                'query' => 'meta.VideoCodec=%s',
+                'query' => 'meta.VideoCodec:%s',
             ],
             'audiocodec_aggregate' => [
                 'label' => 'Audio codec',
                 'field' => 'metadata_tags.AudioCodec',
-                'query' => 'meta.AudioCodec=%s',
+                'query' => 'meta.AudioCodec:%s',
             ],
             'orientation_aggregate' => [
                 'label' => 'Orientation',
@@ -386,14 +386,14 @@ class ElasticsearchOptions
                 'query' => 'meta.Orientation=%s',
             ],
             'colorspace_aggregate' => [
-                'label' => 'ColorSpace',
+                'label' => 'Colorspace',
                 'field' => 'metadata_tags.ColorSpace',
-                'query' => 'meta.ColorSpace=%s',
+                'query' => 'meta.ColorSpace:%s',
             ],
             'mimetype_aggregate' => [
                 'label' => 'MimeType',
                 'field' => 'metadata_tags.MimeType',
-                'query' => 'meta.MimeType=%s',
+                'query' => 'meta.MimeType:%s',
             ],
         ];
     }
