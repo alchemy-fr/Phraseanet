@@ -31,12 +31,9 @@ class ElasticsearchOptions
     private $populateOrder;
     /** @var string */
     private $populateDirection;
-    /** @var int */
-    private $baseAggregateLimit;
-    /** @var int */
-    private $collectionAggregateLimit;
-    /** @var int */
-    private $doctypeAggregateLimit;
+
+    /** @var  int[] */
+    private $_customValues;
 
     const POPULATE_ORDER_RID  = "RECORD_ID";
     const POPULATE_ORDER_MODDATE = "MODIFICATION_DATE";
@@ -51,7 +48,7 @@ class ElasticsearchOptions
      */
     public static function fromArray(array $options)
     {
-        $options = array_replace([
+        $defaultOptions = [
             'host' => '127.0.0.1',
             'port' => 9200,
             'index' => '',
@@ -62,10 +59,12 @@ class ElasticsearchOptions
             'max_result_window' => 500000,
             'populate_order' => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
-            'base_aggregate_limit' => 0,
-            'collection_aggregate_limit' => 0,
-            'doctype_aggregate_limit' => 0,
-        ], $options);
+        ];
+        foreach(self::getAggregableTechnicalFields() as $k => $f) {
+            $defaultOptions[$k.'_limit'] = 0;
+        }
+
+        $options = array_replace($defaultOptions, $options);
 
         $self = new self();
         $self->setHost($options['host']);
@@ -78,9 +77,9 @@ class ElasticsearchOptions
         $self->setMaxResultWindow($options['max_result_window']);
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
-        $self->setBaseAggregateLimit($options['base_aggregate_limit']);
-        $self->setCollectionAggregateLimit($options['collection_aggregate_limit']);
-        $self->setDoctypeAggregateLimit($options['doctype_aggregate_limit']);
+        foreach(self::getAggregableTechnicalFields() as $k => $f) {
+            $self->setAggregableFieldLimit($k, $options[$k.'_limit']);
+        }
 
         return $self;
     }
@@ -90,7 +89,7 @@ class ElasticsearchOptions
      */
     public function toArray()
     {
-        return [
+        $ret = [
             'host' => $this->host,
             'port' => $this->port,
             'index' => $this->indexName,
@@ -101,10 +100,12 @@ class ElasticsearchOptions
             'maxResultWindow' => $this->maxResultWindow,
             'populate_order' => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
-            'base_aggregate_limit' => $this->baseAggregateLimit,
-            'collection_aggregate_limit' => $this->collectionAggregateLimit,
-            'doctype_aggregate_limit' => $this->doctypeAggregateLimit
         ];
+        foreach(self::getAggregableTechnicalFields() as $k => $f) {
+            $ret[$k.'_limit'] = $this->getAggregableFieldLimit($k);
+        }
+
+        return $ret;
     }
 
     /**
@@ -289,53 +290,111 @@ class ElasticsearchOptions
         return $this->maxResultWindow;
     }
 
-    /**
-     * @param int $baseAggregateLimit
-     */
-    public function setBaseAggregateLimit($baseAggregateLimit)
+
+    public function setAggregableFieldLimit($key, $value)
     {
-        $this->baseAggregateLimit = (int)$baseAggregateLimit;
+        $this->_customValues[$key.'_limit'] = $value;
     }
 
-    /**
-     * @return int
-     */
-    public function getBaseAggregateLimit()
+    public function getAggregableFieldLimit($key)
     {
-        return $this->baseAggregateLimit;
+        return $this->_customValues[$key.'_limit'];
     }
 
-    /**
-     * @param int $collectionAggregateLimit
-     */
-    public function setCollectionAggregateLimit($collectionAggregateLimit)
+    public function __get($key)
     {
-        $this->collectionAggregateLimit = (int)$collectionAggregateLimit;
+        if(!array_key_exists($key, $this->_customValues)) {
+            $this->_customValues[$key] = 0;
+        }
+        return $this->_customValues[$key];
     }
 
-    /**
-     * @return int
-     */
-    public function getCollectionAggregateLimit()
+    public function __set($key, $value)
     {
-        return $this->collectionAggregateLimit;
+        $this->_customValues[$key] = $value;
     }
 
-    /**
-     * @param int $doctypeAggregateLimit
-     */
-    public function setDoctypeAggregateLimit($doctypeAggregateLimit)
+    public static function getAggregableTechnicalFields()
     {
-        $this->doctypeAggregateLimit = (int)$doctypeAggregateLimit;
+        return [
+            'base_aggregate' => [
+                'label' => 'prod::facet:base_label',
+                'field' => 'databox_name',
+                'query' => 'database:%s',
+            ],
+            'collection_aggregate' => [
+                'label' => 'prod::facet:collection_label',
+                'field' => 'collection_name',
+                'query' => 'collection:%s',
+            ],
+            'doctype_aggregate' => [
+                'label' => 'prod::facet:doctype_label',
+                'field' => 'type',
+                'query' => 'type=%s',
+            ],
+            'camera_model_aggregate' => [
+                'label' => 'Camera Model',
+                'field' => 'metadata_tags.CameraModel.raw',
+                'query' => 'meta.CameraModel=%s',
+            ],
+            'iso_aggregate' => [
+                'label' => 'ISO',
+                'field' => 'metadata_tags.ISO',
+                'query' => 'meta.ISO=%s',
+            ],
+            'aperture_aggregate' => [
+                'label' => 'Aperture',
+                'field' => 'metadata_tags.Aperture',
+                'query' => 'meta.Aperture=%s',
+            ],
+            'shutterspeed_aggregate' => [
+                'label' => 'Shutter speed',
+                'field' => 'metadata_tags.ShutterSpeed',
+                'query' => 'meta.ShutterSpeed=%s',
+            ],
+            'flashfired_aggregate' => [
+                'label' => 'FlashFired',
+                'field' => 'metadata_tags.FlashFired',
+                'query' => 'meta.FlashFired=%s',
+                'choices' => [
+                    "aggregated (2 values: fired = 0 or 1)" => -1,
+                ],
+            ],
+            'framerate_aggregate' => [
+                'label' => 'FrameRate',
+                'field' => 'metadata_tags.FrameRate',
+                'query' => 'meta.FrameRate=%s',
+            ],
+            'audiosamplerate_aggregate' => [
+                'label' => 'Audio Samplerate',
+                'field' => 'metadata_tags.AudioSamplerate',
+                'query' => 'meta.AudioSamplerate=%s',
+            ],
+            'videocodec_aggregate' => [
+                'label' => 'Video codec',
+                'field' => 'metadata_tags.VideoCodec',
+                'query' => 'meta.VideoCodec=%s',
+            ],
+            'audiocodec_aggregate' => [
+                'label' => 'Audio codec',
+                'field' => 'metadata_tags.AudioCodec',
+                'query' => 'meta.AudioCodec=%s',
+            ],
+            'orientation_aggregate' => [
+                'label' => 'Orientation',
+                'field' => 'metadata_tags.Orientation',
+                'query' => 'meta.Orientation=%s',
+            ],
+            'colorspace_aggregate' => [
+                'label' => 'ColorSpace',
+                'field' => 'metadata_tags.ColorSpace',
+                'query' => 'meta.ColorSpace=%s',
+            ],
+            'mimetype_aggregate' => [
+                'label' => 'MimeType',
+                'field' => 'metadata_tags.MimeType',
+                'query' => 'meta.MimeType=%s',
+            ],
+        ];
     }
-
-    /**
-     * @return int
-     */
-    public function getDoctypeAggregateLimit()
-    {
-        return $this->doctypeAggregateLimit;
-    }
-
-
 }

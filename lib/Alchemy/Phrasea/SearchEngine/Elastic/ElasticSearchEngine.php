@@ -427,44 +427,20 @@ class ElasticSearchEngine implements SearchEngineInterface
         $aggs = [];
 
         // technical aggregates (enable + optional limit)
-
-        $size = $this->options->getBaseAggregateLimit();
-        if ($size !== databox_field::FACET_DISABLED) {
-            if ($size === databox_field::FACET_NO_LIMIT) {
-                $size = ESField::FACET_NO_LIMIT;
+        foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+            $size = $this->options->getAggregableFieldLimit($k);
+            if ($size !== databox_field::FACET_DISABLED) {
+                if ($size === databox_field::FACET_NO_LIMIT) {
+                    $size = ESField::FACET_NO_LIMIT;
+                }
+                $agg = [
+                    'terms' => [
+                        'field' => $f['field'],
+                        'size'  => $size
+                    ]
+                ];
+                $aggs[$k] = $agg;
             }
-            $aggs['Base_Name'] = [
-                'terms' => [
-                    'field' => 'databox_name',
-                    'size'  => $size
-                ]
-            ];
-        }
-
-        $size = $this->options->getCollectionAggregateLimit();
-        if ($size !== databox_field::FACET_DISABLED) {
-            if ($size === databox_field::FACET_NO_LIMIT) {
-                $size = ESField::FACET_NO_LIMIT;
-            }
-            $aggs['Collection_Name'] = [
-                'terms' => [
-                    'field' => 'collection_name',
-                    'size'  => $size
-                ]
-            ];
-        }
-
-        $size = $this->options->getDoctypeAggregateLimit();
-        if ($size !== databox_field::FACET_DISABLED) {
-            if ($size === databox_field::FACET_NO_LIMIT) {
-                $size = ESField::FACET_NO_LIMIT;
-            }
-            $aggs['Type_Name'] = [
-                'terms' => [
-                    'field' => 'type',
-                    'size'  => $size
-                ]
-            ];
         }
 
         // fields aggregates
