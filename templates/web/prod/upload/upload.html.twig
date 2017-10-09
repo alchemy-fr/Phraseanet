@@ -17,6 +17,7 @@
             </li>
         </ul>
         {# upload tab content #}
+
         <div id="tab-upload">
             {% if collections|length > 0 %}
                 <form id="fileupload" enctype="multipart/form-data" method="POST" action="{{ path('upload_form') }}">
@@ -36,18 +37,19 @@
                                         ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                     </span>
                                 </td>
-                                <td class='uploader-icon'>
-                                    <img src='/assets/common/images/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>
-                                </td>
-                                <td class="uploader-info">
-                                    <p>
-                                        {{ 'You are using the HTML5 uploader.' | trans }}
-                                        {% if not app['browser'].supportFileAPI() %}
-                                            {{ 'Your browser does not support all HTML5 features properly.' | trans }}
-                                        {% endif %}
-                                    </p>
-                                    <a id="UPLOAD_FLASH_LINK" href="{{ path('upload_flash_form') }}" class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
-                                </td>
+                                {#<td class='uploader-icon'>#}
+                                {#<img src='/assets/common/images/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>#}
+                                {#</td>#}
+                                {#<td class="uploader-info">#}
+                                {#<p>#}
+                                {#{{ 'You are using the HTML5 uploader.' | trans }}#}
+                                {#{% if not app['browser'].supportFileAPI() %}#}
+                                {#{{ 'Your browser does not support all HTML5 features properly.' | trans }}#}
+                                {#{% endif %}#}
+                                {#</p>#}
+                                <a style="display: none" id="UPLOAD_FLASH_LINK" href="{{ path('upload_flash_form') }}"
+                                   class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
+                                {#</td>#}
                             </tr>
                         </table>
 
@@ -136,6 +138,12 @@
                     </div>
 
                 </form>
+                <div>
+                    <select name="upload_type" id="upload_type" class="input-large" style="width: 200px; float:right">
+                        <option value="html" selected>{{ 'Use the HTML5 uploader' | trans }}</option>
+                        <option value="flash">{{ 'Use the Flash uploader' | trans }}</option>
+                    </select>
+                </div>
             {% else %}
                 {{ 'You can not upload files' | trans }}
             {% endif %}
@@ -161,6 +169,7 @@ $(document).ready(function () {
 
     if (iev >= 10) {
         $("#UPLOAD_FLASH_LINK").hide();
+        $('#upload_type option[value="flash"]').remove();
     }
     //Upload management
     var UploaderManager = new p4.UploaderManager({
@@ -176,6 +185,12 @@ $(document).ready(function () {
     UploaderManager.Preview.setOptions({
         maxWidth: 130,
         maxHeight: 120
+    });
+
+    $('#upload_type').on('change', function () {
+        if ($(this).val() === 'flash') {
+            $("#UPLOAD_FLASH_LINK").trigger("click");
+        }
     });
 
     //Init jquery tabs

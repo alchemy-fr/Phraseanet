@@ -855,7 +855,7 @@
             });
         }
 
-        const disableDragOnModalClosed = () => {
+        function disableDragOnModalClosed() {
             $('html').off('drop');
             $('html').off('dragover');
             $('html').off('dragleave');
