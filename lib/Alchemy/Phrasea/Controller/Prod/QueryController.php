@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\StringHelper;
@@ -188,11 +189,13 @@ class QueryController extends Controller
             $json['parsed_query'] = $result->getEngineQuery();
             /** End debug */
 
-            $fieldLabels = [
-                'Base_Name' => $this->app->trans('prod::facet:base_label'),
-                'Collection_Name' => $this->app->trans('prod::facet:collection_label'),
-                'Type_Name' => $this->app->trans('prod::facet:doctype_label'),
-            ];
+            $fieldLabels = [];
+
+            // add technical fields
+            foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+                $fieldLabels[$k] = $this->app->trans($f['label']);
+            }
+            // add databox fields
             foreach ($this->app->getDataboxes() as $databox) {
                 foreach ($databox->get_meta_structure() as $field) {
                     if (!isset($fieldLabels[$field->get_name()])) {

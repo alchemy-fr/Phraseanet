@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -70,18 +71,15 @@ class FacetsResponse
 
     private function buildQuery($name, $value)
     {
-        switch($name) {
-            case 'Collection_Name':
-                return sprintf('collection:%s', $this->escaper->escapeWord($value));
-            case 'Base_Name':
-                return sprintf('database:%s', $this->escaper->escapeWord($value));
-            case 'Type_Name':
-                return sprintf('type:%s', $this->escaper->escapeWord($value));
-            default:
-                return sprintf('field.%s:%s',
-                    $this->escaper->escapeWord($name),
-                    $this->escaper->escapeWord($value));
+        if(array_key_exists($name, ElasticsearchOptions::getAggregableTechnicalFields())) {
+            $q = ElasticsearchOptions::getAggregableTechnicalFields()[$name]['query'];
+            $ret = sprintf($q, $this->escaper->escapeWord($value));
         }
+        else {
+            $ret = sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($value));
+        }
+
+        return $ret;
     }
 
     private function throwAggregationResponseError()

@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
@@ -55,19 +56,36 @@ class ElasticsearchSettingsFormType extends AbstractType
             ->add('minScore', 'integer', [
                 'label' => 'Thesaurus Min score',
                 'constraints' => new Range(['min' => 0]),
-            ])
-            ->add('baseAggregateLimit', 'integer', [
-                'label' => 'Base aggregate limit',
-                'constraints' => new Range(['min' => -1]),
-            ])
-            ->add('collectionAggregateLimit', 'integer', [
-                'label' => 'Collection aggregate limit',
-                'constraints' => new Range(['min' => -1]),
-            ])
-            ->add('doctypeAggregateLimit', 'integer', [
-                'label' => 'Doc type aggregate limit',
-                'constraints' => new Range(['min' => -1]),
-            ])
+            ]);
+
+        foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+
+            if(array_key_exists('choices', $f)) {
+                // choices[] : choice_key => choice_value
+                $choices = $f['choices'];
+            }
+            else {
+                $choices = [
+                    "10 values" => 10,
+                    "20 values" => 20,
+                    "50 values" => 50,
+                    "100 values" => 100,
+                    "all values" => -1
+                ];
+            }
+
+            // array_unshift($choices, "not aggregated");  //  always as first choice
+            $choices = array_merge(["not aggregated" => 0], $choices);
+
+            $builder
+                ->add($k.'_limit', ChoiceType::class, [
+                    // 'label' => $f['label'],// . ' ' . 'aggregate limit',
+                    'choices_as_values' => true,
+                    'choices' => $choices,
+                ]);
+        }
+
+        $builder
             ->add('highlight', 'checkbox', [
                 'label' => 'Activate highlight',
                 'required' => false
