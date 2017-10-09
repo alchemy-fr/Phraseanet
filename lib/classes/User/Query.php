@@ -832,7 +832,7 @@ class User_Query
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of = ' . $this->app->getAuthenticatedUser()->getId();
+            $sql .= ' AND model_of IS NOT NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
