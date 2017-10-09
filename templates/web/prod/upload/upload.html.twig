@@ -149,7 +149,7 @@
 
 
 $(document).ready(function () {
-
+    var filesList = $dialog.options.filesList || [];
     var iev=0;
     var ieold = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
     var trident = !!navigator.userAgent.match(/Trident\/7.0/);
@@ -511,6 +511,11 @@ $(document).ready(function () {
             data.context.find('.progress-bar').width('25%');
         }
     });
+
+    if (filesList !== undefined) {
+        $('#fileupload', UploaderManager.getContainer()).fileupload('add', {files: filesList});
+    }
+
 });
 </script>
 <style>

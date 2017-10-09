@@ -828,7 +828,63 @@
             $('#left-btn').mouseenter(function() {
                 $('#left-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
             });
+
+            dragOnModalClosed();
         });
+
+
+        function dragOnModalClosed() {
+            $('html').on('drop', (event) => {
+                if (event.originalEvent.dataTransfer !== undefined) {
+                    let fileList = event.originalEvent.dataTransfer.files;
+                    // open modal
+                    if (fileList.length > 0) {
+                        openModal($('.uploader-open-action'), fileList);
+
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }
+            }).on('dragover', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            }).on('dragleave', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            });
+        }
+
+        const disableDragOnModalClosed = () => {
+            $('html').off('drop');
+            $('html').off('dragover');
+            $('html').off('dragleave');
+        }
+
+        function openModal ($this, filesList) {
+            var options = {
+                size: 'Full',
+                loading: true,
+                title: $this.attr('title'),
+                closeOnEscape: true,
+                filesList: filesList,
+                closeCallback: () => {
+                    dragOnModalClosed();
+                }
+            };
+
+            let $dialog = p4.Dialog.Create(options, 1);
+            $.ajax({
+                type: 'GET',
+                url: $this.attr('href'),
+                dataType: 'html',
+                success: function (data) {
+                    disableDragOnModalClosed();
+                    $dialog.setContent(data);
+                    return;
+                }
+            });
+        };
 
         function pollNotifications(){
             $.ajax({
