@@ -113,8 +113,8 @@
                                 <td>
                                     <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
                                         <option value="">{{ 'All' | trans }}</option>
-                                        {% for Template in query.getRelatedTemplates() %}
-                                            <option value="{{ Template }}">{{ Template }}</option>
+                                        {% for id,Template in query.getRelatedTemplates() %}
+                                            <option value="{{ id }}">{{ Template }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>

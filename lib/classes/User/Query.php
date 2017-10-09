@@ -674,7 +674,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.activity ' . $this->generate_sql_constraints(). ' ORDER BY Users.activity';
+        $sql = 'SELECT DISTINCT Users.activity ' . $this->only_templates(false)->generate_sql_constraints(). ' ORDER BY Users.activity';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -701,7 +701,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.job ' . $this->generate_sql_constraints() . ' ORDER BY Users.job';
+        $sql = 'SELECT DISTINCT Users.job ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.job';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -728,7 +728,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.country ' . $this->generate_sql_constraints() . ' ORDER BY Users.country';
+        $sql = 'SELECT DISTINCT Users.country ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.country';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -759,7 +759,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.company ' . $this->generate_sql_constraints() . ' ORDER BY Users.company';
+        $sql = 'SELECT DISTINCT Users.company ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.company';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -786,7 +786,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.last_model ' . $this->generate_sql_constraints() . ' ORDER BY Users.last_model';
+        $sql = 'SELECT DISTINCT Users.id, Users.login ' . $this->only_templates(true)->generate_sql_constraints() . ' ORDER BY Users.login';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -795,11 +795,11 @@ class User_Query
 
         $lastModel = [];
         foreach ($rs as $row) {
-            if (trim($row['last_model']) === '') {
+            if (trim($row['login']) === '') {
                 continue;
             }
 
-            $lastModel[] = $row['last_model'];
+            $lastModel[$row['id']] = $row['login'];
         }
 
         return $lastModel;
@@ -832,7 +832,7 @@ class User_Query
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of = ' . $this->app->getAuthenticatedUser()->getId();
+            $sql .= ' AND model_of IS NOT NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId();
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
