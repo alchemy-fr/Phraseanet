@@ -91,7 +91,6 @@ class UserRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('u');
         $qb->where($qb->expr()->eq($qb->expr()->lower('u.login'), $qb->expr()->lower($qb->expr()->literal($login))))
-            ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->isNull('u.templateOwner'))
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
