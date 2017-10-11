@@ -312,7 +312,11 @@
               <i class="icon-remove"></i>
           </a>
           {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-              <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}"></div>
+              <span class="icon-stack captionRolloverTips"
+                    tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
+                   <i class="icon-circle icon-stack-base"></i>
+                   <i class="icon-list icon-light"></i>
+              </span>
           {% endif %}
       </div>
   </div>
@@ -377,5 +381,4 @@
           </table>
       </span>
   {% endfor %}
-
 {% endmacro %}
