@@ -456,6 +456,7 @@ input[id="elasticsearch_settings_highlight"] {
 
 #elasticsearch_settings_save {
   padding: 15px;
+  margin-top: 20px;
   &::before {
     content: "\F0A0";
     font-family: "FontAwesome";

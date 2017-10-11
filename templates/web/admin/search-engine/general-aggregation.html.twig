@@ -1,93 +1,27 @@
 <div class="general-aggregation-layout">
     <ul class="unstyled aggregation-collection">
-        <li>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <span class="label-aggregation">{{ "Base" | trans }}</span>
-                    </td>
-                    <td>
-                        <select id="aggregable-base">
-                            <option value='0'>{% trans %}Not aggregated{% endtrans %}</option>
-                            <option value='10'>10 values</option>
-                            <option value='20'>20 values</option>
-                            <option value='50'>50 values</option>
-                            <option value='100'>100 values</option>
-                            <option value='-1'>{% trans %}All values{% endtrans %}</option>
-                        </select>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-        <li>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <span class="label-aggregation">{{ "Collection" | trans }}</span>
-                    </td>
-                    <td>
-                        <select id="aggregable-collection">
-                            <option value='0'>{% trans %}Not aggregated{% endtrans %}</option>
-                            <option value='10'>10 values</option>
-                            <option value='20'>20 values</option>
-                            <option value='50'>50 values</option>
-                            <option value='100'>100 values</option>
-                            <option value='-1'>{% trans %}All values{% endtrans %}</option>
-                        </select>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-        <li>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <span class="label-aggregation">{{ "Type de documents" | trans }}</span>
-                    </td>
-                    <td>
-                        <select id="aggregable-document">
-                            <option value='0'>{% trans %}Not aggregated{% endtrans %}</option>
-                            <option value='10'>10 values</option>
-                            <option value='20'>20 values</option>
-                            <option value='50'>50 values</option>
-                            <option value='100'>100 values</option>
-                            <option value='-1'>{% trans %}All values{% endtrans %}</option>
-                        </select>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
+        {% for formdata in form %}
+            {% set attr = formdata.vars['attr']|join(',') %}
+            {% if attr == 'aggregate' %}
+                <li>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ form_label(formdata, null, {
+                                    'label_attr': {'class': 'label-aggregation'}
+                                }) }}
+                            </td>
+                            <td>
+                                {{ form_widget(formdata) }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
-    <button type="button" class="btn btn-primary save-all-changes" disabled="disabled">
-        <i class="icon-hdd icon-white"></i>{% trans %}Save all changes{% endtrans %}</button>
+    <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
+            class="btn btn-primary">{{ 'Save' | trans }}</button>
 </div>
-
-{% block javascript %}
-    <script type="text/javascript">
-        var value_base, value_collection, value_document = '';
-        var containerList = $('.aggregation-collection');
-        $('#aggregable-base', containerList).on('change', function() {
-            value_base = $(this).val();
-        });
-
-        $('#aggregable-collection', containerList).on('change', function() {
-            value_collection = $(this).val();
-        });
-
-        $('#aggregable-document', containerList).on('change', function() {
-            value_document = $(this).val();
-        });
-
-        $('.save-all-changes', containerList).on('click', function() {
-           //to write save function
-        });
-
-
-    </script>
-{% endblock %}
