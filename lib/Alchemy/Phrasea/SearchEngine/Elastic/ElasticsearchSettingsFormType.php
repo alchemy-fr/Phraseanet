@@ -109,6 +109,7 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'mapped' => false,
                 'attr' => ['class' => 'dumpfield hide']
             ])
+            ->add('activeTab', 'hidden');
 
         ;
     }
