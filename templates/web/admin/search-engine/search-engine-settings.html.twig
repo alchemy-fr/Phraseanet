@@ -17,7 +17,15 @@
 {% block javascript %}
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.search-engine-tabs').tabs();
+            $('.search-engine-tabs').tabs({
+                activate: function (event, ui) {
+                    $('#elasticsearch_settings_activeTab').val(ui.newPanel.selector);
+                }
+            });
+            var activeTab = $('#elasticsearch_settings_activeTab').val();
+            if (activeTab) {
+                $('.search-engine-tabs a[href="' + activeTab + '"]').trigger('click');
+            }
         });
     </script>
 {% endblock %}
