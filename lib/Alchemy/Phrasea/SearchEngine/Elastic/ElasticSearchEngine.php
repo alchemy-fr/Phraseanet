@@ -269,54 +269,57 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($string, SearchEngineOptions $options = null)
+    public function query($queryText, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
-        $recordQuery = $query_compiler->compile($string, $context);
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+        $queryCompiled = $query_compiler->compile($queryText, $context);
 
-        $params = $this->createRecordQueryParams($recordQuery, $options, null);
+        $queryESLib    = $this->createRecordQueryParams($queryCompiled, $options, null);
 
         // ask ES to return field _version (incremental version number of document)
-        $params['body']['version'] = true;
+        $queryESLib['body']['version'] = true;
 
-        $params['body']['from'] = $options->getFirstResult();
-        $params['body']['size'] = $options->getMaxResults();
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
         if ($this->options->getHighlight()) {
-            $params['body']['highlight'] = $this->buildHighlightRules($context);
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
         $aggs = $this->getAggregationQueryParams($options);
 
         if ($aggs) {
-            $params['body']['aggs'] = $aggs;
+            $queryESLib['body']['aggs'] = $aggs;
         }
 
-        $res = $this->client->search($params);
+        $res = $this->client->search($queryESLib);
 
         $results = new ArrayCollection();
-
+        $rawResults = [];
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n);
+            $rawResults[$n] = $hit;
+            $n++;
         }
 
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $query_compiler->parse($string)->dump();
-        $query['query_main'] = $recordQuery;
-        $query['query'] = $params['body'];
-        $query['query_string'] = json_encode($params['body']);
-
         return new SearchEngineResult(
             $options,
-            $results,   // ArrayCollection of results
-            $string,    // the query as typed by the user
-            json_encode($query),
+            $results,      // ArrayCollection of results
+            $rawResults,   // raw result
+
+            $queryText,    // the query as typed by the user
+            $queryAST,
+            $queryCompiled,
+            $queryESLib,
+
             $res['took'],   // duration
             $options->getFirstResult(),
             $res['hits']['total'],  // available

@@ -76,7 +76,7 @@ class QueryController extends Controller
                     return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
                 }));
 
-                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collections);
+                $this->getSearchEngineLogger()->log($databox, $result->getQueryText(), $result->getTotal(), $collections);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;
@@ -182,12 +182,9 @@ class QueryController extends Controller
             } else {
                 $template = 'prod/results/records.html.twig';
             }
-
             $json['results'] = $this->render($template, ['results'=> $result]);
 
-            /** Debug */
-            $json['parsed_query'] = $result->getEngineQuery();
-            /** End debug */
+            $json['rawResults'] = $result->getRawResults();
 
             $fieldLabels = [];
 
@@ -220,6 +217,9 @@ class QueryController extends Controller
             $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
             $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
             $json['form'] = $options->serialize();
+            $json['queryCompiled'] = $result->getQueryCompiled();
+            $json['queryAST'] = $result->getQueryAST();
+            $json['queryESLib'] = $result->getQueryESLib();
         }
         catch(\Exception $e) {
             // we'd like a message from the parser so get all the exceptions messages
