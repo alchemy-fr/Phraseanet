@@ -89,9 +89,13 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
+        $rawResults = ["a", "b"];
 
-        $user_query = 'Gotainer';
-        $engine_query = '{text:"Gotainer"}';    // fake, real is really more complex
+        $queryText = 'azerty';
+        $queryAST = '<text:"azerty">';    // fake, real is really more complex
+        $queryCompiled = '{match:"azerty"}';    // fake, real is really more complex
+        $queryESLib = '{index:"test", match:{"azerty"}}';    // fake, real is really more complex
+
         $duration = 1 / 3;
         $offsetStart = 0;
         $available = 25;
@@ -99,12 +103,31 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $error = 'this is an error message';
         $warning = 'this is a warning message';
         $suggestions = new ArrayCollection([
-                        new SearchEngineSuggestion($user_query, 'Richard', 22)
+                        new SearchEngineSuggestion($queryText, 'Richard', 22)
         ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
 
-        $result = new SearchEngineResult($options, $results, $user_query, $engine_query, $duration, $offsetStart, $available, $total, $error, $warning, $suggestions, $propositions, $indexes);
+        $result = new SearchEngineResult(
+            $options,
+            $results,
+            $rawResults,
+
+            $queryText,    // the query as typed by the user
+            $queryAST,
+            $queryCompiled,
+            $queryESLib,
+
+            $duration,
+            $offsetStart,
+            $available,
+            $total,
+            $error,
+            $warning,
+            $suggestions,
+            $propositions,
+            $indexes
+        );
 
         $this->assertEquals(1, $result->getCurrentPage(10));
         $this->assertEquals(1, $result->getCurrentPage(25));
