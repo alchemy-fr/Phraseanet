@@ -51,10 +51,11 @@
         {{ form_rest(daform) }}
     </fieldset>
 {%  endfor %}
-<legend>{{ "Custom Links" }}</legend>
+<legend>{{ "setup::custom-link:title-custom-link" | trans }}</legend>
 <table id="custom-link-table">
 </table>
-<button id="add-row">{{ "setup::custom-link:add-link" }}</button>
+<button id="add-row" class="btn btn-success">{{ "setup::custom-link:add-link" }}</button>
+<div style="clear: both;"></div>
 <div class="well well-large">
     <div style="max-width: 400px;margin: 0 auto 10px;">
         <input type="submit" class="btn btn-primary btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
@@ -106,8 +107,8 @@
             //check if first row, then add header and body
             var rowCount = $('#custom-link-table tr').length;
             if (rowCount < 1) {
-                var header = '<thead><th>{{ "Name of my link" }}</th><th>{{ "Select a language" }}</th>' +
-                    '<th>{{ "Put url of link" }}</th><th>{{ "Location" }}</th> <th>{{ "Order" }}</th>' +
+                var header = '<thead><th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
+                    '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th><th>{{ "setup::custom-link:order-link" | trans }}</th>' +
                     '<th></th></thead>';
 
                 $("#custom-link-table").append(header);
@@ -117,14 +118,15 @@
             id++;
 
             //custom link
-            var rowForCustomLink = '<tr><td><input type="text" placeholder="Alchemy store" name="link-name" required></td>' +
+            var rowForCustomLink = '<tr><td><input type="text" placeholder="Alchemy store" name="link-name" maxlength="30" required></td>' +
                 '<td><select name="link-language" required><option value="">{{ "setup::custom-link:select-language" | trans }}</option>' +
                 '<option value="all">{{ "All" | trans }}</option><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option>' +
                 '<option value="ar">AR</option><option value="de">DE</option><option value="du">DU</option></select></td>' +
                 '<td><input type="url" placeholder="https://alchemy.odoo.com" name="link-url" required></td><td><select name="link-location" required>' +
                 '<option value="">{{ "setup::custom-link:location" | trans }}</option><option value="help-menu">{{ "setup::custom-link:help-menu" | trans }}</option>' +
                 '<option value="navigation-bar">{{ "setup::custom-link:navigation-bar" | trans }}</option></select></td>' +
-                '<td><input type="number" min="1" name="link-order"></td><td><button class="close-row">X</button></td></tr>';
+                '<td><input type="number" min="1" name="link-order"></td><td><button class="btn btn-default close-row">' +
+                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button></td></tr>';
 
             $("#custom-link-table").append(rowForCustomLink);
             return false;
@@ -143,13 +145,23 @@
         $('form').on('submit', function () {
             // do validation for custom link
             var linkObjects = [];
+            var helpObjects = [];
+            var menuObjects = [];
             $('#custom-link-table tbody tr').each(function (i, row) {
                 var rowData = getDataOfRow(row);
-                validate(rowData);
-                linkObjects.push(rowData);
+                if (rowData.linkLocation === "help-menu") {
+                    helpObjects.push(rowData);
+                } else {
+                    menuObjects.push(rowData);
+                }
             });
+            if (helpObjects.length > 0) {
+                linkObjects['help'] = helpObjects;
+            }
+            if (menuObjects.length > 0) {
+                linkObjects['menu'] = menuObjects;
+            }
 
-            console.log(linkObjects);
         });
 
 
