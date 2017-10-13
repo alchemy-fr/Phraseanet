@@ -216,8 +216,10 @@ class Install extends Command
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
-                            $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
-                        } while (!in_array($template, ['en', 'fr']));
+                            $templates = $this->container['phraseanet.structure-template']->getAvailable();
+
+                            $template = $dialog->ask($output, "Choose a language template for metadata structure, available are {$templates->__toString()} : ", 'en');
+                        } while (!in_array($template, array_keys($templates->getTemplates())));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
                     } catch (\Exception $e) {
@@ -248,7 +250,7 @@ class Install extends Command
             $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
-        return [$dbConn, $template];
+        return [$dbConn, $templates->getTemplateName($template)];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
