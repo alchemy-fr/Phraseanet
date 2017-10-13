@@ -161,7 +161,6 @@
             if (menuObjects.length > 0) {
                 linkObjects['menu'] = menuObjects;
             }
-
         });
 
 
@@ -173,7 +172,7 @@
             linkObject.linkLanguage = row.find($('select[name="link-language"]')).val();
             linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
             linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
-            linkObject.linkOrder = row.find($('input[name="link-order"]')).val();
+            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() | 1;
 
             return linkObject;
         }
