@@ -20,7 +20,7 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
-        $template = 'fr';
+        $template = 'fr-simple';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
