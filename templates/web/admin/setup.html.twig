@@ -51,6 +51,11 @@
         {{ form_rest(daform) }}
     </fieldset>
 {%  endfor %}
+<legend>{{ "setup::custom-link:title-custom-link" | trans }}</legend>
+<table id="custom-link-table">
+</table>
+<button id="add-row" class="btn btn-success">{{ "setup::custom-link:add-link" }}</button>
+<div style="clear: both;"></div>
 <div class="well well-large">
     <div style="max-width: 400px;margin: 0 auto 10px;">
         <input type="submit" class="btn btn-primary btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
@@ -95,6 +100,83 @@
                 }
             });
         }
+
+        var id = 1;
+
+        $("#add-row").click(function () {
+            //check if first row, then add header and body
+            var rowCount = $('#custom-link-table tr').length;
+            if (rowCount < 1) {
+                var header = '<thead><th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
+                    '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th><th>{{ "setup::custom-link:order-link" | trans }}</th>' +
+                    '<th></th></thead>';
+
+                $("#custom-link-table").append(header);
+                $("#custom-link-table").append('<tbody></tbody>');
+            }
+
+            id++;
+
+            //custom link
+            var rowForCustomLink = '<tr><td><input type="text" placeholder="Alchemy store" name="link-name" maxlength="30" required></td>' +
+                '<td><select name="link-language" required><option value="">{{ "setup::custom-link:select-language" | trans }}</option>' +
+                '<option value="all">{{ "All" | trans }}</option><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option>' +
+                '<option value="ar">AR</option><option value="de">DE</option><option value="du">DU</option></select></td>' +
+                '<td><input type="url" placeholder="https://alchemy.odoo.com" name="link-url" required></td><td><select name="link-location" required>' +
+                '<option value="">{{ "setup::custom-link:location" | trans }}</option><option value="help-menu">{{ "setup::custom-link:help-menu" | trans }}</option>' +
+                '<option value="navigation-bar">{{ "setup::custom-link:navigation-bar" | trans }}</option></select></td>' +
+                '<td><input type="number" min="1" name="link-order"></td><td><button class="btn btn-default close-row">' +
+                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button></td></tr>';
+
+            $("#custom-link-table").append(rowForCustomLink);
+            return false;
+        });
+        $("#custom-link-table").on('click', '.close-row', function () {
+            $(this).closest('tr').remove();
+            var rowCount = $('#custom-link-table tr').length;
+            //remove header if no more rows
+            if (rowCount <= 1) {
+                $("#custom-link-table").empty();
+                id = 0;
+            }
+            return false;
+        });
+
+        $('form').on('submit', function () {
+            // do validation for custom link
+            var linkObjects = [];
+            var helpObjects = [];
+            var menuObjects = [];
+            $('#custom-link-table tbody tr').each(function (i, row) {
+                var rowData = getDataOfRow(row);
+                if (rowData.linkLocation === "help-menu") {
+                    helpObjects.push(rowData);
+                } else {
+                    menuObjects.push(rowData);
+                }
+            });
+            if (helpObjects.length > 0) {
+                linkObjects['help'] = helpObjects;
+            }
+            if (menuObjects.length > 0) {
+                linkObjects['menu'] = menuObjects;
+            }
+        });
+
+
+        function getDataOfRow(row) {
+            var row = $(row);
+
+            var linkObject = {};
+            linkObject.linkName = row.find($('input[name="link-name"]')).val();
+            linkObject.linkLanguage = row.find($('select[name="link-language"]')).val();
+            linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
+            linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
+            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() | 1;
+
+            return linkObject;
+        }
+
     });
     {% endautoescape %}
 </script>

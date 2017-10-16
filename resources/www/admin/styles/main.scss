@@ -422,6 +422,53 @@ input[id="elasticsearch_settings_highlight"] {
   overflow: visible;
 }
 
+/******* SETUP *******************************************************************/
+#custom-link-table {
+  width: 100%;
+  thead {
+    th {
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+  td {
+    height: 30px;
+    width: 20%;
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    button {
+      height: 30px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+  }
+  td:nth-of-type(5) {
+    width: 14%;
+  }
+  td:last-child {
+    width: 8%;
+  }
+}
+
+#add-row {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  float: right;
+}
+
 /******* SEARCH ENGINE SETTINGS ***************************************************/
 .search-engine-tabs {
   background: 0;

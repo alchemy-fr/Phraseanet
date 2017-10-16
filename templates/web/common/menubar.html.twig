@@ -1,5 +1,6 @@
 <div id="mainMenu" class="">
-    <div class="PNB" style="right:auto;overflow:hidden;">
+    {% set configuration = app['conf'].get(['registry', 'custom-link']) %}
+    <div class="PNB menu-bar" style="right:auto;overflow:hidden;">
       <ol>
         <li>
             <span class="title">
@@ -180,3 +181,43 @@
         {% include 'prod/notifications.html.twig' %}
     </div>
 {% endif %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // var key = 'help';
+        var configurationSettingLinks = JSON.parse('{{ configuration|json_encode|raw }}');
+
+
+        _.each(configurationSettingLinks, function (customLinksArray) {
+            for (key in customLinksArray) {
+                if (key === 'menu') {
+                    var sortedCustomLinks = _.sortBy(customLinksArray[key], 'linkOrder');
+
+                    _.each(sortedCustomLinks, function (linksData) {
+                        if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                            var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
+                                '<span>' +
+                                linksData.linkName +
+                                '</span></a></li>';
+                            $('#mainMenu .menu-bar ol').append(links);
+                        }
+                    });
+                } else if (key === 'help') {
+                    var sortedCustomLinks = _.sortBy(customLinksArray[key], 'linkOrder');
+
+                    _.each(sortedCustomLinks, function (linksData) {
+                        if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                            var links = '<div title="" class="context-menu-item menu3-custom-item">' +
+                                '<div style="" class="context-menu-item-inner shortcuts-trigger">' +
+                                '<a target="_blank" href="' + linksData.linkUrl + '">' +
+                                '<span>' + linksData.linkName + '</span></a></div></div>';
+                            $('.helpcontextmenu .context-menu-theme-vista').append(links);
+                        }
+                    });
+                }
+            }
+        });
+
+
+    });
+</script>
