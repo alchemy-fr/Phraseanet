@@ -53,7 +53,7 @@ class Installer
 
     private function createDB(Connection $dbConn = null, $template, User $admin)
     {
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
+        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '.xml');
         $databox = \databox::create($this->app, $dbConn, $template);
 
         $this->app->getAclForUser($admin)
