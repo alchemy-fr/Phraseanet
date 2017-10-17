@@ -1,8 +1,10 @@
 Phraseanet 4.0 - Digital Asset Management application
 =====================================================
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
 
+
+
+[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
 # Features :
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
@@ -30,3 +32,6 @@ See https://docs.phraseanet.com/Devel/
 # License :
 
 Phraseanet is licensed under GPL-v3 license.
+
+
+[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
