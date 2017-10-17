@@ -22,7 +22,6 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
-        $rawResults = ["a", "b"];
 
         $queryText = 'azerty';
         $queryAST = '<text:"azerty">';    // fake, real is really more complex
@@ -44,7 +43,6 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $result = new SearchEngineResult(
             $options,
             $results,
-            $rawResults,
 
             $queryText,    // the query as typed by the user
             $queryAST,
@@ -89,7 +87,6 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
-        $rawResults = ["a", "b"];
 
         $queryText = 'azerty';
         $queryAST = '<text:"azerty">';    // fake, real is really more complex
@@ -111,7 +108,6 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $result = new SearchEngineResult(
             $options,
             $results,
-            $rawResults,
 
             $queryText,    // the query as typed by the user
             $queryAST,

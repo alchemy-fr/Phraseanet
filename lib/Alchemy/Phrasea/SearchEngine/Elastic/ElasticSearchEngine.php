@@ -299,12 +299,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $res = $this->client->search($queryESLib);
 
         $results = new ArrayCollection();
-        $rawResults = [];
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
-            $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n);
-            $rawResults[$n] = $hit;
-            $n++;
+            $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
         }
 
         /** @var FacetsResponse $facets */
@@ -313,7 +310,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         return new SearchEngineResult(
             $options,
             $results,      // ArrayCollection of results
-            $rawResults,   // raw result
 
             $queryText,    // the query as typed by the user
             $queryAST,

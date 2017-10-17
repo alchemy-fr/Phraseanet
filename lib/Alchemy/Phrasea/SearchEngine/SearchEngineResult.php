@@ -17,7 +17,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 class SearchEngineResult
 {
     protected $results;
-    protected $rawResults;
 
     protected $queryText;
     protected $queryAST;
@@ -44,7 +43,6 @@ class SearchEngineResult
     /**
      * @param SearchEngineOptions $options
      * @param ArrayCollection $results
-     * @param Array $rawReults
      * @param string $queryText
      * @param string $queryAST
      * @param string $queryCompiled
@@ -63,7 +61,6 @@ class SearchEngineResult
     public function __construct(
         SearchEngineOptions $options,
         ArrayCollection $results,
-        $rawReults,
 
         $queryText,
         $queryAST,
@@ -83,7 +80,6 @@ class SearchEngineResult
     ) {
         $this->options = $options;
         $this->results = $results;
-        $this->rawResults = $rawReults;
 
         $this->queryText = $queryText;
         $this->queryAST = $queryAST;
@@ -118,11 +114,6 @@ class SearchEngineResult
     public function getResults()
     {
         return $this->results;
-    }
-
-    public function getRawResults()
-    {
-        return $this->rawResults;
     }
 
     /**
