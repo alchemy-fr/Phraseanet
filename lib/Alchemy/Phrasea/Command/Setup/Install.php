@@ -251,7 +251,7 @@ class Install extends Command
             $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
-        return [$dbConn, $templates->getTemplateName($template)];
+        return [$dbConn, $template];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)

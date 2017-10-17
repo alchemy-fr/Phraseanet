@@ -20,7 +20,7 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
-        $template = 'fr-simple';
+        $template = 'fr';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
@@ -36,7 +36,6 @@ class InstallTest extends \PhraseanetTestCase
             ->method('get')
             ->with('dialog')
             ->will($this->returnValue($dialog));
-
         $input->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($option) use ($infoDb, $template, $email, $password, $serverName, $dataPath) {

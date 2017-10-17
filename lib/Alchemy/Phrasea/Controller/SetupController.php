@@ -190,7 +190,7 @@ class SetupController extends Controller
                 $binaryData[$key] = $path;
             }
 
-            $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $this->app['phraseanet.documentary-structure']->getStructureAvailable()->getTemplateName($template), $binaryData);
+            $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
 
