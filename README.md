@@ -7,7 +7,7 @@ Phraseanet 4.0 - Digital Asset Management application
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
- - Bridge to Youtube/Dailymotion/Flickr
+ - Elasticsearch 
 
 #Documentation :
 
@@ -32,5 +32,4 @@ See https://docs.phraseanet.com/Devel/
 Phraseanet is licensed under GPL-v3 license.
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/alchemy-fr/phraseanet/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
