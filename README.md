@@ -1,7 +1,8 @@
 Phraseanet 4.0 - Digital Asset Management application
 =====================================================
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
+[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/4.0.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/4.0)
+
 
 #Features :
 
@@ -31,5 +32,5 @@ See https://docs.phraseanet.com/Devel/
 
 Phraseanet is licensed under GPL-v3 license.
 
-
+travis [![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
 
