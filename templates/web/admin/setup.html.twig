@@ -71,6 +71,31 @@
         // use html5 fallback validation if browser do not support required attribute
         var form = $("#GV_form");
         var inputs = form.find("input, select, textarea");
+
+        var languageOptionArray = [
+            {"value": "", "text": "{{ "setup::custom-link:select-language" | trans }}"},
+            {"value": "all", "text": "{{ "All" | trans }}"},
+            {"value": "fr", "text": "FR"},
+            {"value": "en", "text": "EN"},
+            {"value": "es", "text": "ES"},
+            {"value": "ar", "text": "AR"},
+            {"value": "de", "text": "DE"},
+            {"value": "du", "text": "DU"}
+        ];
+
+        var locationOptionArray = [
+            {"value": "", "text": "{{ "setup::custom-link:location" | trans }}"},
+            {"value": "help-menu", "text": "{{ "setup::custom-link:help-menu" | trans }}"},
+            {"value": "navigation-bar", "text": "{{ "setup::custom-link:navigation-bar" | trans }}"}
+        ];
+
+        var header = '<thead>' +
+            '<th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:order-link" | trans }}</th>' +
+            '<th></th>' +
+            '</thead>';
+
         // if required not supported, emulate it
         if (!Modernizr.input.required) {
             form.bind("submit", function (event) {
@@ -107,15 +132,12 @@
             //check if first row, then add header and body
             var rowCount = $('#custom-link-table tr').length;
             if (rowCount < 1) {
-                var header = '<thead><th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
-                    '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th><th>{{ "setup::custom-link:order-link" | trans }}</th>' +
-                    '<th></th></thead>';
 
                 $("#custom-link-table").append(header);
                 $("#custom-link-table").append('<tbody></tbody>');
             }
 
-            addRow(null);
+            addRow();
             return false;
         });
         $("#custom-link-table").on('click', '.close-row', function () {
@@ -124,7 +146,6 @@
             //remove header if no more rows
             if (rowCount <= 1) {
                 $("#custom-link-table").empty();
-                id = 0;
             }
             return false;
         });
@@ -137,38 +158,41 @@
                 var rowData = getDataOfRow(row);
                 customLinks.push(rowData);
             });
+
             $('#custom-links').val(JSON.stringify(customLinks));
         });
 
         function addRow(rowData) {
             //custom link
-            var rowForCustomLink = '<tr><td><input type="text" placeholder="Alchemy store" name="link-name" maxlength="30" required></td>' +
-                '<td><select name="link-language" required><option value="">{{ "setup::custom-link:select-language" | trans }}</option>' +
-                '<option value="all">{{ "All" | trans }}</option><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option>' +
-                '<option value="ar">AR</option><option value="de">DE</option><option value="du">DU</option></select></td>' +
-                '<td><input type="url" placeholder="https://alchemy.odoo.com" name="link-url" required></td><td><select name="link-location" required>' +
-                '<option value="">{{ "setup::custom-link:location" | trans }}</option><option value="help-menu">{{ "setup::custom-link:help-menu" | trans }}</option>' +
-                '<option value="navigation-bar">{{ "setup::custom-link:navigation-bar" | trans }}</option></select></td>' +
-                '<td><input type="number" min="1" name="link-order"></td><td><button class="btn btn-default close-row">' +
-                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button></td></tr>';
+            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName : "") + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}' + '" name="link-name" maxlength="30" required>';
+            var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';
+            var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));
+            var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));
+            var inputOrder = '<input type="number" min="1" name="link-order" value="' + (rowData ? rowData.linkOrder : "") + '">';
+            var closeButton = '<button class="btn btn-default close-row">' +
+                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button>';
 
-            if (rowData != null) {
-                rowForCustomLink = '<tr><td><input type="text" value="' + rowData.linkName + '" placeholder="Alchemy store" name="link-name" maxlength="30" required></td>' +
-                    '<td><select name="link-language" required><option value="">{{ "setup::custom-link:select-language" | trans }}</option>' +
-                    '<option value="all"' + (rowData.linkLanguage == 'all' ? "selected" : "") + '>{{ "All" | trans }}</option><option value="fr"' +
-                    (rowData.linkLanguage == 'fr' ? "selected" : "") + '>FR</option><option value="en"' + (rowData.linkLanguage == 'en' ? "selected" : "") + '>EN</option><option value="es">ES</option>' +
-                    '<option value="ar"' + (rowData.linkLanguage == 'fr' ? "ar" : "") + '>AR</option><option value="de"' + (rowData.linkLanguage == 'de' ? "selected" : "") +
-                    '>DE</option><option value="du"' + (rowData.linkLanguage == 'du' ? "selected" : "") + '>DU</option></select></td>' +
-                    '<td><input type="url" value="' + rowData.linkUrl + '" placeholder="https://alchemy.odoo.com" name="link-url" required></td><td><select name="link-location" required>' +
-                    '<option value="">{{ "setup::custom-link:location" | trans }}</option><option value="help-menu" ' + (rowData.linkLocation == 'help-menu' ? "selected" : "") + '>{{ "setup::custom-link:help-menu" | trans }}</option>' +
-                    '<option value="navigation-bar" ' + (rowData.linkLocation == 'navigation-bar' ? "selected" : "") + '>{{ "setup::custom-link:navigation-bar" | trans }}</option></select></td>' +
-                    '<td><input type="number" min="1" name="link-order" value="' + rowData.linkOrder + '"></td><td><button class="btn btn-default close-row">' +
-                    '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button></td></tr>';
-            }
+            var rowForCustomLink = '<tr>' +
+                '<td>' + inputName + '</td>' +
+                '<td>' + inputLanguage + '</td>' +
+                '<td>' + inputURL + '</td>' +
+                '<td>' + inputLocation + '</td>' +
+                '<td>' + inputOrder + '</td>' +
+                '<td>' + closeButton + '</td></tr>';
 
             $("#custom-link-table").append(rowForCustomLink);
         }
 
+        function generateSelectInput(inputName, optionArray, selectedValue) {
+            var html = $("<select></select>").attr("name", inputName);
+            _.each(optionArray, function (option) {
+                html.append($('<option>', {
+                    value: option.value,
+                    text: option.text
+                }).attr('selected', (selectedValue == option.value)));
+            });
+            return html[0].outerHTML;
+        }
 
         function getDataOfRow(row) {
             var row = $(row);
@@ -178,20 +202,17 @@
             linkObject.linkLanguage = row.find($('select[name="link-language"]')).val();
             linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
             linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
-            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() | 1;
+            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() || 1;
 
             return linkObject;
         }
 
 
         //create custom link table if data exist
-        var customLinksData = JSON.parse($('#custom-links').val());
+        var customLinksData = JSON.parse($('#custom-links').val() || '[]');
         if (customLinksData.length > 0) {
             var rowCount = $('#custom-link-table tr').length;
             if (rowCount < 1) {
-                var header = '<thead><th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
-                    '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th><th>{{ "setup::custom-link:order-link" | trans }}</th>' +
-                    '<th></th></thead>';
 
                 $("#custom-link-table").append(header);
                 $("#custom-link-table").append('<tbody></tbody>');
