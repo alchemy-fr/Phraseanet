@@ -22,8 +22,6 @@ use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
 class QueryController extends Controller
 {
     use SearchEngineAware;

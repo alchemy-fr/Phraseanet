@@ -66,7 +66,6 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $this->assertEquals($total, $result->getTotal());
         $this->assertEquals($suggestions, $result->getSuggestions());
         $this->assertEquals($results, $result->getResults());
-        $this->assertEquals($rawResults, $result->getRawResults());
 
         $this->assertEquals($queryText, $result->getQueryText());
         $this->assertEquals($queryAST, $result->getQueryAST());
