@@ -66,8 +66,8 @@ Menu contextuel
 .context-menu-theme-vista {
   background-image: none;
   background-color: $darkerBackgroundColor;
-  border: 1px solid #00b0e7;
-  border-radius: 5px;
+  border-bottom-left-radius: $defaultBorderRadius;
+  border-bottom-right-radius: $defaultBorderRadius;
 }
 
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner.published {
