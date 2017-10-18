@@ -185,8 +185,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // var key = 'help';
-        var configurationSettingLinks = JSON.parse({{ configuration|json_encode|raw }});
-
+        var configurationSettingLinks = {{ configuration|json_encode|raw }};
         //seperate array based on location of link
         var seperatedLinksByLocation = _.groupBy(configurationSettingLinks, "linkLocation");
 

@@ -54,6 +54,7 @@ class SetupController extends Controller
                 $registryData = $this->registryFormManipulator->getRegistryData($form, $this->configuration);
 
                 $this->configuration->set('registry', $registryData);
+                $this->configuration->set(['registry', 'custom-links'], json_decode($registryData["custom-links"], true));
             }
 
             // Do not return a 400 status code as not very well handled in calling JS.
