@@ -201,10 +201,10 @@ class QueryController extends Controller
                 foreach ($databox->get_meta_structure() as $field) {
                     $name = $field->get_name();
                     $fieldsInfos[$sbasId][$name] = [
-                        'label' => $field->get_label($this->app['locale']),
-                        'type' => $field->get_type(),
+                        'label'    => $field->get_label($this->app['locale']),
+                        'type'     => $field->get_type(),
                         'business' => $field->isBusiness(),
-                        'multi' => $field->is_multi(),
+                        'multi'    => $field->is_multi(),
                     ];
                     if (!isset($fieldLabels[$name])) {
                         $fieldLabels[$name] = $field->get_label($this->app['locale']);
@@ -220,21 +220,21 @@ class QueryController extends Controller
             $acl = $this->getAclForUser();
             $json['rawResults'] = [];
             /** @var ElasticsearchRecord $record */
-            foreach($result->getResults() as $record) {
+            foreach ($result->getResults() as $record) {
                 $rawRecord = $record->asArray();
 
                 $sbasId = $record->getDataboxId();
                 $baseId = $record->getBaseId();
 
                 $caption = $rawRecord['caption'];
-                if($acl && $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD)) {
+                if ($acl && $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD)) {
                     $caption = array_merge($caption, $rawRecord['privateCaption']);
                 }
 
                 // read the fields following the structure order
                 $rawCaption = [];
-                foreach($fieldsInfos[$sbasId] as $fieldName=>$fieldInfos) {
-                    if(array_key_exists($fieldName, $caption)) {
+                foreach ($fieldsInfos[$sbasId] as $fieldName => $fieldInfos) {
+                    if (array_key_exists($fieldName, $caption)) {
                         $rawCaption[$fieldName] = $caption[$fieldName];
                     }
                 }
@@ -282,6 +282,22 @@ class QueryController extends Controller
     }
 
     /**
+     * @return DisplaySettingService
+     */
+    private function getSettings()
+    {
+        return $this->app['settings'];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
      * Get a preview answer train
      *
      * @param  Request $request
@@ -312,21 +328,5 @@ class QueryController extends Controller
                 'selected' => $pos,
             ])
         ]);
-    }
-
-    /**
-     * @return DisplaySettingService
-     */
-    private function getSettings()
-    {
-        return $this->app['settings'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getUserManipulator()
-    {
-        return $this->app['manipulator.user'];
     }
 }

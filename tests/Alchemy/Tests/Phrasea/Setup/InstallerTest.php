@@ -75,7 +75,6 @@ class InstallerTest extends \PhraseanetTestCase
         $dataPath = __DIR__ . '/../../../../../datas/';
 
 
-
         $installer = new Installer($app);
         $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
 
