@@ -109,7 +109,7 @@ class BuildSubdefs extends Command
             ]
         ];
 
-        $this->setDescription('Build subviews');
+        $this->setDescription('All major operations on subviews eg: Re-generate all or specifics subdefs, delete old unused subview with parallelization capability');
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
         $this->addOption('mode',               null, InputOption::VALUE_REQUIRED,                             'preset working mode : ' . implode('|', array_keys($this->presets)));
         $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to (re)build ex. "image,video", dafault=ALL');
