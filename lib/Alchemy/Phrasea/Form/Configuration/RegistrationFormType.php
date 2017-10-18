@@ -25,6 +25,9 @@ class RegistrationFormType extends AbstractType
         $builder->add('auto-register-enabled', 'checkbox', [
             'label'        => 'Enable auto registration',
         ]);
+        $builder->add('user-email-mandatory', 'checkbox', [
+            'label'        => 'Disallow user connection without email',
+        ]);
     }
 
     public function getName()

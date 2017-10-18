@@ -241,3 +241,5 @@ embed_bundle:
 registry:
     actions:
         export-stamp-choice: false
+    registration:
+        user-email-mandatory: true
