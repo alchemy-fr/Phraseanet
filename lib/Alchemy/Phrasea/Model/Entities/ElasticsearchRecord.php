@@ -86,7 +86,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             'subdefs'        => $this->subdefs,
             'flags'          => $this->flags,
             'highlight'      => $this->highlight,
-       ];
+        ];
     }
 
     /**
@@ -145,6 +145,30 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     }
 
     /** {@inheritdoc} */
+    public function getDataboxId()
+    {
+        return $this->databoxId;
+    }
+
+    /** {@inheritdoc} */
+    public function setDataboxId($databoxId)
+    {
+        $this->databoxId = $databoxId;
+    }
+
+    /** {@inheritdoc} */
+    public function getRecordId()
+    {
+        return $this->recordId;
+    }
+
+    /** {@inheritdoc} */
+    public function setRecordId($recordId)
+    {
+        $this->recordId = $recordId;
+    }
+
+    /** {@inheritdoc} */
     public function getBaseId()
     {
         return $this->baseId;
@@ -178,18 +202,6 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setCreated(\DateTime $created = null)
     {
         $this->created = $created;
-    }
-
-    /** {@inheritdoc} */
-    public function getDataboxId()
-    {
-        return $this->databoxId;
-    }
-
-    /** {@inheritdoc} */
-    public function setDataboxId($databoxId)
-    {
-        $this->databoxId = $databoxId;
     }
 
     /** {@inheritdoc} */
@@ -233,30 +245,6 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setCollectionName($collectionName)
     {
         $this->collectionName = $collectionName;
-    }
-
-    /** {@inheritdoc} */
-    public function getOriginalName()
-    {
-        return $this->originalName;
-    }
-
-    /** {@inheritdoc} */
-    public function setOriginalName($originalName)
-    {
-        $this->originalName = $originalName;
-    }
-
-    /** {@inheritdoc} */
-    public function getRecordId()
-    {
-        return $this->recordId;
-    }
-
-    /** {@inheritdoc} */
-    public function setRecordId($recordId)
-    {
-        $this->recordId = $recordId;
     }
 
     /** {@inheritdoc} */
@@ -323,6 +311,18 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         }
 
         return $this->getOriginalName();
+    }
+
+    /** {@inheritdoc} */
+    public function getOriginalName()
+    {
+        return $this->originalName;
+    }
+
+    /** {@inheritdoc} */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
     }
 
     /**
