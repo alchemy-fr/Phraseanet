@@ -26,13 +26,16 @@ class NativeAuthentication implements PasswordAuthenticationInterface
     private $oldEncoder;
     /** @var UserRepository */
     private $repository;
+    /** @var  bool */
+    private $userEmailMandatory;
 
-    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo)
+    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo, $userEmailMandatory = false)
     {
         $this->userManipulator = $userManipulator;
         $this->encoder = $encoder;
         $this->oldEncoder = $oldEncoder;
         $this->repository = $repo;
+        $this->userEmailMandatory = $userEmailMandatory;
     }
 
     /**
@@ -40,7 +43,7 @@ class NativeAuthentication implements PasswordAuthenticationInterface
      */
     public function getUsrId($username, $password, Request $request)
     {
-        if (null === $user = $this->repository->findRealUserByLogin($username)) {
+        if (null === $user = $this->repository->findRealUserByLogin($username, $this->userEmailMandatory)) {
             return null;
         }
 

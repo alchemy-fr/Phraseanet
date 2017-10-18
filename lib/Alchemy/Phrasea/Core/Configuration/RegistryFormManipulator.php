@@ -96,6 +96,7 @@ class RegistryFormManipulator
             'registration' => [
                 'auto-select-collections' => true,
                 'auto-register-enabled' => false,
+                'user-email-mandatory' => true,
             ],
             'maintenance' => [
                 'message' => 'The application is down for maintenance',
