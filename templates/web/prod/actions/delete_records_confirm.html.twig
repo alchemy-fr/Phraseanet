@@ -8,31 +8,59 @@
         </div>
     {% endif %}
 
-    <form method="POST" action="{{ path('record_delete') }}">
+    <form style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
         {% if goingToTrash %}
-            <div class="well-small label-important" style="background-color: orange;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
-                <span class="ui-icon ui-icon-alert" ></span>
-                {{ "prod:app trash: move-to-trash" | trans }}
+            <div class="well-small label-important"
+                 style="background-color: orange;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;overflow: auto;">
+                <div class="dialog-left-section">
+                    <img src="/assets/common/images/icons/Icone-collection-corbeille.png" width="57" height="101"/>
+                </div>
+                <div class="dialog-right-section" style="margin-top: 10px;">
+                    <span>{{ "prod:app trash: move-to-trash" | trans }}</span>
+                    {% if records.stories().count() %}
+                        <label class="checkbox">
+                            <input type="checkbox" id="del_children" name="del_children"
+                                   value="1"> {{ "Also delete records that rely on groupings." | trans }}
+                        </label>
+                    {% endif %}
+                    <div class="form-actions" style="background-color:transparent;">
+                        <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }}
+                            ({{ nbEligibleDocuments }})
+                        </button>
+                        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+                        <span class="form-action-loader" style="display:none;">
+                            <img src="/assets/common/images/icons/loader000.gif"/>
+                        </span>
+                    </div>
+                </div>
             </div>
         {% else %}
-            <div class="well-small label-important" style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;">
-                <span class="ui-icon ui-icon-alert" ></span>
-                {{ "These records will be definitely deleted and can not be recovered" | trans }}
+            <div class="well-small label-important"
+                 style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;overflow: auto;">
+                <div class="dialog-left-section">
+                    <img src="/assets/common/images/icons/Icone-vider-corbeille.png" width="57" height="101"/>
+                </div>
+                <div class="dialog-right-section">
+                    <span>{{ "These records will be definitely deleted and can not be recovered" | trans }}</span>
+                    {% if records.stories().count() %}
+                        <label class="checkbox">
+                            <input type="checkbox" id="del_children" name="del_children"
+                                   value="1"> {{ "Also delete records that rely on groupings." | trans }}
+                        </label>
+                    {% endif %}
+                    <div class="form-actions" style="background-color:transparent;">
+                        <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }}
+                            ({{ nbEligibleDocuments }})
+                        </button>
+                        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+                        <span class="form-action-loader" style="display:none;">
+                        <img src="/assets/common/images/icons/loader000.gif"/>
+                    </span>
+                    </div>
+                </div>
             </div>
         {% endif %}
-        {% if records.stories().count() %}
-            <label class="checkbox">
-            <input type="checkbox" id="del_children" name="del_children" value="1"> {{ "Also delete records that rely on groupings." | trans }}
-          </label>
-        {% endif %}
-        <div class="form-actions" style="background-color:transparent;">
-            <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }} ({{ nbEligibleDocuments }})</button>
-            <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-            <span class="form-action-loader" style="display:none;">
-                <img src="/assets/common/images/icons/loader000.gif" />
-            </span>
-        </div>
     </form>
 
     <script type="text/javascript">
