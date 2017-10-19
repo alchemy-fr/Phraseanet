@@ -3151,9 +3151,9 @@
         <target state="translated">Nombre d'images par seconde</target>
         <jms:reference-file line="33">Media/Subdef/Video.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate">
+      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate" approved="no">
         <source>FrameRate</source>
-        <target state="new">FrameRate</target>
+        <target state="needs-translation">Cadence img/sec</target>
         <jms:reference-file line="364">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
@@ -12106,7 +12106,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="no">
         <source>setup::custom-link:location-link</source>
-        <target state="needs-translation">Placement</target>
+        <target state="needs-translation">Emplacement</target>
         <jms:reference-file line="94">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link" approved="no">
@@ -12127,12 +12127,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="1b09a3a0a8b0205f23b3fe59074f8dfd72d0b0ae" resname="setup::custom-link:placeholder-link-url" approved="yes">
         <source>setup::custom-link:placeholder-link-url</source>
-        <target state="translated">ex: https://www.monurl.corp</target>
+        <target state="translated">ex: https://docs.phraseanet.com</target>
         <jms:reference-file line="168">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1380c70f5190d6c0c38214fe24ac99272ef7bd2" resname="setup::custom-link:select-language" approved="yes">
         <source>setup::custom-link:select-language</source>
-        <target state="translated">Choisir un langue</target>
+        <target state="translated">Choisir une langue</target>
         <jms:reference-file line="76">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67572283912404fe90681e8566d880e1fd10d58e" resname="setup::custom-link:title-custom-link" approved="yes">
