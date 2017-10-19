@@ -12088,7 +12088,7 @@
       </trans-unit>
       <trans-unit id="0286ea45f1074802cfe8fbf84b7c439fb287d0de" resname="setup::custom-link:language-link" approved="yes">
         <source>setup::custom-link:language-link</source>
-        <target state="translated">Appear in language</target>
+        <target state="translated">Show in language</target>
         <jms:reference-file line="93">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51269c7ad5acb4ebf70560266a8739d608285ac4" resname="setup::custom-link:link-url" approved="yes">
