@@ -12094,35 +12094,35 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Affiché en</target>
         <jms:reference-file line="93">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51269c7ad5acb4ebf70560266a8739d608285ac4" resname="setup::custom-link:link-url" approved="no">
+      <trans-unit id="51269c7ad5acb4ebf70560266a8739d608285ac4" resname="setup::custom-link:link-url" approved="yes">
         <source>setup::custom-link:link-url</source>
-        <target state="needs-translation">Url de destination</target>
+        <target state="translated">Url de destination</target>
         <jms:reference-file line="94">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2de3bc78c6fb26b56dd934a81dc76afdba8c79ab" resname="setup::custom-link:location" approved="no">
+      <trans-unit id="2de3bc78c6fb26b56dd934a81dc76afdba8c79ab" resname="setup::custom-link:location" approved="yes">
         <source>setup::custom-link:location</source>
-        <target state="needs-translation">Sélectionner un emplacement</target>
+        <target state="translated">Sélectionner un emplacement</target>
         <jms:reference-file line="87">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="no">
+      <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="yes">
         <source>setup::custom-link:location-link</source>
-        <target state="needs-translation">Emplacement</target>
+        <target state="translated">Emplacement</target>
         <jms:reference-file line="94">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link" approved="no">
+      <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link" approved="yes">
         <source>setup::custom-link:name-link</source>
-        <target state="needs-translation">Nom du lien</target>
+        <target state="translated">Nom du lien</target>
         <jms:reference-file line="93">web/admin/setup.html.twig</jms:reference-file>
         <jms:reference-file line="167">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fdecb6454c7adeaeb05bac7f574ee70884900ca2" resname="setup::custom-link:navigation-bar" approved="no">
+      <trans-unit id="fdecb6454c7adeaeb05bac7f574ee70884900ca2" resname="setup::custom-link:navigation-bar" approved="yes">
         <source>setup::custom-link:navigation-bar</source>
-        <target state="needs-translation">Barre de Navigation</target>
+        <target state="translated">Barre de Navigation</target>
         <jms:reference-file line="89">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link" approved="no">
+      <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link" approved="yes">
         <source>setup::custom-link:order-link</source>
-        <target state="needs-translation">Ordre</target>
+        <target state="translated">Ordre d'affichage</target>
         <jms:reference-file line="95">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b09a3a0a8b0205f23b3fe59074f8dfd72d0b0ae" resname="setup::custom-link:placeholder-link-url" approved="yes">
