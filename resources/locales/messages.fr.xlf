@@ -1157,9 +1157,9 @@
         <target state="translated">Fréquence d'échantillonage</target>
         <jms:reference-file line="369">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec">
+      <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec" approved="yes">
         <source>Audio codec</source>
-        <target state="new">Audio codec</target>
+        <target state="translated">Audio Codec</target>
         <jms:reference-file line="379">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="27be4ad944410219f1a8dd01cc5e216a09c16646" resname="AudioSamplerate" approved="yes">
@@ -1716,9 +1716,9 @@
         <target state="translated">Espace colorimétrique</target>
         <jms:reference-file line="62">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace">
+      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace" approved="yes">
         <source>Colorspace</source>
-        <target state="new">Colorspace</target>
+        <target state="translated">Colorspace</target>
         <jms:reference-file line="389">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
@@ -3151,9 +3151,9 @@
         <target state="translated">Nombre d'images par seconde</target>
         <jms:reference-file line="33">Media/Subdef/Video.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate" approved="no">
+      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate" approved="yes">
         <source>FrameRate</source>
-        <target state="needs-translation">Cadence img/sec</target>
+        <target state="translated">Cadence img/sec</target>
         <jms:reference-file line="364">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
@@ -3368,9 +3368,9 @@
         <target state="translated">Adresse IP</target>
         <jms:reference-file line="28">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4f325d995b6d028ccc75771b1679537b623521c4" resname="ISO">
+      <trans-unit id="4f325d995b6d028ccc75771b1679537b623521c4" resname="ISO" approved="yes">
         <source>ISO</source>
-        <target state="new">ISO</target>
+        <target state="translated">ISO</target>
         <jms:reference-file line="341">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16a5173a6d384d155354f429d72834cd0bd6bc54" resname="ISO sensibility" approved="yes">
@@ -4058,9 +4058,9 @@
         <target state="translated">Type Mime</target>
         <jms:reference-file line="14">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType">
+      <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType" approved="yes">
         <source>MimeType</source>
-        <target state="new">MimeType</target>
+        <target state="translated">Mime Type</target>
         <jms:reference-file line="394">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
@@ -4535,9 +4535,9 @@
         <target state="translated">Normale</target>
         <jms:reference-file line="151">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation">
+      <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation" approved="yes">
         <source>Orientation</source>
-        <target state="new">Orientation</target>
+        <target state="translated">Orientation</target>
         <jms:reference-file line="384">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name" approved="yes">
@@ -7016,9 +7016,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Codec Vidéos</target>
         <jms:reference-file line="34">Media/Subdef/Video.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="534048d6c768f47f83f67c0498e6d4ecf5cff4bb" resname="Video codec">
+      <trans-unit id="534048d6c768f47f83f67c0498e6d4ecf5cff4bb" resname="Video codec" approved="yes">
         <source>Video codec</source>
-        <target state="new">Video codec</target>
+        <target state="translated">Video Codec</target>
         <jms:reference-file line="374">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56b71e89fb1079caaadefd0889e9a22e8b0560e3" resname="Videos" approved="yes">
