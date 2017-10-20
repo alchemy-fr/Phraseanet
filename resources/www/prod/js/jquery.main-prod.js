@@ -1728,7 +1728,7 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: '310x176',
+        size: '300x178',
         title: language.deleteRecords
     });
 

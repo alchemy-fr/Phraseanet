@@ -8,11 +8,11 @@
         </div>
     {% endif %}
 
-    <form style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
+    <form style="margin: 0; height: 110px;" method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
         {% if goingToTrash %}
             <div class="well-small label-important"
-                 style="background-color: orange;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;overflow: auto;">
+                 style="background-color: #ffef22;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 100%;">
                 <div class="dialog-left-section">
                     <img src="/assets/common/images/icons/Icone-collection-corbeille.png" width="57" height="101"/>
                 </div>
@@ -37,7 +37,7 @@
             </div>
         {% else %}
             <div class="well-small label-important"
-                 style="background-color: red;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;overflow: auto;">
+                 style="background-color: #ed1c24;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 100%;">
                 <div class="dialog-left-section">
                     <img src="/assets/common/images/icons/Icone-vider-corbeille.png" width="57" height="101"/>
                 </div>
