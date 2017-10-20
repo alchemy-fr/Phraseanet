@@ -244,16 +244,30 @@ td span.text_block_bold {
 
 .dialog-left-section {
   float: left;
-  width: 25%;
-  padding: 4px 0px;
+  width: 28%;
+  height: 100%;
+  text-align: center;
+  line-height: 110px;
+  img {
+    display: inline-block;
+    vertical-align: middle;
+  }
 }
 
 .dialog-right-section {
   float: left;
-  width: 75%;
+  width: 72%;
+  height: 100%;
+  span {
+    padding-top: 10px;
+    padding-left: 2px;
+    padding-right: 2px;
+    display: block;
+    line-height: 14px;
+  }
   .form-actions {
     position: absolute;
-    bottom: 16px;
+    bottom: 24px;
     padding: 0;
     margin: 10px 0 0 0;
     border: none;
@@ -262,7 +276,8 @@ td span.text_block_bold {
       color: #fff;
       font-family: Helvetica;
       background: #808080;
-      margin: 4px;
+      margin: 2px;
+      padding: 0px 10px;
     }
     .btn:hover {
       background: #3b3b3b;
