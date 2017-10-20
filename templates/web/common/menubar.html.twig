@@ -208,7 +208,7 @@
                 _.each(sortedCustomLinks, function (linksData) {
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
                         var links = '<div title="" class="context-menu-item menu3-custom-item">' +
-                            '<div style="" class="context-menu-item-inner shortcuts-trigger">' +
+                            '<div style="" class="context-menu-item-inner">' +
                             '<a target="_blank" href="' + linksData.linkUrl + '">' +
                             '<span>' + linksData.linkName + '</span></a></div></div>';
                         $('.helpcontextmenu .context-menu-theme-vista').append(links);
