@@ -12132,9 +12132,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Barre de Navigation</target>
         <jms:reference-file line="89">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link" approved="yes">
+      <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link" approved="no">
         <source>setup::custom-link:order-link</source>
-        <target state="translated">Ordre d'affichage</target>
+        <target state="needs-translation">Ordre</target>
         <jms:reference-file line="95">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b09a3a0a8b0205f23b3fe59074f8dfd72d0b0ae" resname="setup::custom-link:placeholder-link-url" approved="yes">
