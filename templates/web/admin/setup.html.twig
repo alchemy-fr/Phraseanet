@@ -90,8 +90,10 @@
         ];
 
         var header = '<thead>' +
-            '<th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
-            '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:name-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:language-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:link-url" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:location-link" | trans }}</th>' +
             '<th>{{ "setup::custom-link:order-link" | trans }}</th>' +
             '<th></th>' +
             '</thead>';
@@ -164,7 +166,7 @@
 
         function addRow(rowData) {
             //custom link
-            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName : "") + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}' + '" name="link-name" maxlength="30" required>';
+            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "") + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}' + '" name="link-name" maxlength="30" required>';
             var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';
             var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));
             var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));
