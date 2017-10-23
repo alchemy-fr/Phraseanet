@@ -1464,6 +1464,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->app['orm.em']->remove($basket_element);
         }
 
+        $feedItemsRepository = $this->app['repo.feed-items'];
+        $feedItems = $feedItemsRepository->findByRecordId($this->getRecordId());
+        if($feedItems)
+        {
+            foreach ($feedItems as $feedItem){
+                if($feedItem->getEntry()->getItems()->count() == 1)
+                {
+                    $this->app['orm.em']->remove($feedItem->getEntry());
+                }
+                else
+                {
+                    $this->app['orm.em']->remove($feedItem);
+                }
+            }
+        }
+
         $this->app['orm.em']->flush();
 
         $this->app['filesystem']->remove($ftodel);
