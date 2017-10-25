@@ -59,9 +59,21 @@ $proposalsFacetHoverColor: #FFF !default;
     margin-left: 0;
     border-left: 4px solid $mediumBackgroundColor;
     border-bottom: 1px solid $mediumBorderColor;
+    .newNode {
+      position: relative;
+      overflow: auto;
+      clear: both;
+    }
+    .dataNode {
+      float: left;
+      width: 65%;
+      height: 100%;
+    }
     .fancytree-title {
       font-size: $xmediumFontSize;
       margin-left: 10px;
+      float: left;
+      width: 30%;
     }
     &:hover {
       border-left: 4px solid $proposalColor;
@@ -120,7 +132,7 @@ $proposalsFacetHoverColor: #FFF !default;
 
   .facetFilter_AND {
     font-weight: normal;
-    position: absolute;
+    position: initial;
     width: 127px;
     height: 25px;
     line-height: 25px;
@@ -151,7 +163,7 @@ $proposalsFacetHoverColor: #FFF !default;
   }
 
   .facetFilter-label {
-    position: absolute;
+    position: relative;
     left: 13px;
     right: 14px;
     overflow: hidden;
