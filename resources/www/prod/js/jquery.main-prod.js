@@ -701,6 +701,11 @@ function getFacetsTree() {
             renderNode: function(event, data){
                 var facetFilter = "";
                 if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
+                    //remove existing facets
+                    $(".fancytree-folder", data.node.li)
+                        .children()
+                        .not('.fancytree-expander, .fancytree-title')
+                        .remove();
                     facetFilter = selectedFacetValues[data.node.title].value.label;
 
                     var s_label = document.createElement("SPAN");
