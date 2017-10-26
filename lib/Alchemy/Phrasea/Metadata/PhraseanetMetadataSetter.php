@@ -65,14 +65,7 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                if (\DateTime::createFromFormat('Y:m:d H:i:s', $value) !== FALSE) {
-                    $dateValue = new \DateTime($value);
-                    $data['value'] = $dateValue->format('Y/m/d');
-                }
-                else{
-                    $data['value'] = $value;
-                }
-
+                $data['value'] = $value;
                 $metadataInRecordFormat[] = $data;
             }
         }
@@ -97,7 +90,7 @@ class PhraseanetMetadataSetter
                 $groups[$tagName] = [];
             }
 
-            $groups[$tagName][] = $databoxField->get_name();
+            $groups[$tagName] = [$databoxField->get_type() => $databoxField->get_name()];
         }
 
         return $groups;
@@ -121,9 +114,16 @@ class PhraseanetMetadataSetter
                 continue;
             }
 
-            foreach ($databoxFields[$tagName] as $fieldName) {
+            foreach ($databoxFields[$tagName] as $fieldType => $fieldName) {
                 if (!isset($metadataPerField[$fieldName])) {
                     $metadataPerField[$fieldName] = [];
+                }
+
+                if(strtolower($fieldType) === 'date')
+                {
+                    $metadataValue = $metadata->getValue();
+                    $dateValue = new \Datetime(preg_replace('/:|-/', "/", $metadataValue->asString(),2));
+                    $metadataValue->set($dateValue->format('Y/m/d'));
                 }
 
                 $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
