@@ -153,6 +153,8 @@ $proposalsFacetHoverColor: #FFF !default;
     padding-right: 13px;
     display: inline-block;
     margin: 2px 0px;
+    float: right;
+    margin-right: 10px;
     //margin-top: 11px;
   }
 
@@ -172,12 +174,12 @@ $proposalsFacetHoverColor: #FFF !default;
     //margin-top: 11px;
     display: inline-block;
     margin: 2px 0px;
+    float: right;
+    margin-right: 10px;
   }
 
   .facetFilter-label {
     position: relative;
-    left: 13px;
-    right: 14px;
     overflow: hidden;
     cursor: default;
     line-height: 25px;
