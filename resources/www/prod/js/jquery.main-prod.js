@@ -614,7 +614,7 @@ function loadFacets(facets) {
             title: facet.label,
             folder: true,
             children: values,
-            expanded: _.isUndefined(selectedFacetValues[facet.name])
+            expanded: true
         };
     });
 
@@ -624,7 +624,12 @@ function loadFacets(facets) {
 
     treeSource = shouldFilterSingleContent(treeSource, filterFacet);
 
-    return getFacetsTree().reload(treeSource);
+    return getFacetsTree().reload(treeSource)
+        .done(function () {
+            _.each($('#proposals').find('.fancytree-expanded'), function (element) {
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+            });
+        });
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
@@ -706,12 +711,18 @@ function getFacetsTree() {
             renderNode: function(event, data){
                 var facetFilter = "";
                 if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    var dataNode = document.createElement('div');
-                    dataNode.setAttribute("class", "dataNode");
-                    $(".fancytree-folder", data.node.li).append(
-                        dataNode
-                    );
+                    if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
+                        var dataNode = document.createElement('div');
+                        dataNode.setAttribute("class", "dataNode");
+                        $(".fancytree-folder", data.node.li).append(
+                            dataNode
+                        );
+                    } else {
+                        //remove existing facets
+                        $(".dataNode", data.node.li).empty();
+                    }
                     _.each(selectedFacetValues[data.node.title], function (facetValue) {
+
                         facetFilter = facetValue.value.label;
 
                         var s_label = document.createElement("SPAN");
@@ -739,12 +750,16 @@ function getFacetsTree() {
                         s_facet.appendChild(s_label);
                         s_closer = $(s_facet.appendChild(s_closer));
                         s_closer.data("facetTitle", data.node.title);
+                        s_closer.data("facetFilter", facetFilter);
 
                         s_closer.click(
                             function (event) {
                                 event.stopPropagation();
                                 var facetTitle = $(this).data("facetTitle");
-                                delete selectedFacetValues[facetTitle];
+                                selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
+                                    return obj.value.label == facetFilter;
+                                });
+                                //delete selectedFacetValues[facetTitle];
                                 facetCombinedSearch();
                                 return false;
                             }
@@ -756,7 +771,7 @@ function getFacetsTree() {
                         $(".fancytree-folder .dataNode", data.node.li).append(
                             newNode
                         );
-                    })
+                    });
                 }
             }
         });
