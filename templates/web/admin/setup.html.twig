@@ -34,27 +34,29 @@
 {{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'autocomplete' : 'off', 'class' : 'form-horizontal'}}) }}
 {{ form_errors(form) }}
 {% for daform in form %}
-    <fieldset>
-        <legend>{{ daform.vars['label'] }}</legend>
-        {%  for formdata in daform %}
-            <div class="control-group">
-                {{ form_errors(formdata) }}
-                {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
-                <div class="controls">
-                    {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
-                </div>
+    {% if daform.vars['label'] != null %}
+        <fieldset>
+            <legend>{{ daform.vars['label'] }}</legend>
+            {% for formdata in daform %}
+                <div class="control-group">
+                    {{ form_errors(formdata) }}
+                    {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                    <div class="controls">
+                        {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                    </div>
 
-                <div>{{ formdata.vars['help_message'] }}</div>
-                {{  form_rest(formdata) }}
-            </div>
-        {% endfor %}
-        {{ form_rest(daform) }}
-    </fieldset>
+                    <div>{{ formdata.vars['help_message'] }}</div>
+                    {{ form_rest(formdata) }}
+                </div>
+            {% endfor %}
+            {{ form_rest(daform) }}
+        </fieldset>
+    {% endif %}
 {%  endfor %}
 <legend>{{ "setup::custom-link:title-custom-link" | trans }}</legend>
 <table id="custom-link-table">
 </table>
-<button id="add-row" class="btn btn-success">{{ "setup::custom-link:add-link" }}</button>
+<button id="add-row" class="btn btn-success">{{ "setup::custom-link:add-link" | trans }}</button>
 <div style="clear: both;"></div>
 <div class="well well-large">
     <div style="max-width: 400px;margin: 0 auto 10px;">
@@ -69,6 +71,33 @@
         // use html5 fallback validation if browser do not support required attribute
         var form = $("#GV_form");
         var inputs = form.find("input, select, textarea");
+
+        var languageOptionArray = [
+            {"value": "", "text": "{{ "setup::custom-link:select-language" | trans }}"},
+            {"value": "all", "text": "{{ "All" | trans }}"},
+            {"value": "fr", "text": "FR"},
+            {"value": "en", "text": "EN"},
+            {"value": "es", "text": "ES"},
+            {"value": "ar", "text": "AR"},
+            {"value": "de", "text": "DE"},
+            {"value": "du", "text": "DU"}
+        ];
+
+        var locationOptionArray = [
+            {"value": "", "text": "{{ "setup::custom-link:location" | trans }}"},
+            {"value": "help-menu", "text": "{{ "setup::custom-link:help-menu" | trans }}"},
+            {"value": "navigation-bar", "text": "{{ "setup::custom-link:navigation-bar" | trans }}"}
+        ];
+
+        var header = '<thead>' +
+            '<th>{{ "setup::custom-link:name-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:language-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:link-url" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:location-link" | trans }}</th>' +
+            '<th>{{ "setup::custom-link:order-link" | trans }}</th>' +
+            '<th></th>' +
+            '</thead>';
+
         // if required not supported, emulate it
         if (!Modernizr.input.required) {
             form.bind("submit", function (event) {
@@ -101,34 +130,16 @@
             });
         }
 
-        var id = 1;
-
         $("#add-row").click(function () {
             //check if first row, then add header and body
             var rowCount = $('#custom-link-table tr').length;
             if (rowCount < 1) {
-                var header = '<thead><th>{{ "setup::custom-link:name-link" | trans }}</th><th>{{ "setup::custom-link:language-link" | trans }}</th>' +
-                    '<th>{{ "setup::custom-link:link-url" | trans }}</th><th>{{ "setup::custom-link:location-link" | trans }}</th><th>{{ "setup::custom-link:order-link" | trans }}</th>' +
-                    '<th></th></thead>';
 
                 $("#custom-link-table").append(header);
                 $("#custom-link-table").append('<tbody></tbody>');
             }
 
-            id++;
-
-            //custom link
-            var rowForCustomLink = '<tr><td><input type="text" placeholder="Alchemy store" name="link-name" maxlength="30" required></td>' +
-                '<td><select name="link-language" required><option value="">{{ "setup::custom-link:select-language" | trans }}</option>' +
-                '<option value="all">{{ "All" | trans }}</option><option value="fr">FR</option><option value="en">EN</option><option value="es">ES</option>' +
-                '<option value="ar">AR</option><option value="de">DE</option><option value="du">DU</option></select></td>' +
-                '<td><input type="url" placeholder="https://alchemy.odoo.com" name="link-url" required></td><td><select name="link-location" required>' +
-                '<option value="">{{ "setup::custom-link:location" | trans }}</option><option value="help-menu">{{ "setup::custom-link:help-menu" | trans }}</option>' +
-                '<option value="navigation-bar">{{ "setup::custom-link:navigation-bar" | trans }}</option></select></td>' +
-                '<td><input type="number" min="1" name="link-order"></td><td><button class="btn btn-default close-row">' +
-                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button></td></tr>';
-
-            $("#custom-link-table").append(rowForCustomLink);
+            addRow();
             return false;
         });
         $("#custom-link-table").on('click', '.close-row', function () {
@@ -137,32 +148,53 @@
             //remove header if no more rows
             if (rowCount <= 1) {
                 $("#custom-link-table").empty();
-                id = 0;
             }
             return false;
         });
 
         $('form').on('submit', function () {
             // do validation for custom link
-            var linkObjects = [];
-            var helpObjects = [];
-            var menuObjects = [];
+            var customLinks = [];
+
             $('#custom-link-table tbody tr').each(function (i, row) {
                 var rowData = getDataOfRow(row);
-                if (rowData.linkLocation === "help-menu") {
-                    helpObjects.push(rowData);
-                } else {
-                    menuObjects.push(rowData);
-                }
+                customLinks.push(rowData);
             });
-            if (helpObjects.length > 0) {
-                linkObjects['help'] = helpObjects;
-            }
-            if (menuObjects.length > 0) {
-                linkObjects['menu'] = menuObjects;
-            }
+
+            $('#custom-links').val(JSON.stringify(customLinks));
         });
 
+        function addRow(rowData) {
+            //custom link
+            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "") + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}' + '" name="link-name" maxlength="30" required>';
+            var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';
+            var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));
+            var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));
+            var inputOrder = '<input type="number" min="1" name="link-order" value="' + (rowData ? rowData.linkOrder : "") + '">';
+            var closeButton = '<button class="btn btn-default close-row">' +
+                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button>';
+
+            var rowForCustomLink = '<tr>' +
+                '<td>' + inputName + '</td>' +
+                '<td>' + inputLanguage + '</td>' +
+                '<td>' + inputURL + '</td>' +
+                '<td>' + inputLocation + '</td>' +
+                '<td>' + inputOrder + '</td>' +
+                '<td>' + closeButton + '</td></tr>';
+
+            $("#custom-link-table").append(rowForCustomLink);
+        }
+
+        function generateSelectInput(inputName, optionArray, selectedValue) {
+            var html = $("<select></select>").attr("name", inputName);
+            _.each(optionArray, function (option) {
+                html.append($('<option>', {
+                    value: option.value,
+                    text: option.text
+                }).attr('selected', (selectedValue == option.value)));
+            });
+            return html[0].outerHTML;
+        }
 
         function getDataOfRow(row) {
             var row = $(row);
@@ -172,9 +204,25 @@
             linkObject.linkLanguage = row.find($('select[name="link-language"]')).val();
             linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
             linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
-            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() | 1;
+            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() || 1;
 
             return linkObject;
+        }
+
+
+        //create custom link table if data exist
+        var customLinksData = JSON.parse($('#custom-links').val() || '[]');
+        if (customLinksData.length > 0) {
+            var rowCount = $('#custom-link-table tr').length;
+            if (rowCount < 1) {
+
+                $("#custom-link-table").append(header);
+                $("#custom-link-table").append('<tbody></tbody>');
+            }
+
+            _.each(customLinksData, function (linkData) {
+                addRow(linkData);
+            })
         }
 
     });

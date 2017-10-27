@@ -1,5 +1,5 @@
 <div id="mainMenu" class="">
-    {% set configuration = app['conf'].get(['registry', 'custom-link']) %}
+    {% set configuration = app['conf'].get(['registry', 'custom-links']) %}
     <div class="PNB menu-bar" style="right:auto;overflow:hidden;">
       <ol>
         <li>
@@ -138,7 +138,8 @@
           <a target="_blank" href="https://docs.phraseanet.com/4.0/">
             <span>
               {{ 'phraseanet:: aide' | trans }}
-              <span style="display:inline-block;cursor:pointer;padding:0;border:none;" id="help-trigger"> <i class="icon-caret-down"></i></span>
+                <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
+                      id="help-trigger"> <i class="icon-caret-down"></i></span>
             </span>
           </a>
           <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu helpcontextmenu">
@@ -185,38 +186,37 @@
 <script type="text/javascript">
     $(document).ready(function () {
         // var key = 'help';
-        var configurationSettingLinks = JSON.parse('{{ configuration|json_encode|raw }}');
+        var configurationSettingLinks = {{ configuration|json_encode|raw }};
+        //seperate array based on location of link
+        var seperatedLinksByLocation = _.groupBy(configurationSettingLinks, "linkLocation");
 
+        for (key in seperatedLinksByLocation) {
+            if (key === 'navigation-bar') {
+                var sortedCustomLinks = _.sortBy(seperatedLinksByLocation[key], 'linkOrder');
 
-        _.each(configurationSettingLinks, function (customLinksArray) {
-            for (key in customLinksArray) {
-                if (key === 'menu') {
-                    var sortedCustomLinks = _.sortBy(customLinksArray[key], 'linkOrder');
+                _.each(sortedCustomLinks, function (linksData) {
+                    if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                        var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
+                            '<span>' +
+                            linksData.linkName +
+                            '</span></a></li>';
+                        $('#mainMenu .menu-bar ol').append(links);
+                    }
+                });
+            } else if (key === 'help-menu') {
+                var sortedCustomLinks = _.sortBy(seperatedLinksByLocation[key], 'linkOrder');
 
-                    _.each(sortedCustomLinks, function (linksData) {
-                        if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
-                            var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
-                                '<span>' +
-                                linksData.linkName +
-                                '</span></a></li>';
-                            $('#mainMenu .menu-bar ol').append(links);
-                        }
-                    });
-                } else if (key === 'help') {
-                    var sortedCustomLinks = _.sortBy(customLinksArray[key], 'linkOrder');
-
-                    _.each(sortedCustomLinks, function (linksData) {
-                        if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
-                            var links = '<div title="" class="context-menu-item menu3-custom-item">' +
-                                '<div style="" class="context-menu-item-inner shortcuts-trigger">' +
-                                '<a target="_blank" href="' + linksData.linkUrl + '">' +
-                                '<span>' + linksData.linkName + '</span></a></div></div>';
-                            $('.helpcontextmenu .context-menu-theme-vista').append(links);
-                        }
-                    });
-                }
+                _.each(sortedCustomLinks, function (linksData) {
+                    if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                        var links = '<div title="" class="context-menu-item menu3-custom-item">' +
+                            '<div style="" class="context-menu-item-inner">' +
+                            '<a target="_blank" href="' + linksData.linkUrl + '">' +
+                            '<span>' + linksData.linkName + '</span></a></div></div>';
+                        $('.helpcontextmenu .context-menu-theme-vista').append(links);
+                    }
+                });
             }
-        });
+        }
 
 
     });

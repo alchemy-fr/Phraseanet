@@ -118,7 +118,7 @@ $proposalsFacetHoverColor: #FFF !default;
     cursor: pointer;
   }
 
-  .facetFilter {
+  .facetFilter_AND {
     font-weight: normal;
     position: absolute;
     width: 127px;
@@ -127,7 +127,23 @@ $proposalsFacetHoverColor: #FFF !default;
     vertical-align: middle;
     border-radius: 4px;
     right: 28px;
-    background-color: $proposalColor;
+    background-color: $proposalColor_AND;
+    color: $proposalFacetColor;
+    padding-left: 13px;
+    padding-right: 13px;
+    margin-top: 11px;
+  }
+
+  .facetFilter_EXCEPT {
+    font-weight: normal;
+    position: absolute;
+    width: 127px;
+    height: 25px;
+    line-height: 25px;
+    vertical-align: middle;
+    border-radius: 4px;
+    right: 28px;
+    background-color: $proposalColor_EXCEPT;
     color: $proposalFacetColor;
     padding-left: 13px;
     padding-right: 13px;

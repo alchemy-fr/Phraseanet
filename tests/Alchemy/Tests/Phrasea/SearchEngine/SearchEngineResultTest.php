@@ -35,7 +35,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $error = 'this is an error message';
         $warning = 'this is a warning message';
         $suggestions = new ArrayCollection([
-                        new SearchEngineSuggestion($queryText, 'Richard', 22)
+            new SearchEngineSuggestion($queryText, 'Richard', 22)
         ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';
@@ -99,7 +99,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $error = 'this is an error message';
         $warning = 'this is a warning message';
         $suggestions = new ArrayCollection([
-                        new SearchEngineSuggestion($queryText, 'Richard', 22)
+            new SearchEngineSuggestion($queryText, 'Richard', 22)
         ]);
         $propositions = new ArrayCollection();
         $indexes = 'new-index';

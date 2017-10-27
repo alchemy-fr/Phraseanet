@@ -586,6 +586,14 @@ function initAnswerForm() {
     }
 }
 
+/*
+ selectedFacetValues[]
+ key : facet.name
+ value : {
+ 'value' : facet.value,
+ 'mode' : "AND"|"EXCEPT"
+ }
+ */
 var selectedFacetValues = [];
 
 function loadFacets(facets) {
@@ -683,14 +691,17 @@ function getFacetsTree() {
                 var query = data.node.data.query;
                 if (query) {
                     var facet = data.node.parent;
-                    selectedFacetValues[facet.title] = data.node.data;
+                    selectedFacetValues[facet.title] = {
+                        value: data.node.data,
+                        mode: event.altKey ? "EXCEPT" : "AND"
+                    };
                     facetCombinedSearch();
                 }
             },
             renderNode: function(event, data){
                 var facetFilter = "";
                 if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    facetFilter = selectedFacetValues[data.node.title].label;
+                    facetFilter = selectedFacetValues[data.node.title].value.label;
 
                     var s_label = document.createElement("SPAN");
                     s_label.setAttribute("class", "facetFilter-label");
@@ -713,7 +724,7 @@ function getFacetsTree() {
                     s_label.appendChild(s_gradient);
 
                     var s_facet = document.createElement("SPAN");
-                    s_facet.setAttribute("class", "facetFilter");
+                    s_facet.setAttribute("class", "facetFilter" + '_' + selectedFacetValues[data.node.title].mode);
                     s_facet.appendChild(s_label);
                     s_closer = $(s_facet.appendChild(s_closer));
                     s_closer.data("facetTitle", data.node.title);
@@ -741,15 +752,30 @@ function getFacetsTree() {
 
 function facetCombinedSearch() {
     var q = $("#EDIT_query").val();
-    var q_facet = "";
+    var q_facet_and = "";
+    var q_facet_except = "";
     _.each(_.values(selectedFacetValues), function(facetValue) {
-        q_facet += (q_facet ? " AND " : "") + '(' + facetValue.query + ')';
+        switch(facetValue.mode) {
+            case "AND":
+                q_facet_and += (q_facet_and ? " AND " : "") + '(' + facetValue.value.query + ')';
+                break;
+            case "EXCEPT":
+                q_facet_except += (q_facet_except ? " OR " : "") + '(' + facetValue.value.query + ')';
+                break;
+        }
     });
-    if(q_facet) {
+    if(!q && !q_facet_and && q_facet_except) {
+        // too bad : an except with no query.
+        q = "created_on>1900/01/01";    // fake "all"
+    }
+    if(q_facet_and != "") {
         if(q) {
             q = '(' + q + ') AND '
         }
-        q += q_facet;
+        q += q_facet_and;
+    }
+    if(q_facet_except != "") {
+        q = '(' + q + ') EXCEPT (' + q_facet_except + ')';
     }
 
     checkFilters();
@@ -1702,7 +1728,7 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: 'Small',
+        size: '300x178',
         title: language.deleteRecords
     });
 

@@ -8,7 +8,8 @@ Phraseanet 4.0 - Digital Asset Management application
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
- - Elasticsearch 
+ - Elasticsearch search engine
+ - Multiple resolution assets generation
 
 #Documentation :
 

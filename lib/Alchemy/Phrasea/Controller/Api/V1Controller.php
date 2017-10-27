@@ -104,14 +104,6 @@ class V1Controller extends Controller
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
-    public function getBadRequestAction(Request $request, $message = '')
-    {
-        $response = Result::createError($request, 400, $message)->createResponse();
-        $response->headers->set('X-Status-Code', $response->getStatusCode());
-
-        return $response;
-    }
-
     /**
      * Return an array of key-values information about scheduler
      *
@@ -171,9 +163,12 @@ class V1Controller extends Controller
         ];
     }
 
-    public function showTaskAction(Request $request, Task $task)
+    /**
+     * @return TaskRepository
+     */
+    private function getTaskRepository()
     {
-        return Result::create($request, ['task' => $this->showTask($task)])->createResponse();
+        return $this->app['repo.tasks'];
     }
 
     public function startTaskAction(Request $request, Task $task)
@@ -181,6 +176,19 @@ class V1Controller extends Controller
         $this->getTaskManipulator()->start($task);
 
         return $this->showTaskAction($request, $task);
+    }
+
+    /**
+     * @return TaskManipulator
+     */
+    private function getTaskManipulator()
+    {
+        return $this->app['manipulator.task'];
+    }
+
+    public function showTaskAction(Request $request, Task $task)
+    {
+        return Result::create($request, ['task' => $this->showTask($task)])->createResponse();
     }
 
     public function stopTaskAction(Request $request, Task $task)
@@ -209,6 +217,46 @@ class V1Controller extends Controller
         return $this->showTaskAction($request, $task);
     }
 
+    public function getBadRequestAction(Request $request, $message = '')
+    {
+        $response = Result::createError($request, 400, $message)->createResponse();
+        $response->headers->set('X-Status-Code', $response->getStatusCode());
+
+        return $response;
+    }
+
+    public function showPhraseanetConfigurationAction(Request $request)
+    {
+        $ret = array_merge(
+            $this->getConfigInformation(),
+            $this->getCacheInformation(),
+            $this->getGlobalValuesInformation()
+        );
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    private function getConfigInformation()
+    {
+        $ret = [];
+
+        /** @var Version $version */
+        $version = $this->app['phraseanet.version'];
+        $ret['phraseanet']['version'] = [
+            'name'   => $version->getName(),
+            'number' => $version->getNumber(),
+        ];
+
+        $ret['phraseanet']['environment'] = $this->app->getEnvironment();
+        $ret['phraseanet']['debug'] = $this->app['debug'];
+        $conf = $this->getConf();
+        $ret['phraseanet']['maintenance'] = $conf->get(['main', 'maintenance']);
+        $ret['phraseanet']['errorsLog'] = $this->app['debug'];
+        $ret['phraseanet']['serverName'] = $conf->get('servername');
+
+        return $ret;
+    }
+
     private function getCacheInformation()
     {
         $caches = [
@@ -232,27 +280,6 @@ class V1Controller extends Controller
                 $ret['cache'][$name] = null;
             }
         }
-
-        return $ret;
-    }
-
-    private function getConfigInformation()
-    {
-        $ret = [];
-
-        /** @var Version $version */
-        $version = $this->app['phraseanet.version'];
-        $ret['phraseanet']['version'] = [
-            'name'   => $version->getName(),
-            'number' => $version->getNumber(),
-        ];
-
-        $ret['phraseanet']['environment'] = $this->app->getEnvironment();
-        $ret['phraseanet']['debug'] = $this->app['debug'];
-        $conf = $this->getConf();
-        $ret['phraseanet']['maintenance'] = $conf->get(['main', 'maintenance']);
-        $ret['phraseanet']['errorsLog'] = $this->app['debug'];
-        $ret['phraseanet']['serverName'] = $conf->get('servername');
 
         return $ret;
     }
@@ -374,6 +401,7 @@ class V1Controller extends Controller
                         'password' => $conf->get(['registry', 'email', 'smtp-password']),
                     ],
                 ],
+                'custom-links'      => json_encode($conf->get(['registry', 'custom-links'])),
                 'ftp'               => [
                     'active'        => $conf->get(['registry', 'ftp', 'ftp-enabled']),
                     'activeForUser' => $conf->get(['registry', 'ftp', 'ftp-user-access']),
@@ -402,17 +430,6 @@ class V1Controller extends Controller
                 ],
             ],
         ];
-    }
-
-    public function showPhraseanetConfigurationAction(Request $request)
-    {
-        $ret = array_merge(
-            $this->getConfigInformation(),
-            $this->getCacheInformation(),
-            $this->getGlobalValuesInformation()
-        );
-
-        return Result::create($request, $ret)->createResponse();
     }
 
     public function listDataboxesAction(Request $request)
@@ -456,30 +473,6 @@ class V1Controller extends Controller
         ])->createResponse();
     }
 
-    /**
-     * Get a Response containing the collections of a \databox
-     *
-     * @param Request $request
-     * @param int     $databox_id
-     *
-     * @return Response
-     */
-    public function getDataboxCollectionsAction(Request $request, $databox_id)
-    {
-        $ret = [
-            "collections" => $this->listDataboxCollections($this->findDataboxById($databox_id)),
-        ];
-
-        return Result::create($request, $ret)->createResponse();
-    }
-
-    private function listDataboxCollections(\databox $databox)
-    {
-        return array_map(function (\collection $collection) {
-            return $this->listCollection($collection);
-        }, $databox->get_collections());
-    }
-
     private function listCollection(\collection $collection)
     {
         $userQuery = new \User_Query($this->app);
@@ -506,6 +499,30 @@ class V1Controller extends Controller
             'record_amount' => $collection->get_record_amount(),
             'order_managers' => $orderMasters
         ];
+    }
+
+    /**
+     * Get a Response containing the collections of a \databox
+     *
+     * @param Request $request
+     * @param int $databox_id
+     *
+     * @return Response
+     */
+    public function getDataboxCollectionsAction(Request $request, $databox_id)
+    {
+        $ret = [
+            "collections" => $this->listDataboxCollections($this->findDataboxById($databox_id)),
+        ];
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    private function listDataboxCollections(\databox $databox)
+    {
+        return array_map(function (\collection $collection) {
+            return $this->listCollection($collection);
+        }, $databox->get_collections());
     }
 
     /**
@@ -649,31 +666,6 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
-    /**
-     * @param int     $lazaret_id
-     * @param Request $request
-     * @return Response
-     */
-    public function listQuarantineItemAction($lazaret_id, Request $request)
-    {
-        /** @var LazaretFileRepository $repository */
-        $repository = $this->app['repo.lazaret-files'];
-        /** @var LazaretFile $lazaretFile */
-        $lazaretFile = $repository->find($lazaret_id);
-
-        if (null === $lazaretFile) {
-            return Result::createError($request, 404, sprintf('Lazaret file id %d not found', $lazaret_id))->createResponse();
-        }
-
-        if (!$this->getAclForUser()->has_right_on_base($lazaretFile->getBaseId(), \ACL::CANADDRECORD)) {
-            return Result::createError($request, 403, 'You do not have access to this quarantine item')->createResponse();
-        }
-
-        $ret = ['quarantine_item' => $this->listLazaretFile($lazaretFile)];
-
-        return Result::create($request, $ret)->createResponse();
-    }
-
     private function listLazaretFile(LazaretFile $file)
     {
         $manager = $this->getBorderManager();
@@ -709,6 +701,14 @@ class V1Controller extends Controller
             'created_on'         => $file->getCreated()->format(DATE_ATOM),
             'updated_on'         => $file->getUpdated()->format(DATE_ATOM),
         ];
+    }
+
+    /**
+     * @return Manager
+     */
+    private function getBorderManager()
+    {
+        return $this->app['border-manager'];
     }
 
     private function listUser(User $user)
@@ -751,69 +751,29 @@ class V1Controller extends Controller
         ];
     }
 
-    private function listUserCollections(User $user)
+    /**
+     * @param int $lazaret_id
+     * @param Request $request
+     * @return Response
+     */
+    public function listQuarantineItemAction($lazaret_id, Request $request)
     {
-        $acl = $this->getAclForUser($user);
-        $rights = $acl->get_bas_rights();
-        $bases = $acl->get_granted_base();
+        /** @var LazaretFileRepository $repository */
+        $repository = $this->app['repo.lazaret-files'];
+        /** @var LazaretFile $lazaretFile */
+        $lazaretFile = $repository->find($lazaret_id);
 
-        $grants = [];
-
-
-        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
-
-        foreach ($bases as $base) {
-            $baseGrants = [];
-
-            foreach ($rights as $right) {
-                if (! $acl->has_right_on_base($base->get_base_id(), $right)) {
-                    continue;
-                }
-
-                $baseGrants[] = $right;
-            }
-
-            $grants[] = [
-                'databox_id' => $base->get_sbas_id(),
-                'base_id' => $base->get_base_id(),
-                'collection_id' => $base->get_coll_id(),
-                'rights' => $baseGrants,
-                'statuses' => $statusMapper->getRestrictedStatuses($base->get_base_id())
-            ];
+        if (null === $lazaretFile) {
+            return Result::createError($request, 404, sprintf('Lazaret file id %d not found', $lazaret_id))->createResponse();
         }
 
-        return $grants;
-    }
-
-    private function listUserDataboxes(User $user)
-    {
-        $acl = $this->getAclForUser($user);
-        $rightsByDatabox = $acl->get_sbas_rights();
-        $grants = [];
-
-        foreach ($rightsByDatabox as $databoxId => $databoxRights) {
-            $rights = [];
-
-            foreach ($databoxRights as $name => $allowedFlag) {
-                if (! $allowedFlag) {
-                    continue;
-                }
-
-                $rights[] = $name;
-            }
-
-            $grants[] = [
-                'databox_id' => $databoxId,
-                'rights' => $rights
-            ];
+        if (!$this->getAclForUser()->has_right_on_base($lazaretFile->getBaseId(), \ACL::CANADDRECORD)) {
+            return Result::createError($request, 403, 'You do not have access to this quarantine item')->createResponse();
         }
 
-        return $grants;
-    }
+        $ret = ['quarantine_item' => $this->listLazaretFile($lazaretFile)];
 
-    private function listUserDemands(User $user)
-    {
-        return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
+        return Result::create($request, $ret)->createResponse();
     }
 
     public function requestPasswordReset(Request $request, $email)
@@ -871,6 +831,14 @@ class V1Controller extends Controller
         return Result::create($request, [ 'success' => false, 'message' => (string) $form->getErrors() ]);
     }
 
+    /**
+     * @return AccountService
+     */
+    public function getAccountService()
+    {
+        return $this->app['accounts.service'];
+    }
+
     public function unlockAccount(Request $request, $token)
     {
         try {
@@ -881,6 +849,14 @@ class V1Controller extends Controller
         }
 
         return Result::create($request, [ 'success' => true ])->createResponse();
+    }
+
+    /**
+     * @return RegistrationService
+     */
+    public function getRegistrationService()
+    {
+        return $this->app['authentication.registration_service'];
     }
 
     public function addRecordAction(Request $request)
@@ -1034,6 +1010,14 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * @return \Alchemy\Phrasea\Media\SubdefSubstituer
+     */
+    private function getSubdefSubstituer()
+    {
+        return $this->app['subdef.substituer'];
+    }
+
     private function listEmbeddableMedia(Request $request, \record_adapter $record, \media_subdef $media)
     {
         if (!$media->is_physically_present()) {
@@ -1162,6 +1146,97 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * Returns requested includes
+     *
+     * @param Request $request
+     * @return string[]
+     */
+    private function resolveSearchIncludes(Request $request)
+    {
+        $includes = [
+            'results.stories.records'
+        ];
+
+        if ($request->attributes->get('_extended', false)) {
+            if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+                $includes = array_merge($includes, [
+                    'results.stories.records.subdefs',
+                    'results.stories.records.metadata',
+                    'results.stories.records.caption',
+                    'results.stories.records.status'
+                ]);
+            }
+            else {
+                $includes = ['results.stories.caption'];
+            }
+
+            $includes = array_merge($includes, [
+                'results.records.subdefs',
+                'results.records.metadata',
+                'results.records.caption',
+                'results.records.status'
+            ]);
+        }
+
+        return $includes;
+    }
+
+    /**
+     * @param Request $request
+     * @return SearchEngineResult
+     */
+    private function doSearch(Request $request)
+    {
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
+        $options->setFirstResult((int)($request->get('offset_start') ?: 0));
+        $options->setMaxResults((int)$request->get('per_page') ?: 10);
+
+        $this->getSearchEngine()->resetCache();
+
+        $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
+
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQueryText());
+
+        foreach ($options->getDataboxes() as $databox) {
+            $colls = array_map(function (\collection $collection) {
+                return $collection->get_coll_id();
+            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
+                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
+            }));
+
+            $this->getSearchEngineLogger()
+                ->log($databox, $search_result->getQueryText(), $search_result->getTotal(), $colls);
+        }
+
+        $this->getSearchEngine()->clearCache();
+
+        return $search_result;
+    }
+
+    /**
+     * @return SearchEngineInterface
+     */
+    private function getSearchEngine()
+    {
+        return $this->app['phraseanet.SE'];
+    }
+
+    /**
+     * @return UserManipulator
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
+    }
+
+    /**
+     * @return SearchEngineLogger
+     */
+    private function getSearchEngineLogger()
+    {
+        return $this->app['phraseanet.SE.logger'];
+    }
 
     /**
      * @param SearchEngineResult $result
@@ -1286,38 +1361,22 @@ class V1Controller extends Controller
     }
 
     /**
-     * @param SearchEngineResult $result
-     * @param string[] $includes
-     * @param int $urlTTL
-     * @return SearchResultView
+     * @param RecordCollection|\record_adapter[] $references
+     * @return RecordView[]
      */
-    private function buildSearchRecordsView(SearchEngineResult $result, array $includes, $urlTTL)
+    private function buildRecordViews($references)
     {
-        $references = new RecordReferenceCollection($result->getResults());
-        $references = new RecordCollection($references->toRecords($this->getApplicationBox()));
-
-        $names = in_array('results.subdefs', $includes, true) ? null : ['thumbnail'];
-
-        $recordViews = $this->buildRecordViews($references);
-        $subdefViews = $this->buildSubdefsViews($references, $names, $urlTTL);
-        $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
-
-        foreach ($recordViews as $index => $recordView) {
-            $recordView->setSubdefs($subdefViews[$index]);
-            $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
+        if (!$references instanceof RecordCollection) {
+            $references = new RecordCollection($references);
         }
 
-        if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
-            $captions = $this->app['service.caption']->findByReferenceCollection($references);
-            $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($references);
+        $recordViews = [];
 
-            $this->buildCaptionViews($recordViews, $captions, $canSeeBusiness);
+        foreach ($references as $index => $record) {
+            $recordViews[$index] = new RecordView($record);
         }
 
-        $resultView = new SearchResultView($result);
-        $resultView->setRecords($recordViews);
-
-        return $resultView;
+        return $recordViews;
     }
 
     /**
@@ -1385,59 +1444,66 @@ class V1Controller extends Controller
     }
 
     /**
-     * Returns requested includes
-     *
-     * @param Request $request
-     * @return string[]
+     * @param array $groups
+     * @return array|mixed
      */
-    private function resolveSearchIncludes(Request $request)
+    private function mergeGroupsIntoOneList(array $groups)
     {
-        $includes = [
-            'results.stories.records'
-        ];
+        // Strips keys from the internal array
+        array_walk($groups, function (array &$group) {
+            $group = array_values($group);
+        });
 
-        if ($request->attributes->get('_extended', false)) {
-            if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
-                $includes = array_merge($includes, [
-                    'results.stories.records.subdefs',
-                    'results.stories.records.metadata',
-                    'results.stories.records.caption',
-                    'results.stories.records.status'
-                ]);
-            }
-            else {
-                $includes = [ 'results.stories.caption' ];
-            }
-
-            $includes = array_merge($includes, [
-                'results.records.subdefs',
-                'results.records.metadata',
-                'results.records.caption',
-                'results.records.status'
-            ]);
-        }
-
-        return $includes;
-    }
-
-    /**
-     * Returns requested includes
-     *
-     * @param Request $request
-     * @return string[]
-     */
-    private function resolveSearchRecordsIncludes(Request $request)
-    {
-        if ($request->attributes->get('_extended', false)) {
-            return [
-                'results.subdefs',
-                'results.metadata',
-                'results.caption',
-                'results.status'
-            ];
+        if ($groups) {
+            return call_user_func_array('array_merge', $groups);
         }
 
         return [];
+    }
+
+    /**
+     * @param RecordReferenceInterface[]|DataboxGroupable $references
+     * @return array<int, bool>
+     */
+    private function retrieveSeeBusinessPerDatabox($references)
+    {
+        if (!$references instanceof DataboxGroupable) {
+            $references = new RecordReferenceCollection($references);
+        }
+
+        $acl = $this->getAclForUser();
+
+        $canSeeBusiness = [];
+
+        foreach ($references->getDataboxIds() as $databoxId) {
+            $canSeeBusiness[$databoxId] = $acl->can_see_business_fields($this->findDataboxById($databoxId));
+        }
+
+        $rights = [];
+
+        foreach ($references as $index => $reference) {
+            $rights[$index] = $canSeeBusiness[$reference->getDataboxId()];
+        }
+
+        return $rights;
+    }
+
+    /**
+     * @param RecordView[] $recordViews
+     * @param \caption_record[] $captions
+     * @param bool[] $canSeeBusiness
+     */
+    private function buildCaptionViews($recordViews, $captions, $canSeeBusiness)
+    {
+        foreach ($recordViews as $index => $recordView) {
+            $caption = $captions[$index];
+
+            $captionView = new CaptionView($caption);
+
+            $captionView->setFields($caption->get_fields(null, isset($canSeeBusiness[$index]) && (bool)$canSeeBusiness[$index]));
+
+            $recordView->setCaption($captionView);
+        }
     }
 
     /**
@@ -1453,164 +1519,6 @@ class V1Controller extends Controller
         }
 
         return $this->getConf()->get(['registry', 'general', 'default-subdef-url-ttl']);
-    }
-
-    /**
-     * @param Request $request
-     * @return SearchEngineResult
-     */
-    private function doSearch(Request $request)
-    {
-        $options = SearchEngineOptions::fromRequest($this->app, $request);
-        $options->setFirstResult((int)($request->get('offset_start') ?: 0));
-        $options->setMaxResults((int)$request->get('per_page') ?: 10);
-
-        $this->getSearchEngine()->resetCache();
-
-        $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
-
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQueryText());
-
-        foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
-                return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-            }));
-
-            $this->getSearchEngineLogger()
-                ->log($databox, $search_result->getQueryText(), $search_result->getTotal(), $colls);
-        }
-
-        $this->getSearchEngine()->clearCache();
-
-        return $search_result;
-    }
-
-    /**
-     * @param Request $request
-     * @param RecordReferenceInterface[]|RecordReferenceCollection $records
-     * @return array
-     */
-    private function listRecords(Request $request, $records)
-    {
-        if (!$records instanceof RecordReferenceCollection) {
-            $records = new RecordReferenceCollection($records);
-        }
-
-        $technicalData = $this->app['service.technical_data']->fetchRecordsTechnicalData($records);
-
-        $data = [];
-
-        foreach ($records->toRecords($this->getApplicationBox()) as $index => $record) {
-            $record->setTechnicalDataSet($technicalData[$index]);
-
-            $data[$index] = $this->listRecord($request, $record);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Retrieve detailed information about one record
-     *
-     * @param Request          $request
-     * @param \record_adapter $record
-     * @return array
-     */
-    private function listRecord(Request $request, \record_adapter $record)
-    {
-        $technicalInformation = [];
-        foreach ($record->get_technical_infos()->getValues() as $name => $value) {
-            $technicalInformation[] = ['name' => $name, 'value' => $value];
-        }
-
-        $data = [
-            'databox_id'             => $record->getDataboxId(),
-            'record_id'              => $record->getRecordId(),
-            'mime_type'              => $record->getMimeType(),
-            'title'                  => $record->get_title(),
-            'original_name'          => $record->get_original_name(),
-            'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
-            'created_on'             => $record->getCreated()->format(DATE_ATOM),
-            'collection_id'          => $record->getCollectionId(),
-            'base_id'                => $record->getBaseId(),
-            'sha256'                 => $record->getSha256(),
-            'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
-            'technical_informations' => $technicalInformation,
-            'phrasea_type'           => $record->getType(),
-            'uuid'                   => $record->getUuid(),
-        ];
-
-        if ($request->attributes->get('_extended', false)) {
-            $data = array_merge($data, [
-                'subdefs' => $this->listRecordEmbeddableMedias($request, $record),
-                'metadata' => $this->listRecordMetadata($record),
-                'status' => $this->listRecordStatus($record),
-                'caption' => $this->listRecordCaption($record),
-            ]);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Retrieve detailed information about one story
-     *
-     * @param Request         $request
-     * @param \record_adapter $story
-     * @return array
-     * @throws \Exception
-     */
-    private function listStory(Request $request, \record_adapter $story)
-    {
-        if (!$story->isStory()) {
-            return Result::createError($request, 404, 'Story not found')->createResponse();
-        }
-
-        $caption = $story->get_caption();
-
-        $format = function (\caption_record $caption, $dcField) {
-
-            $field = $caption->get_dc_field($dcField);
-
-            if (!$field) {
-                return null;
-            }
-
-            return $field->get_serialized_values();
-        };
-
-        return [
-            '@entity@'      => self::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->getDataboxId(),
-            'story_id'      => $story->getRecordId(),
-            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
-            'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => $story->getCollectionId(),
-            'base_id'       => $story->getBaseId(),
-            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->getUuid(),
-            'metadatas'     => [
-                '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
-                'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
-                'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
-                'dc:creator'     => $format($caption, \databox_Field_DCESAbstract::Creator),
-                'dc:date'        => $format($caption, \databox_Field_DCESAbstract::Date),
-                'dc:description' => $format($caption, \databox_Field_DCESAbstract::Description),
-                'dc:format'      => $format($caption, \databox_Field_DCESAbstract::Format),
-                'dc:identifier'  => $format($caption, \databox_Field_DCESAbstract::Identifier),
-                'dc:language'    => $format($caption, \databox_Field_DCESAbstract::Language),
-                'dc:publisher'   => $format($caption, \databox_Field_DCESAbstract::Publisher),
-                'dc:relation'    => $format($caption, \databox_Field_DCESAbstract::Relation),
-                'dc:rights'      => $format($caption, \databox_Field_DCESAbstract::Rights),
-                'dc:source'      => $format($caption, \databox_Field_DCESAbstract::Source),
-                'dc:subject'     => $format($caption, \databox_Field_DCESAbstract::Subject),
-                'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
-                'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
-            ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
-        ];
     }
 
     /**
@@ -1821,6 +1729,171 @@ class V1Controller extends Controller
     }
 
     /**
+     * Retrieve detailed information about one story
+     *
+     * @param Request $request
+     * @param \record_adapter $story
+     * @return array
+     * @throws \Exception
+     */
+    private function listStory(Request $request, \record_adapter $story)
+    {
+        if (!$story->isStory()) {
+            return Result::createError($request, 404, 'Story not found')->createResponse();
+        }
+
+        $caption = $story->get_caption();
+
+        $format = function (\caption_record $caption, $dcField) {
+
+            $field = $caption->get_dc_field($dcField);
+
+            if (!$field) {
+                return null;
+            }
+
+            return $field->get_serialized_values();
+        };
+
+        return [
+            '@entity@'      => self::OBJECT_TYPE_STORY,
+            'databox_id'    => $story->getDataboxId(),
+            'story_id'      => $story->getRecordId(),
+            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'    => $story->getCreated()->format(DATE_ATOM),
+            'collection_id' => $story->getCollectionId(),
+            'base_id'       => $story->getBaseId(),
+            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
+            'uuid'          => $story->getUuid(),
+            'metadatas'     => [
+                '@entity@'       => self::OBJECT_TYPE_STORY_METADATA_BAG,
+                'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
+                'dc:coverage'    => $format($caption, \databox_Field_DCESAbstract::Coverage),
+                'dc:creator'     => $format($caption, \databox_Field_DCESAbstract::Creator),
+                'dc:date'        => $format($caption, \databox_Field_DCESAbstract::Date),
+                'dc:description' => $format($caption, \databox_Field_DCESAbstract::Description),
+                'dc:format'      => $format($caption, \databox_Field_DCESAbstract::Format),
+                'dc:identifier'  => $format($caption, \databox_Field_DCESAbstract::Identifier),
+                'dc:language'    => $format($caption, \databox_Field_DCESAbstract::Language),
+                'dc:publisher'   => $format($caption, \databox_Field_DCESAbstract::Publisher),
+                'dc:relation'    => $format($caption, \databox_Field_DCESAbstract::Relation),
+                'dc:rights'      => $format($caption, \databox_Field_DCESAbstract::Rights),
+                'dc:source'      => $format($caption, \databox_Field_DCESAbstract::Source),
+                'dc:subject'     => $format($caption, \databox_Field_DCESAbstract::Subject),
+                'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
+                'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
+            ],
+            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
+        ];
+    }
+
+    /**
+     * @param Request $request
+     * @param RecordReferenceInterface[]|RecordReferenceCollection $records
+     * @return array
+     */
+    private function listRecords(Request $request, $records)
+    {
+        if (!$records instanceof RecordReferenceCollection) {
+            $records = new RecordReferenceCollection($records);
+        }
+
+        $technicalData = $this->app['service.technical_data']->fetchRecordsTechnicalData($records);
+
+        $data = [];
+
+        foreach ($records->toRecords($this->getApplicationBox()) as $index => $record) {
+            $record->setTechnicalDataSet($technicalData[$index]);
+
+            $data[$index] = $this->listRecord($request, $record);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Retrieve detailed information about one record
+     *
+     * @param Request $request
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function listRecord(Request $request, \record_adapter $record)
+    {
+        $technicalInformation = [];
+        foreach ($record->get_technical_infos()->getValues() as $name => $value) {
+            $technicalInformation[] = ['name' => $name, 'value' => $value];
+        }
+
+        $data = [
+            'databox_id'             => $record->getDataboxId(),
+            'record_id'              => $record->getRecordId(),
+            'mime_type'              => $record->getMimeType(),
+            'title'                  => $record->get_title(),
+            'original_name'          => $record->get_original_name(),
+            'updated_on'             => $record->getUpdated()->format(DATE_ATOM),
+            'created_on'             => $record->getCreated()->format(DATE_ATOM),
+            'collection_id'          => $record->getCollectionId(),
+            'base_id'                => $record->getBaseId(),
+            'sha256'                 => $record->getSha256(),
+            'thumbnail'              => $this->listEmbeddableMedia($request, $record, $record->get_thumbnail()),
+            'technical_informations' => $technicalInformation,
+            'phrasea_type'           => $record->getType(),
+            'uuid'                   => $record->getUuid(),
+        ];
+
+        if ($request->attributes->get('_extended', false)) {
+            $data = array_merge($data, [
+                'subdefs'  => $this->listRecordEmbeddableMedias($request, $record),
+                'metadata' => $this->listRecordMetadata($record),
+                'status'   => $this->listRecordStatus($record),
+                'caption'  => $this->listRecordCaption($record),
+            ]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param Request $request
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function listRecordEmbeddableMedias(Request $request, \record_adapter $record)
+    {
+        $subdefs = [];
+
+        foreach ($record->get_embedable_medias([], []) as $name => $media) {
+            if (null !== $subdef = $this->listEmbeddableMedia($request, $record, $media)) {
+                $subdefs[] = $subdef;
+            }
+        }
+
+        return $subdefs;
+    }
+
+    /**
+     * @param \record_adapter $record
+     * @return array
+     */
+    private function listRecordCaption(\record_adapter $record)
+    {
+        $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
+
+        $caption = [];
+
+        foreach ($record->get_caption()->get_fields(null, $includeBusiness) as $field) {
+            $caption[] = [
+                'meta_structure_id' => $field->get_meta_struct_id(),
+                'name'              => $field->get_name(),
+                'value'             => $field->get_serialized_values(';'),
+            ];
+        }
+
+        return $caption;
+    }
+
+    /**
      * Get a Response containing the record embed files
      *
      * @param Request $request
@@ -1968,33 +2041,6 @@ class V1Controller extends Controller
         } catch (\Exception $e) {
             return $this->getBadRequestAction($request, $e->getMessage());
         }
-    }
-
-    /**
-     * Return the baskets list of the authenticated user
-     *
-     * @param  Request $request
-     *
-     * @return Response
-     */
-    public function searchBasketsAction(Request $request)
-    {
-        return Result::create($request, ['baskets' => $this->listBaskets()])->createResponse();
-    }
-
-    /**
-     * Return a baskets list
-     **
-     * @return array
-     */
-    private function listBaskets()
-    {
-        /** @var BasketRepository $repo */
-        $repo = $this->app['repo.baskets'];
-
-        return array_map(function (Basket $basket) {
-            return $this->listBasket($basket);
-        }, $repo->findActiveByUser($this->getAuthenticatedUser()));
     }
 
     /**
@@ -2167,6 +2213,33 @@ class V1Controller extends Controller
         $em->flush();
 
         return $this->searchBasketsAction($request);
+    }
+
+    /**
+     * Return the baskets list of the authenticated user
+     *
+     * @param  Request $request
+     *
+     * @return Response
+     */
+    public function searchBasketsAction(Request $request)
+    {
+        return Result::create($request, ['baskets' => $this->listBaskets()])->createResponse();
+    }
+
+    /**
+     * Return a baskets list
+     **
+     * @return array
+     */
+    private function listBaskets()
+    {
+        /** @var BasketRepository $repo */
+        $repo = $this->app['repo.baskets'];
+
+        return array_map(function (Basket $basket) {
+            return $this->listBasket($basket);
+        }, $repo->findActiveByUser($this->getAuthenticatedUser()));
     }
 
     /**
@@ -2478,19 +2551,6 @@ class V1Controller extends Controller
         return $story;
     }
 
-    private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
-    {
-        $data = $this->decodeJsonBody($request, 'story_records.json');
-        $story = new \record_adapter($this->app, $databox_id, $story_id);
-
-        $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
-        $result = Result::create($request, array('records' => $records));
-
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
-
-        return $result->createResponse();
-    }
-
     private function addOrDelStoryRecordsFromData(\record_adapter $story, array $recordsData, $action)
     {
         $records = array();
@@ -2538,28 +2598,6 @@ class V1Controller extends Controller
         return $record->getId();
     }
 
-    public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
-    {
-        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'ADD');
-    }
-
-    public function delRecordsFromStoryAction(Request $request, $databox_id, $story_id)
-    {
-        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'DEL');
-    }
-
-    public function setStoryCoverAction(Request $request, $databox_id, $story_id)
-    {
-        $data = $this->decodeJsonBody($request, 'story_cover.json');
-
-        $story = new \record_adapter($this->app, $databox_id, $story_id);
-
-        // we do NOT let "setStoryCover()" fail : pass false as last arg
-        $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
-
-        return Result::create($request, array($record_key))->createResponse();
-    }
-
     protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false)
     {
         try {
@@ -2600,12 +2638,47 @@ class V1Controller extends Controller
         return $record->getId();
     }
 
+    public function addRecordsToStoryAction(Request $request, $databox_id, $story_id)
+    {
+        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'ADD');
+    }
+
+    private function addOrDelStoryRecordsFromRequest(Request $request, $databox_id, $story_id, $action)
+    {
+        $data = $this->decodeJsonBody($request, 'story_records.json');
+        $story = new \record_adapter($this->app, $databox_id, $story_id);
+
+        $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
+        $result = Result::create($request, ['records' => $records]);
+
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+
+        return $result->createResponse();
+    }
+
+    public function delRecordsFromStoryAction(Request $request, $databox_id, $story_id)
+    {
+        return $this->addOrDelStoryRecordsFromRequest($request, $databox_id, $story_id, 'DEL');
+    }
+
+    public function setStoryCoverAction(Request $request, $databox_id, $story_id)
+    {
+        $data = $this->decodeJsonBody($request, 'story_cover.json');
+
+        $story = new \record_adapter($this->app, $databox_id, $story_id);
+
+        // we do NOT let "setStoryCover()" fail : pass false as last arg
+        $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
+
+        return Result::create($request, [$record_key])->createResponse();
+    }
+
     public function getCurrentUserAction(Request $request)
     {
         $ret = [
-            "user" => $this->listUser($this->getAuthenticatedUser()),
+            "user"        => $this->listUser($this->getAuthenticatedUser()),
             "collections" => $this->listUserCollections($this->getAuthenticatedUser()),
-            "databoxes" => $this->listUserDataboxes($this->getAuthenticatedUser())
+            "databoxes"   => $this->listUserDataboxes($this->getAuthenticatedUser())
         ];
 
         if (defined('API_SKIP_USER_REGISTRATIONS') && ! constant('API_SKIP_USER_REGISTRATIONS')) {
@@ -2617,16 +2690,81 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    private function listUserCollections(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rights = $acl->get_bas_rights();
+        $bases = $acl->get_granted_base();
+
+        $grants = [];
+
+
+        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
+
+        foreach ($bases as $base) {
+            $baseGrants = [];
+
+            foreach ($rights as $right) {
+                if (!$acl->has_right_on_base($base->get_base_id(), $right)) {
+                    continue;
+                }
+
+                $baseGrants[] = $right;
+            }
+
+            $grants[] = [
+                'databox_id'    => $base->get_sbas_id(),
+                'base_id'       => $base->get_base_id(),
+                'collection_id' => $base->get_coll_id(),
+                'rights'        => $baseGrants,
+                'statuses'      => $statusMapper->getRestrictedStatuses($base->get_base_id())
+            ];
+        }
+
+        return $grants;
+    }
+
+    private function listUserDataboxes(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rightsByDatabox = $acl->get_sbas_rights();
+        $grants = [];
+
+        foreach ($rightsByDatabox as $databoxId => $databoxRights) {
+            $rights = [];
+
+            foreach ($databoxRights as $name => $allowedFlag) {
+                if (!$allowedFlag) {
+                    continue;
+                }
+
+                $rights[] = $name;
+            }
+
+            $grants[] = [
+                'databox_id' => $databoxId,
+                'rights'     => $rights
+            ];
+        }
+
+        return $grants;
+    }
+
+    private function listUserDemands(User $user)
+    {
+        return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
+    }
+
     public function deleteCurrentUserAction(Request $request)
     {
         try {
             $service = $this->getAccountService();
             $service->deleteAccount();
 
-            $ret = [ 'success' => true ];
+            $ret = ['success' => true];
         }
         catch (\Exception $ex) {
-            $ret = [ 'success' => false ];
+            $ret = ['success' => false];
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -2734,6 +2872,27 @@ class V1Controller extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * @return User
+     */
+    private function getApiAuthenticatedUser()
+    {
+        /** @var ApiOauthToken $token */
+        $token = $this->getSession()->get('token');
+
+        return $token
+            ->getAccount()
+            ->getUser();
+    }
+
+    /**
+     * @return Session
+     */
+    private function getSession()
+    {
+        return $this->app['session'];
     }
 
     public function ensureUserManagementRights(Request $request)
@@ -2854,216 +3013,57 @@ class V1Controller extends Controller
     }
 
     /**
-     * @return AccountService
+     * @param SearchEngineResult $result
+     * @param string[] $includes
+     * @param int $urlTTL
+     * @return SearchResultView
      */
-    public function getAccountService()
+    private function buildSearchRecordsView(SearchEngineResult $result, array $includes, $urlTTL)
     {
-        return $this->app['accounts.service'];
-    }
+        $references = new RecordReferenceCollection($result->getResults());
+        $references = new RecordCollection($references->toRecords($this->getApplicationBox()));
 
-    /**
-     * @return RegistrationService
-     */
-    public function getRegistrationService()
-    {
-        return $this->app['authentication.registration_service'];
-    }
+        $names = in_array('results.subdefs', $includes, true) ? null : ['thumbnail'];
 
-    /**
-     * @return Session
-     */
-    private function getSession()
-    {
-        return $this->app['session'];
-    }
+        $recordViews = $this->buildRecordViews($references);
+        $subdefViews = $this->buildSubdefsViews($references, $names, $urlTTL);
+        $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($references);
 
-    /**
-     * @return User
-     */
-    private function getApiAuthenticatedUser()
-    {
-        /** @var ApiOauthToken $token */
-        $token = $this->getSession()->get('token');
-
-        return $token
-            ->getAccount()
-            ->getUser();
-    }
-
-    /**
-     * @return TaskRepository
-     */
-    private function getTaskRepository()
-    {
-        return $this->app['repo.tasks'];
-    }
-
-    /**
-     * @return TaskManipulator
-     */
-    private function getTaskManipulator()
-    {
-        return $this->app['manipulator.task'];
-    }
-
-    /**
-     * @return Manager
-     */
-    private function getBorderManager()
-    {
-        return $this->app['border-manager'];
-    }
-
-    /**
-     * @return SearchEngineInterface
-     */
-    private function getSearchEngine()
-    {
-        return $this->app['phraseanet.SE'];
-    }
-
-    /**
-     * @return UserManipulator
-     */
-    private function getUserManipulator()
-    {
-        return $this->app['manipulator.user'];
-    }
-
-    /**
-     * @return SearchEngineLogger
-     */
-    private function getSearchEngineLogger()
-    {
-        return $this->app['phraseanet.SE.logger'];
-    }
-
-    /**
-     * @return \Alchemy\Phrasea\Media\SubdefSubstituer
-     */
-    private function getSubdefSubstituer()
-    {
-        return $this->app['subdef.substituer'];
-    }
-
-    /**
-     * @param Request $request
-     * @param \record_adapter $record
-     * @return array
-     */
-    private function listRecordEmbeddableMedias(Request $request, \record_adapter $record)
-    {
-        $subdefs = [];
-
-        foreach ($record->get_embedable_medias([], []) as $name => $media) {
-            if (null !== $subdef = $this->listEmbeddableMedia($request, $record, $media)) {
-                $subdefs[] = $subdef;
-            }
+        foreach ($recordViews as $index => $recordView) {
+            $recordView->setSubdefs($subdefViews[$index]);
+            $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
         }
 
-        return $subdefs;
+        if (array_intersect($includes, ['results.metadata', 'results.caption'])) {
+            $captions = $this->app['service.caption']->findByReferenceCollection($references);
+            $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($references);
+
+            $this->buildCaptionViews($recordViews, $captions, $canSeeBusiness);
+        }
+
+        $resultView = new SearchResultView($result);
+        $resultView->setRecords($recordViews);
+
+        return $resultView;
     }
 
     /**
-     * @param \record_adapter $record
-     * @return array
+     * Returns requested includes
+     *
+     * @param Request $request
+     * @return string[]
      */
-    private function listRecordCaption(\record_adapter $record)
+    private function resolveSearchRecordsIncludes(Request $request)
     {
-        $includeBusiness = $this->getAclForUser()->can_see_business_fields($record->getDatabox());
-
-        $caption = [];
-
-        foreach ($record->get_caption()->get_fields(null, $includeBusiness) as $field) {
-            $caption[] = [
-                'meta_structure_id' => $field->get_meta_struct_id(),
-                'name' => $field->get_name(),
-                'value' => $field->get_serialized_values(';'),
+        if ($request->attributes->get('_extended', false)) {
+            return [
+                'results.subdefs',
+                'results.metadata',
+                'results.caption',
+                'results.status'
             ];
         }
 
-        return $caption;
-    }
-
-    /**
-     * @param array $groups
-     * @return array|mixed
-     */
-    private function mergeGroupsIntoOneList(array $groups)
-    {
-        // Strips keys from the internal array
-        array_walk($groups, function (array &$group) {
-            $group = array_values($group);
-        });
-
-        if ($groups) {
-            return call_user_func_array('array_merge', $groups);
-        }
-
         return [];
-    }
-
-    /**
-     * @param RecordCollection|\record_adapter[] $references
-     * @return RecordView[]
-     */
-    private function buildRecordViews($references)
-    {
-        if (!$references instanceof RecordCollection) {
-            $references = new RecordCollection($references);
-        }
-
-        $recordViews = [];
-
-        foreach ($references as $index => $record) {
-            $recordViews[$index] = new RecordView($record);
-        }
-
-        return $recordViews;
-    }
-
-    /**
-     * @param RecordReferenceInterface[]|DataboxGroupable $references
-     * @return array<int, bool>
-     */
-    private function retrieveSeeBusinessPerDatabox($references)
-    {
-        if (!$references instanceof DataboxGroupable) {
-            $references = new RecordReferenceCollection($references);
-        }
-
-        $acl = $this->getAclForUser();
-
-        $canSeeBusiness = [];
-
-        foreach ($references->getDataboxIds() as $databoxId) {
-            $canSeeBusiness[$databoxId] = $acl->can_see_business_fields($this->findDataboxById($databoxId));
-        }
-
-        $rights = [];
-
-        foreach ($references as $index => $reference) {
-            $rights[$index] = $canSeeBusiness[$reference->getDataboxId()];
-        }
-
-        return $rights;
-    }
-
-    /**
-     * @param RecordView[] $recordViews
-     * @param \caption_record[] $captions
-     * @param bool[] $canSeeBusiness
-     */
-    private function buildCaptionViews($recordViews, $captions, $canSeeBusiness)
-    {
-        foreach ($recordViews as $index => $recordView) {
-            $caption = $captions[$index];
-
-            $captionView = new CaptionView($caption);
-
-            $captionView->setFields($caption->get_fields(null, isset($canSeeBusiness[$index]) && (bool)$canSeeBusiness[$index]));
-
-            $recordView->setCaption($captionView);
-        }
     }
 }

@@ -62,12 +62,14 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('email', new EmailFormType(), [
             'label' => 'Emails',
         ]);
+        $builder->add('custom-links', 'hidden');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'required' => false,
+            'required'           => false,
+            'allow_extra_fields' => true
         ]);
     }
 

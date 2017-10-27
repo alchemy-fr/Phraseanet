@@ -38,24 +38,28 @@ class StructureTemplate
 
         $templateList = new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates');
 
-        if(empty($templateList)) throw new \Exception('No available structure template');
+        if (empty($templateList)) {
+            throw new \Exception('No available structure template');
+        }
 
         $templates = [];
         $abbreviationLength = 2;
-        foreach ($templateList as $template)
-        {
-            if($template->isDot()
+        foreach ($templateList as $template) {
+            if ($template->isDot()
                 || !$template->isFile()
-                || $template->getExtension() !== self::TEMPLATE_EXTENSION) continue;
-
-            $name = $template->getFilename();
-            $abbreviation = strtolower(substr($name,0,$abbreviationLength));
-
-            if(array_key_exists($abbreviation,$templates) ){
-                $abbreviation = strtolower(substr($name,0,++$abbreviationLength));
+                || $template->getExtension() !== self::TEMPLATE_EXTENSION
+            ) {
+                continue;
             }
 
-            $templates[$abbreviation] = $template->getBasename('.'.self::TEMPLATE_EXTENSION);
+            $name = $template->getFilename();
+            $abbreviation = strtolower(substr($name, 0, $abbreviationLength));
+
+            if (array_key_exists($abbreviation, $templates)) {
+                $abbreviation = strtolower(substr($name, 0, ++$abbreviationLength));
+            }
+
+            $templates[$abbreviation] = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
         }
 
         $this->templates = $templates;
@@ -68,24 +72,26 @@ class StructureTemplate
      */
     public function __toString()
     {
-        if(!$this->templates){
+        if (!$this->templates) {
             return '';
         }
 
         $templateToString = '';
         $cpt = 1;
         $templateLength = count($this->templates);
-        foreach ($this->templates as $key => $value){
+        foreach ($this->templates as $key => $value) {
 
             if (($templateLength - 1) == $cpt) {
                 $separator = ' and ';
-            }elseif(end($this->templates) == $value){
-                $separator =  '';
-            }else{
+            }
+            elseif (end($this->templates) == $value) {
+                $separator = '';
+            }
+            else {
                 $separator = ', ';
             }
 
-            $templateToString .= $key.' ('.$value.')'. $separator;
+            $templateToString .= $key . ' (' . $value . ')' . $separator;
             $cpt++;
         }
 
@@ -97,10 +103,11 @@ class StructureTemplate
      * @return mixed
      * @throws \Exception
      */
-    public function getTemplateName($template = 'en'){
+    public function getTemplateName($template = 'en')
+    {
 
-        if(!array_key_exists($template,$this->templates)){
-            throw new \Exception('Not found template : '.$template);
+        if (!array_key_exists($template, $this->templates)) {
+            throw new \Exception('Not found template : ' . $template);
         }
 
         return $this->templates[$template];

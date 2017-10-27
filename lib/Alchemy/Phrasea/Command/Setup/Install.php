@@ -220,7 +220,8 @@ class Install extends Command
                         do {
 
                             $template = $dialog->ask($output, "Choose a language template for metadata structure, available are {$templates->__toString()} : ", 'en');
-                        } while (!in_array($template, array_keys($templates->getTemplates())));
+                        }
+                        while (!in_array($template, array_keys($templates->getTemplates())));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
                     } catch (\Exception $e) {
