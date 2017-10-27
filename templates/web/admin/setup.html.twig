@@ -29,8 +29,6 @@
     </div>
 </form>
 
-
-
 {{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'autocomplete' : 'off', 'class' : 'form-horizontal'}}) }}
 {{ form_errors(form) }}
 {% for daform in form %}
@@ -65,6 +63,7 @@
 </div>
 {{ form_end(form) }}
 
+<script src="/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
 <script type='text/javascript'>
     {% autoescape false %}
     $(document).ready(function() {
@@ -89,12 +88,33 @@
             {"value": "navigation-bar", "text": "{{ "setup::custom-link:navigation-bar" | trans }}"}
         ];
 
+        var colorOptionArray = [
+            {"value": "", "text": ""},
+            {"value": "#ad0800", "text": "#ad0800"},
+            {"value": "#f06006", "text": "#f06006"},
+            {"value": "#f5842b", "text": "#f5842b"},
+            {"value": "#ffc322", "text": "#ffc322"},
+            {"value": "#f4ea5b", "text": "#f4ea5b"},
+            {"value": "#b8d84e", "text": "#b8d84e"},
+            {"value": "#5aa53b", "text": "#5aa53b"},
+            {"value": "#a1d0d0", "text": "#a1d0d0"},
+            {"value": "#4497d5", "text": "#4497d5"},
+            {"value": "#3567c6", "text": "#3567c6"},
+            {"value": "#b151ee", "text": "#b151ee"},
+            {"value": "#c875ea", "text": "#c875ea"},
+            {"value": "#e46990", "text": "#e46990"},
+            {"value": "#ffccd7", "text": "#ffccd7"},
+            {"value": "#ffffff", "text": "#ffffff"}
+        ];
+
         var header = '<thead>' +
             '<th>{{ "setup::custom-link:name-link" | trans }}</th>' +
             '<th>{{ "setup::custom-link:language-link" | trans }}</th>' +
             '<th>{{ "setup::custom-link:link-url" | trans }}</th>' +
             '<th>{{ "setup::custom-link:location-link" | trans }}</th>' +
             '<th>{{ "setup::custom-link:order-link" | trans }}</th>' +
+            '<th></th>' +
+            '<th></th>' +
             '<th></th>' +
             '</thead>';
 
@@ -166,11 +186,15 @@
 
         function addRow(rowData) {
             //custom link
-            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "") + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}' + '" name="link-name" maxlength="30" required>';
+            var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "")
+                + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}'
+                + '" name="link-name" style="' + (rowData ? "background-color:" + rowData.linkColor : "") + '" maxlength="30" required>';
             var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';
             var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));
             var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));
             var inputOrder = '<input type="number" min="1" name="link-order" value="' + (rowData ? rowData.linkOrder : "") + '">';
+            var inputColor = generateSelectInput("link-color", colorOptionArray, (rowData ? rowData.linkColor : ""));
+            var inputBold = '<input type="checkbox" class="link_check_box" name="link-bold" value="' + (rowData ? rowData.linkBold : "") + '" onchange="$(this).val(this.checked? true: false);" ' + (rowData && rowData.linkBold == "true" ? "checked" : "") + ' /><label for="link-bold"></label> ';
             var closeButton = '<button class="btn btn-default close-row">' +
                 '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button>';
 
@@ -180,6 +204,8 @@
                 '<td>' + inputURL + '</td>' +
                 '<td>' + inputLocation + '</td>' +
                 '<td>' + inputOrder + '</td>' +
+                '<td>' + inputBold + '</td>' +
+                '<td>' + inputColor + '</td>' +
                 '<td>' + closeButton + '</td></tr>';
 
             $("#custom-link-table").append(rowForCustomLink);
@@ -205,6 +231,8 @@
             linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
             linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
             linkObject.linkOrder = row.find($('input[name="link-order"]')).val() || 1;
+            linkObject.linkColor = row.find($('select[name="link-color"]')).val();
+            linkObject.linkBold = row.find($('input[name="link-bold"]')).val() || "false";
 
             return linkObject;
         }
@@ -225,6 +253,28 @@
             })
         }
 
+        $('select[name="link-color"]').simplecolorpicker({picker: true});
+
+        _.each($('select[name="link-color"]'), function (element) {
+            if ($(element).val() == "") {
+                //replace icon
+                $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)")
+            }
+        });
+
+        $('select[name="link-color"]').on('change', function () {
+            var element = $(this).parent().siblings(':first').find("input");
+            updateInputNameColor(element, $(this).val());
+            if ($(this).val() == "") {
+                $(this).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)")
+            } else {
+                $(this).siblings().css("background", $(this).val());
+            }
+        });
+
+        function updateInputNameColor(element, color) {
+            element.css("background-color", color);
+        }
     });
     {% endautoescape %}
 </script>
