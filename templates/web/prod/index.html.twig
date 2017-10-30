@@ -586,11 +586,15 @@
                     </div>
                 </div>
                 <div class="box">
-                    <h1>{{  'Language' | trans }} : {{ app['locale'] }}</h1>
+                    <h1>{{  'Language selection' | trans }}</h1>
                     <label class="inline" for="language">
                         <select onchange="window.location = $(this).val();" id="language">
-                            {% for code, language in app.getAvailableLanguages() if code != app['locale'] %}
-                                <option value="{{ path('set_locale', {'locale' : code, 'redirect' : current_url }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : current_url }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                            {% for code, language in app.getAvailableLanguages()  %}
+                                {% if code == app['locale'] %}
+                                    <option selected="selected" disabled="disabled">{{ language }}</option>
+                                {% else %}
+                                    <option value="{{ path('set_locale', {'locale' : code, 'redirect' : "/prod" }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : "/prod" }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </label>
