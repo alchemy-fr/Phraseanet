@@ -455,6 +455,7 @@ input[id="elasticsearch_settings_highlight"] {
       background-size: contain !important;
       background-position: center center;
       border: none;
+      margin-right: 3px;
     }
     button {
       height: 30px;
@@ -474,6 +475,19 @@ input[id="elasticsearch_settings_highlight"] {
   }
   td:last-child {
     width: 8%;
+  }
+}
+
+span.simplecolorpicker.picker {
+  min-width: 0px;
+  width: 22px;
+  margin-top: -385px;
+  border-radius: 0px;
+  margin-left: 4px;
+  padding: 0;
+  span {
+    width: 20px;
+    margin: 0px;
   }
 }
 

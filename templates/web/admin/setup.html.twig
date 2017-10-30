@@ -63,7 +63,7 @@
 </div>
 {{ form_end(form) }}
 
-<script src="/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
+<script type="text/javascript" src="/assets/vendors/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
 <script type='text/javascript'>
     {% autoescape false %}
     $(document).ready(function() {
@@ -172,6 +172,12 @@
             return false;
         });
 
+        $("#custom-link-table").on('change', 'select[name="link-color"]', function () {
+            var element = $(this).parent().siblings(':first').find("input");
+            updateSelectColor($(this).siblings(), $(this).val());
+            updateInputNameColor(element, $(this).val());
+        });
+
         $('form').on('submit', function () {
             // do validation for custom link
             var customLinks = [];
@@ -188,7 +194,7 @@
             //custom link
             var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "")
                 + '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}'
-                + '" name="link-name" style="' + (rowData ? "background-color:" + rowData.linkColor : "") + '" maxlength="30" required>';
+                + '" name="link-name" style="' + getInputNameStyle(rowData) + '" maxlength="30" required>';
             var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';
             var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));
             var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));
@@ -209,6 +215,28 @@
                 '<td>' + closeButton + '</td></tr>';
 
             $("#custom-link-table").append(rowForCustomLink);
+
+            $('select[name="link-color"]').simplecolorpicker({picker: true});
+
+            _.each($('select[name="link-color"]'), function (element) {
+                if ($(element).val() == "") {
+                    //replace icon
+                    $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
+                    $(element).siblings().css("color", "#FFFFFF");
+                }
+            });
+        }
+
+        function getInputNameStyle(rowData) {
+            if (rowData) {
+                if (rowData.linkColor === "#ffffff" || rowData.linkColor === "") {
+                    return "background-color:" + rowData.linkColor + ";color:#555;";
+                } else {
+                    return "background-color:" + rowData.linkColor + ";color:#FFFFFF;";
+                }
+            } else {
+                return "";
+            }
         }
 
         function generateSelectInput(inputName, optionArray, selectedValue) {
@@ -250,30 +278,38 @@
 
             _.each(customLinksData, function (linkData) {
                 addRow(linkData);
-            })
-        }
+            });
 
-        $('select[name="link-color"]').simplecolorpicker({picker: true});
+        }
 
         _.each($('select[name="link-color"]'), function (element) {
             if ($(element).val() == "") {
                 //replace icon
-                $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)")
+                $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
+                $(element).siblings().css("color", "#FFFFFF");
             }
         });
 
-        $('select[name="link-color"]').on('change', function () {
-            var element = $(this).parent().siblings(':first').find("input");
-            updateInputNameColor(element, $(this).val());
-            if ($(this).val() == "") {
-                $(this).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)")
+        function updateSelectColor(element, color) {
+            element.css("border", "none");
+            if (color === "") {
+                element.css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
+            } else if (color === '#ffffff') {
+                //add black border if color is white for visibility
+                element.css("background", color);
+                element.css("border", "1px solid");
             } else {
-                $(this).siblings().css("background", $(this).val());
+                element.css("background", color);
             }
-        });
+        }
 
         function updateInputNameColor(element, color) {
             element.css("background-color", color);
+            if (color === "#ffffff" || color === "") {
+                element.css("color", "#555");
+            } else {
+                element.css("color", "#FFFFFF");
+            }
         }
     });
     {% endautoescape %}
