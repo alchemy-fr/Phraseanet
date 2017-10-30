@@ -194,7 +194,7 @@ registry:
         description: ''
         analytics: ''
         allow-indexation: true
-        home-presentation-mode: COOLIRIS
+        home-presentation-mode: 'GALLERIA'
     modules:
         thesaurus: true
         stories: true

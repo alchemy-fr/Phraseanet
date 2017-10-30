@@ -420,10 +420,6 @@ class record_preview extends record_adapter
                         'label' => $this->app->trans('report:: page d\'accueil'),
                         'count' => 0
                     ],
-                    'report:: visualiseur cooliris' => [
-                        'label' => $this->app->trans('report:: visualiseur cooliris'),
-                        'count' => 0
-                    ],
                     // ...
                     // some more entries can be added if the referrer does not match anything
                 ]
@@ -531,9 +527,6 @@ class record_preview extends record_adapter
                 }
                 elseif ($k == $this->app['conf']->get('servername') . 'client/') {
                     $k = $this->app->trans('admin::monitor: module client');
-                }
-                elseif (strpos($k, 'http://apps.cooliris.com/') !== false) {
-                    $k = $this->app->trans('report:: visualiseur cooliris');
                 }
                 elseif (strpos($k, $this->app['conf']->get('servername') . 'login/') !== false) {
                     $k = $this->app->trans('report:: page d\'accueil');
@@ -685,8 +678,6 @@ class record_preview extends record_adapter
                 $row['referrer'] = $this->app->trans('admin::monitor: module client');
             if (strpos($row['referrer'], $this->app['conf']->get('servername') . 'login/') !== false)
                 $row['referrer'] = $this->app->trans('report:: page d\'accueil');
-            if (strpos($row['referrer'], 'http://apps.cooliris.com/') !== false)
-                $row['referrer'] = $this->app->trans('report:: visualiseur cooliris');
 
             if (strpos($row['referrer'], $this->app['conf']->get('servername') . 'document/') !== false) {
                 $row['referrer'] = $this->app->trans('report::acces direct');

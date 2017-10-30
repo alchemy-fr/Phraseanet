@@ -12,7 +12,6 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Feed\Formatter\AtomFormatter;
-use Alchemy\Phrasea\Feed\Formatter\CoolirisFormatter;
 use Alchemy\Phrasea\Feed\Formatter\RssFormatter;
 use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
@@ -43,9 +42,6 @@ class FeedServiceProvider implements ServiceProviderInterface
         $app['feed.atom-formatter'] = $app->share(function ($app) {
             return new AtomFormatter($app['feed.link-generator-collection']);
         });
-        $app['feed.cooliris-formatter'] = $app->share(function ($app) {
-            return new CoolirisFormatter($app['feed.link-generator-collection']);
-        });
         $app['feed.formatter-strategy'] = $app->protect(function ($type) use ($app) {
             switch ($type) {
                 case 'rss':
@@ -53,9 +49,6 @@ class FeedServiceProvider implements ServiceProviderInterface
                     break;
                 case 'atom':
                     return $app['feed.atom-formatter'];
-                    break;
-                case 'cooliris':
-                    return $app['feed.cooliris-formatter'];
                     break;
                 default:
                     throw new InvalidArgumentException(sprintf('Format %s is not recognized.', $type));

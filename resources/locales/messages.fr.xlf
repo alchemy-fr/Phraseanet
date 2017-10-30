@@ -11832,13 +11832,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Validé</target>
         <jms:reference-file line="198">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1d900ae5b08909338f17350122691995bf9174b9" resname="report:: visualiseur cooliris" approved="yes">
-        <source>report:: visualiseur cooliris</source>
-        <target state="translated">Visualiseur Cooliris</target>
-        <jms:reference-file line="424">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="536">classes/record/preview.php</jms:reference-file>
-        <jms:reference-file line="689">classes/record/preview.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="c3d0f1bc2eac01fb560464a3e0d29bfc30989f7a" resname="report::Changement de collection vers : %coll_name%" approved="yes">
         <source>report::Changement de collection vers : %coll_name%</source>
         <target state="translated">Changement de collection vers : %coll_name%</target>

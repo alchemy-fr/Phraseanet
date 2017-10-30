@@ -124,16 +124,6 @@ class RSSFeedTest extends \PhraseanetWebTestCase
         $this->verifyATOM($feed, $xml);
     }
 
-    public function testCooliris()
-    {
-        self::$DI['app']['orm.em']->find('Phraseanet:Feed', 2);
-
-        self::$DI['client']->request("GET", "/feeds/cooliris/");
-        $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        $this->assertEquals("application/rss+xml", self::$DI['client']->getResponse()->headers->get("content-type"));
-        $xml = self::$DI['client']->getResponse()->getContent();
-        $this->verifyXML($xml);
-    }
 
     public function testAggregatedRss()
     {
