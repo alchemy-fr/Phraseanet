@@ -259,7 +259,7 @@
             linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
             linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
             linkObject.linkOrder = row.find($('input[name="link-order"]')).val() || 1;
-            linkObject.linkColor = row.find($('select[name="link-color"]')).val();
+            linkObject.linkColor = row.find($('select[name="link-color"]')).val() || "";
             linkObject.linkBold = row.find($('input[name="link-bold"]')).val() || "false";
 
             return linkObject;
