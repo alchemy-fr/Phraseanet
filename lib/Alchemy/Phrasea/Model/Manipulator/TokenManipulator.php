@@ -40,17 +40,29 @@ class TokenManipulator implements ManipulatorInterface
     private $repository;
 
     private $temporaryDownloadPath;
+    private $downloadLinkValidity;
 
     public function __construct(
         ObjectManager $om,
         Generator $random,
         TokenRepository $repository,
-        $temporaryDownloadPath)
+        $temporaryDownloadPath,
+        $downloadLinkValidity = 0)
     {
         $this->om = $om;
         $this->random = $random;
         $this->repository = $repository;
         $this->temporaryDownloadPath = $temporaryDownloadPath;
+        $this->downloadLinkValidity = $downloadLinkValidity;
+    }
+
+    /**
+     * Get int value of downloadLinkValidity if set in configuration.yml
+     * @return int
+     */
+    private function getDownloadLinkValidity()
+    {
+        return (int) $this->downloadLinkValidity;
     }
 
     /**
@@ -133,7 +145,10 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createDownloadToken(User $user, $data)
     {
-        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime('+3 hours'), $data);
+        $downloadLinkValidity = $this->getDownloadLinkValidity();
+        $time = ($downloadLinkValidity)? "+{$downloadLinkValidity} hours":'+3 hours';
+
+        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime($time), $data);
     }
 
     /**
@@ -143,7 +158,10 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createEmailExportToken($data)
     {
-        return $this->create(null, self::TYPE_EMAIL, new \DateTime('+1 day'), $data);
+        $downloadLinkValidity = $this->getDownloadLinkValidity();
+        $time = ($downloadLinkValidity)? "+{$downloadLinkValidity} hours":'+1 day';
+        
+        return $this->create(null, self::TYPE_EMAIL, new \DateTime($time), $data);
     }
 
     /**

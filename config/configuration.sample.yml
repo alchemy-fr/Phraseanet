@@ -241,3 +241,4 @@ embed_bundle:
 registry:
     actions:
         export-stamp-choice: false
+        download-link-validity: 24
