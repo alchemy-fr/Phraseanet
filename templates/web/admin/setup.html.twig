@@ -219,11 +219,8 @@
             $('select[name="link-color"]').simplecolorpicker({picker: true});
 
             _.each($('select[name="link-color"]'), function (element) {
-                if ($(element).val() == "") {
-                    //replace icon
-                    $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
-                    $(element).siblings().css("color", "#FFFFFF");
-                }
+                updateSelectColor($(element).siblings(), $(element).val());
+                updateInputNameColor($(element).parent().siblings(':first').find("input"), $(element).val());
             });
         }
 
@@ -281,14 +278,6 @@
             });
 
         }
-
-        _.each($('select[name="link-color"]'), function (element) {
-            if ($(element).val() == "") {
-                //replace icon
-                $(element).siblings().css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
-                $(element).siblings().css("color", "#FFFFFF");
-            }
-        });
 
         function updateSelectColor(element, color) {
             element.css("border", "none");
