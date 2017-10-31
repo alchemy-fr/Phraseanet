@@ -225,7 +225,7 @@
 
         function getInputNameStyle(rowData) {
             if (rowData) {
-                if (rowData.linkColor === "#ffffff" || rowData.linkColor === "") {
+                if (rowData.linkColor === "") {
                     return "background-color:" + rowData.linkColor + ";color:#555;";
                 } else {
                     return "background-color:" + rowData.linkColor + ";color:#FFFFFF;";
@@ -282,10 +282,6 @@
             element.css("border", "none");
             if (color === "") {
                 element.css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
-            } else if (color === '#ffffff') {
-                //add black border if color is white for visibility
-                element.css("background", color);
-                element.css("border", "1px solid");
             } else {
                 element.css("background", color);
             }
@@ -293,7 +289,7 @@
 
         function updateInputNameColor(element, color) {
             element.css("background-color", color);
-            if (color === "#ffffff" || color === "") {
+            if (color === "") {
                 element.css("color", "#555");
             } else {
                 element.css("color", "#FFFFFF");
