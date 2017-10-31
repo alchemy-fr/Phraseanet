@@ -58,7 +58,7 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
                 $app['random.medium'],
                 $app['repo.tokens'],
                 $app['tmp.download.path'],
-                $app['conf']->get(['registry', 'actions', 'download-link-validity'])
+                $app['conf']
             );
         });
 
