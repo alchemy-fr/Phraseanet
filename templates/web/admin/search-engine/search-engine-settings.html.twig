@@ -1,5 +1,5 @@
 {{ form_start(form) }}
-<div class="search-engine-tabs">
+<div class="search-engine-tabs" style="display: none;">
     <ul>
         <li><a href="#elastic-search">{{ 'ElasticSearch configuration' | trans }}</a></li>
         <li><a href="#general-aggregation">{{ 'admin::search-engine: general-aggregation' | trans }}</a></li>
@@ -27,6 +27,7 @@
                 $('.search-engine-tabs a[href="' + activeTab + '"]').trigger('click');
             }
         });
+        $(".search-engine-tabs").show();
     </script>
 {% endblock %}
 {{ form_end(form) }}
