@@ -433,7 +433,7 @@ input[id="elasticsearch_settings_highlight"] {
   }
   td {
     height: 30px;
-    width: 20%;
+    width: 19%;
     input {
       width: 100%;
       box-sizing: border-box;
@@ -448,6 +448,15 @@ input[id="elasticsearch_settings_highlight"] {
       -webkit-box-sizing: border-box;
       height: 30px;
     }
+    .simplecolorpicker {
+      width: 21px;
+      height: 21px;
+      background-repeat: no-repeat;
+      background-size: contain !important;
+      background-position: center center;
+      border: none;
+      margin-right: 3px;
+    }
     button {
       height: 30px;
       box-sizing: border-box;
@@ -458,8 +467,27 @@ input[id="elasticsearch_settings_highlight"] {
   td:nth-of-type(5) {
     width: 14%;
   }
+  td:nth-of-type(6) {
+    width: 3%;
+  }
+  td:nth-of-type(7) {
+    width: 3%;
+  }
   td:last-child {
     width: 8%;
+  }
+}
+
+span.simplecolorpicker.picker {
+  min-width: 0px;
+  width: 22px;
+  margin-top: -360px;
+  border-radius: 0px;
+  margin-left: 4px;
+  padding: 0;
+  span {
+    width: 20px;
+    margin: 0px;
   }
 }
 
@@ -467,6 +495,28 @@ input[id="elasticsearch_settings_highlight"] {
   margin-top: 10px;
   margin-bottom: 20px;
   float: right;
+}
+
+.link_check_box:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-Bold.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+.link_check_box:checked:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-bold-active.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
 }
 
 /******* SEARCH ENGINE SETTINGS ***************************************************/
