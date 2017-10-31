@@ -57,8 +57,8 @@ $proposalsFacetHoverColor: #FFF !default;
     min-height: 49px;
     //line-height: 49px;
     margin-left: 0;
-    //border-left: 4px solid $mediumBackgroundColor;
-    //border-bottom: 1px solid $mediumBorderColor;
+    border-left: 4px solid $mediumBackgroundColor;
+    border-bottom: 1px solid $mediumBorderColor;
     overflow: auto;
     position: relative;
     .newNode {

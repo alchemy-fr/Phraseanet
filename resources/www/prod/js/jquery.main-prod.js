@@ -756,6 +756,7 @@ function getFacetsTree() {
                             function (event) {
                                 event.stopPropagation();
                                 var facetTitle = $(this).data("facetTitle");
+                                var facetFilter = $(this).data("facetFilter");
                                 selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
                                     return obj.value.label == facetFilter;
                                 });
