@@ -872,55 +872,6 @@ class ApiJsonTest extends ApiTestCase
         }
     }
 
-    public function testRecordsSearchRoute()
-    {
-        $this->setToken($this->userAccessToken);
-        $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize($response->getContent());
-
-        $this->evaluateResponse200($response);
-        $this->evaluateMeta200($content);
-
-        $response = $content['response'];
-
-        $this->evaluateSearchResponse($response);
-
-        foreach ($response['results'] as $record) {
-            $this->evaluateGoodRecord($record);
-            break;
-        }
-    }
-
-    /**
-     * @dataProvider provideAvailableSearchMethods
-     */
-    public function testRecordsSearchRouteWithQuery($method)
-    {
-        $this->setToken($this->userAccessToken);
-        $searchEngine = $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $searchEngine->expects($this->any())
-            ->method('getSuggestions')
-            ->will($this->returnValue(new ArrayCollection()));
-
-        $app = $this->getApplication();
-        $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
-        $app['phraseanet.SE'] = $mock;
-
-            $mock
-            ->expects($this->once())
-            ->method('query')
-            ->withAnyParameters()
-            ->will($this->returnValue(
-                $this->getMockBuilder('Alchemy\Phrasea\SearchEngine\SearchEngineResult')
-                    ->disableOriginalConstructor()
-                    ->getMock()
-            ));
-        self::$DI['client']->request($method, '/api/v1/records/search/', $this->getParameters(['query' => 'koala']), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
-    }
-
     public function provideAvailableSearchMethods()
     {
         return [['POST'], ['GET']];

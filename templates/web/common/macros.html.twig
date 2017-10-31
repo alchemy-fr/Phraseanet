@@ -118,10 +118,10 @@
 
 {% macro caption(record, can_see_business, display_exif, limitedWidth = false) %}
     <dl class="{% if limitedWidth %}{% else %}dl-horizontal{% endif %}">
-    {% for name, value in record.getCaption(caption_field_order(record, can_see_business)) %}
-        <dt>{{ caption_field_label(record, name) }}</dt>
-        <dd>{{ caption_field(record, name, value)|e|highlight }}</dd>
-    {% endfor %}
+        {% for field in record.get_caption().get_highlight_fields(null, can_see_business) %}
+            <dt>{{ caption_field_label(record, field.label_name) }}</dt>
+            <dd>{{ _self.caption_value(field, bounceable|default(true))|highlight|linkify }}</dd>
+        {% endfor %}
     </dl>
     {% if display_exif|default(true) and app.getAuthenticator().user is not none and user_setting('technical_display') == 'group' %}
         <hr/>
