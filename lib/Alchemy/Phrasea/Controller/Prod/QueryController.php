@@ -140,9 +140,6 @@ class QueryController extends Controller
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
 
-
-
-
             $explain = $this->render(
                 "prod/results/infos.html.twig",
                 [
@@ -152,12 +149,6 @@ class QueryController extends Controller
                         null
                 ]
             );
-
-
-
-
-
-
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
