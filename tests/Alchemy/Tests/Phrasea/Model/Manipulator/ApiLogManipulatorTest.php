@@ -72,6 +72,7 @@ class ApiLogManipulatorTest extends \PhraseanetTestCase
             ['/databoxes/1/termsOfUse/', ['resource' => 'databoxes', 'aspect' => 'termsOfUse', 'action' => null, 'general' => 'databoxes']],
             ['/quarantine/list/', ['resource' => 'quarantine', 'aspect' => null, 'action' => 'list', 'general' => 'quarantine']],
             ['/records/add/', ['resource' => 'records', 'aspect' => null, 'action' => 'add', 'general' => 'records']],
+            ['/records/search/', ['resource' => 'records', 'aspect' => null, 'action' => 'search', 'general' => 'records']],
             ['/records/1/1/caption/', ['resource' => 'records', 'aspect' => 'caption', 'action' => null, 'general' => 'records']],
             ['/records/1/1/metadatas/', ['resource' => 'records', 'aspect' => 'metadatas', 'action' => null, 'general' => 'records']],
             ['/records/1/1/status/', ['resource' => 'records', 'aspect' => 'status', 'action' => null, 'general' => 'records']],
