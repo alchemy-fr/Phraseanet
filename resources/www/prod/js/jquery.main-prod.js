@@ -317,7 +317,6 @@ function checkFilters(save) {
 
     if (save === true) {
         setPref('search', JSON.stringify(search));
-        console.log(JSON.stringify(search));
     }
 }
 
