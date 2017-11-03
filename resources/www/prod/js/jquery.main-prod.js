@@ -19,6 +19,8 @@ var filterFacet = false;
 
 var facets = null;
 
+var lastFilterResults = [];
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -541,7 +543,14 @@ function initAnswerForm() {
                     container: $('#answers')
                 });
 
-                loadFacets(datas.facets);
+                //load last result collected or [] if length == 0
+                if (datas.facets.length == 0) {
+                    loadFacets(lastFilterResults);
+                } else {
+                    lastFilterResults = datas.facets;
+                    loadFacets(datas.facets);
+                }
+
                 facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
@@ -637,9 +646,9 @@ function shouldFilterSingleContent(source, shouldFilter) {
     if(shouldFilter == true) {
         _.forEach(source, function(facet) {
             //close expansion for facet containing selected values
-            if(!_.isUndefined(selectedFacetValues[facet.title])) {
-                facet.expanded = false;
-            }
+            // if(!_.isUndefined(selectedFacetValues[facet.title])) {
+            //     facet.expanded = false;
+            // }
             if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
                 filteredSource.push(facet);
             }
@@ -757,8 +766,9 @@ function getFacetsTree() {
                                 event.stopPropagation();
                                 var facetTitle = $(this).data("facetTitle");
                                 var facetFilter = $(this).data("facetFilter");
+                                var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
                                 selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
-                                    return obj.value.label == facetFilter;
+                                    return (obj.value.label == facetFilter && obj.mode == mode);
                                 });
                                 //delete selectedFacetValues[facetTitle];
                                 facetCombinedSearch();
