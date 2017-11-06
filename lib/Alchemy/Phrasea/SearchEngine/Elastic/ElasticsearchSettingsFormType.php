@@ -81,7 +81,10 @@ class ElasticsearchSettingsFormType extends AbstractType
                 ->add($k.'_limit', ChoiceType::class, [
                     // 'label' => $f['label'],// . ' ' . 'aggregate limit',
                     'choices_as_values' => true,
-                    'choices' => $choices,
+                    'choices'           => $choices,
+                    'attr'              => [
+                        'class' => 'aggregate'
+                    ]
                 ]);
         }
 
@@ -90,9 +93,9 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'label' => 'Activate highlight',
                 'required' => false
             ])
-            ->add('save', 'submit', [
-                'attr' => ['class' => 'btn btn-primary']
-            ])
+//            ->add('save', 'submit', [
+//                'attr' => ['class' => 'btn btn-primary']
+//            ])
             ->add('esSettingFromIndex', 'button', [
                 'label' => 'Get setting form index',
                 'attr' => [
@@ -106,6 +109,7 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'mapped' => false,
                 'attr' => ['class' => 'dumpfield hide']
             ])
+            ->add('activeTab', 'hidden');
 
         ;
     }

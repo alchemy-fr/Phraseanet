@@ -1,13 +1,15 @@
 Phraseanet 4.0 - Digital Asset Management application
 =====================================================
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
+[![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/4.0.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/4.0)
+
 
 #Features :
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
- - Bridge to Youtube/Dailymotion/Flickr
+ - Elasticsearch search engine
+ - Multiple resolution assets generation
 
 #Documentation :
 
@@ -31,6 +33,5 @@ See https://docs.phraseanet.com/Devel/
 
 Phraseanet is licensed under GPL-v3 license.
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/alchemy-fr/phraseanet/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+travis [![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
 

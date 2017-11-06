@@ -74,6 +74,7 @@ class InstallerTest extends \PhraseanetTestCase
         $app['orm.ems.default'] = $key;
         $dataPath = __DIR__ . '/../../../../../datas/';
 
+
         $installer = new Installer($app);
         $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
 

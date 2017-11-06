@@ -109,7 +109,7 @@ class BuildSubdefs extends Command
             ]
         ];
 
-        $this->setDescription('Build subviews');
+        $this->setDescription('All major operations on subviews eg: Re-generate all or specifics subdefs, delete old unused subview with parallelization capability');
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
         $this->addOption('mode',               null, InputOption::VALUE_REQUIRED,                             'preset working mode : ' . implode('|', array_keys($this->presets)));
         $this->addOption('record_type',        null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Type(s) of records(s) to (re)build ex. "image,video", dafault=ALL');
@@ -162,187 +162,6 @@ class BuildSubdefs extends Command
             . "                    (= --all --reset_subdef_flag --set_writemeta_flag\n"
         );
 
-    }
-
-    /**
-     * merge options so one can mix csv-option and/or multiple options
-     * ex. with keepUnique = false :  --opt=a,b --opt=c --opt=b  ==> [a,b,c,b]
-     * ex. with keepUnique = true  :  --opt=a,b --opt=c --opt=b  ==> [a,b,c]
-     *
-     * @param InputInterface $input
-     * @param string $optionName
-     * @param int $option
-     * @return array
-     */
-    private function getOptionAsArray(InputInterface $input, $optionName, $option)
-    {
-        $ret = [];
-        foreach($input->getOption($optionName) as $v0) {
-            foreach(explode(',', $v0) as $v) {
-                $v = trim($v);
-                if($option & self::OPTION_ALL_VALUES || !in_array($v, $ret)) {
-                    $ret[] = $v;
-                }
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * print a string if verbosity >= verbose (-v)
-     * @param string $s
-     */
-    private function verbose($s)
-    {
-        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->output->write($s);
-        }
-    }
-
-    /**
-     * sanity check the cmd line options
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return bool
-     */
-    protected function sanitizeArgs(InputInterface $input, OutputInterface $output)
-    {
-        $argsOK = true;
-
-        // find the databox / collection by id or by name
-        $this->databox = null;
-        if(($d = $input->getOption('databox')) !== null) {
-            $d = trim($d);
-            foreach ($this->container->getDataboxes() as $db) {
-                if ($db->get_sbas_id() == (int)$d || $db->get_viewname() == $d || $db->get_dbname() == $d) {
-                    $this->databox = $db;
-                    $this->connection = $db->get_connection();
-                    break;
-                }
-            }
-            if ($this->databox == null) {
-                $output->writeln(sprintf("<error>Unknown databox \"%s\"</error>", $input->getOption('databox')));
-                $argsOK = false;
-            }
-        }
-        else {
-            $output->writeln(sprintf("<error>Missing mandatory options --databox</error>"));
-            $argsOK = false;
-        }
-
-        // get options
-        $this->mode = $input->getOption('mode');
-        if($this->mode) {
-            if(!in_array($this->mode, array_keys($this->presets))) {
-                $output->writeln(sprintf("<error>invalid --mode \"%s\"<error>", $this->mode));
-                $argsOK = false;
-            }
-            else {
-                $explain = "";
-                foreach($this->presets[$this->mode] as $k=>$v) {
-                    if($input->getOption($k) !== false && $input->getOption($k) !== null) {
-                        $output->writeln(sprintf("<error>--mode=%s and --%s are mutually exclusive</error>", $this->mode, $k));
-                        $argsOK = false;
-                    }
-                    else {
-                        $input->setOption($k, $v);
-                    }
-                    $explain .= ' --' . $k . ($v===true ? '' : ('='.$v));
-                }
-
-                $output->writeln(sprintf("mode \"%s\" ==>%s", $this->mode, $explain));
-            }
-        }
-
-        $this->show_sql           = $input->getOption('show_sql') ? true : false;
-        $this->dry                = $input->getOption('dry') ? true : false;
-        $this->min_record_id      = $input->getOption('min_record_id');
-        $this->max_record_id      = $input->getOption('max_record_id');
-        $this->substituted_only   = $input->getOption('substituted_only') ? true : false;
-        $this->with_substituted   = $input->getOption('with_substituted') ? true : false;
-        $this->missing_only       = $input->getOption('missing_only') ? true : false;
-        $this->prune              = $input->getOption('prune') ? true : false;
-        $this->all                = $input->getOption('all') ? true : false;
-        $this->scheduled          = $input->getOption('scheduled') ? true : false;
-        $this->reverse            = $input->getOption('reverse') ? true : false;
-        $this->reset_subdef_flag  = $input->getOption('reset_subdef_flag') ? true : false;
-        $this->set_writemeta_flag = $input->getOption('set_writemeta_flag') ? true : false;
-        $this->maxrecs            = (int)$input->getOption('maxrecs');
-        $this->maxduration        = (int)$input->getOption('maxduration');
-        $this->ttl                = (int)$input->getOption('ttl');
-
-        $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
-        $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
-
-        if ($this->with_substituted && $this->substituted_only) {
-            $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
-            $argsOK = false;
-        }
-        if($this->prune && !empty($names)) {
-            $output->writeln("<error>--prune and --name are mutually exclusive<error>");
-            $argsOK = false;
-        }
-
-        $n = ($this->scheduled?1:0) + ($this->missing_only?1:0) + ($this->all?1:0);
-        if($n != 1) {
-            $output->writeln("<error>set one an only one option --scheduled, --missing_only, --all<error>");
-            $argsOK = false;
-        }
-
-        // validate types and subdefs
-        $this->subdefsTodoByType = [];
-        $this->subdefsByType = [];
-
-        if($this->databox !== null) {
-
-            /** @var SubdefGroup $sg */
-            foreach ($this->databox->get_subdef_structure() as $sg) {
-                if (empty($types) || in_array($sg->getName(), $types)) {
-                    $all = [];
-                    $todo = [];
-                    /** @var databox_subdef $sd */
-                    foreach ($sg as $sd) {
-                        $all[] = $sd->get_name();
-                        if (empty($names) || in_array($sd->get_name(), $names)) {
-                            $todo[] = $sd->get_name();
-                        }
-                    }
-                    asort($all);
-                    $this->subdefsByType[$sg->getName()] = $all;
-                    asort($todo);
-                    $this->subdefsTodoByType[$sg->getName()] = $todo;
-                }
-            }
-            foreach ($types as $t) {
-                if (!array_key_exists($t, $this->subdefsTodoByType)) {
-                    $output->writeln(sprintf("<error>unknown type \"%s\"</error>", $t));
-                    $argsOK = false;
-                }
-            }
-        }
-
-        // validate partition
-        $this->partitionIndex = $this->partitionCount = null;
-        if( ($arg = $input->getOption('partition')) !== null) {
-            $arg = explode('/', $arg);
-            if(count($arg) == 2 && ($arg0 = (int)trim($arg[0]))>0 && ($arg1 = (int)trim($arg[1]))>1 && $arg0<=$arg1 ) {
-                $this->partitionIndex = $arg0;
-                $this->partitionCount = $arg1;
-            }
-            else {
-                $output->writeln(sprintf('<error>partition must be n/N</error>'));
-                $argsOK = false;
-            }
-        }
-
-        // warning about changing jeton when not working on all subdefs
-        if(!empty($names) && ($this->reset_subdef_flag || $this->set_writemeta_flag)) {
-            $output->writeln("<warning>changing record flag(s) but working on a subset of subdefs</warning>");
-        }
-        
-        return $argsOK;
     }
 
     /**
@@ -532,6 +351,176 @@ class BuildSubdefs extends Command
     }
 
     /**
+     * sanity check the cmd line options
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return bool
+     */
+    protected function sanitizeArgs(InputInterface $input, OutputInterface $output)
+    {
+        $argsOK = true;
+
+        // find the databox / collection by id or by name
+        $this->databox = null;
+        if (($d = $input->getOption('databox')) !== null) {
+            $d = trim($d);
+            foreach ($this->container->getDataboxes() as $db) {
+                if ($db->get_sbas_id() == (int)$d || $db->get_viewname() == $d || $db->get_dbname() == $d) {
+                    $this->databox = $db;
+                    $this->connection = $db->get_connection();
+                    break;
+                }
+            }
+            if ($this->databox == null) {
+                $output->writeln(sprintf("<error>Unknown databox \"%s\"</error>", $input->getOption('databox')));
+                $argsOK = false;
+            }
+        }
+        else {
+            $output->writeln(sprintf("<error>Missing mandatory options --databox</error>"));
+            $argsOK = false;
+        }
+
+        // get options
+        $this->mode = $input->getOption('mode');
+        if ($this->mode) {
+            if (!in_array($this->mode, array_keys($this->presets))) {
+                $output->writeln(sprintf("<error>invalid --mode \"%s\"<error>", $this->mode));
+                $argsOK = false;
+            }
+            else {
+                $explain = "";
+                foreach ($this->presets[$this->mode] as $k => $v) {
+                    if ($input->getOption($k) !== false && $input->getOption($k) !== null) {
+                        $output->writeln(sprintf("<error>--mode=%s and --%s are mutually exclusive</error>", $this->mode, $k));
+                        $argsOK = false;
+                    }
+                    else {
+                        $input->setOption($k, $v);
+                    }
+                    $explain .= ' --' . $k . ($v === true ? '' : ('=' . $v));
+                }
+
+                $output->writeln(sprintf("mode \"%s\" ==>%s", $this->mode, $explain));
+            }
+        }
+
+        $this->show_sql = $input->getOption('show_sql') ? true : false;
+        $this->dry = $input->getOption('dry') ? true : false;
+        $this->min_record_id = $input->getOption('min_record_id');
+        $this->max_record_id = $input->getOption('max_record_id');
+        $this->substituted_only = $input->getOption('substituted_only') ? true : false;
+        $this->with_substituted = $input->getOption('with_substituted') ? true : false;
+        $this->missing_only = $input->getOption('missing_only') ? true : false;
+        $this->prune = $input->getOption('prune') ? true : false;
+        $this->all = $input->getOption('all') ? true : false;
+        $this->scheduled = $input->getOption('scheduled') ? true : false;
+        $this->reverse = $input->getOption('reverse') ? true : false;
+        $this->reset_subdef_flag = $input->getOption('reset_subdef_flag') ? true : false;
+        $this->set_writemeta_flag = $input->getOption('set_writemeta_flag') ? true : false;
+        $this->maxrecs = (int)$input->getOption('maxrecs');
+        $this->maxduration = (int)$input->getOption('maxduration');
+        $this->ttl = (int)$input->getOption('ttl');
+
+        $types = $this->getOptionAsArray($input, 'record_type', self::OPTION_DISTINT_VALUES);
+        $names = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
+
+        if ($this->with_substituted && $this->substituted_only) {
+            $output->writeln("<error>--substituted_only and --with_substituted are mutually exclusive<error>");
+            $argsOK = false;
+        }
+        if ($this->prune && !empty($names)) {
+            $output->writeln("<error>--prune and --name are mutually exclusive<error>");
+            $argsOK = false;
+        }
+
+        $n = ($this->scheduled ? 1 : 0) + ($this->missing_only ? 1 : 0) + ($this->all ? 1 : 0);
+        if ($n != 1) {
+            $output->writeln("<error>set one an only one option --scheduled, --missing_only, --all<error>");
+            $argsOK = false;
+        }
+
+        // validate types and subdefs
+        $this->subdefsTodoByType = [];
+        $this->subdefsByType = [];
+
+        if ($this->databox !== null) {
+
+            /** @var SubdefGroup $sg */
+            foreach ($this->databox->get_subdef_structure() as $sg) {
+                if (empty($types) || in_array($sg->getName(), $types)) {
+                    $all = [];
+                    $todo = [];
+                    /** @var databox_subdef $sd */
+                    foreach ($sg as $sd) {
+                        $all[] = $sd->get_name();
+                        if (empty($names) || in_array($sd->get_name(), $names)) {
+                            $todo[] = $sd->get_name();
+                        }
+                    }
+                    asort($all);
+                    $this->subdefsByType[$sg->getName()] = $all;
+                    asort($todo);
+                    $this->subdefsTodoByType[$sg->getName()] = $todo;
+                }
+            }
+            foreach ($types as $t) {
+                if (!array_key_exists($t, $this->subdefsTodoByType)) {
+                    $output->writeln(sprintf("<error>unknown type \"%s\"</error>", $t));
+                    $argsOK = false;
+                }
+            }
+        }
+
+        // validate partition
+        $this->partitionIndex = $this->partitionCount = null;
+        if (($arg = $input->getOption('partition')) !== null) {
+            $arg = explode('/', $arg);
+            if (count($arg) == 2 && ($arg0 = (int)trim($arg[0])) > 0 && ($arg1 = (int)trim($arg[1])) > 1 && $arg0 <= $arg1) {
+                $this->partitionIndex = $arg0;
+                $this->partitionCount = $arg1;
+            }
+            else {
+                $output->writeln(sprintf('<error>partition must be n/N</error>'));
+                $argsOK = false;
+            }
+        }
+
+        // warning about changing jeton when not working on all subdefs
+        if (!empty($names) && ($this->reset_subdef_flag || $this->set_writemeta_flag)) {
+            $output->writeln("<warning>changing record flag(s) but working on a subset of subdefs</warning>");
+        }
+
+        return $argsOK;
+    }
+
+    /**
+     * merge options so one can mix csv-option and/or multiple options
+     * ex. with keepUnique = false :  --opt=a,b --opt=c --opt=b  ==> [a,b,c,b]
+     * ex. with keepUnique = true  :  --opt=a,b --opt=c --opt=b  ==> [a,b,c]
+     *
+     * @param InputInterface $input
+     * @param string $optionName
+     * @param int $option
+     * @return array
+     */
+    private function getOptionAsArray(InputInterface $input, $optionName, $option)
+    {
+        $ret = [];
+        foreach ($input->getOption($optionName) as $v0) {
+            foreach (explode(',', $v0) as $v) {
+                $v = trim($v);
+                if ($option & self::OPTION_ALL_VALUES || !in_array($v, $ret)) {
+                    $ret[] = $v;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
      * @return string
      */
     protected function getSQL()
@@ -576,5 +565,16 @@ class BuildSubdefs extends Command
         $sql .= "\nORDER BY r.`record_id` " . ($this->reverse ? "DESC" : "ASC");
 
         return $sql;
+    }
+
+    /**
+     * print a string if verbosity >= verbose (-v)
+     * @param string $s
+     */
+    private function verbose($s)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->write($s);
+        }
     }
 }

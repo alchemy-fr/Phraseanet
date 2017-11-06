@@ -36,7 +36,6 @@ class InstallTest extends \PhraseanetTestCase
             ->method('get')
             ->with('dialog')
             ->will($this->returnValue($dialog));
-
         $input->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($option) use ($infoDb, $template, $email, $password, $serverName, $dataPath) {

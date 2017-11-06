@@ -401,7 +401,7 @@
                 var totalViewportHeight = viewportDimensions.y;
 
                 //for basket
-                if(recordPosition.left < 30) {
+                if (!$($this).hasClass('icon-stack') && recordPosition.left < 30) {
                     leftOffset = $('.insidebloc').width();
                 }
                 var leftAvailableSpace = recordPosition.left + leftOffset;

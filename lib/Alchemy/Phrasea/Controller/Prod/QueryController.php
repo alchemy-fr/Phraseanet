@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\StringHelper;
@@ -38,9 +39,9 @@ class QueryController extends Controller
         // since the query comes from a submited form, normalize crlf,cr,lf ...
         $query = StringHelper::crlfNormalize($query);
 
-        $json = array(
+        $json = [
             'query' => $query
-        );
+        ];
 
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
@@ -76,7 +77,7 @@ class QueryController extends Controller
                     return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
                 }));
 
-                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collections);
+                $this->getSearchEngineLogger()->log($databox, $result->getQueryText(), $result->getTotal(), $collections);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;
@@ -84,6 +85,8 @@ class QueryController extends Controller
             $npages = $result->getTotalPages($perPage);
 
             $page = $result->getCurrentPage($perPage);
+
+            $queryESLib = $result->getQueryESLib();
 
             $string = '';
 
@@ -137,19 +140,15 @@ class QueryController extends Controller
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
 
-            $explain = "<div id=\"explainResults\" class=\"myexplain\">";
-
-            $explain .= "<img src=\"/assets/common/images/icons/answers.gif\" /><span><b>";
-
-            if ($result->getTotal() != $result->getAvailable()) {
-                $explain .= $this->app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
-            } else {
-                $explain .= $this->app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
-            }
-
-            $explain .= " </b></span>";
-            $explain .= '<br><div>' . ($result->getDuration() / 1000) . ' s</div>dans index ' . $result->getIndexes();
-            $explain .= "</div>";
+            $explain = $this->render(
+                "prod/results/infos.html.twig",
+                [
+                    'results'=> $result,
+                    'esquery' => $this->getAclForUser()->is_admin() ?
+                        json_encode($queryESLib['body'], JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) :
+                        null
+                ]
+            );
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
@@ -182,30 +181,69 @@ class QueryController extends Controller
             } else {
                 $template = 'prod/results/records.html.twig';
             }
-
             $json['results'] = $this->render($template, ['results'=> $result]);
 
-            /** Debug */
-            $json['parsed_query'] = $result->getEngineQuery();
-            /** End debug */
-
-            $fieldLabels = [];
 
             // add technical fields
+            $fieldLabels = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
                 $fieldLabels[$k] = $this->app->trans($f['label']);
             }
+
             // add databox fields
+            // get infos about fields, fusionned and by databox
+            $fieldsInfos = [];  // by databox
             foreach ($this->app->getDataboxes() as $databox) {
+                $sbasId = $databox->get_sbas_id();
+                $fieldsInfos[$sbasId] = [];
                 foreach ($databox->get_meta_structure() as $field) {
-                    if (!isset($fieldLabels[$field->get_name()])) {
-                        $fieldLabels[$field->get_name()] = $field->get_label($this->app['locale']);
+                    $name = $field->get_name();
+                    $fieldsInfos[$sbasId][$name] = [
+                        'label'    => $field->get_label($this->app['locale']),
+                        'type'     => $field->get_type(),
+                        'business' => $field->isBusiness(),
+                        'multi'    => $field->is_multi(),
+                    ];
+                    if (!isset($fieldLabels[$name])) {
+                        $fieldLabels[$name] = $field->get_label($this->app['locale']);
                     }
                 }
             }
 
-            $facets = [];
+            // populates fileds infos
+            $json['fields'] = $fieldsInfos;
 
+            // populates rawresults
+            // need acl so the result will not include business fields where not allowed
+            $acl = $this->getAclForUser();
+            $json['rawResults'] = [];
+            /** @var ElasticsearchRecord $record */
+            foreach ($result->getResults() as $record) {
+                $rawRecord = $record->asArray();
+
+                $sbasId = $record->getDataboxId();
+                $baseId = $record->getBaseId();
+
+                $caption = $rawRecord['caption'];
+                if ($acl && $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD)) {
+                    $caption = array_merge($caption, $rawRecord['privateCaption']);
+                }
+
+                // read the fields following the structure order
+                $rawCaption = [];
+                foreach ($fieldsInfos[$sbasId] as $fieldName => $fieldInfos) {
+                    if (array_key_exists($fieldName, $caption)) {
+                        $rawCaption[$fieldName] = $caption[$fieldName];
+                    }
+                }
+                $rawRecord['caption'] = $rawCaption;
+                unset($rawRecord['privateCaption']);
+
+                $json['rawResults'][$record->getId()] = $rawRecord;
+            }
+
+            // populates facets (aggregates)
+            $facets = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
@@ -220,6 +258,9 @@ class QueryController extends Controller
             $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
             $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
             $json['form'] = $options->serialize();
+            $json['queryCompiled'] = $result->getQueryCompiled();
+            $json['queryAST'] = $result->getQueryAST();
+            $json['queryESLib'] = $queryESLib;
         }
         catch(\Exception $e) {
             // we'd like a message from the parser so get all the exceptions messages
@@ -228,14 +269,30 @@ class QueryController extends Controller
                 $msg .= ($msg ? "\n":"") . $e->getMessage();
             }
             $template = 'prod/results/help.html.twig';
-            $result = array(
+            $result = [
                 'error' => $msg
-            );
+            ];
             $json['results'] = $this->render($template, ['results'=> $result]);
         }
 
 
         return $this->app->json($json);
+    }
+
+    /**
+     * @return DisplaySettingService
+     */
+    private function getSettings()
+    {
+        return $this->app['settings'];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getUserManipulator()
+    {
+        return $this->app['manipulator.user'];
     }
 
     /**
@@ -269,21 +326,5 @@ class QueryController extends Controller
                 'selected' => $pos,
             ])
         ]);
-    }
-
-    /**
-     * @return DisplaySettingService
-     */
-    private function getSettings()
-    {
-        return $this->app['settings'];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getUserManipulator()
-    {
-        return $this->app['manipulator.user'];
     }
 }

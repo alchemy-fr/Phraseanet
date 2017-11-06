@@ -53,6 +53,42 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $flags = [];
     private $highlight = [];
 
+    public function asArray()
+    {
+        return [
+            '_index'         => $this->_index,
+            '_type'          => $this->_type,
+            '_id'            => $this->_id,
+            '_version'       => $this->_version,
+            '_score'         => $this->_score,
+            'databoxId'      => $this->databoxId,
+            'recordId'       => $this->recordId,
+            'collectionId'   => $this->collectionId,
+            'baseId'         => $this->baseId,
+            'collectionName' => $this->collectionName,
+            'mimeType'       => $this->mimeType,
+            'title'          => $this->title,
+            'originalName'   => $this->originalName,
+            'updated'        => $this->updated,
+            'created'        => $this->created,
+            'sha256'         => $this->sha256,
+            'width'          => $this->width,
+            'height'         => $this->height,
+            'size'           => $this->size,
+            'uuid'           => $this->uuid,
+            'position'       => $this->position,
+            'type'           => $this->type,
+            'status'         => $this->status,
+            'isStory'        => $this->isStory,
+            'caption'        => $this->caption,
+            'privateCaption' => $this->privateCaption,
+            'exif'           => $this->exif,
+            'subdefs'        => $this->subdefs,
+            'flags'          => $this->flags,
+            'highlight'      => $this->highlight,
+        ];
+    }
+
     /**
      * @param string $index
      * @param string $type
@@ -109,6 +145,30 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     }
 
     /** {@inheritdoc} */
+    public function getDataboxId()
+    {
+        return $this->databoxId;
+    }
+
+    /** {@inheritdoc} */
+    public function setDataboxId($databoxId)
+    {
+        $this->databoxId = $databoxId;
+    }
+
+    /** {@inheritdoc} */
+    public function getRecordId()
+    {
+        return $this->recordId;
+    }
+
+    /** {@inheritdoc} */
+    public function setRecordId($recordId)
+    {
+        $this->recordId = $recordId;
+    }
+
+    /** {@inheritdoc} */
     public function getBaseId()
     {
         return $this->baseId;
@@ -142,18 +202,6 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setCreated(\DateTime $created = null)
     {
         $this->created = $created;
-    }
-
-    /** {@inheritdoc} */
-    public function getDataboxId()
-    {
-        return $this->databoxId;
-    }
-
-    /** {@inheritdoc} */
-    public function setDataboxId($databoxId)
-    {
-        $this->databoxId = $databoxId;
     }
 
     /** {@inheritdoc} */
@@ -197,30 +245,6 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setCollectionName($collectionName)
     {
         $this->collectionName = $collectionName;
-    }
-
-    /** {@inheritdoc} */
-    public function getOriginalName()
-    {
-        return $this->originalName;
-    }
-
-    /** {@inheritdoc} */
-    public function setOriginalName($originalName)
-    {
-        $this->originalName = $originalName;
-    }
-
-    /** {@inheritdoc} */
-    public function getRecordId()
-    {
-        return $this->recordId;
-    }
-
-    /** {@inheritdoc} */
-    public function setRecordId($recordId)
-    {
-        $this->recordId = $recordId;
     }
 
     /** {@inheritdoc} */
@@ -287,6 +311,18 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
         }
 
         return $this->getOriginalName();
+    }
+
+    /** {@inheritdoc} */
+    public function getOriginalName()
+    {
+        return $this->originalName;
+    }
+
+    /** {@inheritdoc} */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
     }
 
     /**

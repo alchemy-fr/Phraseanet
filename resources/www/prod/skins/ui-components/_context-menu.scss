@@ -44,9 +44,13 @@ Menu contextuel
 /******* DROPDOWN MENU ********************************************************/
 
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
-  padding: 4px 20px;
+  padding: 4px 12px;
   margin-left: 0;
-  color: #75ABFF;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  font-spacing: 0;
+  color: $darkerTextColor;
 }
 
 .context-menu-theme-vista .context-menu-item-hover {
@@ -72,9 +76,23 @@ Menu contextuel
   background-position: 5px center;
 }
 
+.context-menu-item .divider {
+  border-bottom: 1px solid #808080;
+  margin-left: 20px;
+}
 
 .context-menu-item a {
-  color: #75ABFF;
+  font-family: Helvetica;
+  font-size: 12px;
+  font-weight: bold;
+  font-spacing: 0;
+  color: $darkerTextColor;
+  span {
+    vertical-align: middle;
+  }
+  img {
+    width: 16px;
+  }
 }
 
 .context-menu-item-hover a {

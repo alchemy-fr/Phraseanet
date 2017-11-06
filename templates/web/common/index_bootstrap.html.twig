@@ -32,6 +32,8 @@
             var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
             $.fn.btn = btn; // assigns bootstrap button functionality to $.fn.btn
         </script>
+        <script type="text/javascript"
+                src="/assets/vendors/underscore/underscore{% if not app.debug %}.min{% endif %}.js"></script>
         {% block rss %}{% endblock %}
         {% block javascript %}{% endblock %}
     </head>

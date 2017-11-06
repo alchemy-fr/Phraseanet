@@ -1,4 +1,6 @@
 {{ form(form) }}
+<button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
+        class="btn btn-primary">{{ 'Save' | trans }}</button>
 
 <form id="ElasticSearchDropIndexForm" action="{{ path('admin_searchengine_drop_index') }}" method="POST">
 </form>
