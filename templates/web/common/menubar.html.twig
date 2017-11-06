@@ -196,10 +196,13 @@
 
                 _.each(sortedCustomLinks, function (linksData) {
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                        var styleAttr = "";
+                        styleAttr += linksData.linkColor ? "color: " + linksData.linkColor + ";" : "";
+                        styleAttr += linksData.linkBold == "true" ? "font-weight: bold;" : "";
+
+                        var spanElement = $('<span />').attr('style', styleAttr).html(linksData.linkName);
                         var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
-                            '<span>' +
-                            linksData.linkName +
-                            '</span></a></li>';
+                            spanElement.prop("outerHTML") + '</a></li>';
                         $('#mainMenu .menu-bar ol').append(links);
                     }
                 });
@@ -208,10 +211,15 @@
 
                 _.each(sortedCustomLinks, function (linksData) {
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
+                        var styleAttr = "";
+                        styleAttr += linksData.linkColor ? "color: " + linksData.linkColor + ";" : "";
+                        styleAttr += linksData.linkBold == "true" ? "font-weight: bold;" : "";
+
+                        var spanElement = $('<span />').attr('style', styleAttr).html(linksData.linkName);
                         var links = '<div title="" class="context-menu-item menu3-custom-item">' +
                             '<div style="" class="context-menu-item-inner">' +
                             '<a target="_blank" href="' + linksData.linkUrl + '">' +
-                            '<span>' + linksData.linkName + '</span></a></div></div>';
+                            spanElement.prop("outerHTML") + '</a></div></div>';
                         $('.helpcontextmenu .context-menu-theme-vista').append(links);
                     }
                 });

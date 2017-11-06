@@ -103,36 +103,37 @@ class UploadController extends Controller
                         'databox_collections' => []
                     ];
                 }
-                $collections[$sbasId]['databox_collections'][] = $collection;
-            }
+                $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
 
-            /** @var DisplaySettingService $settings */
-            $settings = $this->app['settings'];
-            $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+                /** @var DisplaySettingService $settings */
+                $settings = $this->app['settings'];
+                $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
-            // a temporary array to sort the collections
-            $aName = array();
-            list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
-            switch ($userOrderSetting) {
-                case $settings::ORDER_ALPHA_ASC :
-                    list($ukey, $uorder) = ["name", SORT_ASC];
-                    break;
+                // a temporary array to sort the collections
+                $aName = [];
+                list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
+                switch ($userOrderSetting) {
+                    case $settings::ORDER_ALPHA_ASC :
+                        list($ukey, $uorder) = ["name", SORT_ASC];
+                        break;
 
-                case $settings::ORDER_ALPHA_DESC :
-                    list($ukey, $uorder) = ["name", SORT_DESC];
-                    break;
-            }
-
-            foreach ($collections[$sbasId]['databox_collections'] as $key => $row) {
-                if($ukey == "order") {
-                    $aName[$key] = $row->get_ord();
-                }else {
-                    $aName[$key] = $row->get_name();
+                    case $settings::ORDER_ALPHA_DESC :
+                        list($ukey, $uorder) = ["name", SORT_DESC];
+                        break;
                 }
-            }
 
-            // sort the collections
-            array_multisort($aName, $uorder, SORT_REGULAR, $collections[$sbasId]['databox_collections']);
+                foreach ($collections[$databox->get_sbas_id()]['databox_collections'] as $key => $row) {
+                    if ($ukey == "order") {
+                        $aName[$key] = $row->get_ord();
+                    }
+                    else {
+                        $aName[$key] = $row->get_name();
+                    }
+                }
+
+                // sort the collections
+                array_multisort($aName, $uorder, SORT_REGULAR, $collections[$databox->get_sbas_id()]['databox_collections']);
+            }
         }
 
         return $collections;

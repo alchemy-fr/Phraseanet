@@ -19,6 +19,8 @@ var filterFacet = false;
 
 var facets = null;
 
+var lastFilterResults = [];
+
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
     p4.preview.width = $('#PREVIEWIMGCONT').width();
@@ -249,7 +251,7 @@ function checkFilters(save) {
                 // nb: unselect the "all" field, so it acts as a button
                 optAllSelected = $(opt).is(":selected");
             }
-            if(idx == 0 || optAllSelected || $(opt).is(":disabled") || !$(opt).is(":visible") ) {
+            if (idx == 0 || optAllSelected || $(opt).is(":disabled") || $(opt).css('display') === 'none') {
                 $(opt).prop("selected", false);
             }
         }
@@ -541,7 +543,14 @@ function initAnswerForm() {
                     container: $('#answers')
                 });
 
-                loadFacets(datas.facets);
+                //load last result collected or [] if length == 0
+                if (datas.facets.length == 0) {
+                    loadFacets(lastFilterResults);
+                } else {
+                    lastFilterResults = datas.facets;
+                    loadFacets(datas.facets);
+                }
+
                 facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
@@ -614,7 +623,7 @@ function loadFacets(facets) {
             title: facet.label,
             folder: true,
             children: values,
-            expanded: _.isUndefined(selectedFacetValues[facet.name])
+            expanded: true
         };
     });
 
@@ -624,7 +633,12 @@ function loadFacets(facets) {
 
     treeSource = shouldFilterSingleContent(treeSource, filterFacet);
 
-    return getFacetsTree().reload(treeSource);
+    return getFacetsTree().reload(treeSource)
+        .done(function () {
+            _.each($('#proposals').find('.fancytree-expanded'), function (element) {
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+            });
+        });
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
@@ -632,9 +646,9 @@ function shouldFilterSingleContent(source, shouldFilter) {
     if(shouldFilter == true) {
         _.forEach(source, function(facet) {
             //close expansion for facet containing selected values
-            if(!_.isUndefined(selectedFacetValues[facet.title])) {
-                facet.expanded = false;
-            }
+            // if(!_.isUndefined(selectedFacetValues[facet.title])) {
+            //     facet.expanded = false;
+            // }
             if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
                 filteredSource.push(facet);
             }
@@ -691,57 +705,84 @@ function getFacetsTree() {
                 var query = data.node.data.query;
                 if (query) {
                     var facet = data.node.parent;
-                    selectedFacetValues[facet.title] = {
+                    var facetData = {
                         value: data.node.data,
                         mode: event.altKey ? "EXCEPT" : "AND"
                     };
+
+                    if (selectedFacetValues[facet.title] == null) {
+                        selectedFacetValues[facet.title] = [];
+                    }
+                    selectedFacetValues[facet.title].push(facetData);
                     facetCombinedSearch();
                 }
             },
             renderNode: function(event, data){
                 var facetFilter = "";
                 if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    facetFilter = selectedFacetValues[data.node.title].value.label;
-
-                    var s_label = document.createElement("SPAN");
-                    s_label.setAttribute("class", "facetFilter-label");
-                    s_label.setAttribute("title", facetFilter);
-
-                    var length = 15;
-                    var facetFilterString = facetFilter;
-                    if( facetFilterString.length > length) {
-                        facetFilterString = facetFilterString.substring(0,length) + '…';
+                    if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
+                        var dataNode = document.createElement('div');
+                        dataNode.setAttribute("class", "dataNode");
+                        $(".fancytree-folder", data.node.li).append(
+                            dataNode
+                        );
+                    } else {
+                        //remove existing facets
+                        $(".dataNode", data.node.li).empty();
                     }
-                    s_label.appendChild(document.createTextNode(facetFilterString));
+                    _.each(selectedFacetValues[data.node.title], function (facetValue) {
 
-                    var s_closer = document.createElement("A");
-                    s_closer.setAttribute("class", "facetFilter-closer");
+                        facetFilter = facetValue.value.label;
 
-                    var s_gradient = document.createElement("SPAN");
-                    s_gradient.setAttribute("class", "facetFilter-gradient");
-                    s_gradient.appendChild(document.createTextNode("\u00A0"));
+                        var s_label = document.createElement("SPAN");
+                        s_label.setAttribute("class", "facetFilter-label");
+                        s_label.setAttribute("title", facetFilter);
 
-                    s_label.appendChild(s_gradient);
-
-                    var s_facet = document.createElement("SPAN");
-                    s_facet.setAttribute("class", "facetFilter" + '_' + selectedFacetValues[data.node.title].mode);
-                    s_facet.appendChild(s_label);
-                    s_closer = $(s_facet.appendChild(s_closer));
-                    s_closer.data("facetTitle", data.node.title);
-
-                    s_closer.click(
-                        function(event) {
-                            event.stopPropagation();
-                            var facetTitle = $(this).data("facetTitle");
-                            delete selectedFacetValues[facetTitle];
-                            facetCombinedSearch();
-                            return false;
+                        var length = 15;
+                        var facetFilterString = facetFilter;
+                        if (facetFilterString.length > length) {
+                            facetFilterString = facetFilterString.substring(0, length) + '…';
                         }
-                    );
+                        s_label.appendChild(document.createTextNode(facetFilterString));
 
-                    $(".fancytree-folder", data.node.li).append(
-                        $(s_facet)
-                    );
+                        var s_closer = document.createElement("A");
+                        s_closer.setAttribute("class", "facetFilter-closer");
+
+                        var s_gradient = document.createElement("SPAN");
+                        s_gradient.setAttribute("class", "facetFilter-gradient");
+                        s_gradient.appendChild(document.createTextNode("\u00A0"));
+
+                        s_label.appendChild(s_gradient);
+
+                        var s_facet = document.createElement("SPAN");
+                        s_facet.setAttribute("class", "facetFilter" + '_' + facetValue.mode);
+                        s_facet.appendChild(s_label);
+                        s_closer = $(s_facet.appendChild(s_closer));
+                        s_closer.data("facetTitle", data.node.title);
+                        s_closer.data("facetFilter", facetFilter);
+
+                        s_closer.click(
+                            function (event) {
+                                event.stopPropagation();
+                                var facetTitle = $(this).data("facetTitle");
+                                var facetFilter = $(this).data("facetFilter");
+                                var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
+                                selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
+                                    return (obj.value.label == facetFilter && obj.mode == mode);
+                                });
+                                //delete selectedFacetValues[facetTitle];
+                                facetCombinedSearch();
+                                return false;
+                            }
+                        );
+
+                        var newNode = document.createElement('div');
+                        newNode.setAttribute("class", "newNode");
+                        newNode.appendChild(s_facet);
+                        $(".fancytree-folder .dataNode", data.node.li).append(
+                            newNode
+                        );
+                    });
                 }
             }
         });
@@ -754,22 +795,24 @@ function facetCombinedSearch() {
     var q = $("#EDIT_query").val();
     var q_facet_and = "";
     var q_facet_except = "";
-    _.each(_.values(selectedFacetValues), function(facetValue) {
-        switch(facetValue.mode) {
-            case "AND":
-                q_facet_and += (q_facet_and ? " AND " : "") + '(' + facetValue.value.query + ')';
-                break;
-            case "EXCEPT":
-                q_facet_except += (q_facet_except ? " OR " : "") + '(' + facetValue.value.query + ')';
-                break;
-        }
+    _.each(_.values(selectedFacetValues), function (facet) {
+        _.each(facet, function (facetValue) {
+            switch (facetValue.mode) {
+                case "AND":
+                    q_facet_and += (q_facet_and ? " AND " : "") + '(' + facetValue.value.query + ')';
+                    break;
+                case "EXCEPT":
+                    q_facet_except += (q_facet_except ? " OR " : "") + '(' + facetValue.value.query + ')';
+                    break;
+            }
+        });
     });
     if(!q && !q_facet_and && q_facet_except) {
         // too bad : an except with no query.
         q = "created_on>1900/01/01";    // fake "all"
     }
     if(q_facet_and != "") {
-        if(q) {
+        if (q) {
             q = '(' + q + ') AND '
         }
         q += q_facet_and;

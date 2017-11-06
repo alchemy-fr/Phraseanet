@@ -54,14 +54,32 @@ $proposalsFacetHoverColor: #FFF !default;
     font-weight: bold;
     font-size: $xmediumFontSize;
     color: $proposalsTitleColor;
-    height: 49px;
-    line-height: 49px;
+    min-height: 49px;
+    //line-height: 49px;
     margin-left: 0;
     border-left: 4px solid $mediumBackgroundColor;
     border-bottom: 1px solid $mediumBorderColor;
+    overflow: auto;
+    position: relative;
+    .newNode {
+      position: relative;
+      overflow: auto;
+      clear: both;
+      margin-left: 20px;
+    }
+    .dataNode {
+      float: left;
+      width: 60%;
+      height: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
     .fancytree-title {
       font-size: $xmediumFontSize;
       margin-left: 10px;
+      float: left;
+      width: 30%;
+      line-height: 49px;
     }
     &:hover {
       border-left: 4px solid $proposalColor;
@@ -92,7 +110,7 @@ $proposalsFacetHoverColor: #FFF !default;
 
 
   .fancytree-expander {
-    position: absolute;
+    position: relative;
     right: 10px;
     background-image: none;
     margin: 0;
@@ -101,6 +119,8 @@ $proposalsFacetHoverColor: #FFF !default;
     height: auto;
     font-weight: normal;
     font-size: 65%;
+    float: right;
+    line-height: 49px;
   }
 
   .fancytree-title {
@@ -120,42 +140,50 @@ $proposalsFacetHoverColor: #FFF !default;
 
   .facetFilter_AND {
     font-weight: normal;
-    position: absolute;
+    position: relative;
     width: 127px;
     height: 25px;
     line-height: 25px;
     vertical-align: middle;
     border-radius: 4px;
-    right: 28px;
+    //right: 28px;
     background-color: $proposalColor_AND;
     color: $proposalFacetColor;
     padding-left: 13px;
     padding-right: 13px;
-    margin-top: 11px;
+    display: inline-block;
+    margin: 2px 0px;
+    float: right;
+    margin-right: 10px;
+    //margin-top: 11px;
   }
 
   .facetFilter_EXCEPT {
     font-weight: normal;
-    position: absolute;
+    position: relative;
     width: 127px;
     height: 25px;
     line-height: 25px;
     vertical-align: middle;
     border-radius: 4px;
-    right: 28px;
+    //right: 28px;
     background-color: $proposalColor_EXCEPT;
     color: $proposalFacetColor;
     padding-left: 13px;
     padding-right: 13px;
-    margin-top: 11px;
+    //margin-top: 11px;
+    display: inline-block;
+    margin: 2px 0px;
+    float: right;
+    margin-right: 10px;
   }
 
   .facetFilter-label {
-    position: absolute;
-    left: 13px;
-    right: 14px;
+    position: relative;
     overflow: hidden;
     cursor: default;
+    line-height: 25px;
+    display: inline-block;
   }
 
   .facetFilter-gradient {
