@@ -49,8 +49,6 @@ class RegistryFormManipulator
         $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
         $data = array_replace_recursive($this->getDefaultData($currentConf), $currentConf);
-        //converting array to string array before inserting into form field
-        $data['custom-links'] = json_encode($data['custom-links']);
         $form->setData($data);
 
         return $form;
