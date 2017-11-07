@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Authentication\Phrasea;
 
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +27,16 @@ class NativeAuthentication implements PasswordAuthenticationInterface
     private $oldEncoder;
     /** @var UserRepository */
     private $repository;
+    /** @var PropertyAccess  */
+    private $conf;
 
-    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo)
+    public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo, PropertyAccess $configuration)
     {
         $this->userManipulator = $userManipulator;
         $this->encoder = $encoder;
         $this->oldEncoder = $oldEncoder;
         $this->repository = $repo;
+        $this->conf = $configuration;
     }
 
     /**
@@ -40,7 +44,8 @@ class NativeAuthentication implements PasswordAuthenticationInterface
      */
     public function getUsrId($username, $password, Request $request)
     {
-        if (null === $user = $this->repository->findRealUserByLogin($username)) {
+        $userEmailMandatory = $this->conf->get(['registry', 'web-applications', 'email-optional-for-login']);
+        if (null === $user = $this->repository->findRealUserByLogin($username, $userEmailMandatory)) {
             return null;
         }
 

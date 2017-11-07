@@ -241,3 +241,5 @@ embed_bundle:
 registry:
     actions:
         export-stamp-choice: false
+    web-applications:
+        email-optional-for-login: false

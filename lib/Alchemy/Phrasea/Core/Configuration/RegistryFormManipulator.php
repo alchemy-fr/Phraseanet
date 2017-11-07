@@ -139,6 +139,9 @@ class RegistryFormManipulator
                 'smtp-user' => null,
                 'smtp-password' => isset($config['email']['smtp-password']) ? $config['email']['smtp-password'] : null,
             ],
+            'web-applications' => [
+                'email-optional-for-login' => false
+            ],
             'custom-links' => [
                 [
                     'linkName'     => 'Phraseanet store',
