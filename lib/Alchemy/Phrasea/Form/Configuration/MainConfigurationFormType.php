@@ -62,9 +62,6 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('email', new EmailFormType(), [
             'label' => 'Emails',
         ]);
-        $builder->add('web-applications', new WebApplicationsFormType(), [
-            'label' => 'Web Applications',
-        ]);
         $builder->add('custom-links', 'hidden');
     }
 
