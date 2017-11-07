@@ -96,7 +96,6 @@ class RegistryFormManipulator
             'registration' => [
                 'auto-select-collections' => true,
                 'auto-register-enabled' => false,
-                'user-email-mandatory' => true,
             ],
             'maintenance' => [
                 'message' => 'The application is down for maintenance',
@@ -139,6 +138,9 @@ class RegistryFormManipulator
                 'smtp-secure-mode' => 'tls',
                 'smtp-user' => null,
                 'smtp-password' => isset($config['email']['smtp-password']) ? $config['email']['smtp-password'] : null,
+            ],
+            'web-applications' => [
+                'email-optional-for-login' => false
             ],
             'custom-links' => [
                 [

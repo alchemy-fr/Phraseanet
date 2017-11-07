@@ -84,11 +84,11 @@ class UserRepository extends EntityRepository
      * nb : login match is CASE INSENSITIVE, "doe"=="Doe"=="DOE"
      *
      * @param $login
-     * @param $userEmailMandatory
+     * @param $emailOptionalForLogin
      *
      * @return null|User
      */
-    public function findRealUserByLogin($login, $userEmailMandatory = false)
+    public function findRealUserByLogin($login, $emailOptionalForLogin = true)
     {
         $qb = $this->createQueryBuilder('u');
         $qb->where($qb->expr()->eq($qb->expr()->lower('u.login'), $qb->expr()->lower($qb->expr()->literal($login))))
@@ -96,7 +96,7 @@ class UserRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
-        if ($userEmailMandatory)
+        if (!$emailOptionalForLogin)
         {
             $qb->andWhere($qb->expr()->isNotNull('u.email'));
         }
