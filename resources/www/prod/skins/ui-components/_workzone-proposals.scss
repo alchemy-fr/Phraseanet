@@ -181,7 +181,7 @@ $proposalsFacetHoverColor: #FFF !default;
   .facetFilter-label {
     position: relative;
     overflow: hidden;
-    cursor: default;
+    cursor: pointer;
     line-height: 25px;
     display: inline-block;
   }
