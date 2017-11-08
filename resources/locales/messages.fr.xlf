@@ -10089,7 +10089,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="yes">
         <source>order-manager::order-item: reset</source>
-        <target state="translated">Annulé</target>
+        <target state="translated">Annuler</target>
         <jms:reference-file line="186">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="217">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="583">prod/orders/order_item.html.twig</jms:reference-file>
