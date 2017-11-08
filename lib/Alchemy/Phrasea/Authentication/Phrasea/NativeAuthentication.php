@@ -40,7 +40,8 @@ class NativeAuthentication implements PasswordAuthenticationInterface
      */
     public function getUsrId($username, $password, Request $request)
     {
-        if (null === $user = $this->repository->findRealUserByLogin($username)) {
+        $emailOptionalForLogin = $this->conf->get(['registry', 'web-applications', 'email-optional-for-login']);
+        if (null === $user = $this->repository->findRealUserByLogin($username, $emailOptionalForLogin)) {
             return null;
         }
 
