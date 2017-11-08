@@ -21,7 +21,7 @@ class CustomLinkFormType extends AbstractType
         $builder->add('linkName', 'text', [
             'label' => false,
             'attr'  => [
-                'placeholder' => 'linkname',
+                'placeholder' => 'setup::custom-link:name-link',
                 'required'    => true,
                 'maxlength'   => "30"
             ]
@@ -32,7 +32,7 @@ class CustomLinkFormType extends AbstractType
                 'required' => true
             ],
             'choices' => [
-                ''    => 'select language',
+                ''    => 'setup::custom-link:select-language',
                 'all' => 'All',
                 'fr'  => 'FR',
                 'en'  => 'EN',
@@ -45,7 +45,7 @@ class CustomLinkFormType extends AbstractType
         $builder->add('linkUrl', 'url', [
             'label' => false,
             'attr'  => [
-                'placeholder' => 'ex: https://docs.phraseanet.com',
+                'placeholder' => 'setup::custom-link:placeholder-link-url',
                 'required'    => true
             ]
         ]);
@@ -55,9 +55,9 @@ class CustomLinkFormType extends AbstractType
                 'required' => true
             ],
             'choices' => [
-                ''               => 'select location',
-                'help-menu'      => 'Help Menu',
-                'navigation-bar' => 'Navigation Bar',
+                ''               => 'setup::custom-link:location',
+                'help-menu'      => 'setup::custom-link:help-menu',
+                'navigation-bar' => 'setup::custom-link:navigation-bar',
             ]
         ]);
         $builder->add('linkOrder', 'integer', [

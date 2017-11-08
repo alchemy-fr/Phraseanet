@@ -77,41 +77,6 @@
         var form = $("#GV_form");
         var inputs = form.find("input, select, textarea");
 
-        {#var languageOptionArray = [#}
-        {#{"value": "", "text": "{{ "setup::custom-link:select-language" | trans }}"},#}
-        {#{"value": "all", "text": "{{ "All" | trans }}"},#}
-        {#{"value": "fr", "text": "FR"},#}
-        {#{"value": "en", "text": "EN"},#}
-        {#{"value": "es", "text": "ES"},#}
-        {#{"value": "ar", "text": "AR"},#}
-        {#{"value": "de", "text": "DE"},#}
-        {#{"value": "du", "text": "DU"}#}
-        {#];#}
-
-        {#var locationOptionArray = [#}
-        {#{"value": "", "text": "{{ "setup::custom-link:location" | trans }}"},#}
-        {#{"value": "help-menu", "text": "{{ "setup::custom-link:help-menu" | trans }}"},#}
-        {#{"value": "navigation-bar", "text": "{{ "setup::custom-link:navigation-bar" | trans }}"}#}
-        {#];#}
-
-//        var colorOptionArray = [
-//            {"value": "", "text": ""},
-//            {"value": "#ad0800", "text": "#ad0800"},
-//            {"value": "#f06006", "text": "#f06006"},
-//            {"value": "#f5842b", "text": "#f5842b"},
-//            {"value": "#ffc322", "text": "#ffc322"},
-//            {"value": "#f4ea5b", "text": "#f4ea5b"},
-//            {"value": "#b8d84e", "text": "#b8d84e"},
-//            {"value": "#5aa53b", "text": "#5aa53b"},
-//            {"value": "#a1d0d0", "text": "#a1d0d0"},
-//            {"value": "#4497d5", "text": "#4497d5"},
-//            {"value": "#3567c6", "text": "#3567c6"},
-//            {"value": "#b151ee", "text": "#b151ee"},
-//            {"value": "#c875ea", "text": "#c875ea"},
-//            {"value": "#e46990", "text": "#e46990"},
-//            {"value": "#ffccd7", "text": "#ffccd7"}
-//        ];
-
         var header = '<thead>' +
             '<th>{{ "setup::custom-link:name-link" | trans }}</th>' +
             '<th>{{ "setup::custom-link:language-link" | trans }}</th>' +
@@ -182,17 +147,6 @@
             }
 
             addTagForm($collectionHolder);
-
-//            //check if first row, then add header and body
-//            var rowCount = $('#custom-link-table tr').length;
-//            if (rowCount < 1) {
-//
-//                $("#custom-link-table").append(header);
-//                $("#custom-link-table").append('<tbody></tbody>');
-//            }
-//
-//            addRow();
-//            return false;
         });
 
         function addTagForm($collectionHolder) {
@@ -218,20 +172,6 @@
             });
         }
 
-//        function addFormDeleteLink($element) {
-//            var $closeButton = $('<button class="btn btn-default close-row">' +
-//                '<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button>');
-//            $element.append($closeButton);
-//
-//            $closeButton.on('click', function(e) {
-//                // prevent the link from creating a "#" on the URL
-//                e.preventDefault();
-//                // remove the row
-//                $element.remove();
-//            });
-//        }
-
-
         $("#custom-link-table").on('click', '.close-row', function () {
             $(this).closest('tr').remove();
             var rowCount = $('#custom-link-table tr').length;
@@ -241,113 +181,12 @@
             }
             return false;
         });
-//
+
         $("#custom-link-table").on('change', 'select.link-color', function () {
             var element = $(this).parent().siblings(':first').find("input");
             updateSelectColor($(this).siblings(), $(this).val());
             updateInputNameColor(element, $(this).val());
         });
-
-//        $('form').on('submit', function () {
-//            // do validation for custom link
-//            var customLinks = [];
-//
-//            $('#custom-link-table tbody tr').each(function (i, row) {
-//                var rowData = getDataOfRow(row);
-//                customLinks.push(rowData);
-//            });
-//
-//            $('#custom-links').val(JSON.stringify(customLinks));
-//        });
-
-        {#function addRow(rowData) {#}
-        {#//custom link#}
-        {#var inputName = '<input type="text" value="' + (rowData ? rowData.linkName.replace(/"/g, '&quot;') : "")#}
-        {#+ '" placeholder="' + '{{ "setup::custom-link:name-link" | trans }}'#}
-        {#+ '" name="link-name" style="' + getInputNameStyle(rowData) + '" maxlength="30" required>';#}
-        {#var inputURL = '<input type="url" value="' + (rowData ? rowData.linkUrl : "") + '" placeholder="' + '{{ "setup::custom-link:placeholder-link-url" | trans }}' + '" name="link-url" required>';#}
-        {#var inputLanguage = generateSelectInput("link-language", languageOptionArray, (rowData ? rowData.linkLanguage : ""));#}
-        {#var inputLocation = generateSelectInput("link-location", locationOptionArray, (rowData ? rowData.linkLocation : ""));#}
-        {#var inputOrder = '<input type="number" min="1" name="link-order" value="' + (rowData ? rowData.linkOrder : "") + '">';#}
-        {#var inputColor = generateSelectInput("link-color", colorOptionArray, (rowData ? rowData.linkColor : ""));#}
-        {#var inputBold = '<input type="checkbox" class="link_check_box" name="link-bold" value="' + (rowData ? rowData.linkBold : "") + '" onchange="$(this).val(this.checked? true: false);" ' + (rowData && rowData.linkBold == "true" ? "checked" : "") + ' /><label for="link-bold"></label> ';#}
-        {#var closeButton = '<button class="btn btn-default close-row">' +#}
-        {#'<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span></button>';#}
-
-        {#var rowForCustomLink = '<tr>' +#}
-        {#'<td>' + inputName + '</td>' +#}
-        {#'<td>' + inputLanguage + '</td>' +#}
-        {#'<td>' + inputURL + '</td>' +#}
-        {#'<td>' + inputLocation + '</td>' +#}
-        {#'<td>' + inputOrder + '</td>' +#}
-        {#'<td>' + inputBold + '</td>' +#}
-        {#'<td>' + inputColor + '</td>' +#}
-        {#'<td>' + closeButton + '</td></tr>';#}
-
-        {#$("#custom-link-table").append(rowForCustomLink);#}
-
-//            $('select.link-color').simplecolorpicker({picker: true});
-//
-//            _.each($('select.link-color'), function (element) {
-//                updateSelectColor($(element).siblings(), $(element).val());
-//                updateInputNameColor($(element).parent().siblings(':first').find("input"), $(element).val());
-//            });
-        {#}#}
-
-//        function getInputNameStyle(rowData) {
-//            if (rowData) {
-//                if (rowData.linkColor === "") {
-//                    return "background-color:" + rowData.linkColor + ";color:#555;";
-//                } else {
-//                    return "background-color:" + rowData.linkColor + ";color:#FFFFFF;";
-//                }
-//            } else {
-//                return "";
-//            }
-//        }
-
-//        function generateSelectInput(inputName, optionArray, selectedValue) {
-//            var html = $("<select></select>").attr("name", inputName);
-//            _.each(optionArray, function (option) {
-//                html.append($('<option>', {
-//                    value: option.value,
-//                    text: option.text
-//                }).attr('selected', (selectedValue == option.value)));
-//            });
-//            return html[0].outerHTML;
-//        }
-//
-//        function getDataOfRow(row) {
-//            var row = $(row);
-//
-//            var linkObject = {};
-//            linkObject.linkName = row.find($('input[name="link-name"]')).val();
-//            linkObject.linkLanguage = row.find($('select[name="link-language"]')).val();
-//            linkObject.linkUrl = row.find($('input[name="link-url"]')).val();
-//            linkObject.linkLocation = row.find($('select[name="link-location"]')).val();
-//            linkObject.linkOrder = row.find($('input[name="link-order"]')).val() || 1;
-//            linkObject.linkColor = row.find($('select[name="link-color"]')).val() || "";
-//            linkObject.linkBold = row.find($('input[name="link-bold"]')).val() || "false";
-//
-//            return linkObject;
-//        }
-
-
-        //create custom link table if data exist
-//        var customLinksData = JSON.parse($('#custom-links').val() || '[]');
-//        if (customLinksData.length > 0) {
-//            var rowCount = $('#custom-link-table tr').length;
-//            if (rowCount < 1) {
-//
-//                $("#custom-link-table").append(header);
-//                $("#custom-link-table").append('<tbody></tbody>');
-//            }
-//
-//            _.each(customLinksData, function (linkData) {
-//                addRow(linkData);
-//            });
-//
-//        }
 
         function updateSelectColor(element, color) {
             element.css("border", "none");
