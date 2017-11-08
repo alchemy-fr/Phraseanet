@@ -10086,7 +10086,7 @@
       </trans-unit>
       <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="yes">
         <source>order-manager::order-item: reset</source>
-        <target state="translated">Cancelled</target>
+        <target state="translated">Cancel</target>
         <jms:reference-file line="186">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="217">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="583">prod/orders/order_item.html.twig</jms:reference-file>
@@ -10103,7 +10103,7 @@
       </trans-unit>
       <trans-unit id="43e2047dc48e5fbcd5691716d6517e3cdca907ef" resname="order-manager::order-item: submit" approved="yes">
         <source>order-manager::order-item: submit</source>
-        <target state="translated">Send order</target>
+        <target state="translated">Submit</target>
         <jms:reference-file line="579">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7742dc07f1103d1ac92c252a722d6fe23d86b055" resname="order-manager::order-item: tel" approved="yes">
@@ -12260,7 +12260,7 @@
       </trans-unit>
       <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance" approved="yes">
         <source>share::share-record: advance</source>
-        <target state="translated">Advance setting</target>
+        <target state="translated">Advanced setting</target>
         <jms:reference-file line="9">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def" approved="yes">
