@@ -69,6 +69,9 @@ class MainConfigurationFormType extends AbstractType
             'allow_add'     => true,
             'allow_delete'  => true,
         ]);
+        $builder->add('web-applications', new WebApplicationsFormType(), [
+            'label' => 'Web Applications',
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

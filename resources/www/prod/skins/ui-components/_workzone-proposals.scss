@@ -156,6 +156,7 @@ $proposalsFacetHoverColor: #FFF !default;
     float: right;
     margin-right: 10px;
     //margin-top: 11px;
+    overflow: hidden;
   }
 
   .facetFilter_EXCEPT {
@@ -176,12 +177,13 @@ $proposalsFacetHoverColor: #FFF !default;
     margin: 2px 0px;
     float: right;
     margin-right: 10px;
+    overflow: hidden;
   }
 
   .facetFilter-label {
     position: relative;
     overflow: hidden;
-    cursor: default;
+    cursor: pointer;
     line-height: 25px;
     display: inline-block;
   }
