@@ -96,8 +96,7 @@ class UserRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
 
-        if (!$emailOptionalForLogin)
-        {
+        if (!$emailOptionalForLogin) {
             $qb->andWhere($qb->expr()->isNotNull('u.email'));
         }
 
