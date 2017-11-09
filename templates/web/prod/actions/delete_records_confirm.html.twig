@@ -1,6 +1,9 @@
 {% set nbReceived = records.received().count() %}
 {% set nbEligibleDocuments = records.count() %}
 
+{% set nbTrash = filteredRecord.trash|length %}
+{% set nbDelete = filteredRecord.delete|length %}
+
 {% if nbEligibleDocuments > 0 %}
     {% if nbReceived != records.count() %}
         <div class="well-small" style="text-align:center;">
@@ -10,14 +13,14 @@
 
     <form style="margin: 0; height: 110px;" method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
-        {% if goingToTrash %}
+        {% if nbTrash > 0 %}
             <div class="well-small label-important"
-                 style="background-color: #ffef22;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 100%;">
+                 style="background-color: #ffef22;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 68px;">
                 <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/Icone-collection-corbeille.png" width="57" height="101"/>
+                    <img src="/assets/common/images/icons/Icone-collection-corbeille.png" width="auto" height="55"/>
                 </div>
                 <div class="dialog-right-section" style="margin-top: 10px;">
-                    <span>{{ "prod:app trash: move-to-trash" | trans }}</span>
+                    <span>{{ nbTrash }} {{ "prod:app trash: record-move-to-trash" | trans }}</span>
                     {% if records.stories().count() %}
                         <label class="checkbox">
                             <input type="checkbox" id="del_children" name="del_children"
@@ -35,11 +38,12 @@
                     </div>
                 </div>
             </div>
-        {% else %}
+        {% endif %}
+        {% if nbDelete > 0 %}
             <div class="well-small label-important"
-                 style="background-color: #ed1c24;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 100%;">
+                 style="background-color: #ed1c24;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 68px;">
                 <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/Icone-vider-corbeille.png" width="57" height="101"/>
+                    <img src="/assets/common/images/icons/Icone-vider-corbeille.png" width="auto" height="55"/>
                 </div>
                 <div class="dialog-right-section">
                     <span>{{ "These records will be definitely deleted and can not be recovered" | trans }}</span>

@@ -232,7 +232,7 @@ class RecordController extends Controller
         );
 
 
-        $goingToTrash = $this->goingToTrash($records);
+        $filteredRecord = $this->filterRecordToDelete($records);
 
 //        return $this->render('prod/actions/delete_records_confirm.html.twig', [
 //            'records'   => $records,
@@ -240,17 +240,19 @@ class RecordController extends Controller
 //        ]);
 
         return $this->app->json([
-            'renderView' => $this->render('prod/actions/delete_records_confirm.html.twig', [
-                'records'   => $records,
-                'goingToTrash' => $goingToTrash
+            'renderView'     => $this->render('prod/actions/delete_records_confirm.html.twig', [
+                'records'        => $records,
+                'filteredRecord' => $filteredRecord
              ]),
-            'goingToTrash' => $goingToTrash
+            'filteredRecord' => $filteredRecord
             ]);
     }
 
-    private function goingToTrash(RecordsRequest $records) {
+    private function filterRecordToDelete(RecordsRequest $records)
+    {
     $trashCollectionsBySbasId = [];
     $goingToTrash = [];
+        $delete = [];
     foreach($records as $record) {
         $sbasId = $record->getDatabox()->get_sbas_id();
         if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
@@ -259,21 +261,22 @@ class RecordController extends Controller
         if($trashCollectionsBySbasId[$sbasId] !== null) {
             if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                 // record is already in trash
-                $goingToTrash[] = false;
+                $delete[] = $record;
             }else {
                 // will be moved to trash
-                $goingToTrash[] = true;
+                $goingToTrash[] = $record;
             }
         }else {
             // trash does not exist
-            $goingToTrash[] = false;
+            $delete[] = $record;
         }
     }
 
     //check if all values in array are true
-    return (!in_array(false, $goingToTrash, true));
+        //return (!in_array(false, $goingToTrash, true));
+        return ['trash' => $goingToTrash, 'delete' => $delete];
 
-}
+    }
 
     /**
      *  Renew url list of records
