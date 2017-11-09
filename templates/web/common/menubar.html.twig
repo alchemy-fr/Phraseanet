@@ -198,7 +198,7 @@
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
                         var styleAttr = "";
                         styleAttr += linksData.linkColor ? "color: " + linksData.linkColor + ";" : "";
-                        styleAttr += linksData.linkBold == "true" ? "font-weight: bold;" : "";
+                        styleAttr += linksData.linkBold == true ? "font-weight: bold;" : "";
 
                         var spanElement = $('<span />').attr('style', styleAttr).html(linksData.linkName);
                         var links = '<li><a target="_blank" href="' + linksData.linkUrl + '">' +
@@ -213,7 +213,7 @@
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
                         var styleAttr = "";
                         styleAttr += linksData.linkColor ? "color: " + linksData.linkColor + ";" : "";
-                        styleAttr += linksData.linkBold == "true" ? "font-weight: bold;" : "";
+                        styleAttr += linksData.linkBold == true ? "font-weight: bold;" : "";
 
                         var spanElement = $('<span />').attr('style', styleAttr).html(linksData.linkName);
                         var links = '<div title="" class="context-menu-item menu3-custom-item">' +

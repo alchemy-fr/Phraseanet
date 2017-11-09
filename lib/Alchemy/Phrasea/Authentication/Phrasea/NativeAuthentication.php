@@ -27,7 +27,7 @@ class NativeAuthentication implements PasswordAuthenticationInterface
     private $oldEncoder;
     /** @var UserRepository */
     private $repository;
-    /** @var PropertyAccess  */
+    /** @var PropertyAccess */
     private $conf;
 
     public function __construct(PasswordEncoder $encoder, OldPasswordEncoder $oldEncoder, UserManipulator $userManipulator, UserRepository $repo, PropertyAccess $configuration)

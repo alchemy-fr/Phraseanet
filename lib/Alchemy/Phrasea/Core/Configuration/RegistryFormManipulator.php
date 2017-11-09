@@ -49,8 +49,6 @@ class RegistryFormManipulator
         $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
         $data = array_replace_recursive($this->getDefaultData($currentConf), $currentConf);
-        //converting array to string array before inserting into form field
-        $data['custom-links'] = json_encode($data['custom-links']);
         $form->setData($data);
 
         return $form;
@@ -114,7 +112,7 @@ class RegistryFormManipulator
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
             ],
-            'executables' => [
+            'executables'      => [
                 'h264-streaming-enabled' => false,
                 'auth-token-directory' => null,
                 'auth-token-directory-path' => null,
@@ -124,12 +122,12 @@ class RegistryFormManipulator
                 'ffmpeg-threads' => 2,
                 'pdf-max-pages' => 5,
             ],
-            'searchengine' => [
+            'searchengine'     => [
                 'min-letters-truncation' => 1,
                 'default-query' => '',
                 'default-query-type' => 0,
             ],
-            'email'        => [
+            'email'            => [
                 'emitter-email' => 'phraseanet@example.com',
                 'prefix' => null,
                 'smtp-enabled' => false,
@@ -143,7 +141,7 @@ class RegistryFormManipulator
             'web-applications' => [
                 'email-optional-for-login' => false
             ],
-            'custom-links' => [
+            'custom-links'     => [
                 [
                     'linkName'     => 'Phraseanet store',
                     'linkLanguage' => 'fr',
