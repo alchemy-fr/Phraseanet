@@ -244,33 +244,49 @@ td span.text_block_bold {
 
 .dialog-left-section {
   float: left;
-  width: 28%;
+  width: 25%;
   height: 100%;
   text-align: center;
-  line-height: 110px;
+  line-height: 58px;
   img {
     display: inline-block;
     vertical-align: middle;
+    height: 55px;
+    width: auto;
   }
 }
 
 .dialog-right-section {
   float: left;
-  width: 72%;
+  width: 75%;
   height: 100%;
   span {
-    padding-top: 10px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-top: 8px;
+    padding-left: 10px;
+    padding-right: 20px;
     display: block;
     line-height: 14px;
   }
+}
+
+#delete-record-form {
+  .well-small {
+    border: 0;
+    color: #000;
+    padding: 5px;
+    display: block;
+    word-wrap: break-word;
+    font-weight: bold;
+    height: 58px;
+    margin-bottom: 7px;
+  }
   .form-actions {
     position: absolute;
-    bottom: 24px;
+    bottom: 4px;
+    right: 15px;
     padding: 0;
-    margin: 10px 0 0 0;
-    border: none;
+    margin: 0;
+    border: 0;
     .btn {
       font-size: 12px;
       color: #fff;
