@@ -119,7 +119,7 @@
 {% macro caption(record, can_see_business, display_exif, limitedWidth = false) %}
     <dl class="{% if limitedWidth %}{% else %}dl-horizontal{% endif %}">
         {% for field in record.get_caption().get_highlight_fields(null, can_see_business) %}
-            <dt>{{ caption_field_label(record, field.label_name) }}</dt>
+            <dt>{{ field.label_name }}</dt>
             <dd>{{ _self.caption_value(field, bounceable|default(true))|highlight|linkify }}</dd>
         {% endfor %}
     </dl>

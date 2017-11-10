@@ -758,14 +758,12 @@ function getFacetsTree() {
                         s_facet.setAttribute("class", "facetFilter" + '_' + facetValue.mode);
                         s_facet.appendChild(s_label);
                         s_closer = $(s_facet.appendChild(s_closer));
-                        s_closer.data("facetTitle", data.node.title);
-                        s_closer.data("facetFilter", facetFilter);
 
                         s_closer.click(
                             function (event) {
                                 event.stopPropagation();
-                                var facetTitle = $(this).data("facetTitle");
-                                var facetFilter = $(this).data("facetFilter");
+                                var facetTitle = $(this).parent().data("facetTitle");
+                                var facetFilter = $(this).parent().data("facetFilter");
                                 var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
                                 selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
                                     return (obj.value.label == facetFilter && obj.mode == mode);
@@ -778,9 +776,32 @@ function getFacetsTree() {
 
                         var newNode = document.createElement('div');
                         newNode.setAttribute("class", "newNode");
-                        newNode.appendChild(s_facet);
+                        s_facet = $(newNode.appendChild(s_facet));
+                        s_facet.data("facetTitle", data.node.title);
+                        s_facet.data("facetFilter", facetFilter);
+
                         $(".fancytree-folder .dataNode", data.node.li).append(
                             newNode
+                        );
+
+                        s_facet.click(
+                            function (event) {
+                                event.stopPropagation();
+                                var facetTitle = $(this).data("facetTitle");
+                                var facetFilter = $(this).data("facetFilter");
+                                var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
+                                var found = _.find(selectedFacetValues[facetTitle], function (obj) {
+                                    return (obj.value.label == facetFilter && obj.mode == mode);
+                                });
+                                if (found) {
+                                    var newMode = event.altKey ? "EXCEPT" : "AND";
+                                    found.mode = newMode;
+                                    //replace class attr
+                                    $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
+                                    facetCombinedSearch();
+                                }
+                                return false;
+                            }
                         );
                     });
                 }

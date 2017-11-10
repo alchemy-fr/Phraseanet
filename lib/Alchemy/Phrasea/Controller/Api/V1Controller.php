@@ -390,7 +390,7 @@ class V1Controller extends Controller
                     'docSubsitution'     => $conf->get(['registry', 'modules', 'doc-substitution']),
                     'subdefSubstitution' => $conf->get(['registry', 'modules', 'thumb-substitution']),
                 ],
-                'email'             => [
+                'email'        => [
                     'defaultMailAddress' => $conf->get(['registry', 'email', 'emitter-email']),
                     'smtp'               => [
                         'active'   => $conf->get(['registry', 'email', 'smtp-enabled']),
@@ -402,12 +402,12 @@ class V1Controller extends Controller
                         'password' => $conf->get(['registry', 'email', 'smtp-password']),
                     ],
                 ],
-                'custom-links'      => json_encode($conf->get(['registry', 'custom-links'])),
-                'ftp'               => [
+                'custom-links' => $conf->get(['registry', 'custom-links']),
+                'ftp'          => [
                     'active'        => $conf->get(['registry', 'ftp', 'ftp-enabled']),
                     'activeForUser' => $conf->get(['registry', 'ftp', 'ftp-user-access']),
                 ],
-                'client'            => [
+                'client'       => [
                     'maxSizeDownload'         => $conf->get(['registry', 'actions', 'download-max-size']),
                     'tabSearchMode'           => $conf->get(['registry', 'classic', 'search-tab']),
                     'tabAdvSearchPosition'    => $conf->get(['registry', 'classic', 'adv-search-tab']),
