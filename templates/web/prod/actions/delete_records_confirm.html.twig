@@ -11,15 +11,15 @@
         </div>
     {% endif %}
 
-    <form style="margin: 0; height: 110px;" method="POST" action="{{ path('record_delete') }}">
+    <form id="delete-record-form" style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
         <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
         {% if nbTrash > 0 %}
             <div class="well-small label-important"
-                 style="background-color: #ffef22;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 68px;">
+                 style="background-color: #ffef22;">
                 <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/Icone-collection-corbeille.png" width="auto" height="55"/>
+                    <img src="/assets/common/images/icons/Icone-collection-corbeille.png"/>
                 </div>
-                <div class="dialog-right-section" style="margin-top: 10px;">
+                <div class="dialog-right-section" style="margin-top: 8px;">
                     <span>{{ nbTrash }} {{ "prod:app trash: record-move-to-trash" | trans }}</span>
                     {% if records.stories().count() %}
                         <label class="checkbox">
@@ -27,44 +27,33 @@
                                    value="1"> {{ "Also delete records that rely on groupings." | trans }}
                         </label>
                     {% endif %}
-                    <div class="form-actions" style="background-color:transparent;">
-                        <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }}
-                            ({{ nbEligibleDocuments }})
-                        </button>
-                        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-                        <span class="form-action-loader" style="display:none;">
-                            <img src="/assets/common/images/icons/loader000.gif"/>
-                        </span>
-                    </div>
                 </div>
             </div>
         {% endif %}
         {% if nbDelete > 0 %}
             <div class="well-small label-important"
-                 style="background-color: #ed1c24;color:#000;padding:5px;display:block;word-wrap:break-word;font-weight: bold;height: 68px;">
+                 style="background-color: #ed1c24;">
                 <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/Icone-vider-corbeille.png" width="auto" height="55"/>
+                    <img src="/assets/common/images/icons/Icone-vider-corbeille.png"/>
                 </div>
                 <div class="dialog-right-section">
-                    <span>{{ "These records will be definitely deleted and can not be recovered" | trans }}</span>
+                    <span>{{ nbDelete }} {{ "prod:app trash: record-delete" | trans }}</span>
                     {% if records.stories().count() %}
                         <label class="checkbox">
                             <input type="checkbox" id="del_children" name="del_children"
                                    value="1"> {{ "Also delete records that rely on groupings." | trans }}
                         </label>
                     {% endif %}
-                    <div class="form-actions" style="background-color:transparent;">
-                        <button type="button" class="btn btn-danger submiter">{{ "Delete" | trans }}
-                            ({{ nbEligibleDocuments }})
-                        </button>
-                        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-                        <span class="form-action-loader" style="display:none;">
-                        <img src="/assets/common/images/icons/loader000.gif"/>
-                    </span>
-                    </div>
                 </div>
             </div>
         {% endif %}
+        <div class="form-actions" style="background-color:transparent;">
+            <button type="button" class="btn btn-danger submiter">{{ "Ok" | trans }}</button>
+            <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+            <span class="form-action-loader" style="display:none;">
+                        <img src="/assets/common/images/icons/loader000.gif"/>
+                    </span>
+        </div>
     </form>
 
     <script type="text/javascript">
@@ -72,6 +61,8 @@
         var $dialogBox = $dialog.getDomElement();
         var $closeButton = $("button.ui-dialog-titlebar-close", $dialogBox.parent());
         var $cancelButton = $("button.cancel", $dialogBox);
+        var titleBox = $(".ui-dialog-title", $dialogBox.parent());
+        titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
 
         $cancelButton.bind("click", function(){
             $dialog.Close();

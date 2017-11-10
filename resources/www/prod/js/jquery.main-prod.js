@@ -1771,8 +1771,8 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: '287x178',
-        title: language.deleteRecords
+        size: '287x153',
+        title: language.warning
     });
 
     $.ajax({
@@ -1782,10 +1782,9 @@ function deleteThis(lst) {
         data: {lst: lst},
         success: function (data) {
             var response = JSON.parse(data);
-            if (response.filteredRecord.trash.length > 0 && response.filteredRecord.delete.length == 0) {
-                $dialog.setOption('title', language.moveToTrash);
+            if (response.filteredRecord.trash.length > 0 && response.filteredRecord.delete.length > 0) {
+                $dialog.setOption('height', '227');
             }
-            $dialog.setOption('height', 'auto');
             $dialog.setContent(response.renderView);
         }
     });
