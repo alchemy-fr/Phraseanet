@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-08T07:20:50Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-11-10T07:52:25Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -907,8 +907,8 @@
       <trans-unit id="ebd447ea09611b090d7b8a12835ffaf79ea17e47" resname="Also delete records that rely on groupings." approved="yes">
         <source>Also delete records that rely on groupings.</source>
         <target state="translated">Also delete records that rely on stories.</target>
-        <jms:reference-file line="24">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
-        <jms:reference-file line="49">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="27">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="44">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f0cf9a47c6b420dda55c973a12840600fc19b7fb" resname="An error occured" approved="yes">
         <source>An error occured</source>
@@ -1513,8 +1513,7 @@
         <jms:reference-file line="67">admin/fields/templates.html.twig</jms:reference-file>
         <jms:reference-file line="77">task-manager/task-editor/task.html.twig</jms:reference-file>
         <jms:reference-file line="42">user/import/view.html.twig</jms:reference-file>
-        <jms:reference-file line="31">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
-        <jms:reference-file line="56">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="52">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
         <jms:reference-file line="115">actions/Property/index.html.twig</jms:reference-file>
         <jms:reference-file line="50">actions/Property/type.html.twig</jms:reference-file>
         <jms:reference-file line="439">web/prod/thesaurus.js.twig</jms:reference-file>
@@ -2294,8 +2293,6 @@
         <target state="translated">Delete</target>
         <jms:reference-file line="93">admin/task-manager/index.html.twig</jms:reference-file>
         <jms:reference-file line="25">admin/task-manager/templates.html.twig</jms:reference-file>
-        <jms:reference-file line="28">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
-        <jms:reference-file line="53">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
         <jms:reference-file line="29">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="355">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="356">prod/upload/lazaret.html.twig</jms:reference-file>
@@ -2678,6 +2675,11 @@
         <source>Email is required</source>
         <target state="translated">E-mail address is required.</target>
         <jms:reference-file line="444">Controller/Prod/PushController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f5161e1c5440da465ff381598d88b3fbacee4d78" resname="Email optional for login">
+        <source>Email optional for login</source>
+        <target state="new">Email optional for login</target>
+        <jms:reference-file line="22">Form/Configuration/WebApplicationsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8efc876746f2fe8dae7e433323dc4f22535d1ac" resname="Email successfully confirmed" approved="yes">
         <source>Email successfully confirmed</source>
@@ -4378,7 +4380,7 @@
       <trans-unit id="24e1d1f1adee0ef9a3cc46d278ab4ac295b2ef64" resname="No document selected" approved="yes">
         <source>No document selected</source>
         <target state="translated">No document selected</target>
-        <jms:reference-file line="134">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="129">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1730e13a1377a3de9e5a8f3f8539490d5f54a545" resname="No elements to push" approved="yes">
         <source>No elements to push</source>
@@ -4587,6 +4589,7 @@
         <source>Ok</source>
         <target state="translated">Ok</target>
         <jms:reference-file line="18">admin/fields/templates.html.twig</jms:reference-file>
+        <jms:reference-file line="51">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="31081f40f972b203737e963468e7d7971cac14b2" resname="One document can not be modified." approved="yes">
         <source>One document can not be modified.</source>
@@ -6512,11 +6515,6 @@
         <target state="translated">These information do not match?</target>
         <jms:reference-file line="100">login/providers/mapping.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6249183a1e2ec418a4abce106229ab2fcaabdbb7" resname="These records will be definitely deleted and can not be recovered" approved="yes">
-        <source>These records will be definitely deleted and can not be recovered</source>
-        <target state="translated">These records will be definitely deleted and will not be recoverable.</target>
-        <jms:reference-file line="45">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="50fdfaf7998fc9c3bee211471711e640a4711dcb" resname="These subdef will be permanently deleted and cannot be recovered. Are you sure?" approved="yes">
         <source>These subdef will be permanently deleted and cannot be recovered. Are you sure?</source>
         <target state="translated">These subdef will be permanently deleted, recovery will be impossible. Are you sure?</target>
@@ -7367,6 +7365,11 @@
         <target state="translated">Weak</target>
         <jms:reference-file line="150">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="9e3061957eef1d435c60aa8de43f59b3f9568007" resname="Web Applications">
+        <source>Web Applications</source>
+        <target state="new">Web Applications</target>
+        <jms:reference-file line="73">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="a8615df6f3944845fdf0fed38e531933d9d14159" resname="Webservices connectivity" approved="yes">
         <source>Webservices connectivity</source>
         <target state="translated">Webservices connectivity</target>
@@ -7565,12 +7568,12 @@
       <trans-unit id="d22354b7fd4ef371f98345acd4cbcc4ab67a4f82" resname="You do not have rights to remove all selected documents. Are you sure ?" approved="yes">
         <source>You do not have rights to remove all selected documents. Are you sure ?</source>
         <target state="translated">You do not have rights to remove all selected documents. Are you sure?</target>
-        <jms:reference-file line="7">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="10">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5240333cf2fb5043a468c8efdcea6957c354e5b7" resname="You do not have rights to remove selected documents" approved="yes">
         <source>You do not have rights to remove selected documents</source>
         <target state="translated">You don't have rights to remove selected documents.</target>
-        <jms:reference-file line="138">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+        <jms:reference-file line="133">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab0d76168504f5091c09576e3b463c16c3a0cb91" resname="You do not have the permission to move records to %collection%" approved="yes">
         <source>You do not have the permission to move records to %collection%</source>
@@ -8835,7 +8838,7 @@
       <trans-unit id="a06a492959ce12b3f0292406ec84177d07ae19b1" resname="audio" approved="yes">
         <source>audio</source>
         <target state="translated">audio</target>
-        <jms:reference-file line="254">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="229">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="350">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="25">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -9428,7 +9431,7 @@
       <trans-unit id="4f8278c89ad16da05fec4fdfc61fe44798b92720" resname="document" approved="yes">
         <source>document</source>
         <target state="translated">document</target>
-        <jms:reference-file line="246">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="221">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="341">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="351">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="396">web/admin/subdefs.html.twig</jms:reference-file>
@@ -9601,7 +9604,7 @@
       <trans-unit id="6117e45ab57f8660d866a21ca5e9d2c31dbc1945" resname="flash" approved="yes">
         <source>flash</source>
         <target state="translated">flash</target>
-        <jms:reference-file line="258">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="233">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="352">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="31">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -9731,7 +9734,7 @@
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
         <source>image</source>
         <target state="translated">Image</target>
-        <jms:reference-file line="242">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="217">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
         <jms:reference-file line="348">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="19">task-manager/task-editor/subdefs.html.twig</jms:reference-file>
       </trans-unit>
@@ -11041,10 +11044,15 @@
         <jms:reference-file line="45">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c8c3f04906cfc03bfe06b53496b5f7802c6e3a89" resname="prod:app trash: move-to-trash" approved="yes">
-        <source>prod:app trash: move-to-trash</source>
-        <target state="translated">Move to Trash Collection</target>
-        <jms:reference-file line="20">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+      <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete">
+        <source>prod:app trash: record-delete</source>
+        <target state="new">prod:app trash: record-delete</target>
+        <jms:reference-file line="40">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash">
+        <source>prod:app trash: record-move-to-trash</source>
+        <target state="new">prod:app trash: record-move-to-trash</target>
+        <jms:reference-file line="23">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
         <source>prod:app trash: title-trash</source>
@@ -12081,8 +12089,8 @@
       <trans-unit id="386c42eb4d167d87be7f7f68faf1aafce1be237e" resname="reportage" approved="yes">
         <source>reportage</source>
         <target state="translated">Feature</target>
-        <jms:reference-file line="234">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
-        <jms:reference-file line="250">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="209">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
+        <jms:reference-file line="225">Phrasea/Twig/PhraseanetExtension.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55655edb5e7b23c00fe3fe0509be09e674138da6" resname="resultat numero %number%" approved="yes">
         <source>resultat numero %number%</source>
