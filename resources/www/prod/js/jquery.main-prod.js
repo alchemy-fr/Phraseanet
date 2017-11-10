@@ -786,19 +786,21 @@ function getFacetsTree() {
 
                         s_facet.click(
                             function (event) {
-                                event.stopPropagation();
-                                var facetTitle = $(this).data("facetTitle");
-                                var facetFilter = $(this).data("facetFilter");
-                                var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
-                                var found = _.find(selectedFacetValues[facetTitle], function (obj) {
-                                    return (obj.value.label == facetFilter && obj.mode == mode);
-                                });
-                                if (found) {
-                                    var newMode = event.altKey ? "EXCEPT" : "AND";
-                                    found.mode = newMode;
-                                    //replace class attr
-                                    $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
-                                    facetCombinedSearch();
+                                if (event.altKey) {
+                                    event.stopPropagation();
+                                    var facetTitle = $(this).data("facetTitle");
+                                    var facetFilter = $(this).data("facetFilter");
+                                    var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
+                                    var found = _.find(selectedFacetValues[facetTitle], function (obj) {
+                                        return (obj.value.label == facetFilter && obj.mode == mode);
+                                    });
+                                    if (found) {
+                                        var newMode = mode == "EXCEPT" ? "AND" : "EXCEPT";
+                                        found.mode = newMode;
+                                        //replace class attr
+                                        $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
+                                        facetCombinedSearch();
+                                    }
                                 }
                                 return false;
                             }
