@@ -8686,7 +8686,7 @@
       </trans-unit>
       <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation" approved="yes">
         <source>admin::search-engine: general-aggregation</source>
-        <target state="translated">Aggregate setting</target>
+        <target state="translated">Aggregates settings</target>
         <jms:reference-file line="5">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
@@ -12224,7 +12224,7 @@
       </trans-unit>
       <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="yes">
         <source>setup::custom-link:location-link</source>
-        <target state="translated">Select placement</target>
+        <target state="translated">Select Placement</target>
         <jms:reference-file line="84">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link" approved="yes">
