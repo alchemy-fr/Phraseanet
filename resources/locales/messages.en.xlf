@@ -12219,12 +12219,12 @@
       </trans-unit>
       <trans-unit id="2de3bc78c6fb26b56dd934a81dc76afdba8c79ab" resname="setup::custom-link:location" approved="yes">
         <source>setup::custom-link:location</source>
-        <target state="translated">Placement</target>
+        <target state="translated">Select Placement ...</target>
         <jms:reference-file line="58">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="yes">
         <source>setup::custom-link:location-link</source>
-        <target state="translated">Select Placement</target>
+        <target state="translated">Placement</target>
         <jms:reference-file line="84">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link" approved="yes">
@@ -12240,7 +12240,7 @@
       </trans-unit>
       <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link" approved="yes">
         <source>setup::custom-link:order-link</source>
-        <target state="translated">Order in placement</target>
+        <target state="translated">Order</target>
         <jms:reference-file line="85">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b09a3a0a8b0205f23b3fe59074f8dfd72d0b0ae" resname="setup::custom-link:placeholder-link-url" approved="yes">
