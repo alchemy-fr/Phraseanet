@@ -62,7 +62,7 @@ class ElasticsearchRecordHydrator
         $record->setTitles((array) igorw\get_in($data, ['title'], []));
         $record->setCaption((array) igorw\get_in($data, ['caption'], []));
         $record->setPrivateCaption((array) igorw\get_in($data, ['private_caption'], []));
-        $record->setExif((array) igorw\get_in($data, ['exif'], []));
+        $record->setExif((array) igorw\get_in($data, ['metadata_tags'], []));
         $record->setSubdefs((array) igorw\get_in($data, ['subdefs'], []));
         $record->setFlags((array) igorw\get_in($data, ['flags'], []));
         $record->setHighlight((array) $highlight);
