@@ -25,14 +25,14 @@
              {% if settings.rollover_thumbnail == 'preview' %}tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"{% endif %}
              style="height:{{ settings.images_size }}px; z-index:90;">
             <div class="doc_infos">
+                <span class="duration">
+                    {% if record.type == 'video' and attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) is defined %}
+                        {{ attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION'))|formatDuration }}
+                    {% endif %}
+                </span>
                 {% if settings.doctype_display == '1' %}
                     {{ record_doctype_icon(record) }}
                 {% endif %}
-                <span class="duration">
-                    {% if record.type == 'video' and attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) is defined %}
-                        {{ attribute(record.exif, constant('\\media_subdef::TC_DATA_DURATION')) }}
-                    {% endif %}
-                </span>
             </div>
             {% set rollover = record.subdefs.thumbnailgif is defined %}
             {% set extraclass = '' %}

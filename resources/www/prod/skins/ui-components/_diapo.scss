@@ -96,6 +96,7 @@ $diapoBorderColor: $darkerBorderColor !default;
   .duration {
     background-color: darken($darkerBackgroundColor, 10);
     color: $darkerTextColor;
+    vertical-align: middle;
   }
 }
 
