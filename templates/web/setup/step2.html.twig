@@ -799,8 +799,8 @@
                                         <td><label>{{ 'Modele de donnees' | trans }}</label></td>
                                         <td>
                                             <select name="db_template" class="databox_creation_input">
-                                                {% for template in available_templates %}
-                                                    <option value="{{ template }}">{{ template }}</option>
+                                                {% for key,template in available_templates %}
+                                                    <option value="{{ key }}">{{ template }}</option>
                                                 {% endfor %}
                                             </select>
                                         </td>
