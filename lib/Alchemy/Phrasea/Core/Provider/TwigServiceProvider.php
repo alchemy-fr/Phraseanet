@@ -143,8 +143,29 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
             return str_replace('"', '\"', $value);
         }));
-    }
 
+        $twig->addFilter(new \Twig_SimpleFilter('formatDuration',
+            function ($secondsInDecimals) {
+                $time = [];
+                $hours = floor($secondsInDecimals / 3600);
+                $secondsInDecimals -= $hours * 3600;
+
+                $minutes = floor($secondsInDecimals / 60);
+                $secondsInDecimals -= $minutes * 60;
+
+                $seconds = intVal($secondsInDecimals % 60, 10);
+
+                if ($hours > 0) {
+                    array_push($time, (strlen($hours) < 2) ? "0{$hours}" : $hours);
+                }
+                array_push($time, (strlen($minutes) < 2) ? "0{$minutes}" : $minutes);
+                array_push($time, (strlen($seconds) < 2) ? "0{$seconds}" : $seconds);
+
+                $formattedTime = implode(':', $time);
+
+                return $formattedTime;
+            }));
+    }
     /**
      * Bootstraps the application.
      *
