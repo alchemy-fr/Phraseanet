@@ -143,6 +143,8 @@
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+            prodApp.appEvents.emit('search.setFilterFacet', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}")
+
 
         });
     </script>
@@ -661,6 +663,14 @@
                             <input type="button" class="btn btn-inverse preferences-options-submit" value="{{'boutton::valider'  | trans }}" />
                         </form>
                     </div>
+                </div>
+                <div class="box">
+                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                    <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
+                        <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
+                        {{ 'index::advance_search: disable-facet' | trans }}
+                    </label>
                 </div>
             </div>
         </div>
