@@ -7338,10 +7338,9 @@
         <jms:reference-file line="797">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="835">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b0b39c7242ec17b1126ffe19d3e377337b26d6c9" resname="Warning, this database is not empty" approved="yes">
+      <trans-unit id="b0b39c7242ec17b1126ffe19d3e377337b26d6c9" resname="Warning, this database is not empty" approved="no">
         <source>Warning, this database is not empty</source>
-        <target state="translated">Warning, this database is not empty, running install ERASE definitively content of this databases,
-(user, basket etc...).</target>
+        <target state="needs-translation">Warning, this database is not empty, running install ERASE definitively content of this database, (user, basket etc...)</target>
         <jms:reference-file line="246">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6757e48da7a5a3de6e28f4b827526f0275f928e" resname="Watch it online" approved="yes">
