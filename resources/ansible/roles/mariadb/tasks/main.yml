@@ -3,6 +3,7 @@
 - shell: hostname
   register: current_hostname
 
+
 - name: Add MariaDB-Repository
   sudo: yes
   apt_repository: repo='deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present
@@ -41,9 +42,9 @@
 - name: mariadb | Create databases
   mysql_db: name={{ item }} state=present login_user=root login_password={{ mariadb.root_password }}
   with_items:
-    - "{{ mariadb.database }}"
-    - "{{ mariadb.databox_db }}"
-    - "{{ mariadb.alt_db }}"
+    - "{{ mariadb.appbox_db }}"
+    - "{{ mariadb.databox_db }}"
+    - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
   mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}

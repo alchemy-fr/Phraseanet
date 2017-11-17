@@ -143,6 +143,8 @@
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
+            prodApp.appEvents.emit('search.setFilterFacet', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}")
+
 
         });
     </script>
@@ -662,34 +664,50 @@
                         </form>
                     </div>
                 </div>
+                <div class="box">
+                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                    <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
+                        <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
+                        {{ 'index::advance_search: disable-facet' | trans }}
+                    </label>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
-        <div class="PNB" style="right:180px;">
-            <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
-                <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                    <div style="padding-top: 0px; padding-left: 5px;">
-                        <span id="PREVIEWTITLE_COLLLOGO"> </span>
-                        &nbsp;
-                        <span id="PREVIEWTITLE_COLLNAME"> </span>
-                        &nbsp;
-                        <span id="SPANTITLE"> </span>
-                    </div>
+        <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
+            <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
+                <div style="padding-top: 0px; padding-left: 5px;">
+                    <span id="PREVIEWTITLE_COLLLOGO"> </span>
+                    &nbsp;
+                    <span id="PREVIEWTITLE_COLLNAME"> </span>
+                    &nbsp;
+                    <span id="SPANTITLE"> </span>
                 </div>
             </div>
+        </div>
+        <div class="PNB" style="right:180px;">
             <div class="PNB" style="top:55px;">
                 <div id="PREVIEWLEFT" class="preview_col PNB" style="width:60%;right:auto;overflow:hidden;">
-                    <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:0;height:116px;bottom:auto;">
+                    <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:11px;height:116px;bottom:auto;">
                         <div id="PREVIEWCURRENTGLOB" style=""></div>
+                    </div>
+                    <div class="PNB10" style="top:146px;">
+                        <button id="left-btn" class="invisible-btn preview-navigate-action" data-direction="backward">
+                            <i class="icon-caret-left"></i>
+                        </button>
+                        <button id="right-btn" class="invisible-btn preview-navigate-action" data-direction="forward">
+                            <i class="icon-caret-right"></i>
+                        </button>
                     </div>
                     <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>
                 </div>
                 <div class="gui_vsplitter gui_vsplitter2" style="left:60%;">
 
                 </div>
-                <div id="PREVIEWRIGHT" class="preview_col PNB">
+                <div id="PREVIEWRIGHT" class="preview_col PNB" style="top:0px;left:60%;overflow:hidden;">
                     <div id="PREVIEWIMGDESC" class="PNB10">
                         <ul class="PNB" style="height:30px;bottom:auto;">
                             <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
@@ -720,8 +738,8 @@
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
-            <div id="PREVIEWOTHERS" style="top:40px;" class="PNB10 ui-corner-all">
-                <div id="PREVIEWOTHERSINNER" style=""></div>
+            <div id="PREVIEWOTHERS" style="top:95px;" class="PNB10 ui-corner-all">
+            <div id="PREVIEWOTHERSINNER" style=""></div>
             </div>
         </div>
     </div>
@@ -767,4 +785,14 @@
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
     <script type="text/javascript" id="bitly_loader"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#right-btn').mouseenter(function() {
+                $('#right-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
+            });
+            $('#left-btn').mouseenter(function() {
+                $('#left-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
+            });
+        });
+    </script>
 {% endblock %}

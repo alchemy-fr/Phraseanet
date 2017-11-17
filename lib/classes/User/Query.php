@@ -683,7 +683,7 @@ class User_Query
             if (trim($row['activity']) === '') {
                 continue;
             }
-            $activities[] = $row['activite'];
+            $activities[] = $row['activity'];
         }
 
         return $activities;
