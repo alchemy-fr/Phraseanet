@@ -21,6 +21,10 @@
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            google.charts.load('42', {packages: ['corechart']});
+        </script>
         {% block rss %}{% endblock %}
         {% block javascript %}{% endblock %}
     </head>

@@ -74,6 +74,8 @@ class record_preview extends record_adapter
     protected $query;
     protected $options;
 
+    protected $statistics;
+
     public function __construct(Application $app, $env, $pos, $contId, SearchEngineInterface $search_engine = null, $query = '', SearchEngineOptions $options = null)
     {
         $number = null;
@@ -83,6 +85,7 @@ class record_preview extends record_adapter
         $this->searchEngine = $search_engine;
         $this->query = $query;
         $this->options = $options;
+        $this->statistics = null;
 
         switch ($env) {
             case "RESULT":
@@ -364,6 +367,181 @@ class record_preview extends record_adapter
         $this->short_history = array_reverse($tab);
 
         return $this->short_history;
+    }
+
+    /**
+     * get statistics about the record during the last nbDays
+     * - nb of dowloads, nb of views, referrers.
+     *
+     * @param int $nbDays
+     * @return array|bool       false if user is not allowed to see stats (aka report)
+     * @throws Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getStatistics($nbDays)
+    {
+        if(is_null($this->statistics)) {
+            if($nbDays < 1) {
+                throw new \Alchemy\Phrasea\Exception\InvalidArgumentException("nbDays must be > 0");
+            }
+            if(!$this->app->getAclForUser($this->app->getAuthenticatedUser())
+                ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT)) {
+                return( ($this->statistics = false) );
+            }
+            $this->statistics = [
+                'days'          => $nbDays,
+                'from'          => '',
+                'to'            => '',
+                'max_views'     => 0,
+                'max_downloads' => 0,
+                'by_day' => [
+                    // '2012-01-02' => [
+                    //     'label' => '2012-01-02',
+                    //     'views' => 123,
+                    //     'downloads' => 456,
+                    // ],
+                ],
+                'referrers' => [
+                    'report::acces direct' => [
+                        'label' => $this->app->trans('report::acces direct'),
+                        'count' => 0
+                    ],
+                    'admin::monitor: module production' => [
+                        'label' => $this->app->trans('admin::monitor: module production'),
+                        'count' => 0
+                    ],
+                    'admin::monitor: module client' => [
+                        'label' => $this->app->trans('admin::monitor: module client'),
+                        'count' => 0
+                    ],
+                    'report:: page d\'accueil' => [
+                        'label' => $this->app->trans('report:: page d\'accueil'),
+                        'count' => 0
+                    ],
+                    'report:: visualiseur cooliris' => [
+                        'label' => $this->app->trans('report:: visualiseur cooliris'),
+                        'count' => 0
+                    ],
+                    // ...
+                    // some more entries can be added if the referrer does not match anything
+                ]
+            ];
+            // preset 30 dates in the past
+            //
+            $nbDays--;      // because 0 is included
+            for ($d=$nbDays; $d>=0; $d--) {
+                $datetime = new DateTime('-' . $d . ' days');
+                $date = date_format($datetime, 'Y-m-d');
+                if($d == $nbDays) {
+                    $this->statistics['from'] = $date;
+                }
+                elseif($d == 0) {
+                    $this->statistics['to'] = $date;
+                }
+                $this->statistics['by_day'][$date] = [
+                    'label'     => $date,
+                    'views'     => 0,
+                    'downloads' => 0
+                ];
+            }
+            //------- views stats
+            //
+            $sql = "SELECT COUNT(id) AS n, DATE_FORMAT(date, '%Y-%m-%d') AS datee FROM `log_view`\n"
+                . " WHERE record_id = :record_id\n"
+                . "  AND date >= :from AND date <= :to\n"
+                . "  AND site_id = :site\n"
+                . " GROUP BY datee ORDER BY datee ASC";
+            $result = $this->getDataboxConnection()
+                ->executeQuery($sql, [
+                    ':record_id' => $this->getRecordId(),
+                    ':site'      => $this->app['conf']->get(['main', 'key']),
+                    ':from'      => $this->statistics['from'],
+                    ':to'        => $this->statistics['to']
+                ])
+                ->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $date = $row['datee'];
+                if(array_key_exists($date, $this->statistics['by_day'])) {
+                    $this->statistics['by_day'][$date]['views'] += (int)($row['n']);
+                    if($this->statistics['by_day'][$date]['views'] > $this->statistics['max_views']) {
+                        $this->statistics['max_views'] = $this->statistics['by_day'][$date]['views'];
+                    }
+                }
+            }
+            //------- downloads stats
+            //
+            $sql = "SELECT COUNT(d.id) AS n, DATE_FORMAT(d.date, '%Y-%m-%d') AS datee\n"
+                . " FROM `log_docs` AS d, log AS l\n"
+                . " WHERE action='download'\n"
+                . "  AND log_id=l.id\n"
+                . "  AND record_id= :record_id\n"
+                . "  AND d.date >= :from AND d.date <= :to\n"
+                . "  AND site= :site\n"
+                . " GROUP BY datee ORDER BY datee ASC";
+            $result = $this->getDataboxConnection()
+                ->executeQuery($sql, [
+                    ':record_id' => $this->getRecordId(),
+                    ':site'      => $this->app['conf']->get(['main', 'key']),
+                    ':from'      => $this->statistics['from'],
+                    ':to'        => $this->statistics['to']
+                ])
+                ->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $date = $row['datee'];
+                if(array_key_exists($date, $this->statistics['by_day'])) {
+                    $this->statistics['by_day'][$date]['downloads'] += (int)($row['n']);
+                    if($this->statistics['by_day'][$date]['downloads'] > $this->statistics['max_downloads']) {
+                        $this->statistics['max_downloads'] = $this->statistics['by_day'][$date]['downloads'];
+                    }
+                }
+            }
+            //------- referers stats
+            //
+            $sql = "SELECT count( id ) AS n, referrer FROM `log_view`\n"
+                . " WHERE record_id = :record_id\n"
+                . "  AND date >= :from AND date <= :to\n"
+                . " GROUP BY referrer ORDER BY referrer ASC";
+            $result = $this->getDataboxConnection()
+                ->executeQuery($sql, [
+                    ':record_id' => $this->getRecordId(),
+                    ':from'      => $this->statistics['from'],
+                    ':to'        => $this->statistics['to']
+                ])
+                ->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $k = $row['referrer'];
+                if ($k == 'NO REFERRER') {
+                    $k = $this->app->trans('report::acces direct');
+                }
+                elseif ($k == $this->app['conf']->get('servername') . 'prod/') {
+                    $k = $this->app->trans('admin::monitor: module production');
+                }
+                elseif ($k == $this->app['conf']->get('servername') . 'client/') {
+                    $k = $this->app->trans('admin::monitor: module client');
+                }
+                elseif (strpos($k, 'http://apps.cooliris.com/') !== false) {
+                    $k = $this->app->trans('report:: visualiseur cooliris');
+                }
+                elseif (strpos($k, $this->app['conf']->get('servername') . 'login/') !== false) {
+                    $k = $this->app->trans('report:: page d\'accueil');
+                }
+                elseif (strpos($k, $this->app['conf']->get('servername') . 'document/') !== false) {
+                    $k = $this->app->trans('report::acces direct');
+                }
+                elseif (strpos($k, $this->app['conf']->get('servername') . 'permalink/') !== false) {
+                    $k = $this->app->trans('report::acces direct');
+                }
+                if (!isset($this->statistics['referrers'][$k])) {
+                    // the referrer does not match anything, just add it untranslated
+                    $this->statistics['referrers'][$k] = [
+                        'label' => $k,
+                        'count' => 0
+                    ];
+                }
+                $this->statistics['referrers'][$k]['count'] += (int)$row['n'];
+            }
+        }
+        return $this->statistics;
     }
 
     /**

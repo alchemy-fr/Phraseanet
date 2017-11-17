@@ -16,12 +16,12 @@
     </a>
 {% endif %}
 
-  <div class="print-record-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
+  <div class="record-print-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
       <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image" title="'{{ 'action : print' | trans }}">
   </div>
 
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDHD')) or app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDWNLDPREVIEW')) %}
-    <div class="export-record-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
+    <div class="record-export-action" data-kind="record" data-id="{{record.get_sbas_id()}}_{{record.get_record_id()}}">
         <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image" title="{{ 'action : exporter' | trans }}">
        {# <img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
