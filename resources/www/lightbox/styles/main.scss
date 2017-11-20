@@ -46,7 +46,14 @@ img {
 }
 
 #top_container {
-  bottom: 190px;
+  bottom: 220px;
+}
+
+.documentTips {
+  height: 100%;
+  iframe {
+    height: 100%;
+  }
 }
 
 #bottom_container {
@@ -448,6 +455,14 @@ table th i {
   .thumb {
     position: relative;
   }
+}
+
+.basket_wrapper .thumb_wrapper {
+  margin-top: 10px;
+  margin-bottom: 10px;
+    .thumb {
+      position: static;
+    }
 }
 
 #sc_wrapper .thumb_wrapper {
