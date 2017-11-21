@@ -102,7 +102,7 @@
                 </td>
             </tr>
         </table>
-        <button style="display:none;" class="btn validate outline"><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
+        <button class="btn validate outline" disabled><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
@@ -126,48 +126,50 @@
                         </ul>
                     </div>
                 </div>
-                <table class="table-order">
-                    <tbody>
-                    {% for element in order.getElements() %}
-                        <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
-                            <td width="10%" align="center">
-                                {% if element.getOrderMaster() %}
-                                    {% set name = element.getOrderMaster().getDisplayName() %}
-                                    {% if element.getDeny() == true %}
-                                        {% set title %}
-                                            {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
-                                        {% endset %}
-                                        {% set title_send %}
-                                            {% trans %}Forcer l'envoi du document{% endtrans %}
-                                        {% endset %}
-                                        <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
-                                        <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
-                                    {% else %}
-                                        {% set title %}
-                                            {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
-                                        {% endset %}
-                                        <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                <div class="scrollable-table">
+                    <table class="table-order">
+                        <tbody>
+                        {% for element in order.getElements() %}
+                            <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                                <td width="10%" align="center">
+                                    {% if element.getOrderMaster() %}
+                                        {% set name = element.getOrderMaster().getDisplayName() %}
+                                        {% if element.getDeny() == true %}
+                                            {% set title %}
+                                                {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
+                                            {% endset %}
+                                            {% set title_send %}
+                                                {% trans %}Forcer l'envoi du document{% endtrans %}
+                                            {% endset %}
+                                            <img style="cursor:help;" src="/assets/common/images/icons/delete.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                            <img style="cursor:pointer;" class="force_sender" src="/assets/common/images/icons/reload.png" title="{% spaceless %}{{title_send|e}}{% endspaceless %}" />
+                                        {% else %}
+                                            {% set title %}
+                                                {% trans with {'%name%' : name} %}Document envoye par %name%{% endtrans %}
+                                            {% endset %}
+                                            <img style="cursor:help;" src="/assets/common/images/icons/ok.png" title="{% spaceless %}{{title|e}}{% endspaceless %}" />
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </td>
-                            <td width="30%" align="center">
-                                <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper">
-                                    {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
-                                    {#<div style="position:absolute;bottom:4px;right:4px;">#}
-                                    {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
-                                    {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>#}
-                                    {#<div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>#}
-                                    {#</div>#}
-                                    <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
-                                </div>
-                            </td>
-                            <td width="60%" align="center">
-                                <span>{{element.getRecord(app).getOriginalName() }}</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                                </td>
+                                <td width="30%" align="center">
+                                    <div id="order_wrapper_{{order.getId()}}_{{element.getBaseId()}}_{{element.getRecordId()}}" class="order_wrapper">
+                                        {{ thumbnail.format(element.getRecord(app).get_thumbnail() ,80, 80, '', true, false) }}
+                                        {#<div style="position:absolute;bottom:4px;right:4px;">#}
+                                        {#<img class="infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" src="/assets/common/images/icons/info.gif"/>#}
+                                        {#<div tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId() }) }}" class="previewTips"></div>#}
+                                        {#<div tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : element.getSbasId(app), 'record_id' : element.getRecordId(), 'context' : 'preview' }) }}" class="captionRolloverTips"></div>#}
+                                        {#</div>#}
+                                        <input type="hidden" name="order_element_id" value="{{element.getId()}}"/>
+                                    </div>
+                                </td>
+                                <td width="60%" align="center">
+                                    <span>{{element.getRecord(app).getOriginalName() }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 
@@ -176,6 +178,7 @@
                     <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
                     <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                     <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                    <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                     <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                 </div>
@@ -200,15 +203,19 @@
                         <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
                         <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                              style="width:150px;height:150px;"
-                             src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
+                             src="/assets/common/images/icons/substitution/image_jpg.png" ondragstart="return false;"/>
                         <div id="text-content"></div>
                     </div>
                     <div id="order-action" style="color:#333;">
                         <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
                         <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
+                        <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
                         <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
+                </div>
+                <div id="wrapper-no-item">
+                    <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_jpg.png">
                 </div>
             </div>
         </div>

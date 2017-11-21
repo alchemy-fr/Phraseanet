@@ -6,7 +6,7 @@
     {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
     {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
     {% if wrap %}
-        <div style="width:{{box_w}}px;height:{{box_h}}px;" class="thumb_wrapper {{extra_class|default('')}}" >
+        <div style="width:100%; height:100%;" class="thumb_wrapper {{extra_class|default('')}}" >
     {% endif %}
 
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
