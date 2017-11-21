@@ -77,16 +77,16 @@
         var form = $("#GV_form");
         var inputs = form.find("input, select, textarea");
 
-        var header = '<thead>' +
-            '<th>{{ "setup::custom-link:name-link" | trans }}</th>' +
-            '<th>{{ "setup::custom-link:language-link" | trans }}</th>' +
-            '<th>{{ "setup::custom-link:link-url" | trans }}</th>' +
-            '<th>{{ "setup::custom-link:location-link" | trans }}</th>' +
-            '<th>{{ "setup::custom-link:order-link" | trans }}</th>' +
-            '<th></th>' +
-            '<th></th>' +
-            '<th></th>' +
-            '</thead>';
+        var header = "<thead>" +
+            "<th>{{ "setup::custom-link:name-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:language-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:link-url" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:location-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:order-link" | trans }}</th>" +
+            "<th></th>" +
+            "<th></th>" +
+            "<th></th>" +
+            "</thead>";
 
         // if required not supported, emulate it
         if (!Modernizr.input.required) {
