@@ -518,7 +518,6 @@ function initAnswerForm() {
                 $('#answers').removeClass('loading');
             },
             success: function (datas) {
-
                 // DEBUG QUERY PARSER
                 try {
                     console.info(JSON.parse(datas.parsed_query));
@@ -532,6 +531,10 @@ function initAnswerForm() {
                 });
 
                 loadFacets(datas.facets);
+
+                if(datas.total_answers > 0) {
+                    sessionStorage.setItem('search', JSON.stringify(datas.query));
+                }
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 

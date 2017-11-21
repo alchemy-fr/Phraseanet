@@ -4,22 +4,25 @@ var utils = require('../../utils.js');
 var debugMode = false;
 
 // for dev purposes
-gulp.task('copy-alchemy-embed-medias-debug', function(){
+gulp.task('copy-alchemy-embed-debug', function(){
     debugMode = true;
-    gulp.start('copy-alchemy-embed-medias');
+    gulp.start('copy-alchemy-embed');
 });
 
-gulp.task('copy-alchemy-embed-medias', function(){
+gulp.task('copy-alchemy-embed', function(){
     // copy all dist folder:
-
-    return gulp.src('node_modules/alchemy-embed-medias/dist/**/*')
+    if( debugMode === true) {
+        return gulp.src('vendor/alchemy/embed-bundle/dist/**/*')
+            .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
+    }
+    return gulp.src(config.paths.vendors + 'alchemy-embed-medias/dist/**/*')
         .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
 });
-gulp.task('watch-alchemy-embed-medias-js', function() {
+gulp.task('watch-alchemy-embed-js', function() {
     debugMode = true;
     // in dev mode, watch composer's vendor path:
-    return gulp.watch('node_modules/alchemy-embed-medias/dist/**/*', ['copy-alchemy-embed-medias']);
+    return gulp.watch('vendor/alchemy/embed-bundle/dist/**/*', ['copy-alchemy-embed']);
 });
-gulp.task('build-alchemy-embed-medias', function(){
-    gulp.start('copy-alchemy-embed-medias');
+gulp.task('build-alchemy-embed', function(){
+    gulp.start('copy-alchemy-embed');
 });
