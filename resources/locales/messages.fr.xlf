@@ -12257,7 +12257,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="67572283912404fe90681e8566d880e1fd10d58e" resname="setup::custom-link:title-custom-link" approved="yes">
         <source>setup::custom-link:title-custom-link</source>
-        <target state="translated">Lien Personalisable.</target>
+        <target state="translated">Lien Personnalisable</target>
         <jms:reference-file line="54">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance" approved="yes">
