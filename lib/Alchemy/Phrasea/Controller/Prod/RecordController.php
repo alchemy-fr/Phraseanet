@@ -122,6 +122,54 @@ class RecordController extends Controller
     }
 
     /**
+     * @param \record_preview $recordContainer
+     * @return array
+     */
+    private function getContainerResult(\record_preview $recordContainer)
+    {
+        /* @var $recordPreview \media_subdef */
+        $helpers = new PhraseanetExtension($this->app);
+
+        $recordData = [
+          'databoxId' => $recordContainer->getBaseId(),
+          'id' => $recordContainer->getId(),
+          'isGroup' => $recordContainer->isStory(),
+          'url' => (string)$helpers->getThumbnailUrl($recordContainer),
+        ];
+        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
+        if ($userHaveAccess) {
+            $recordPreview = $recordContainer->get_preview();
+        } else {
+            $recordPreview = $recordContainer->get_thumbnail();
+        }
+
+        $recordData['preview'] = [
+          'width' => $recordPreview->get_width(),
+          'height' => $recordPreview->get_height(),
+          'url' => $this->app->url('alchemy_embed_view', [
+            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
+            'autoplay' => false
+          ])
+        ];
+
+        return $recordData;
+    }
+
+    public function getRecordById($sbasId, $recordId)
+    {
+        $record = new \record_adapter($this->app, $sbasId, $recordId);
+        return $this->app->json([
+            "html_preview"  => $this->render('common/preview.html.twig', [
+                'record'        => $record
+            ]),
+            "desc"  => $this->render('common/caption.html.twig', [
+                'record'        => $record,
+                'view'          => 'preview'
+            ])
+        ]);
+    }
+
+    /**
      *  Delete a record or a list of records
      *
      * @param  Request $request
@@ -170,6 +218,22 @@ class RecordController extends Controller
     }
 
     /**
+     * @return BasketElementRepository
+     */
+    private function getBasketElementRepository()
+    {
+        return $this->app['repo.basket-elements'];
+    }
+
+    /**
+     * @return StoryWZRepository
+     */
+    private function getStoryWorkZoneRepository()
+    {
+        return $this->app['repo.story-wz'];
+    }
+
+    /**
      *  Delete a record or a list of records
      *
      * @param  Request $request
@@ -206,55 +270,5 @@ class RecordController extends Controller
         };
 
         return $this->app->json($renewed);
-    }
-
-    /**
-     * @return BasketElementRepository
-     */
-    private function getBasketElementRepository()
-    {
-        return $this->app['repo.basket-elements'];
-    }
-
-    /**
-     * @return StoryWZRepository
-     */
-    private function getStoryWorkZoneRepository()
-    {
-        return $this->app['repo.story-wz'];
-    }
-
-    /**
-     * @param \record_preview $recordContainer
-     * @return array
-     */
-    private function getContainerResult(\record_preview $recordContainer)
-    {
-        /* @var $recordPreview \media_subdef */
-        $helpers = new PhraseanetExtension($this->app);
-
-        $recordData = [
-          'databoxId' => $recordContainer->getBaseId(),
-          'id' => $recordContainer->getId(),
-          'isGroup' => $recordContainer->isStory(),
-          'url' => (string)$helpers->getThumbnailUrl($recordContainer),
-        ];
-        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
-        if ($userHaveAccess) {
-            $recordPreview = $recordContainer->get_preview();
-        } else {
-            $recordPreview = $recordContainer->get_thumbnail();
-        }
-
-        $recordData['preview'] = [
-          'width' => $recordPreview->get_width(),
-          'height' => $recordPreview->get_height(),
-          'url' => $this->app->url('alchemy_embed_view', [
-            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
-            'autoplay' => false
-          ])
-        ];
-
-        return $recordData;
     }
 }

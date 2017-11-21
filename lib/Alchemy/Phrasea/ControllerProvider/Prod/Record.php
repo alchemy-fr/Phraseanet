@@ -49,6 +49,11 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('record_details')
             ->method('GET|POST');
 
+        $controllers->get('/record/{sbasId}/{recordId}/', 'controller.prod.records:getRecordById')
+            ->bind('record_single')
+            ->assert('sbasId', '\d+')
+            ->assert('recordId', '\d+');
+
         $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');
 
