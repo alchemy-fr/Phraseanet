@@ -1,5 +1,5 @@
 - name: Install
-  apt: pkg="php5-dev" state=present
+  apt: pkg="php5.6-dev" state=present
   when: php.pecl_packages is defined
 
 - name: Install Package
@@ -13,7 +13,7 @@
 - name: Create extension .ini file
   template: >
     src="extension.tpl"
-    dest="/etc/php5/mods-available/{{ item.name }}.ini"
+    dest="/etc/php/5.6/mods-available/{{ item.name }}.ini"
     owner="root"
     group="root"
     mode=0644

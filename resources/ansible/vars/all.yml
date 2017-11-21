@@ -43,7 +43,7 @@ mariadb:
     root_password: toor
     database: ab_master
     databox_db: db_master
-    alt_db: db_alt
+    alt_databox_db: db_alt
     user: phraseanet
     password: phraseanet
     dump: ''
@@ -55,8 +55,26 @@ elasticsearch:
         - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.7.0'}
 php:
     install: '1'
-    ppa: php5
-    packages: [php5-cli, php5-intl, php5-mcrypt, php5-enchant, php5-gd, php5-imagick, php5-memcache, php5-memcached, php5-curl, php5-mysql, php5-sqlite]
+    ppa: php
+    packages:
+        - 'php5.6-cli'
+        - 'php5.6-fpm'
+        - 'php5.6-intl'
+        - 'php5.6-mcrypt'
+        - 'php5.6-enchant'
+        - 'php5.6-gd'
+        - 'php5.6-memcache'
+        - 'php5.6-xml'
+        - 'php5.6-xmlrpc'
+        - 'php5.6-memcached'
+        - 'php5.6-mbstring'
+        - 'php5.6-curl'
+        - 'php5.6-mysql'
+        - 'php5.6-imagick'
+        - 'php5.6-zip'
+        - 'php5.6-sqlite3'
+        - 'php5.6-bcmath'
+        - 'php-pear'
     pecl_packages:
         - {name: zmq, package: zmq-beta}
         - {name: amqp, package: amqp-1.4.0}
