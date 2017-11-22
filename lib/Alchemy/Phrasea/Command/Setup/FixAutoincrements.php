@@ -15,6 +15,9 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -24,6 +27,9 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class FixAutoincrements extends Command
 {
+    /** @var  InputInterface */
+    private $input;
+
     /** @var  OutputInterface */
     private $output;
 
@@ -38,7 +44,8 @@ class FixAutoincrements extends Command
         parent::__construct($name);
 
         $this
-            ->setDescription("Fix autoincrements");
+            ->setDescription("Fix autoincrements")
+            ->addOption('dry', null, InputOption::VALUE_NONE, 'Dry run : list but do not update.');
 
         return $this;
     }
@@ -48,8 +55,9 @@ class FixAutoincrements extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->output = $output;
-        $this->appBox = $this->getContainer()->getApplicationBox();
+        $this->input     = $input;
+        $this->output    = $output;
+        $this->appBox    = $this->getContainer()->getApplicationBox();
         $this->databoxes = [];
         foreach ($this->getContainer()->getDataboxes() as $databox) {
             $this->databoxes[] = $databox;
@@ -72,17 +80,28 @@ class FixAutoincrements extends Command
      */
     private function box_fixTable($box, $table, $subtables)
     {
-        $max_id = $this->box_getMax($box, $table, $subtables);
-        $this->box_setMax($box, $table, $max_id);
+        $ouputTable = new Table($this->output);
+
+        $title = sprintf("fixing table \"%s.%s\"", $box->get_dbname(), $table);
+        $ouputTable->setHeaders([new TableCell($title, ['colspan'=>2])]);
+
+        $max_id = $this->box_getMax($box, $table, $subtables, $ouputTable);
+        //if($this->output->getVerbosity())
+        $this->box_setAutoIncrement($box, $table, $max_id, $ouputTable);
+
+        $ouputTable->render();
+
+        $this->output->writeln("");
     }
 
     /**
      * @param \Appbox|\databox $box
      * @param $table
      * @param $subtables
+     * @param Table $ouputTable
      * @return int
      */
-    private function box_getMax($box, $table, $subtables)
+    private function box_getMax($box, $table, $subtables, $ouputTable)
     {
         $sql = "  SELECT '".$box->get_dbname().'.'.$table.".AUTO_INCREMENT' AS src, AUTO_INCREMENT AS `id` FROM information_schema.TABLES\n"
             . "         WHERE TABLE_SCHEMA = :dbname AND TABLE_NAME = '" . $table . "'\n";
@@ -93,14 +112,14 @@ class FixAutoincrements extends Command
                 . "  SELECT '".$box->get_dbname().'.'.$subtable.'.'.$fieldname."' AS src, MAX(`" . $fieldname . "`)+1 AS `id` FROM `" . $subtable . "`\n";
         }
 
-        // $this->output->writeln($sql);
-
         $stmt = $box->get_connection()->executeQuery($sql, [':dbname' => $box->get_dbname()]);
         $max_id = 0;
         $rows = $stmt->fetchAll();
         foreach($rows as $row) {
             $id = $row['id'];
-            $this->output->writeln(sprintf("%s = %s", $row['src'], is_null($id) ? "null" : $id));
+
+            $ouputTable->addRow([$row['src'], is_null($id) ? "null" : $id]);
+
             if(!is_null($id)){
                 $id = (int)$id;
                 if ($id > $max_id) {
@@ -117,17 +136,48 @@ class FixAutoincrements extends Command
      * @param \Appbox|\databox $box
      * @param $table
      * @param $max_id
+     * @param Table $ouputTable
      * @throws \Doctrine\DBAL\DBALException
      */
-    private function box_setMax($box, $table, $max_id)
+    private function box_setAutoIncrement($box, $table, $max_id, $ouputTable)
     {
         $sql = "ALTER TABLE `" . $table . "` AUTO_INCREMENT = " . $max_id;
-        $stmt = $box->get_connection()->executeQuery($sql);
-        $stmt->closeCursor();
+        $msg = [
+            sprintf("%s.%s.AUTO_INCREMENT set to", $box->get_dbname(), $table),
+            $max_id,
+        ];
 
-        $this->output->writeln(sprintf("--> %s.%s.AUTO_INCREMENT set to %d", $box->get_dbname(), $table, $max_id));
+        $this->box_setSQL($box, $sql, [], $msg, $ouputTable);
     }
 
+    /**
+     * @param \Appbox|\databox $box
+     * @param string $sql
+     * @param Array $parms
+     * @param string $msg[]
+     * @param Table $ouputTable
+     */
+    private function box_setSQL($box, $sql, $parms, $msg, $ouputTable)
+    {
+        $ouputTable->addRow(New TableSeparator());
+        if($this->input->getOption("dry")) {
+            $msg[1] = sprintf("<comment>%s</comment> (dry-run : not done)", $msg[1]);
+            $ouputTable->addRow($msg);
+        }
+        else {
+            try {
+                $stmt = $box->get_connection()->executeQuery($sql, $parms);
+                $stmt->closeCursor();
+
+                $msg[1] = sprintf("<info>%s</info>", $msg[1]);
+                $ouputTable->addRow($msg);
+            }
+            catch(\Exception $e) {
+                $msg[1] = sprintf("<error>%s</error>)", $msg[1]);
+                $ouputTable->addRow($msg);
+            }
+        }
+    }
 
 
     //
@@ -257,21 +307,26 @@ class FixAutoincrements extends Command
 
 
     /**
-     * fix AppBox "Sessions" autoincrement, as autoincrement or as doctrine generated sequence
+     * fix AppBox "Sessions" autoincrement
      *
      * @return $this
      * @throws \Doctrine\DBAL\DBALException
      */
     private function ab_fix_Sessions()
     {
+        $ouputTable = new Table($this->output);
+
+        $title = sprintf("fixing table \"%s.%s\"", $this->appBox->get_dbname(), "Sessions");
+        $ouputTable->setHeaders([new TableCell($title, ['colspan'=>2])]);
+
         $site = $this->getContainer()['conf']->get(['main', 'key']);
-        $ab = $this->appBox->get_connection();
 
         // if autoincrement, get the current value as a minimum
         $max_SessionId = $this->box_getMax(
             $this->appBox,
             'Sessions',
-            []          // no sub-tables
+            [],          // no sub-tables
+            $ouputTable
         );
 
         // get max session from databoxes, using the "log" table which refers to ab.Sessions ids
@@ -281,7 +336,9 @@ class FixAutoincrements extends Command
             $sql = "SELECT MAX(`sit_session`) FROM `log` WHERE `site` = :site";
             $stmt = $db->executeQuery($sql, [':site' => $site]);
             $id = $stmt->fetchColumn(0);
-            $this->output->writeln(sprintf("%s.log.sit_session = %s", $databox->get_dbname(), is_null($id) ? 'null' : $id));
+
+            $ouputTable->addRow([sprintf("%s.log.sit_session", $databox->get_dbname()), sprintf("%s", is_null($id) ? 'null' : $id)]);
+
             if(!is_null($id)) {
                 $id = (int)$id + 1;
                 if ($id > $max_SessionId) {
@@ -293,37 +350,35 @@ class FixAutoincrements extends Command
 
         // fix using different methods
         foreach ([
-                     // 4.0 with autoincrement
-                     [
-                         'sql'   => "ALTER TABLE `Sessions` AUTO_INCREMENT = " . $max_SessionId,   // can't use parameter here
-                         'parms' => [],
-                         'msg'   => sprintf("--> ab.Sessions' autoincrement set to %d", $max_SessionId),
-                     ],
-                     // 4.0 with custom generator already set
-                     [
-                         'sql'   => "UPDATE `Id` SET value = :v WHERE `id` = :k",
-                         'parms' => [':v' => $max_SessionId, ':k' => 'Alchemy\\Phrasea\\Model\\Entities\\Session'],
-                         'msg'   => sprintf("--> ab.Id['Sessions']' set to %d", $max_SessionId),
-                     ],
-                     // 4.0 with custom generator not yet set
-                     [
-                         'sql'   => "INSERT INTO `Id` (`id`, `value`) VALUES (:k, :v)",
-                         'parms' => [':v' => $max_SessionId, ':k' => 'Alchemy\\Phrasea\\Model\\Entities\\Session'],
-                         'msg'   => sprintf("--> ab.Id['Sessions']' set to %d", $max_SessionId),
-                     ]
+                    // 4.0 with autoincrement
+                    [
+                        'sql'   => "ALTER TABLE `Sessions` AUTO_INCREMENT = " . $max_SessionId,   // can't use parameter here
+                        'parms' => [],
+                        'msg'   => ["ab.Sessions.AUTO_INCREMENT set to", $max_SessionId],
+                    ],
+                    /* --- custon generators not yet implemented in phraseanet
+                    // 4.0 with custom generator already set
+                    [
+                        'sql'   => "UPDATE `Id` SET value = :v WHERE `id` = :k",
+                        'parms' => [':v' => $max_SessionId, ':k' => 'Alchemy\\Phrasea\\Model\\Entities\\Session'],
+                        'msg'   => ["ab.Id['Sessions']' set to", $max_SessionId],
+                    ],
+                    // 4.0 with custom generator not yet set
+                    [
+                        'sql'   => "INSERT INTO `Id` (`id`, `value`) VALUES (:k, :v)",
+                        'parms' => [':v' => $max_SessionId, ':k' => 'Alchemy\\Phrasea\\Model\\Entities\\Session'],
+                        'msg'   => ["ab.Id['Sessions']' set to", $max_SessionId],
+                    ]
+                    --- */
+                ] as $sql) {
 
-
-                 ] as $sql) {
-            try {
-                // one or more sql will fail, no pb
-                $stmt = $ab->executeQuery($sql['sql'], $sql['parms']);
-                $stmt->closeCursor();
-                $this->output->writeln($sql['msg']);
-            }
-            catch (\Exception $e) {
-                // no-op
-            }
+            // one or more sql will fail, no pb
+            $this->box_setSQL($this->appBox, $sql['sql'], $sql['parms'], $sql['msg'], $ouputTable);
         }
+
+        $ouputTable->render();
+
+        $this->output->writeln("");
 
         return $this;
     }
