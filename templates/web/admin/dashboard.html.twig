@@ -108,14 +108,14 @@
                 {% endfor %}
                 <input class="admin_adder input-large" placeholder="{{ 'Add an admin' | trans }}"/>
             </ul>
-            <input type="submit" class="btn btn-warning" value="{{ 'boutton::valider' | trans }}" />
+            <input type="submit" class="btn btn-primary" value="{{ 'boutton::valider' | trans }}" />
             <input type="hidden" class="new" name="admins[]" />
         </fieldset>
     </form>
     <form id="admin_reset" action="{{ path('admin_dashboard_reset_admin_rights') }}" method="post" class="form-inline" style="display:inline">
         <fieldset>
             <legend>{{ 'setup:: Reinitialisation des droits admins' | trans }}</legend>
-            <input type="submit" class="btn btn-warning" value="{{ 'boutton::reinitialiser' | trans }}" />
+            <input type="submit" class="btn btn-primary" value="{{ 'boutton::reinitialiser' | trans }}" />
         </fieldset>
     </form>
 </div>
@@ -127,7 +127,7 @@
                 <legend>{{ 'setup::Tests d\'envois d\'emails' | trans }}</legend>
                 <div class="input-append">
                     <input class="span3" id="appendedInputButton" name="email" value="" type="text" placeholder="{% trans %}Email{% endtrans %}" required>
-                    <input type="submit" class="btn btn-warning" value="{{ 'Send' | trans }}"/>
+                    <input type="submit" class="btn btn-primary" value="{{ 'Send' | trans }}"/>
                 </div>
             </fieldset>
         </form>
@@ -143,7 +143,7 @@
             <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}" class="form-inline">
                 <fieldset>
                 <legend>{% trans %}Reset cache{% endtrans %}</legend>
-                    <input type="submit" id="flush_button" class="btn btn-warning span4" value="Flush All Caches" />
+                    <input type="submit" id="flush_button" class="btn btn-primary span4" value="Flush All Caches" />
                 </fieldset>
             </form>
         </div>
