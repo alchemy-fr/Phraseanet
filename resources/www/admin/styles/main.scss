@@ -87,12 +87,12 @@ select {
 }
 li.selected,
 div.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 li.selected a,
 div.selected a {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 .treeview ul {
@@ -114,7 +114,7 @@ div.finder div.content div.title {
 /******* MAIN MENU ************************************************************/
 
 
-$mainMenuBackgroundColor: #fceb3f;
+$mainMenuBackgroundColor: #ffe000;
 $mainMenuLinkColor: #333333;
 $mainMenuLinkHoverColor: #000000;
 $mainMenuLinkActiveColor: #000000;
@@ -128,14 +128,14 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 
 /******* LEFT SIDE ************************************************************/
 #left {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
   overflow: auto;
 }
 #FNDR {
   overflow: auto;
 }
 #FNDR li.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 #FNDR a {
@@ -256,7 +256,7 @@ div.switch_right.unchecked {
   background-size: 16px;
 }
 .board_section div[class="section"] ul.setup li:hover {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
 }
 /******* PUBLICATIONS *********************************************************/
 #pub_icon {
