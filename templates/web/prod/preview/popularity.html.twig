@@ -66,8 +66,8 @@
         function drawChartVisualisation() {
             var maxValue = statistics.max_views < 4 ? 4 : statistics.max_views;
             var data = new google.visualization.DataTable();
-            data.addColumn('date', '{{ 'preview::date' | trans }}');
-            data.addColumn('number', '{{ 'preview::visualisation' | trans }}');
+            data.addColumn('date', "{{ 'preview::date' | trans }}");
+            data.addColumn('number', "{{ 'preview::visualisation' | trans }}");
 
             data.addRows(arrayViews);
 
@@ -80,7 +80,7 @@
                 'backgroundColor': 'transparent',
                 chartArea: {width:'70%',height:'70%'},
                 hAxis: {
-                    title: '{{ 'preview::date' | trans }}',
+                    title: "{{ 'preview::date' | trans }}",
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -93,7 +93,7 @@
                     baselineColor: '#FFF'
                 },
                 vAxis: {
-                    title: '{{ 'preview::visualisation' | trans }}',
+                    title: "{{ 'preview::visualisation' | trans }}",
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -116,8 +116,8 @@
         function drawChartDownload() {
             var maxValue = statistics.max_downloads < 4 ? 4 : statistics.max_downloads;
             var data = new google.visualization.DataTable();
-            data.addColumn('date', '{{ 'preview::date' | trans }}');
-            data.addColumn('number', '{{ 'preview::downloads' | trans }}');
+            data.addColumn('date', "{{ 'preview::date' | trans }}");
+            data.addColumn('number', "{{ 'preview::downloads' | trans }}");
 
             data.addRows(arrayDownloads);
 
@@ -130,7 +130,7 @@
                 'backgroundColor': 'transparent',
                 chartArea: {width:'70%',height:'70%'},
                 hAxis: {
-                    title: '{{ 'preview::date' | trans }}',
+                    title: "{{ 'preview::date' | trans }}",
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -143,7 +143,7 @@
                     baselineColor: '#FFF'
                 },
                 vAxis: {
-                    title: '{{ 'preview::downloads' | trans }}',
+                    title: "{{ 'preview::downloads' | trans }}",
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
