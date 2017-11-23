@@ -1,0 +1,8 @@
+# templates/ssh_config.j2
+
+{{ ansible_managed | comment }}
+
+Host github.com
+IdentityFile ~/.ssh/deploy_key
+IdentitiesOnly yes
+User git

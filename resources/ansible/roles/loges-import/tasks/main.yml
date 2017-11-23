@@ -1,0 +1,32 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: Create folder to checkout plugin
+      file:
+         path:  /var/www/log-es-plugin
+         state: directory
+         owner: phraseanet
+         group: phraseanet
+         mode: 0755
+
+    - name: Perform Git Clone
+      git:
+        repo: git@github.com:alchemy-fr/Phraseanet-plugin-CLIExportLogsToElasticSearch.git
+        key_file: ~/.ssh/id_rsa
+        dest: /var/www/log-es-plugin
+        accept_hostkey: yes
+        force: yes
+
+    - name: Set up
+      shell: 'bin/setup plugin:add /var/www/log-es-plugin'
+      args:
+       chdir: /var/www/pv4
+
+    - cron:
+        name: "cron job to add log"
+        minute: "0"
+        hour: "4"
+        weekday: "0-6"
+        user: "www-data"
+        job: "/var/www/pv4/log-import.sh"
