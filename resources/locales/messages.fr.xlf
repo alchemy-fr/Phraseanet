@@ -6341,9 +6341,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="6">web/login/cgus.html.twig</jms:reference-file>
         <jms:reference-file line="107">login/layout/base-layout.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance" approved="yes">
+      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance" approved="no">
         <source>The Phraseanet Web API allows other web application to rely on this instance</source>
-        <target state="translated">The Phraseanet Web API allows other web application to rely on this instance</target>
+        <target state="needs-translation">L'API Web Phraseanet permet à d'autres applications web de se reposer sur cette instance</target>
         <jms:reference-file line="23">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2558cc2c887bbe4e2444ec6ef83b4982386e871a" resname="The URL you used is out of date, please login" approved="yes">
@@ -7037,9 +7037,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Suggestion d'utilisateurs</target>
         <jms:reference-file line="134">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="yes">
+      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="no">
         <source>Utilisation prevue:</source>
-        <target state="translated">Utilisation prevue:</target>
+        <target state="needs-translation">Utilisation prévue:</target>
         <jms:reference-file line="875">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b3e9155f69edf73caab337bf5f64231188b1e48" resname="VALIDATION" approved="yes">
@@ -12115,17 +12115,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ae34347293abc9a106150c8db2b2a3b1b7739c0b" resname="same UUID" approved="yes">
         <source>same UUID</source>
-        <target state="translated">Document Unique Id (UUID) identique.</target>
+        <target state="translated">Un fichier avec le même UUID existe déjà dans la base de données</target>
         <jms:reference-file line="58">Border/Checker/UUID.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9efb800c6df15d107be9c0aeb19e2d218ebfe135" resname="same checksum" approved="yes">
         <source>same checksum</source>
-        <target state="translated">Somme de contrôle Identique.</target>
+        <target state="translated">Un fichier avec la même somme de contrôle existe déjà dans la base de données</target>
         <jms:reference-file line="59">Border/Checker/Sha256.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="99e3a652745118f0d3c79e13d81168544afe2b77" resname="same filename" approved="yes">
         <source>same filename</source>
-        <target state="translated">Nom de fichier Identique.</target>
+        <target state="translated">Un fichier avec le même nom existe déjà dans la base de données</target>
         <jms:reference-file line="72">Border/Checker/Filename.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2be8dbf0a1ca487e47fe126c995102dcf17e251e" resname="scheduled status" approved="yes">
