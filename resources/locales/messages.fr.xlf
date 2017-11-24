@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-21T11:35:35Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2017-11-24T12:36:50Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -2265,7 +2265,7 @@
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
         <source>Detailed view URL</source>
         <target state="translated">URL de la vue détaillée</target>
-        <jms:reference-file line="32">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="44">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc3decbb93847518f1a049dcf49d0d7c6560bcc6" resname="Details" approved="yes">
         <source>Details</source>
@@ -2580,7 +2580,7 @@
       <trans-unit id="7884b9b422d77cabded5da8a9a56524a84481930" resname="Embed code" approved="yes">
         <source>Embed code</source>
         <target state="translated">Code d'intégration (Embed code)</target>
-        <jms:reference-file line="41">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="53">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5afbbe7023486a123b45581f49820899571c415" resname="Empty a collection" approved="yes">
         <source>Empty a collection</source>
@@ -4245,7 +4245,7 @@
       <trans-unit id="8c123d8ad43d08cc48c3d6a7676e65f71eea59df" resname="No URL available" approved="yes">
         <source>No URL available</source>
         <target state="translated">Aucune URL de disponible</target>
-        <jms:reference-file line="57">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="120">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="486829367591dc8209f3fc6960814c0bdd8930d1" resname="No account yet?" approved="yes">
         <source>No account yet?</source>
@@ -5463,7 +5463,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="8e78cff6cd2bb8595029060cb53dba7a4ba72b8a" resname="Resource URL" approved="yes">
         <source>Resource URL</source>
         <target state="translated">URL de la ressource</target>
-        <jms:reference-file line="22">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="34">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2479ef7e025d9d4c6e5463dc366c2d6c79aaefbe" resname="Resquest access" approved="yes">
         <source>Resquest access</source>
@@ -5741,12 +5741,12 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="6ff7a49e36b0e5c8302603f98e4eb1c7dec4a56e" resname="Send to Facebook" approved="yes">
         <source>Send to Facebook</source>
         <target state="translated">Envoyer vers Facebook</target>
-        <jms:reference-file line="16">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="28">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="29f82ee42eeecce87dfe9223d5d7ff716dc68ead" resname="Send to Twitter" approved="yes">
         <source>Send to Twitter</source>
         <target state="translated">Envoyer vers Twitter</target>
-        <jms:reference-file line="10">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="22">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="35f49dcfbfb2e03fdce327671e82bf173b1ccb8b" resname="Sent" approved="yes">
         <source>Sent</source>
@@ -9329,9 +9329,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="a70a59b9120185471e5b45630f8ba24d5516f590" resname="copyClipboardLabel" approved="yes">
         <source>copyClipboardLabel</source>
         <target state="translated">Copier dans le presse-papier</target>
-        <jms:reference-file line="28">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="36">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="49">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="40">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="61">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc97186645dc71dae8e3221c8ce53c56e6d611bf" resname="dans %category%" approved="yes">
         <source>dans %category%</source>
@@ -10656,9 +10656,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="yes">
         <source>previewLinkLabel</source>
         <target state="translated">Prévisualiser</target>
-        <jms:reference-file line="27">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="39">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="47">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="60">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
         <source>print:: image de choix et description</source>
@@ -10971,6 +10971,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="6ad73c8fd370f62ccd3bf50cd9cc3563aed5273c" resname="prod::tools: document" approved="yes">
         <source>prod::tools: document</source>
         <target state="translated">Document</target>
+        <jms:reference-file line="41">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
@@ -12110,6 +12111,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>setup::Tests d'envois d'emails</source>
         <target state="translated">Tests d'envois d'e-mails</target>
         <jms:reference-file line="127">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance">
+        <source>share::share-record: advance</source>
+        <target state="new">share::share-record: advance</target>
+        <jms:reference-file line="9">prod/Share/record.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def">
+        <source>share::share-record: select-shared-def</source>
+        <target state="new">share::share-record: select-shared-def</target>
+        <jms:reference-file line="11">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8ab6a8a0cf069e3783c6f59163ad03a051310556" resname="sport" approved="yes">
         <source>sport</source>
