@@ -188,24 +188,38 @@ class GooglePlus extends AbstractProvider
     {
         $identity = new Identity();
 
-        $token = @json_decode($this->client->getAccessToken(), true);
+        $accessToken = $this->client->getAccessToken();
+        $token = @json_decode($accessToken, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse Google+ JSON');
         }
 
-        $ticket = $this->client->verifyIdToken($token['id_token']);
-        $mapping = [
-            'email'       => Identity::PROPERTY_EMAIL,
-            'given_name'  => Identity::PROPERTY_FIRSTNAME,
-            'family_name' => Identity::PROPERTY_LASTNAME,
-            'picture'     => Identity::PROPERTY_IMAGEURL,
-            'sub'         => Identity::PROPERTY_ID
-        ];
-        foreach($mapping as $src=>$dest) {
-            if(array_key_exists($src, $ticket)) {
-                $identity->set($dest, $ticket[$src]);
+        try {
+            if(is_array($ticket = $this->client->verifyIdToken($token['id_token']))){
+                $mapping = [
+                    'email'       => Identity::PROPERTY_EMAIL,
+                    'given_name'  => Identity::PROPERTY_FIRSTNAME,
+                    'family_name' => Identity::PROPERTY_LASTNAME,
+                    'picture'     => Identity::PROPERTY_IMAGEURL,
+                    'sub'         => Identity::PROPERTY_ID
+                ];
+                foreach ($mapping as $src => $dest) {
+                    if (array_key_exists($src, $ticket)) {
+                        $identity->set($dest, $ticket[$src]);
+                    }
+                }
             }
+            else {
+                throw new NotAuthenticatedException('Google + has not authenticated');
+            }
+        }
+        catch (\Google_Exception $e) {
+            throw new NotAuthenticatedException('Google + has not authenticated');
+        }
+
+        if(!$identity->has(Identity::PROPERTY_ID)) {
+            throw new NotAuthenticatedException('Google + has not authenticated');
         }
 
         return $identity;
