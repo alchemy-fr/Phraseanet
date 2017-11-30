@@ -27,7 +27,6 @@ class GooglePlus extends AbstractProvider
 {
     private $client;
     private $guzzle;
-    private $plus;
 
     public function __construct(UrlGenerator $generator, SessionInterface $session, \Google_Client $google, ClientInterface $guzzle)
     {
@@ -36,18 +35,17 @@ class GooglePlus extends AbstractProvider
         $this->client = $google;
         $this->guzzle = $guzzle;
 
-        $this->plus = new \Google_PlusService($this->client);
-
         $this->client->setScopes([
             'https://www.googleapis.com/auth/plus.me',
             'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
         ]);
 
         $this->client->setRedirectUri(
             $this->generator->generate(
                 'login_authentication_provider_callback', [
-                    'providerId' => $this->getId(),
-                ], UrlGenerator::ABSOLUTE_URL
+                'providerId' => $this->getId(),
+            ], UrlGenerator::ABSOLUTE_URL
             )
         );
 
@@ -96,26 +94,6 @@ class GooglePlus extends AbstractProvider
     public function getGoogleClient()
     {
         return $this->client;
-    }
-
-    /**
-     * @param \Google_PlusService $plus
-     *
-     * @return GooglePlus
-     */
-    public function setGooglePlusService(\Google_PlusService $plus)
-    {
-        $this->plus = $plus;
-
-        return $this;
-    }
-
-    /**
-     * @return \Google_PlusService
-     */
-    public function getGooglePlusService()
-    {
-        return $this->plus;
     }
 
     /**
@@ -173,21 +151,22 @@ class GooglePlus extends AbstractProvider
         }
 
         try {
-            $this->client->authenticate($request->query->get('code'));
+            $this->client->fetchAccessTokenWithAuthCode($request->query->get('code'));
 
             $token = @json_decode($this->client->getAccessToken(), true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new NotAuthenticatedException('Unable to parse Google+ JSON');
+                throw new NotAuthenticatedException('Unable to parse Google+ JSON', json_last_error());
             }
 
             $ticket = $this->client->verifyIdToken($token['id_token']);
-        } catch (\Google_Exception $e) {
+        }
+        catch (\Google_Exception $e) {
             throw new NotAuthenticatedException('Unable to authenticate through Google+', $e->getCode(), $e);
         }
 
-        $this->session->set('google-plus.provider.token', json_encode($token));
-        $this->session->set('google-plus.provider.id', $ticket->getUserId());
+        $this->session->set('google-plus.provider.token', $this->client->getAccessToken());
+        $this->session->set('google-plus.provider.id', $ticket['sub']);
     }
 
     /**
@@ -209,44 +188,39 @@ class GooglePlus extends AbstractProvider
     {
         $identity = new Identity();
 
-        $token = @json_decode($this->session->get('google-plus.provider.token'), true);
+        $accessToken = $this->client->getAccessToken();
+        $token = @json_decode($accessToken, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse Google+ JSON');
         }
 
         try {
-            $request = $this->guzzle->get(sprintf(
-                'https://www.googleapis.com/oauth2/v1/tokeninfo?%s',
-                http_build_query(['access_token' => $token['access_token']], '', '&')
-            ));
-            $response = $request->send();
-        } catch (GuzzleException $e) {
-            throw new NotAuthenticatedException('Unable to retrieve Google+ tokeninfo', $e->getCode(), $e);
+            if(is_array($ticket = $this->client->verifyIdToken($token['id_token']))){
+                $mapping = [
+                    'email'       => Identity::PROPERTY_EMAIL,
+                    'given_name'  => Identity::PROPERTY_FIRSTNAME,
+                    'family_name' => Identity::PROPERTY_LASTNAME,
+                    'picture'     => Identity::PROPERTY_IMAGEURL,
+                    'sub'         => Identity::PROPERTY_ID
+                ];
+                foreach ($mapping as $src => $dest) {
+                    if (array_key_exists($src, $ticket)) {
+                        $identity->set($dest, $ticket[$src]);
+                    }
+                }
+            }
+            else {
+                throw new NotAuthenticatedException('Google + has not authenticated');
+            }
+        }
+        catch (\Google_Exception $e) {
+            throw new NotAuthenticatedException('Google + has not authenticated');
         }
 
-        if (200 !== $response->getStatusCode()) {
-            throw new NotAuthenticatedException('Error while retrieving user info');
+        if(!$identity->has(Identity::PROPERTY_ID)) {
+            throw new NotAuthenticatedException('Google + has not authenticated');
         }
-
-        try {
-            $plusData = $this->plus->people->get('me');
-        } catch (\Google_Exception $e) {
-            throw new NotAuthenticatedException('Error while retrieving user info', $e->getCode(), $e);
-        }
-
-        $data = @json_decode($response->getBody(true), true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new NotAuthenticatedException('Unable to parse Google+ JSON');
-        }
-
-        $identity->set(Identity::PROPERTY_EMAIL, $data['email']);
-
-        $identity->set(Identity::PROPERTY_FIRSTNAME, $plusData['name']['givenName']);
-        $identity->set(Identity::PROPERTY_ID, $plusData['id']);
-        $identity->set(Identity::PROPERTY_IMAGEURL, $plusData['image']['url']);
-        $identity->set(Identity::PROPERTY_LASTNAME, $plusData['name']['familyName']);
 
         return $identity;
     }
@@ -351,3 +325,4 @@ class GooglePlus extends AbstractProvider
         return new GooglePlus($generator, $session, $client, new Guzzle());
     }
 }
+
