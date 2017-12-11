@@ -38,7 +38,14 @@ class SetupController extends Controller
 
     public function submitGlobalsAction(Request $request)
     {
-        $form = $this->registryFormManipulator->createForm();
+        if (null !== $this->configuration->get('registry'))
+        {
+            $form = $this->registryFormManipulator->createForm($this->configuration);
+        }
+        else
+        {
+            $form = $this->registryFormManipulator->createForm();
+        }
 
         if ('POST' === $request->getMethod()) {
             $form->submit($request->request->all());

@@ -1,0 +1,14 @@
+<tr>
+    <td>{{ form_widget(form.linkName) }}</td>
+    <td>{{ form_widget(form.linkLanguage) }}</td>
+    <td>{{ form_widget(form.linkUrl) }}</td>
+    <td>{{ form_widget(form.linkLocation) }}</td>
+    <td>{{ form_widget(form.linkOrder) }}</td>
+    <td>{{ form_widget(form.linkBold, { 'attr': {'style' : 'margin-top:0', 'class': 'link_check_box'} }) }}</td>
+    <td>{{ form_widget(form.linkColor, { 'attr': {'class': 'link-color'} }) }}</td>
+    <td>
+        <button class="btn btn-default close-row">
+            <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+        </button>
+    </td>
+</tr>
