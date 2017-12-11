@@ -5,7 +5,7 @@ install:
 	make install_assets
 
 install_composer:
-	composer
+	composer install
 
 install_asset_dependencies:
 	npm install
