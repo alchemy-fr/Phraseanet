@@ -629,7 +629,8 @@ class ElasticSearchEngine implements SearchEngineInterface
                     $highlighted_fields[$index_field] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
                         'matched_fields' => [$index_field, $raw_index_field],
-                        'type'           => 'fvh'
+                        // 'type'           => 'fvh',
+                        'type'           => 'plain',
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
@@ -648,7 +649,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             'pre_tags'  => ['[[em]]'],
             'post_tags' => ['[[/em]]'],
-            'order'     => 'score',
+            // 'order'     => 'score',
             'fields'    => $highlighted_fields
         ];
     }
