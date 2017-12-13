@@ -296,11 +296,19 @@ class databox_subdef
     /**
      * boolean
      *
-     * @return type
+     * @return bool
      */
-    public function is_downloadable()
+    public function isDownloadable()
     {
         return $this->downloadable;
+    }
+
+     /**
+     * @return bool
+     */
+    public function isOrderable()
+    {
+        return $this->orderable;
     }
 
     /**

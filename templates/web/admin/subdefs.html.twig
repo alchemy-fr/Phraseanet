@@ -401,7 +401,7 @@
                                 <tbody>
                                 <tr>
                                     <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
-                                    <td style="width:300px;"><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
+                                    <td style="width:300px;"><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.isDownloadable() %}checked="checked"{% endif %} value="1" /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
