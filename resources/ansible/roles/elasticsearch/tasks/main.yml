@@ -36,7 +36,7 @@
   sudo: yes
 
 - name: Install plugins
-  shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}/{{ item.version }}
+  shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}
   when: not is_installed
   with_items: "{{ elasticsearch.plugins }}"
 

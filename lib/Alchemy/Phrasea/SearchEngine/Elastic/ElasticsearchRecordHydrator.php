@@ -32,7 +32,10 @@ class ElasticsearchRecordHydrator
             if (substr($key, 0, strlen($prefix)) == $prefix) {
                 $key = substr($key, strlen($prefix));
             }
-            $highlight[$key] = $value;
+            if(substr($key, -6) == '.light') {
+                $key = substr($key, 0, strlen($key)-6);
+                $highlight[$key] = $value;
+            }
         }
 
         $record = new ElasticsearchRecord();

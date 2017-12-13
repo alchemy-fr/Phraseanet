@@ -55,9 +55,9 @@ mariadb:
 elasticsearch:
     install: '1'
     port: '9200'
-    version: '1.7.3'
+    version: '2.3.3'
     plugins:
-        - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.7.0'}
+        - {name: 'elasticsearch/elasticsearch-analysis-icu'}
 php:
     install: '1'
     ppa: php
