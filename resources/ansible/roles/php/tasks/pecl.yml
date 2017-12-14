@@ -2,6 +2,9 @@
   apt: pkg="php5.6-dev" state=present
   when: php.pecl_packages is defined
 
+- name: Update pecl chennel
+  shell: pecl channel-update pecl.php.net
+
 - name: Install Package
   shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.package }}
   register: pecl_result
