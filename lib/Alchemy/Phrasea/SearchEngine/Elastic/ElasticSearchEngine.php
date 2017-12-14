@@ -626,10 +626,11 @@ class ElasticSearchEngine implements SearchEngineInterface
                 case FieldMapping::TYPE_STRING:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
-                    $highlighted_fields[$index_field] = [
+                    $highlighted_fields[$index_field . ".light"] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
-                        'matched_fields' => [$index_field, $raw_index_field],
-                        'type'           => 'fvh'
+                        // 'matched_fields' => [$index_field, $raw_index_field],
+                        'type'           => 'fvh',
+                        //'type'           => 'plain',
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
@@ -638,7 +639,6 @@ class ElasticSearchEngine implements SearchEngineInterface
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    continue;
                 case FieldMapping::TYPE_DATE:
                 default:
                     continue;
@@ -648,7 +648,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             'pre_tags'  => ['[[em]]'],
             'post_tags' => ['[[/em]]'],
-            'order'     => 'score',
+            // 'order'     => 'score',
             'fields'    => $highlighted_fields
         ];
     }
