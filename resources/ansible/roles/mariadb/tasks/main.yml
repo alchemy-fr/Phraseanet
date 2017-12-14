@@ -47,7 +47,7 @@
     - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
-  mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
+  mysql_db: name={{ mariadb.appbox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
   when: mariadb.dump
 
 - name: mariadb | Create users
