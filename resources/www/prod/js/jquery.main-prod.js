@@ -629,7 +629,7 @@ function loadFacets(facets) {
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
+    treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
 
     treeSource = shouldFilterSingleContent(treeSource, filterFacet);
 
