@@ -21,13 +21,13 @@
                 </div>
                 <div class="dialog-right-section" style="margin-top: 8px;">
                     <span>{{ nbTrash }} {{ "prod:app trash: record-move-to-trash" | trans }}</span>
-                    {% if records.stories().count() %}
-                        <label class="checkbox">
-                            <input type="checkbox" id="del_children" name="del_children"
-                                   value="1"> {{ "Also delete records that rely on groupings." | trans }}
-                        </label>
-                    {% endif %}
                 </div>
+                {% if records.stories().count() %}
+                    <label class="checkbox story">
+                        <input type="checkbox" id="del_children" name="del_children"
+                               value="1"> {{ "Also delete records that rely on groupings." | trans }}
+                    </label>
+                {% endif %}
             </div>
         {% endif %}
         {% if nbDelete > 0 %}
@@ -38,13 +38,13 @@
                 </div>
                 <div class="dialog-right-section">
                     <span>{{ nbDelete }} {{ "prod:app trash: record-delete" | trans }}</span>
-                    {% if records.stories().count() %}
-                        <label class="checkbox">
-                            <input type="checkbox" id="del_children" name="del_children"
-                                   value="1"> {{ "Also delete records that rely on groupings." | trans }}
-                        </label>
-                    {% endif %}
                 </div>
+                {% if records.stories().count() %}
+                    <label class="checkbox story">
+                        <input type="checkbox" id="del_children" name="del_children"
+                               value="1"> {{ "Also delete records that rely on groupings." | trans }}
+                    </label>
+                {% endif %}
             </div>
         {% endif %}
         <div class="form-actions" style="background-color:transparent;">

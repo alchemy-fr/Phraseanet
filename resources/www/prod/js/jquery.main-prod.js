@@ -1810,10 +1810,12 @@ function deleteThis(lst) {
         data: {lst: lst},
         success: function (data) {
             var response = JSON.parse(data);
-            if (response.filteredRecord.trash.length > 0 && response.filteredRecord.delete.length > 0) {
-                $dialog.setOption('height', '227');
-            }
+            $dialog.setOption('height', 'auto');
+
             $dialog.setContent(response.renderView);
+
+            //reset top position of dialog
+            $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
         }
     });
 
