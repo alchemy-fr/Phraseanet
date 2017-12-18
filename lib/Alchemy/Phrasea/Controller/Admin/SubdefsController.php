@@ -149,12 +149,11 @@ class SubdefsController extends Controller
                         break;
                 }
 
-                $subdefs->set_subdef($group, $name, $class, false, $options, [], $preset);
+                $subdefs->set_subdef($group, $name, $class, false, $options, [], true, $preset);
             }
 
         } else {
             $subdefs = $databox->get_subdef_structure();
-            $this->updateSubdefGroups($subdefs, $request);
 
             foreach ($Parmsubdefs as $post_sub) {
                 $options = [];
@@ -193,7 +192,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $preset, $orderable);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset);
             }
         }
 
@@ -216,35 +215,6 @@ class SubdefsController extends Controller
         );
 
         return $mapping;
-    }
-
-    /**
-     * Update Databox subdefsStructure DOM according to defined groups.
-     *
-     * @param \databox_subdefsStructure $subdefs
-     * @param Request $request
-     */
-    protected function updateSubdefGroups(\databox_subdefsStructure $subdefs, Request $request)
-    {
-        $subdefsGroups = $request->request->get('subdefsgroups', []);
-        $changedGroups = [];
-        /** @var SubdefGroup $subdefsGroup */
-        foreach ($subdefs as $groupName => $subdefsGroup) {
-            $documentOrderable = isset($subdefsGroups[$groupName]['document_orderable'])
-                ? \p4field::isyes($subdefsGroups[$groupName]['document_orderable'])
-                : false;
-            if ($subdefsGroup->isDocumentOrderable() !== $documentOrderable) {
-                if ($documentOrderable) {
-                    $subdefsGroup->allowDocumentOrdering();
-                } else {
-                    $subdefsGroup->disallowDocumentOrdering();
-                }
-                $changedGroups[] = $subdefsGroup;
-            }
-        }
-        if ($changedGroups) {
-            $subdefs->updateSubdefGroups($changedGroups);
-        }
     }
 
     /**
