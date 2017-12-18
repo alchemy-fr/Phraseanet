@@ -1576,12 +1576,12 @@ $(document).ready(function () {
                                     $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop() - 30);
                                     cancelKey = shortCut = true;
                                     break;
-                                //								case 37://previous page
-                                //									$('#PREV_PAGE').trigger('click');
-                                //									break;
-                                //								case 39://previous page
-                                //									$('#NEXT_PAGE').trigger('click');
-                                //									break;
+                                case 37://previous page
+                                    $('#PREV_PAGE').trigger('click');
+                                    break;
+                                case 39://previous page
+                                    $('#NEXT_PAGE').trigger('click');
+                                    break;
                                 case 9://tab
                                     if (!is_ctrl_key(event) && !$('.ui-widget-overlay').is(':visible') && !$('.overlay_box').is(':visible')) {
                                         document.getElementById('EDIT_query').focus();
