@@ -703,6 +703,11 @@ function getFacetsTree() {
             source: [],
             activate: function(event, data){
                 var query = data.node.data.query;
+                var eventType = event.originalEvent;
+                //if user did not click, then no need to perform any query
+                if(eventType == null) {
+                    return;
+                }
                 if (query) {
                     var facet = data.node.parent;
                     var facetData = {
@@ -1571,12 +1576,12 @@ $(document).ready(function () {
                                     $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop() - 30);
                                     cancelKey = shortCut = true;
                                     break;
-                                //								case 37://previous page
-                                //									$('#PREV_PAGE').trigger('click');
-                                //									break;
-                                //								case 39://previous page
-                                //									$('#NEXT_PAGE').trigger('click');
-                                //									break;
+                                case 37://previous page
+                                    $('#PREV_PAGE').trigger('click');
+                                    break;
+                                case 39://previous page
+                                    $('#NEXT_PAGE').trigger('click');
+                                    break;
                                 case 9://tab
                                     if (!is_ctrl_key(event) && !$('.ui-widget-overlay').is(':visible') && !$('.overlay_box').is(':visible')) {
                                         document.getElementById('EDIT_query').focus();
