@@ -269,7 +269,16 @@ td span.text_block_bold {
   }
 }
 
+.story {
+  clear: both;
+  margin: 0px 15px;
+  padding-top: 10px;
+  color: #000;
+  font-size: 13px;
+}
+
 #delete-record-form {
+  padding-bottom: 20px;
   .well-small {
     border: 0;
     color: #000;
@@ -277,7 +286,7 @@ td span.text_block_bold {
     display: block;
     word-wrap: break-word;
     font-weight: bold;
-    height: 58px;
+    min-height: 58px;
     margin-bottom: 7px;
   }
   .form-actions {
