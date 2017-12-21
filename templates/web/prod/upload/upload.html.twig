@@ -68,7 +68,7 @@
                             {# collections status #}
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
                                         <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
