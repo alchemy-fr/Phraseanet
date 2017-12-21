@@ -41,7 +41,7 @@ nginx:
 mariadb:
     install: '1'
     root_password: toor
-    database: ab_master
+    appbox_db: ab_master
     databox_db: db_master
     alt_databox_db: db_alt
     user: phraseanet
