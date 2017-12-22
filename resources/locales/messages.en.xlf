@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-21T11:34:47Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-12-22T11:46:19Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -2232,7 +2232,7 @@
         <jms:reference-file line="45">prod/results/entry.html.twig</jms:reference-file>
         <jms:reference-file line="39">prod/results/feeds_entry.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dcce9368ad626fe4addfa719b7a16807d464aa9b" resname="Derniers envois" approved="no">
+      <trans-unit id="dcce9368ad626fe4addfa719b7a16807d464aa9b" resname="Derniers envois">
         <source>Derniers envois</source>
         <target state="needs-translation">Last sent</target>
         <jms:reference-file line="126">web/developers/application.html.twig</jms:reference-file>
@@ -4625,7 +4625,7 @@
         <target state="translated">Past year</target>
         <jms:reference-file line="60">WorkZone/Browser/Browser.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="781961bc81c25697841ecce5d4d9dad9f6b261c6" resname="Pause" approved="no">
+      <trans-unit id="781961bc81c25697841ecce5d4d9dad9f6b261c6" resname="Pause">
         <source>Pause</source>
         <target state="needs-translation">Pause</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -6995,7 +6995,7 @@
         <target state="translated">Users suggestion</target>
         <jms:reference-file line="134">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="no">
+      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:">
         <source>Utilisation prevue:</source>
         <target state="needs-translation">Intended use:</target>
         <jms:reference-file line="238">prod/orders/order_item.html.twig</jms:reference-file>
@@ -9475,6 +9475,11 @@
         <target state="translated">Download</target>
         <jms:reference-file line="103">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="116">web/common/dialog_export.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fcf5093722566a47fe3e773296cc63fac7190dac" resname="export::export-email: email-invalid">
+        <source>export::export-email: email-invalid</source>
+        <target state="new">export::export-email: email-invalid</target>
+        <jms:reference-file line="510">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
         <source>export::ftp: reglages manuels</source>

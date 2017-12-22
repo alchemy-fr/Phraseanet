@@ -506,7 +506,8 @@
                 fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans | e('js') }}',
                 fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans | e('js') }}',
                 success: '{{ "Success" | trans | e('js') }}',
-                warning: '{{ "Warning !" | trans | e('js') }}'
+                warning: '{{ "Warning !" | trans | e('js') }}',
+                invalidEmail: '{{ 'export::export-email: email-invalid' | trans }}'
             },
             user: {
                 email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
