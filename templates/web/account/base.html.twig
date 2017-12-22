@@ -3,6 +3,10 @@
 
 {% extends "common/index_bootstrap.html.twig" %}
 
+{% block icon %}
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/account/images/favicon.ico">
+{% endblock %}
+
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/account/css/account{% if not app.debug %}.min{% endif %}.css">
     <style type="text/css">
