@@ -45,8 +45,6 @@ class TaskRun extends TaskManagerCommand
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->assertTaskManagerIsEnabled();
-
         declare(ticks=1000);
 
         $task = $this->getTask($input);
