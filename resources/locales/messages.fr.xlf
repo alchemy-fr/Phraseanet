@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-11-21T11:35:35Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2018-01-03T11:13:27Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -130,7 +130,7 @@
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
         <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
-        <jms:reference-file line="246">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="247">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone" approved="yes">
         <source>%quantity% Stories attached to the WorkZone</source>
@@ -211,7 +211,7 @@
       <trans-unit id="f9b19aa0c7cf7aab245692450b473acff6a077e4" resname="%total% reponses" approved="yes">
         <source>%total% reponses</source>
         <target state="translated">%total% réponses</target>
-        <jms:reference-file line="248">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="249">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d850bddc9385d23589a2204c4583dcc0d62ffe5" resname="%total_count% results" approved="yes">
         <source>%total_count% results</source>
@@ -567,7 +567,7 @@
       <trans-unit id="c4a4f00323184bd750ee72b5c05e6e17d1584bfd" resname="Activate highlight" approved="yes">
         <source>Activate highlight</source>
         <target state="translated">Activer le surlignage</target>
-        <jms:reference-file line="54">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="90">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a733b809d2f1233496ab516eed0f3ef75cf3791a" resname="Active" approved="yes">
         <source>Active</source>
@@ -911,6 +911,7 @@
         <target state="translated">Une erreur est survenue</target>
         <jms:reference-file line="125">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="521">Controller/Admin/DataboxController.php</jms:reference-file>
+        <jms:reference-file line="108">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="1971">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="2417">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="145">Controller/Prod/BasketController.php</jms:reference-file>
@@ -945,6 +946,7 @@
       <trans-unit id="aae1263383b96270870516a4097020921912df74" resname="Aperture" approved="yes">
         <source>Aperture</source>
         <target state="translated">Ouverture</target>
+        <jms:reference-file line="270">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="104">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="yes">
@@ -1153,6 +1155,16 @@
         <target state="translated">Codec audio</target>
         <jms:reference-file line="34">Media/Subdef/Audio.php</jms:reference-file>
         <jms:reference-file line="36">Media/Subdef/Video.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a80232c45008d73666e95544f7c9c8c0896536af" resname="Audio Samplerate">
+        <source>Audio Samplerate</source>
+        <target state="new">Audio Samplerate</target>
+        <jms:reference-file line="293">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec">
+        <source>Audio codec</source>
+        <target state="new">Audio codec</target>
+        <jms:reference-file line="303">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="27be4ad944410219f1a8dd01cc5e216a09c16646" resname="AudioSamplerate" approved="yes">
         <source>AudioSamplerate</source>
@@ -1413,6 +1425,7 @@
       <trans-unit id="07d75a5073e3247c7ac54d3a797d3f777b421863" resname="Camera Model" approved="yes">
         <source>Camera Model</source>
         <target state="translated">Type d'appareil numérique</target>
+        <jms:reference-file line="260">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="56">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77dfd2135f4db726c47299bb55be26f7f4525a46" resname="Cancel" approved="yes">
@@ -1703,6 +1716,11 @@
         <target state="translated">Espace colorimétrique</target>
         <jms:reference-file line="62">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace">
+        <source>Colorspace</source>
+        <target state="new">Colorspace</target>
+        <jms:reference-file line="313">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
         <source>Commande</source>
         <target state="translated">Commande</target>
@@ -1879,7 +1897,7 @@
       <trans-unit id="26a9831600fb0e895035038bcac30cc389b393e0" resname="Create index" approved="yes">
         <source>Create index</source>
         <target state="translated">Créer les index</target>
-        <jms:reference-file line="38">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="43">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="384422e656d8a4d803155efc371754913755a4b0" resname="Create new subdef" approved="yes">
         <source>Create new subdef</source>
@@ -2423,7 +2441,7 @@
       <trans-unit id="4e4528018d1a0aa11f7dc17b5425174a7436d334" resname="Drop index" approved="yes">
         <source>Drop index</source>
         <target state="translated">Supprimer les index</target>
-        <jms:reference-file line="34">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="36">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a9c043f68c147a7c8d8c2fa14ddfaba6e05da62" resname="Duree" approved="yes">
         <source>Duree</source>
@@ -2513,22 +2531,22 @@
       <trans-unit id="be61ecc340f590e9b41e78d8f0dd9a07a0eadeda" resname="ElasticSearch configuration" approved="yes">
         <source>ElasticSearch configuration</source>
         <target state="translated">Configuration Elasticsearch</target>
-        <jms:reference-file line="1">admin/search-engine/elastic-search.html.twig</jms:reference-file>
+        <jms:reference-file line="4">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="201b9ab150a2ab3e5641814c373f8db1949199d0" resname="ElasticSearch index name" approved="yes">
         <source>ElasticSearch index name</source>
         <target state="translated">Nom de l'index Elasticsearch</target>
-        <jms:reference-file line="30">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="31">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b89586db0b00163ce75ae7426f06aa2e2a57b223" resname="ElasticSearch server host" approved="yes">
         <source>ElasticSearch server host</source>
         <target state="translated">Hôte du serveur Elasticsearch</target>
-        <jms:reference-file line="23">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="24">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fd7d0c79d71cd9317190ae98dccdb1f7cf8b76" resname="ElasticSearch service port" approved="yes">
         <source>ElasticSearch service port</source>
         <target state="translated">Port de service Elasticsearch</target>
-        <jms:reference-file line="26">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="27">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="84add5b2952787581cb9a8851eef63d1ec75d22b" resname="Email" approved="yes">
         <source>Email</source>
@@ -3089,6 +3107,11 @@
         <jms:reference-file line="87">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="282">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="2869d115faa9aa305076269dfbaf57c28cbd9fb6" resname="FlashFired">
+        <source>FlashFired</source>
+        <target state="new">FlashFired</target>
+        <jms:reference-file line="280">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="02893456d53323f0fdbbe9447fe5b3401f2102f7" resname="Flatten layers" approved="yes">
         <source>Flatten layers</source>
         <target state="translated">Aplatir les calques</target>
@@ -3142,6 +3165,11 @@
         <source>Frame Rate</source>
         <target state="translated">Nombre d'images par seconde</target>
         <jms:reference-file line="33">Media/Subdef/Video.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate">
+        <source>FrameRate</source>
+        <target state="new">FrameRate</target>
+        <jms:reference-file line="288">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
         <source>Frequence d'echantillonage</source>
@@ -3223,6 +3251,11 @@
         <source>Get a notification when a mail export fails</source>
         <target state="translated">Obtenir une notification quand un export par e-mail échoue</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index">
+        <source>Get setting form index</source>
+        <target state="new">Get setting form index</target>
+        <jms:reference-file line="97">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
         <source>Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side.</source>
@@ -3374,6 +3407,11 @@
         <source>IP</source>
         <target state="translated">Adresse IP</target>
         <jms:reference-file line="28">web/account/sessions.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4f325d995b6d028ccc75771b1679537b623521c4" resname="ISO">
+        <source>ISO</source>
+        <target state="new">ISO</target>
+        <jms:reference-file line="265">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16a5173a6d384d155354f429d72834cd0bd6bc54" resname="ISO sensibility" approved="yes">
         <source>ISO sensibility</source>
@@ -4050,6 +4088,11 @@
         <target state="translated">Type Mime</target>
         <jms:reference-file line="14">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType">
+        <source>MimeType</source>
+        <target state="new">MimeType</target>
+        <jms:reference-file line="318">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
         <source>Minimum number of letters before truncation</source>
         <target state="translated">Nombre minimal de caractères avant la troncature</target>
@@ -4460,12 +4503,12 @@
       <trans-unit id="997c69f6571530618bb38ac03f4cf2d236dcc15e" resname="Number of replicas" approved="yes">
         <source>Number of replicas</source>
         <target state="translated">Nombre de répliques (Replica Shards)</target>
-        <jms:reference-file line="46">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="53">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c2a8aa4e676273c8d8f177856923ed9950e54bb" resname="Number of shards" approved="yes">
         <source>Number of shards</source>
         <target state="translated">Nombre de Shards Elastic</target>
-        <jms:reference-file line="42">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="49">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a44db49e9b745fe2a96ae2a2ef3595913e274b33" resname="Number of threads to use for FFMpeg" approved="yes">
         <source>Number of threads to use for FFMpeg</source>
@@ -4549,6 +4592,11 @@
         <source>Ordinary</source>
         <target state="translated">Normale</target>
         <jms:reference-file line="151">Controller/Root/LoginController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation">
+        <source>Orientation</source>
+        <target state="new">Orientation</target>
+        <jms:reference-file line="308">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name" approved="yes">
         <source>Original name</source>
@@ -5610,6 +5658,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Save</source>
         <target state="translated">Sauvegarder</target>
         <jms:reference-file line="45">web/account/change-password.html.twig</jms:reference-file>
+        <jms:reference-file line="3">admin/search-engine/elastic-search.html.twig</jms:reference-file>
+        <jms:reference-file line="26">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
         <jms:reference-file line="75">task-manager/task-editor/task.html.twig</jms:reference-file>
         <jms:reference-file line="53">web/developers/application.html.twig</jms:reference-file>
         <jms:reference-file line="91">web/developers/application.html.twig</jms:reference-file>
@@ -5845,6 +5895,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="32e50dd99f3b67dc93272aa6c904b83d37f4f48d" resname="Shutter speed" approved="yes">
         <source>Shutter speed</source>
         <target state="translated">Vitesse d'obturateur</target>
+        <jms:reference-file line="275">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="98">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e4538baf30d4eb324ec64e4b48c1ca424dd3b773" resname="Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur." approved="yes">
@@ -6296,7 +6347,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="6">web/login/cgus.html.twig</jms:reference-file>
         <jms:reference-file line="74">login/layout/base-layout.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance" approved="no">
+      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance">
         <source>The Phraseanet Web API allows other web application to rely on this instance</source>
         <target state="needs-translation">L'API Web Phraseanet permet à d'autres applications web de se reposer sur cette instance</target>
         <jms:reference-file line="23">Form/Configuration/APIClientsFormType.php</jms:reference-file>
@@ -6453,7 +6504,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="3fc5195b4a6ff8dc205dbbad17104fa93db88281" resname="Thesaurus Min score" approved="yes">
         <source>Thesaurus Min score</source>
         <target state="translated">Hits minimum du Thésaurus</target>
-        <jms:reference-file line="50">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
+        <jms:reference-file line="57">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="163fc70a23cf29331bab9896c9a8a0cb0b113bd6" resname="Thesaurus branch" approved="yes">
         <source>Thesaurus branch</source>
@@ -6997,7 +7048,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Suggestion d'utilisateurs</target>
         <jms:reference-file line="134">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="no">
+      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:">
         <source>Utilisation prevue:</source>
         <target state="needs-translation">Utilisation prévue:</target>
         <jms:reference-file line="238">prod/orders/order_item.html.twig</jms:reference-file>
@@ -7081,6 +7132,11 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Video Codec</source>
         <target state="translated">Codec Vidéos</target>
         <jms:reference-file line="34">Media/Subdef/Video.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="534048d6c768f47f83f67c0498e6d4ecf5cff4bb" resname="Video codec">
+        <source>Video codec</source>
+        <target state="new">Video codec</target>
+        <jms:reference-file line="298">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56b71e89fb1079caaadefd0889e9a22e8b0560e3" resname="Videos" approved="yes">
         <source>Videos</source>
@@ -8651,6 +8707,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Un utilisateur s'est inscrit</target>
         <jms:reference-file line="29">Notification/Mail/MailInfoSomebodyAutoregistered.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation">
+        <source>admin::search-engine: general-aggregation</source>
+        <target state="new">admin::search-engine: general-aggregation</target>
+        <jms:reference-file line="5">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
         <source>admin::status: case A</source>
         <target state="translated">Off</target>
@@ -8794,7 +8855,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="bc977e6f2634272519d99c369e27b6c0f4f2b542" resname="ascendant" approved="yes">
         <source>ascendant</source>
         <target state="translated">Ascendant</target>
-        <jms:reference-file line="174">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="176">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a06a492959ce12b3f0292406ec84177d07ae19b1" resname="audio" approved="yes">
         <source>audio</source>
@@ -9347,7 +9408,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="aab7fdd9c18941cbc8d78fa0c690361ffd8c50bf" resname="date dajout" approved="yes">
         <source>date dajout</source>
         <target state="translated">Date d'ajout</target>
-        <jms:reference-file line="139">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="141">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
         <source>decembre</source>
@@ -9362,7 +9423,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="1051f820052d19c0fff9afec561c3d02607fc90d" resname="descendant" approved="yes">
         <source>descendant</source>
         <target state="translated">Descendant</target>
-        <jms:reference-file line="173">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="175">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55a2ad6e3d1c02d871104d64fb811f08c54bd1b9" resname="do you want to validate" approved="yes">
         <source>do you want to validate</source>
@@ -10224,7 +10285,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="f16110620b1971f58336063cbdb64df7e0e0c7ac" resname="pertinence" approved="yes">
         <source>pertinence</source>
         <target state="translated">Pertinence</target>
-        <jms:reference-file line="138">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="140">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="da819bd8e531681e8cc8b0c5f30da694b7ffe03c" resname="php.ini path" approved="yes">
         <source>php.ini path</source>
@@ -10836,17 +10897,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
         <source>prod::facet:base_label</source>
         <target state="translated">Bases</target>
-        <jms:reference-file line="284">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="245">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label" approved="yes">
         <source>prod::facet:collection_label</source>
         <target state="translated">Collections</target>
-        <jms:reference-file line="285">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="250">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="yes">
         <source>prod::facet:doctype_label</source>
         <target state="translated">Types de documents</target>
-        <jms:reference-file line="286">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="255">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
@@ -11081,12 +11142,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="20de9f9f6ca10877415fac4611f5edd2e898c4f0" resname="reponses:: %available% Resultats rappatries sur un total de %total% trouves" approved="yes">
         <source>reponses:: %available% Resultats rappatries sur un total de %total% trouves</source>
         <target state="translated">%available% résultats récupérés sur un total de %total% trouvés</target>
-        <jms:reference-file line="236">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="237">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="796a49ee2759063c6ffcb69cb54bc55b92020af5" resname="reponses:: %total% Resultats" approved="yes">
         <source>reponses:: %total% Resultats</source>
         <target state="translated">%total% résultats</target>
-        <jms:reference-file line="238">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="239">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8791c3f27e222c796605d749c60766ef98da955c" resname="reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?" approved="yes">
         <source>reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?</source>
