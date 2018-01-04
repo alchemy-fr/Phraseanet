@@ -21,6 +21,6 @@
   when: php.pecl_packages is defined
 
 - name: Enable extension
-  shell: php5enmod {{ item.name }}
+  shell: phpenmod {{ item.name }}
   with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
