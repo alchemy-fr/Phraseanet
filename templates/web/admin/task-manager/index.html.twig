@@ -68,11 +68,10 @@
                 <tr>
                     <td class="menu">
                         <div class="btn-group dropdown">
-                            <a class="btn btn-mini dropdown-toggle disabled" data-toggle="dropdown" href="#">
+                            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                                 <li>
                                     <a href="{{ path('admin_tasks_task_show', {"task" : task["id"] }) }}">
                                         {{ 'Edit' | trans }}
@@ -93,7 +92,6 @@
                                         {{ 'Delete' | trans }}
                                     </a>
                                 </li>
-                                {% endif %}
                                 <li>
                                     <a href="{{ path('admin_tasks_task_log', {"task" : task["id"] }) }}">
                                         {{ 'Logs' | trans }}
