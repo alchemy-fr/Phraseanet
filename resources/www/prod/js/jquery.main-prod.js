@@ -604,6 +604,7 @@ function initAnswerForm() {
  }
  */
 var selectedFacetValues = [];
+var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
@@ -623,7 +624,7 @@ function loadFacets(facets) {
             title: facet.label,
             folder: true,
             children: values,
-            expanded: true
+            expanded: !_.some(facetStatus, function(o) { return _.has(o, facet.name)})
         };
     });
 
@@ -721,6 +722,24 @@ function getFacetsTree() {
                     selectedFacetValues[facet.title].push(facetData);
                     facetCombinedSearch();
                 }
+            },
+            
+            collapse: function (event, data) {    
+                var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if(_.findWhere(facetStatus, dict) !== undefined ) {
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict)) 
+                }    
+                facetStatus.push(dict);    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
+            },
+            expand: function (event, data) {
+            var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if (_.findWhere(facetStatus, dict) !== undefined) {         
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))     
+                }    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
             renderNode: function(event, data){
                 var facetFilter = "";
