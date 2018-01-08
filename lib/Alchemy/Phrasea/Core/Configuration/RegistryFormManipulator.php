@@ -147,7 +147,7 @@ class RegistryFormManipulator
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
             ],
-            'executables' => [
+            'executables'  => [
                 'h264-streaming-enabled' => false,
                 'auth-token-directory' => null,
                 'auth-token-directory-path' => null,
@@ -162,7 +162,7 @@ class RegistryFormManipulator
                 'default-query' => '',
                 'default-query-type' => 0,
             ],
-            'email' => [
+            'email'        => [
                 'emitter-email' => 'phraseanet@example.com',
                 'prefix' => null,
                 'smtp-enabled' => false,
@@ -173,7 +173,7 @@ class RegistryFormManipulator
                 'smtp-user' => null,
                 'smtp-password' => isset($config['email']['smtp-password']) ? $config['email']['smtp-password'] : null,
             ],
-            'custom-links'     => [
+            'custom-links' => [
                 [
                     'linkName'     => 'Phraseanet store',
                     'linkLanguage' => 'fr',

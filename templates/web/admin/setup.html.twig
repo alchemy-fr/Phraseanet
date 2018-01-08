@@ -37,16 +37,16 @@
     {% if daform.vars['label'] != null %}
         <fieldset>
             <legend>{{ daform.vars['label'] }}</legend>
-            {%  for formdata in daform %}
+            {% for formdata in daform %}
                 <div class="control-group">
                     {{ form_errors(formdata) }}
-                    {{  form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                    {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
                     <div class="controls">
-                        {{  form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                        {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
                     </div>
 
                     <div>{{ formdata.vars['help_message'] }}</div>
-                    {{  form_rest(formdata) }}
+                    {{ form_rest(formdata) }}
                 </div>
             {% endfor %}
             {{ form_rest(daform) }}
@@ -157,6 +157,7 @@
                 updateInputNameColor($(element).parent().siblings(':first').find("input"), $(element).val());
             });
         }
+
         $("#custom-link-table").on('click', '.close-row', function () {
             $(this).closest('tr').remove();
             var rowCount = $('#custom-link-table tr').length;
@@ -179,6 +180,7 @@
                 element.css("background", color);
             }
         }
+
         function updateInputNameColor(element, color) {
             element.css("background-color", color);
             if (color === "") {
