@@ -1,58 +1,121 @@
 {% if not isAvailable %}
     <p>{{ 'No permalink available.' | trans }}</p>
 {% else %}
-    {%  if preview.permalinkUrl is not empty %}
+    {%  if subdefList is not empty %}
+        {% set defKey = defaultKey %}
         <div id="share">
-            <div id="tweet" class="well-large">
-                <p>
-                    <a href="http://www.twitter.com/home/?status={{ preview.permaviewUrl }}" target="_blank">
-                        <img src="/assets/common/images/icons/twitter.png" title="share this on twitter" style="width:25px;vertical-align:middle;padding:0 5px;"/>
-                        {% trans %}Send to Twitter{% endtrans %}
-                    </a>
-                </p>
-                <p>
-                    <a href="http://www.facebook.com/sharer.php?u={{ preview.permaviewUrl }}" target="_blank">
-                        <img src="/assets/common/images/icons/facebook.png" title="share on facebook" style="width:25px;vertical-align:middle;padding:0 5px;"/>
-                        {% trans %}Send to Facebook{% endtrans %}
-                    </a>
-                </p>
-
-                <form action="#">
-                    <div class="form-group clearfix">
-                        <label>{% trans %}Resource URL{% endtrans %}</label>
-                        <input class="input-block-level" readonly="readonly" type="text" value="{{ preview.permalinkUrl }}"
-                               id="permalinkUrl"/>
-
-                        <p class="pull-right">
-                            <a href="{{ preview.permalinkUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="permalinkUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
-                        </p>
-                    </div>
-                    <div class="form-group clearfix">
-                        <label>{% trans %}Detailed view URL{% endtrans %}</label>
-                        <input class="input-block-level" readonly="readonly" type="text" value="{{ preview.permaviewUrl }}" id="permaviewUrl"/>
-                        <p class="pull-right">
-                            <a href="{{ preview.permaviewUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="permaviewUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
-                        </p>
-                    </div>
-                    <div class="form-group clearfix">
-                        {#{% if type == 'image' %}#}
-                        <label>{% trans %}Embed code{% endtrans %}</label>
-                        {% spaceless %}
-                            <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
-                                <iframe width="{{ preview.width }}" height="{{ preview.height }}" src="{{ preview.embedUrl }}" frameborder="0" allowfullscreen></iframe>
-                            </textarea>
-                        {% endspaceless %}
-                        <p class="pull-right">
-                            <a href="{{ preview.embedUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
-                            <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
-                        </p>
-                    </div>
-                    {#{% endif %}#}
-                </form>
+        <div id="tweet" class="well-large">
+            <p>
+                <a href="#" id="advance-share">{{ 'share::share-record: advance' | trans }}</a>
+                <span id="shared-def">
+                        {{ 'share::share-record: select-shared-def' | trans }}
+                    <select name="resource_type" id="resource_type_sel" class="input-small">
+                            {% for key,value in subdefList %}
+                                <option value={{ key }} {% if key == defKey %}selected{% endif %}>{{ value.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
             </p>
+            <p>
+                <a id="twitter-link" href="http://www.twitter.com/home/?status={{ subdefList[defKey].permaviewUrl }}" target="_blank">
+                    <img src="/assets/common/images/icons/twitter.png" title="share this on twitter" style="width:25px;vertical-align:middle;padding:0 5px;"/>
+                    {% trans %}Send to Twitter{% endtrans %}
+                </a>
+            </p>
+            <p>
+                <a id="facebook-link" href="http://www.facebook.com/sharer.php?u={{ subdefList[defKey].permaviewUrl }}" target="_blank">
+                    <img src="/assets/common/images/icons/facebook.png" title="share on facebook" style="width:25px;vertical-align:middle;padding:0 5px;"/>
+                    {% trans %}Send to Facebook{% endtrans %}
+                </a>
+            </p>
+
+            <form action="#">
+                <div class="form-group clearfix">
+                    <label style="display:inline-block;">{% trans %}Resource URL{% endtrans %}</label>
+                    <input class="input-block-level" readonly="readonly" type="text" value="{{ subdefList[defKey].permalinkUrl }}"
+                           id="permalinkUrl"/>
+
+                    <p class="pull-right">
+                        <a id="permalinkUrl-link" href="{{ subdefList[defKey].permalinkUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a href="#" class="" id="permalinkUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                    </p>
+                </div>
+                <div class="form-group clearfix">
+                    <label>{% trans %}Detailed view URL{% endtrans %}</label>
+                    <input class="input-block-level" readonly="readonly" type="text" value="{{ subdefList[defKey].permaviewUrl }}" id="permaviewUrl"/>
+                    <p class="pull-right">
+                        <a id="permaviewUrl-link" href="{{ subdefList[defKey].permaviewUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a href="#" class="" id="permaviewUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                    </p>
+                </div>
+                <div class="form-group clearfix">
+                    {#{% if type == 'image' %}#}
+                    <label>{% trans %}Embed code{% endtrans %}</label>
+                    {% spaceless %}
+                        <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
+                                <iframe width="{{ subdefList[defKey].width }}" height="{{ subdefList[defKey].height }}" src="{{ subdefList[defKey].embedUrl }}" frameborder="0" allowfullscreen></iframe>
+                            </textarea>
+                    {% endspaceless %}
+                    <p class="pull-right">
+                        <a id="embedRecordUrl-link" href="{{ subdefList[defKey].embedUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
+                    </p>
+                </div>
+                {#{% endif %}#}
+            </form>
         </div>
+
+        <script language="javascript">
+            // var subdefListObj = JSON.parse(subdefList); // to convert json into a javascript object
+            $(document).ready(function(){
+                var subdefList = JSON.parse('{{ subdefList | json_encode | escape('js') }}');
+                $('#resource_type_sel').on('change', function() {
+                    assignPermalinks(this.value);
+                });
+                $('input.ui-state-default').hover(
+                    function(){$(this).addClass('ui-state-hover');},
+                    function(){$(this).removeClass('ui-state-hover');}
+                );
+                $('#permalinkUrlCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('permalinkUrl');
+                });
+                $('#permaviewUrlCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('permaviewUrl');
+                });
+                $('#embedCopy').on('click', function(event) {
+                    event.preventDefault();
+                    return copyElContentClipboard('embedRecordUrl');
+                });
+                $('#advance-share').on('click', function() {
+                    $('#shared-def').show();
+                });
+                var copyElContentClipboard = function(elId) {
+                    var copyEl = document.getElementById(elId);
+                    copyEl.select();
+                    try {
+                        var successful = document.execCommand('copy');
+                        var msg = successful ? 'successful' : 'unsuccessful';
+                        console.log('Copying text command was ' + msg);
+                    } catch (err) {
+                        console.log('unable to copy');
+                    }
+                }
+                var assignPermalinks = function(resourceType) {
+                    $('#twitter-link').attr('href', 'http://www.twitter.com/home/?status=' + subdefList[resourceType].permaviewUrl);
+                    $('#facebook-link').attr('href', 'http://www.facebook.com/sharer.php?u=' + subdefList[resourceType].permaviewUrl);
+                    $('#permalinkUrl').val(subdefList[resourceType].permalinkUrl);
+                    $('#permalinkUrl-link').attr('href', subdefList[resourceType].permalinkUrl);
+                    $('#permaviewUrl').val(subdefList[resourceType].permaviewUrl);
+                    $('#permaviewUrl-link').attr('href', subdefList[resourceType].permaviewUrl);
+                    var html = '<iframe width="' + subdefList[resourceType].width
+                        + '" height="' + subdefList[resourceType].height + '" src="' + subdefList[resourceType].embedUrl + '" frameborder="0" allowfullscreen></iframe>';
+                    $('#embedRecordUrl').val(html);
+                    $('#embedRecordUrl-link').attr('href', subdefList[resourceType].embedUrl);
+                }
+            });
+        </script>
     {% else %}
         <div>{{ 'No URL available' | trans }}</div>
     {% endif %}
