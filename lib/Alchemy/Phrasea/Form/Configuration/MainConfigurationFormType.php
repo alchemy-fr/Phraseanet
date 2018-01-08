@@ -74,7 +74,7 @@ class MainConfigurationFormType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'required' => false,
+            'required'           => false,
             'allow_extra_fields' => true
         ]);
     }

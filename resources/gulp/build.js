@@ -50,4 +50,5 @@ gulp.task('build-vendors', [
     'build-jquery-lazyload',
     'build-jquery-test-paths',
     'build-simple-colorpicker'
-], function() {});
+], function () {
+});

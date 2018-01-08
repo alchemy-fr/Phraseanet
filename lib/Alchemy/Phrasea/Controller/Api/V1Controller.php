@@ -376,7 +376,7 @@ class V1Controller extends Controller
                         'password' => $conf->get(['registry', 'email', 'smtp-password']),
                     ],
                 ],
-                'custom-links' => $conf->get(['registry', 'custom-links']),
+                'custom-links'      => $conf->get(['registry', 'custom-links']),
                 'ftp'               => [
                     'active'        => $conf->get(['registry', 'ftp', 'ftp-enabled']),
                     'activeForUser' => $conf->get(['registry', 'ftp', 'ftp-user-access']),

@@ -36,6 +36,10 @@ var commonModule = (function ($, p4) {
         //     hideTransition: 'hide',
         //     shadow: false
         // });
+
+        $('body').on('click', '.infoDialog', function (event) {
+            infoDialog($(this));
+        });
     });
 
     function showOverlay(n, appendto, callback, zIndex) {
@@ -87,6 +91,26 @@ var commonModule = (function ($, p4) {
         if (typeof(n) != "undefined")
             div += n;
         $('#' + div).hide().remove();
+    }
+
+    function infoDialog(el) {
+        $("#DIALOG").attr('title', '')
+            .empty()
+            .append(el.attr('infos'))
+            .dialog({
+
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: false,
+                draggable: false,
+                width: 600,
+                height: 400,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                }
+            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'auto'});
     }
 
 
