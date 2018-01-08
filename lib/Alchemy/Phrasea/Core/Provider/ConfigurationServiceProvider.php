@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
@@ -70,6 +72,10 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
 
         $app['conf.restrictions'] = $app->share(function (SilexApplication $app) {
             return new AccessRestriction($app['conf'], $app->getApplicationBox(), $app['monolog']);
+        });
+
+        $app['phraseanet.structure-template'] = $app->share(function (Application $app) {
+            return new StructureTemplate($app);
         });
     }
 

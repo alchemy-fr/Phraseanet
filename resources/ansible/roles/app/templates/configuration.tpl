@@ -12,7 +12,7 @@ main:
         port: 3306
         user: '{{ mariadb.user }}'
         password: '{{ mariadb.password }}'
-        dbname: '{{ mariadb.database }}'
+        dbname: '{{ mariadb.appbox_db }}'
         driver: pdo_mysql
         charset: UTF8
     database-test:

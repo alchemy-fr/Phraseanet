@@ -336,6 +336,93 @@ div.switch_right.unchecked {
   margin-top: 5px;
 }
 
+.alert .close {
+  text-decoration: none;
+}
+
+.subdefs [id^="box"] {
+  display: none;
+}
+
+.subdefs .subviews-submit {
+  position: fixed;
+  top: 75px;
+  right: 40px;
+  z-index: 1;
+}
+h2.subdefName {
+  display: inline-block;
+  margin-right: 1.5rem;
+}
+
+.reload, .loader, .status {
+  display: inline-block;
+}
+
+.langTab {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.langTab h3{
+  font-weight: 700;
+  font-size: 13px;
+  margin: 4px 0;
+  line-height: 11px;
+  text-align: center;
+}
+
+.toggle{
+  display: block;
+  margin: 15px 0;
+  color: #08c;
+  cursor: pointer;
+}
+.subdefTab input, .langTab input{
+  margin: 0;
+}
+
+label[for="elasticsearch_settings_highlight"] {
+  display: inline-block;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+input[id="elasticsearch_settings_highlight"] {
+  float: left;
+}
+
+#downbutton {
+  margin: 1rem 0;
+}
+#upbutton {
+  width: 100%;
+  text-align: left;
+}
+
+#upbutton i {
+  position: relative;
+  left: -5px;
+}
+
+#downbutton i {
+  position: relative;
+  left: -5px;
+}
+
+.form-horizontal .controls + div {
+  margin-left: 180px;
+  font-style: italic;
+}
+
+.ui-dialog .ui-dialog-content {
+  position: relative;
+  border: 0;
+  padding: .5em 1em;
+  background: none;
+  margin-bottom: 7rem;
+  overflow: visible;
+}
+
 /******* SETUP *******************************************************************/
 #custom-link-table {
   width: 100%;
@@ -431,6 +518,12 @@ span.simplecolorpicker.picker {
   background-repeat: no-repeat;
   background-size: 75%;
   background-position: center center;
+}
+
+@media screen and (max-width: 1150px) {
+  .langTab{
+    display: block;
+  }
 }
 
 @import './databases';

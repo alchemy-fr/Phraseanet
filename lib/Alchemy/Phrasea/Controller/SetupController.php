@@ -77,7 +77,7 @@ class SetupController extends Controller
         return $this->render('/setup/step2.html.twig', [
             'locale'              => $this->app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
-            'available_templates' => ['en', 'fr'],
+            'available_templates' => $this->app['phraseanet.structure-template']->getAvailable()->getTemplates(),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
