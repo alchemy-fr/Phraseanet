@@ -7,40 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
+use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Audio;
+use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
-use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Unknown;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 use MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-
 class databox_subdef
 {
-    const CLASS_THUMBNAIL = 'thumbnail';
-    const CLASS_PREVIEW = 'preview';
-    const CLASS_DOCUMENT = 'document';
-
-    const DEVICE_ALL = 'all';
-    const DEVICE_HANDHELD = 'handheld';
-    const DEVICE_PRINT = 'print';
-    const DEVICE_PROJECTION = 'projection';
-    const DEVICE_SCREEN = 'screen';
-    const DEVICE_TV = 'tv';
-
-    protected static $mediaTypeToSubdefTypes = [
-        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
-        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
-        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
-        SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE]
-    ];
-
     /**
      * The class type of the subdef
      * Is null or one of the CLASS_* constants
@@ -51,52 +29,61 @@ class databox_subdef
     protected $devices = [];
     protected $name;
     protected $path;
+    protected $preset;
     protected $subdef_group;
     protected $labels = [];
-    protected $downloadable;
-    protected $translator;
-
     /**
      * @var bool
      */
     private $requiresMetadataUpdate;
+    protected $downloadable;
+    protected $translator;
+    protected static $mediaTypeToSubdefTypes = [
+        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
+        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
+        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE],
+    ];
+    const CLASS_THUMBNAIL = 'thumbnail';
+    const CLASS_PREVIEW = 'preview';
+    const CLASS_DOCUMENT = 'document';
+    const DEVICE_ALL = 'all';
+    const DEVICE_HANDHELD = 'handheld';
+    const DEVICE_PRINT = 'print';
+    const DEVICE_PROJECTION = 'projection';
+    const DEVICE_SCREEN = 'screen';
+    const DEVICE_TV = 'tv';
 
     /**
-     * @var bool
-     */
-    private $orderable;
-
-    /**
+     *
      * @param SubdefType $type
      * @param SimpleXMLElement $sd
-     * @param TranslatorInterface $translator
+     *
+     * @return databox_subdef
      */
     public function __construct(SubdefType $type, SimpleXMLElement $sd, TranslatorInterface $translator)
     {
         $this->subdef_group = $type;
-        $this->class = (string) $sd->attributes()->class;
+        $this->class = (string)$sd->attributes()->class;
         $this->translator = $translator;
-
         foreach ($sd->devices as $device) {
-            $this->devices[] = (string) $device;
+            $this->devices[] = (string)$device;
         }
-
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->orderable = isset($sd->attributes()->orderable) ? p4field::isyes($sd->attributes()->orderable) : true;
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
-
-        $this->requiresMetadataUpdate = p4field::isyes((string) $sd->meta);
-
+        $this->preset = $sd->attributes()->presets;
+        $this->requiresMetadataUpdate = p4field::isyes((string)$sd->meta);
         foreach ($sd->label as $label) {
-            $lang = trim((string) $label->attributes()->lang);
-
+            $lang = trim((string)$label->attributes()->lang);
             if ($lang) {
-                $this->labels[$lang] = (string) $label;
+                $this->labels[$lang] = (string)$label;
             }
         }
-
-        switch ((string) $sd->mediatype) {
+        switch ((string)$sd->mediatype) {
             default:
             case SubdefSpecs::TYPE_IMAGE:
                 $this->subdef_type = $this->buildImageSubdef($sd);
@@ -118,7 +105,6 @@ class databox_subdef
                 break;
         }
     }
-
     /**
      * Build Image Subdef object depending the SimpleXMLElement
      *
@@ -128,7 +114,6 @@ class databox_subdef
     protected function buildImageSubdef(SimpleXMLElement $sd)
     {
         $image = new Image($this->translator);
-
         if ($sd->icodec) {
             $image->setOptionValue(Image::OPTION_ICODEC, (string) $sd->icodec);
         }
@@ -147,10 +132,8 @@ class databox_subdef
         if ($sd->flatten) {
             $image->setOptionValue(Image::OPTION_FLATTEN, p4field::isyes($sd->flatten));
         }
-
         return $image;
     }
-
     /**
      * Build Audio Subdef object depending the SimpleXMLElement
      *
@@ -160,7 +143,6 @@ class databox_subdef
     protected function buildAudioSubdef(SimpleXMLElement $sd)
     {
         $audio = new Audio($this->translator);
-
         if ($sd->acodec) {
             $audio->setOptionValue(Audio::OPTION_ACODEC, (string) $sd->acodec);
         }
@@ -170,10 +152,8 @@ class databox_subdef
         if ($sd->audiosamplerate) {
             $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
         }
-
         return $audio;
     }
-
     /**
      * Build Video Subdef object depending the SimpleXMLElement
      *
@@ -183,7 +163,6 @@ class databox_subdef
     protected function buildVideoSubdef(SimpleXMLElement $sd)
     {
         $video = new Video($this->translator);
-
         if ($sd->size) {
             $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
         }
@@ -208,10 +187,8 @@ class databox_subdef
         if ($sd->GOPsize) {
             $video->setOptionValue(Video::OPTION_GOPSIZE, (int) $sd->GOPsize);
         }
-
         return $video;
     }
-
     /**
      * Build GIF Subdef object depending the SimpleXMLElement
      *
@@ -221,17 +198,14 @@ class databox_subdef
     protected function buildGifSubdef(SimpleXMLElement $sd)
     {
         $gif = new Gif($this->translator);
-
         if ($sd->size) {
             $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
         }
         if ($sd->delay) {
             $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
         }
-
         return $gif;
     }
-
     /**
      * Build Flexpaper Subdef object depending the SimpleXMLElement
      *
@@ -242,8 +216,8 @@ class databox_subdef
     {
         return new FlexPaper($this->translator);
     }
-
     /**
+     *
      * @return string
      */
     public function get_class()
@@ -252,6 +226,16 @@ class databox_subdef
     }
 
     /**
+     *
+     * @return string
+     */
+    public function get_preset()
+    {
+        return $this->preset;
+    }
+
+    /**
+     *
      * @return string
      */
     public function get_path()
@@ -262,7 +246,7 @@ class databox_subdef
     /**
      * The devices matching this subdefinition
      *
-     * @return array
+     * @return Array
      */
     public function getDevices()
     {
@@ -272,7 +256,7 @@ class databox_subdef
     /**
      * The current SubdefType the subdef converts documents
      *
-     * @return \Alchemy\Phrasea\Media\Subdef\Subdef
+     * @return Alchemy\Phrasea\Media\Subdef\Subdef
      */
     public function getSubdefType()
     {
@@ -292,7 +276,7 @@ class databox_subdef
     /**
      * An associative label ; keys are i18n languages
      *
-     * @return array
+     * @return Array
      */
     public function get_labels()
     {
@@ -306,21 +290,12 @@ class databox_subdef
         } elseif (isset($this->labels[$code])) {
             return $this->labels[$code];
         }
-
         return null;
     }
 
     /**
-     * The name of the subdef
+     * boolean
      *
-     * @return string
-     */
-    public function get_name()
-    {
-        return $this->name;
-    }
-
-    /**
      * @return bool
      */
     public function isDownloadable()
@@ -328,7 +303,7 @@ class databox_subdef
         return $this->downloadable;
     }
 
-    /**
+     /**
      * @return bool
      */
     public function isOrderable()
@@ -344,7 +319,6 @@ class databox_subdef
     public function getAvailableSubdefTypes()
     {
         $subdefTypes = [];
-
         $availableDevices = [
             self::DEVICE_ALL,
             self::DEVICE_HANDHELD,
@@ -353,11 +327,8 @@ class databox_subdef
             self::DEVICE_SCREEN,
             self::DEVICE_TV,
         ];
-
         if (isset(self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()])) {
-
             foreach (self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()] as $subdefType) {
-
                 if ($subdefType == $this->subdef_type->getType()) {
                     $mediatype_obj = $this->subdef_type;
                 } else {
@@ -385,13 +356,11 @@ class databox_subdef
                             break;
                     }
                 }
-
-                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi($this->translator->trans('Target Device'), 'devices', $availableDevices, $this->devices));
-
+                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi($this->translator->trans('Target Device'),
+                    'devices', $availableDevices, $this->devices));
                 $subdefTypes[] = $mediatype_obj;
             }
         }
-
         return $subdefTypes;
     }
 
@@ -403,6 +372,16 @@ class databox_subdef
     public function isMetadataUpdateRequired()
     {
         return $this->requiresMetadataUpdate;
+    }
+
+    /**
+     * The name of the subdef
+     *
+     * @return string
+     */
+    public function get_name()
+    {
+        return $this->name;
     }
 
     /**

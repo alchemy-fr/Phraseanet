@@ -1,3 +1,4 @@
 {
-    "directory" : "www/bower_components"
+    "directory" : "www/bower_components",
+    "timeout": 1200000
 }
