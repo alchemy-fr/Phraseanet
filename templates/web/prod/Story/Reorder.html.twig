@@ -1,34 +1,38 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
-<div id="reorder_options" class="PNB" style="height:30px;bottom:auto;">
-    <form id="reorder_options" class="form-inline" style="display:inline-block;">
+<div id="reorder_options" class="row-fluid" style="height:30px;bottom:auto;">
+    <form id="reorder_options" class="form-inline span10">
         <span>{{ 'Reordonner automatiquement' | trans }}</span>
         <select id="auto_order">
           <option value="">{{ 'Choisir' | trans }}</option>
           <option value="default">{{ 'Re-initialiser' | trans }}</option>
           <option value="title">{{ 'Titre' | trans }}</option>
+          <option value="date_created">{{ 'Date de création' | trans }}</option>
+          <option value="date_updated">{{ 'Date de modification' | trans }}</option>
         </select>
-        <button type="button" class="autoorder">{{ 'Re-ordonner' | trans }}</button>
-        <button type="button" class="reverseorder">{{ 'Inverser' | trans }}</button>
+        <button type="button" class="autoorder btn btn-inverse">{{ 'Re-ordonner' | trans }}</button>
+        <button type="button" class="reverseorder btn btn-inverse">{{ 'Inverser' | trans }}</button>
     </form>
-    <form  style="display:inline-block;" class="form-inline" name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
+    <form class="form-inline span2" name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
         {% for element in story.get_children() %}
             <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.getNumber() }}"/>
         {% endfor %}
-        <button>{{ 'boutton::valider' | trans }}</button>
+        <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}" />
     </form>
 </div>
-<div style="top:45px;overflow:auto;" id="reorder_box" class="PNB">
+<div style="top:45px;overflow:auto;" id="reorder_box" class="row-fluid">
     <div class="elements">
         {% for element in story.get_children() %}
             <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
                 <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:hidden;text-align:center;text-overflow: ellipsis; line-height: 15px;">
-                    {{ element.get_title() }} {{ element.get_title() }} {{ element.get_title() }}
+                    {{ element.get_title() }}
                 </div>
                 {{ thumbnail.format(element.get_thumbnail(), 80, 80, '', false, false) }}
                 <form style="display:none;">
                     <input type="hidden" name="id" value="{{ element.get_record_id() }}"/>
                     <input type="hidden" name="title" value="{{ element.get_title() }}"/>
                     <input type="hidden" name="default" value="{{ element.getNumber() }}"/>
+                    <input type="hidden" name="date_created" value="{{ element.getCreated() | date('Y-m-dTH:i:s') }}"/>
+                    <input type="hidden" name="date_updated" value="{{ element.getUpdated() | date('Y-m-dTH:i:s') }}"/>
                 </form>
             </div>
         {% endfor %}
