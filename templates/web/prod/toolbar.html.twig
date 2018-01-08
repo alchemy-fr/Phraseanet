@@ -141,10 +141,10 @@
                     </li>
                     {#<li class="divider"></li>#}
                     {#<li>#}
-                        {#<a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}"  data-selection-source="search-result">#}
-                            {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/>#}
-                            {#{{ 'action : bridge' | trans }}#}
-                        {#</a>#}
+                    {#<a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}"  data-selection-source="search-result">#}
+                    {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/>#}
+                    {#{{ 'action : bridge' | trans }}#}
+                    {#</a>#}
                     {#</li>#}
                     <li class="divider"></li>
                     <li>
@@ -212,7 +212,7 @@
         <span class="dropdownButton">
             <div class="btn-group">
                 {#<button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse"  data-selection-source="search-result">#}
-                    {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}#}
+                {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}#}
                 {#</button>#}
                 <button class="TOOL_publish_btn results_window btn btn-inverse">
                     <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
@@ -230,7 +230,8 @@
                                 <li>
                                         <a class="results_window {{ action.classes|default('') }}">
                                             {% if action.icon %}
-                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"
+                                                     height="16" width="16" class="btn-image"/>
                                             {% endif %}
 
                                             {% set label = action.label %}

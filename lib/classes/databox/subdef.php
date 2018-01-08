@@ -39,12 +39,12 @@ class databox_subdef
     protected $downloadable;
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
-        SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
+        SubdefType::TYPE_AUDIO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
         SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
-        SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
-        SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_FLASH    => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_IMAGE    => [SubdefSpecs::TYPE_IMAGE],
+        SubdefType::TYPE_VIDEO    => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_UNKNOWN  => [SubdefSpecs::TYPE_IMAGE],
     ];
     const CLASS_THUMBNAIL = 'thumbnail';
     const CLASS_PREVIEW = 'preview';
@@ -303,7 +303,7 @@ class databox_subdef
         return $this->downloadable;
     }
 
-     /**
+    /**
      * @return bool
      */
     public function isOrderable()

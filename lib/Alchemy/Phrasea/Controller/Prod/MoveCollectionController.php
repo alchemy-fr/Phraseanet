@@ -41,7 +41,7 @@ class MoveCollectionController extends Controller
             $settings = $this->app['settings'];
             $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
             // a temporary array to sort the collections
-            $aName = array();
+            $aName = [];
             list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
             switch ($userOrderSetting) {
                 case $settings::ORDER_ALPHA_ASC :
@@ -52,9 +52,10 @@ class MoveCollectionController extends Controller
                     break;
             }
             foreach ($collections as $key => $row) {
-                if($ukey == "order") {
+                if ($ukey == "order") {
                     $aName[$key] = $row->get_ord();
-                }else {
+                }
+                else {
                     $aName[$key] = $row->get_name();
                 }
             }

@@ -247,7 +247,7 @@ class UploadController extends Controller
             $sbasId = $databox->get_sbas_id();
             foreach ($acl->get_granted_base([\ACL::CANADDRECORD], [$sbasId]) as $collection) {
                 $databox = $collection->get_databox();
-                if ( ! isset($collections[$sbasId])) {
+                if (!isset($collections[$sbasId])) {
                     $collections[$databox->get_sbas_id()] = [
                         'databox'             => $databox,
                         'databox_collections' => []
