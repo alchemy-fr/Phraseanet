@@ -1,7 +1,7 @@
 {% if not isAvailable %}
     <p>{{ 'No permalink available.' | trans }}</p>
 {% else %}
-    {%  if subdefList is not empty %}
+    {% if subdefList is not empty %}
         {% set defKey = defaultKey %}
         <div id="share">
         <div id="tweet" class="well-large">
@@ -17,14 +17,18 @@
                     </span>
             </p>
             <p>
-                <a id="twitter-link" href="http://www.twitter.com/home/?status={{ subdefList[defKey].permaviewUrl }}" target="_blank">
-                    <img src="/assets/common/images/icons/twitter.png" title="share this on twitter" style="width:25px;vertical-align:middle;padding:0 5px;"/>
+                <a id="twitter-link" href="http://www.twitter.com/home/?status={{ subdefList[defKey].permaviewUrl }}"
+                   target="_blank">
+                    <img src="/assets/common/images/icons/twitter.png" title="share this on twitter"
+                         style="width:25px;vertical-align:middle;padding:0 5px;"/>
                     {% trans %}Send to Twitter{% endtrans %}
                 </a>
             </p>
             <p>
-                <a id="facebook-link" href="http://www.facebook.com/sharer.php?u={{ subdefList[defKey].permaviewUrl }}" target="_blank">
-                    <img src="/assets/common/images/icons/facebook.png" title="share on facebook" style="width:25px;vertical-align:middle;padding:0 5px;"/>
+                <a id="facebook-link" href="http://www.facebook.com/sharer.php?u={{ subdefList[defKey].permaviewUrl }}"
+                   target="_blank">
+                    <img src="/assets/common/images/icons/facebook.png" title="share on facebook"
+                         style="width:25px;vertical-align:middle;padding:0 5px;"/>
                     {% trans %}Send to Facebook{% endtrans %}
                 </a>
             </p>
@@ -32,19 +36,23 @@
             <form action="#">
                 <div class="form-group clearfix">
                     <label style="display:inline-block;">{% trans %}Resource URL{% endtrans %}</label>
-                    <input class="input-block-level" readonly="readonly" type="text" value="{{ subdefList[defKey].permalinkUrl }}"
+                    <input class="input-block-level" readonly="readonly" type="text"
+                           value="{{ subdefList[defKey].permalinkUrl }}"
                            id="permalinkUrl"/>
 
                     <p class="pull-right">
-                        <a id="permalinkUrl-link" href="{{ subdefList[defKey].permalinkUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a id="permalinkUrl-link" href="{{ subdefList[defKey].permalinkUrl }}"
+                           target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
                         <a href="#" class="" id="permalinkUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
                     </p>
                 </div>
                 <div class="form-group clearfix">
                     <label>{% trans %}Detailed view URL{% endtrans %}</label>
-                    <input class="input-block-level" readonly="readonly" type="text" value="{{ subdefList[defKey].permaviewUrl }}" id="permaviewUrl"/>
+                    <input class="input-block-level" readonly="readonly" type="text"
+                           value="{{ subdefList[defKey].permaviewUrl }}" id="permaviewUrl"/>
                     <p class="pull-right">
-                        <a id="permaviewUrl-link" href="{{ subdefList[defKey].permaviewUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a id="permaviewUrl-link" href="{{ subdefList[defKey].permaviewUrl }}"
+                           target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
                         <a href="#" class="" id="permaviewUrlCopy">{{ 'copyClipboardLabel' | trans }}</a>
                     </p>
                 </div>
@@ -53,11 +61,14 @@
                     <label>{% trans %}Embed code{% endtrans %}</label>
                     {% spaceless %}
                         <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
-                                <iframe width="{{ subdefList[defKey].width }}" height="{{ subdefList[defKey].height }}" src="{{ subdefList[defKey].embedUrl }}" frameborder="0" allowfullscreen></iframe>
+                                <iframe width="{{ subdefList[defKey].width }}" height="{{ subdefList[defKey].height }}"
+                                        src="{{ subdefList[defKey].embedUrl }}" frameborder="0"
+                                        allowfullscreen></iframe>
                             </textarea>
                     {% endspaceless %}
                     <p class="pull-right">
-                        <a id="embedRecordUrl-link" href="{{ subdefList[defKey].embedUrl }}" target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
+                        <a id="embedRecordUrl-link" href="{{ subdefList[defKey].embedUrl }}"
+                           target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
                         <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
                     </p>
                 </div>
@@ -67,31 +78,35 @@
 
         <script language="javascript">
             // var subdefListObj = JSON.parse(subdefList); // to convert json into a javascript object
-            $(document).ready(function(){
+            $(document).ready(function () {
                 var subdefList = JSON.parse('{{ subdefList | json_encode | escape('js') }}');
-                $('#resource_type_sel').on('change', function() {
+                $('#resource_type_sel').on('change', function () {
                     assignPermalinks(this.value);
                 });
                 $('input.ui-state-default').hover(
-                    function(){$(this).addClass('ui-state-hover');},
-                    function(){$(this).removeClass('ui-state-hover');}
+                    function () {
+                        $(this).addClass('ui-state-hover');
+                    },
+                    function () {
+                        $(this).removeClass('ui-state-hover');
+                    }
                 );
-                $('#permalinkUrlCopy').on('click', function(event) {
+                $('#permalinkUrlCopy').on('click', function (event) {
                     event.preventDefault();
                     return copyElContentClipboard('permalinkUrl');
                 });
-                $('#permaviewUrlCopy').on('click', function(event) {
+                $('#permaviewUrlCopy').on('click', function (event) {
                     event.preventDefault();
                     return copyElContentClipboard('permaviewUrl');
                 });
-                $('#embedCopy').on('click', function(event) {
+                $('#embedCopy').on('click', function (event) {
                     event.preventDefault();
                     return copyElContentClipboard('embedRecordUrl');
                 });
-                $('#advance-share').on('click', function() {
+                $('#advance-share').on('click', function () {
                     $('#shared-def').show();
                 });
-                var copyElContentClipboard = function(elId) {
+                var copyElContentClipboard = function (elId) {
                     var copyEl = document.getElementById(elId);
                     copyEl.select();
                     try {
@@ -102,7 +117,7 @@
                         console.log('unable to copy');
                     }
                 }
-                var assignPermalinks = function(resourceType) {
+                var assignPermalinks = function (resourceType) {
                     $('#twitter-link').attr('href', 'http://www.twitter.com/home/?status=' + subdefList[resourceType].permaviewUrl);
                     $('#facebook-link').attr('href', 'http://www.facebook.com/sharer.php?u=' + subdefList[resourceType].permaviewUrl);
                     $('#permalinkUrl').val(subdefList[resourceType].permalinkUrl);

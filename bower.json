@@ -28,7 +28,8 @@
     "jquery.lazyload": "~1.9.7",
     "jquery-treeview": "~1.4.2",
     "alchemy-embed-medias": "~0.3.4",
-    "html5shiv": "^3.7.3"
+    "html5shiv": "^3.7.3",
+    "jquery-simplecolorpicker": "^0.3.1"
   },
   "devDependencies": {
     "mocha": "latest",
