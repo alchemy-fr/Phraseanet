@@ -16,6 +16,7 @@ class SubdefPreset
      * @var array
      */
     private $definitions;
+
     /**
      * @param string $mediaType
      * @param array $definitions
@@ -23,12 +24,13 @@ class SubdefPreset
     public function __construct($mediaType, array $definitions)
     {
         foreach ($definitions as $definition) {
-            if (! $definition instanceof Subdef) {
+            if (!$definition instanceof Subdef) {
             }
         }
-        $this->mediaType = (string) $mediaType;
+        $this->mediaType = (string)$mediaType;
         $this->definitions = $definitions;
     }
+
     /**
      * @return string
      */
@@ -36,6 +38,7 @@ class SubdefPreset
     {
         return $this->label;
     }
+
     /**
      * @return array
      */

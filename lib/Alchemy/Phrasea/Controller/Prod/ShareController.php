@@ -31,7 +31,7 @@ class ShareController extends Controller
         $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
         $acl = $this->getAclForUser();
         $subdefList = [];
-        $defaultKey =  null;
+        $defaultKey = null;
         foreach ($subdefs as $subdef) {
             $subdefName = $subdef->get_name();
             if ($subdefName == 'document') {
@@ -55,7 +55,7 @@ class ShareController extends Controller
             $defaultKey = $value;   // will set a default option if neither preview,thumbnail or document is present
 
 
-            if ( ($previewLink = $preview->get_permalink()) !== null ) {
+            if (($previewLink = $preview->get_permalink()) !== null) {
                 $permalinkUrl = $previewLink->get_url()->__toString();
                 $permaviewUrl = $previewLink->get_page();
                 $previewWidth = $preview->get_width();
@@ -74,7 +74,7 @@ class ShareController extends Controller
         }
 
         // candidates as best default selected option
-        foreach(["preview", "thumbnail", "document"] as $k) {
+        foreach (["preview", "thumbnail", "document"] as $k) {
             if (array_key_exists($k, $subdefList)) {
                 $defaultKey = $k;
                 break;
@@ -84,8 +84,8 @@ class ShareController extends Controller
         // the twig MUST handle that
         $outputVars = [
             'isAvailable' => !empty($subdefList),
-            'subdefList' => $subdefList,
-            'defaultKey' => $defaultKey
+            'subdefList'  => $subdefList,
+            'defaultKey'  => $defaultKey
         ];
 
         return $this->renderResponse('prod/Share/record.html.twig', $outputVars);

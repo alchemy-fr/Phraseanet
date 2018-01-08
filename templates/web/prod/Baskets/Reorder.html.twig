@@ -31,8 +31,10 @@
                 <input type="hidden" name="id" value="{{ element.getId() }}"/>
                 <input type="hidden" name="title" value="{{ element.getRecord(app).get_title() }}"/>
                 <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
-                <input type="hidden" name="date_created" value="{{ element.getRecord(app).getCreated() | date('Y-m-dTH:i:s') }}"/>
-                <input type="hidden" name="date_updated" value="{{ element.getRecord(app).getUpdated() | date('Y-m-dTH:i:s') }}"/>
+                <input type="hidden" name="date_created"
+                       value="{{ element.getRecord(app).getCreated() | date('Y-m-dTH:i:s') }}"/>
+                <input type="hidden" name="date_updated"
+                       value="{{ element.getRecord(app).getUpdated() | date('Y-m-dTH:i:s') }}"/>
             </form>
         </div>
     {% endfor %}

@@ -37,9 +37,9 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $name = $this->getSubdefName();
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/", ['add_subdef' => [
-            'class'  => 'thumbnail',
-            'name'   => $name,
-            'group'  => 'image'
+            'class' => 'thumbnail',
+            'name'  => $name,
+            'group' => 'image'
         ]]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         $app = $this->getApplication();
@@ -65,7 +65,7 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
         $name = $this->getSubdefName();
         $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)");
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/"
-            , ['subdefs' => [
+            , ['subdefs'                             => [
                 'image_' . $name
             ]
                 , 'image_' . $name . '_class'        => 'thumbnail'

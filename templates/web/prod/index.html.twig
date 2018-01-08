@@ -304,7 +304,9 @@
                                     <td style="width:50%; vertical-align:top;">
                                         {% set useTruncation = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'use_truncation') %}
                                         <label class="checkbox inline" for="ADVSRCH_USE_TRUNCATION">
-                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox" class="checkbox preferences-options-use-truncation" name="truncation" {% if useTruncation == '1' or useTruncation == NULL %}checked="checked"{% endif %}>
+                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox"
+                                                   class="checkbox preferences-options-use-truncation" name="truncation"
+                                                   {% if useTruncation == '1' or useTruncation == NULL %}checked="checked"{% endif %}>
                                             {{ 'index:advanced-preferences:: use truncation' | trans }}
                                         </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
@@ -689,9 +691,12 @@
                         {% set order_collection_by = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_collection_by') %}
                         <label class="select" for="orderByName">
                             <select class="preferences-options-collection-order" name="orderByName">
-                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') }}">{{ 'Defined by admin' | trans }}</option>
-                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %} value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') }}">{{ 'Defined by admin' | trans }}</option>
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
                             </select>
                         </label>
                     </form>

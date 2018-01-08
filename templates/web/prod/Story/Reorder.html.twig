@@ -6,17 +6,18 @@
           <option value="">{{ 'Choisir' | trans }}</option>
           <option value="default">{{ 'Re-initialiser' | trans }}</option>
           <option value="title">{{ 'Titre' | trans }}</option>
-          <option value="date_created">{{ 'Date de création' | trans }}</option>
-          <option value="date_updated">{{ 'Date de modification' | trans }}</option>
+            <option value="date_created">{{ 'Date de création' | trans }}</option>
+            <option value="date_updated">{{ 'Date de modification' | trans }}</option>
         </select>
         <button type="button" class="autoorder btn btn-inverse">{{ 'Re-ordonner' | trans }}</button>
         <button type="button" class="reverseorder btn btn-inverse">{{ 'Inverser' | trans }}</button>
     </form>
-    <form class="form-inline span2" name="reorder" method="POST" action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
+    <form class="form-inline span2" name="reorder" method="POST"
+          action="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.get_sbas_id(), 'record_id' : story.get_record_id() }) }}">
         {% for element in story.get_children() %}
             <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.getNumber() }}"/>
         {% endfor %}
-        <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}" />
+        <input type="submit" class="btn btn-inverse" value="{{ 'boutton::valider' | trans }}"/>
     </form>
 </div>
 <div style="top:45px;overflow:auto;" id="reorder_box" class="row-fluid">
