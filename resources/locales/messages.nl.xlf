@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-01-08T13:25:53Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2018-01-09T05:49:37Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -28,73 +28,73 @@
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6">
         <source>#3567c6</source>
         <target state="new">#3567c6</target>
-        <jms:reference-file line="78">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="81">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c18097cf04c5f24e6b201e44603c26f000cbf266" resname="#4497d5">
         <source>#4497d5</source>
         <target state="new">#4497d5</target>
-        <jms:reference-file line="77">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="80">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="654b7f2144322b13150ca53f8eb712644275fbbb" resname="#5aa53b">
         <source>#5aa53b</source>
         <target state="new">#5aa53b</target>
-        <jms:reference-file line="75">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="78">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="81184afa6b2fb59a54a368a94c5af314882f4379" resname="#a1d0d0">
         <source>#a1d0d0</source>
         <target state="new">#a1d0d0</target>
-        <jms:reference-file line="76">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="79">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="69760e828adabd5e543638f8b396d108e4e1c7f6" resname="#ad0800">
         <source>#ad0800</source>
         <target state="new">#ad0800</target>
-        <jms:reference-file line="68">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
-        <jms:reference-file line="69">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="71">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="72">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8868030f047d29838dccd3ebd90a8cbcf5cf97b9" resname="#b151ee">
         <source>#b151ee</source>
         <target state="new">#b151ee</target>
-        <jms:reference-file line="79">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="82">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="df800d7d3f6bec2f0c48d7b18ad0f7515b4ed8a4" resname="#b8d84e">
         <source>#b8d84e</source>
         <target state="new">#b8d84e</target>
-        <jms:reference-file line="74">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="77">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d3505d50f73a3440832d861060fc212eb2d929a" resname="#c875ea">
         <source>#c875ea</source>
         <target state="new">#c875ea</target>
-        <jms:reference-file line="80">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="83">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cdd9fb48ed6b38bdf4cd732d30851062312f64b3" resname="#e46990">
         <source>#e46990</source>
         <target state="new">#e46990</target>
-        <jms:reference-file line="81">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="84">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="22a0112b6eafc281d17f1b98fb8405847d01f04b" resname="#f06006">
         <source>#f06006</source>
         <target state="new">#f06006</target>
-        <jms:reference-file line="70">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="73">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db6ca79114142b612eebf0ca5f80b94c80cbf453" resname="#f4ea5b">
         <source>#f4ea5b</source>
         <target state="new">#f4ea5b</target>
-        <jms:reference-file line="73">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="76">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc4fad5f043fc9875dcdc532a296ec359a6c39e1" resname="#f5842b">
         <source>#f5842b</source>
         <target state="new">#f5842b</target>
-        <jms:reference-file line="71">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="74">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="590b78bf59d578b0efdd1a7b1a385e8004fa88e8" resname="#ffc322">
         <source>#ffc322</source>
         <target state="new">#ffc322</target>
-        <jms:reference-file line="72">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="75">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0cc996e2ae03790c84ef6edc0601ba0245d7cf1c" resname="#ffccd7">
         <source>#ffccd7</source>
         <target state="new">#ffccd7</target>
-        <jms:reference-file line="82">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="85">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9378053eb7743587671aa830ffd2c9f1b13ad1a" resname="%ElementsCount% records">
         <source>%ElementsCount% records</source>
@@ -539,7 +539,7 @@
       <trans-unit id="62a3ad0fef668c4e2a220f6982de94942fbf1d1e" resname="AR">
         <source>AR</source>
         <target state="new">AR</target>
-        <jms:reference-file line="36">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="39">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8887b473975b3b740e5afe559123403a6c219524" resname="About Roles :" approved="yes">
         <source>About Roles :</source>
@@ -839,7 +839,7 @@
       <trans-unit id="6a72085653e4c5be8c7640c868ef787cbcf063d1" resname="All" approved="yes">
         <source>All</source>
         <target state="translated">Alle</target>
-        <jms:reference-file line="32">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="35">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
         <jms:reference-file line="110">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="118">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="126">actions/Feedback/list.html.twig</jms:reference-file>
@@ -2110,12 +2110,12 @@
       <trans-unit id="ce3e4bed2954adbf05f8edfaf1a4c0cc0cea70e9" resname="DE">
         <source>DE</source>
         <target state="new">DE</target>
-        <jms:reference-file line="37">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="40">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="129bcdb9bbdbd9bba49b7e1eb1ec49698604f0b0" resname="DU">
         <source>DU</source>
         <target state="new">DU</target>
-        <jms:reference-file line="38">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="41">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !">
         <source>Danger zone !</source>
@@ -2584,7 +2584,7 @@
       <trans-unit id="734a78cd06d0929c433f487754d18bf073e43bf6" resname="EN">
         <source>EN</source>
         <target state="new">EN</target>
-        <jms:reference-file line="34">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="37">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a908567d2c0292366061394efd6d40b139e033c5" resname="ERREUR : La classe de subdef est necessaire et egal a &quot;thumbnail&quot;,&quot;preview&quot; ou &quot;document&quot;">
         <source>ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"</source>
@@ -2604,7 +2604,7 @@
       <trans-unit id="9debabbaa01a190fabe8324c5e6e2f2808052099" resname="ES">
         <source>ES</source>
         <target state="new">ES</target>
-        <jms:reference-file line="35">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="38">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5301648dcf6b53cefc9ed52999aaa92d4603cae0" resname="Edit" approved="yes">
         <source>Edit</source>
@@ -3080,7 +3080,7 @@
       <trans-unit id="6d2830b1e76dc7300fce6745176601827d233de8" resname="FR">
         <source>FR</source>
         <target state="new">FR</target>
-        <jms:reference-file line="33">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="36">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="acb28212fba0272ee990cebd571ebe09b463312e" resname="FTP">
         <source>FTP</source>
@@ -9617,6 +9617,11 @@
         <jms:reference-file line="103">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="116">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="fcf5093722566a47fe3e773296cc63fac7190dac" resname="export::export-email: email-invalid">
+        <source>export::export-email: email-invalid</source>
+        <target state="new">export::export-email: email-invalid</target>
+        <jms:reference-file line="510">web/common/dialog_export.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
         <source>export::ftp: reglages manuels</source>
         <target state="translated">Manuele instellingen</target>
@@ -12268,7 +12273,7 @@
       <trans-unit id="44a5de1cdcf30547c937f197cd3d58e143de62a6" resname="setup::custom-link:help-menu">
         <source>setup::custom-link:help-menu</source>
         <target state="new">setup::custom-link:help-menu</target>
-        <jms:reference-file line="55">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="58">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0286ea45f1074802cfe8fbf84b7c439fb287d0de" resname="setup::custom-link:language-link">
         <source>setup::custom-link:language-link</source>
@@ -12283,7 +12288,7 @@
       <trans-unit id="2de3bc78c6fb26b56dd934a81dc76afdba8c79ab" resname="setup::custom-link:location">
         <source>setup::custom-link:location</source>
         <target state="new">setup::custom-link:location</target>
-        <jms:reference-file line="54">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="57">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link">
         <source>setup::custom-link:location-link</source>
@@ -12293,13 +12298,13 @@
       <trans-unit id="ccfe45428ee9769a865d3d90c0e4dc50a6b68e9c" resname="setup::custom-link:name-link">
         <source>setup::custom-link:name-link</source>
         <target state="new">setup::custom-link:name-link</target>
-        <jms:reference-file line="20">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="23">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
         <jms:reference-file line="83">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdecb6454c7adeaeb05bac7f574ee70884900ca2" resname="setup::custom-link:navigation-bar">
         <source>setup::custom-link:navigation-bar</source>
         <target state="new">setup::custom-link:navigation-bar</target>
-        <jms:reference-file line="56">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="59">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4696021003b181f9acc9261382e07364c6b83036" resname="setup::custom-link:order-link">
         <source>setup::custom-link:order-link</source>
@@ -12309,12 +12314,12 @@
       <trans-unit id="1b09a3a0a8b0205f23b3fe59074f8dfd72d0b0ae" resname="setup::custom-link:placeholder-link-url">
         <source>setup::custom-link:placeholder-link-url</source>
         <target state="new">setup::custom-link:placeholder-link-url</target>
-        <jms:reference-file line="44">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="47">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1380c70f5190d6c0c38214fe24ac99272ef7bd2" resname="setup::custom-link:select-language">
         <source>setup::custom-link:select-language</source>
         <target state="new">setup::custom-link:select-language</target>
-        <jms:reference-file line="31">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+        <jms:reference-file line="34">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="67572283912404fe90681e8566d880e1fd10d58e" resname="setup::custom-link:title-custom-link">
         <source>setup::custom-link:title-custom-link</source>
