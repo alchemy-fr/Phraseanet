@@ -41,9 +41,9 @@
       </button>
       {% endif %}
       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
-      <button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}" data-selection-source="story">
-        <img src="/assets/common/images/icons/door.png"/>
-      </button>
+          {#<button class="ui-corner-all TOOL_bridge_btn story_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}" data-selection-source="story">#}
+          {#<img src="/assets/common/images/icons/door.png"/>#}
+          {#</button>#}
       <button class="ui-corner-all TOOL_publish_btn story_window" title="{{ 'action : publier' | trans }}" data-selection-source="story">
         <img src="/assets/common/images/icons/rss16.png"/>
       </button>

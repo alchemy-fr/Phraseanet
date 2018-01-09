@@ -33,20 +33,21 @@
                                     ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                 </span>
                             </td>
-                            <td class='uploader-icon'>
-                                <img src='/assets/common/images/icons/logo-flash.png' width="32px" heigh="32px" title="{{ 'You are using the Flash uploader.' | trans }}"/>
-                            </td>
-                            <td class='uploader-info'>
-                                <p>
-                                    {{ 'You are using the Flash uploader.' | trans }}
-                                    {% if not app['browser'].supportFileAPI() %}
-                                        {{ 'This version does not allow you to access all the features offered by the HTML5 uploader' | trans }}
-                                    {% endif %}
-                                </p>
-                                {% if app['browser'].supportFileAPI() %}
-                                <a id="UPLOAD_HTML5_LINK" href="{{ path('upload_html5_form') }}" class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
-                                {% endif %}
-                            </td>
+                            {#<td class='uploader-icon'>#}
+                            {#<img src='/assets/common/images/icons/logo-flash.png' width="32px" heigh="32px" title="{{ 'You are using the Flash uploader.' | trans }}"/>#}
+                            {#</td>#}
+                            {#<td class='uploader-info'>#}
+                            {#<p>#}
+                            {#{{ 'You are using the Flash uploader.' | trans }}#}
+                            {#{% if not app['browser'].supportFileAPI() %}#}
+                            {#{{ 'This version does not allow you to access all the features offered by the HTML5 uploader' | trans }}#}
+                            {#{% endif %}#}
+                            {#</p>#}
+                            {#{% if app['browser'].supportFileAPI() %}#}
+                            <a style="display: none" id="UPLOAD_HTML5_LINK" href="{{ path('upload_html5_form') }}"
+                               class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
+                            {#{% endif %}#}
+                            {#</td>#}
                         </tr>
                      </table>
                     {# settings box #}
@@ -54,11 +55,14 @@
                         <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                         {# collections list #}
                         {% if collections|length > 0 %}
-                            <select name="base_id" class="span3" style="margin-left: 10px;">
+                            {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
+                            <select name="base_id" class="span3 upload-options-collection" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <option value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %}
+                                            value="{{ collection.get_base_id() }}"
+                                            class="select-row">{{ collection.get_label(app['locale']) }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
@@ -66,7 +70,8 @@
                             {# collections status #}
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
                                         <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
@@ -121,6 +126,12 @@
                 </div>
 
             </form>
+            <div>
+                <select name="upload_type" id="upload_type" class="input-large" style="width: 200px; float:right">
+                    <option value="html">{{ 'Use the HTML5 uploader' | trans }}</option>
+                    <option value="flash" selected>{{ 'Use the Flash uploader' | trans }}</option>
+                </select>
+            </div>
          </div>
     </div>
 </div>

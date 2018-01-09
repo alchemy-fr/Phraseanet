@@ -47,10 +47,22 @@ class Share implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
             ->before(function (Request $request) use ($app, $firewall) {
-                $firewall->requireRightOnSbas(
-                    \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
-                    \ACL::BAS_CHUPUB
-                );
+                $socialTools = $app['conf']->get(['registry', 'actions', 'social-tools']);
+                if ($socialTools === "all") {
+                    return;
+                }
+                elseif ($socialTools === "none") {
+                    $app->abort(403, 'social tools disabled');
+                }
+                elseif ($socialTools === "publishers") {
+                    $firewall->requireRightOnSbas(
+                        \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
+                        \ACL::BAS_CHUPUB
+                    );
+                }
+                else {
+                    throw new \Exception("bad value \"" . $socialTools . "\" for social tools");
+                }
             })
             ->bind('share_record');
 

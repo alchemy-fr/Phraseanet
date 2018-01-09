@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class MainConfigurationFormType extends AbstractType
 {
@@ -62,12 +63,19 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('email', new EmailFormType(), [
             'label' => 'Emails',
         ]);
+        $builder->add('custom-links', CollectionType::class, [
+            'entry_type'    => CustomLinkFormType::class,
+            'entry_options' => ['label' => false],
+            'allow_add'     => true,
+            'allow_delete'  => true,
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'required' => false,
+            'required'           => false,
+            'allow_extra_fields' => true
         ]);
     }
 
