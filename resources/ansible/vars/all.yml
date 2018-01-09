@@ -80,6 +80,9 @@ php:
         - {name: amqp, package: amqp-1.4.0}
 xdebug:
     install: '1'
+    idekey: 'PHPSTORM'
+    port: '10001'
+
 composer:
     install: '1'
 
