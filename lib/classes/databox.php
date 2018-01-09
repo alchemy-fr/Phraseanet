@@ -148,8 +148,9 @@ class databox extends base implements ThumbnailedElement
      */
     public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
     {
-        if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
+        $rp = $data_template->getRealPath();
+        if ($rp || !file_exists($rp)) {
+            throw new \InvalidArgumentException(sprintf("Databox template \"%s\" not found.", $data_template->getFilename()));
         }
 
         $host = $databoxConnection->getHost();

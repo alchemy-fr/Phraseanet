@@ -71,28 +71,80 @@ class DataboxService
         $this->rootPath = $rootPath;
     }
 
+    public function exists($databaseName, DataboxConnectionSettings $connectionSettings = null)
+    {
+        $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
+            $this->configuration->get(['main', 'database'])
+        );
+        $factory = $this->connectionFactory;
+
+        // do not simply try to connect to the database, list
+        /** @var Connection $connection */
+        $connection = $factory([
+            'host' => $connectionSettings->getHost(),
+            'port' => $connectionSettings->getPort(),
+            'user' => $connectionSettings->getUser(),
+            'password' => $connectionSettings->getPassword(),
+            'dbname' => null,
+        ]);
+
+        $ret = false;
+        $databaseName = strtolower($databaseName);
+        $sm = $connection->getSchemaManager();
+        $databases = $sm->listDatabases();
+        foreach($databases as $database) {
+            if(strtolower($database) == $databaseName) {
+                $ret = true;
+                break;
+            }
+        }
+
+        return $ret;
+    }
+
     /**
      * @param User $owner
      * @param string $databaseName
-     * @param string $dataTemplate
+     * @param string $templateName
      * @param DataboxConnectionSettings|null $connectionSettings
      * @return \databox
      */
     public function createDatabox(
         $databaseName,
-        $dataTemplate,
+        $templateName,
         User $owner,
         DataboxConnectionSettings $connectionSettings = null
     ) {
         $this->validateDatabaseName($databaseName);
 
-        $dataTemplate = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+        $templateName = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $templateName . '.xml');
+
+        $rp = $templateName->getRealPath();
+        if ($rp || !file_exists($rp)) {
+            throw new \InvalidArgumentException(sprintf("Databox template \"%s\" not found.", $templateName));
+        }
+
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
 
         $factory = $this->connectionFactory;
+
+        // use a tmp connection to create the database
         /** @var Connection $connection */
+        $connection = $factory([
+            'host' => $connectionSettings->getHost(),
+            'port' => $connectionSettings->getPort(),
+            'user' => $connectionSettings->getUser(),
+            'password' => $connectionSettings->getPassword(),
+            'dbname' => null
+        ]);
+        $connection->getSchemaManager()->createDatabase($databaseName);
+
+        // change the connection to the newly created database
+        $connection->close();
+        unset($connection);
+
         $connection = $factory([
             'host' => $connectionSettings->getHost(),
             'port' => $connectionSettings->getPort(),
@@ -103,7 +155,7 @@ class DataboxService
 
         $connection->connect();
 
-        $databox = \databox::create($this->app, $connection, $dataTemplate);
+        $databox = \databox::create($this->app, $connection, $templateName);
         $databox->registerAdmin($owner);
 
         $connection->close();

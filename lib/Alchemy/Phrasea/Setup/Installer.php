@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -156,9 +157,15 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function createDB(Connection $dbConn = null, $template, User $admin)
+    private function createDB(Connection $dbConn = null, $templateName, User $admin)
     {
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $this->app['phraseanet.structure-template']->getAvailable()->getTemplateName($template) . '.xml');
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
+        $SPLTemplate = $st->getTemplateByName($templateName);
+
+        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $st->getTemplateByName($template) . '.xml');
+
         $databox = \databox::create($this->app, $dbConn, $template);
 
         $this->app->getAclForUser($admin)

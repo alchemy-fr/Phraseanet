@@ -19,31 +19,30 @@ use Alchemy\Phrasea\Application;
  */
 class StructureTemplate
 {
-
     const TEMPLATE_EXTENSION = 'xml';
 
+    /** @var  \SplFileInfo[] */
     private $templates;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->templates = null;    // lazy loaded, not yet set
     }
 
     /**
      * @return $this
      * @throws \Exception
      */
-    public function getAvailable()
+    private function load()
     {
+        if(!is_null($this->templates)) {
+            return;     // already loaded
+        }
 
         $templateList = new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates');
 
-        if (empty($templateList)) {
-            throw new \Exception('No available structure template');
-        }
-
-        $templates = [];
-        $abbreviationLength = 2;
+        $this->templates = [];
         foreach ($templateList as $template) {
             if ($template->isDot()
                 || !$template->isFile()
@@ -53,64 +52,23 @@ class StructureTemplate
             }
 
             $name = $template->getFilename();
-            $abbreviation = strtolower(substr($name, 0, $abbreviationLength));
-
-            if (array_key_exists($abbreviation, $templates)) {
-                $abbreviation = strtolower(substr($name, 0, ++$abbreviationLength));
-            }
-
-            $templates[$abbreviation] = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
+            $this->templates[$name] = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
         }
-
-        $this->templates = $templates;
-
-        return $this;
     }
 
     /**
-     * @return string
+     * @param string $templateName
+     * @return \SplFileInfo | null
      */
-    public function __toString()
+    public function getTemplateByName($templateName)
     {
-        if (!$this->templates) {
-            return '';
+        $this->load();
+
+        if (!array_key_exists($templateName, $this->templates)) {
+            return null;
         }
 
-        $templateToString = '';
-        $cpt = 1;
-        $templateLength = count($this->templates);
-        foreach ($this->templates as $key => $value) {
-
-            if (($templateLength - 1) == $cpt) {
-                $separator = ' and ';
-            }
-            elseif (end($this->templates) == $value) {
-                $separator = '';
-            }
-            else {
-                $separator = ', ';
-            }
-
-            $templateToString .= $key . ' (' . $value . ')' . $separator;
-            $cpt++;
-        }
-
-        return $templateToString;
-    }
-
-    /**
-     * @param $template
-     * @return mixed
-     * @throws \Exception
-     */
-    public function getTemplateName($template = 'en')
-    {
-
-        if (!array_key_exists($template, $this->templates)) {
-            throw new \Exception('Not found template : ' . $template);
-        }
-
-        return $this->templates[$template];
+        return $this->templates[$templateName];
     }
 
     /**

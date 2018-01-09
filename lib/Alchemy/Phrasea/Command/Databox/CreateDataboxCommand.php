@@ -29,7 +29,7 @@ class CreateDataboxCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Metadata structure language template (available are fr (french) and en (english))',
-                'fr'
+                'frxx'
             );
     }
 
@@ -45,18 +45,40 @@ class CreateDataboxCommand extends Command
 
         /** @var UserRepository $userRepository */
         $userRepository = $this->container['repo.users'];
+
+        $owner = $userRepository->findByLogin($input->getArgument('owner'));
+        if(!$owner) {
+            $output->writeln(sprintf("<error>Unknown user \"%s\"</error>", $input->getArgument('owner')));
+
+            return 1;
+        }
+
         /** @var DataboxService $databoxService */
         $databoxService = $this->container['databox.service'];
 
-        $owner = $userRepository->findByEmail($input->getArgument('owner'));
+        try {
+            if($databoxService->exists($databoxName, $connectionSettings)) {
+                $output->writeln(sprintf("<error>Database \"%s\" already exists</error>", $databoxName));
+                return 1;
+            }
+            $databoxService->createDatabox(
+                $databoxName,
+                $input->getOption('db-template') . '-simple',
+                $owner,
+                $connectionSettings
+            );
+        }
+        catch(\Exception $e) {
+            $output->writeln(sprintf("<error>Failed to create database \"%s\", error=\"%s\"</error>"
+                , $databoxName
+                , $e->getMessage()
+            ));
 
-        $databoxService->createDatabox(
-            $databoxName,
-            $input->getOption('db-template') . '-simple',
-            $owner,
-            $connectionSettings
-        );
+            return 1;
+        }
 
         $output->writeln('Databox created');
+
+        return 0;
     }
 }
