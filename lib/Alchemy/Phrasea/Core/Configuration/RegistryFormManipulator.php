@@ -110,7 +110,7 @@ class RegistryFormManipulator
                 'thumb-substitution' => true,
                 'anonymous-report' => false,
             ],
-            'actions' => [
+            'actions'      => [
                 'download-max-size' => 120,
                 'validation-reminder-days' => 2,
                 'validation-expiration-days' => 10,
@@ -123,7 +123,7 @@ class RegistryFormManipulator
                 'force-push-authentication' => false,
                 'enable-feed-notification' => true,
             ],
-            'ftp' => [
+            'ftp'          => [
                 'ftp-enabled' => false,
                 'ftp-user-access' => false,
             ],
@@ -131,16 +131,16 @@ class RegistryFormManipulator
                 'auto-select-collections' => true,
                 'auto-register-enabled' => false,
             ],
-            'maintenance' => [
+            'maintenance'  => [
                 'message' => 'The application is down for maintenance',
                 'enabled' => false,
             ],
-            'api-clients' => [
+            'api-clients'  => [
                 'api-enabled' => true,
                 'navigator-enabled' => true,
                 'office-enabled' => true,
             ],
-            'webservices' => [
+            'webservices'  => [
                 'google-charts-enabled' => true,
                 'geonames-server' => 'http://geonames.alchemyasp.com/',
                 'captchas-enabled' => false,
