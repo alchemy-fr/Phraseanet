@@ -21,6 +21,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexManipulateCommand extends Command
 {
+    /** @var  OutputInterface */
+    private $output = null;
+
+    /**
+     * print a string if verbosity >= verbose (-v)
+     *
+     * @param string $s
+     * @param int $verbosity
+     */
+    private function verbose($s, $verbosity = OutputInterface::VERBOSITY_VERBOSE)
+    {
+        if ($this->output->getVerbosity() >= $verbosity) {
+            $this->output->writeln($s);
+        }
+    }
+
     protected function configure()
     {
         /** @var Indexer $indexer */
@@ -54,6 +70,8 @@ class IndexManipulateCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
+
         /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
         /** @var ElasticsearchOptions $options */
@@ -112,10 +130,10 @@ class IndexManipulateCommand extends Command
             
             if ($confirmation) {
                 $indexer->deleteIndex();
-                $output->writeln(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
+                $this->verbose(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
             }
             else {
-                $output->writeln('Canceled.');
+                $this->verbose('Canceled.');
 
                 return 0;
             }
@@ -131,7 +149,7 @@ class IndexManipulateCommand extends Command
             }
             else {
                 $r = $indexer->createIndex();
-                $output->writeln(sprintf('<info>Search index "%s@%s:%s" -> "%s" was created</info>'
+                $this->verbose(sprintf('<info>Search index "%s@%s:%s" -> "%s" was created</info>'
                     , $r['alias']
                     , $options->getHost()
                     , $options->getPort()
@@ -146,7 +164,7 @@ class IndexManipulateCommand extends Command
             if(!$indexExists) {
                 $indexer->createIndex();
                 $r = $indexer->createIndex();
-                $output->writeln(sprintf('<info>Search index "%s@%s:%s" -> "%s" was created</info>'
+                $this->verbose(sprintf('<info>Search index "%s@%s:%s" -> "%s" was created</info>'
                     , $r['alias']
                     , $options->getHost()
                     , $options->getPort()
@@ -166,7 +184,7 @@ class IndexManipulateCommand extends Command
                 $newIndexName = $r['index'];
                 $newAliasName = $r['alias'];
 
-                $output->writeln(sprintf('<info>Temporary index "%s@%s:%s" -> "%s" was created</info>'
+                $this->verbose(sprintf('<info>Temporary index "%s@%s:%s" -> "%s" was created</info>'
                     , $r['alias']
                     , $options->getHost()
                     , $options->getPort()
@@ -187,16 +205,13 @@ class IndexManipulateCommand extends Command
             }
 
             if($temporary) {
-                $output->writeln(sprintf('<info>Renaming temporary to "%s" -> "%s"</info>'
-                    , $newAliasName
-                    , $newIndexName
-                ));
+                $this->verbose('<info>Renaming temporary :</info>');
 
                 $indexer->getIndex()->getOptions()->setIndexName($oldAliasName);
 
                 $r = $indexer->replaceIndex($newIndexName, $newAliasName);
                 foreach($r as $action) {
-                    $output->writeln(sprintf('<info>%s</info>', $action['msg']));
+                    $this->verbose(sprintf('  <info>%s</info>', $action['msg']));
                 }
             }
         }

@@ -36,6 +36,9 @@ def config_net(config)
         config.vm.provider "virtualbox" do |vb|
           vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
@@ -49,11 +52,18 @@ $hostname = File.basename($root).downcase
 if which('ip')
     # $hostIps = `ip addr show | grep inet | grep -v inet6 | cut -d' ' -f6 | cut -d'/' -f1`.split("\n");
     $hostIps = `ip addr show | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+    # puts "via ip : "
 else
     $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+    # puts "via ifconfig : "
 end
+$hostIps.each do |item|
+    # puts item
+end
+# puts "ici"
 
 Vagrant.configure("2") do |config|
+    # puts "là"
 
     # Configure hostmanager
     config.hostmanager.enabled = true
@@ -109,4 +119,5 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.synced_folder "./", "/vagrant", type: "nfs"
+    # puts "fin"
 end
