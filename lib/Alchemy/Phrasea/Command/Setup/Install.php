@@ -176,6 +176,7 @@ class Install extends Command
     private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
     {
         $dbConn = $template = $info = null;
+        $templates = $this->container['phraseanet.structure-template']->getAvailable();
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
@@ -196,8 +197,9 @@ class Install extends Command
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
 
                         do {
-                            $template = $dialog->ask($output, 'Choose a language template for metadata structure, available are fr (french) and en (english) (en) : ', 'en');
-                        } while (!in_array($template, ['en', 'fr']));
+                            $template = $dialog->ask($output, "Choose a language template for metadata structure, available are {$templates->__toString()} : ", 'en');
+                        }
+                        while (!in_array($template, array_keys($templates->getTemplates())));
 
                         $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
                     } catch (\Exception $e) {

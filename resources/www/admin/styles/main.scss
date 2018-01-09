@@ -343,6 +343,194 @@ div.switch_right.unchecked {
   margin-top: 5px;
 }
 
+.alert .close {
+  text-decoration: none;
+}
+
+.subdefs [id^="box"] {
+  display: none;
+}
+
+.subdefs .subviews-submit {
+  position: fixed;
+  top: 75px;
+  right: 40px;
+  z-index: 1;
+}
+
+h2.subdefName {
+  display: inline-block;
+  margin-right: 1.5rem;
+}
+
+.reload, .loader, .status {
+  display: inline-block;
+}
+
+.langTab {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.langTab h3 {
+  font-weight: 700;
+  font-size: 13px;
+  margin: 4px 0;
+  line-height: 11px;
+  text-align: center;
+}
+
+.toggle {
+  display: block;
+  margin: 15px 0;
+  color: #08c;
+  cursor: pointer;
+}
+
+.subdefTab input, .langTab input {
+  margin: 0;
+}
+
+label[for="elasticsearch_settings_highlight"] {
+  display: inline-block;
+  margin-left: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[id="elasticsearch_settings_highlight"] {
+  float: left;
+}
+
+#downbutton {
+  margin: 1rem 0;
+}
+
+#upbutton {
+  width: 100%;
+  text-align: left;
+}
+
+#upbutton i {
+  position: relative;
+  left: -5px;
+}
+
+#downbutton i {
+  position: relative;
+  left: -5px;
+}
+
+.form-horizontal .controls + div {
+  margin-left: 180px;
+  font-style: italic;
+}
+
+.ui-dialog .ui-dialog-content {
+  position: relative;
+  border: 0;
+  padding: .5em 1em;
+  background: none;
+  margin-bottom: 7rem;
+  overflow: visible;
+}
+
+/******* SETUP *******************************************************************/
+#custom-link-table {
+  width: 100%;
+  thead {
+    th {
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+  td {
+    height: 30px;
+    width: 19%;
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    .simplecolorpicker {
+      width: 21px;
+      height: 21px;
+      background-repeat: no-repeat;
+      background-size: contain !important;
+      background-position: center center;
+      border: none;
+      margin-right: 3px;
+    }
+    button {
+      height: 30px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+  }
+  td:nth-of-type(5) {
+    width: 14%;
+  }
+  td:nth-of-type(6) {
+    width: 3%;
+  }
+  td:nth-of-type(7) {
+    width: 3%;
+  }
+  td:last-child {
+    width: 8%;
+  }
+}
+
+span.simplecolorpicker.picker {
+  min-width: 0px;
+  width: 22px;
+  margin-top: -360px;
+  border-radius: 0px;
+  margin-left: 4px;
+  padding: 0;
+  span {
+    width: 20px;
+    margin: 0px;
+  }
+}
+
+#add-row {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  float: right;
+}
+
+.link_check_box:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-Bold.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+.link_check_box:checked:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-bold-active.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
 /******* SEARCH ENGINE SETTINGS ***************************************************/
 .search-engine-tabs {
   background: 0;
@@ -438,6 +626,12 @@ div.switch_right.unchecked {
   select {
     float: right;
     width: 100%;
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  .langTab {
+    display: block;
   }
 }
 

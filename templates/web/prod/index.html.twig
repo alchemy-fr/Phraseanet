@@ -200,39 +200,53 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="basket-create-action" href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau panier' | trans }}" />
-                                {{ 'action:: nouveau panier' | trans }}
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/new_basket.png"
+                                     title="{{ 'action:: nouveau panier' | trans }}"/>
+                                <span>{{ 'action:: nouveau panier' | trans }}</span>
                             </a>
                         </div>
                         <div class="context-menu-item-inner">
                             <a title="{{ 'Browse Baskets' | trans }}" class="basket-browse-action" href="#">
-                                {{ 'Browse Baskets' | trans }}
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/browse_basket.png"
+                                     title="{{ 'Browse Baskets' | trans }}"/>
+                                <span>{{ 'Browse Baskets' | trans }}</span>
                             </a>
                         </div>
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-                            <div class="context-menu-item-inner">
+                            <div class="context-menu-item-inner" style="line-height: 34px;">
+                                <div class="divider"></div>
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="story-create-action" href="#">
-                                    <img style="cursor:pointer;" src="/assets/common/images/icons/mtadd_0.gif" title="{{ 'action:: nouveau reportage' | trans }}" />
-                                    {{ 'action:: nouveau reportage' | trans }}
+                                    <img style="cursor:pointer;" src="/assets/common/images/icons/new_report.png"
+                                         title="{{ 'action:: nouveau reportage' | trans }}"/>
+                                    <span>{{ 'action:: nouveau reportage' | trans }}</span>
                                 </a>
+                                <div class="divider"></div>
                             </div>
                        {% endif %}
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="date">
-                            <img style="cursor:pointer;" src="/assets/common/images/icons/cal.png" title="{{ 'phraseanet:: tri par date' | trans }}" />
-                            {{ 'phraseanet:: tri par date' | trans }}
+                            <a title="{{ 'phraseanet:: tri par date' | trans }} " href="#">
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_date.png"
+                                     title="{{ 'phraseanet:: tri par date' | trans }}"/>
+                                <span>{{ 'phraseanet:: tri par date' | trans }}</span>
+                            </a>
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="name">
-                            <img style="cursor:pointer;" src="/assets/common/images/icons/alpha.png" title="{{ 'phraseanet:: tri par nom' | trans }}" />
-                            {{ 'phraseanet:: tri par nom' | trans }}
+                            <a title="{{ 'phraseanet:: tri par nom' | trans }} " href="#">
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_alpha.png"
+                                     title="{{ 'phraseanet:: tri par nom' | trans }}"/>
+                                <span>{{ 'phraseanet:: tri par nom' | trans }}</span>
+                            </a>
                         </div>
                     </li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-preferences-action">
-                            {{ 'Preferences' | trans }}
+                            <a title="{{ 'Preferences' | trans }} " href="#">
+                                <span>{{ 'Preferences' | trans }}</span>
+                            </a>
                         </div>
                     </li>
                 </ul>
@@ -288,6 +302,13 @@
                             <table style="width:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
+                                        {% set useTruncation = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'use_truncation') %}
+                                        <label class="checkbox inline" for="ADVSRCH_USE_TRUNCATION">
+                                            <input id="ADVSRCH_USE_TRUNCATION" type="checkbox"
+                                                   class="checkbox preferences-options-use-truncation" name="truncation"
+                                                   {% if useTruncation == '1' or useTruncation == NULL %}checked="checked"{% endif %}>
+                                            {{ 'index:advanced-preferences:: use truncation' | trans }}
+                                        </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
                                             <div class="btn-toolbar">
                                                 <input class="btn btn-inverse toggle-database" type="button"
@@ -663,6 +684,22 @@
                             <input type="button" class="btn btn-inverse preferences-options-submit" value="{{'boutton::valider'  | trans }}" />
                         </form>
                     </div>
+                </div>
+                <div class="box">
+                    <h1>{{ 'Collection order' | trans }}</h1>
+                    <form class="form-inline">
+                        {% set order_collection_by = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_collection_by') %}
+                        <label class="select" for="orderByName">
+                            <select class="preferences-options-collection-order" name="orderByName">
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_ADMIN') }}">{{ 'Defined by admin' | trans }}</option>
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                            </select>
+                        </label>
+                    </form>
                 </div>
                 <div class="box">
                     <h1>{{ 'index::advance_search: facet' | trans }}</h1>

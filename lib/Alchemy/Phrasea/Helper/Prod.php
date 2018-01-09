@@ -46,9 +46,33 @@ class Prod extends Helper
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
                 $bases[$sbasId]['collections'][] = array(
                     'selected' => $selected,
-                    'base_id' => $coll->get_base_id()
+                    'base_id'  => $coll->get_base_id(),
+                    'name'     => $coll->get_name(),
+                    'order'    => $coll->get_ord()
                 );
             }
+
+            /** @var DisplaySettingService $settings */
+            $settings = $this->app['settings'];
+            $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+
+            // a temporary array to sort the collections
+            $aName = [];
+            list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
+            switch ($userOrderSetting) {
+                case $settings::ORDER_ALPHA_ASC :
+                    list($ukey, $uorder) = ["name", SORT_ASC];
+                    break;
+
+                case $settings::ORDER_ALPHA_DESC :
+                    list($ukey, $uorder) = ["name", SORT_DESC];
+                    break;
+            }
+            foreach ($bases[$sbasId]['collections'] as $key => $row) {
+                $aName[$key] = $row[$ukey];
+            }
+            // sort the collections
+            array_multisort($aName, $uorder, SORT_REGULAR, $bases[$sbasId]['collections']);
 
             foreach ($databox->get_meta_structure() as $fieldMeta) {
                 if (!$fieldMeta->is_indexable()) {
