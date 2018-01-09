@@ -111,6 +111,13 @@ div.finder div.content div.title {
   white-space: nowrap;
   overflow: hidden;
 }
+
+//setting
+.dumpfield {
+  margin-top:10px;
+  width: 400px;
+}
+
 /******* MAIN MENU ************************************************************/
 
 
@@ -522,6 +529,104 @@ span.simplecolorpicker.picker {
   background-repeat: no-repeat;
   background-size: 75%;
   background-position: center center;
+}
+
+/******* SEARCH ENGINE SETTINGS ***************************************************/
+.search-engine-tabs {
+  background: 0;
+  border: 0;
+  .top-bar-shadow {
+    margin-top: 1px;
+    background: #aaa8a5; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* Standard syntax */
+    height: 4px;
+  }
+  .ui-tabs-active {
+    background: #9EA09D !important;
+    a {
+      color: #FFFFFF !important;
+    }
+  }
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+    background: #EFF0F0;
+    a {
+      color: #9EA09D;
+    }
+  }
+}
+
+#elasticsearch_settings_esSettingsDropIndexButton, #elasticsearch_settings_esSettingsCreateIndexButton {
+  margin-bottom: 20px;
+}
+
+#elasticsearch_settings_save {
+  padding: 15px;
+  margin-top: 20px;
+  &::before {
+    content: "\F0A0";
+    font-family: "FontAwesome";
+    margin-right: 5px;
+  }
+}
+
+#elasticsearch_settings_esSettingFromIndex {
+  margin-top: 20px;
+}
+
+#elastic-search, #general-aggregation {
+  background: #ffffff;
+}
+
+.general-aggregation-layout {
+  margin-top: 20px;
+  width: 450px;
+  button.btn-primary {
+    margin-left: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    width: 180px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+.aggregation-collection {
+  li {
+    border: 1px solid #ccc;
+    background: #FFF;
+    color: #000;
+    height: 30px;
+    margin: 4px;
+    padding: 20px;
+    table {
+      width: 100%;
+      display: inline-table;
+      vertical-align: middle;
+      height: 100%;
+      table-layout: fixed;
+    }
+  }
+  .label-aggregation {
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+    margin-bottom: 0px;
+  }
+  select {
+    float: right;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1150px) {

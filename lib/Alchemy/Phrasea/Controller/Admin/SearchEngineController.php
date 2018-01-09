@@ -36,11 +36,13 @@ class SearchEngineController extends Controller
             return $this->app->redirectPath('admin_searchengine_form');
         }
 
-        return $this->render('admin/search-engine/elastic-search.html.twig', [
+        return $this->render('admin/search-engine/search-engine-settings.html.twig', [
             'form' => $form->createView(),
             'indexer' => $this->app['elasticsearch.indexer']
         ]);
     }
+
+
 
     public function dropIndexAction(Request $request)
     {
@@ -85,6 +87,30 @@ class SearchEngineController extends Controller
     {
         return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
             'action' => $this->app->url('admin_searchengine_form'),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getSettingFromIndexAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $this->app->abort(400);
+        }
+        $indexer = $this->app['elasticsearch.indexer'];
+        $index = $request->get('index');
+        if (!$indexer->indexExists() || is_null($index))
+        {
+            return $this->app->json([
+                'success' => false,
+                'message' => $this->app->trans('An error occurred'),
+            ]);
+        }
+        return $this->app->json([
+            'success' => true,
+            'response' => $indexer->getSettings(['index' => $index])
         ]);
     }
 }

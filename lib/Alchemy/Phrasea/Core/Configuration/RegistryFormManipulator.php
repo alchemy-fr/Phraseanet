@@ -110,7 +110,7 @@ class RegistryFormManipulator
                 'thumb-substitution' => true,
                 'anonymous-report' => false,
             ],
-            'actions'      => [
+            'actions' => [
                 'download-max-size' => 120,
                 'validation-reminder-days' => 2,
                 'validation-expiration-days' => 10,
