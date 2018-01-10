@@ -5,6 +5,7 @@
     - vars/all.yml
   roles:
     - server
+    - repositories
     - vagrant_local
     - nginx
     - mariadb

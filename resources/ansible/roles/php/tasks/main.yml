@@ -1,11 +1,8 @@
 ---
-- name: Add ppa Repository
+# Watch repositories task to retrieve repository add
+- name: Install php5.6
   sudo: yes
-  apt_repository: repo=ppa:ondrej/{{ php.ppa }} update_cache=yes
-
-- name: Install php5
-  sudo: yes
-  apt: pkg=php5 state=latest
+  apt: pkg=php5.6 state=latest
 
 - name: Install php5.6-fpm
   sudo: yes
