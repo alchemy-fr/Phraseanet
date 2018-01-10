@@ -163,7 +163,7 @@ class Installer
         $st = $this->app['phraseanet.structure-template'];
 
         $template = $st->getTemplateByName($templateName);
-        if(isNull($template)) {
+        if(is_null($template)) {
             throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
