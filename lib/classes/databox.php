@@ -1444,7 +1444,7 @@ class databox extends base implements ThumbnailedElement
 
         $missing_locale = [];
 
-        $TOU = [];
+        //$TOU = [];
         $avLanguages = $this->app['locales.available'];
         foreach ($avLanguages as $code => $language) {
             if (!isset($TOU[$code])) {
