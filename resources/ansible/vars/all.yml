@@ -50,9 +50,9 @@ mariadb:
 elasticsearch:
     install: '1'
     port: '9200'
-    version: '1.7.3'
+    version: '2.3.3'
     plugins:
-        - {name: 'elasticsearch/elasticsearch-analysis-icu', version: '2.7.0'}
+        - {name: 'analysis-icu'}
 php:
     install: '1'
     ppa: php
@@ -76,8 +76,9 @@ php:
         - 'php5.6-bcmath'
         - 'php-pear'
     pecl_packages:
-        - {name: zmq, package: zmq-beta}
-        - {name: amqp, package: amqp-1.4.0}
+        - {name: zmq, package: php-zmq}
+        - {name: amqp, package: amqp-1.9.3}
+
 xdebug:
     install: '1'
     idekey: 'PHPSTORM'
