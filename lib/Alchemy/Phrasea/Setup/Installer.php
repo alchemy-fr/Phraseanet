@@ -30,7 +30,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -40,7 +40,7 @@ class Installer
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
             if (null !== $dbConn) {
-                $this->createDB($dbConn, $template, $user);
+                $this->createDB($dbConn, $templateName, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
@@ -162,9 +162,10 @@ class Installer
         /** @var StructureTemplate $st */
         $st = $this->app['phraseanet.structure-template'];
 
-        $SPLTemplate = $st->getTemplateByName($templateName);
-
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $st->getTemplateByName($template) . '.xml');
+        $template = $st->getTemplateByName($templateName);
+        if(isNull($template)) {
+            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
+        }
 
         $databox = \databox::create($this->app, $dbConn, $template);
 

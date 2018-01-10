@@ -3,9 +3,11 @@
 namespace Alchemy\Phrasea\Command\Databox;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxService;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,13 +30,16 @@ class CreateDataboxCommand extends Command
                 'db-template',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Metadata structure language template (available are fr (french) and en (english))',
-                'frxx'
+                'Databox template',
+                null
             );
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var DialogHelper $dialog */
+        $dialog = $this->getHelperSet()->get('dialog');
+
         $databoxName = $input->getArgument('databox');
         $connectionSettings = $input->getOption('connection') == false ? null : new DataboxConnectionSettings(
             $input->getOption('db-host'),
@@ -53,17 +58,36 @@ class CreateDataboxCommand extends Command
             return 1;
         }
 
+
         /** @var DataboxService $databoxService */
         $databoxService = $this->container['databox.service'];
 
-        try {
-            if($databoxService->exists($databoxName, $connectionSettings)) {
-                $output->writeln(sprintf("<error>Database \"%s\" already exists</error>", $databoxName));
-                return 1;
+        if($databoxService->exists($databoxName, $connectionSettings)) {
+            $output->writeln(sprintf("<error>Database \"%s\" already exists</error>", $databoxName));
+
+            return 1;
+        }
+
+
+        /** @var StructureTemplate $templates */
+        $templates = $this->container['phraseanet.structure-template'];
+
+        // if a template name is provided, check that this template exists
+        $templateName = $input->getOption('db-template');
+        if($templateName && !$templates->getTemplateByName($templateName)) {
+            throw new \Exception_InvalidArgument(sprintf("Databox template \"%s\" not found.", $templateName));
+        }
+        if(!$templateName) {
+            do {
+                $templateName = $dialog->ask($output, "Choose a template from (".$templates->toString().") for metadata structure : ");
             }
+            while (!$templates->getTemplateByName($templateName));
+        }
+
+        try {
             $databoxService->createDatabox(
                 $databoxName,
-                $input->getOption('db-template') . '-simple',
+                $templateName,
                 $owner,
                 $connectionSettings
             );

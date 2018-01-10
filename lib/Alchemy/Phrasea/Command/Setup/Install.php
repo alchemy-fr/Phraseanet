@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
@@ -40,7 +41,7 @@ class Install extends Command
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
             ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
-            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template (available are fr (french) and en (english))', null)
+            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Databox template', null)
             ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
@@ -58,6 +59,7 @@ class Install extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $output->writeln("<comment>
@@ -97,7 +99,7 @@ class Install extends Command
 
         $abConn = $this->getABConn($input, $output, $dialog);
 
-        list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
+        list($dbConn, $templateName) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
         $serverName = $this->getServerName($input, $output, $dialog);
@@ -127,7 +129,7 @@ class Install extends Command
             }
         }
 
-        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
         $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
 
         if (null !== $this->getApplication()) {
@@ -139,7 +141,7 @@ class Install extends Command
 
         $output->writeln("<info>Install successful !</info>");
 
-        return;
+        return 0;
     }
 
     private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
@@ -195,9 +197,23 @@ class Install extends Command
 
     private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
     {
-        $dbConn = $template = $info = null;
-        $templates = $this->container['phraseanet.structure-template']->getAvailable();
-        
+        $dbConn = $info = null;
+
+        /** @var StructureTemplate $templates */
+        $templates = $this->container['phraseanet.structure-template'];
+
+        // if a template name is provided, check that this template exists
+        $templateName = $input->getOption('db-template');
+        if($templateName && !$templates->getTemplateByName($templateName)) {
+            throw new \Exception_InvalidArgument(sprintf("Databox template \"%s\" not found.", $templateName));
+        }
+        if(!$templateName) {
+            do {
+                $templateName = $dialog->ask($output, "Choose a template from (".$templates->toString().") for metadata structure : ");
+            }
+            while (!$templates->getTemplateByName($templateName));
+        }
+
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
@@ -216,22 +232,18 @@ class Install extends Command
                         $dbConn = $this->container['dbal.provider']($info);
                         $dbConn->connect();
                         $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
-
-                        do {
-
-                            $template = $dialog->ask($output, "Choose a language template for metadata structure, available are {$templates->__toString()} : ", 'en');
-                        }
-                        while (!in_array($template, array_keys($templates->getTemplates())));
-
-                        $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
-                    } catch (\Exception $e) {
+                    }
+                    catch (\Exception $e) {
                         $retry = true;
                     }
-                } else {
+                }
+                else {
                     $output->writeln("\n\tNo databox will be created\n");
                 }
+
             } while ($retry);
-        } else {
+        }
+        else {
             $info = [
                 'host'     => $input->getOption('db-host'),
                 'port'     => $input->getOption('db-port'),
@@ -242,9 +254,9 @@ class Install extends Command
 
             $dbConn = $this->container['dbal.provider']($info);
             $dbConn->connect();
-            $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
-            $template = $input->getOption('db-template') ? : 'en';
+            $output->writeln("\n\t<info>Databox : Connection successful !</info>\n");
         }
+
 
         // add dbs.option & orm.options services to use orm.em later
         if ($dbConn && $info) {
@@ -252,7 +264,7 @@ class Install extends Command
             $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
-        return [$dbConn, $template];
+        return [$dbConn, $templateName];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)

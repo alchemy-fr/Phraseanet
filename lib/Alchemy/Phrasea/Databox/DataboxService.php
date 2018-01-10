@@ -4,7 +4,8 @@ namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate
+;use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -103,11 +104,22 @@ class DataboxService
     }
 
     /**
+     * @param Connection $connection
+     * @param \SplFileInfo $template
+     * @return \databox
+     */
+    public function createDataboxFromConnection($connection, $template)
+    {
+        return \databox::create($this->app, $connection, $template);
+    }
+
+    /**
      * @param User $owner
      * @param string $databaseName
      * @param string $templateName
      * @param DataboxConnectionSettings|null $connectionSettings
      * @return \databox
+     * @throws \Exception_InvalidArgument
      */
     public function createDatabox(
         $databaseName,
@@ -117,11 +129,12 @@ class DataboxService
     ) {
         $this->validateDatabaseName($databaseName);
 
-        $templateName = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $templateName . '.xml');
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
 
-        $rp = $templateName->getRealPath();
-        if ($rp || !file_exists($rp)) {
-            throw new \InvalidArgumentException(sprintf("Databox template \"%s\" not found.", $templateName));
+        $template = $st->getTemplateByName($templateName);
+        if(is_null($template)) {
+            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
@@ -155,7 +168,8 @@ class DataboxService
 
         $connection->connect();
 
-        $databox = \databox::create($this->app, $connection, $templateName);
+        $databox = $this->createDataboxFromConnection($connection, $template);
+
         $databox->registerAdmin($owner);
 
         $connection->close();

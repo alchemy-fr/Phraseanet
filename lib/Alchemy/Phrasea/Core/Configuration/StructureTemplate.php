@@ -21,12 +21,18 @@ class StructureTemplate
 {
     const TEMPLATE_EXTENSION = 'xml';
 
+    /** @var  string */
+    private $rootPath;
+
     /** @var  \SplFileInfo[] */
     private $templates;
 
-    public function __construct(Application $app)
+    /**
+     * @param string $rootPath
+     */
+    public function __construct($rootPath)
     {
-        $this->app = $app;
+        $this->rootPath = $rootPath;
         $this->templates = null;    // lazy loaded, not yet set
     }
 
@@ -40,7 +46,7 @@ class StructureTemplate
             return;     // already loaded
         }
 
-        $templateList = new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates');
+        $templateList = new \DirectoryIterator($this->rootPath . '/lib/conf.d/data_templates');
 
         $this->templates = [];
         foreach ($templateList as $template) {
@@ -51,8 +57,9 @@ class StructureTemplate
                 continue;
             }
 
-            $name = $template->getFilename();
-            $this->templates[$name] = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
+            $name = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
+            // beware that the directoryiterator returns a reference on a static, so clone()
+            $this->templates[$name] = clone($template);
         }
     }
 
@@ -69,6 +76,13 @@ class StructureTemplate
         }
 
         return $this->templates[$templateName];
+    }
+
+    public function toString()
+    {
+        $this->load();
+
+        return implode(', ', array_keys($this->templates));
     }
 
     /**
