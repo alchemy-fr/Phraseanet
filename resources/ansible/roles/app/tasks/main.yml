@@ -39,12 +39,12 @@
 - name: Create extra databox
   become: yes
   become_user: vagrant
-  shell: 'bin/console databox:create db_alt admin@{{ hostname }}.vb'
+  shell: 'bin/console databox:create {{ mariadb.alt_databox_db }} admin@{{ hostname }}.vb'
   args:
     chdir: /vagrant/
 
 - name: Enable debugger for host IP addresses
-  shell: bin/setup system:config add debugger.allowed-ips "{{ item}}"
+  shell: bin/setup system:config add debugger.allowed-ips "{{ item }}"
   with_items: '{{ host_addresses }}'
   args:
     chdir: /vagrant/

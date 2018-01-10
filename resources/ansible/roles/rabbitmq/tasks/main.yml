@@ -1,26 +1,10 @@
 ---
-- name: Add package repository
-  sudo: yes
-  shell: echo 'deb http://www.rabbitmq.com/debian/ testing main' > /etc/apt/sources.list.d/rabbitmq.list
-
-- name: Install package repository key
-  sudo: yes
-  shell: wget https://www.rabbitmq.com/rabbitmq-signing-key-public.asc && apt-key add rabbitmq-signing-key-public.asc
-
-- name: Remove signing key
-  sudo: yes
-  shell: rm rabbitmq-signing-key-public.asc
-
-- name: Update apt
-  sudo: yes
-  apt: update_cache=yes
-
+# Watch repositories task to retrieve repository add
 - name: Install server and libraries
   sudo: yes
   apt: pkg={{ item }} state=latest allow_unauthenticated=yes
   with_items:
     - rabbitmq-server
-    - librabbitmq1
     - librabbitmq-dev
 
 - name: Enable management plugin

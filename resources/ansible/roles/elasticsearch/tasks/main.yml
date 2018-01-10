@@ -1,4 +1,5 @@
 ---
+# Watch repositories task to retrieve repository add
 - name: Check Elastic Search installation
   shell: apt-cache policy elasticsearch | grep -Po 'Installed:\s(.*)' | cut -d' ' -f 2;
   changed_when: false
@@ -6,9 +7,6 @@
 
 - name: Set installed variable
   set_fact: is_installed='{{ install_status.stdout == elasticsearch.version }}'
-
-- name: Add dependencies repository
-  apt_repository: repo='ppa:webupd8team/java' update_cache=yes
 
 - name: Set dependencies License
   shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
