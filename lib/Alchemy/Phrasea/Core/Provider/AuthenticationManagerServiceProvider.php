@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -8,9 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Alchemy\Phrasea\Core\Provider;
-
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\AccountCreator;
 use Alchemy\Phrasea\Authentication\Manager;
@@ -26,9 +23,9 @@ use Alchemy\Phrasea\Authentication\RecoveryService;
 use Alchemy\Phrasea\Authentication\RegistrationService;
 use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Silex\Application;
+use ReCaptcha\ReCaptcha;
 use Silex\ServiceProviderInterface;
 use Alchemy\Phrasea\Core\Event\Subscriber\PersistentCookieSubscriber;
-
 class AuthenticationManagerServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
@@ -36,7 +33,11 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         $app['authentication'] = $app->share(function (Application $app) {
             return new Authenticator($app, $app['browser'], $app['session'], $app['orm.em']);
         });
-
+        if($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']) !== ""){
+            $app['recaptcha'] = $app->share(function (Application $app) {
+                return new ReCaptcha($app['conf']->get(['registry', 'webservices', 'recaptcha-private-key']));
+            });
+        }
         $app['authentication.persistent-manager'] = $app->share(function (Application $app) {
             return new CookieManager($app['auth.password-encoder'], $app['repo.sessions'], $app['browser']);
         });
@@ -46,7 +47,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['authentication.providers.factory'] = $app->share(function (Application $app) {
-           return new ProviderFactory($app['url_generator'], $app['session']);
+            return new ProviderFactory($app['url_generator'], $app['session']);
         });
 
         $app['authentication.providers.account-creator'] = $app->share(function (Application $app) {
@@ -129,8 +130,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native.failure-manager'] = $app->share(function (Application $app) {
-            $authConf = $app['conf']->get(['authentication', 'captcha']);
-
+            $authConf = $app['conf']->get(['registry', 'webservices']);
             return new FailureManager($app['repo.auth-failures'], $app['orm.em'], $app['recaptcha'], isset($authConf['trials-before-display']) ? $authConf['trials-before-display'] : 9);
         });
 
@@ -139,9 +139,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
         });
 
         $app['auth.native'] = $app->share(function (Application $app) {
-            $authConf = $app['conf']->get('authentication');
+            $authConf = $app['conf']->get(['registry', 'webservices']);
 
-            if ($authConf['captcha']['enabled']) {
+            if ($authConf['captchas-enabled']) {
                 return new FailureHandledNativeAuthentication(
                     $app['auth.password-checker'],
                     $app['auth.native.failure-manager']

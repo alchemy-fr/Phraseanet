@@ -8,15 +8,15 @@
   "repositories": [
     {
       "type": "package",
-        "package": {
-          "name": "facebook/php-sdk",
-          "version": "3.2.3",
-          "source": {
-            "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-            "type": "git",
-            "reference": "3.2.3"
-            }
-       }
+      "package": {
+        "name": "facebook/php-sdk",
+        "version": "3.2.3",
+        "source": {
+          "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
+          "type": "git",
+          "reference": "3.2.3"
+        }
+      }
     },
     {
       "type": "vcs",
