@@ -19,6 +19,8 @@ use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Permalink;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
@@ -89,6 +91,8 @@ class ApiApplicationLoader extends BaseApplicationLoader
             }
         });
 
+        $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
+
         $app->get('/api/', function (Request $request, Application $app) {
             return Result::create($request, [
                 'name'          => $app['conf']->get(['registry', 'general', 'title']),
@@ -140,6 +144,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->after(function (Request $request, Response $response) use ($app) {
             $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
         });
+        $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
     }
 
     protected function getDispatcherSubscribersFor(Application $app)
