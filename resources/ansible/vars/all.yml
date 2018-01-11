@@ -57,7 +57,7 @@ elasticsearch:
     port: '9200'
     version: '2.3.3'
     plugins:
-        - {name: 'elasticsearch/elasticsearch-analysis-icu'}
+        - {name: 'analysis-icu'}
 php:
     install: '1'
     ppa: php

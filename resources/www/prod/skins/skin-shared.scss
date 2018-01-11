@@ -341,7 +341,7 @@ span.ww_winTitle {
 
 .invisible-btn {
   position: absolute;
-  top: 50%;
+  top: 21%;
   z-index: 1;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -349,9 +349,8 @@ span.ww_winTitle {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  height: 320px;
-  width: 150px;
-  margin-top: -160px;
+  height: 50%;
+  width: 25%;
   i {
     display: none;
     font-size: 120px;

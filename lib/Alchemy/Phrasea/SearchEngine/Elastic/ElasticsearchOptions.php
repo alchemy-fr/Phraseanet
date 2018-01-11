@@ -117,11 +117,20 @@ class ElasticsearchOptions
                 'label' => 'Aperture',
                 'field' => 'metadata_tags.Aperture',
                 'query' => 'meta.Aperture=%s',
+                'output_formatter' => function($value) {
+                    return round($value, 1);
+                },
             ],
             'shutterspeed_aggregate' => [
                 'label' => 'Shutter speed',
                 'field' => 'metadata_tags.ShutterSpeed',
                 'query' => 'meta.ShutterSpeed=%s',
+                'output_formatter' => function($value) {
+                    if($value < 1.0 && $value != 0) {
+                        $value = '1/' . round(1.0 / $value);
+                    }
+                    return $value . ' s.';
+                },
             ],
             'flashfired_aggregate' => [
                 'label' => 'FlashFired',
@@ -130,6 +139,10 @@ class ElasticsearchOptions
                 'choices' => [
                     "aggregated (2 values: fired = 0 or 1)" => -1,
                 ],
+                'output_formatter' => function($value) {
+                    static $map = ['0'=>"No flash", '1'=>"Flash"];
+                    return array_key_exists($value, $map) ? $map[$value] : $value;
+                },
             ],
             'framerate_aggregate' => [
                 'label' => 'FrameRate',

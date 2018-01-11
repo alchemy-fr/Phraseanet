@@ -604,6 +604,7 @@ function initAnswerForm() {
  }
  */
 var selectedFacetValues = [];
+var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 
 function loadFacets(facets) {
     // Convert facets data to fancytree source format
@@ -623,13 +624,13 @@ function loadFacets(facets) {
             title: facet.label,
             folder: true,
             children: values,
-            expanded: true
+            expanded: !_.some(facetStatus, function(o) { return _.has(o, facet.name)})
         };
     });
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
+    treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
 
     treeSource = shouldFilterSingleContent(treeSource, filterFacet);
 
@@ -703,6 +704,11 @@ function getFacetsTree() {
             source: [],
             activate: function(event, data){
                 var query = data.node.data.query;
+                var eventType = event.originalEvent;
+                //if user did not click, then no need to perform any query
+                if(eventType == null) {
+                    return;
+                }
                 if (query) {
                     var facet = data.node.parent;
                     var facetData = {
@@ -716,6 +722,24 @@ function getFacetsTree() {
                     selectedFacetValues[facet.title].push(facetData);
                     facetCombinedSearch();
                 }
+            },
+            
+            collapse: function (event, data) {    
+                var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if(_.findWhere(facetStatus, dict) !== undefined ) {
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict)) 
+                }    
+                facetStatus.push(dict);    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
+            },
+            expand: function (event, data) {
+            var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if (_.findWhere(facetStatus, dict) !== undefined) {         
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))     
+                }    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
             renderNode: function(event, data){
                 var facetFilter = "";
@@ -1571,12 +1595,12 @@ $(document).ready(function () {
                                     $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop() - 30);
                                     cancelKey = shortCut = true;
                                     break;
-                                //								case 37://previous page
-                                //									$('#PREV_PAGE').trigger('click');
-                                //									break;
-                                //								case 39://previous page
-                                //									$('#NEXT_PAGE').trigger('click');
-                                //									break;
+                                case 37://previous page
+                                    $('#PREV_PAGE').trigger('click');
+                                    break;
+                                case 39://previous page
+                                    $('#NEXT_PAGE').trigger('click');
+                                    break;
                                 case 9://tab
                                     if (!is_ctrl_key(event) && !$('.ui-widget-overlay').is(':visible') && !$('.overlay_box').is(':visible')) {
                                         document.getElementById('EDIT_query').focus();
@@ -1805,10 +1829,12 @@ function deleteThis(lst) {
         data: {lst: lst},
         success: function (data) {
             var response = JSON.parse(data);
-            if (response.filteredRecord.trash.length > 0 && response.filteredRecord.delete.length > 0) {
-                $dialog.setOption('height', '227');
-            }
+            $dialog.setOption('height', 'auto');
+
             $dialog.setContent(response.renderView);
+
+            //reset top position of dialog
+            $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
         }
     });
 

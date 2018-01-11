@@ -422,6 +422,13 @@ input[id="elasticsearch_settings_highlight"] {
   overflow: visible;
 }
 
+#masks_dialog {
+  margin-bottom: 0;
+  form {
+    margin: 0;
+  }
+}
+
 /******* SETUP *******************************************************************/
 #custom-link-table {
   width: 100%;

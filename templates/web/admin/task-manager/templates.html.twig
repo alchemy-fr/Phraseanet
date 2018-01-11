@@ -48,6 +48,7 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
+                {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
                 <li>
                     <a method="POST" href="<%- scheduler['urls']['start'] %>">
                         {{ 'Start' | trans }}
@@ -58,6 +59,7 @@
                         {{ 'Stop' | trans }}
                     </a>
                 </li>
+                {% endif %}
                 <li>
                     <a href="<%- scheduler['urls']['log'] %>">
                         {{ 'Logs' | trans }}
