@@ -9,6 +9,6 @@ class ApiLoadEndEvent extends SfEvent
 {
     public function getName()
     {
-        return PhraseaEvents::API_LOAD_START;
+        return PhraseaEvents::API_LOAD_END;
     }
 }
