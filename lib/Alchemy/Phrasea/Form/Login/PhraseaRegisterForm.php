@@ -120,6 +120,9 @@ class PhraseaRegisterForm extends AbstractType
                 );
             }
         }
+        $builder->add('captcha', 'hidden', [
+            'error_bubbling' => false
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

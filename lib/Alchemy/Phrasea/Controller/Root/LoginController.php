@@ -65,6 +65,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormError;
 
 class LoginController extends Controller
 {
@@ -188,6 +189,14 @@ class LoginController extends Controller
             $data = $form->getData();
 
             $provider = null;
+
+            if(isset($requestData['g-recaptcha-response']) && $requestData['g-recaptcha-response'] == "") {
+                $this->app->addFlash('error', $this->app->trans('Please fill captcha'));
+
+                $dateError = new FormError("");
+                $form->get('captcha')->addError($dateError);
+            }
+
             if ($data['provider-id']) {
                 try {
                     $provider = $this->findProvider($data['provider-id']);
