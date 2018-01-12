@@ -136,6 +136,7 @@ authentication:
             options:
                 app-id: ''
                 secret: ''
+                default-graph-version: 'v2.10'
         twitter:
             enabled: false
             options:
