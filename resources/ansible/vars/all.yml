@@ -84,6 +84,7 @@ php:
         - 'php-zmq'
         - 'php-amqp'
 node:
+    install: '1'
     version: '9.4.0' 
 xdebug:
     install: '1'
@@ -96,3 +97,6 @@ composer:
 mailcatcher:
     install: '1'
 
+ffmpeg:
+    install: '1'
+    version: '3.1.10'
