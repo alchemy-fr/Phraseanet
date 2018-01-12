@@ -1,0 +1,57 @@
+---
+# This playbook will compile and install FFmpeg and dependencies for Phraseanet 
+
+- name: Install dependencies for ffmpeg compilation 
+  apt: pkg={{ item }} state=latest
+
+  with_items:
+    - yasm
+    - libvorbis-dev 
+    - texi2html 
+    - nasm
+    - zlib1g-dev
+    - libx264-dev
+    - libfdk-aac-dev
+    - libopus-dev    
+    - libvpx-dev
+    - libmp3lame-dev
+    - libogg-dev
+    - libfaac-dev
+    - libopencore-amrnb-dev 
+    - libopencore-amrwb-dev
+    - libdc1394-22-dev
+    - libx11-dev
+    - libswscale-dev
+    - libpostproc-dev
+    - libxvidcore-dev
+    - libtheora-dev
+    - libgsm1-dev
+    - libfreetype6-dev
+
+# Download FFMPEG
+
+- name: ffmpeg | Download
+  get_url: url=http://ffmpeg.org/releases/ffmpeg-{{ ffmpeg.version }}.tar.gz dest=/tmp/ffmpeg-{{ ffmpeg.version }}.tar.gz
+
+- name: ffmpeg | Untar
+  shell: tar xzvf ffmpeg-{{ ffmpeg.version }}.tar.gz
+  args:
+    chdir: "/tmp"
+    creates: "/tmp/ffmpeg-{{ ffmpeg.version }}"		
+- name: Compile | ffmpeg
+  shell: "export PATH=/usr/local/bin/:$PATH && {{ item }}"
+  args:
+    chdir: "/tmp/ffmpeg-{{ ffmpeg.version }}"
+  with_items:
+    - ./configure --enable-gpl --enable-nonfree --enable-libfaac --enable-libfdk_aac --enable-libgsm --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libfreetype --enable-libopus --enable-libx264 --enable-libxvid --enable-zlib --enable-postproc --enable-swscale --enable-pthreads --enable-x11grab --enable-libdc1394 --enable-version3 --enable-libopencore-amrnb --enable-libopencore-amrwb
+    - make
+    - make install
+    - make distclean
+
+- name: delete ffmpeg sources files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/tmp/ffmpeg-{{ ffmpeg.version }}"
+    - "/tmp/ffmpeg-{{ ffmpeg.version }}.tar.gz"

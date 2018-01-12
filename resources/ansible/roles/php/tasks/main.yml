@@ -15,4 +15,4 @@
   when: php.packages is defined
 
 - include: configure.yml
-- include: pecl.yml
+# - include: pecl.yml
