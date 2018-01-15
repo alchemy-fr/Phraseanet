@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Application;
 class StructureTemplate
 {
     const TEMPLATE_EXTENSION = 'xml';
+    const DEFAULT_TEMPLATE = 'en-simple';
 
     /** @var  string */
     private $rootPath;
@@ -67,7 +68,7 @@ class StructureTemplate
      * @param string $templateName
      * @return \SplFileInfo | null
      */
-    public function getTemplateByName($templateName)
+    public function getByName($templateName)
     {
         $this->load();
 
@@ -78,6 +79,20 @@ class StructureTemplate
         return $this->templates[$templateName];
     }
 
+    /**
+     * @param $index
+     * @return null|\SplFileInfo
+     */
+    public function getNameByIndex($index)
+    {
+        static $indexToKey = null;
+        if(is_null($indexToKey)) {
+            $indexToKey = array_keys($this->templates);
+        }
+
+        return $indexToKey[$index];
+    }
+
     public function toString()
     {
         $this->load();
@@ -86,11 +101,12 @@ class StructureTemplate
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getTemplates()
+    public function getDefault()
     {
-        return $this->templates;
-    }
+        $this->load();
 
+        return $this->getByName(self::DEFAULT_TEMPLATE) ? self::DEFAULT_TEMPLATE : $this->getNameByIndex(0);
+    }
 }

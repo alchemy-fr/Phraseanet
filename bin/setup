@@ -75,7 +75,7 @@ $app->command(new PluginsReset());
 $app->command(new EnablePlugin());
 $app->command(new DisablePlugin());
 $app->command(new CheckEnvironment('check:system'));
-$app->command(new Install('system:install'));
+$app->command(new Install('system:install', $app['phraseanet.structure-template']));
 $app->command(new CrossDomainGenerator());
 $app->command(new FixAutoincrements('system:fix-autoincrements'));
 

@@ -74,14 +74,20 @@ class CreateDataboxCommand extends Command
 
         // if a template name is provided, check that this template exists
         $templateName = $input->getOption('db-template');
-        if($templateName && !$templates->getTemplateByName($templateName)) {
+        if($templateName && !$templates->getByName($templateName)) {
             throw new \Exception_InvalidArgument(sprintf("Databox template \"%s\" not found.", $templateName));
         }
         if(!$templateName) {
+            // propose a default template : the first available if "en-simple" does not exists.
+            $defaultDBoxTemplate = $templates->getDefault();
+
             do {
-                $templateName = $dialog->ask($output, "Choose a template from (".$templates->toString().") for metadata structure : ");
+                $templateName = $dialog->ask($output, 'Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate);
+                if(!$templates->getByName($templateName)){
+                    $output->writeln("    <error>Data-Box template : Template not found, try again.</error>");
+                }
             }
-            while (!$templates->getTemplateByName($templateName));
+            while (!$templates->getByName($templateName));
         }
 
         try {

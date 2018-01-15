@@ -1438,13 +1438,13 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $TOU = [];
         foreach ($rs as $row) {
             $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }
 
         $missing_locale = [];
 
-        //$TOU = [];
         $avLanguages = $this->app['locales.available'];
         foreach ($avLanguages as $code => $language) {
             if (!isset($TOU[$code])) {
