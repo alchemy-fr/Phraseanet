@@ -23,7 +23,13 @@
     "jake": "latest",
     "path": "^0.12.7",
     "tmp": "0.0.23",
-    "wrench": "^1.5.8"
+    "wrench": "^1.5.8",
+    "chai": "^1.6.1",
+    "js-fixtures": "^1.5.3",
+    "mocha": "^4.1.0",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.5.0",
+    "squire": "^1.1.8"
   },
   "engines": {
     "node": ">=5.8"
@@ -35,7 +41,36 @@
     "phraseanet-production-client": "npm uninstall phraseanet-production-client && npm install phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
   },
   "dependencies": {
+    "JSON2": "^0.1.0",
     "alchemy-embed-medias": "^0.4.4",
-    "phraseanet-production-client": "^0.32.3"
+    "backbone": "^1.0.0",
+    "blueimp-file-upload": "^8.3.0",
+    "blueimp-load-image": "^2.17.1",
+    "bootstrap-multiselect": "^0.9.13",
+    "bootstrap-sass": "^2.3.2",
+    "font-awesome": "^4.7.0",
+    "galleria": "^1.5.7",
+    "geonames-server-jquery-plugin": "^0.2.2",
+    "html5shiv": "^3.7.3",
+    "humane-js": "^3.0.6",
+    "i18next": "^1.10.6",
+    "jquery": "^1.11.3",
+    "jquery-lazyload": "^1.9.7",
+    "jquery-mobile": "^1.5.0-alpha.1",
+    "jquery-simplecolorpicker": "^0.3.1",
+    "jquery-ui": "^1.12.1",
+    "jquery-ui-datepicker-with-i18n": "^1.10.4",
+    "jquery-ui-dist": "^1.12.1",
+    "jquery.cookie": "^1.4.1",
+    "jquery.fancytree": "^2.27.0",
+    "modernizr": "^3.0.0",
+    "normalize-css": "^2.1.0",
+    "npm": "^5.6.0",
+    "phraseanet-production-client": "../Phraseanet-production-client",
+    "qunit": "^1.0.0",
+    "requirejs": "^2.1.22",
+    "tinymce": "^4.0.28",
+    "underscore": "^1.4.4",
+    "zxcvbn": "git+https://github.com/lowe/zxcvbn.git"
   }
 }
