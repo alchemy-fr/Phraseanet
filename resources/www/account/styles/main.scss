@@ -5,7 +5,7 @@
 @import '../../vendors/bootstrap/bootstrap';
 @import 'skin';
 @import '../../../../www/bower_components/font-awesome/scss/font-awesome.scss';
-@import '../../../../www/bower_components/jquery-ui/themes/base/jquery.ui.autocomplete'; // not extension for inline import
+@import '../../../../node_modules/jquery-ui/themes/base/autocomplete'; // not extension for inline import
 
 $mainMenuBackgroundColor: #3b3b3b;
 $mainMenuLinkColor: #A6A6A6;

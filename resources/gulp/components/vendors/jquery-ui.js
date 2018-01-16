@@ -19,6 +19,6 @@ gulp.task('copy-jquery-ui-theme2', function(){
 gulp.task('build-jquery-ui', ['copy-jquery-ui-images', 'copy-jquery-ui-theme1', 'copy-jquery-ui-theme2'], function(){
     // copy jquery ui assets
     return utils.buildJsGroup([
-        config.paths.vendors + 'jquery-ui/ui/jquery-ui.js'
+        config.paths.nodes + 'jquery-ui-dist/jquery-ui.js'
     ], 'jquery-ui', 'vendors/jquery-ui');
 });
