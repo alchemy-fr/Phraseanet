@@ -31,7 +31,7 @@ class JsFixtures extends Command
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         if (!file_exists($this->container['db.fixture.info']['path'])) {
-            throw new RuntimeException('You must generate sqlite db first, run "bin/console phraseanet:regenerate-sqlite" command.');
+            throw new RuntimeException('You must generate sqlite db first, run "bin/developer phraseanet:regenerate-sqlite" command.');
         }
 
         $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
