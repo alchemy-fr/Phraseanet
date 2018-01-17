@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Form\Configuration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class WebservicesFormType extends AbstractType
 {
@@ -46,6 +47,18 @@ class WebservicesFormType extends AbstractType
         ]);
         $builder->add('recaptcha-private-key', 'text', [
             'label'       => 'Recaptcha private key',
+        ]);
+        $builder->add('trials-before-display', 'integer', [
+            'label'        => 'Trials before display captcha',
+            'constraints' => array(
+                new Assert\NotBlank(),
+                new Assert\Type('integer'),
+                new Assert\Regex(array(
+                        'pattern' => '/^[0-9]\d*$/',
+                        'message' => 'Please use only positive numbers.'
+                    )
+                ),
+            ),
         ]);
     }
 
