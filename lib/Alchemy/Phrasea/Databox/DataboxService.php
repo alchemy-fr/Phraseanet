@@ -4,7 +4,8 @@ namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate
+;use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -71,28 +72,92 @@ class DataboxService
         $this->rootPath = $rootPath;
     }
 
+    public function exists($databaseName, DataboxConnectionSettings $connectionSettings = null)
+    {
+        $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
+            $this->configuration->get(['main', 'database'])
+        );
+        $factory = $this->connectionFactory;
+
+        // do not simply try to connect to the database, list
+        /** @var Connection $connection */
+        $connection = $factory([
+            'host' => $connectionSettings->getHost(),
+            'port' => $connectionSettings->getPort(),
+            'user' => $connectionSettings->getUser(),
+            'password' => $connectionSettings->getPassword(),
+            'dbname' => null,
+        ]);
+
+        $ret = false;
+        $databaseName = strtolower($databaseName);
+        $sm = $connection->getSchemaManager();
+        $databases = $sm->listDatabases();
+        foreach($databases as $database) {
+            if(strtolower($database) == $databaseName) {
+                $ret = true;
+                break;
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param Connection $connection
+     * @param \SplFileInfo $template
+     * @return \databox
+     */
+    public function createDataboxFromConnection($connection, $template)
+    {
+        return \databox::create($this->app, $connection, $template);
+    }
+
     /**
      * @param User $owner
      * @param string $databaseName
-     * @param string $dataTemplate
+     * @param string $templateName
      * @param DataboxConnectionSettings|null $connectionSettings
      * @return \databox
+     * @throws \Exception_InvalidArgument
      */
     public function createDatabox(
         $databaseName,
-        $dataTemplate,
+        $templateName,
         User $owner,
         DataboxConnectionSettings $connectionSettings = null
     ) {
         $this->validateDatabaseName($databaseName);
 
-        $dataTemplate = new \SplFileInfo($this->rootPath . '/lib/conf.d/data_templates/' . $dataTemplate . '.xml');
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
+        $template = $st->getByName($templateName);
+        if(is_null($template)) {
+            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
+        }
+
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
 
         $factory = $this->connectionFactory;
+
+        // use a tmp connection to create the database
         /** @var Connection $connection */
+        $connection = $factory([
+            'host' => $connectionSettings->getHost(),
+            'port' => $connectionSettings->getPort(),
+            'user' => $connectionSettings->getUser(),
+            'password' => $connectionSettings->getPassword(),
+            'dbname' => null
+        ]);
+        $connection->getSchemaManager()->createDatabase($databaseName);
+
+        // change the connection to the newly created database
+        $connection->close();
+        unset($connection);
+
         $connection = $factory([
             'host' => $connectionSettings->getHost(),
             'port' => $connectionSettings->getPort(),
@@ -103,7 +168,8 @@ class DataboxService
 
         $connection->connect();
 
-        $databox = \databox::create($this->app, $connection, $dataTemplate);
+        $databox = $this->createDataboxFromConnection($connection, $template);
+
         $databox->registerAdmin($owner);
 
         $connection->close();
