@@ -137,10 +137,10 @@ $workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
     }
 
   }
-  ul.icon-menu {
+  ul.prod-icon-menu {
     width: 100%;
   }
-  .icon-menu {
+  .prod-icon-menu {
     .WZtabs, .WZplugins {
       display: block;
       width: 70px;
@@ -159,7 +159,7 @@ $workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
     }
   }
   .closed {
-    .icon-menu li {
+    .prod-icon-menu li {
       clear: left;
     }
   }

@@ -173,7 +173,7 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     {% block tabs_panel %}
-                        <div id="retractableButton"><i class="icon-double-angle-left"></i></div>
+                        <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
@@ -443,12 +443,14 @@
                                                     <span id="ADVSRCH_DATE_SELECTORS">
                                                         {{ 'phraseanet::time:: de' | trans }}
                                                         <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <span class="add-on"><i class="fa fa-calendar"
+                                                                                    aria-hidden="true"></i></span>
                                                             <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                         {{ 'phraseanet::time:: a' | trans }}
                                                         <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <span class="add-on"><i class="fa fa-calendar"
+                                                                                    aria-hidden="true"></i></span>
                                                             <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                     </span>
@@ -733,10 +735,10 @@
                     </div>
                     <div class="PNB10" style="top:146px;">
                         <button id="left-btn" class="invisible-btn preview-navigate-action" data-direction="backward">
-                            <i class="icon-caret-left"></i>
+                            <i class="fa fa-caret-left" aria-hidden="true"></i>
                         </button>
                         <button id="right-btn" class="invisible-btn preview-navigate-action" data-direction="forward">
-                            <i class="icon-caret-right"></i>
+                            <i class="fa fa-caret-right" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>
