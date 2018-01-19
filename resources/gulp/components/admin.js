@@ -15,7 +15,7 @@ gulp.task('build-admin-css', function(){
 
 gulp.task('build-admin-js', function(){
     var adminGroup = [
-        config.paths.vendors + 'underscore-amd/underscore.js',
+        config.paths.nodes + 'underscore/underscore.js',
         config.paths.nodes + 'jquery-treeview/jquery.treeview.js',
         // config.paths.vendors + 'jquery-file-upload/js/vendor/jquery.ui.widget.js',
         // config.paths.vendors + 'jquery-file-upload/js/jquery.iframe-transport.js',

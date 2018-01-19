@@ -2,12 +2,13 @@
   "name": "Phraseanet",
   "version": "4.0.0",
   "dependencies": {
-    "underscore-amd": "~1.4",
     "alchemy-embed-medias": "~0.3.4",
-    "i18next": "~1.6",
-    "backbone-amd": "~1.0"
+    "i18next": "~1.6"
   },
   "resolutions": {
     "jquery": "~1.11.3"
+  },
+  "devDependencies": {
+    "qunit": "v1.11.0"
   }
 }
