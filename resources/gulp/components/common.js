@@ -9,12 +9,12 @@ gulp.task('copy-common-images', function(){
 });
 
 gulp.task('copy-common-fonts',function(){
-    return gulp.src([config.paths.vendors + 'font-awesome/font/*'])
-        .pipe(gulp.dest( config.paths.build + 'common/font'));
+    return gulp.src([config.paths.nodes + 'font-awesome/fonts/*'])
+        .pipe(gulp.dest(config.paths.build + 'common/fonts'));
 });
 
 gulp.task('build-common-font-css', ['copy-common-fonts'],function(){
-    return gulp.src([config.paths.vendors + 'font-awesome/css/font-awesome-ie7.min.css'])
+    return gulp.src([config.paths.nodes + 'font-awesome/css/font-awesome.min.css'])
         .pipe(gulp.dest( config.paths.build + 'common/css'));
 });
 

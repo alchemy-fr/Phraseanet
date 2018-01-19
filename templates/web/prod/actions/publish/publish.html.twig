@@ -37,7 +37,8 @@
                         {% if app['conf'].get(['registry', 'actions', 'enable-feed-notification']) %}
                         <label class="checkbox">
                             <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" style="min-height: 0; height: auto" />
-                            <i class="icon icon-envelope"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
+                            <i class="icon fa fa-envelope"
+                               aria-hidden="true"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
                         </label>
                         <br />
                         {% endif %}

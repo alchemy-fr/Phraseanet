@@ -211,7 +211,8 @@
 
     <div id="image" class="tabBox">
       <div class="text-info">
-          <i class=" icon-info-sign"></i> {% trans %}Changes for rotation will be applied only on the sub-definitions of "image" type.{% endtrans %}
+          <i class="fa fa-info-circle" aria-hidden="true"></i> {% trans %}Changes for rotation will be applied only on
+          the sub-definitions of "image" type.{% endtrans %}
       </div>
       <form name="formpushdoc" action="{{ path('prod_tools_rotate') }}" method="post">
         <fieldset style='border:1px solid #999;padding:20px;'>
@@ -242,7 +243,8 @@
         <div id="substitution" class="tabBox">
 
          {% if "unknown" == record.get_type() %}
-            <i class="icon-warning-sign icon-white"></i>{{ "Substitution is not possible for this kind of record" | trans }}
+             <i class="fa fa-exclamation-triangle icon-white"
+                aria-hidden="true"></i>{{ "Substitution is not possible for this kind of record" | trans }}
          {% else %}
             {% if app['conf'].get(['registry', 'modules', 'doc-substitution']) %}
                 <div id="substitution-hd">
