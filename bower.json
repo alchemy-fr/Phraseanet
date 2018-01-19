@@ -2,8 +2,7 @@
   "name": "Phraseanet",
   "version": "4.0.0",
   "dependencies": {
-    "alchemy-embed-medias": "~0.3.4",
-    "i18next": "~1.6"
+    "alchemy-embed-medias": "~0.3.4"
   },
   "resolutions": {
     "jquery": "~1.11.3"
