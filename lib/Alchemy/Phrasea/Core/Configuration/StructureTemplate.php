@@ -36,7 +36,7 @@ class StructureTemplate
     public function __construct($rootPath)
     {
         $this->rootPath = $rootPath;
-        $this->templates = null;    // lazy loaded, not yet set
+        $this->names = $this->templates = null;    // lazy loaded, not yet set
     }
 
     /**
@@ -52,6 +52,7 @@ class StructureTemplate
         $templateList = new \DirectoryIterator($this->rootPath . '/lib/conf.d/data_templates');
 
         $this->templates = [];
+        $this->names     = [];
         foreach ($templateList as $template) {
             if ($template->isDot()
                 || !$template->isFile()
