@@ -27,6 +27,8 @@ class StructureTemplate
 
     /** @var  \SplFileInfo[] */
     private $templates;
+    /** @var  string[] */
+    private $names;
 
     /**
      * @param string $rootPath
@@ -61,6 +63,7 @@ class StructureTemplate
             $name = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
             // beware that the directoryiterator returns a reference on a static, so clone()
             $this->templates[$name] = clone($template);
+            $this->names[]          = $name;
         }
     }
 
@@ -85,19 +88,26 @@ class StructureTemplate
      */
     public function getNameByIndex($index)
     {
-        static $indexToKey = null;
-        if(is_null($indexToKey)) {
-            $indexToKey = array_keys($this->templates);
-        }
+        $this->load();
 
-        return $indexToKey[$index];
+        return $this->names[$index];
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getNames()
+    {
+        $this->load();
+
+        return $this->names;
     }
 
     public function toString()
     {
         $this->load();
 
-        return implode(', ', array_keys($this->templates));
+        return implode(', ', $this->names);
     }
 
     /**
