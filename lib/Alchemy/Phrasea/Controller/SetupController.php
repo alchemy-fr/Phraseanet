@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
@@ -78,10 +79,13 @@ class SetupController extends Controller
             $warnings[] = $this->app->trans('It is not recommended to install Phraseanet without HTTPS support');
         }
 
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
         return $this->render('/setup/step2.html.twig', [
             'locale'              => $this->app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
-            'available_templates' => $this->app['phraseanet.structure-template']->getTemplates(),
+            'available_templates' => $st->getNames(),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
