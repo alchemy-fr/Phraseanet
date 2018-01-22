@@ -111,6 +111,11 @@ class Facebook extends AbstractProvider
             exit;
         }
 
+        if (!$response)
+        {
+            throw new NotAuthenticatedException('Not authenticated');
+        }
+
         return $response->getGraphUser();
     }
 
@@ -128,7 +133,7 @@ class Facebook extends AbstractProvider
         $identity->set(Identity::PROPERTY_EMAIL, $user['email']);
         $identity->set(Identity::PROPERTY_FIRSTNAME, $user['first_name']);
         $identity->set(Identity::PROPERTY_LASTNAME, $user['last_name']);
-        $identity->set(Identity::PROPERTY_USERNAME, $user['name']);
+        $identity->set(Identity::PROPERTY_USERNAME, $user['first_name']);
 
         return $identity;
     }
