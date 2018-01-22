@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -29,7 +30,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -39,7 +40,7 @@ class Installer
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
             if (null !== $dbConn) {
-                $this->createDB($dbConn, $template, $user);
+                $this->createDB($dbConn, $templateName, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
@@ -156,9 +157,16 @@ class Installer
         $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
-    private function createDB(Connection $dbConn = null, $template, User $admin)
+    private function createDB(Connection $dbConn = null, $templateName, User $admin)
     {
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $this->app['phraseanet.structure-template']->getAvailable()->getTemplateName($template) . '.xml');
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
+        $template = $st->getByName($templateName);
+        if(is_null($template)) {
+            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
+        }
+
         $databox = \databox::create($this->app, $dbConn, $template);
 
         $this->app->getAclForUser($admin)

@@ -42,7 +42,7 @@
 - name: Run application setup
   become: yes
   become_user: vagrant
-  shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=fr --appbox={{ mariadb.appbox_db }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
+  shell: 'bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=en-simple --appbox={{ mariadb.appbox_db }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
   args:
     chdir: /vagrant/
   when: app_cfg.stat.exists == False
@@ -77,6 +77,6 @@
     chdir: /vagrant/
 
 - name: Create ElasticSearch indexes
-  shell: 'bin/console searchengine:index:create --drop'
+  shell: 'bin/console searchengine:index -c -p'
   args:
     chdir: /vagrant/
