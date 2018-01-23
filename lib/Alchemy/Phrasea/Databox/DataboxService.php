@@ -4,8 +4,9 @@ namespace Alchemy\Phrasea\Databox;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Core\Configuration\StructureTemplate
-;use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
+use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Utilities\StringHelper;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -155,7 +156,9 @@ class DataboxService
                 'password' => $connectionSettings->getPassword(),
                 'dbname'   => null
             ]);
-            $connection->getSchemaManager()->createDatabase($databaseName);
+            // the schemeManager does NOT quote identifiers, we MUST do it
+            // see : http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/schema-manager.html
+            $connection->getSchemaManager()->createDatabase(StringHelper::SqlQuote($databaseName, StringHelper::SQL_IDENTIFIER));
 
             $connection->close();
             unset($connection);
