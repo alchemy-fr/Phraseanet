@@ -137,27 +137,31 @@ class DataboxService
             throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
+        // if no connectionSettings (host, user, ...) are provided, create dbox beside appBox
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
             $this->configuration->get(['main', 'database'])
         );
 
         $factory = $this->connectionFactory;
 
-        // use a tmp connection to create the database
+        if(!$this->exists($databaseName, $connectionSettings)) {
+
+            // use a tmp connection to create the database
+            /** @var Connection $connection */
+            $connection = $factory([
+                'host'     => $connectionSettings->getHost(),
+                'port'     => $connectionSettings->getPort(),
+                'user'     => $connectionSettings->getUser(),
+                'password' => $connectionSettings->getPassword(),
+                'dbname'   => null
+            ]);
+            $connection->getSchemaManager()->createDatabase($databaseName);
+
+            $connection->close();
+            unset($connection);
+        }
+
         /** @var Connection $connection */
-        $connection = $factory([
-            'host' => $connectionSettings->getHost(),
-            'port' => $connectionSettings->getPort(),
-            'user' => $connectionSettings->getUser(),
-            'password' => $connectionSettings->getPassword(),
-            'dbname' => null
-        ]);
-        $connection->getSchemaManager()->createDatabase($databaseName);
-
-        // change the connection to the newly created database
-        $connection->close();
-        unset($connection);
-
         $connection = $factory([
             'host' => $connectionSettings->getHost(),
             'port' => $connectionSettings->getPort(),
