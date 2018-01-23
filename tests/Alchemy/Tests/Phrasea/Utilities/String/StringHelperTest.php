@@ -70,7 +70,7 @@ class StringHelperTest extends \PhraseanetTestCase
     {
         return [
             ["azerty",  StringHelper::SQL_VALUE, "'azerty'"],
-            ["aze'rty", StringHelper::SQL_VALUE, "'aze''rty"],
+            ["aze'rty", StringHelper::SQL_VALUE, "'aze''rty'"],
             ["aze`rty", StringHelper::SQL_VALUE, "'aze`rty'"],
             ["azerty",  StringHelper::SQL_IDENTIFIER, "`azerty`"],
             ["aze'rty", StringHelper::SQL_IDENTIFIER, "`aze'rty`"],
