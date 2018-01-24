@@ -25,6 +25,8 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class Install extends Command
 {
+    const DEFAULT_SERVER_NAME = "phraseanet";
+
     private $executableFinder;
     /** @var StructureTemplate StructureTemplate */
     private $structureTemplate;
