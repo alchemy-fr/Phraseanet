@@ -25,15 +25,7 @@
 
 - name: Install rabbitmq package repository
   sudo: yes
-  shell: wget https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
-
-- name: Install rabbitmq package repository key
-  sudo: yes
-  shell: apt-key add rabbitmq-signing-key-public.asc
-
-- name: Remove signing key
-  sudo: yes
-  shell: rm rabbitmq-signing-key-public.asc
+  apt_key: url=https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
 
 # Update APT
 - name: Update apt

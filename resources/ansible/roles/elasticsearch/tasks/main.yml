@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Install Dependencies
-  apt: pkg=openjdk-7-jre state=latest
+  apt: pkg=oracle-java8-installer state=latest
 
 - name: Remove temporary debian package
   shell: rm -f /tmp/elasticsearch-{{ elasticsearch.version }}.deb
@@ -21,7 +21,7 @@
 
 - name: Download debian package
   get_url: >
-    url={{ elasticsearch_url }}
+    url={{ elasticsearch.package_url }}
     dest=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
   when: not is_installed
 
@@ -30,11 +30,11 @@
   when: not is_installed
 
 - name: Remove old plugin directory
-  shell: rm -rf /usr/share/elasticsearch/plugins/analysis-icu
   sudo: yes
+  file: path=/usr/share/elasticsearch/plugins/analysis-icu state=absent
 
 - name: Install plugins
-  shell: /usr/share/elasticsearch/bin/plugin install {{ item.name }}
+  shell: /usr/share/elasticsearch/bin/elasticsearch-plugin install {{ item.name }}
   when: not is_installed
   with_items: "{{ elasticsearch.plugins }}"
 

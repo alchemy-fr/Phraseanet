@@ -56,7 +56,8 @@ mariadb:
 elasticsearch:
     install: '1'
     port: '9200'
-    version: '2.3.3'
+    version: '6.1.2'
+    package_url: 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.2.deb'
     plugins:
         - {name: 'analysis-icu'}
 php:
