@@ -64,14 +64,6 @@ class Indexer
      */
     private $index;
 
-    /**
-     * @return Index
-     */
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
     public function __construct(
         Client $client,
         Index $index,
@@ -88,6 +80,14 @@ class Indexer
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
+    }
+
+    /**
+     * @return Index
+     */
+    public function getIndex()
+    {
+        return $this->index;
     }
 
     public function createIndex($indexName = null)
