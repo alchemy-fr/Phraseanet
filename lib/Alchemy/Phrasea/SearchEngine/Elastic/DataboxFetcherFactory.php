@@ -45,7 +45,7 @@ class DataboxFetcherFactory
      * @param string $structureKey
      * @param string $thesaurusKey
      */
-    public function __construct(RecordHelper $recordHelper,ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
+    public function __construct(RecordHelper $recordHelper, ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
     {
         $this->recordHelper = $recordHelper;
         $this->options      = $options;
