@@ -11,6 +11,10 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 class ElasticsearchOptions
 {
+    const POPULATE_ORDER_RID = "RECORD_ID";
+    const POPULATE_ORDER_MODDATE = "MODIFICATION_DATE";
+    const POPULATE_DIRECTION_ASC = "ASC";
+    const POPULATE_DIRECTION_DESC = "DESC";
     /** @var string */
     private $host;
     /** @var int */
@@ -25,6 +29,10 @@ class ElasticsearchOptions
     private $minScore;
     /** @var  bool */
     private $highlight;
+    /** @var string */
+    private $populateOrder;
+    /** @var string */
+    private $populateDirection;
 
     /** @var  int[] */
     private $_customValues;
@@ -46,6 +54,8 @@ class ElasticsearchOptions
             'replicas' => 0,
             'minScore' => 4,
             'highlight' => true,
+            'populate_order'     => self::POPULATE_ORDER_RID,
+            'populate_direction' => self::POPULATE_DIRECTION_DESC,
             'activeTab' => null,
         ];
 
@@ -63,6 +73,8 @@ class ElasticsearchOptions
         $self->setReplicas($options['replicas']);
         $self->setMinScore($options['minScore']);
         $self->setHighlight($options['highlight']);
+        $self->setPopulateOrder($options['populate_order']);
+        $self->setPopulateDirection($options['populate_direction']);
         $self->setActiveTab($options['activeTab']);
         foreach(self::getAggregableTechnicalFields() as $k => $f) {
             $self->setAggregableFieldLimit($k, $options[$k.'_limit']);
@@ -85,6 +97,8 @@ class ElasticsearchOptions
             'replicas' => $this->replicas,
             'minScore' => $this->minScore,
             'highlight' => $this->highlight,
+            'populate_order'     => $this->populateOrder,
+            'populate_direction' => $this->populateDirection,
             'activeTab' => $this->activeTab
         ];
         foreach(self::getAggregableTechnicalFields() as $k => $f) {
@@ -320,6 +334,62 @@ class ElasticsearchOptions
                 'query' => 'meta.MimeType:%s',
             ],
         ];
+    }
+
+    /**
+     * @param string $order
+     * @return bool returns false if order is invalid
+     */
+    public function setPopulateOrder($order)
+    {
+        $order = strtoupper($order);
+        if (in_array($order, [self::POPULATE_ORDER_RID, self::POPULATE_ORDER_MODDATE])) {
+            $this->populateOrder = $order;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopulateOrderAsSQL()
+    {
+        static $orderAsColumn = [
+            self::POPULATE_ORDER_RID     => "`record_id`",
+            self::POPULATE_ORDER_MODDATE => "`moddate`",
+        ];
+
+        // populateOrder IS one of the keys (ensured by setPopulateOrder)
+        return $orderAsColumn[$this->populateOrder];
+    }
+
+    /**
+     * @param string $direction
+     * @return bool returns false if direction is invalid
+     */
+    public function setPopulateDirection($direction)
+    {
+        $direction = strtoupper($direction);
+        if (in_array($direction, [self::POPULATE_DIRECTION_DESC, self::POPULATE_DIRECTION_ASC])) {
+            $this->populateDirection = $direction;
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPopulateDirectionAsSQL()
+    {
+        // already a SQL word
+        return $this->populateDirection;
     }
 
 }
