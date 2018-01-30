@@ -4,6 +4,6 @@ var utils = require('../../utils.js');
 
 gulp.task('build-i18next', function(){
     return utils.buildJsGroup([
-        config.paths.vendors + 'i18next/release/i18next.amd-1.6.3.js'
+        config.paths.nodes + 'i18next//i18next.js'
     ], 'i18next', 'vendors/i18next');
 });

@@ -1,7 +1,8 @@
 @import '../../_shared/styles/variables';
 
 @import '../../vendors/jquery-treeview/jquery.treeview'; // to inline import css file, don't put extension
-@import '../../../../www/bower_components/jquery-file-upload/css/jquery.fileupload-ui'; // to inline import css file, don't put extension
+@import '../../../../node_modules/blueimp-file-upload/css/jquery.fileupload-ui';
+// to inline import css file, don't put extension
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 @import '../../_shared/styles/main';
 
