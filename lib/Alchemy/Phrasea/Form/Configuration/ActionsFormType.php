@@ -57,6 +57,9 @@ class ActionsFormType extends AbstractType
         $builder->add('enable-feed-notification', 'checkbox', [
             'label'        => 'Enable possibility to notify users when publishing a new feed entry',
         ]);
+        $builder->add('download-link-validity', 'integer', [
+            'label'        => 'Validity period of the download links',
+        ]);
     }
 
     public function getName()
