@@ -138,9 +138,8 @@ class TokenManipulator implements ManipulatorInterface
     public function createDownloadToken(User $user, $data)
     {
         $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity']);
-        $time = ($downloadLinkValidity)? "+{$downloadLinkValidity} hours":'+3 hours';
 
-        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime($time), $data);
+        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**
@@ -151,9 +150,8 @@ class TokenManipulator implements ManipulatorInterface
     public function createEmailExportToken($data)
     {
         $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity']);
-        $time = ($downloadLinkValidity)? "+{$downloadLinkValidity} hours":'+1 day';
-        
-        return $this->create(null, self::TYPE_EMAIL, new \DateTime($time), $data);
+
+        return $this->create(null, self::TYPE_EMAIL, new \DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**
