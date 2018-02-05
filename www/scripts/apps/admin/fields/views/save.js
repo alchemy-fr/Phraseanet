@@ -16,6 +16,7 @@ define([
     "apps/admin/fields/views/alert"
 ], function ($, _, Backbone, i18n, bootstrap, AlertView) {
     var SaveView = Backbone.View.extend({
+        template: _.template($("#save_template").html()),
         initialize: function () {
             var self = this;
             this.previousAttributes = [];
@@ -78,8 +79,7 @@ define([
             return this;
         },
         render: function () {
-            var template = _.template($("#save_template").html());
-            this.$el.html(template);
+            this.$el.html(this.template());
             this.updateStateButton();
 
             return this;
