@@ -22,7 +22,6 @@ define([
             "keyup #live_search": "searchAction",
             "update-sort": "updateSortAction"
         },
-        template: _.template($("#item_list_view_template").html()),
         initialize: function () {
             var self = this;
             // store all single rendered views
@@ -63,7 +62,9 @@ define([
             });
         },
         render: function () {
-            this.$el.empty().html(this.template());
+            var template = _.template($("#item_list_view_template").html());
+
+            this.$el.empty().html(template);
 
             this.$listEl = $("ul#collection-fields", this.$el);
 
