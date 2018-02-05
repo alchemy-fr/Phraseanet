@@ -24,10 +24,10 @@ define([
             "click .btn-cancel-field": "toggleCreateFormAction",
             "keyup input": "onKeyupInput"
         },
-        template: _.template($("#create_template").html()),
         render: function () {
+            var template = _.template($("#create_template").html());
 
-            this.$el.html(this.template());
+            this.$el.html(template);
 
             $("#new-source", this.$el).autocomplete({
                 minLength: 2,

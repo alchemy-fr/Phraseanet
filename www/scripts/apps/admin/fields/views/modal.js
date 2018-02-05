@@ -20,7 +20,6 @@ define([
         events: {
             "click .confirm": "confirmAction"
         },
-        template: _.template($("#modal_template").html()),
         initialize: function (options) {
             var self = this;
             // remove view when modal is closed
@@ -33,7 +32,11 @@ define([
             }
         },
         render: function () {
-            this.$el.html(this.template({msg: this.message || ""})).modal();
+            var template = _.template($("#modal_template").html(), {
+                msg: this.message || ""
+            });
+
+            this.$el.html(template).modal();
 
             return this;
         },
