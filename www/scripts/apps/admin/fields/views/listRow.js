@@ -16,6 +16,7 @@ define([
     var FieldListRowView = Backbone.View.extend({
         tagName: "li",
         className: "field-row",
+        template: _.template($("#list_row_template").html()),
         initialize: function () {
             // destroy view is model is deleted
             this.model.on("change", this.onChange, this);
@@ -52,14 +53,13 @@ define([
             }
         },
         render: function () {
-            var template = _.template($("#list_row_template").html(), {
-                id: this.model.get("id"),
-                position: this.model.get("sorter"),
-                name: this.model.get("name"),
-                tag: this.model.get("tag")
-            });
-
-            this.$el.empty().html(template);
+            this.$el.empty().html(this.template({
+                    id: this.model.get("id") || "",
+                    position: this.model.get("sorter"),
+                    name: this.model.get("name"),
+                    tag: this.model.get("tag")
+                }
+            ));
 
             // highlight view if edit view model match current view model
             if (AdminFieldApp.fieldEditView
