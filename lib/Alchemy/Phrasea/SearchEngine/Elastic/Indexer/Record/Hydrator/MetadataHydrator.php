@@ -121,6 +121,9 @@ SQL;
     private function sanitizeValue($value, $type)
     {
         switch ($type) {
+            case FieldMapping::TYPE_STRING:
+                return str_replace("\0", "", $value);
+
             case FieldMapping::TYPE_DATE:
                 return $this->helper->sanitizeDate($value);
 
