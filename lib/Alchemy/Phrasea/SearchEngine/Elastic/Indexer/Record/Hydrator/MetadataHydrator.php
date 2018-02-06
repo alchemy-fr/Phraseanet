@@ -62,7 +62,7 @@ SQL;
         while ($metadata = $statement->fetch()) {
             // Store metadata value
             $key = $metadata['key'];
-            $value = trim($metadata['value']);
+            $value = $metadata['value'];
 
             // Do not keep empty values
             if ($key === '' || $value === '') {
@@ -121,6 +121,9 @@ SQL;
     private function sanitizeValue($value, $type)
     {
         switch ($type) {
+            case FieldMapping::TYPE_STRING:
+                return str_replace("\0", "", $value);
+
             case FieldMapping::TYPE_DATE:
                 return $this->helper->sanitizeDate($value);
 
