@@ -1,0 +1,11 @@
+---
+- name: Configure the Yarn APT key
+  apt_key: url={{ repositories.yarn }}pubkey.gpg
+
+- name: Add Yarn repository
+  apt_repository:
+    repo: 'deb {{ repositories.yarn }} stable main'
+    state: present
+
+- name: Install Yarn
+  apt: pkg=yarn state=present
