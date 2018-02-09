@@ -32,6 +32,7 @@ repositories:
     mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
     elasticsearch: 'ppa:webupd8team/java'
     rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
+    yarn: 'https://dl.yarnpkg.com/debian/'
 vagrant_local:
     install: '1'
     vm:
