@@ -41,7 +41,7 @@ class ToolsController extends Controller
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
 
-        $metadata = false;
+        $metadatas = false;
         $record = null;
         $recordAccessibleSubdefs = array();
 
