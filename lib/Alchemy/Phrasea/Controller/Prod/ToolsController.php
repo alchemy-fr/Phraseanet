@@ -90,7 +90,7 @@ class ToolsController extends Controller
                     $metadatas = $this->getExifToolReader()
                         ->files($record->get_subdef('document')->getRealPath())
                         ->first()->getMetadatas();
-                    $metadatas = $this->getNoBinaryMetadataValue($metadatas, $record);
+                    $metadatas = $this->getNoBinaryMetadataValues($metadatas, $record);
                 } catch (PHPExiftoolException $e) {
                     // ignore
                 } catch (\Exception_Media_SubdefNotFound $e) {
@@ -442,7 +442,7 @@ class ToolsController extends Controller
      * @param $record
      * @return MetadataBag
      */
-    private function getNoBinaryMetadataValue(MetadataBag $metadatas, $record)
+    private function getNoBinaryMetadataValues(MetadataBag $metadatas, $record)
     {
         $metadataBag = new MetadataBag();
         $fileEntity = $this->getExifToolReader()
@@ -450,7 +450,6 @@ class ToolsController extends Controller
             ->first();
         foreach($metadatas as $metadata){
             $valuedata = $fileEntity->executeQuery($metadata->getTag()->getTagname()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
-
             if(!empty($valuedata)){
                 $tag = TagFactory::getFromRDFTagname($metadata->getTag()->getTagname());
                 $metadataBagElement = new Metadata($tag, $valuedata);
