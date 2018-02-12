@@ -188,12 +188,14 @@ class RegistryFormManipulator
 
     private function filterNullValues(array &$array)
     {
-        return array_filter($array, function (&$value, $key) {
+        foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = $this->filterNullValues($value);
+                $this->filterNullValues($value);
             }
-
-            return null !== $value || $key == 'geonames-server';
-        }, ARRAY_FILTER_USE_BOTH);
+            else if ($key !== 'geonames-server' && $value === null) {
+                unset($array[$key]);
+            }
+        }
+        return $array;
     }
 }
