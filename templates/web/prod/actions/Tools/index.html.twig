@@ -329,16 +329,29 @@
                         <td></td>
                         <td></td>
                     </tr>
-                {% for metadata in metadatas %}
-                    <tr>
-                        <td>
-                            {{ metadata.getTag().getTagname() }}
-                        </td>
-                        <td>
-                            {{ metadata.getValue().asString() }}
-                        </td>
-                    </tr>
-                {% endfor %}
+                {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
+                    {% for metadata in metadatas %}
+                        <tr>
+                            <td>
+                                {{ metadata.getTag().getTagname() }}
+                            </td>
+                            <td>
+                                {{ metadata.getValue().asString() }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    {% for metadata in metadatas if 'System' not in  metadata.getTag().getTagname() %}
+                        <tr>
+                            <td>
+                                {{ metadata.getTag().getTagname() }}
+                            </td>
+                            <td>
+                                {{ metadata.getValue().asString() }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
                 </tbody>
             </table>
           </div>
