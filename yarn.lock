@@ -2380,7 +2380,7 @@ global@4.3.0:
     min-document "^2.6.1"
     process "~0.5.1"
 
-global@4.3.2, global@^4.3.1, global@~4.3.0:
+global@4.3.2, global@^4.3.1, global@^4.3.2, global@~4.3.0:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/global/-/global-4.3.2.tgz#e76989268a6c74c38908b1305b10fc0e394e9d0f"
   dependencies:
@@ -3905,8 +3905,8 @@ lodash.merge@^3.3.2:
     lodash.toplainobject "^3.0.0"
 
 lodash.merge@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.1.tgz#adc25d9cb99b9391c59624f379fbba60d7111d54"
 
 lodash.mergewith@^4.6.0:
   version "4.6.0"
@@ -5163,9 +5163,9 @@ phantomjs-prebuilt@^2.1.3:
     request-progress "^2.0.1"
     which "^1.2.10"
 
-phraseanet-common@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/phraseanet-common/-/phraseanet-common-0.4.0.tgz#a029b80eb20a9bb6e672dc9fb39f52c6d698b653"
+phraseanet-common@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/phraseanet-common/-/phraseanet-common-0.4.1.tgz#c5a76683cf1a6bf3338d253a6f5417d86b27f5f7"
   dependencies:
     es6-promise "^4.1.1"
     humane-js "^3.2.2"
@@ -5175,8 +5175,8 @@ phraseanet-common@^0.4.0:
     pym.js "^1.3.1"
 
 phraseanet-production-client@^0.33.0:
-  version "0.33.0"
-  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.33.0.tgz#5c8d8379b0407428a42db28dc771e39abc682525"
+  version "0.33.2"
+  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.33.2.tgz#a170ebee699dd159f9ca85bd7fcd065f014e2cb5"
   dependencies:
     axios "^0.16.2"
     backbone "^1.3.3"
@@ -5202,12 +5202,13 @@ phraseanet-production-client@^0.33.0:
     lodash.merge "^4.6.0"
     mapbox.js "^3.1.1"
     nouislider "^9.2.0"
-    phraseanet-common "^0.4.0"
+    phraseanet-common "^0.4.1"
     pym.js "^1.3.1"
     rx "^4.1.0"
     sprintf-js "^1.1.1"
     underscore "^1.8.3"
     video.js "^6.2.4"
+    videojs-flash "^2.1.0"
     videojs-hotkeys "^0.2.20"
     zxcvbn "^4.4.2"
 
@@ -5367,8 +5368,8 @@ punycode@^1.2.4, punycode@^1.4.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
 pym.js@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/pym.js/-/pym.js-1.3.1.tgz#140cfa9b4bda2e13613e89683e5551c4ce2ac9c4"
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/pym.js/-/pym.js-1.3.2.tgz#0ebd083c5a7ef7650214db872b4b29a10743305d"
 
 qrcode-terminal@~0.11.0:
   version "0.11.0"
@@ -6926,9 +6927,9 @@ video.js@^5.11.6, video.js@^5.5.3:
     videojs-vtt.js "0.12.4"
     xhr "2.2.2"
 
-video.js@^6.2.4:
-  version "6.6.3"
-  resolved "https://registry.yarnpkg.com/video.js/-/video.js-6.6.3.tgz#6ebf8ca607c95961bf07f0ecbe15f4b30c232d1e"
+video.js@^6.1.0, video.js@^6.2.4:
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/video.js/-/video.js-6.7.2.tgz#4dd2f4c8a9e7ac5cd332806b9f9601f505ba8dad"
   dependencies:
     babel-runtime "^6.9.2"
     global "4.3.2"
@@ -6936,7 +6937,7 @@ video.js@^6.2.4:
     tsml "1.0.1"
     videojs-font "2.1.0"
     videojs-ie8 "1.1.2"
-    videojs-vtt.js "0.12.4"
+    videojs-vtt.js "0.12.5"
     xhr "2.4.0"
 
 videojs-chapter-thumbnails@^1.1.2:
@@ -6944,6 +6945,14 @@ videojs-chapter-thumbnails@^1.1.2:
   resolved "https://registry.yarnpkg.com/videojs-chapter-thumbnails/-/videojs-chapter-thumbnails-1.1.4.tgz#b448929046c8a3af6b4c7bde49843853e12e1d25"
   dependencies:
     video.js "^5.11.6"
+
+videojs-flash@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/videojs-flash/-/videojs-flash-2.1.0.tgz#8a262ada96a6f985e4776a1e1612990e8ba19311"
+  dependencies:
+    global "^4.3.2"
+    video.js "^6.1.0"
+    videojs-swf "5.4.1"
 
 videojs-font@2.0.0:
   version "2.0.0"
@@ -6970,6 +6979,12 @@ videojs-swf@5.4.1:
 videojs-vtt.js@0.12.4:
   version "0.12.4"
   resolved "https://registry.yarnpkg.com/videojs-vtt.js/-/videojs-vtt.js-0.12.4.tgz#38f2499e31efb3fa93590ddad4cb663275a4b161"
+  dependencies:
+    global "^4.3.1"
+
+videojs-vtt.js@0.12.5:
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/videojs-vtt.js/-/videojs-vtt.js-0.12.5.tgz#32852732741c8b4e7a4314caa2cd93646a9c2d40"
   dependencies:
     global "^4.3.1"
 
