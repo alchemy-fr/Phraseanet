@@ -83,8 +83,8 @@ php:
         - 'php-pear'
         - 'php5.6-dev'
     pecl_packages:
-        - {name: zmq, package: zmq-beta}
-        - {name: amqp, package: amqp-1.9.3}
+        - {name: zmq, package: zmq-beta}
+        - {name: amqp, package: amqp-1.9.3}
 node:
     install: '1'
     version: '9.4.0' 
