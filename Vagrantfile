@@ -88,6 +88,7 @@ Vagrant.configure("2") do |config|
             ansible.extra_vars = {
                 hostname: $hostname,
                 host_addresses: $hostIps,
+                phpversion: ENV['phpversion'],
                 postfix: {
                     postfix_domain: $hostname + ".vb"
                 }
@@ -104,7 +105,7 @@ Vagrant.configure("2") do |config|
             }
         end
     else
-        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: ["default"]
+        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: ["default", ENV['phpversion']]
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
 
