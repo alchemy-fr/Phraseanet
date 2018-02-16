@@ -82,11 +82,12 @@ php:
         - 'php5.6-bcmath'
         - 'php-pear'
         - 'php5.6-dev'
-        - 'php-zmq'
-        - 'php-amqp'
+    pecl_packages:
+        - {name: zmq, package: zmq-beta}
+        - {name: amqp, package: amqp-1.9.3}
 node:
     install: '1'
-    version: '9.4.0' 
+    version: '9.4.0'
 xdebug:
     install: '1'
     idekey: 'PHPSTORM'
