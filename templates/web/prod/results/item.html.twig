@@ -33,12 +33,12 @@
         <div class="thumb captionTips " tooltipsrc="{{ tooltipsrc }}"
              style="height:{{ images_size }}px; z-index:90;">
             <div class="doc_infos">
-                {% if doctype_display %}
-                    {{ record_doctype_icon(record) }}
-                {% endif %}
                 <span class="duration">
                     {{ record.get_formated_duration }}
                 </span>
+                {% if doctype_display %}
+                    {{ record_doctype_icon(record) }}
+                {% endif %}
             </div>
             <div class="{% if rollover_gif %}rollovable{% endif %}">
                 {% set extraclass = rollover_gif ? 'rollover-gif-out' : '' %}
