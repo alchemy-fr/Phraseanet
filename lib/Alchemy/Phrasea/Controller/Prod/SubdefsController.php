@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-
 use Alchemy\Phrasea\Controller\Controller;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
@@ -51,6 +50,7 @@ class SubdefsController extends Controller
             'metadatas' => $metadataBag,
         ]);
     }
+
     /**
      * @return Reader
      */
