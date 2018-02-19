@@ -21,9 +21,9 @@ class SubdefsController extends Controller
     public function metadataAction($databox_id, $record_id, $subdef_name)
     {
         $record = new \record_adapter($this->app, (int) $databox_id, (int) $record_id);
+        $metadataBag = new MetadataBag();
 
         try {
-            $metadataBag = new MetadataBag();
             $fileEntity = $this->getExifToolReader()
                 ->files($record->get_subdef($subdef_name)->getRealPath())
                 ->first();
