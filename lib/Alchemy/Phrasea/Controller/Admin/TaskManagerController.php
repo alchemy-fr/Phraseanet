@@ -86,10 +86,6 @@ class TaskManagerController extends Controller
 
     public function getLiveInformation(Request $request)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         if ($request->getRequestFormat() !== "json") {
             $this->app->abort(406, 'Only JSON format is accepted.');
         }
@@ -108,23 +104,28 @@ class TaskManagerController extends Controller
 
     public function getScheduler(Request $request)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         if ($request->getRequestFormat() !== "json") {
             $this->app->abort(406, 'Only JSON format is accepted.');
         }
-
-        return $this->app->json([
+        $ret = [
             'name' => $this->app->trans('Task Scheduler'),
             'configuration' => $this->app['task-manager.status']->getStatus(),
-            'urls' => [
+        ];
+
+        if (($this->app['phraseanet.configuration']['main']['task-manager']['enabled'] === true)) {
+            $ret['urls'] = [
                 'start' => $this->app->path('admin_tasks_scheduler_start'),
-                'stop' => $this->app->path('admin_tasks_scheduler_stop'),
+                'stop'  => $this->app->path('admin_tasks_scheduler_stop'),
+                'log'   => $this->app->path('admin_tasks_scheduler_log'),
+            ];
+        }
+        else {
+            $ret['urls'] = [
                 'log' => $this->app->path('admin_tasks_scheduler_log'),
-            ]
-        ]);
+            ];
+        }
+
+        return $this->app->json($ret);
     }
 
     public function getTasks(Request $request)
@@ -212,10 +213,6 @@ class TaskManagerController extends Controller
 
     public function postTaskDelete(Task $task)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         $this->getTaskManipulator()->delete($task);
 
         return $this->app->redirectPath('admin_tasks_list');
@@ -223,10 +220,6 @@ class TaskManagerController extends Controller
 
     public function postStartTask(Task $task)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         $this->getTaskManipulator()->start($task);
 
         return $this->app->redirectPath('admin_tasks_list');
@@ -234,10 +227,6 @@ class TaskManagerController extends Controller
 
     public function postStopTask(Task $task)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         $this->getTaskManipulator()->stop($task);
 
         return $this->app->redirectPath('admin_tasks_list');
@@ -252,10 +241,6 @@ class TaskManagerController extends Controller
 
     public function postSaveTask(Request $request, Task $task)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         if (!$this->doValidateXML($request->request->get('settings'))) {
             return $this->app->json(['success' => false, 'message' => sprintf('Unable to load XML %s', $request->request->get('xml'))]);
         }
@@ -292,10 +277,6 @@ class TaskManagerController extends Controller
 
     public function getTask(Request $request, Task $task)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         if ('json' === $request->getContentType()) {
             return $this->app->json(array_replace([
                 'id' => $task->getId(),
@@ -322,10 +303,6 @@ class TaskManagerController extends Controller
 
     public function validateXML(Request $request)
     {
-        if (false === $this->app['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-
         return $this->app->json(['success' => $this->doValidateXML($request->getContent())]);
     }
 
