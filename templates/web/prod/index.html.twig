@@ -585,6 +585,16 @@
                     </div>
                 </div>
                 <div class="box">
+                    <h1>{{  'Language' | trans }} : {{ app['locale'] }}</h1>
+                    <label class="inline" for="language">
+                        <select onchange="window.location = $(this).val();" id="language">
+                            {% for code, language in app.getAvailableLanguages() if code != app['locale'] %}
+                                <option value="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+                <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'view') %}
