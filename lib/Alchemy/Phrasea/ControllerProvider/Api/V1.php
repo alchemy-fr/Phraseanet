@@ -37,6 +37,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'));
         });
     }

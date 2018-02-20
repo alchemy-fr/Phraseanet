@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Account\Command\UpdatePasswordCommand;
 use Alchemy\Phrasea\Account\RestrictedStatusExtractor;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Authentication\Exception\RegistrationException;
 use Alchemy\Phrasea\Authentication\RegistrationService;
@@ -96,10 +97,12 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
+
 class V1Controller extends Controller
 {
     use DataboxLoggerAware;
     use DispatcherAware;
+    use FilesystemAware;
     use JsonBodyAware;
 
     const OBJECT_TYPE_USER = 'http://api.phraseanet.com/api/objects/user';
@@ -913,7 +916,14 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        $media = $this->app->getMediaFromUri($file->getPathname());
+        // Add file extension
+        $uploadedFilename = $file->getRealPath();
+
+        $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+        $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
+
+        $media = $this->app->getMediaFromUri($renamedFilename);
 
         $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
 
