@@ -1,8 +1,15 @@
 Vagrant.require_version ">= 1.5"
+$php = [ "5.6", "7.0", "7.1", "7.2" ]
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : 5.6;
 
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
+
+if $php.include?($phpVersion)
+    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
+end
+
 $root = File.dirname(File.expand_path(__FILE__))
 
 # Check to determine whether we're on a windows or linux/os-x host,
@@ -54,7 +61,6 @@ else
 end
 
 Vagrant.configure("2") do |config|
-
     # Configure hostmanager
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
@@ -88,7 +94,7 @@ Vagrant.configure("2") do |config|
             ansible.extra_vars = {
                 hostname: $hostname,
                 host_addresses: $hostIps,
-                phpversion: ENV['phpversion'],
+                phpversion: $phpVersion,
                 postfix: {
                     postfix_domain: $hostname + ".vb"
                 }
@@ -105,7 +111,7 @@ Vagrant.configure("2") do |config|
             }
         end
     else
-        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: ["default", ENV['phpversion']]
+        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: ["default", $phpVersion]
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
 
