@@ -23,11 +23,6 @@ use Alchemy\Phrasea\Record\RecordWasRotated;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Metadata\MetadataBag;
-use PHPExiftool\Driver\TagFactory;
-use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Reader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -87,13 +82,7 @@ class ToolsController extends Controller
                 }
             }
             if (!$record->isStory()) {
-                try {
-                    $metadatas = $this->getMetadatas($record);
-                } catch (PHPExiftoolException $e) {
-                    // ignore
-                } catch (\Exception_Media_SubdefNotFound $e) {
-                    // ignore
-                }
+                $metadatas = true;
             }
         }
         $conf = $this->getConf();
@@ -433,31 +422,5 @@ class ToolsController extends Controller
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
-    }
-
-    /**
-     * @param  $record
-     * @return MetadataBag
-     */
-    private function getMetadatas($record)
-    {
-        $metadataBag = new MetadataBag();
-        $fileEntity = $this->getExifToolReader()
-            ->files($record->get_subdef('document')->getRealPath())
-            ->first();
-        $metadatas = $fileEntity->getMetadatas();
-        foreach($metadatas as $metadata){
-            $valuedata = $fileEntity->executeQuery($metadata->getTag()->getTagname()."[not(@rdf:datatype = 'http://www.w3.org/2001/XMLSchema#base64Binary')]");
-            if(empty($valuedata)){
-                $valuedata = new Mono($this->app->trans('Binary data'));
-                $tag = TagFactory::getFromRDFTagname($metadata->getTag()->getTagname());
-                $metadataBagElement = new Metadata($tag, $valuedata);
-                $metadataBag->set($metadata->getTag()->getTagname(), $metadataBagElement);
-            }else{
-                $metadataBag->set($metadata->getTag()->getTagname(), $metadata);
-            }
-        }
-
-        return $metadataBag;
     }
 }

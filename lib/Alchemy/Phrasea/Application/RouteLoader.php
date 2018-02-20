@@ -55,6 +55,7 @@ class RouteLoader
         '/prod/records/property'       => Providers\Prod\Property::class,
         '/prod/share/'                 => Providers\Prod\Share::class,
         '/prod/story'                  => Providers\Prod\Story::class,
+        '/prod/subdefs'                => Providers\Prod\Subdefs::class,
         '/prod/tools/'                 => Providers\Prod\Tools::class,
         '/prod/tooltip'                => Providers\Prod\Tooltip::class,
         '/prod/TOU/'                   => Providers\Prod\TOU::class,

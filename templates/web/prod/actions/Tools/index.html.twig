@@ -59,7 +59,7 @@
                 {% endif %}
                 {% if metadatas %}
                     <li>
-                        <a href="#exiftool">
+                        <a class="tool-metadata" href="#exiftool">
                             {{ "meta-datas" | trans }}
                         </a>
                     </li>
@@ -311,52 +311,10 @@
 
     {# exiftool section #}
     {% if metadatas %}
-      {% for record in records %}
         <div id="exiftool"  class="tabBox">
-          {% set thumbnail = record.get_thumbnail() %}
-
-          <img style='float:left; margin-right:15px'
-            src="{{thumbnail.get_url()}}"
-            width="{{thumbnail.get_width()}}"
-            height="{{thumbnail.get_height()}}" />
-
-          <div>
-            <h1><b>Metadatas</b></h1>
-            <hr>
-            <table>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
-                    {% for metadata in metadatas %}
-                        <tr>
-                            <td>
-                                {{ metadata.getTag().getTagname() }}
-                            </td>
-                            <td>
-                                {{ metadata.getValue().asString() }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    {% for metadata in metadatas if 'System' not in  metadata.getTag().getTagname() %}
-                        <tr>
-                            <td>
-                                {{ metadata.getTag().getTagname() }}
-                            </td>
-                            <td>
-                                {{ metadata.getValue().asString() }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                {% endif %}
-                </tbody>
-            </table>
-          </div>
+            <div id="metadata-load" style="height: 100%"></div>
+            <div id="metadata-content"></div>
         </div>
-      {% endfor %}
     {% endif %}
         {% if selectionLength == 1 and recordSubdefs is not empty %}
             <div id="tools-sharing" class="tabBox">
@@ -448,4 +406,21 @@
         ]
 
     };
+
+    $(document).ready(function(){
+        $('.tool-metadata').click(function(e){
+            $.ajax({
+                "url": "{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'}) }}",
+                "type": "GET",
+                beforeSend: function(){
+                    $('#metadata-content').empty();
+                    $('#metadata-load').removeClass('hidden').addClass('loading');
+                },
+                success: function (data) {
+                    $('#metadata-load').removeClass('loading').addClass('hidden');
+                    $('#metadata-content').append(data);
+                }
+            });
+        });
+    });
 </script>
