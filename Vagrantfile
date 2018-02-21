@@ -1,12 +1,12 @@
 Vagrant.require_version ">= 1.5"
 $php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : 5.6;
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
 
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
 
-if $php.include?($phpVersion)
+unless $php.include?($phpVersion)
     raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
 end
 
