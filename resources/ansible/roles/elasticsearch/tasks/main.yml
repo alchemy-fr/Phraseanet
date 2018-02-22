@@ -16,7 +16,7 @@
   apt: pkg=oracle-java8-installer state=latest
 
 - name: Remove temporary debian package
-  shell: rm -f /tmp/elasticsearch-{{ elasticsearch.version }}.deb
+  file: path=/tmp/elasticsearch-{{ elasticsearch.version }}.deb state=absent
   when: not is_installed
 
 - name: Download debian package

@@ -152,6 +152,9 @@ class PropertyAccess
         if (array_key_exists($prop, $conf)) {
             return $this->doRemove($conf[$prop], $props);
         }
+        else {
+            return null;
+        }
     }
 
     private function arrayize($value)

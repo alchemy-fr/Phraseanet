@@ -109,7 +109,7 @@ class QueryContext
     {
         $index_field = $field->getIndexField();
 
-        if ($field->getType() === FieldMapping::TYPE_STRING) {
+        if ($field->getType() === FieldMapping::TYPE_TEXT) {
             return $this->localizeFieldName($index_field);
         } else {
             return [$index_field];

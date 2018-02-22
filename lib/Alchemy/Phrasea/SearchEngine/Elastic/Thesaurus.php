@@ -99,6 +99,7 @@ class Thesaurus
         ));
 
         $must = [];
+        $must_not = [];
         $filters = [];
 
         $must[] = [
@@ -118,13 +119,15 @@ class Thesaurus
                     ],
                 ],
             ];
-        } else {
-            $filters[] = [
-                'missing' => [
+        }
+        else {
+            $must_not[] = [
+                'exists' => [
                     'field' => 'context'
                 ]
             ];
         }
+
         if ($lang) {
             $filters[] = [
                 'term' => [
@@ -135,48 +138,38 @@ class Thesaurus
         if ($filter) {
             $filters = array_merge($filters, $filter->getQueryFilters());
         }
+
+        $bool = [];
+        if(!empty($must)) {
+            $bool['must'] = $must;
+        }
+        if(!empty($must_not)) {
+            $bool['must_not'] = $must_not;
+        }
         if(!empty($filters)) {
-            if (count($filters) > 1) {
-                $must[] = [
-                    'constant_score' => [
-                        'filter' => [
-                            'and' => $filters
-                        ]
-                    ]
-                ];
-            }
-            else {
-                $must[] = [
-                    'constant_score' => [
-                        'filter' => $filters[0]
-                    ]
-                ];
-            }
+            $bool['filter'] = $filters;
         }
-
-        if(count($must) > 1) {
-            $query = [
-                'bool' => [
-                    'must' => $must
-                ]
-            ];
-        }
-        else {
-            $query = $must[0];
-        }
-
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
+        $params['body']['query']['bool'] = $bool;
 
         // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName(),
+            'type'  => TermIndexer::TYPE_NAME,
+            'body' => [
+                'query' => [
+                    'bool' => $bool
+                ],
+                'aggs' => [
+                    'dedup' => [
+                        'terms' => [
+                            'field' => 'path.raw'
+                        ]
+                    ]
+                ],
+                'size' => 0,        // No need to get any hits since we extract data from aggs
+            ]
+        ];
+
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);

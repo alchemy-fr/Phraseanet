@@ -13,29 +13,48 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
 use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
-use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordListFetcherDelegate;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\RecordIdListFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\ScheduledFetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\CoreHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\FlagHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\MetadataHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\SubDefinitionHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\ThesaurusHydrator;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\TitleHydrator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use databox;
-use Iterator;
+use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use record_adapter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+
 class RecordIndexer
 {
     const TYPE_NAME = 'record';
 
+    /** @var  RecordIndexer */
+    private $indexer;
+
+    /** @var  ElasticsearchOptions */
+    private $options;
+
+    /** @var  Client $client */
+    private $client;
+
     /**
      * @var RecordHelper
      */
-    private $helper;
+    private $recordHelper;
 
     /**
      * @var LoggerInterface
@@ -48,26 +67,22 @@ class RecordIndexer
     private $eventDispatcher;
 
     /**
-     * @var DataboxFetcherFactory
-     */
-    private $fetcherFactory;
-
-    /**
-     * @param DataboxFetcherFactory $fetcherFactory
-     * @param RecordHelper $helper
+     * @param Indexer $indexer
+     * @param RecordHelper $recordHelper
      * @param LoggerInterface $logger
      * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(
-        DataboxFetcherFactory $fetcherFactory,
-        RecordHelper $helper,
-        EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger = null
-    ) {
+    public function __construct(Indexer $indexer,
+                                RecordHelper $recordHelper,
+                                EventDispatcherInterface $eventDispatcher, LoggerInterface $logger = null)
+    {
+        $this->indexer = $indexer;
+        $this->recordHelper = $recordHelper;
         $this->eventDispatcher = $eventDispatcher;
-        $this->fetcherFactory = $fetcherFactory;
-        $this->helper = $helper;
         $this->logger = $logger ?: new NullLogger();
+
+        $this->options = $indexer->getIndex()->getOptions();
+        $this->client = $indexer->getClient();
     }
 
     /**
@@ -114,16 +129,21 @@ class RecordIndexer
      * index whole databox(es), don't test actual "jetons"
      * called by command "populate"
      *
-     * @param BulkOperation $bulk
      * @param databox $databox
      */
-    public function populateIndex(BulkOperation $bulk, databox $databox)
+    public function populateIndex(databox $databox)
     {
-        $this->logger->info(sprintf('Indexing database %s...', $databox->get_viewname()));
+        $this->logger->info(sprintf('Indexing database %s...', $databox->get_dbname()));
+
+        $indexName = $this->indexer->getDataboxIndexBasename($databox) . '.r';
+
+        // Prepare the bulk operation
+        $bulk = new BulkOperation($this->client, $indexName, $this->logger);
+        $bulk->setAutoFlushLimit(15);
 
         $submitted_records = [];
         // No delegate, scan all records
-        $fetcher = $this->fetcherFactory->createFetcher($databox);
+        $fetcher = $this->createFetcherForDatabox($databox);
 
         // post fetch : flag records as "indexing"
         $fetcher->setPostFetch(function(array $records) use ($databox, $fetcher) {
@@ -139,23 +159,31 @@ class RecordIndexer
         // Perform indexing
         $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
 
-        $this->logger->info(sprintf('Finished indexing %s', $databox->get_viewname()));
+        // Flush just in case, it's a noop when already done
+        $bulk->flush();
+
+        $this->logger->info(sprintf('Finished indexing %s', $databox->get_dbname()));
     }
 
     /**
      * Index the records flagged as "to_index" on databox
      * called by task "indexer"
      *
-     * @param BulkOperation $bulk
      * @param databox $databox
      */
-    public function indexScheduled(BulkOperation $bulk, databox $databox)
+    public function indexScheduled(databox $databox)
     {
         $submitted_records = [];
 
+        $indexName = $this->indexer->getDataboxIndexBasename($databox) . '.r';
+
+        // Prepare the bulk operation
+        $bulk = new BulkOperation($this->client, $indexName, $this->logger);
+        $bulk->setAutoFlushLimit(15);
+
         // Make fetcher
         $delegate = new ScheduledFetcherDelegate();
-        $fetcher = $this->fetcherFactory->createFetcher($databox, $delegate);
+        $fetcher = $this->createFetcherForDatabox($databox, $delegate);
 
         // post fetch : flag records as "indexing"
         $fetcher->setPostFetch(function(array $records) use ($databox, $fetcher) {
@@ -173,88 +201,108 @@ class RecordIndexer
 
         // Perform indexing
         $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
+
+        $bulk->flush();
     }
 
     /**
      * Index a list of records
      *
-     * @param BulkOperation $bulk
-     * @param Iterator $records
+     * @param Databox $databox,
+     * @param int[] $recordIds
      */
-    public function index(BulkOperation $bulk, Iterator $records)
+    public function index(Databox $databox, array $recordIds)
     {
-        foreach ($this->createFetchersForRecords($records) as $fetcher) {
-            $submitted_records = [];
-            $databox = $fetcher->getDatabox();
+        $submitted_records = [];
 
-            // post fetch : flag records as "indexing"
-            $fetcher->setPostFetch(function(array $records) use ($fetcher, $databox) {
-                RecordQueuer::didStartIndexingRecords($records, $databox);
-                // do not restart the fetcher since it has no clause on jetons
-            });
+        $indexName = $this->indexer->getDataboxIndexBasename($databox) . '.r';
 
-            // bulk flush : flag records as "indexed"
-            $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
-                $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
-            });
+        // Prepare the bulk operation
+        $bulk = new BulkOperation($this->client, $indexName, $this->logger);
+        $bulk->setAutoFlushLimit(15);
 
-            // Perform indexing
-            $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
-        }
+        // Make fetcher
+        $delegate = new RecordIdListFetcherDelegate($recordIds);
+        $fetcher = $this->createFetcherForDatabox($databox, $delegate);
+
+        // post fetch : flag records as "indexing"
+        $fetcher->setPostFetch(function(array $records) use ($databox, $fetcher) {
+            RecordQueuer::didStartIndexingRecords($records, $databox);
+            // do not restart the fetcher since it has no clause on jetons
+        });
+
+        // bulk flush : flag records as "indexed"
+        $bulk->onFlush(function($operation_identifiers) use ($databox, &$submitted_records) {
+            $this->onBulkFlush($databox, $operation_identifiers, $submitted_records);
+        });
+
+        // Perform indexing
+        $this->indexFromFetcher($bulk, $fetcher, $submitted_records);
+
+        $bulk->flush();
     }
 
     /**
      * Deleta a list of records
      *
-     * @param BulkOperation $bulk
-     * @param Iterator $records
+     * @param databox $databox
+     * @param int[] $recordIds
      */
-    public function delete(BulkOperation $bulk, Iterator $records)
+    public function delete(databox $databox, $recordIds)
     {
-        foreach ($records as $record) {
-            $bulk->delete([
-                'id' => $record->getId(),
-                'type' => self::TYPE_NAME
-            ], null);
+        $indexName = $this->indexer->getDataboxIndexBasename($databox) . '.r';
+
+        // Prepare the bulk operation
+        $bulk = new BulkOperation($this->client, $indexName, $this->logger);
+        $bulk->setAutoFlushLimit(15);
+
+        foreach ($recordIds as $record_id) {
+            $params = array();
+            $params['id'] = $record_id;
+            $params['type'] = self::TYPE_NAME;
+            $bulk->delete($params, null);       // no operationIdentifier is related to a delete op
         }
+
+        $bulk->flush();
     }
 
-    /**
-     * @param Iterator $records
-     * @return Fetcher[]
-     */
-    private function createFetchersForRecords(Iterator $records)
+    private function createFetcherForDatabox(databox $databox, FetcherDelegateInterface $fetcherDelegate = null)
     {
-        $fetchers = array();
+        $connection = $databox->get_connection();
 
-        foreach ($this->groupRecordsByDatabox($records) as $group) {
-            $databox = $group['databox'];
-            $delegate = new RecordListFetcherDelegate($group['records']);
+        // a thesaurus linked to the .t index for this databox
+        $thesaurusOptions = clone $this->options;
 
-            $fetchers[] = $this->fetcherFactory->createFetcher($databox, $delegate);
-        }
+        //$thesaurusOptions->setIndexName($this->getTermIndexName());
+        $termIndexName = $this->indexer->getDataboxIndexBasename($databox) . '.t';
+        $thesaurusOptions->setIndexName($termIndexName);
 
-        return $fetchers;
-    }
+        $thesaurus = new Thesaurus($this->client, $thesaurusOptions, $this->logger);   // !!! specific options 'index'
 
-    private function groupRecordsByDatabox(Iterator $records)
-    {
-        $databoxes = array();
+        $structure = GlobalStructure::createFromDataboxes([$databox]);
 
-        foreach ($records as $record) {
-            /** @var record_adapter $record */
-            $databox = $record->getDatabox();
-            $k = $databox->get_sbas_id();
-            if(!array_key_exists($k, $databoxes)) {
-                $databoxes[$k] = [
-                    'databox' => $databox,
-                    'records' => []
-                ];
-            }
-            $databoxes[$k]['records'][] = $record;
-        }
+        $candidateTerms = new CandidateTerms($databox);
 
-        return array_values($databoxes);
+        $fetcher = new Fetcher(
+            $databox,
+            $this->options,
+            [
+                new CoreHydrator($databox->get_sbas_id(), $databox->get_viewname(), $this->recordHelper),
+                new TitleHydrator($connection, $this->recordHelper),
+                new MetadataHydrator($connection, $structure, $this->recordHelper),
+                new FlagHydrator($structure, $databox),
+                new ThesaurusHydrator($structure, $thesaurus, $candidateTerms),
+                new SubDefinitionHydrator($connection)
+            ],
+            $fetcherDelegate
+        );
+
+        $fetcher->setBatchSize(200);
+        $fetcher->onDrain(function() use ($candidateTerms) {
+            $candidateTerms->save();
+        });
+
+        return $fetcher;
     }
 
     private function indexFromFetcher(BulkOperation $bulk, Fetcher $fetcher, array &$submitted_records)
@@ -283,11 +331,14 @@ class RecordIndexer
 
             $this->logger->debug(sprintf("Indexing record %s of databox %s", $record['record_id'], $databox->get_sbas_id()));
 
-            $params = array();
-            $params['id'] = $record['id'];
+            $id = $record['id'];
             unset($record['id']);
-            $params['type'] = self::TYPE_NAME;
-            $params['body'] = $record;
+
+            $params = [
+                'id'   => $id,
+                'type' => self::TYPE_NAME,
+                'body' => $record
+            ];
 
             $submitted_records[$op_identifier] = $record;
 

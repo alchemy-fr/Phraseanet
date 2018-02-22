@@ -19,15 +19,10 @@ class MetadataTagToFieldMappingConverter
 
     public function convertTag(Tag $tag)
     {
-        if ($tag->getType() === FieldMapping::TYPE_STRING) {
-            $fieldMapping = new StringFieldMapping($tag->getName());
+        if ($tag->getType() === FieldMapping::TYPE_TEXT) {
+            $fieldMapping = new TextFieldMapping($tag->getName());
 
-            $fieldMapping->disableAnalysis();
-
-            if ($tag->isAnalyzable()) {
-                $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
-                $fieldMapping->enableAnalysis();
-            }
+            $fieldMapping->addChild((new FieldMapping('raw', FieldMapping::TYPE_KEYWORD)));
 
             return $fieldMapping;
         }

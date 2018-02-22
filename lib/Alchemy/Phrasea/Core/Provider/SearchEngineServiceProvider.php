@@ -11,27 +11,25 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\LazyLocator;
-use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Index;
-use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
-use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
 use Hoa\File;
@@ -72,7 +70,9 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['search_engine'] = $app->share(function ($app) {
-            $type = $app['conf']->get(['main', 'search-engine', 'type']);
+            /** @var PropertyAccess $conf */
+            $conf = $app['conf'];
+            $type = $conf->get(['main', 'search-engine', 'type']);
             if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
                 throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
             }
@@ -110,6 +110,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     private function registerIndexer(Application $app)
     {
         /* Indexer related services */
+
         $app['elasticsearch.index'] = $app->share(function ($app) {
             return new Index($app['elasticsearch.options'], $app['elasticsearch.index.locator']);
         });
@@ -126,45 +127,44 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new IndexLocator($app, 'elasticsearch.index.record', 'elasticsearch.index.term');
         });
 
+
         $app['elasticsearch.indexer'] = $app->share(function ($app) {
             return new Indexer(
+                $app['phraseanet.appbox'],
+                $app['elasticsearch.options'],
                 $app['elasticsearch.client'],
                 $app['elasticsearch.index'],
-                $app['elasticsearch.indexer.term_indexer'],
-                $app['elasticsearch.indexer.record_indexer'],
+            //    $app['elasticsearch.indexer.term_indexer'],
+            //    $app['elasticsearch.indexer.record_indexer'],
+                $app['dispatcher'],
+                $app['elasticsearch.record_helper'],
                 $app['monolog']
             );
         });
 
+        /*
         $app['elasticsearch.indexer.term_indexer'] = $app->share(function ($app) {
             return new TermIndexer(
-                $app['phraseanet.appbox'],
+                $app['elasticsearch.client'],
                 $app['monolog']
             );
         });
+        */
 
-        $app['elasticsearch.indexer.databox_fetcher_factory'] = $app->share(function ($app) {
-            return new DataboxFetcherFactory(
-                $app['elasticsearch.record_helper'],
-                $app['elasticsearch.options'],
-                $app,
-                'search_engine.structure',
-                'thesaurus'
-            );
-        });
-
+        /*
         $app['elasticsearch.indexer.record_indexer'] = $app->share(function ($app) {
             // TODO Use upcoming monolog factory
             $logger = new Logger('indexer');
             $logger->pushHandler(new ErrorLogHandler());
 
             return new RecordIndexer(
-                $app['elasticsearch.indexer.databox_fetcher_factory'],
+                $app['elasticsearch.indexer'],
                 $app['elasticsearch.record_helper'],
                 $app['dispatcher'],
                 $app['monolog']
             );
         });
+        */
 
         $app['elasticsearch.record_helper'] = $app->share(function ($app) {
             return new RecordHelper($app['phraseanet.appbox']);
@@ -211,8 +211,11 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             if ($app['debug']) {
                 /** @var Logger $logger */
                 $logger = new $app['monolog.logger.class']('search logger');
-                $logger->pushHandler(new RotatingFileHandler($app['log.path'] . DIRECTORY_SEPARATOR . 'elasticsearch.log',
-                    2, Logger::INFO));
+                $logger->pushHandler(new RotatingFileHandler(
+                    $app['log.path'] . DIRECTORY_SEPARATOR . 'elasticsearch.log',
+                    2,
+                    Logger::INFO
+                ));
 
                 $clientParams['logObject'] = $logger;
                 $clientParams['logging'] = true;
@@ -228,12 +231,14 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.options'] = $app->share(function ($app) {
-            $options = ElasticsearchOptions::fromArray($app['conf']->get(['main', 'search-engine', 'options'], []));
+            /** @var PropertyAccess $conf */
+            $conf = $app['conf'];
+            $options = ElasticsearchOptions::fromArray($conf->get(['main', 'search-engine', 'options'], []));
 
             if (empty($options->getIndexName())) {
                 $options->setIndexName(strtolower(sprintf('phraseanet_%s', str_replace(
                     array('/', '.'), array('', ''),
-                    $app['conf']->get(['main', 'key'])
+                    $conf->get(['main', 'key'])
                 ))));
             }
 
@@ -273,7 +278,9 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_parser.grammar_path'] = function ($app) {
             $configPath = ['registry', 'searchengine', 'query-grammar-path'];
-            $grammarPath = $app['conf']->get($configPath, 'grammar/query.pp');
+            /** @var PropertyAccess $conf */
+            $conf = $app['conf'];
+            $grammarPath = $conf->get($configPath, 'grammar/query.pp');
             $projectRoot = '../../../../..';
 
             return realpath(implode('/', [__DIR__, $projectRoot, $grammarPath]));

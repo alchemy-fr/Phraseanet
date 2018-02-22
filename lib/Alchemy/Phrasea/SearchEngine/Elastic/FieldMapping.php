@@ -20,7 +20,8 @@ class FieldMapping
     const DATE_FORMAT_CAPTION_PHP = 'Y/m/d';  // PHP format
 
     // Core types
-    const TYPE_STRING     = 'string';
+    const TYPE_TEXT       = 'text';
+    const TYPE_KEYWORD    = 'keyword';
     const TYPE_BOOLEAN    = 'boolean';
     const TYPE_DATE       = 'date';
     const TYPE_COMPLETION = 'completion';
@@ -38,7 +39,8 @@ class FieldMapping
     const TYPE_OBJECT  = 'object';
 
     private static $types = array(
-        self::TYPE_STRING,
+        self::TYPE_KEYWORD,
+        self::TYPE_TEXT,
         self::TYPE_BOOLEAN,
         self::TYPE_DATE,
         self::TYPE_FLOAT,
@@ -71,11 +73,6 @@ class FieldMapping
      * @var bool
      */
     private $enabled = true;
-
-    /**
-     * @var bool
-     */
-    private $raw = false;
 
     /**
      * @param string $name
@@ -137,13 +134,6 @@ class FieldMapping
         return $this;
     }
 
-    public function enableRawIndexing()
-    {
-        $this->raw = true;
-
-        return $this;
-    }
-
     /**
      * @return bool
      */
@@ -195,9 +185,7 @@ class FieldMapping
         }
 
         if (! $this->indexed) {
-            $baseProperties['index'] = 'no';
-        } elseif ($this->raw) {
-            $baseProperties['index'] = 'not_analyzed';
+            $baseProperties['index'] = false;
         }
 
         if (! $this->enabled) {

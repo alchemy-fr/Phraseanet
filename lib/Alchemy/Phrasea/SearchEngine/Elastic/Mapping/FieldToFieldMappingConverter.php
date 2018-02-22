@@ -23,13 +23,13 @@ class FieldToFieldMappingConverter
             return new DateFieldMapping($field->getName(), FieldMapping::DATE_FORMAT_CAPTION);
         }
 
-        if ($field->getType() === FieldMapping::TYPE_STRING) {
-            $fieldMapping = new StringFieldMapping($field->getName());
+        if ($field->getType() === FieldMapping::TYPE_TEXT) {
+            $fieldMapping = new TextFieldMapping($field->getName());
 
             if (! $field->isFacet() && ! $field->isSearchable()) {
                 $fieldMapping->disableIndexing();
             } else {
-                $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
+                $fieldMapping->addChild(new FieldMapping('raw', FieldMapping::TYPE_KEYWORD));
 
                 $child = new CompletionFieldMapping('suggest');
                 $fieldMapping->addChild($child);

@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
@@ -32,6 +31,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Application;
 use databox_field;
 use Elasticsearch\Client;
+
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -275,6 +275,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function query($queryText, SearchEngineOptions $options = null)
     {
+        // file_put_contents("/tmp/phraseanet-log.txt", '');
+
         $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
 
@@ -283,13 +285,18 @@ class ElasticSearchEngine implements SearchEngineInterface
         $queryAST      = $query_compiler->parse($queryText)->dump();
         $queryCompiled = $query_compiler->compile($queryText, $context);
 
-        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
+        $queryESLib = [
+            'index' => $this->indexName,
+            'type'  => RecordIndexer::TYPE_NAME,
+            'body'  => [
+                'version' => true,          // ask ES to return field _version (incremental version number of document)
+                'from'    => $options->getFirstResult(),
+                'size'    => $options->getMaxResults(),
+                'sort'    => $this->createSortQueryParams($options),
+                'query'   => $this->createRecordQueryParams($queryCompiled, $options)
+            ]
+        ];
 
-        // ask ES to return field _version (incremental version number of document)
-        $queryESLib['body']['version'] = true;
-
-        $queryESLib['body']['from'] = $options->getFirstResult();
-        $queryESLib['body']['size'] = $options->getMaxResults();
         if($this->options->getHighlight()) {
             $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
@@ -298,6 +305,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($aggs) {
             $queryESLib['body']['aggs'] = $aggs;
         }
+
+        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s\n\n", json_encode($queryESLib['body'], JSON_PRETTY_PRINT)), FILE_APPEND);
 
         $res = $this->client->search($queryESLib);
 
@@ -335,22 +344,25 @@ class ElasticSearchEngine implements SearchEngineInterface
         $highlighted_fields = [];
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
-                        'matched_fields' => [$index_field, $raw_index_field],
+                        'matched_fields' => [
+                            $index_field . '.light',
+                            // $raw_index_field
+                        ],
                         'type' => 'fvh'
                     ];
                     break;
+                case FieldMapping::TYPE_KEYWORD:
                 case FieldMapping::TYPE_FLOAT:
                 case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_INTEGER:
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    continue;
                 case FieldMapping::TYPE_DATE:
                 default:
                     continue;
@@ -378,7 +390,9 @@ class ElasticSearchEngine implements SearchEngineInterface
             'text' => [],
             'byField' => []
         ];
-        foreach(array_keys($params['body']) as $fname) {
+        /** @var array $body */
+        $body = $params['body'];
+        foreach(array_keys($body) as $fname) {
             $t = [];
             foreach($res[$fname] as $suggest) {    // don't know why there is a sub-array level
                 foreach($suggest['options'] as $option) {
@@ -437,7 +451,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $search_context = $this->context_factory->createContext($options);
         $fields = $search_context->getUnrestrictedFields();
         foreach($fields as $field) {
-            if($field->getType() == FieldMapping::TYPE_STRING) {
+            if($field->getType() == FieldMapping::TYPE_TEXT) {
                 $k = '' . $field->getName();
                 $body[$k] = [
                     'text' => $query,
@@ -455,32 +469,34 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
     }
 
-    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options)
     {
-        $params = [
-            'index' => $this->indexName,
-            'type'  => RecordIndexer::TYPE_NAME,
-            'body'  => [
-                'sort'   => $this->createSortQueryParams($options),
-            ]
-        ];
-
         $query_filters = $this->createQueryFilters($options);
         $acl_filters = $this->createACLFilters($options);
 
-        $ESQuery = ['filtered' => ['query' => $ESQuery]];
-
-        if (count($query_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
+        $filters = [];
+        if(!empty($query_filters)) {
+            $filters[] = $query_filters;
+        }
+        if(!empty($acl_filters)) {
+            $filters[] = $acl_filters;
         }
 
-        if (count($acl_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
+        if(!empty($filters)) {
+            // wrap the query inside a bool
+            $ESQuery = [
+                'bool' => [
+                    'must' => $ESQuery,
+                    'filter' => [
+                        'bool' => [
+                            'must' => $filters,
+                        ]
+                    ]
+                ]
+            ];
         }
 
-        $params['body']['query'] = $ESQuery;
-
-        return $params;
+        return $ESQuery;
     }
 
     private function getAggregationQueryParams(SearchEngineOptions $options)

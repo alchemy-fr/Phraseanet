@@ -29,16 +29,16 @@ class CompletionFieldMapping extends FieldMapping
     protected function getProperties()
     {
         return [
-            'context' => [
-                'base_id' => [
+            'contexts' => [
+                [
+                    'name' => 'base_id',
                     'type' => 'category',
                     'path' => 'base_id',
-                    'default' => ''
                 ],
-                'record_type' => [
+                [
+                    'name' => 'record_type',
                     'type' => 'category',
                     'path' => 'record_type',
-                    'default' => ''
                 ]
             ],
             //    'analyzer' => 'simple',

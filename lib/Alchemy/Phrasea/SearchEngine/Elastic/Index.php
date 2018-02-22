@@ -27,10 +27,8 @@ class Index
      * @param ElasticsearchOptions $options
      * @param IndexLocator $indexLocator
      */
-    public function __construct(
-        ElasticsearchOptions $options,
-        IndexLocator $indexLocator
-    ) {
+    public function __construct(ElasticsearchOptions $options, IndexLocator $indexLocator)
+    {
         $this->options = $options;
         $this->indexLocator = $indexLocator;
 

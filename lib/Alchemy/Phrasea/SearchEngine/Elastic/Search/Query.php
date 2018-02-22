@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Node;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\NullQueryNode;
-use Hoa\Compiler\Llk\TreeNode;
 
 class Query
 {
@@ -27,8 +26,11 @@ class Query
     {
         $query = $this->root->buildQuery($context);
         if ($query === null) {
-            $query = [];
-            $query['bool']['must'] = [];
+            $query = [
+                'bool' => [
+                    'must' => []
+                ]
+            ];
         }
 
         return $query;

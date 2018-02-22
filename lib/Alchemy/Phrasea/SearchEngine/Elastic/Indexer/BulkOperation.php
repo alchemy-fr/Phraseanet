@@ -60,20 +60,14 @@ class BulkOperation
 
     /**
      * @param Client $client
+     * @param string $indexName
      * @param LoggerInterface $logger
      */
-    public function __construct(Client $client, LoggerInterface $logger)
+    public function __construct(Client $client, $indexName, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->index  = $indexName;
         $this->logger = $logger;
-    }
-
-    /**
-     * @param string $index
-     */
-    public function setDefaultIndex($index)
-    {
-        $this->index = (string) $index;
     }
 
     /**

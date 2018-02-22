@@ -51,23 +51,24 @@ class RecordIndex implements MappingProvider
         $mapping->addIntegerField('databox_id');
 
         // Database name (still indexed for facets)
-        $mapping->addStringField('databox_name')->disableAnalysis();
+        $mapping->addKeywordField('databox_name');
+
         // Unique base ID
         //$mapping->addIntegerField('base_id')->enableIndexing();
-        $mapping->addStringField('base_id')->disableAnalysis();     // must be a string to match completion context ?
+        $mapping->addKeywordField('base_id');     // must be a string to match completion context ?
 
         // Useless collection ID (local to databox)
         $mapping->addIntegerField('collection_id')->disableIndexing();
         // Collection name (still indexed for facets)
-        $mapping->addStringField('collection_name')->disableAnalysis();
+        $mapping->addKeywordField('collection_name');
 
-        $mapping->addStringField('uuid')->disableIndexing();
-        $mapping->addStringField('sha256')->disableIndexing();
-        $mapping->addStringField('original_name')->disableIndexing();
-        $mapping->addStringField('mime')->disableAnalysis();
-        $mapping->addStringField('type')->disableAnalysis();
+        $mapping->addKeywordField('uuid')->disableIndexing();
+        $mapping->addKeywordField('sha256')->disableIndexing();
+        $mapping->addKeywordField('original_name')->disableIndexing();
+        $mapping->addKeywordField('mime');
+        $mapping->addKeywordField('type');
 
-        $mapping->addStringField('record_type')->disableAnalysis();
+        $mapping->addKeywordField('record_type');
 
         $mapping->addIntegerField('width')->disableIndexing();
         $mapping->addIntegerField('height')->disableIndexing();
@@ -97,15 +98,16 @@ class RecordIndex implements MappingProvider
         $captionMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach ($fields as $field) {
-            $captionMapping->addChild($fieldConverter->convertField($field, $this->locales));
+            $child = $fieldConverter->convertField($field, $this->locales);
+            $captionMapping->addChild($child);
         }
 
         $parent->add($captionMapping);
 
-        $localizedCaptionMapping = new Mapping\StringFieldMapping(sprintf('%s_all', $name));
+        $localizedCaptionMapping = new Mapping\TextFieldMapping(sprintf('%s_all', $name));
         $localizedCaptionMapping
             ->addLocalizedChildren($this->locales)
-            ->addChild((new Mapping\StringFieldMapping('raw'))->enableRawIndexing());
+            ->addChild((new FieldMapping('raw', FieldMapping::TYPE_KEYWORD)));
 
         $parent->add($localizedCaptionMapping);
 
@@ -117,11 +119,11 @@ class RecordIndex implements MappingProvider
         $thesaurusMapping = new Mapping\ComplexPropertiesMapping($name);
 
         foreach (array_keys($this->structure->getThesaurusEnabledFields()) as $name) {
-            $child = new Mapping\StringFieldMapping($name);
+            $child = new Mapping\TextFieldMapping($name);
 
             $child->setAnalyzer('thesaurus_path', 'indexing');
             $child->setAnalyzer('keyword', 'searching');
-            $child->addChild((new Mapping\StringFieldMapping('raw'))->enableRawIndexing());
+            $child->addChild((new FieldMapping('raw', FieldMapping::TYPE_KEYWORD)));
 
             $thesaurusMapping->addChild($child);
         }

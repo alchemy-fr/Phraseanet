@@ -21,7 +21,7 @@ class RawFieldMapping extends FieldMapping
      */
     public function __construct($type)
     {
-        parent::__construct('raw', $type);
+        parent::__construct('raw', parent::TYPE_KEYWORD);
     }
 
     /**
@@ -29,6 +29,6 @@ class RawFieldMapping extends FieldMapping
      */
     protected function getProperties()
     {
-        return [ 'index' => 'not_analyzed' ];
+        return [ ];
     }
 }

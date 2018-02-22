@@ -11,53 +11,57 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\MappingBuilder;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
 use databox;
+use Elasticsearch\Client;
 use Psr\Log\LoggerInterface;
 
 class TermIndexer
 {
     const TYPE_NAME = 'term';
 
-    /**
-     * @var \appbox
-     */
-    private $appbox;
+    /** @var  RecordIndexer */
+    private $indexer;
 
-    /**
-     * @var Navigator
-     */
+    /** @var Client */
+    private $client;
+
+    /** @var Navigator */
     private $navigator;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
     /**
-     * @param \appbox $appbox
+     * TermIndexer constructor.
+     * @param Indexer $indexer
+     * @param Client $client
      * @param LoggerInterface $logger
      */
-    public function __construct(\appbox $appbox, LoggerInterface $logger)
+    public function __construct(Indexer $indexer, Client $client, LoggerInterface $logger)
     {
-        $this->appbox = $appbox;
-        $this->navigator = new Navigator();
+        $this->indexer = $indexer;
+        $this->client = $client;
         $this->logger = $logger;
+
+        $this->navigator = new Navigator();
     }
 
     /**
-     * @param BulkOperation $bulk
      * @param databox $databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function populateIndex(BulkOperation $bulk, databox $databox)
+    public function populateIndex(databox $databox)
     {
         $databoxId = $databox->get_sbas_id();
+
+        $indexName = $this->indexer->getDataboxIndexBasename($databox) . '.t';
+        $bulk = new BulkOperation($this->client, $indexName, $this->logger);
+        $bulk->setAutoFlushLimit(1000);
 
         $visitor = new TermVisitor(function ($term) use ($bulk, $databoxId) {
             // Path and id are prefixed with a databox identifier to not
@@ -73,10 +77,11 @@ class TermIndexer
             $term['databox_id'] = $databoxId;
 
             // Index request
-            $params = array();
-            $params['id'] = $id;
-            $params['type'] = self::TYPE_NAME;
-            $params['body'] = $term;
+            $params = [
+                'id' => $id,
+                'type' => self::TYPE_NAME,
+                'body' => $term,
+            ];
 
             $bulk->index($params, null);
         });
@@ -86,6 +91,8 @@ class TermIndexer
 
         $document = Helper::thesaurusFromDatabox($databox);
         $this->navigator->walk($document, $visitor);
+
+        $bulk->flush();
 
         $databox->get_connection()->executeUpdate(
             "INSERT INTO pref (prop, value, locale, updated_on, created_on)"

@@ -2,8 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
-use Assert\Assertion;
-use InvalidArgumentException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use media_subdef;
 
 class MetadataHelper
@@ -13,35 +12,35 @@ class MetadataHelper
     public static function createTags()
     {
         static $tag_descriptors = [
-            [media_subdef::TC_DATA_WIDTH             , 'integer', false],
-            [media_subdef::TC_DATA_HEIGHT            , 'integer', false],
-            [media_subdef::TC_DATA_COLORSPACE        , 'string' , false],
-            [media_subdef::TC_DATA_CHANNELS          , 'integer', false],
-            [media_subdef::TC_DATA_ORIENTATION       , 'integer', false],
-            [media_subdef::TC_DATA_COLORDEPTH        , 'integer', false],
-            [media_subdef::TC_DATA_DURATION          , 'float'  , false],
-            [media_subdef::TC_DATA_AUDIOCODEC        , 'string' , false],
-            [media_subdef::TC_DATA_AUDIOSAMPLERATE   , 'float'  , false],
-            [media_subdef::TC_DATA_VIDEOCODEC        , 'string' , false],
-            [media_subdef::TC_DATA_FRAMERATE         , 'float'  , false],
-            [media_subdef::TC_DATA_MIMETYPE          , 'string' , false],
-            [media_subdef::TC_DATA_FILESIZE          , 'long'   , false],
+            [media_subdef::TC_DATA_WIDTH             , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_HEIGHT            , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_COLORSPACE        , FieldMapping::TYPE_KEYWORD ],
+            [media_subdef::TC_DATA_CHANNELS          , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_ORIENTATION       , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_COLORDEPTH        , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_DURATION          , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_AUDIOCODEC        , FieldMapping::TYPE_KEYWORD ],
+            [media_subdef::TC_DATA_AUDIOSAMPLERATE   , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_VIDEOCODEC        , FieldMapping::TYPE_KEYWORD ],
+            [media_subdef::TC_DATA_FRAMERATE         , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_MIMETYPE          , FieldMapping::TYPE_KEYWORD ],
+            [media_subdef::TC_DATA_FILESIZE          , FieldMapping::TYPE_LONG    ],
             // TODO use geo point type for lat/long
-            [media_subdef::TC_DATA_LONGITUDE         , 'float'  , false],
-            [media_subdef::TC_DATA_LATITUDE          , 'float'  , false],
-            [media_subdef::TC_DATA_FOCALLENGTH       , 'float'  , false],
-            [media_subdef::TC_DATA_CAMERAMODEL       , 'string' , true ],
-            [media_subdef::TC_DATA_FLASHFIRED        , 'boolean', false],
-            [media_subdef::TC_DATA_APERTURE          , 'float'  , false],
-            [media_subdef::TC_DATA_SHUTTERSPEED      , 'float'  , false],
-            [media_subdef::TC_DATA_HYPERFOCALDISTANCE, 'float'  , false],
-            [media_subdef::TC_DATA_ISO               , 'integer', false],
-            [media_subdef::TC_DATA_LIGHTVALUE        , 'float'  , false]
+            [media_subdef::TC_DATA_LONGITUDE         , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_LATITUDE          , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_FOCALLENGTH       , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_CAMERAMODEL       , FieldMapping::TYPE_TEXT    ],
+            [media_subdef::TC_DATA_FLASHFIRED        , FieldMapping::TYPE_BOOLEAN ],
+            [media_subdef::TC_DATA_APERTURE          , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_SHUTTERSPEED      , FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_HYPERFOCALDISTANCE, FieldMapping::TYPE_FLOAT   ],
+            [media_subdef::TC_DATA_ISO               , FieldMapping::TYPE_INTEGER ],
+            [media_subdef::TC_DATA_LIGHTVALUE        , FieldMapping::TYPE_FLOAT   ]
         ];
 
         $tags = [];
         foreach ($tag_descriptors as $descriptor) {
-            $tags[] = new Tag($descriptor[0], $descriptor[1], $descriptor[2]);
+            $tags[] = new Tag($descriptor[0], $descriptor[1]);
         }
 
         return $tags;

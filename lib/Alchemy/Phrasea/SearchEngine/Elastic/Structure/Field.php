@@ -5,9 +5,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
-use Assert\Assertion;
 use databox_field;
 
 /**
@@ -51,7 +49,7 @@ class Field implements Typed
         $databox = $field->get_databox();
 
         $roots = null;
-        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
+        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_TEXT) {
             // Thesaurus concept inference
             $xpath = $field->get_tbranch();
             if (!empty($xpath)) {
@@ -90,7 +88,7 @@ class Field implements Typed
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
             case databox_field::TYPE_TEXT:
-                return FieldMapping::TYPE_STRING;
+                return FieldMapping::TYPE_TEXT;
         }
 
         throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
@@ -105,19 +103,6 @@ class Field implements Typed
         $this->facet           = \igorw\get_in($options, ['facet']);
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
         $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
-
-        Assertion::boolean($this->is_searchable);
-        Assertion::boolean($this->is_private);
-
-        if ($this->facet !== self::FACET_DISABLED) {
-            Assertion::integer($this->facet);
-        }
-
-        if ($this->thesaurus_roots !== null) {
-            Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
-        }
-
-        Assertion::allScalar($this->used_by_collections);
     }
 
     public function withOptions(array $options)
@@ -142,7 +127,7 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
+            $raw && $this->type === FieldMapping::TYPE_TEXT ? '.raw' : ''
         );
     }
 

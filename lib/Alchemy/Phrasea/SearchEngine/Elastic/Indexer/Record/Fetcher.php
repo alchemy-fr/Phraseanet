@@ -11,15 +11,14 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegate;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\HydratorInterface;
 use Closure;
 use databox;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
 use PDO;
 
 class Fetcher
@@ -34,11 +33,14 @@ class Fetcher
     private $batchSize = 1;
     private $buffer = array();
 
-    private $hydrators = array();
+    /** @var HydratorInterface[] */
+    private $hydrators;
+    /** @var  Closure */
     private $postFetch;
+    /** @var  Closure */
     private $onDrain;
 
-    public function __construct(databox $databox,ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
         $this->options = $options;
@@ -77,7 +79,7 @@ class Fetcher
         }
         if (empty($records)) {
             $this->onDrain->__invoke();
-            return;
+            return [];
         }
 
         // Hydrate records

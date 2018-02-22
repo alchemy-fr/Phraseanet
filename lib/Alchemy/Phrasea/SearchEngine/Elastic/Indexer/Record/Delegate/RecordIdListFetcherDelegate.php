@@ -13,37 +13,27 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate;
 
 use Doctrine\DBAL\Connection;
 
-class RecordListFetcherDelegate implements FetcherDelegateInterface
+class RecordIdListFetcherDelegate implements FetcherDelegateInterface
 {
-    private $records;
+    private $record_ids;
 
-    public function __construct(array $records)
+    public function __construct(array $record_ids)
     {
-        $this->records = $records;
+        $this->record_ids = $record_ids;
     }
 
     public function buildWhereClause()
     {
-        return 'WHERE r.record_id IN (:record_identifiers)';
+        return 'r.record_id IN (:record_identifiers)';
     }
 
     public function getParameters()
     {
-        return array(':record_identifiers' => $this->getRecordIdentifiers());
+        return array(':record_identifiers' => $this->record_ids);
     }
 
     public function getParametersTypes()
     {
         return array(':record_identifiers' => Connection::PARAM_INT_ARRAY);
-    }
-
-    private function getRecordIdentifiers()
-    {
-        $identifiers = array();
-        foreach ($this->records as $record) {
-            $identifiers[] = $record->getRecordId();
-        }
-
-        return $identifiers;
     }
 }
