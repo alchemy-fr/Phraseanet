@@ -50,6 +50,11 @@ class LazaretFile
     private $base_id;
 
     /**
+     * @ORM\Column(type="string", length=512)
+     */
+    private $record_ids;
+
+    /**
      * @ORM\Column(type="string", length=36)
      */
     private $uuid;
@@ -203,6 +208,29 @@ class LazaretFile
     public function getBaseId()
     {
         return $this->base_id;
+    }
+
+    /**
+     * Set record_ids
+     *
+     * @param  mixed  $recordIds
+     * @return LazaretFile
+     */
+    public function setRecordIds($recordIds)
+    {
+        $this->record_ids = serialize($recordIds);
+
+        return $this;
+    }
+
+    /**
+     * Get record_ids
+     *
+     * @return mixed
+     */
+    public function getRecordIds()
+    {
+        return unserialize($this->record_ids);
     }
 
     /**
@@ -448,6 +476,30 @@ class LazaretFile
         }
 
         return $merged;
+    }
+
+    /**
+     * Get an array of record_id
+     *
+     * @param Application $app
+     * @return array
+     */
+    public function getRecordIdsByCheckers(Application $app)
+    {
+        $recordIds = [];
+        /** @var LazaretCheck $check */
+        foreach($this->getChecks() as $check) {
+            /** @var record_adapter $record */
+            $conflicts = $check->listConflicts($app);
+
+            foreach ($conflicts as $record) {
+                if(!in_array($record, $recordIds)){
+                    $recordIds[] = $record->getRecordId();
+                }
+            }
+        }
+
+        return $recordIds;
     }
 
 }
