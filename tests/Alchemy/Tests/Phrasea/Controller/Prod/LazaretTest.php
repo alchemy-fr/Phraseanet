@@ -507,6 +507,7 @@ class LazaretTest extends \PhraseanetAuthenticatedWebTestCase
         $lazaretFile->setUuid('7b8ef0e3-dc8f-4b66-9e2f-bd049d175124');
         $lazaretFile->setCreated(new \DateTime('-1 day'));
         $lazaretFile->setUpdated(new \DateTime('now'));
+        $lazaretFile->setRecordIds([1]);
 
         return $lazaretFile;
     }
