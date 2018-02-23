@@ -493,7 +493,7 @@ class LazaretFile
             $conflicts = $check->listConflicts($app);
 
             foreach ($conflicts as $record) {
-                if(!in_array($record, $recordIds)){
+                if(!in_array($record->getRecordId(), $recordIds)){
                     $recordIds[] = $record->getRecordId();
                 }
             }
