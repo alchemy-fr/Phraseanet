@@ -100,10 +100,6 @@ final class GlobalStructure implements Structure
      */
     public function __construct(array $fields = [], array $flags = [], array $metadata_tags = [])
     {
-        Assertion::allIsInstanceOf($fields, Field::class);
-        Assertion::allIsInstanceOf($flags, Flag::class);
-        Assertion::allIsInstanceOf($metadata_tags, Tag::class);
-
         foreach ($fields as $field) {
             $this->add($field);
         }

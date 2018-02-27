@@ -15,7 +15,7 @@ class Field implements Typed
 {
 
     const FACET_DISABLED = null;
-    const FACET_NO_LIMIT = 0;
+    const FACET_NO_LIMIT = 10000;
 
     /**
      * @var string

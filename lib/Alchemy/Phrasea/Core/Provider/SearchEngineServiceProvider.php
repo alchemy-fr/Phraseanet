@@ -124,7 +124,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.index.locator'] = $app->share(function ($app) {
-            return new IndexLocator($app, 'elasticsearch.index.record', 'elasticsearch.index.term');
+            return new IndexLocator($app, array_keys($app['locales.available']), 'elasticsearch.index.record', 'elasticsearch.index.term');
         });
 
 

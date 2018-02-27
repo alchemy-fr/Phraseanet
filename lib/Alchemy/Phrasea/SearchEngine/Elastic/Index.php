@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndex;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndex;
+use \databox;
 
 class Index
 {
@@ -64,9 +65,9 @@ class Index
     /**
      * @return RecordIndex
      */
-    public function getRecordIndex()
+    public function getRecordIndex(databox $databox)
     {
-        return $this->indexLocator->getRecordIndex();
+        return $this->indexLocator->getRecordIndex($databox);
     }
 
     /**

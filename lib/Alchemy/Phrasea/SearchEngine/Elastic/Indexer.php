@@ -231,7 +231,7 @@ class Indexer
                 ],
                 'mappings' => [
                     // todo : get the mapping for the databox, not for the merged databoxes
-                    RecordIndexer::TYPE_NAME => $this->index->getRecordIndex()->getMapping()->export(),
+                    RecordIndexer::TYPE_NAME => $this->index->getRecordIndex($databox)->getMapping()->export(),
                 ]
             ]
         ];
@@ -263,21 +263,18 @@ class Indexer
      * the indexes will be detached from previous aliases
      *
      * @param string $indexBasename     basename for the 2 real indexes (add ".r" and ".t")
-     * @param string[] $aliases         aliases where to attach the 2 real indexes
+     * @param string $dbAliasname       alias as dbname to attach the 2 real indexes
+     * @param string $appAliasname      alias as appname to attach only the .r index
      */
-    public function createAliases($indexBasename, array $aliases)
+    public function createAliases($indexBasename, $dbAliasname, $appAliasname)
     {
-        $params = [
-            'body' => [
-                'actions' => []
-            ]
-        ];
+        $actions = [];
 
         $indexes = $this->client->indices()->getAliases([]);
         foreach($indexes as $indexName => $data) {
             if( ($indexName === $indexBasename.'.r') || ($indexName === $indexBasename.'.t') ) {
                 foreach($data['aliases'] as $aliasName => $data2) {
-                    $params['body']['actions'][] = [
+                    $actions[] = [
                         'remove' => [
                             'alias' => $aliasName,
                             'index' => $indexName,
@@ -287,22 +284,37 @@ class Indexer
             }
         }
 
-        // $this->client->indices()->updateAliases($params);
+        $actions[] = [
+            'add' => [
+                'index' => $indexBasename . '.r',
+                'alias' => $dbAliasname
+            ]
+        ];
+        $actions[] = [
+            'add' => [
+                'index' => $indexBasename . '.t',
+                'alias' => $dbAliasname
+            ]
+        ];
 
-        foreach($aliases as $aliasName) {
-            $params['body']['actions'][] = [
-                'add' => [
-                    'index' => $indexBasename . '.r',
-                    'alias' => $aliasName
-                ]
-            ];
-            $params['body']['actions'][] = [
-                'add' => [
-                    'index' => $indexBasename . '.t',
-                    'alias' => $aliasName
-                ]
-            ];
-        }
+        $actions[] = [
+            'add' => [
+                'index' => $indexBasename . '.r',
+                'alias' => $appAliasname
+            ]
+        ];
+        //$actions[] = [
+        //    'add' => [
+        //        'index' => $indexBasename . '.t',
+        //        'alias' => $appAliasname
+        //    ]
+        //];
+
+        $params = [
+            'body' => [
+                'actions' => $actions
+            ]
+        ];
 
         $this->client->indices()->updateAliases($params);
     }

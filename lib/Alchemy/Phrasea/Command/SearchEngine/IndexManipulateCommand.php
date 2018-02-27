@@ -150,7 +150,7 @@ class IndexManipulateCommand extends Command
                         , $options->getPort()
                     ));
 
-                    $indexer->createAliases($indexName, [$databox->get_dbname(), $options->getIndexName()]);
+                    $indexer->createAliases($indexName, $databox->get_dbname(), $options->getIndexName());
                 }
             }
 
@@ -186,8 +186,8 @@ class IndexManipulateCommand extends Command
                     ));
                 }
                 */
-//                $r = $indexer->populateIndex($databox, Indexer::THESAURUS | Indexer::RECORDS);
-                $r = $indexer->populateIndex($databox, Indexer::RECORDS);
+                $r = $indexer->populateIndex($databox, Indexer::THESAURUS | Indexer::RECORDS);
+//                $r = $indexer->populateIndex($databox, Indexer::RECORDS);
                 $output->writeln(sprintf(
                         "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
                         $databox->get_dbname(),
