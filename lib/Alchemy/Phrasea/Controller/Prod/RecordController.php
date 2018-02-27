@@ -189,6 +189,9 @@ class RecordController extends Controller
 
         $deleted = [];
 
+        /** @var \collection[] $trashCollectionsBySbasId */
+        $trashCollectionsBySbasId = [];
+
         $manager = $this->getEntityManager();
         foreach ($records as $record) {
             try {
@@ -205,10 +208,30 @@ class RecordController extends Controller
                     $manager->remove($attachedStory);
                 }
 
+                $sbasId = $record->getDatabox()->get_sbas_id();
+                if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                    $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+                }
                 $deleted[] = $record->getId();
-                $record->delete();
+                if($trashCollectionsBySbasId[$sbasId] !== null) {
+                    if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                        // record is already in trash so delete it
+                        $record->delete();
+                    } else {
+                        // move to trash collection
+                        $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
+                        // disable permalinks
+                        foreach($record->get_subdefs() as $subdef) {
+                            if( ($pl = $subdef->get_permalink()) ) {
+                                    $pl->set_is_activated(false);
+                            }
+                        }
+                    }
+                } else {
+                    // no trash collection, delete
+                    $record->delete();
+                }
             } catch (\Exception $e) {
-
             }
         }
 
