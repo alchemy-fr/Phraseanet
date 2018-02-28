@@ -707,7 +707,7 @@ class V1Controller extends Controller
             'id'                 => $file->getId(),
             'quarantine_session' => $session,
             'base_id'            => $file->getBaseId(),
-            'record_id'          => $file->getRecordIds()?:[],
+            'record_id'          => $file->getRecordIdsByCheckers($this->app)?:[],
             'original_name'      => $file->getOriginalName(),
             'sha256'             => $file->getSha256(),
             'uuid'               => $file->getUuid(),

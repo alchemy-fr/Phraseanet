@@ -50,11 +50,6 @@ class LazaretFile
     private $base_id;
 
     /**
-     * @ORM\Column(type="string", length=512)
-     */
-    private $record_ids;
-
-    /**
      * @ORM\Column(type="string", length=36)
      */
     private $uuid;
@@ -208,29 +203,6 @@ class LazaretFile
     public function getBaseId()
     {
         return $this->base_id;
-    }
-
-    /**
-     * Set record_ids
-     *
-     * @param  mixed  $recordIds
-     * @return LazaretFile
-     */
-    public function setRecordIds($recordIds)
-    {
-        $this->record_ids = serialize($recordIds);
-
-        return $this;
-    }
-
-    /**
-     * Get record_ids
-     *
-     * @return mixed
-     */
-    public function getRecordIds()
-    {
-        return unserialize($this->record_ids);
     }
 
     /**

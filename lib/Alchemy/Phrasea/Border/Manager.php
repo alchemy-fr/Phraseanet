@@ -401,11 +401,6 @@ class Manager
             }
         }
 
-        $recordIds = $lazaretFile->getRecordIdsByCheckers($this->app);
-
-        /**  $recordIds  will be serialized */
-        $lazaretFile->setRecordIds($recordIds);
-
         $this->app['orm.em']->flush();
 
         return $lazaretFile;
