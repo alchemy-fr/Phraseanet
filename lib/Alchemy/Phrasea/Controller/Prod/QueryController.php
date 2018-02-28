@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
+use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
@@ -132,9 +133,9 @@ class QueryController extends Controller
         // since the query comes from a submited form, normalize crlf,cr,lf ...
         $query = StringHelper::crlfNormalize($query);
 
-        $json = array(
+        $json = [
             'query' => $query
-        );
+        ];
 
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
@@ -168,7 +169,7 @@ class QueryController extends Controller
             foreach ($collectionsReferencesByDatabox as $sbid => $references) {
                 $databox = $this->findDataboxById($sbid);
                 $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
-                $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collectionsIds);
+                $this->getSearchEngineLogger()->log($databox, $result->getQueryText(), $result->getTotal(), $collectionsIds);
             }
 
             $proposals = $firstPage ? $result->getProposals() : false;
@@ -274,29 +275,69 @@ class QueryController extends Controller
             } else {
                 $template = 'prod/results/records.html.twig';
             }
-
             $json['results'] = $this->render($template, ['results'=> $result]);
 
-            /** Debug */
-            $json['parsed_query'] = $result->getEngineQuery();
-            /** End debug */
 
-            $fieldLabels = [];
             // add technical fields
+            $fieldLabels = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
                 $fieldLabels[$k] = $this->app->trans($f['label']);
             }
+
             // add databox fields
+            // get infos about fields, fusionned and by databox
+            $fieldsInfos = [];  // by databox
             foreach ($this->app->getDataboxes() as $databox) {
+                $sbasId = $databox->get_sbas_id();
+                $fieldsInfos[$sbasId] = [];
                 foreach ($databox->get_meta_structure() as $field) {
-                    if (!isset($fieldLabels[$field->get_name()])) {
-                        $fieldLabels[$field->get_name()] = $field->get_label($this->app['locale']);
+                    $name = $field->get_name();
+                    $fieldsInfos[$sbasId][$name] = [
+                      'label' => $field->get_label($this->app['locale']),
+                      'type' => $field->get_type(),
+                      'business' => $field->isBusiness(),
+                      'multi' => $field->is_multi(),
+                    ];
+                    if (!isset($fieldLabels[$name])) {
+                        $fieldLabels[$name] = $field->get_label($this->app['locale']);
                     }
                 }
             }
 
-            $facets = [];
+            // populates fileds infos
+            $json['fields'] = $fieldsInfos;
 
+            // populates rawresults
+            // need acl so the result will not include business fields where not allowed
+            $acl = $this->getAclForUser();
+            $json['rawResults'] = [];
+            /** @var ElasticsearchRecord $record */
+            foreach($result->getResults() as $record) {
+                $rawRecord = $record->asArray();
+
+                $sbasId = $record->getDataboxId();
+                $baseId = $record->getBaseId();
+
+                $caption = $rawRecord['caption'];
+                if($acl && $acl->has_right_on_base($baseId, \ACL::CANMODIFRECORD)) {
+                    $caption = array_merge($caption, $rawRecord['privateCaption']);
+                }
+
+                // read the fields following the structure order
+                $rawCaption = [];
+                foreach($fieldsInfos[$sbasId] as $fieldName=>$fieldInfos) {
+                    if(array_key_exists($fieldName, $caption)) {
+                        $rawCaption[$fieldName] = $caption[$fieldName];
+                    }
+                }
+                $rawRecord['caption'] = $rawCaption;
+                unset($rawRecord['privateCaption']);
+
+                $json['rawResults'][$record->getId()] = $rawRecord;
+            }
+
+            // populates facets (aggregates)
+            $facets = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
@@ -311,6 +352,9 @@ class QueryController extends Controller
             $json['next_page'] = ($page < $npages && $result->getAvailable() > 0) ? ($page + 1) : false;
             $json['prev_page'] = ($page > 1 && $result->getAvailable() > 0) ? ($page - 1) : false;
             $json['form'] = $options->serialize();
+            $json['queryCompiled'] = $result->getQueryCompiled();
+            $json['queryAST'] = $result->getQueryAST();
+            $json['queryESLib'] = $result->getQueryESLib();
         }
         catch(\Exception $e) {
             // we'd like a message from the parser so get all the exceptions messages
@@ -319,9 +363,9 @@ class QueryController extends Controller
                 $msg .= ($msg ? "\n":"") . $e->getMessage();
             }
             $template = 'prod/results/help.html.twig';
-            $result = array(
+            $result = [
                 'error' => $msg
-            );
+            ];
             $json['results'] = $this->render($template, ['results'=> $result]);
         }
 

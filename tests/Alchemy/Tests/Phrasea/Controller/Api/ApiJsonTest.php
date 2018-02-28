@@ -59,10 +59,10 @@ class ApiJsonTest extends ApiTestCase
         );
         $record = \record_adapter::createFromFile($file, $app);
 
-        $story['story_records'] = array(array(
+        $story['story_records'] = [[
                                             'databox_id' => $record->getDataboxId(),
                                             'record_id' => $record->getRecordId()
-                                        ));
+                                        ]];
 
         $client = $this->getClient();
         $client->request(
@@ -74,7 +74,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('stories' => array($story)))
+            json_encode(['stories' => [$story]])
         );
         $content = $this->unserialize($client->getResponse()->getContent());
 
@@ -105,10 +105,10 @@ class ApiJsonTest extends ApiTestCase
         );
         $record = \record_adapter::createFromFile($file, self::$DI['app']);
 
-        $records = array(
+        $records = [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId()
-        );
+        ];
 
         self::$DI['client']->request(
             'POST',
@@ -119,7 +119,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('story_records' => array($records)))
+            json_encode(['story_records' => [$records]])
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -147,10 +147,10 @@ class ApiJsonTest extends ApiTestCase
         $story->appendChild($record);
 
         $route = sprintf('/api/v1/stories/%s/%s/delrecords', $story->getDataboxId(), $story->getRecordId());
-        $records = array(
+        $records = [
             'databox_id' => $record->getDataboxId(),
             'record_id' => $record->getRecordId()
-        );
+        ];
 
         self::$DI['client']->request(
             'DELETE',
@@ -161,7 +161,7 @@ class ApiJsonTest extends ApiTestCase
                 'HTTP_ACCEPT' => $this->getAcceptMimeType(),
                 'CONTENT_TYPE' => 'application/json',
             ],
-            json_encode(array('story_records' => array($records)))
+            json_encode(['story_records' => [$records]])
         );
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
@@ -877,7 +877,6 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
         $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
-
         $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
@@ -909,7 +908,7 @@ class ApiJsonTest extends ApiTestCase
         $mock = $this->getMock('Alchemy\Phrasea\SearchEngine\SearchEngineInterface');
         $app['phraseanet.SE'] = $mock;
 
-            $mock
+        $mock
             ->expects($this->once())
             ->method('query')
             ->withAnyParameters()
@@ -1065,7 +1064,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1093,7 +1092,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), array(), array('HTTP_Accept' => $this->getAcceptMimeType()));
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
