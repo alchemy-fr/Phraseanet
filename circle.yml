@@ -14,7 +14,11 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mysql:9.4
-
+    services:
+      - memcached
+      - redis
+      - mysql
+      - rabbitmq-server
 #    working_directory: ~/repo
     database:
       override:
