@@ -1,3 +1,4 @@
+version: 2
 general:
   branches:
     ignore:
@@ -5,16 +6,16 @@ general:
       - '3.7'
       - '3.8'
 
-machine:
-  php:
-    version: 7.0.24 #5.6.22
-  node:
-    version: stable
-  services:
-    - memcached
-    - redis
-    - mysql
-    - rabbitmq-server
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.0.24
+      - image: circleci/node:stable
+    services:
+      - memcached
+      - redis
+      - mysql
+      - rabbitmq-server
 
 dependencies:
   cache_directories:
