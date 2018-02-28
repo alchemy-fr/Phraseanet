@@ -119,8 +119,6 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->match('/search/', 'controller.api.v1:searchAction');
 
-        $controllers->match('/records/search/', 'controller.api.v1:searchRecordsAction');
-
         $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:getRecordCaptionAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')

@@ -77,7 +77,6 @@ use Alchemy\Phrasea\Search\SubdefView;
 use Alchemy\Phrasea\Search\TechnicalDataTransformer;
 use Alchemy\Phrasea\Search\TechnicalDataView;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
-use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchResultTransformer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
@@ -1161,49 +1160,6 @@ class V1Controller extends Controller
     }
 
     /**
-     * Get a Response containing the results of a records search
-     *
-     * @deprecated in favor of search
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function searchRecordsAction(Request $request)
-    {
-        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
-        $technicalDataTransformer = new TechnicalDataTransformer();
-        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
-        $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
-
-        $transformerResolver = new SearchResultTransformerResolver([
-            '' => $searchTransformer,
-            'results' => $recordTransformer,
-            'results.thumbnail' => $subdefTransformer,
-            'results.technical_informations' => $technicalDataTransformer,
-            'results.subdefs' => $subdefTransformer,
-            'results.metadata' => new CallbackTransformer(),
-            'results.status' => new CallbackTransformer(),
-            'results.caption' => new CallbackTransformer(),
-        ]);
-        $includeResolver = new IncludeResolver($transformerResolver);
-
-        $fractal = new \League\Fractal\Manager();
-        $fractal->setSerializer(new ArraySerializer());
-        $fractal->parseIncludes($this->resolveSearchRecordsIncludes($request));
-
-        $searchView = $this->buildSearchRecordsView(
-            $this->doSearch($request),
-            $includeResolver->resolve($fractal),
-            $this->resolveSubdefUrlTTL($request)
-        );
-
-        $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
-
-        return Result::create($request, $ret)->createResponse();
-    }
-
-    /**
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
@@ -1509,14 +1465,14 @@ class V1Controller extends Controller
 
         $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getUserQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQueryText());
 
         // log array of collectionIds (from $options) for each databox
         $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
         foreach ($collectionsReferencesByDatabox as $sbid => $references) {
             $databox = $this->findDataboxById($sbid);
             $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
-            $this->getSearchEngineLogger()->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $collectionsIds);
+            $this->getSearchEngineLogger()->log($databox, $search_result->getQueryText(), $search_result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();
