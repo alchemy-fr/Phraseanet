@@ -9,17 +9,11 @@ jobs:
       # specify the version you desire here
       - image: circleci/php:7.0.27-cli-node-browsers
       - image: circleci/node:latest-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
     services:
       - memcached
       - redis
       - mysql
       - rabbitmq-server
-    working_directory: ~/Phraseanet
     database:
       override:
         - mysql -u ubuntu -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
@@ -30,10 +24,8 @@ jobs:
         - "./bin/console searchengine:index:create -v"
         - "./bin/developer phraseanet:regenerate-sqlite -v"
         - "./bin/developer phraseanet:generate-js-fixtures -v"
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - elasticsearch-2.3.3 # relative to the build directory
@@ -44,8 +36,6 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
-
-      # run tests!
       - run:
           command: |
               git clone https://github.com/alanxz/rabbitmq-c
@@ -66,6 +56,15 @@ jobs:
               if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
               elasticsearch-2.3.3/bin/elasticsearch: {background: true}
               case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac:
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+
+
+    #working_directory: ~/Phraseane
 #
 #
 #
