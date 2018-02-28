@@ -261,10 +261,10 @@ class SearchEngineOptions
     /**
      * Set the bases where to search for
      *
-     * @param  int[] $basesIds An array of ids
+     * @param  null|int[] $basesIds An array of ids
      * @return $this
      */
-    public function onBasesIds(array $basesIds)
+    public function onBasesIds($basesIds)
     {
         $this->basesIds = $basesIds;
 

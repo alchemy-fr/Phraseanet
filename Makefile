@@ -5,7 +5,7 @@ install:
 	make install_assets
 
 install_composer:
-	composer install --ignore-platform-reqs
+	composer install
 
 install_asset_dependencies:
 	yarn

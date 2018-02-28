@@ -468,7 +468,7 @@ class set_export extends set_abstract
                     }
                 }
 
-                set_time_limit(100);
+                set_time_limit(0);
                 $subdef_export = $subdef_alive = false;
 
                 $n_files++;
