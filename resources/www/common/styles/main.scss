@@ -22,5 +22,20 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   margin-top: $mainMenuHeight;
 }
 
+#record_infos .lightbox_container {
+  top: 0px;
+  dt {
+    font-weight: bold;
+    display: block;
+    margin-left: 0px;
+    width: initial;
+    float: none;
+    text-align: initial;
+  }
+  dd {
+    margin-left: 10px;
+  }
+}
+
 
 
