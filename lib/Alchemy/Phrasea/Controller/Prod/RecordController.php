@@ -271,9 +271,46 @@ class RecordController extends Controller
             [\ACL::CANDELETERECORD]
         );
 
-        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-            'records'   => $records,
+        $filteredRecord = $this->filterRecordToDelete($records);
+
+        return $this->app->json([
+            'renderView'     => $this->render('prod/actions/delete_records_confirm.html.twig', [
+                'records'        => $records,
+                'filteredRecord' => $filteredRecord
+            ]),
+            'filteredRecord' => $filteredRecord
         ]);
+
+    }
+
+    private function filterRecordToDelete(RecordsRequest $records)
+    {
+        $trashCollectionsBySbasId = [];
+        $goingToTrash = [];
+        $delete = [];
+        foreach ($records as $record) {
+            $sbasId = $record->getDatabox()->get_sbas_id();
+            if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+            }
+            if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                    // record is already in trash
+                    $delete[] = $record;
+                }
+                else {
+                    // will be moved to trash
+                    $goingToTrash[] = $record;
+                }
+            }
+            else {
+                // trash does not exist
+                $delete[] = $record;
+            }
+        }
+        //check if all values in array are true
+        //return (!in_array(false, $goingToTrash, true));
+        return ['trash' => $goingToTrash, 'delete' => $delete];
     }
 
     /**
