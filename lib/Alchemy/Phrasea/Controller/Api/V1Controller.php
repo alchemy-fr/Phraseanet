@@ -1509,14 +1509,14 @@ class V1Controller extends Controller
 
         $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getUserQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQueryText());
 
         // log array of collectionIds (from $options) for each databox
         $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
         foreach ($collectionsReferencesByDatabox as $sbid => $references) {
             $databox = $this->findDataboxById($sbid);
             $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
-            $this->getSearchEngineLogger()->log($databox, $search_result->getUserQuery(), $search_result->getTotal(), $collectionsIds);
+            $this->getSearchEngineLogger()->log($databox, $search_result->getQueryText(), $search_result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();
