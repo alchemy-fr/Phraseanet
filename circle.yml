@@ -41,8 +41,8 @@ jobs:
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2b5d606bca429deed616339f460897aa41819a63
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
-      - run: yes '' | pecl install amqp-1.9.3
-      - run: yes '' | pecl install imagick
+      - run: yes '' | sudo pecl install amqp-1.9.3
+      - run: yes '' | sudo pecl install imagick
       - run: sudo apt-get install libzmq-dev
       - run: yes '' | pecl install zmq-beta
       - run: echo "extension = amqp.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/amqp.ini
