@@ -35,6 +35,8 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
+      - run: sudo pear config-set php_ini /etc/php.ini
+      - run: sudo pecl config-set bin_dir /usr/bin/
       - run: sudo apt-get install libtool
       - run: sudo apt-get install automake
       - run: git clone https://github.com/alanxz/rabbitmq-c
