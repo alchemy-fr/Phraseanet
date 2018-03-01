@@ -39,6 +39,7 @@ jobs:
       - run: sudo apt-get install automake
       - run: sudo apt-get install pkg-config
       - run: sudo apt-get install libssl-dev
+      - run: sudo apt-get update
       - run: sudo apt-get install php-imagick
       - run: pecl config-set php_ini ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       - run: git clone https://github.com/alanxz/rabbitmq-c
