@@ -36,7 +36,7 @@ jobs:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
       - run: sudo mkdir /test/
-      - run: sudo pecl config-set download_dir /test/
+      - run: sudo pecl config-set download_dir root/tmp/
       - run: sudo apt-get install automake
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2b5d606bca429deed616339f460897aa41819a63
