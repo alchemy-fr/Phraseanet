@@ -63,14 +63,15 @@ class databox extends base implements ThumbnailedElement
     /**
      * @param Application $app
      * @param Connection  $databoxConnection
-     * @param SplFileInfo $data_template
+     * @param SplFileInfo $template
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
+    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
     {
-        if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
+        $rp = $template->getRealPath();
+        if (!$rp || !file_exists($rp)) {
+            throw new \InvalidArgumentException(sprintf('Databox template "%s" not found.', $template->getFilename()));
         }
 
         $host = $databoxConnection->getHost();
@@ -113,7 +114,7 @@ class databox extends base implements ThumbnailedElement
 
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
+            $template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
         $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
@@ -371,9 +372,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
                 $this,
-                array(
+                [
                     'dom_before'=>$old_structure
-                )
+                ]
             )
         );
 
@@ -441,13 +442,13 @@ class databox extends base implements ThumbnailedElement
 
             $type = isset($field['type']) ? $field['type'] : 'string';
             $type = in_array($type
-                    , [
+                , [
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
                     , databox_field::TYPE_TEXT
-                    ]
-                ) ? $type : databox_field::TYPE_STRING;
+                ]
+            ) ? $type : databox_field::TYPE_STRING;
 
             $multi = isset($field['multi']) ? (Boolean) (string) $field['multi'] : false;
 
@@ -769,14 +770,14 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array(
+        $ret = [
             'records'             => 0,
             'records_indexed'     => 0,    // jetons = 0;0
             'records_to_index'    => 0,    // jetons = 0;1
             'records_not_indexed' => 0,    // jetons = 1;0
             'records_indexing'    => 0,    // jetons = 1;1
-            'subdefs_todo'        => array()   // by type "image", "video", ...
-        );
+            'subdefs_todo'        => []   // by type "image", "video", ...
+        ];
         foreach ($rs as $row) {
             $ret['records'] += ($n = (int)($row['n']));
             $status = $row['status'];
@@ -870,9 +871,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -935,9 +936,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::DELETED,
             new DeletedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -1141,7 +1142,7 @@ class databox extends base implements ThumbnailedElement
                     \ACL::BAS_MODIF_TH      => true,
                     \ACL::BAS_CHUPUB        => true
                 ]
-        );
+            );
 
         $sql = "SELECT * FROM coll";
         $stmt = $this->get_connection()->prepare($sql);
@@ -1363,9 +1364,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::TOU_CHANGED,
             new TouChangedEvent(
                 $this,
-                array(
+                [
                     'tou_before'=>$old_tou,
-                )
+                ]
             )
         );
 
@@ -1481,6 +1482,7 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $TOU = [];
         foreach ($rs as $row) {
             $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }
