@@ -35,7 +35,7 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
-      - run: sudo chmod 755 /tmp/pear/download
+      - run: yes '' | sudo pecl update-channels
       - run: sudo apt-get install libtool
       - run: sudo apt-get install automake
       - run: git clone https://github.com/alanxz/rabbitmq-c
