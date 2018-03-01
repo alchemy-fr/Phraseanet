@@ -44,7 +44,7 @@ jobs:
       - run: yes '' | pecl install amqp-1.9.3
       - run: yes '' | pecl install imagick
       - run: sudo apt-get install libzmq-dev
-      - run: yes '' |sudo  pecl install zmq-beta
+      - run: yes '' | pecl install zmq-beta
       - run: echo "extension = amqp.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/amqp.ini
       - run: echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
       - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
