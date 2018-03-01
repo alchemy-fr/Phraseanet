@@ -36,6 +36,7 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
+      - run: sudo apt-get install libtool
       - run: sudo apt-get install automake
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
