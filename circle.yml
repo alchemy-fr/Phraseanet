@@ -46,9 +46,8 @@ jobs:
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
 #      - run: yes '' | sudo pecl install amqp
 #      - run: yes '' | sudo pecl install imagick
-      - run: sudo apt-get install php-zmq
+      - run: sudo apt-get install libzmq3-dev
       - run: sudo apt-get install php-amqp
-      - run: sudo apt-get install libzmq-dev
 #      - run: yes '' | sudo pecl install zmq-beta
 #      - run: echo "extension = amqp.so" > /opt/circleci/php/7.0.27/etc/conf.d/amqp.ini
 #      - run: echo "extension = zmq.so" > /opt/circleci/php/7.0.27/etc/conf.d/zmq.ini
