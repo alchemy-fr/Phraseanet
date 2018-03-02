@@ -31,24 +31,61 @@ jobs:
             - elasticsearch-2.3.3 # relative to the build directory
             - node_modules
             - ~/.composer
-      - run: sudo apt-get install automake libtool libicu-dev libzmq-dev
-      - run: sudo docker-php-ext-configure intl
-      - run: sudo docker-php-ext-install intl bcmath
-      - run: git clone https://github.com/alanxz/rabbitmq-c
-      - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
-      - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
+
       - run:
-          name: PLOP ?
+          name: sudo apt-get install automake libtool libicu-dev libzmq-dev
+          command: |
+            sudo apt-get install automake libtool libicu-dev libzmq-dev
+      - run:
+          name: sudo docker-php-ext-configure intl
+          command: |
+            sudo docker-php-ext-configure intl
+      - run:
+          name: sudo docker-php-ext-install intl bcmath
+          command: |
+            sudo docker-php-ext-install intl bcmath
+      - run:
+          name: git clone https://github.com/alanxz/rabbitmq-c
+          command: |
+            git clone https://github.com/alanxz/rabbitmq-c
+      - run:
+          name: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+          command: |
+            cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+      - run:
+          name: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
+          command: |
+            cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
+      - run:
+          name: yes '' | sudo pecl install zmq-beta
           command: |
             set +o pipefail
             yes '' | sudo pecl install zmq-beta
-      - run: sudo docker-php-ext-enable zmq
-#      - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
-#      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
-      - run: npm rebuild node-sass
-      - run: composer install --no-progress --no-interaction --optimize-autoloader
-      - run: npm install
-      - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
+      - run:
+          name: sudo docker-php-ext-enable zmq
+          command: |
+            sudo docker-php-ext-enable zmq
+      - run:
+          name: npm rebuild node-sass
+          command: |
+            npm rebuild node-sass
+      - run:
+          name: composer install --no-progress --no-interaction --optimize-autoloader
+          command: |
+            composer install --no-progress --no-interaction --optimize-autoloader
+      - run:
+          name: npm install
+          command: |
+            npm install
+      - run:
+          name: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
+          command: |
+            if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
+      - run:
+          name: Tests !!
+          command: |
+            case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac:
+
       - save_cache:
           paths:
             - ./vendor
@@ -60,8 +97,7 @@ workflows:
     jobs:
       - build
 
-
-    #
+#
 #
 #
 #
