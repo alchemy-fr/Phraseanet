@@ -50,8 +50,8 @@ jobs:
 #      - run: yes '' | sudo pecl install zmq-beta
 #      - run: echo "extension = amqp.so" > /opt/circleci/php/7.0.27/etc/conf.d/amqp.ini
 #      - run: echo "extension = zmq.so" > /opt/circleci/php/7.0.27/etc/conf.d/zmq.ini
-      - run: echo "date.timezone = UTC" > /opt/circleci/php/7.0.27/etc/conf.d/timezone.ini
-      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/7.0/etc/php.ini
+#      - run: echo "date.timezone = UTC" > /opt/circleci/php/7.0.27/etc/conf.d/timezone.ini
+#      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/7.0/etc/php.ini
       - run: npm rebuild node-sass
       - run: composer install --no-progress --no-interaction --optimize-autoloader
       - run: npm install
