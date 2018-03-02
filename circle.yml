@@ -40,7 +40,7 @@ jobs:
       - run: sudo apt-get install automake
       - run: sudo apt-get install pkg-config
       - run: sudo apt-get install libssl-dev
-      - run: pecl config-set php_ini ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      - run: pecl config-set php_ini ~/.phpenv/versions/7.0/etc/php.ini
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a #caad0ef1533783729c7644a226c989c79b4c497b
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
@@ -48,10 +48,10 @@ jobs:
 #      - run: yes '' | sudo pecl install imagick
       - run: sudo apt-get install libzmq-dev
 #      - run: yes '' | sudo pecl install zmq-beta
-      - run: echo "extension = amqp.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/amqp.ini
-      - run: echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
-      - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
-      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
+      - run: echo "extension = amqp.so" > /opt/circleci/php/7.0/etc/conf.d/amqp.ini
+      - run: echo "extension = zmq.so" > /opt/circleci/php/7.0/etc/conf.d/zmq.ini
+      - run: echo "date.timezone = UTC" > /opt/circleci/php/7.0/etc/conf.d/timezone.ini
+      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/7.0/etc/php.ini
       - run: npm rebuild node-sass
       - run: composer install --no-progress --no-interaction --optimize-autoloader
       - run: npm install
