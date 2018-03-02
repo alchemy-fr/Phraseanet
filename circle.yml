@@ -31,12 +31,13 @@ jobs:
             - elasticsearch-2.3.3 # relative to the build directory
             - node_modules
             - ~/.composer
-      - run: sudo apt-get install automake libtool libicu-dev
-      - run: sudo docker-php-ext-install intl bcmath zmq
+      - run: sudo apt-get install automake libtool libicu-dev libzmq-dev
+      - run: sudo docker-php-ext-install intl bcmath
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
-
+      - run: yes '' | pecl install zmq-beta
+      - run: sudo docker-php-ext-enable zmq
 #      - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
 #      - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
       - run: npm rebuild node-sass
