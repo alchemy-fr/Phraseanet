@@ -32,7 +32,7 @@ jobs:
             - node_modules
             - ~/.composer
       - run: sudo apt-get install automake libtool libicu-dev
-      - run: sudo docker-php-ext-install intl bcmath
+      - run: sudo docker-php-ext-install intl bcmath zmq
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
