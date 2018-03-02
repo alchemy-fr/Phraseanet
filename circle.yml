@@ -36,18 +36,29 @@ jobs:
           paths:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
+      - run: echo 'deb http://packages.dotdeb.org jessie all' | sudo tee -a /etc/apt/sources.list
+      - run: echo 'deb-src http://packages.dotdeb.org jessie all' | sudo tee -a /etc/apt/sources.list
+      - run: cat /etc/apt/sources.list
+
+      - run: cd /tmp
+      - run: wget https://www.dotdeb.org/dotdeb.gpg
+      - run: sudo apt-key add dotdeb.gpg
+      - run: sudo apt-get update
+
+      - run: sudo apt-get install php7.0 php7.0-intl php7.0-amqp
+
       - run: sudo apt-get install libtool
       - run: sudo apt-get install automake
-      - run: sudo apt-get install pkg-config
+      - run: sudo apt-get install pkg-confi
       - run: sudo apt-get install libssl-dev
-      - run: pecl config-set php_ini ~/.phpenv/versions/7.0/etc/php.ini
+      - run: sudo apt-get install ghostscript imagemagick
+#      - run: pecl config-set php_ini ~/.phpenv/versions/7.0/etc/php.ini
       - run: git clone https://github.com/alanxz/rabbitmq-c
       - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a #caad0ef1533783729c7644a226c989c79b4c497b
       - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
 #      - run: yes '' | sudo pecl install amqp
 #      - run: yes '' | sudo pecl install imagick
       - run: sudo apt-get install libzmq3-dev
-      - run: sudo apt-get install php-amqp
 #      - run: yes '' | sudo pecl install zmq-beta
 #      - run: echo "extension = amqp.so" > /opt/circleci/php/7.0.27/etc/conf.d/amqp.ini
 #      - run: echo "extension = zmq.so" > /opt/circleci/php/7.0.27/etc/conf.d/zmq.ini
