@@ -178,6 +178,8 @@ class QueryController extends Controller
 
             $page = $result->getCurrentPage($perPage);
 
+            $queryESLib = $result->getQueryESLib();
+
             $string = '';
 
             if ($npages > 1) {
@@ -230,19 +232,15 @@ class QueryController extends Controller
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
 
-            $explain = "<div id=\"explainResults\" class=\"myexplain\">";
-
-            $explain .= "<img src=\"/assets/common/images/icons/answers.gif\" /><span><b>";
-
-            if ($result->getTotal() != $result->getAvailable()) {
-                $explain .= $this->app->trans('reponses:: %available% Resultats rappatries sur un total de %total% trouves', ['available' => $result->getAvailable(), '%total%' => $result->getTotal()]);
-            } else {
-                $explain .= $this->app->trans('reponses:: %total% Resultats', ['%total%' => $result->getTotal()]);
-            }
-
-            $explain .= " </b></span>";
-            $explain .= '<br><div>' . ($result->getDuration() / 1000) . ' s</div>dans index ' . $result->getIndexes();
-            $explain .= "</div>";
+            $explain = $this->render(
+                "prod/results/infos.html.twig",
+                [
+                    'results'=> $result,
+                    'esquery' => $this->getAclForUser()->is_admin() ?
+                        json_encode($queryESLib['body'], JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) :
+                        null
+                ]
+            );
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
@@ -354,7 +352,7 @@ class QueryController extends Controller
             $json['form'] = $options->serialize();
             $json['queryCompiled'] = $result->getQueryCompiled();
             $json['queryAST'] = $result->getQueryAST();
-            $json['queryESLib'] = $result->getQueryESLib();
+            $json['queryESLib'] = $queryESLib;
         }
         catch(\Exception $e) {
             // we'd like a message from the parser so get all the exceptions messages

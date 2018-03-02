@@ -1,0 +1,19 @@
+<div id="explainResults" class="myexplain">
+    <img src="/assets/common/images/icons/answers.gif" />
+    <span>
+        <b>
+            {% set total = results.getTotal() %}
+            {% trans %}reponses:: %total% Resultats{% endtrans %}
+        </b>
+    </span>
+    <br>
+    <div>
+        {{ results.getDuration() / 1000 }} s
+    </div>
+    dans index {{ results.getIndexes() }}
+    {% if not(esquery is null) %}
+        <div>
+            <pre>{{ esquery }}</pre>
+        </div>
+    {% endif %}
+</div>
