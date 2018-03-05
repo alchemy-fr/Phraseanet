@@ -560,10 +560,14 @@ class Indexer
             }
 
             $databox = $this->appbox->get_databox($sbas_id);
-            $this->recordIndexer->index($databox, array_keys($q['index']));
-            $this->recordIndexer->delete($databox, array_keys($q['delete']));
-
-            $q['index'] = $q['delete'] = [];
+            if(!empty($q['index'])) {
+                $this->recordIndexer->index($databox, array_keys($q['index']));
+                $q['index'] = [];
+            }
+            if(!empty($q['delete'])) {
+                $this->recordIndexer->delete($databox, array_keys($q['delete']));
+                $q['delete'] = [];
+            }
         }
     }
 

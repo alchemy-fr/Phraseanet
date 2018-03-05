@@ -67,11 +67,7 @@ class RecordHelper
     {
         if (!$this->collectionMap) {
             $map = array();
-            $sql = 'SELECT
-                        sbas_id as databox_id,
-                        server_coll_id as collection_id,
-                        base_id
-                    FROM bas';
+            $sql = 'SELECT sbas_id AS databox_id, server_coll_id AS collection_id, base_id FROM bas';
 
             $statement = $this->appbox->get_connection()->query($sql);
 

@@ -254,11 +254,11 @@ class RecordIndexer
 
         // Prepare the bulk operation
         $bulk = new BulkOperation($this->client, $indexName, $this->logger);
-        $bulk->setAutoFlushLimit(15);
+        $bulk->setAutoFlushLimit(50);
 
         foreach ($recordIds as $record_id) {
             $params = array();
-            $params['id'] = $record_id;
+            $params['id'] = $this->recordHelper->getUniqueRecordId($databox->get_sbas_id(), $record_id);
             $params['type'] = self::TYPE_NAME;
             $bulk->delete($params, null);       // no operationIdentifier is related to a delete op
         }
@@ -270,12 +270,9 @@ class RecordIndexer
     {
         $connection = $databox->get_connection();
 
-        // a thesaurus linked to the .t index for this databox
         $thesaurusOptions = clone $this->options;
-
-        //$thesaurusOptions->setIndexName($this->getTermIndexName());
-        $termIndexName = $this->indexer->getDataboxIndexBasename($databox) . '.t';
-        $thesaurusOptions->setIndexName($termIndexName);
+        $indexName = $this->indexer->getDataboxIndexBasename($databox);
+        $thesaurusOptions->setIndexName($indexName);
 
         $thesaurus = new Thesaurus($this->client, $thesaurusOptions, $this->logger);   // !!! specific options 'index'
 
