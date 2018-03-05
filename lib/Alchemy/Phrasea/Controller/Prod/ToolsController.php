@@ -207,7 +207,7 @@ class ToolsController extends Controller
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
-                    $this->getSubDefinitionSubstituer()->substitute($record, 'document', $media);
+                    $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
                     $record->insertTechnicalDatas($this->getMediaVorus());
                     $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
 
@@ -267,7 +267,7 @@ class ToolsController extends Controller
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
-            $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, 'thumbnail', $media);
             $this->getDataboxLogger($record->getDatabox())
                 ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
@@ -431,7 +431,11 @@ class ToolsController extends Controller
 
         $media = $this->app->getMediaFromUri($fileName);
 
-        $this->getSubDefinitionSubstituer()->substitute($record, $subDefName, $media);
+        if($subDefName == 'document') {
+            $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
+        } else {
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subDefName, $media);
+        }
         $this->getDataboxLogger($record->getDatabox())
           ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 

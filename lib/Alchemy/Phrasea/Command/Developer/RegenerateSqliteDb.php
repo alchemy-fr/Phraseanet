@@ -432,8 +432,8 @@ class RegenerateSqliteDb extends Command
             if ($i < 3) {
                 /** @var SubdefSubstituer $substituer */
                 $substituer = $this->container['subdef.substituer'];
-                $substituer->substitute($story, 'preview', $media);
-                $substituer->substitute($story, 'thumbnail', $media);
+                $substituer->substituteSubdef($story, 'preview', $media);
+                $substituer->substituteSubdef($story, 'thumbnail', $media);
             }
             $DI['record_story_' . $i] = $story;
         }

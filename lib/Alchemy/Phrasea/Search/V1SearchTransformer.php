@@ -36,7 +36,7 @@ abstract class V1SearchTransformer extends TransformerAbstract
                     return $suggestion->toArray();
                 }, $result->getSuggestions()->toArray()),
             'facets' => $result->getFacets(),
-            'query' => $result->getEngineQuery(),
+            'query' => $result->getQueryText(),
         ];
     }
 
