@@ -407,20 +407,22 @@
 
     };
 
-    $(document).ready(function(){
-        $('.tool-metadata').click(function(e){
-            $.ajax({
-                "url": "{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'}) }}",
-                "type": "GET",
-                beforeSend: function(){
-                    $('#metadata-content').empty();
-                    $('#metadata-load').removeClass('hidden').addClass('loading');
-                },
-                success: function (data) {
-                    $('#metadata-load').removeClass('loading').addClass('hidden');
-                    $('#metadata-content').append(data);
-                }
+    {% if record is not null %}
+        $(document).ready(function(){
+            $('.tool-metadata').click(function(e){
+                $.ajax({
+                    "url": "{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'}) }}",
+                    "type": "GET",
+                    beforeSend: function(){
+                        $('#metadata-content').empty();
+                        $('#metadata-load').removeClass('hidden').addClass('loading');
+                    },
+                    success: function (data) {
+                        $('#metadata-load').removeClass('loading').addClass('hidden');
+                        $('#metadata-content').append(data);
+                    }
+                });
             });
         });
-    });
+    {% endif %}
 </script>
