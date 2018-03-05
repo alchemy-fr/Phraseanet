@@ -136,6 +136,8 @@ class IndexManipulateCommand extends Command
                 $this->verbose(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
             }
 
+            $indexExists = $indexer->indexExists($databox);
+
             if ($create) {
                 if ($indexExists) {
                     $output->writeln(sprintf('<error>The search index "%s" already exists.</error>', $idx));

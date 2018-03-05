@@ -152,7 +152,7 @@ class BulkOperation
             foreach($item as $command=>$result) {   // command may be "index" or "delete"
                 if($response['errors'] && $result['status'] >= 400) { // 4xx or 5xx error
                     $err = array_key_exists('error', $result) ? $result['error'] : ($command . " error " . $result['status']);
-                    throw new Exception(sprintf('%d: %s', $key, $err));
+                    throw new Exception(sprintf('%d: %s', $key, $this->errorToString($err)));
                 }
             }
 
@@ -168,6 +168,18 @@ class BulkOperation
         }
 
         $this->operationIdentifiers = [];
+    }
+
+    private function errorToString($err)
+    {
+        $ret = '';
+        if(is_array($err)) {
+            foreach($err as $k=>$e) {
+                $ret .= ($ret?'; ':'') . ($k.'=>'.$this->errorToString($e));
+            }
+            return '('.$ret.')';
+        }
+        return '"'.(string)$err.'"';
     }
 
     private function buildHeader($key, array $params)

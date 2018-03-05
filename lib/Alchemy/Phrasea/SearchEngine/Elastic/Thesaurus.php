@@ -153,7 +153,7 @@ class Thesaurus
 
         // Search request
         $params = [
-            'index' => $this->options->getIndexName(),
+            'index' => $this->options->getIndexName() . '.t',   // alias grouping terms indexes
             'type'  => TermIndexer::TYPE_NAME,
             'body' => [
                 'query' => [
@@ -239,23 +239,22 @@ class Thesaurus
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
 
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
-        // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // Arbitrary score low limit, we need find a more granular way to remove
-        // inexact concepts.
-        // We also need to disable TF/IDF on terms, and try to boost score only
-        // when the search match nearly all tokens of term's value field.
-        $params['body']['min_score'] = $this->options->getMinScore();
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName() . '.t',   // alias grouping terms indexes
+            'type' => TermIndexer::TYPE_NAME,
+            'body' => [
+                'query' => $query,
+                'aggs' => [
+                    'dedup' => [
+                        'terms' => [
+                            'field' => 'path.raw'
+                        ]
+                    ]
+                ],
+                'min_score' => $this->options->getMinScore(),
+                'size' => 0,
+            ],
+        ];
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);

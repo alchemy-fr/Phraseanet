@@ -57,6 +57,25 @@ class DateFieldMapping extends ComplexFieldMapping
      */
     protected function getProperties()
     {
-        return array_merge([ 'format' => $this->format ], parent::getProperties());
+
+        return array_merge(
+            [
+                'format' => $this->format,
+            ],
+            parent::getProperties()
+        );
+
+        /* todo: wip tryout to highlight dates ?
+        return [
+            'type' => 'keyword',
+            // 'term_vector' => 'with_positions_offsets',
+            'fields' => [
+                'as_date' => [
+                    'type' => 'date',
+                    'format' => $this->format,
+                ],
+            ],
+        ];
+        */
     }
 }

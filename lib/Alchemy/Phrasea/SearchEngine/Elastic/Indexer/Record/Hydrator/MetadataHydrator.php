@@ -121,7 +121,8 @@ SQL;
     private function sanitizeValue($value, $type)
     {
         switch ($type) {
-            case FieldMapping::TYPE_STRING:
+            case FieldMapping::TYPE_KEYWORD:
+            case FieldMapping::TYPE_TEXT:
                 return str_replace("\0", "", $value);
 
             case FieldMapping::TYPE_DATE:

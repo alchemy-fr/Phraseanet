@@ -194,7 +194,7 @@ class Field implements Typed
         // type so we reject only those with different types.
 
         if (($type = $other->getType()) !== $this->type) {
-            throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $type, $this->type));
+//            throw new MergeException(sprintf("Field %s can't be merged, incompatible types (%s vs %s)", $name, $type, $this->type));
         }
 
         if ($other->isPrivate() !== $this->is_private) {

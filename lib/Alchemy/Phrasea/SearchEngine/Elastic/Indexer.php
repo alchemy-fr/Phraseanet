@@ -230,7 +230,7 @@ class Indexer
                     'analysis'           => $this->index->getAnalysis()
                 ],
                 'mappings' => [
-                    // todo : get the mapping for the databox, not for the merged databoxes
+                    // the mapping is different for each db
                     RecordIndexer::TYPE_NAME => $this->index->getRecordIndex($databox)->getMapping()->export(),
                 ]
             ]
@@ -247,7 +247,7 @@ class Indexer
                     'analysis'           => $this->index->getAnalysis()
                 ],
                 'mappings' => [
-                    // todo : get the mapping for the databox, not for the merged databoxes
+                    // the mapping is fixed (not related to db structure)
                     TermIndexer::TYPE_NAME => $this->index->getTermIndex()->getMapping()->export()
                 ]
             ]
@@ -284,6 +284,8 @@ class Indexer
             }
         }
 
+        // records ".r" and terms ".t" indexes for a db are grouped in a common "db"
+        // this will allow to find the physical indexes related to a db
         $actions[] = [
             'add' => [
                 'index' => $indexBasename . '.r',
@@ -297,10 +299,20 @@ class Indexer
             ]
         ];
 
+
+        // all records indexes are searchable in a common "app" (todo: add ".r" ?)
         $actions[] = [
             'add' => [
                 'index' => $indexBasename . '.r',
                 'alias' => $appAliasname
+            ]
+        ];
+
+        // all thesaurus indexes are searchable in a common "app" . ".t"
+        $actions[] = [
+            'add' => [
+                'index' => $indexBasename . '.t',
+                'alias' => $appAliasname . '.t'
             ]
         ];
         //$actions[] = [
