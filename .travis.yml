@@ -38,8 +38,8 @@ before_install:
   - phpenv config-rm xdebug.ini
   - composer self-update --no-progress --no-interaction
   - sudo apt-get purge elasticsearch
-  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.6.0.deb
-  - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0
+  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.deb && sudo dpkg -i --force-confnew elasticsearch-6.2.2.deb
+  - sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
   - sudo service elasticsearch start
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini

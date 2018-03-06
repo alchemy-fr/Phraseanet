@@ -18,7 +18,7 @@ machine:
 
 dependencies:
   cache_directories:
-    - elasticsearch-2.3.3 # relative to the build directory
+    - elasticsearch-6.2.2 # relative to the build directory
     - node_modules
     - ~/.composer
   pre:
@@ -39,8 +39,8 @@ dependencies:
     - composer install --no-progress --no-interaction --optimize-autoloader
   post:
     - npm install
-    - if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
-    - elasticsearch-2.3.3/bin/elasticsearch: {background: true}
+    - if [[ ! -e elasticsearch-6.2.2 ]]; then wget --no-check-certificate https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz && tar -xvf elasticsearch-6.2.2.tar.gz && elasticsearch-6.2.2/bin/elasticsearch-plugin install analysis-icu; fi
+    - elasticsearch-6.2.2/bin/elasticsearch: {background: true}
 
 database:
   override:
