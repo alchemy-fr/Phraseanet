@@ -644,7 +644,8 @@ class ElasticSearchEngine implements SearchEngineInterface
             $databoxId = $databox->get_sbas_id();
             $statusStructure = $databox->getStatusStructure();
             foreach($statusStructure as $bit => $status) {
-                $flags[$databoxId][$bit] = Flag::normalizeName($status['labelon']);
+                $labelOn = Flag::getLabelOn($bit, $status['labalon']);
+                $flags[$databoxId][$bit] = Flag::normalizeName($labelOn);
             }
         }
 
