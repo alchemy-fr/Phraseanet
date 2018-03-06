@@ -688,8 +688,18 @@ class V1Controller extends Controller
 
         $checks = array_map(function (LazaretCheck $checker) use ($manager, $translator) {
             $checkerFQCN = $checker->getCheckClassname();
+
             return $manager->getCheckerFromFQCN($checkerFQCN)->getMessage($translator);
-        }, iterator_to_array($file->getChecks()));
+        }, $file->getChecksWhithNameKey());
+
+        $recordsMatch = array_map(function ($recordsTab){
+            $record = $recordsTab['record'];
+            $matched['record_id'] = $record->getRecordId();
+            $matched['collection'] = $record->getCollectionName();
+            $matched['checks'] = $recordsTab['reasons'];
+
+            return $matched;
+        }, array_values($file->getRecordsToSubstitute($this->app, true)));
 
         $usr_id = $user = null;
         if ($file->getSession()->getUser()) {
@@ -708,10 +718,12 @@ class V1Controller extends Controller
             'quarantine_session' => $session,
             'base_id'            => $file->getBaseId(),
             'original_name'      => $file->getOriginalName(),
+            'collection'         => $file->getCollection($this->app)->get_label($this->app['locale']),
             'sha256'             => $file->getSha256(),
             'uuid'               => $file->getUuid(),
             'forced'             => $file->getForced(),
             'checks'             => $file->getForced() ? [] : $checks,
+            'records_match'      => $recordsMatch?:[],
             'created_on'         => $file->getCreated()->format(DATE_ATOM),
             'updated_on'         => $file->getUpdated()->format(DATE_ATOM),
         ];
