@@ -43,7 +43,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
@@ -67,8 +67,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
-        $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
+        $public_field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
+        $private_field = new Field('bar', FieldMapping::TYPE_TEXT, [
             'private' => true,
             'used_by_collections' => [1, 2, 3]
         ]);
@@ -126,7 +126,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithConcepts()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
@@ -162,8 +162,8 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFieldAndConcept()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
-        $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
+        $public_field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
+        $private_field = new Field('bar', FieldMapping::TYPE_TEXT, [
             'private' => true,
             'used_by_collections' => [1, 2, 3]
         ]);

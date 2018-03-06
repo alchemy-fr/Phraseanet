@@ -15,7 +15,7 @@ class AggregationHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function testAggregationWrappingOnPrivateField()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'private' => true,
             'used_by_collections' => [1, 2, 3]
         ]);
@@ -41,7 +41,7 @@ class AggregationHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testAggregationWrappingOnUnrestrictedField()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $agg = [
             'terms' => 'bar'
         ];

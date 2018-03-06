@@ -22,6 +22,7 @@ class Sha256Test extends \PhraseanetTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->object = new Sha256(self::$DI['app']);
         $this->filename = __DIR__ . '/../../../../../../tmp/test001.jpg';
         copy(__DIR__ . '/../../../../../files/test001.jpg', $this->filename);
@@ -30,11 +31,12 @@ class Sha256Test extends \PhraseanetTestCase
 
     public function tearDown()
     {
+        parent::tearDown();
+
         $this->media = null;
         if (file_exists($this->filename)) {
             unlink($this->filename);
         }
-        parent::tearDown();
     }
 
     /**
@@ -60,9 +62,11 @@ class Sha256Test extends \PhraseanetTestCase
         $this->assertFalse($response->isOk());
     }
 
+
     /**
      * @covers Alchemy\Phrasea\Border\Checker\Sha256::check
      */
+
     public function testCheckNoFile()
     {
         $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', ['getSha256'], [self::$DI['app'], $this->media, self::$DI['collection']]);
@@ -80,11 +84,14 @@ class Sha256Test extends \PhraseanetTestCase
         $this->assertTrue($response->isOk());
     }
 
+
     /**
      * @covers Alchemy\Phrasea\Border\Checker\Sha256::getMessage
      */
+
     public function testGetMessage()
     {
         $this->assertInternalType('string', $this->object->getMessage($this->createTranslatorMock()));
     }
+
 }
