@@ -143,7 +143,7 @@
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
-            prodApp.appEvents.emit('search.setFilterFacet', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}")
+            prodApp.appEvents.emit('search.updateFacetData');
 
 
         });
@@ -709,6 +709,20 @@
                                         value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
                                 <option {% if order_collection_by == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
                                         value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                            </select>
+                        </label>
+                    </form>
+                </div>
+                <div class="box">
+                    <h1>{{ 'index::advance_search: facet-order' | trans }}</h1>
+                    <form class="form-inline">
+                        {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                        <label class="select" for="orderFacet">
+                            <select class="preferences-facet-order" name="orderFacet">
+                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
                             </select>
                         </label>
                     </form>

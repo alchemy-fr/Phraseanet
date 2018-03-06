@@ -18,6 +18,7 @@ class DisplaySettingService
     const ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
     const ORDER_ALPHA_DESC = "ORDER_ALPHA_DESC";
     const ORDER_BY_ADMIN = "ORDER_BY_ADMIN";
+    const ORDER_BY_BCT = "ORDER_BY_BCT";
 
     /**
      * The default user settings.
