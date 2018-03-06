@@ -143,6 +143,6 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function onReindexRequired(ReindexRequiredEvent $event)
     {
-        $this->getIndexer()->populateIndex(Indexer::THESAURUS, $event->getDatabox());
+        $this->getIndexer()->populateIndex($event->getDatabox(), Indexer::THESAURUS);
     }
 }
