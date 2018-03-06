@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -23,11 +24,18 @@ use Symfony\Component\Process\ExecutableFinder;
 class Install extends Command
 {
     private $executableFinder;
+    /** @var StructureTemplate StructureTemplate */
+    private $structureTemplate;
 
-    public function __construct($name = null)
+    /**
+     * @param null|string $name
+     * @param StructureTemplate $structureTemplate
+     */
+    public function __construct($name, $structureTemplate)
     {
         parent::__construct($name);
 
+        $this->structureTemplate = $structureTemplate;
         $this->executableFinder = new ExecutableFinder();
 
         $this
@@ -38,9 +46,9 @@ class Install extends Command
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
             ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
-            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Metadata structure language template (available are fr (french) and en (english))', null)
-            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
             ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
+            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
+            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Databox template (' . $this->structureTemplate->toString() . ')', null)
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
             ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
@@ -49,11 +57,22 @@ class Install extends Command
         return $this;
     }
 
+    private function serverNameToAppBoxName($serverName)
+    {
+        return "ab_" . $serverName;
+    }
+
+    private function serverNameToDataBoxName($serverName)
+    {
+        return "db_" . $serverName;
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
         $output->writeln("<comment>
@@ -91,12 +110,16 @@ class Install extends Command
             }
         }
 
-        $abConn = $this->getABConn($input, $output, $dialog);
+        $serverName = $this->getServerName($input, $output, $dialog);
 
-        list($dbConn, $template) = $this->getDBConn($input, $output, $abConn, $dialog);
+        $abConn = $this->getABConn($input, $output, $dialog, $serverName);
+        if(!$abConn) {
+            return 1;       // no ab is fatal
+        }
+
+        list($dbConn, $templateName) = $this->getDBConn($input, $output, $abConn, $dialog);
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
-        $serverName = $this->getServerName($input, $output, $dialog);
 
         if (!$input->getOption('yes')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
@@ -108,32 +131,32 @@ class Install extends Command
             }
         }
 
-        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $template, $this->detectBinaries());
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
-            $command->run(new ArrayInput(array(
+            $command->run(new ArrayInput([
                 'command' => 'crossdomain:generate'
-            )), $output);
+            ]), $output);
         }
 
         $output->writeln("<info>Install successful !</info>");
 
-        return;
+        return 0;
     }
 
     private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
         $abConn = $info = null;
         if (!$input->getOption('appbox')) {
-            $output->writeln("\n<info>--- Database credentials ---</info>\n");
+            $output->writeln("<info>--- Database credentials ---</info>");
 
             do {
-                $hostname = $dialog->ask($output, "DB hostname (localhost) : ", 'localhost');
-                $port = $dialog->ask($output, "DB port (3306) : ", 3306);
-                $dbUser = $dialog->ask($output, "DB user : ");
-                $dbPassword = $dialog->askHiddenResponse($output, "DB password (hidden) : ");
-                $abName = $dialog->ask($output, "DB name (phraseanet) : ", 'phraseanet');
+                $hostname = $dialog->ask($output, 'DB hostname <comment>[default: "localhost"]</comment> : ', 'localhost');
+                $port = $dialog->ask($output, 'DB port <comment>[default: "3306"]</comment> : ', '3306');
+                $dbUser = $dialog->ask($output, 'DB user : ');
+                $dbPassword = $dialog->askHiddenResponse($output, 'DB password (hidden) : ');
+                $abName = $dialog->ask($output, 'ApplicationBox name <comment>[default: "phraseanet"]</comment> : ', 'phraseanet');
 
                 $info = [
                     'host'     => $hostname,
@@ -145,9 +168,10 @@ class Install extends Command
                 try {
                     $abConn = $this->container['dbal.provider']($info);
                     $abConn->connect();
-                    $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
+                    $output->writeln("<info>Application-Box : Connection successful !</info>");
                 } catch (\Exception $e) {
-                    $output->writeln("\n\t<error>Invalid connection parameters</error>\n");
+                    $output->writeln("<error>Application-Box : Failed to connect, try again.</error>");
+                    $abConn = null;
                 }
             } while (!$abConn);
         } else {
@@ -161,7 +185,7 @@ class Install extends Command
 
             $abConn = $this->container['dbal.provider']($info);
             $abConn->connect();
-            $output->writeln("\n\t<info>Application-Box : Connection successful !</info>\n");
+            $output->writeln("<info>Application-Box : Connection successful !</info>");
         }
 
         // add dbs.option & orm.options services to use orm.em later
@@ -175,12 +199,13 @@ class Install extends Command
 
     private function getDBConn(InputInterface $input, OutputInterface $output, Connection $abConn, DialogHelper $dialog)
     {
-        $dbConn = $template = $info = null;
-        $templates = $this->container['phraseanet.structure-template']->getAvailable();
+        $dbConn = $info = null;
+        $templateName = null;
+
         if (!$input->getOption('databox')) {
             do {
                 $retry = false;
-                $dbName = $dialog->ask($output, 'DataBox name, will not be created if empty : ', null);
+                $dbName = $dialog->ask($output, 'Data-Box name, will not be created if empty : ', null);
 
                 if ($dbName) {
                     try {
@@ -194,19 +219,13 @@ class Install extends Command
 
                         $dbConn = $this->container['dbal.provider']($info);
                         $dbConn->connect();
-                        $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
-
-                        do {
-                            $template = $dialog->ask($output, "Choose a language template for metadata structure, available are {$templates->__toString()} : ", 'en');
-                        }
-                        while (!in_array($template, array_keys($templates->getTemplates())));
-
-                        $output->writeln("\n\tLanguage selected is <info>'$template'</info>\n");
+                        $output->writeln("<info>Data-Box : Connection successful !</info>");
                     } catch (\Exception $e) {
+                        $output->writeln("    <error>Data-Box : Failed to connect, try again.</error>");
                         $retry = true;
                     }
                 } else {
-                    $output->writeln("\n\tNo databox will be created\n");
+                    $output->writeln("No databox will be created");
                 }
             } while ($retry);
         } else {
@@ -220,17 +239,37 @@ class Install extends Command
 
             $dbConn = $this->container['dbal.provider']($info);
             $dbConn->connect();
-            $output->writeln("\n\t<info>Data-Box : Connection successful !</info>\n");
-            $template = $input->getOption('db-template') ? : 'en';
+            $output->writeln("<info>Data-Box : Connection successful !</info>");
         }
 
         // add dbs.option & orm.options services to use orm.em later
         if ($dbConn && $info) {
+            /** @var StructureTemplate $templates */
+            $templates = $this->container['phraseanet.structure-template'];
+
+            // if a template name is provided, check that this template exists
+            $templateName = $input->getOption('db-template');
+            if($templateName && !$templates->getByName($templateName)) {
+                throw new \Exception_InvalidArgument(sprintf("Databox template \"%s\" not found.", $templateName));
+            }
+            if(!$templateName) {
+                // propose a default template : the first available if "en-simple" does not exists.
+                $defaultDBoxTemplate = $this->structureTemplate->getDefault();
+
+                do {
+                    $templateName = $dialog->ask($output, 'Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate);
+                    if(!$templates->getByName($templateName)) {
+                        $output->writeln("<error>Data-Box template : Template not found, try again.</error>");
+                    }
+                }
+                while (!$templates->getByName($templateName));
+            }
+
             $this->container['dbs.options'] = array_merge($this->container['db.options.from_info']($info), $this->container['dbs.options']);
             $this->container['orm.ems.options'] = array_merge($this->container['orm.em.options.from_info']($info), $this->container['orm.ems.options']);
         }
 
-        return [$dbConn, $template];
+        return [$dbConn, $templateName];
     }
 
     private function getCredentials(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
@@ -238,7 +277,7 @@ class Install extends Command
         $email = $password = null;
 
         if (!$input->getOption('email') && !$input->getOption('password')) {
-            $output->writeln("\n<info>--- Account Informations ---</info>\n");
+            $output->writeln("<info>--- Account Informations ---</info>");
 
             do {
                 $email = $dialog->ask($output, 'Please provide a valid e-mail address : ');
@@ -248,7 +287,7 @@ class Install extends Command
                 $password = $dialog->askHiddenResponse($output, 'Please provide a password (hidden, 6 character min) : ');
             } while (strlen($password) < 6);
 
-            $output->writeln("\n\t<info>Email / Password successfully set</info>\n");
+            $output->writeln("<info>Email / Password successfully set</info>");
         } elseif ($input->getOption('email') && $input->getOption('password')) {
             if (!\Swift_Validate::email($input->getOption('email'))) {
                 throw new \RuntimeException('Invalid email addess');

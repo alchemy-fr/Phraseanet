@@ -52,4 +52,27 @@ class StringHelperTest extends \PhraseanetTestCase
             ["ABC\n\rDEF", "ABC\n\nDEF"],
         ];
     }
+
+    /**
+     * @dataProvider provideStringsForSqlQuote
+     * @covers Alchemy\Phrasea\Utilities\StringHelper::SqlQuote
+     */
+    public function testSqlQuote($string, $mode, $expected)
+    {
+        $result = StringHelper::SqlQuote($string, $mode);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function provideStringsForSqlQuote()
+    {
+        return [
+            ["azerty",  StringHelper::SQL_VALUE, "'azerty'"],
+            ["aze'rty", StringHelper::SQL_VALUE, "'aze''rty'"],
+            ["aze`rty", StringHelper::SQL_VALUE, "'aze`rty'"],
+            ["azerty",  StringHelper::SQL_IDENTIFIER, "`azerty`"],
+            ["aze'rty", StringHelper::SQL_IDENTIFIER, "`aze'rty`"],
+            ["aze`rty", StringHelper::SQL_IDENTIFIER, "`aze``rty`"],
+        ];
+    }
 }

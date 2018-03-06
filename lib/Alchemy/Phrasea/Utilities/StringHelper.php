@@ -13,6 +13,9 @@ namespace Alchemy\Phrasea\Utilities;
 
 class StringHelper
 {
+    const SQL_VALUE      = '\'';
+    const SQL_IDENTIFIER = '`';
+
     /**
      * @param string $str
      * @return string
@@ -33,6 +36,16 @@ class StringHelper
         $transformStr = str_replace(' ', '', ucwords(str_replace($separator, ' ', $str)));
 
         return $pascalCase ? $transformStr : lcfirst($transformStr);
+    }
+
+    /**
+     * @param  $s
+     * @param  $quote
+     * @return string
+     */
+    public static function SqlQuote($s, $quote)
+    {
+        return $quote . str_replace($quote, $quote.$quote, $s) . $quote;
     }
 
 }

@@ -75,7 +75,7 @@ class ConfigurationServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.structure-template'] = $app->share(function (Application $app) {
-            return new StructureTemplate($app);
+            return new StructureTemplate($app['root.path']);
         });
     }
 
