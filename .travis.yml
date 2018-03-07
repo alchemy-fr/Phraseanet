@@ -62,7 +62,7 @@ before_script:
       php resources/hudson/cleanupSubdefs.php;
   - mysql -e 'SELECT ab.version AS applibox_version, db.value AS databox_version FROM ab_test.sitepreff ab, db_test.pref db WHERE db.prop = "version"'
   - "./bin/developer ini:setup-tests-dbs"
-  - "./bin/console searchengine:index -c"
+  - "./bin/console searchengine:index -dc --force"
   - "./bin/developer phraseanet:regenerate-sqlite"
   - "./bin/developer phraseanet:generate-js-fixtures"
 
