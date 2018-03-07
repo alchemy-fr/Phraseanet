@@ -244,7 +244,7 @@ class QueryController extends Controller
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
-                . '</div><a href="#" class="infoDialog search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
+                . '</div><a href="#" class="search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
                 . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
