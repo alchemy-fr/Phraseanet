@@ -29,11 +29,12 @@ class UUIDTest extends \PhraseanetTestCase
 
     public function tearDown()
     {
+        parent::tearDown();
+
         $this->media = null;
         if (file_exists($this->filename)) {
             unlink($this->filename);
         }
-        parent::tearDown();
     }
 
     /**

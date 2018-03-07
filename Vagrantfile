@@ -43,6 +43,9 @@ def config_net(config)
         config.vm.provider "virtualbox" do |vb|
           vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
