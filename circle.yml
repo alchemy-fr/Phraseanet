@@ -25,15 +25,15 @@ jobs:
       - run:
           name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client
           command: |
-            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client pdo_mysql
+            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client
       - run:
           name: sudo docker-php-ext-configure intl
           command: |
             sudo docker-php-ext-configure intl
       - run:
-          name: sudo docker-php-ext-install intl bcmath
+          name: sudo docker-php-ext-install intl bcmath pdo_mysql
           command: |
-            sudo docker-php-ext-install intl bcmath
+            sudo docker-php-ext-install intl bcmath pdo_mysql
       - run:
           name: git clone https://github.com/alanxz/rabbitmq-c
           command: |
