@@ -23,7 +23,7 @@ jobs:
             - ~/.composer
 
       - run:
-          name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server
+          name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib1g-dev
           command: |
             sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server
       - run:
@@ -31,9 +31,9 @@ jobs:
           command: |
             sudo docker-php-ext-configure intl
       - run:
-          name: sudo docker-php-ext-install intl bcmath pdo_mysql
+          name: sudo docker-php-ext-install intl bcmath pdo_mysql zip
           command: |
-            sudo docker-php-ext-install intl bcmath pdo_mysql
+            sudo docker-php-ext-install intl bcmath pdo_mysql zip
       - run:
           name: git clone https://github.com/alanxz/rabbitmq-c
           command: |
