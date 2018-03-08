@@ -25,7 +25,7 @@ jobs:
       - run:
           name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib-dev
           command: |
-            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server
+            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib-dev
       - run:
           name: sudo docker-php-ext-configure intl
           command: |
