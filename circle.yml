@@ -9,6 +9,13 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/php:7.0.27-cli-node-browsers
+      - image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2
+        environment:
+          - discovery.type=single-node
+          - http.host=0.0.0.0
+          - transport.host=127.0.0.1
+          - xpack.security.enabled=false
+          - ES_JAVA_OPTS=-Xms750m -Xmx750m
       - image: circleci/mysql:5.7
         environment:
           - MYSQL_USER=root
@@ -18,7 +25,6 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - elasticsearch-2.4.3 # relative to the build directory
             - node_modules
             - ~/.composer
 
@@ -67,10 +73,10 @@ jobs:
           name: npm install
           command: |
             npm install
-      - run:
-          name: elastic
-          command: |
-            curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.0/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch restart
+#      - run:
+#          name: elastic
+#          command: |
+#            curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.3.0/elasticsearch-2.3.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.3.0.deb && sudo service elasticsearch restart
 
       - run:
           name: mysql -h 127.0.0.1 -u root -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
