@@ -9,11 +9,11 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/php:7.0.27-cli-node-browsers
-      - image: circleci/mysql:5.5.54
+      - image: circleci/mysql:5.7
         environment:
-          - MYSQL_ALLOW_EMPTY_PASSWORD=true
           - MYSQL_USER=root
-          - MYSQL_ROOT_HOST=%
+          - MYSQL_PASSWORD=
+          - MYSQL_ALLOW_EMPTY_PASSWORD=true
     steps:
       - checkout
       - restore_cache:
@@ -25,7 +25,7 @@ jobs:
       - run:
           name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client
           command: |
-            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client
+            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client pdo_mysql
       - run:
           name: sudo docker-php-ext-configure intl
           command: |
