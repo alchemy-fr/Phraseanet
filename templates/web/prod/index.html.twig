@@ -731,8 +731,6 @@
                                 </select>
                             </label>
                         </form>
-                    </div>
-                    <div class="box">
                         <h1>{{ 'index::advance_search: facet-values-order' | trans }}</h1>
                         <form class="form-inline">
                             {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
@@ -745,8 +743,6 @@
                                 </select>
                             </label>
                         </form>
-                    </div>
-                    <div class="box">
                         {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
                         <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                             <input onchange="setFacet($(this).prop('checked'))" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
