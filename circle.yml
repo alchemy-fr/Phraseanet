@@ -73,7 +73,7 @@ jobs:
             wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.3/elasticsearch-2.4.3.tar.gz
             tar -xvf elasticsearch-2.4.3.tar.gz
             sudo ./elasticsearch-2.4.3/bin/plugin install analysis-icu
-            ./elasticsearch-2.4.3/bin/elasticsearch -d
+            ./elasticsearch-2.4.3/bin/elasticsearch -d -v
             sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
 
       - run:
@@ -91,10 +91,11 @@ jobs:
           name: Application tests setup 1
           command: |
             ./bin/developer ini:setup-tests-dbs -v
+
       - run:
-          name: Application tests setup 2
+          name: Application tests setup curl
           command: |
-            ./elasticsearch-2.4.3/bin/elasticsearch -d
+            curl localhost:9200
 
       - run:
           name: Application tests setup 3
