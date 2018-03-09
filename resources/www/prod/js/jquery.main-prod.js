@@ -15,11 +15,11 @@ var bodySize = {
     y: 0
 };
 
-var filterFacet = false;
-
 var facets = null;
 
 var lastFilterResults = [];
+
+var ORDER_BY_BCT = "ORDER_BY_BCT";
 
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
@@ -607,6 +607,13 @@ var selectedFacetValues = [];
 var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 
 function loadFacets(facets) {
+
+    //get properties of facets
+    var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
+    var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
+
+
+
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
@@ -630,9 +637,13 @@ function loadFacets(facets) {
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
+    if(facetOrder == ORDER_BY_BCT) {
+        treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
+    }
 
-    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    if(filterFacet == true) {
+        treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    }
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
@@ -2967,7 +2978,11 @@ function autoorder() {
 
 function setFacet(boolean) {
     setPref("facet", boolean);
-    filterFacet = boolean;
+    loadFacets(facets);
+}
+
+function setFacetOrder(order) {
+    setPref("order_facet", order);
     loadFacets(facets);
 }
 

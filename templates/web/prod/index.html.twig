@@ -719,6 +719,20 @@
                     </div>
                     <div class="box">
                         <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+                        <h1>{{ 'index::advance_search: facet-order' | trans }}</h1>
+                        <form class="form-inline">
+                            {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                            <label class="select" for="orderFacet">
+                                <select onchange="setFacetOrder($(this).val());" name="orderFacet">
+                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                </select>
+                            </label>
+                        </form>
+                    </div>
+                    <div class="box">
                         {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
                         <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                             <input onchange="setFacet($(this).prop('checked'))" id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
@@ -847,7 +861,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             p4.reg_delete="{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}";
-            filterFacet = ({% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %});
+            {#filterFacet = ({% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %});#}
 
             $('#right-btn').mouseenter(function() {
                 $('#right-btn i').stop(true, true).fadeIn(200).delay(500).fadeOut(200);
