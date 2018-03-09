@@ -87,6 +87,7 @@ jobs:
             ./bin/developer system:uninstall -v
             ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
             ./bin/developer ini:setup-tests-dbs -v
+            ./elasticsearch-2.4.3/bin/elasticsearch -d
             ./bin/console searchengine:index:create -v
             ./bin/developer phraseanet:regenerate-sqlite -v
             ./bin/developer phraseanet:generate-js-fixtures -v
