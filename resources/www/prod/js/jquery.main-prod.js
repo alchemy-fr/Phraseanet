@@ -20,6 +20,10 @@ var facets = null;
 var lastFilterResults = [];
 
 var ORDER_BY_BCT = "ORDER_BY_BCT";
+var ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
+var ORDER_BY_HITS = "ORDER_BY_HITS";
+
+
 
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
@@ -611,13 +615,23 @@ function loadFacets(facets) {
     //get properties of facets
     var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
     var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
+    var facetValueOrder = $('#look_box_settings select[name=facetValuesOrder]').val();
 
-
+    function sortIteration(i) {
+        switch(facetValueOrder) {
+            case ORDER_ALPHA_ASC:
+                return i.value.toString().toLowerCase();
+                break;
+            case ORDER_BY_HITS:
+                return i.count*-1;
+                break;
+        }
+    }
 
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
-        var values = _.map(facet.values, function(value) {
+        var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
             return {
                 title: value.value + ' (' + value.count + ')',
                 query: value.query,
@@ -2983,6 +2997,11 @@ function setFacet(boolean) {
 
 function setFacetOrder(order) {
     setPref("order_facet", order);
+    loadFacets(facets);
+}
+
+function setFacetValueOrder(valueOrder) {
+    setPref("facet_values_order", valueOrder);
     loadFacets(facets);
 }
 
