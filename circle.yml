@@ -95,7 +95,7 @@ jobs:
       - run:
           name: Application tests setup curl
           command: |
-            curl localhost:9200
+            curl http://127.0.0.1:9200
 
       - run:
           name: Application tests setup 3
