@@ -86,12 +86,26 @@ jobs:
           command: |
             ./bin/developer system:uninstall -v
             ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+
+      - run:
+          name: Application tests setup 1
+          command: |
             ./bin/developer ini:setup-tests-dbs -v
+      - run:
+          name: Application tests setup 2
+          command: |
             ./elasticsearch-2.4.3/bin/elasticsearch -d
-            ./bin/console searchengine:index:create -v
+
+      - run:
+          name: Application tests setup 3
+          command: |
+            ./bin/console searchengine:index -c -v
+
+      - run:
+          name: Application tests setup 4
+          command: |
             ./bin/developer phraseanet:regenerate-sqlite -v
             ./bin/developer phraseanet:generate-js-fixtures -v
-
 #      - run:
 #          name: Tests !!
 #          command: |
