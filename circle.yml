@@ -91,11 +91,11 @@ jobs:
           name: Application tests setup 1
           command: |
             ./bin/developer ini:setup-tests-dbs -v
-
-      - run:
-          name: Application tests setup curl
-          command: |
-            curl http://127.0.0.1:9200
+#
+#      - run:
+#          name: Application tests setup curl
+#          command: |
+#            curl http://127.0.0.1:9200
 
       - run:
           name: Application tests setup 3
