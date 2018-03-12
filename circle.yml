@@ -9,7 +9,7 @@ machine:
   php:
     version: 5.5.31
   node:
-    version: 4.2.0
+    version: 4.2.6
   services:
     - memcached
     - redis
