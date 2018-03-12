@@ -97,11 +97,11 @@ jobs:
           command: |
             ./bin/developer ini:setup-tests-dbs -v
 
-      - run:
-          name: run elastic daemon
-          command: |
-            ./elasticsearch-2.4.3/bin/elasticsearch -d -v
-            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
+#      - run:
+#          name: run elastic daemon
+#          command: |
+#            ./elasticsearch-2.4.3/bin/elasticsearch -d -v
+#            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
 
       - run:
           name: Application tests setup 3
