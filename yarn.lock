@@ -5316,8 +5316,8 @@ phraseanet-common@^0.4.1:
     pym.js "^1.3.1"
 
 phraseanet-production-client@^0.33.0:
-  version "0.33.5"
-  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.33.5.tgz#f73066ac98786a473ee5ff918aa6f14babb9580e"
+  version "0.33.7"
+  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.33.7.tgz#7b5ecb6e3001de9132cd12cb6574f6d25dc25cb9"
   dependencies:
     axios "^0.16.2"
     backbone "^1.3.3"
