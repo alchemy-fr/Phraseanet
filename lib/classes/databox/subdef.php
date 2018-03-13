@@ -302,6 +302,18 @@ class databox_subdef
     {
         return $this->downloadable;
     }
+    
+    /**
+     * @Deprecated (alias done cause of webgallery usage of old function)
+     *
+     * boolean
+     *
+     * @return bool
+     */
+    public function is_downloadable()
+    {
+        return $this->isDownloadable();
+    }
 
     /**
      * @return bool
