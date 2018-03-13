@@ -390,4 +390,9 @@ class UserManipulator implements ManipulatorInterface
 
         return $var;
     }
+
+    public function updateUser(User $user)
+    {
+        $this->manager->update($user);
+    }
 }
