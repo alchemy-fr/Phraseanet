@@ -33,7 +33,12 @@
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
-            <span>{{ 'Filter' | trans }}</span>
+                <span class="checkbox">
+                    {{ 'Show special users' | trans }}
+                    <input type="checkbox"  name="show_special_users" {% if parm['show_special_users'] %} checked="checked" {% endif %} style="margin-left:10px" />
+                </span>
+                <br/>
+                <span>{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
                     <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
