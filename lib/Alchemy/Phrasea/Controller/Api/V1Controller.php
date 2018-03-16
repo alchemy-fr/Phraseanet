@@ -79,6 +79,7 @@ use Alchemy\Phrasea\Search\TechnicalDataView;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchResultTransformer;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -89,6 +90,7 @@ use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
 use JMS\TranslationBundle\Annotation\Ignore;
 use League\Fractal\Resource\Item;
+use media_subdef;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -2678,6 +2680,137 @@ class V1Controller extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * Returns all documentary fields available for user
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserStructureAction(Request $request)
+    {
+        $ret = [
+          "meta_fields" => $this->listUserAuthorizedMetadataFields($this->getAuthenticatedUser()),
+          "aggregable_fields" => $this->listUserAggregableFields(),
+          "technical_fields" => media_subdef::getTechnicalFieldsList(),
+        ];
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Returns all sub-definitions available for the user
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserSubdefsAction(Request $request)
+    {
+        $ret = [
+          "subdefs" => $this->listUserAuthorizedSubdefs($this->getAuthenticatedUser()),
+        ];
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Returns list of Metadata Fields from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedMetadataFields(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $ret = [];
+
+        foreach ($acl->get_granted_sbas() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            foreach ($databox->get_meta_structure() as $databox_field) {
+                $data = [
+                  'name'             => $databox_field->get_name(),
+                  'id'               => $databox_field->get_id(),
+                  'databox_id'       => $databoxId,
+                  'multivalue'       => $databox_field->is_multi(),
+                  'indexable'        => $databox_field->is_indexable(),
+                  'readonly'         => $databox_field->is_readonly(),
+                  'business'         => $databox_field->isBusiness(),
+                  'source'           => $databox_field->get_tag()->getTagname(),
+                  'labels'           => [
+                    'fr' => $databox_field->get_label('fr'),
+                    'en' => $databox_field->get_label('en'),
+                    'de' => $databox_field->get_label('de'),
+                    'nl' => $databox_field->get_label('nl'),
+                  ],
+                ];
+                $ret[] = $data;
+            }
+
+            if ($acl->can_see_business_fields($databox) === false) {
+                $ret = array_values($this->removeBusinessFields($ret));
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Build the aggregable fields array
+     * @return array
+     */
+    private function listUserAggregableFields()
+    {
+        $ret = [];
+        $aggregFields = ElasticsearchOptions::getAggregableTechnicalFields();
+        foreach ($aggregFields as $key => $field) {
+            $data['name'] = $key;
+            foreach ($field as $k => $i) {
+                $data[$k] = $i;
+            }
+            $ret[] = $data;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Returns list of sub-definitions from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedSubdefs(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $ret = [];
+
+        foreach ($acl->get_granted_sbas() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            $subdefs = $databox->get_subdef_structure();
+            foreach ($subdefs as $subGroup) {
+                foreach ($subGroup->getIterator() as $sub) {
+                    $opt = [];
+                    $data = [
+                      'name'             => $sub->get_name(),
+                      'class'            => $sub->get_class(),
+                      'preset'           => $sub->get_preset(),
+                      'downloadable'     => $sub->isDownloadable(),
+                      'devices'          => $sub->getDevices(),
+                      'labels'           => [
+                        'fr' => $sub->get_label('fr'),
+                        'en' => $sub->get_label('en'),
+                        'de' => $sub->get_label('de'),
+                        'nl' => $sub->get_label('nl'),
+                      ],
+                    ];
+                    $options = $sub->getOptions();
+                    foreach ($options as $option) {
+                        $opt[$option->getName()] = $option->getValue();
+                    }
+                    $data['options'] = $opt;
+                    $ret[$databoxId][$subGroup->getName()][$sub->get_name()] = $data;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
     public function deleteCurrentUserAction(Request $request)
     {
         try {
@@ -3126,5 +3259,17 @@ class V1Controller extends Controller
 
             $recordView->setCaption($captionView);
         }
+    }
+
+    /**
+     * Remove business metadata fields
+     * @param array $fields
+     * @return array
+     */
+    private function removeBusinessFields(array $fields)
+    {
+        return array_filter($fields, function ($field) {
+            return $field['business'] !== true;
+        });
     }
 }
