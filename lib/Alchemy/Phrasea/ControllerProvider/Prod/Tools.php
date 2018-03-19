@@ -69,6 +69,10 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/sharing-editor/{base_id}/{record_id}/', 'controller.prod.tools:editRecordSharing');
 
+        $controllers->post('/metadata/save/', 'controller.prod.tools:saveMetasAction')
+            ->bind('prod_tools_metadata_save');
+
+
         return $controllers;
     }
 }

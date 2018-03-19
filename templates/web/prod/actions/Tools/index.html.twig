@@ -358,6 +358,7 @@
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
         databaseId: {% if selectionLength == 1%}{{record.get_base_id}}{% else %}0{% endif %},
+        databoxId: {% if selectionLength == 1 %}{{ record.get_sbas_id() }}{% else %}0{% endif %},
         recordId: {% if selectionLength == 1%}{{record.get_record_id}}{% else %}0{% endif %},
         translations: {
             alertTitle: '{{ "alert" | trans }}',

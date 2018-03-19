@@ -54,6 +54,7 @@ class ToolsController extends Controller
 
                 /** @Ignore */
                 $JSFields[$meta->get_id()] = [
+                    'id'     => $meta->get_id(),
                     'name'   => $meta->get_name(),
                     '_value' => $record->getCaption([$meta->get_name()]),
                 ];
@@ -441,5 +442,30 @@ class ToolsController extends Controller
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
+    }
+
+    /**
+     * @param $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveMetasAction(Request $request)
+    {
+        $record = new \record_adapter($this->app,
+            (int)$request->request->get("databox_id"),
+            (int)$request->request->get("record_id"));
+
+        $metadatas[0] = [
+            'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
+            'meta_id'        => '',
+            'value'          => $request->request->get("value")
+        ];
+        try {
+            $record->set_metadatas($metadatas);
+        }
+        catch (Exception $e) {
+            return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);
+        }
+
+        return $this->app->json(['success' => true, 'errorMessage' => '']);
     }
 }
