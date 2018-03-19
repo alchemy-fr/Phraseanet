@@ -67,7 +67,7 @@
     "normalize-css": "^2.1.0",
     "npm": "^5.6.0",
     "npm-modernizr": "^2.8.3",
-    "phraseanet-production-client": "^0.33.0",
+    "phraseanet-production-client": "file:../Phraseanet-production-client",
     "requirejs": "^2.1.22",
     "tinymce": "^4.0.28",
     "underscore": "^1.8.3",
