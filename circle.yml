@@ -68,16 +68,18 @@ jobs:
           name: composer install --no-progress --no-interaction --optimize-autoloader
           command: |
             composer install --no-progress --no-interaction --optimize-autoloader
+
       - run:
           name: npm install
           command: |
             npm install
+
       - run:
           name: elastic
           command: |
             sudo ./elasticsearch-5.6.1/bin/plugin install analysis-icu
             ./elasticsearch-5.6.1/bin/elasticsearch -d -v
-            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
+            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://172.23.0.3:9200/
 
       - run:
           name: mysql -h 127.0.0.1 -u root -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
@@ -94,12 +96,6 @@ jobs:
           name: Application tests setup 1
           command: |
             ./bin/developer ini:setup-tests-dbs -v
-
-#      - run:
-#          name: run elastic daemon
-#          command: |
-#            ./elasticsearch-2.4.3/bin/elasticsearch -d -v
-#            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
 
       - run:
           name: Application tests setup 3
