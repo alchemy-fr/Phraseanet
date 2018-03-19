@@ -77,8 +77,6 @@ jobs:
       - run:
           name: elastic
           command: |
-            sudo ./elasticsearch-5.6.1/bin/plugin install analysis-icu
-            ./elasticsearch-5.6.1/bin/elasticsearch -d -v
             sleep 10 && wget --waitretry=5 --retry-connrefused -v http://172.23.0.3:9200/
 
       - run:
