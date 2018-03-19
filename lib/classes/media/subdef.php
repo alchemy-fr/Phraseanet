@@ -77,6 +77,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     /** @var integer */
     private $size = 0;
 
+    /** @var array */
+    private static $technicalFieldsList = [];
+
     /*
      * Players types constants
      */
@@ -589,13 +592,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $techDatas = self::getTechnicalFieldsList();
 
-        foreach ($techDatas as $techData) {
-            if (array_key_exists('name', $techData) && array_key_exists('method', $techData)) {
+        foreach ($techDatas as $tc_name => $techData) {
+            if (array_key_exists('method', $techData)) {
                 if (method_exists($media, $techData['method'])) {
                     $result = call_user_func([$media, $techData['method']]);
 
                     if (null !== $result) {
-                        $datas[$techData['name']] = $result;
+                        $datas[$tc_name] = $result;
                     }
                 }
             }
@@ -805,40 +808,43 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
-     * Return list of technical data and there attributes
+     * Return list of technical data and their attributes
      *
      * @return array
      */
-    public static function getTechnicalFieldsList(){
+    public static function getTechnicalFieldsList()
+    {
+        if (empty(self::$technicalFieldsList)) {
+            self::$technicalFieldsList = [
+              self::TC_DATA_WIDTH              => ['method' => 'getWidth', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_HEIGHT             => ['method' => 'getHeight', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_FOCALLENGTH        => ['method' => 'getFocalLength', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_CHANNELS           => ['method' => 'getChannels', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_COLORDEPTH         => ['method' => 'getColorDepth', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_CAMERAMODEL        => ['method' => 'getCameraModel', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_FLASHFIRED         => ['method' => 'getFlashFired', 'type' => 'boolean', 'analyzable' => false],
+              self::TC_DATA_APERTURE           => ['method' => 'getAperture', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_SHUTTERSPEED       => ['method' => 'getShutterSpeed', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_HYPERFOCALDISTANCE => ['method' => 'getHyperfocalDistance', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_ISO                => ['method' => 'getISO', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_LIGHTVALUE         => ['method' => 'getLightValue', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_COLORSPACE         => ['method' => 'getColorSpace', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_DURATION           => ['method' => 'getDuration', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_FRAMERATE          => ['method' => 'getFrameRate', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_AUDIOSAMPLERATE    => ['method' => 'getAudioSampleRate', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_VIDEOCODEC         => ['method' => 'getVideoCodec', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_AUDIOCODEC         => ['method' => 'getAudioCodec', 'type' => 'string', 'analyzable' => false],
+              self::TC_DATA_ORIENTATION        => ['method' => 'getOrientation', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_LONGITUDE          => ['method' => 'getLongitude', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_LONGITUDE_REF      => ['method' => 'getLongitudeRef'],
+              self::TC_DATA_LATITUDE           => ['method' => 'getLatitude', 'type' => 'float', 'analyzable' => false],
+              self::TC_DATA_LATITUDE_REF       => ['method' => 'getLatitudeRef'],
+              self::TC_DATA_MIMETYPE           => ['type' => 'string', 'analyzable' => false],
+              self::TC_DATA_FILESIZE           => ['type' => 'long', 'analyzable' => false],
+            ];
+        }
 
-        $datas = [
-          ['name' => self::TC_DATA_WIDTH, 'method' => 'getWidth', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_HEIGHT, 'method' => 'getHeight', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_FOCALLENGTH, 'method' => 'getFocalLength', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_CHANNELS, 'method' => 'getChannels', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_COLORDEPTH, 'method' => 'getColorDepth', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_CAMERAMODEL, 'method' => 'getCameraModel', 'type' => 'string', 'analyzable' => false],
-          ['name' => self::TC_DATA_FLASHFIRED, 'method' => 'getFlashFired', 'type' => 'boolean', 'analyzable' => false],
-          ['name' => self::TC_DATA_APERTURE, 'method' => 'getAperture', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_SHUTTERSPEED, 'method' => 'getShutterSpeed', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_HYPERFOCALDISTANCE, 'method' => 'getHyperfocalDistance', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_ISO, 'method' => 'getISO', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_LIGHTVALUE, 'method' => 'getLightValue', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_COLORSPACE, 'method' => 'getColorSpace', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_DURATION, 'method' => 'getDuration', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_FRAMERATE, 'method' => 'getFrameRate', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_AUDIOSAMPLERATE, 'method' => 'getAudioSampleRate', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_VIDEOCODEC, 'method' => 'getVideoCodec', 'type' => 'string', 'analyzable' => false],
-          ['name' => self::TC_DATA_AUDIOCODEC, 'method' => 'getAudioCodec', 'type' => 'string', 'analyzable' => false],
-          ['name' => self::TC_DATA_ORIENTATION, 'method' => 'getOrientation', 'type' => 'integer', 'analyzable' => false],
-          ['name' => self::TC_DATA_LONGITUDE, 'method' => 'getLongitude', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_LONGITUDE_REF, 'method' => 'getLongitudeRef'],
-          ['name' => self::TC_DATA_LATITUDE, 'method' => 'getLatitude', 'type' => 'float', 'analyzable' => false],
-          ['name' => self::TC_DATA_LATITUDE_REF, 'method' => 'getLatitudeRef'],
-          ['name' => self::TC_DATA_MIMETYPE, 'type' => 'string', 'analyzable' => false],
-          ['name' => self::TC_DATA_FILESIZE, 'type' => 'long', 'analyzable' => false],
-        ];
 
-        return $datas;
+        return self::$technicalFieldsList;
     }
 }

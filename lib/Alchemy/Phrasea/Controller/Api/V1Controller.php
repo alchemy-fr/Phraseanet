@@ -2689,8 +2689,8 @@ class V1Controller extends Controller
     {
         $ret = [
           "meta_fields" => $this->listUserAuthorizedMetadataFields($this->getAuthenticatedUser()),
-          "aggregable_fields" => $this->listUserAggregableFields(),
-          "technical_fields" => media_subdef::getTechnicalFieldsList(),
+          "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields()),
+          "technical_fields" => $this->buildUserFieldList(media_subdef::getTechnicalFieldsList()),
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -2751,18 +2751,21 @@ class V1Controller extends Controller
     }
 
     /**
-     * Build the aggregable fields array
+     * Build the aggregable/technical fields array
+     * @param array $fields
      * @return array
      */
-    private function listUserAggregableFields()
+    private function buildUserFieldList(array $fields)
     {
         $ret = [];
-        $aggregFields = ElasticsearchOptions::getAggregableTechnicalFields();
-        foreach ($aggregFields as $key => $field) {
+
+        foreach ($fields as $key => $field) {
             $data['name'] = $key;
+
             foreach ($field as $k => $i) {
                 $data[$k] = $i;
             }
+
             $ret[] = $data;
         }
 

@@ -14,12 +14,14 @@ class MetadataHelper
 
     public static function createTags()
     {
-        self::$tag_descriptors = media_subdef::getTechnicalFieldsList();
+        if (empty(self::$tag_descriptors)) {
+            self::$tag_descriptors = media_subdef::getTechnicalFieldsList();
+        }
 
         $tags = [];
-        foreach (self::$tag_descriptors as $descriptor) {
-            if (array_key_exists('type', $descriptor) && array_key_exists('analyzable', $descriptor) && array_key_exists('name', $descriptor)) {
-                $tags[] = new Tag($descriptor['name'], $descriptor['type'], $descriptor['analyzable']);
+        foreach (self::$tag_descriptors as $key => $descriptor) {
+            if (array_key_exists('type', $descriptor) && array_key_exists('analyzable', $descriptor)) {
+                $tags[] = new Tag($key, $descriptor['type'], $descriptor['analyzable']);
             }
         }
 
