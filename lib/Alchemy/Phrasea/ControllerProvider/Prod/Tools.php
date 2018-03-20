@@ -72,6 +72,7 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/metadata/save/', 'controller.prod.tools:saveMetasAction')
             ->bind('prod_tools_metadata_save');
 
+        $controllers->get('/videoEditor', 'controller.prod.tools:videoEditorAction');
 
         return $controllers;
     }

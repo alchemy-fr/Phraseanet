@@ -40,25 +40,11 @@ class ToolsController extends Controller
         $metadatas = false;
         $record = null;
         $recordAccessibleSubdefs = array();
-        $JSFields = [];
 
         if (count($records) == 1) {
             /** @var \record_adapter $record */
             $record = $records->first();
             $databox = $record->getDatabox();
-
-
-            foreach ($databox->get_meta_structure() as $meta) {
-                /** @var \databox_field $meta */
-                $fields[] = $meta;
-
-                /** @Ignore */
-                $JSFields[$meta->get_id()] = [
-                    'id'     => $meta->get_id(),
-                    'name'   => $meta->get_name(),
-                    '_value' => $record->getCaption([$meta->get_name()]),
-                ];
-            }
 
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
@@ -105,10 +91,8 @@ class ToolsController extends Controller
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'           => $records,
             'record'            => $record,
-            'videoEditorConfig' => $conf->get(['video-editor']),
             'recordSubdefs'     => $recordAccessibleSubdefs,
             'metadatas'         => $metadatas,
-            'JSonFields'        => json_encode($JSFields),
         ]);
     }
 
@@ -467,5 +451,46 @@ class ToolsController extends Controller
         }
 
         return $this->app->json(['success' => true, 'errorMessage' => '']);
+    }
+
+    public function videoEditorAction(Request $request)
+    {
+        $records = RecordsRequest::fromRequest($this->app, $request, false);
+
+        $metadatas = false;
+        $record = null;
+        $JSFields = [];
+
+        if (count($records) == 1) {
+            /** @var \record_adapter $record */
+            $record = $records->first();
+            $databox = $record->getDatabox();
+
+
+            foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
+                $fields[] = $meta;
+
+                /** @Ignore */
+                $JSFields[$meta->get_id()] = [
+                    'id'     => $meta->get_id(),
+                    'name'   => $meta->get_name(),
+                    '_value' => $record->getCaption([$meta->get_name()]),
+                ];
+            }
+
+            if (!$record->isStory()) {
+                $metadatas = true;
+            }
+        }
+        $conf = $this->getConf();
+
+        return $this->render('prod/actions/Tools/videoEditor.html.twig', [
+            'records'           => $records,
+            'record'            => $record,
+            'videoEditorConfig' => $conf->get(['video-editor']),
+            'metadatas'         => $metadatas,
+            'JSonFields'        => json_encode($JSFields),
+        ]);
     }
 }
