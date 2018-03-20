@@ -97,6 +97,36 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $this->evaluateGoodUserItem($content['response']['user'], self::$DI['user_notAdmin']);
     }
 
+    public function testRouteMeStructure()
+    {
+        $this->setToken($this->userAccessToken);
+
+        $route = '/api/v1/me/structure/';
+
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('meta_fields', $content['response']);
+        $this->assertArrayHasKey('aggregable_fields', $content['response']);
+        $this->assertArrayHasKey('technical_fields', $content['response']);
+    }
+
+    public function testRouteMeSubdefs()
+    {
+        $this->setToken($this->userAccessToken);
+
+        $route = '/api/v1/me/subdefs/';
+
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
+        $this->assertArrayHasKey('subdefs', $content['response']);
+    }
+
     protected function evaluateGoodUserItem($data, User $user)
     {
         foreach ([
