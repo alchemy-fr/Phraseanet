@@ -364,7 +364,8 @@
             alertTitle: '{{ "alert" | trans }}',
             noImgSelected: '{{ "no image selected" | trans }}',
             processing: '{{ "processing" | trans }}',
-            thumbnailTitle: '{{ 'thumbnail validation' | trans }}'
+            thumbnailTitle: '{{ 'thumbnail validation' | trans }}',
+            updateTitle: '{{ 'Successful update' | trans }}'
         },
         T_fields: {{ JSonFields|raw }},
         videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
