@@ -15,11 +15,15 @@ var bodySize = {
     y: 0
 };
 
-var filterFacet = false;
-
 var facets = null;
 
 var lastFilterResults = [];
+
+var ORDER_BY_BCT = "ORDER_BY_BCT";
+var ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
+var ORDER_BY_HITS = "ORDER_BY_HITS";
+
+
 
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
@@ -607,10 +611,27 @@ var selectedFacetValues = [];
 var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 
 function loadFacets(facets) {
+
+    //get properties of facets
+    var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
+    var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
+    var facetValueOrder = $('#look_box_settings select[name=facetValuesOrder]').val();
+
+    function sortIteration(i) {
+        switch(facetValueOrder) {
+            case ORDER_ALPHA_ASC:
+                return i.value.toString().toLowerCase();
+                break;
+            case ORDER_BY_HITS:
+                return i.count*-1;
+                break;
+        }
+    }
+
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
-        var values = _.map(facet.values, function(value) {
+        var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
             return {
                 title: value.value + ' (' + value.count + ')',
                 query: value.query,
@@ -630,9 +651,13 @@ function loadFacets(facets) {
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
+    if(facetOrder == ORDER_BY_BCT) {
+        treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
+    }
 
-    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    if(filterFacet == true) {
+        treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    }
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
@@ -2967,7 +2992,16 @@ function autoorder() {
 
 function setFacet(boolean) {
     setPref("facet", boolean);
-    filterFacet = boolean;
+    loadFacets(facets);
+}
+
+function setFacetOrder(order) {
+    setPref("order_facet", order);
+    loadFacets(facets);
+}
+
+function setFacetValueOrder(valueOrder) {
+    setPref("facet_values_order", valueOrder);
     loadFacets(facets);
 }
 
