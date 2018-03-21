@@ -74,7 +74,7 @@ jobs:
             wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/tar/elasticsearch/2.4.3/elasticsearch-2.4.3.tar.gz
             tar -xvf elasticsearch-2.4.3.tar.gz
             sudo ./elasticsearch-2.4.3/bin/plugin install analysis-icu
-            ./elasticsearch-2.4.3/bin/elasticsearch -d
+            ./elasticsearch-2.4.3/bin/elasticsearch -d --host 127.0.0.1
             sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
       - run:
           name: mysql -h 127.0.0.1 -u root -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
