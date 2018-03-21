@@ -24,17 +24,17 @@ jobs:
             - ~/.composer
 
       - run:
-          name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib1g-dev
+          name: sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib1g-dev libssh-dev librabbitmq-dev
           command: |
-            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib1g-dev
+            sudo apt-get install automake libtool libicu-dev libzmq-dev mysql-client mysql-server zlib1g-dev libssh-dev librabbitmq-dev
       - run:
           name: sudo docker-php-ext-configure intl
           command: |
             sudo docker-php-ext-configure intl
       - run:
-          name: sudo docker-php-ext-install intl bcmath pdo_mysql zip
+          name: sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets && pecl install amqp
           command: |
-            sudo docker-php-ext-install intl bcmath pdo_mysql zip
+            sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets && pecl install amqp
       - run:
           name: git clone https://github.com/alanxz/rabbitmq-c
           command: |
@@ -53,9 +53,9 @@ jobs:
             set +o pipefail
             yes '' | sudo pecl install zmq-beta
       - run:
-          name: sudo docker-php-ext-enable zmq
+          name: sudo docker-php-ext-enable zmq amqp
           command: |
-            sudo docker-php-ext-enable zmq
+            sudo docker-php-ext-enable zmq amqp
       - run:
           name: npm rebuild node-sass
           command: |
