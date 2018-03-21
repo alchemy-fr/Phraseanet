@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -215,6 +217,7 @@ class Records implements ControllerProviderInterface
 
         $deleted = array();
 
+        /** @var \record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -230,9 +233,14 @@ class Records implements ControllerProviderInterface
                     $app['EM']->remove($attachedStory);
                 }
 
+                foreach($record->get_grouping_parents() as $story) {
+                    $app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+                }
+
                 $deleted[] = $record->get_serialize_key();
                 $record->delete();
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
 
             }
         }
