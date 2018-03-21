@@ -32,9 +32,9 @@ jobs:
           command: |
             sudo docker-php-ext-configure intl
       - run:
-          name: sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets && pecl install amqp
+          name: sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets
           command: |
-            sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets && pecl install amqp
+            sudo docker-php-ext-install intl bcmath pdo_mysql zip sockets
       - run:
           name: git clone https://github.com/alanxz/rabbitmq-c
           command: |
@@ -52,6 +52,11 @@ jobs:
           command: |
             set +o pipefail
             yes '' | sudo pecl install zmq-beta
+      - run:
+          name: yes '' | sudo pecl install amqp
+          command: |
+            set +o pipefail
+            yes '' | sudo pecl install amqp
       - run:
           name: sudo docker-php-ext-enable zmq amqp
           command: |
