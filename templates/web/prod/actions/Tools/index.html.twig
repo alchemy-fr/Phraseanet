@@ -29,22 +29,6 @@
                         {{ "regeneration of sub-definitions" | trans }}
                     </a>
                 </li>
-                {% if selectionLength == 1%}
-                    {% for record in records %}
-                        {% if record.get_type() == 'video' %}
-                            <li>
-                                <a href="#thumbExtractor">
-                                    {{ "video tool" | trans }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#rangeExtractor">
-                                    {{ "video range extractor" | trans }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
                 <li>
                     <a href="#image">
                         {{ "image tool" | trans }}
@@ -358,17 +342,12 @@
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
         databaseId: {% if selectionLength == 1%}{{record.get_base_id}}{% else %}0{% endif %},
-        databoxId: {% if selectionLength == 1 %}{{ record.get_sbas_id() }}{% else %}0{% endif %},
-        recordId: {% if selectionLength == 1%}{{record.get_record_id}}{% else %}0{% endif %},
         translations: {
             alertTitle: '{{ "alert" | trans }}',
             noImgSelected: '{{ "no image selected" | trans }}',
             processing: '{{ "processing" | trans }}',
             thumbnailTitle: '{{ 'thumbnail validation' | trans }}',
-            updateTitle: '{{ 'Successful update' | trans }}'
         },
-        T_fields: {{ JSonFields|raw }},
-        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
         records: [
 
             {% for record in records %}

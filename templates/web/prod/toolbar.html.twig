@@ -68,6 +68,10 @@
         {{ 'action : editer' | trans }}
         {% endset %}
         {% set actions = actions|merge( { 'edit' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+        {% set label %}
+            {{ 'prod::toolbar : video editor' | trans }}
+        {% endset %}
+        {% set actions = actions|merge( { 'video' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_videoeditor_btn', 'label' : label} }) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::CHGSTATUS')) %}
         {% set label %}
