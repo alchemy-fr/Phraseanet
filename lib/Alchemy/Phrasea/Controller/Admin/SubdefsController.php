@@ -227,7 +227,7 @@ class SubdefsController extends Controller
                     "JPG" => null,
                     "160px JPG" => array(
                         Image::OPTION_SIZE       => "160",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -236,7 +236,7 @@ class SubdefsController extends Controller
                     ),
                     "320 px JPG (thumbnail Phraseanet)" => array(
                         Image::OPTION_SIZE       => "320",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -245,7 +245,7 @@ class SubdefsController extends Controller
                     ),
                     "640px JPG" => array(
                         Image::OPTION_SIZE       => "640",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -254,7 +254,7 @@ class SubdefsController extends Controller
                     ),
                     "1280px JPG (preview Phraseanet)" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -263,7 +263,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px JPG" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -273,7 +273,7 @@ class SubdefsController extends Controller
                     "PNG" => null,
                     "160px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "160",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -282,7 +282,7 @@ class SubdefsController extends Controller
                     ),
                     "320px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "320",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -291,7 +291,7 @@ class SubdefsController extends Controller
                     ),
                     "640px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "640",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -300,7 +300,7 @@ class SubdefsController extends Controller
                     ),
                     "1280px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -309,7 +309,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -319,7 +319,7 @@ class SubdefsController extends Controller
                     "TIFF" => null,
                     "1280 TIFF" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -328,7 +328,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px TIFF" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
