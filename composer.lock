@@ -313,16 +313,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.5",
+            "version": "0.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630"
+                "reference": "1c5c1b20832237ff605a625cc90940c3a75a58c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/ee7d1279a024130fc82fde9eabad86a667ed3630",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/1c5c1b20832237ff605a625cc90940c3a75a58c8",
+                "reference": "1c5c1b20832237ff605a625cc90940c3a75a58c8",
                 "shasum": ""
             },
             "require": {
@@ -372,7 +372,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2016-05-02T15:08:36+00:00"
+            "time": "2018-02-20T17:48:47+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -653,7 +653,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2016-11-30T13:34:30+00:00"
+            "time": "2016-11-30 13:34:30"
         },
         {
             "name": "alchemy/zippy",
@@ -1215,7 +1215,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-29T11:16:17+00:00"
+            "time": "2016-10-29 11:16:17"
         },
         {
             "name": "doctrine/collections",
@@ -3114,7 +3114,7 @@
             "support": {
                 "source": "https://github.com/alchemy-fr/Imagine/tree/alchemy-0.6.2"
             },
-            "time": "2015-01-13T18:12:26+00:00"
+            "time": "2015-01-13 18:12:26"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -3489,7 +3489,7 @@
             "support": {
                 "source": "https://github.com/alchemy-fr/JMSTranslationBundle/tree/rebase-2015-10-20"
             },
-            "time": "2015-11-04T15:09:44+00:00"
+            "time": "2015-11-04 15:09:44"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3746,7 +3746,7 @@
                 "league",
                 "rest"
             ],
-            "time": "2016-12-02T14:55:48+00:00"
+            "time": "2016-12-02 14:55:48"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
@@ -3977,7 +3977,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "2014-02-13T20:27:33+00:00"
+            "time": "2014-02-13 20:27:33"
         },
         {
             "name": "neutron/recaptcha",
