@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-03-21T13:52:55Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2018-03-22T10:51:51Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8888,6 +8888,11 @@
         <target state="translated">nieuwe gebruiker</target>
         <jms:reference-file line="24">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
+        <source>admin::userlist: filterguestuser</source>
+        <target state="new">admin::userlist: filterguestuser</target>
+        <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
         <source>admin::utilisateurs: bases de donnees</source>
         <target state="translated">datables</target>
@@ -8915,11 +8920,6 @@
         <target state="translated">geconnecteerde gebruikers</target>
         <jms:reference-file line="35">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="44">web/admin/connected-users.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="9b3bae2140c35e24a13cfe3a64a0646fa98ee8be" resname="admin:user:filterguestuser">
-        <source>admin:user:filterguestuser</source>
-        <target state="new">admin:user:filterguestuser</target>
-        <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert">
         <source>alert</source>
