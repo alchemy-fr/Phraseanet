@@ -38,7 +38,7 @@
     "dev": "./node_modules/.bin/gulp sync;",
     "build": "./node_modules/.bin/gulp build;",
     "postinstall": "./node_modules/.bin/gulp install;",
-    "phraseanet-production-client": "npm uninstall phraseanet-production-client && npm install phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
+    "phraseanet-production-client": "yarn remove phraseanet-production-client && yarn add phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
   },
   "dependencies": {
     "JSON2": "^0.1.0",
