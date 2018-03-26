@@ -2689,7 +2689,7 @@ class V1Controller extends Controller
     {
         $ret = [
           "meta_fields" => $this->listUserAuthorizedMetadataFields($this->getAuthenticatedUser()),
-          "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields()),
+          "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields(), ['choices']),
           "technical_fields" => $this->buildUserFieldList(media_subdef::getTechnicalFieldsList()),
         ];
 
@@ -2753,9 +2753,10 @@ class V1Controller extends Controller
     /**
      * Build the aggregable/technical fields array
      * @param array $fields
+     * @param array $excludes
      * @return array
      */
-    private function buildUserFieldList(array $fields)
+    private function buildUserFieldList(array $fields, array $excludes = [])
     {
         $ret = [];
 
@@ -2763,6 +2764,10 @@ class V1Controller extends Controller
             $data['name'] = $key;
 
             foreach ($field as $k => $i) {
+                if (in_array($k, $excludes)) {
+                    continue;
+                }
+
                 $data[$k] = $i;
             }
 
@@ -2790,6 +2795,7 @@ class V1Controller extends Controller
                     $opt = [];
                     $data = [
                       'name'             => $sub->get_name(),
+                      'databox_id'       => $databoxId,
                       'class'            => $sub->get_class(),
                       'preset'           => $sub->get_preset(),
                       'downloadable'     => $sub->isDownloadable(),
@@ -2806,7 +2812,7 @@ class V1Controller extends Controller
                         $opt[$option->getName()] = $option->getValue();
                     }
                     $data['options'] = $opt;
-                    $ret[$databoxId][$subGroup->getName()][$sub->get_name()] = $data;
+                    $ret[$subGroup->getName()][$sub->get_name()] = $data;
                 }
             }
         }
