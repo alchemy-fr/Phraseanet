@@ -34,7 +34,7 @@
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
                 <span class="checkbox">
-                    {{ 'Show special users' | trans }}
+                    {{ 'admin::userlist: filterguestuser' | trans }}
                     <input type="checkbox"  name="show_special_users" {% if parm['show_special_users'] %} checked="checked" {% endif %} style="margin-left:10px" />
                 </span>
                 <br/>
