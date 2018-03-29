@@ -68,8 +68,25 @@ class TokenRepository extends EntityRepository
                 WHERE t.expiration < :date';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([':date' => new \DateTime()]);
+        $query->setParameters([':date' => new \DateTime('-1 month')]);
 
         return $query->getResult();
+    }
+
+    /**
+     * @param string $value
+     * @return Token[]
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findExpiredToken($value)
+    {
+        $dql = 'SELECT t FROM Phraseanet:Token t
+                WHERE t.expiration < :date AND t.value = :value';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setMaxResults(1);
+        $query->setParameters([':date' => new \DateTime(), ':value' => $value]);
+
+        return $query->getOneOrNullResult();
     }
 }

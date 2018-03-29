@@ -40,6 +40,16 @@
                     </div>
                 </div>
                 {% endif %}
+                {% if expired_usr_id is not null %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ 'Your token is expired, please follow the following link to renew it' | trans }}<br/>
+                            <a href="{{ path('login_send_mail', { 'usr_id' : expired_usr_id }) }}" target ="_self">
+                                {{ 'login:: Envoyer a nouveau le mail de confirmation' | trans }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
 
                 <form
                     novalidate
