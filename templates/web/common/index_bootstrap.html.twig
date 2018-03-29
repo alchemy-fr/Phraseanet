@@ -29,8 +29,9 @@
         <script type="text/javascript"
                 src="/assets/vendors/underscore/underscore{% if not app.debug %}.min{% endif %}.js"></script>
         {% block rss %}{% endblock %}
-        {% block javascript %}{% endblock %}
-        <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
+        {% block javascript %}
+            <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
+        {% endblock %}
     </head>
     <body class="PNB">
         <div id="mainContainer" class="PNB">

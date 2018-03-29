@@ -1,25 +1,10 @@
 <div id="thumb_confirm">
-<table>
-  <tbody>
-    <tr>
-      <td>
-        <img class="selected" src="{{image}}"/>
-      </td>
-      <td>
-        <img style=" width:50px;height:80px;"src="/assets/prod/images/ThumbExtractor/question_mark.png"/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style='text-align:left'>
-        {{ 'you are about to change the  representation thumbnail of your video' | trans }} : <span style='color:#1B9DD0'>{{video_title}}</span>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style='text-align:left'>
-        {{ 'do you want to validate' | trans }}
-      </td>
-    </tr>
-  </tbody>
-</table>
-
+  <img class="selected" src="{{ image }}"/>
+  <div>
+      {{ 'you are about to change the  representation thumbnail of your video' | trans }} : <span
+            style='color:#884c92'>{{ video_title }}</span>
+  </div>
+  <div>
+      {{ 'do you want to validate' | trans }}
+  </div>
 </div>
