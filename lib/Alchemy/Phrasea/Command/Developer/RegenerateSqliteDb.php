@@ -45,7 +45,6 @@ use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\ToolsException;
 use Gedmo\Timestampable\TimestampableListener;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -82,7 +81,6 @@ class RegenerateSqliteDb extends Command
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
-
 
         $fixtures = [];
 
@@ -180,6 +178,7 @@ class RegenerateSqliteDb extends Command
         $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
 
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
+
         return 0;
     }
 
