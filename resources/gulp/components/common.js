@@ -41,7 +41,9 @@ gulp.task('build-common-js', function(){
         config.paths.src + 'vendors/jquery-contextmenu/js/jquery.contextmenu_custom.js',
         config.paths.src + 'common/js/components/common.js',
         config.paths.src + 'common/js/components/tooltip.js',
-        config.paths.src + 'common/js/components/dialog.js'
+        config.paths.src + 'common/js/components/dialog.js',
+        config.paths.src + 'common/js/components/utils.js',
+        config.paths.src + 'common/js/components/download.js',
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });
