@@ -337,6 +337,12 @@ class LoginController extends Controller
             return $this->app->redirectPath('homepage');
         }
 
+        if (null !== $token = $this->getTokenRepository()->findExpiredToken($code)) {
+            $this->app->addFlash('error', $this->app->trans("Expired unlock token."));
+
+            return $this->app->redirectPath('homepage', ['code' => $code]);
+        }
+
         if (null === $token = $this->getTokenRepository()->findValidToken($code)) {
             $this->app->addFlash('error', $this->app->trans('Invalid unlock link.'));
 
@@ -503,6 +509,9 @@ class LoginController extends Controller
             $this->app->addFlash('error', $this->app->trans('login::erreur: No available connection - Please contact sys-admin'));
         }
 
+        $code = $request->query->get('code');
+        $token = $this->getTokenRepository()->findExpiredToken($code);
+
         $feeds = $this->getFeedRepository()->findBy(['public' => true], ['updatedOn' => 'DESC']);
 
         $form = $this->app->form(new PhraseaAuthenticationForm($this->app));
@@ -513,8 +522,9 @@ class LoginController extends Controller
         return $this->render('login/index.html.twig', array_merge(
             $this->getDefaultTemplateVariables($request),
             [
-                'feeds' => $feeds,
-                'form'  => $form->createView(),
+                'feeds'           => $feeds,
+                'form'            => $form->createView(),
+                'expired_usr_id'  => $token ? $token->getUser()->getId() : null
             ]));
     }
 

@@ -794,7 +794,7 @@ class RegenerateSqliteDb extends Command
         $token->setUser($user);
         $token->setType(TokenManipulator::TYPE_RSS);
         $token->setData('some data');
-        $token->setExpiration(new \DateTime('-1 day'));
+        $token->setExpiration(new \DateTime('-1 month'));
         $DI['token_invalid'] = $token;
         $em->persist($token);
     }
