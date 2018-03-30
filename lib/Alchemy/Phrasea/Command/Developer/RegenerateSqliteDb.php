@@ -63,36 +63,31 @@ class RegenerateSqliteDb extends Command
     public function doExecute(InputInterface $input, OutputInterface $output)
     {
         $fs = new Filesystem();
-        echo 'test\n';
+
         $json = sprintf('%s/fixtures.json', sys_get_temp_dir());
-        echo 'test\n';
+
         if ($fs->exists($json)) {
             $fs->remove($json);
         }
-        echo 'test\n';
+
         $this->container['orm.em'] = $this->container->extend('orm.em', function($em, $app) {
             return $app['orm.ems'][$app['db.fixture.hash.key']];
         });
-        echo 'test\n';
+
         $em = $this->container['orm.em'];
-        echo 'test\n';
+
         if ($fs->exists($em->getConnection()->getParams()['path'])) {
             $fs->remove($em->getConnection()->getParams()['path']);
         }
-        echo 'test\n';
+
         $schemaTool = new SchemaTool($em);
-        echo 'test\n';
-        try {
-            $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
-        } catch (ToolsException $e) {
-            var_dump($e->getMessage());
-            die();
-        }
-        echo 'test\n';
+        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+
         $fixtures = [];
 
         $DI = new \Pimple();
-        echo 'test\n';
+
         $this->generateUsers($em, $DI);
         $this->insertOauthApps($DI);
         $this->insertOauthAccounts($DI);
@@ -113,9 +108,7 @@ class RegenerateSqliteDb extends Command
         $this->insertOneRegistration($DI, $em, $DI['user_alt2'], $DI['coll'], '-3 months', 'registration_2');
         $this->insertOneRegistration($DI, $em, $DI['user_notAdmin'], $DI['coll'], 'now', 'registration_3');
         $this->insertTwoTokens($em, $DI);
-        echo 'test\n';
         $this->insertOneInvalidToken($em, $DI);
-        echo 'testout\n';
         $this->insertOneValidationToken($em, $DI);
         $this->insertWebhookEvent($em, $DI);
         $this->insertWebhookEventDelivery($em, $DI);
@@ -187,7 +180,6 @@ class RegenerateSqliteDb extends Command
         $fixtures['webhook']['event'] = $DI['event_webhook_1']->getId();
 
         $fs->dumpFile($json, json_encode($fixtures, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0));
-        echo 'test\n';
         return 0;
     }
 
