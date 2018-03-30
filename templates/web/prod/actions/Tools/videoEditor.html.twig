@@ -10,10 +10,10 @@
     {% endfor %}
 {% endif %}
 
-<div id='prod-tool-box' class="PNB10">
+<div id='prod-tool-box' class="PNB10 video-edit">
 
     {# jquery Tabs #}
-    <div id="tool-tabs" class="tabs">
+    <div id="tool-tabs" class="tabs PNB">
         {# jquery menu #}
         <div>
             <ul>
@@ -33,108 +33,113 @@
         {% if selectionLength == 1 %}
             {% for record in records %}
                 {% if record.get_type() == 'video' %}
-                    <div id="thumbExtractor" class="tabBox">
-                        <div class="PNB10 main_title">
-                            <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
-                            {{ "screenshot video" | trans }}
-                        </div>
-                        <hr style='margin-top:25px;'/>
-                        <div class="PNB part_title_left"></div>
+                    <div id="thumbExtractor">
 
-                        <div class="PNB frame_video">
-                            {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
-                            {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-                            {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
-                            {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+                        <div id="thumbExtractor-preview">
+                            <div class="frame_video">
+                                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
 
-                            {% set technical_info = record.get_technical_infos %}
-                            {% set width = technical_info[dataW].value %}
-                            {% set height = technical_info[dataH].value %}
+                                {% set technical_info = record.get_technical_infos %}
+                                {% set width = technical_info[dataW].value %}
+                                {% set height = technical_info[dataH].value %}
 
-                            {% if width and height %}
-                                {% set rawRatio =  (width / height)|number_format(3, '.') %}
-                                {% set rawRatioLength =  rawRatio|length %}
-                                {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
-                            {% else %}
-                                {% set ratio = '' %}
-                            {% endif %}
+                                {% if width and height %}
+                                    {% set rawRatio =  (width / height)|number_format(3, '.') %}
+                                    {% set rawRatioLength =  rawRatio|length %}
+                                    {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
+                                {% else %}
+                                    {% set ratio = '' %}
+                                {% endif %}
 
-                            <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
-                                {% for subdef in previewHtml5 %}
-                                    <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
-                                {% endfor %}
-                                {{ 'No preview available' | trans }}
-                            </video>
-                        </div>
-
-                        <div class="PNB action_bar_left">
-                        </div>
-
-                        <div id="thumb_camera_button" class="PNB">
-                            <img src="/assets/prod/images/ThumbExtractor/camera_button.png"
-                                 alt="{{ 'take a screenshot' | trans }}"/>
-                        </div>
-
-                        <div class="PNB part_title_right">
-                        </div>
-
-                        <div class="PNB frame_canva">
-                            <div id="thumb_delete_button">
-                                <img src="/assets/prod/images/ThumbExtractor/delete.png"/>
-                            </div>
-                            <p id='thumb_info'>{{ 'To take a screenshot click on camera' | trans }}</p>
-                            <canvas id="thumb_canvas"></canvas>
-                            <div id="alt_canvas_container"
-                                 style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
-                                {% for subdef in outputFormats %}
-                                    <canvas data-width="{{ subdef.get_width() }}" data-name="{{ subdef.get_name() }}"
-                                            class="alt_canvas" id="{{ subdef.get_name() }}"></canvas>
-                                {% endfor %}
+                                <video id="thumb_video" controls="" preload="auto" data-ratio="{{ ratio }}">
+                                    {% for subdef in previewHtml5 %}
+                                        <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                    {% endfor %}
+                                    {{ 'No preview available' | trans }}
+                                </video>
                             </div>
 
-                        </div>
-                        <div id="thumb_slider" class="PNB">
-                            <div id="thumb_wrapper">
+                            <div id="thumb_camera_button"></div>
+
+                            <div class="vertical-divider"></div>
+
+                            <div class="video-data-container">
+                                <dl class="dl-horizontal">
+                                    <dt>Ratio</dt>
+                                    <dd>{{ ratio }}</dd>
+                                    <dt>Type</dt>
+                                    <dd>{{ record.get_mime() }}</dd>
+                                    {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
+                                        <dt>{{ 'Images par secondes' | trans }}</dt>
+                                        <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }}ips
+                                        </dd>
+                                    {% endif %}
+                                    {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
+                                        <dt>{{ 'Codec Audio' | trans }}</dt>
+                                        <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
+                                    {% endif %}
+                                    <dt>{{ 'Size' | trans }}</dt>
+                                    <dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
+                                        (null) %}
+                                        {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
+                                        {% if width is not none and height is not none %}
+                                            {{ width ~ " x " ~ height }}
+                                        {% endif %}</dd>
+                                </dl>
                             </div>
-                        </div>
-                        <div class="thumb_submit_action PNB">
-                            <input type="hidden" value='{{ record.get_sbas_id() }}' name='sbas_id'>
-                            <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
-                            <button id="thumb_validate_button" class="btn btn-inverse"
-                                    type="button">{{ "validate" | trans }}</button>
 
                         </div>
+                        <div class="horizontal-divider"></div>
+                        <div id="thumbExtractor-screenshot">
+                            <p id='thumb_info'>{{ "screenshot video" | trans }}</p>
+
+                            <div id="frame">
+                                <div class="frame_canva">
+                                    <div id="thumb_delete_button"/>
+                                    <div id="thumb_download_button"/>
+                                    <canvas id="thumb_canvas"></canvas>
+                                    <div id="alt_canvas_container"
+                                         style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
+                                        {% for subdef in outputFormats %}
+                                            <canvas data-width="{{ subdef.get_width() }}"
+                                                    data-height="{{ subdef.get_height() }}"
+                                                    data-name="{{ subdef.get_name() }}"
+                                                    class="alt_canvas" id="{{ subdef.get_name() }}"></canvas>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="grid">
+                            </div>
+
+                            {#<div id="thumb_slider">#}
+                            {#<div id="thumb_wrapper">#}
+                            {#</div>#}
+                            {#</div>#}
+                            <div class="thumb_submit_action">
+                                <input type="hidden" value='{{ record.get_sbas_id() }}' name='sbas_id'>
+                                <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
+                                <button id="thumb_validate_button" class="btn btn-inverse"
+                                        type="button">{{ "validate" | trans }}</button>
+
+                            </div>
+
+                        </div>
+
                     </div>
                     <div id="rangeExtractor" class="">
-                        <div class="main_title">
-                            <img src='/assets/prod/images/ThumbExtractor/camera_title.png'/>
-                            {{ "video range extractor" | trans }}
+                        <div class="video-range-editor-side-container">
+                            <div class="main_title">
+                                {{ "prod:edit: chapters" | trans }}
+                            </div>
+                            <hr/>
                         </div>
                         <div class="video-range-editor-container"></div>
-                        <div class="video-data-container">
-                            <dl class="dl-horizontal">
-                                <dt>Ratio</dt>
-                                <dd>{{ ratio }}</dd>
-                                <dt>Type</dt>
-                                <dd>{{ record.get_mime() }}</dd>
-                                {% if record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] is defined %}
-                                    <dt>{{ 'Images par secondes' | trans }}</dt>
-                                    <dd>{{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }}ips
-                                    </dd>
-                                {% endif %}
-                                {% if record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] is defined %}
-                                    <dt>{{ 'Codec Audio' | trans }}</dt>
-                                    <dd>{{ record.exif[constant('media_subdef::TC_DATA_AUDIOCODEC')] }}</dd>
-                                {% endif %}
-                                <dt>{{ 'Size' | trans }}</dt>
-                                <dd>{% set width = record.exif[constant('media_subdef::TC_DATA_WIDTH')]|default
-                                    (null) %}
-                                    {% set height = record.exif[constant('media_subdef::TC_DATA_HEIGHT')]|default(null) %}
-                                    {% if width is not none and height is not none %}
-                                        {{ width ~ " x " ~ height }}
-                                    {% endif %}</dd>
-                            </dl>
-                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
