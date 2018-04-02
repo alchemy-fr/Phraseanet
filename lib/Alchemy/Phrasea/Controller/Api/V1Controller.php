@@ -2903,7 +2903,7 @@ class V1Controller extends Controller
                         'name'             => $sub->get_name(),
                         'class'            => $sub->get_class(),
                         'preset'           => $sub->get_preset(),
-                        'downloadable'     => $sub->isDownloadable(),
+                        'downloadable'     => $sub->is_downloadable(),
                         'devices'          => $sub->getDevices(),
                         'labels'           => [
                             'fr' => $sub->get_label('fr'),
