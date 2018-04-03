@@ -3452,10 +3452,14 @@ jquery-simplecolorpicker@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/jquery-simplecolorpicker/-/jquery-simplecolorpicker-0.3.1.tgz#4f6befd380ab05470f585d5482e5180556e460eb"
 
-"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git", "jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
+"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
+  version "1.4.2"
+  resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+
+"jquery-treeview@https://github.com/alchemy-fr/jquery-treeview.git":
   version "1.4.2"
   uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
-  resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+  resolved "https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
 
 jquery-ui-datepicker-with-i18n@^1.10.4:
   version "1.10.4"
