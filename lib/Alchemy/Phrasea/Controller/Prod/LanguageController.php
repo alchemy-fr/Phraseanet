@@ -141,12 +141,14 @@ class LanguageController
             'End Range'             => $translator->trans('End Range'),
             'Remove current Range'  => $translator->trans('Remove current Range'),
             'Go to start point'     => $translator->trans('Go to start point'),
-            'Go 1 frame backward'   => $translator->trans('Go 1 frame backward'),
-            'Go 1 frame forward'    => $translator->trans('Go 1 frame forward'),
-            'Go to end point'       => $translator->trans('Go to end point'),
-            'Move up range'         => $translator->trans('Move up range'),
-            'Move down range'       => $translator->trans('Move down range'),
-            'error video editor'    => $translator->trans('prod:edit: only a media of type video can be edited'),
+            'Go 1 frame backward' => $translator->trans('Go 1 frame backward'),
+            'Go 1 frame forward'  => $translator->trans('Go 1 frame forward'),
+            'Go to end point'     => $translator->trans('Go to end point'),
+            'Move up range'       => $translator->trans('Move up range'),
+            'Move down range'     => $translator->trans('Move down range'),
+            'error video editor'  => $translator->trans('prod:edit: only a media of type video can be edited'),
+            'Chapters'            => $translator->trans('prod:edit: chapters'),
+            'No hover to chapter' => $translator->trans('prod:edit: no hover to chapters')
         ]);
     }
 }
