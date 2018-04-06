@@ -13,7 +13,12 @@ gulp.task('copy-common-fonts',function(){
         .pipe(gulp.dest(config.paths.build + 'common/fonts'));
 });
 
-gulp.task('build-common-font-css', ['copy-common-fonts'],function(){
+gulp.task('copy-common-roboto-fonts', function () {
+    return gulp.src([config.paths.src + 'common/styles/fonts/**'])
+        .pipe(gulp.dest(config.paths.build + 'common/fonts'));
+});
+
+gulp.task('build-common-font-css', ['copy-common-fonts', 'copy-common-roboto-fonts'], function () {
     return gulp.src([config.paths.nodes + 'font-awesome/css/font-awesome.min.css'])
         .pipe(gulp.dest( config.paths.build + 'common/css'));
 });

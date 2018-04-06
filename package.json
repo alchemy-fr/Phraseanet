@@ -19,7 +19,7 @@
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
-    "jake": "latest",
+    "jake": "^8.0.16",
     "js-fixtures": "^1.5.3",
     "mocha": "^4.1.0",
     "path": "^0.12.7",
