@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * @group functional
@@ -95,11 +96,17 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         $data = serialize(['some' => 'data']);
         $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path'], self::$DI['app']['conf']);
         $token = $manipulator->createDownloadToken(self::$DI['user'], $data);
+        $parser = new Parser();
+        $config = $parser->parse(file_get_contents(__DIR__ . '/../../../../../../config/configuration.yml'));
+
+        $this->assertArrayHasKey('registry', $config);
+        $this->assertArrayHasKey('actions', $config['registry']);
+        $this->assertArrayHasKey('download-link-validity', $config['registry']['actions']);
+        $this->assertEquals(24, $config['registry']['actions']['download-link-validity']);
 
         $this->assertSame($data, $token->getData());
         $this->assertSame(self::$DI['user'], $token->getUser());
         $this->assertSame(TokenManipulator::TYPE_DOWNLOAD, $token->getType());
-        var_dump($token->getExpiration());
         $this->assertDateNear('+24 hours', $token->getExpiration());
     }
 
