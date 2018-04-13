@@ -148,7 +148,7 @@ class LanguageController
             'Move down range'     => $translator->trans('Move down range'),
             'error video editor'  => $translator->trans('prod:edit: only a media of type video can be edited'),
             'Chapters'            => $translator->trans('prod:edit: chapters'),
-            'No hover to chapter' => $translator->trans('prod:edit: no hover to chapters')
+            'No hover to chapter' => $translator->trans('prod:edit: no overlaps for chapters')
         ]);
     }
 }

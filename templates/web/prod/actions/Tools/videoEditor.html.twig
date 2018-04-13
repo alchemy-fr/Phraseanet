@@ -10,6 +10,8 @@
     {% endfor %}
 {% endif %}
 
+{% set overlapChapters = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'overlapChapters') %}
+
 <div id='prod-tool-box' class="PNB10 video-edit">
 
     {# jquery Tabs #}
@@ -204,7 +206,10 @@
                 {% endif %}
             }{% if not loop.last %},{% endif %}
             {% endfor %}
-        ]
+        ],
+        preferences: {
+            overlapChapters: {% if overlapChapters != NULL %}{{ overlapChapters }}{% else %}0{% endif %},
+        }
 
     };
 </script>
