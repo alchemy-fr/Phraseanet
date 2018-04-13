@@ -435,6 +435,12 @@
             {
                 id: {{ record.get_record_id }},
                 type: "{{ record.get_type() }}",
+                {% set position = record.getPositionFromTechnicalInfos %}
+                technicalInfo: {
+                    isCoordComplete: {{ position.isCoordComplete }},
+                    latitude: {{ position.latitude }},
+                    longitude: {{ position.longitude }}
+                },
                 {% if record.get_type() == 'video' %}
                 {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
                 {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
