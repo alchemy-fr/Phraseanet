@@ -25,13 +25,14 @@ class FieldMapping
     const TYPE_DATE    = 'date';
 
     // Number core types
-    const TYPE_FLOAT   = 'float';
-    const TYPE_DOUBLE  = 'double';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_LONG    = 'long';
-    const TYPE_SHORT   = 'short';
-    const TYPE_BYTE    = 'byte';
-    const TYPE_IP      = 'ip';
+    const TYPE_FLOAT     = 'float';
+    const TYPE_DOUBLE    = 'double';
+    const TYPE_INTEGER   = 'integer';
+    const TYPE_LONG      = 'long';
+    const TYPE_SHORT     = 'short';
+    const TYPE_BYTE      = 'byte';
+    const TYPE_IP        = 'ip';
+    const TYPE_GEO_POINT = 'geo_point';
 
     // Compound types
     const TYPE_OBJECT  = 'object';
@@ -47,6 +48,7 @@ class FieldMapping
         self::TYPE_SHORT,
         self::TYPE_BYTE,
         self::TYPE_IP,
+        self::TYPE_GEO_POINT,
         self::TYPE_OBJECT
     );
 

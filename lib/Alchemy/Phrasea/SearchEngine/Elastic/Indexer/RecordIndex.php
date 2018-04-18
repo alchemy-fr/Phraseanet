@@ -70,6 +70,8 @@ class RecordIndex implements MappingProvider
         $mapping->addIntegerField('height')->disableIndexing();
         $mapping->addLongField('size')->disableIndexing();
 
+        $mapping->addGeoPointField('location')->disableIndexing();
+
         $mapping->addDateField('created_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
         $mapping->addDateField('updated_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
 
