@@ -86,6 +86,7 @@ class RecordController extends Controller
             // get field's values
             $recordCaptions[$field->get_name()] = $field->get_serialized_values();
         }
+        $recordCaptions["technicalInfo"] = $record->getPositionFromTechnicalInfos();
 
         return $this->app->json([
             "desc"          => $this->render('prod/preview/caption.html.twig', [

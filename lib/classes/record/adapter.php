@@ -781,7 +781,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ];
         }
 
-        return ['isCoordComplete' => 0, 'latitude' => 0, 'longitude' => 0];
+        return ['isCoordComplete' => 0, 'latitude' => 'false', 'longitude' => 'false'];
     }
 
     /**
