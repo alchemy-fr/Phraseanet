@@ -61,8 +61,8 @@ class RecordIndex implements MappingProvider
         // Collection name (still indexed for facets)
         $mapping->addStringField('collection_name')->disableAnalysis();
 
-        $mapping->addStringField('uuid')->disableIndexing();
-        $mapping->addStringField('sha256')->disableIndexing();
+        $mapping->addStringField('uuid')->disableAnalysis();
+        $mapping->addStringField('sha256')->disableAnalysis();
         $mapping->addStringField('original_name')->disableIndexing();
         $mapping->addStringField('mime')->disableAnalysis();
         $mapping->addStringField('type')->disableAnalysis();

@@ -8,6 +8,8 @@ class NativeKey implements Key
 {
     const TYPE_DATABASE = 'database';
     const TYPE_COLLECTION = 'collection';
+    const TYPE_SHA256 = 'sha256';
+    const TYPE_UUID = 'uuid';
     const TYPE_MEDIA_TYPE = 'media_type';
     const TYPE_RECORD_IDENTIFIER = 'record_identifier';
 
@@ -22,6 +24,16 @@ class NativeKey implements Key
     public static function collection()
     {
         return new self(self::TYPE_COLLECTION, 'collection_name');
+    }
+
+    public static function sha256()
+    {
+        return new self(self::TYPE_SHA256, 'sha256');
+    }
+
+    public static function uuid()
+    {
+        return new self(self::TYPE_UUID, 'uuid');
     }
 
     public static function mediaType()
