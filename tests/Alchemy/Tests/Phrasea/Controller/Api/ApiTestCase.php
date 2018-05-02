@@ -101,7 +101,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        $route = '/api/v1/me/structure/';
+        $route = '/api/v1/me/structures/';
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
