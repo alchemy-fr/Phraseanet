@@ -100,7 +100,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRouteMeStructure()
     {
         $this->setToken($this->userAccessToken);
-        $route = '/api/v1/me/structure/';
+        $route = '/api/v1/me/structures/';
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());

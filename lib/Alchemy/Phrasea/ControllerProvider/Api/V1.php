@@ -263,7 +263,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->get('/me/', 'controller.api.v1:getCurrentUserAction');
         $controllers->delete('/me/', 'controller.api.v1:deleteCurrentUserAction');
-        $controllers->get('/me/structure/', 'controller.api.v1:getCurrentUserStructureAction');
+        $controllers->get('/me/structures/', 'controller.api.v1:getCurrentUserStructureAction');
         $controllers->get('/me/subdefs/', 'controller.api.v1:getCurrentUserSubdefsAction');
 
         $controllers->post('/me/request-collections/', 'controller.api.v1:createCollectionRequests');
