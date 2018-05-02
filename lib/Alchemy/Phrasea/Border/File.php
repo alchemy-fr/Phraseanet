@@ -102,6 +102,7 @@ class File
             'IPTC:UniqueDocumentID',
             'ExifIFD:ImageUniqueID',
             'Canon:ImageUniqueID',
+            'XMP-xmpMM:DocumentID',
         ];
 
         if (!$this->uuid) {
