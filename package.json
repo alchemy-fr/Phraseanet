@@ -35,10 +35,9 @@
     "node": ">=5.8"
   },
   "scripts": {
-    "show-gulp-version": "./node_modules/.bin/gulp -v;",
     "dev": "./node_modules/.bin/gulp sync;",
     "build": "./node_modules/.bin/gulp build;",
-    "postinstall": "./node_modules/.bin/gulp install;",
+    "postinstall": "./node_modules/.bin/gulp -v && ./node_modules/.bin/gulp install;",
     "phraseanet-production-client": "yarn remove phraseanet-production-client && yarn add phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
   },
   "dependencies": {
@@ -66,7 +65,7 @@
     "jquery.cookie": "^1.4.1",
     "jquery.fancytree": "^2.27.0",
     "normalize-css": "^2.1.0",
-    "npm": "^5.6.0",
+    "npm": "^6.14.0",
     "npm-modernizr": "^2.8.3",
     "phraseanet-production-client": "^0.33.0",
     "requirejs": "^2.1.22",
