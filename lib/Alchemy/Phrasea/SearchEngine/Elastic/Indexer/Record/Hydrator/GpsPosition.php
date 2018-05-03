@@ -81,6 +81,30 @@ class GpsPosition
             && $this->latitude_ref !== null;
     }
 
+    public function isCompleteComposite()
+    {
+        return $this->longitude !== null
+            && $this->latitude !== null;
+    }
+
+    public function getCompositeLongitude()
+    {
+        if ($this->longitude === null) {
+            return null;
+        }
+
+        return $this->longitude ;
+    }
+
+    public function getCompositeLatitude()
+    {
+        if ($this->latitude === null) {
+            return null;
+        }
+
+        return $this->latitude;
+    }
+
     public function getSignedLongitude()
     {
         if ($this->longitude === null) {
