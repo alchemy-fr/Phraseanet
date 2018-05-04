@@ -5010,7 +5010,7 @@
       </trans-unit>
       <trans-unit id="b7a45fd93ff9471252ff1535c56c82f2f2d93865" resname="Pour gérer l'envoi d'email automatique, connectez-vous à %link%" approved="yes">
         <source>Pour gérer l'envoi d'email automatique, connectez-vous à %link%</source>
-        <target state="translated">To manage automatic e-mail  notifications, please connect to% link%.</target>
+        <target state="translated">To manage automatic e-mail notifications, please connect to %link%.</target>
         <jms:reference-file line="134">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb6a1b19177957adc64d41ef7744e5f3f2f1d220" resname="Preference saved !" approved="yes">
