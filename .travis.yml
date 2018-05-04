@@ -41,6 +41,8 @@ before_install:
   - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.6.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.6.0.deb
   - sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-analysis-icu/2.6.0
   - sudo service elasticsearch start
+  - sudo apt-get install libzmq-dev
+  - yes '' | pecl install zmq-beta
   - echo 'session.cache_limiter = ""' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'extension="redis.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then echo 'extension="memcache.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;
