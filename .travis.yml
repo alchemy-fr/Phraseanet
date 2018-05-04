@@ -55,6 +55,7 @@ before_install:
   # test php 7
   - git clone https://github.com/alanxz/rabbitmq-c
   - cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+  - pwd
   - cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
   - yes '' | pecl install amqp-1.9.3
 
