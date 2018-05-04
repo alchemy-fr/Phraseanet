@@ -49,9 +49,15 @@ before_install:
   - echo 'extension="memcached.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   # - echo "extension=zmq.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - yes | pecl install imagick-beta
-  - sudo apt-get install librabbitmq-dev
-  # - pecl install amqp-1.4.0
+  # ok php 5
+  #- sudo apt-get install librabbitmq-dev
+  #- pecl install amqp-1.4.0
+  # test php 7
+  - git clone https://github.com/alanxz/rabbitmq-c
+  - cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
+  - cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
   - yes '' | pecl install amqp-1.9.3
+
 install:
   - if [[ $TRAVIS_PHP_VERSION = 5.* ]];then travis_retry composer install --no-progress --no-interaction --optimize-autoloader; fi;
   - if [[ $TRAVIS_PHP_VERSION = 7.* ]];then travis_retry composer update --no-progress --no-interaction --optimize-autoloader; fi;
