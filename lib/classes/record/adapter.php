@@ -758,26 +758,24 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getPositionFromTechnicalInfos()
     {
         $positionTechnicalField = [
-            media_subdef::TC_DATA_LATITUDE_REF,
             media_subdef::TC_DATA_LATITUDE,
-            media_subdef::TC_DATA_LONGITUDE_REF,
             media_subdef::TC_DATA_LONGITUDE
         ];
-        $position = new GpsPosition();
+        $position = [];
 
         foreach($positionTechnicalField as $field){
             $fieldData = $this->get_technical_infos($field);
 
             if($fieldData){
-                $position->set($field, $fieldData->getValue());
+                $position[$field] = $fieldData->getValue();
             }
         }
 
-        if($position->isComplete()){
+        if(count($position) == 2){
             return [
                 'isCoordComplete' => 1,
-                'latitude' => $position->getSignedLatitude(),
-                'longitude' => $position->getSignedLongitude()
+                'latitude' => $position[media_subdef::TC_DATA_LATITUDE],
+                'longitude' => $position[media_subdef::TC_DATA_LONGITUDE]
             ];
         }
 

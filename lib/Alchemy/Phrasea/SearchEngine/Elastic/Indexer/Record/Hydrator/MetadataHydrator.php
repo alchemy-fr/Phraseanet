@@ -155,9 +155,9 @@ SQL;
         // Push this tag into object
         $position->set($tag_name, $value);
         // Try to output complete position
-        if ($position->isComplete()) {
-            $lon = $position->getSignedLongitude();
-            $lat = $position->getSignedLatitude();
+        if ($position->isCompleteComposite()) {
+            $lon = $position->getCompositeLongitude();
+            $lat = $position->getCompositeLatitude();
 
             $records[$id]['metadata_tags']['Longitude'] = $lon;
             $records[$id]['metadata_tags']['Latitude'] = $lat;
