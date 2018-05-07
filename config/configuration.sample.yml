@@ -102,6 +102,7 @@ border-manager:
             enabled: false
             options:
                 colorspaces: [cmyk, grayscale, rgb]
+                media_types: [Image]
         -
             type: Checker\Dimension
             enabled: false
