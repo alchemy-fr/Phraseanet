@@ -94,7 +94,7 @@
             <div class="edit_field edit-field-action" id="EditFieldBox_{{i}}"
                  data-id="{{i}}"
                  data-name="{{field.get_name()}}">
-                <i id="editSGtri_{{ i }}" style="visibility:hidden;" class="fa fa-caret-right" aria-hidden="true"></i>
+                {#<i id="editSGtri_{{ i }}" style="visibility:hidden;" class="fa fa-caret-right" aria-hidden="true"></i>#}
                 <span class="fa-stack fieldTips"
                       tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
                   <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
@@ -178,6 +178,9 @@
                             <input type='button' value='&#9658;' class='btn btn-inverse field-navigate-action'
                                    data-direction="forward"/>
                         </td>
+                        </tr>
+                        <tr>
+                            <td id="idFieldSuggestedValues" colspan="3" style="visibility:hidden;"></td>
                         </tr>
                     </table>
                 </div>
