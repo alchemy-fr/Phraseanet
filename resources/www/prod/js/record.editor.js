@@ -199,6 +199,82 @@ function editField(evt, meta_struct_id) {
 
         var vocabType = p4.edit.T_fields[meta_struct_id].vocabularyControl;
 
+        for (f in p4.edit.T_fields)	// tous les champs de la base
+            p4.edit.T_fields[f]._sgval = [];
+        var t_lsgval = {};
+        var t_selcol = {};		// les bases (coll) dont au - une thumb est selectionnee
+        var ncolsel = 0;
+        var nrecsel = 0;
+        for (i in p4.edit.T_records) {
+            if (!p4.edit.T_records[i]._selected)
+                continue;
+            nrecsel++;
+
+            var bid = "b" + p4.edit.T_records[i].bid;
+            if (t_selcol[bid])
+                continue;
+
+            t_selcol[bid] = 1;
+            ncolsel++;
+            for (f in p4.edit.T_sgval[bid]) {
+                if (!t_lsgval[f])
+                    t_lsgval[f] = {};
+                for (ivs in p4.edit.T_sgval[bid][f]) {
+                    vs = p4.edit.T_sgval[bid][f][ivs];
+                    if (!t_lsgval[f][vs])
+                        t_lsgval[f][vs] = 0;
+                    t_lsgval[f][vs]++;
+                }
+            }
+        }
+
+        var suggestedValuesCollection = t_lsgval;
+
+        if(!$.isEmptyObject(suggestedValuesCollection[meta_struct_id])) {
+            var selectElement = $('<select><option selected disabled>Suggested values</option> </select>');
+            var selectIdValue = "idSelectSuggestedValues_" + meta_struct_id;
+            selectElement.attr('id', selectIdValue);
+
+            $.each(suggestedValuesCollection[meta_struct_id], function(key, value) {
+                var optionElement = $("<option></option>");
+                optionElement.attr("value",key);
+                optionElement.text(key);
+                selectElement.append(optionElement);
+            });
+
+            selectElement.on('change', function(e) {
+                if (p4.edit.T_fields[p4.edit.curField].multi) {
+                    $("#EditTextMultiValued", p4.edit.editBox).val($(this).val());
+                    $('#EditTextMultiValued').trigger('keyup.maxLength');
+                    edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);
+                }
+                else {
+                    if (is_ctrl_key(e)) {
+                        var t = $("#idEditZTextArea", p4.edit.editBox).val();
+                        $("#idEditZTextArea", p4.edit.editBox).val(t + (t ? " ; " : "") + $(this).val());
+                    }
+                    else {
+                        $("#idEditZTextArea", p4.edit.editBox).val($(this).val());
+                    }
+                    $('#idEditZTextArea').trigger('keyup.maxLength');
+                    p4.edit.textareaIsDirty = true;
+                    if (p4.edit.T_fields[p4.edit.curField]._status != 2)
+                        edit_validField(evt, "ask_ok");
+                }
+            });
+
+            $('#idFieldSuggestedValues', p4.edit.editBox).empty().append(selectElement);
+
+            $('#idFieldSuggestedValues', p4.edit.editBox).css('visibility', 'visible');
+            $('.edit-zone-title', p4.edit.editBox).css('height', 80);
+            $('#EDIT_EDIT', p4.edit.editBox).css('top', 80);
+
+        }else {
+            $('#idFieldSuggestedValues', p4.edit.editBox).css('visibility', 'hidden');
+            $('.edit-zone-title', p4.edit.editBox).css('height', 45);
+            $('#EDIT_EDIT', p4.edit.editBox).css('top', 45);
+        }
+
         $('#idEditZTextArea, #EditTextMultiValued').autocomplete({
             minLength: 2,
             appendTo: "#idEditZone",
@@ -792,63 +868,6 @@ function updateEditSelectedRecords(evt) {
             }
         }
     }
-    var t_sgval = {};
-    for (f in t_lsgval) {
-        for (sv in t_lsgval[f]) {
-            if (t_lsgval[f][sv] == ncolsel) {
-                p4.edit.T_fields[f]._sgval.push({
-                        label: sv,
-                        onclick: function (menuItem, menu, e, label) {
-                            if (p4.edit.T_fields[p4.edit.curField].multi) {
-                                $("#EditTextMultiValued", p4.edit.editBox).val(label);
-                                $('#EditTextMultiValued').trigger('keyup.maxLength');
-                                edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);
-                            }
-                            else {
-                                if (is_ctrl_key(e)) {
-                                    var t = $("#idEditZTextArea", p4.edit.editBox).val();
-                                    $("#idEditZTextArea", p4.edit.editBox).val(t + (t ? " ; " : "") + label);
-                                }
-                                else {
-                                    $("#idEditZTextArea", p4.edit.editBox).val(label);
-                                }
-                                $('#idEditZTextArea').trigger('keyup.maxLength');
-                                p4.edit.textareaIsDirty = true;
-                                if (p4.edit.T_fields[p4.edit.curField]._status != 2)
-                                    edit_validField(evt, "ask_ok");
-                            }
-                        }
-                    }
-                );
-            }
-        }
-        if (p4.edit.T_fields[f]._sgval.length > 0) {
-            $("#editSGtri_" + f, p4.edit.editBox).css("visibility", "visible");
-            $("#editSGtri_" + f, p4.edit.editBox).unbind();
-            $("#editSGtri_" + f, p4.edit.editBox).contextMenu(
-                p4.edit.T_fields[f]._sgval,
-                {
-                    theme: 'vista',
-                    openEvt: "click",
-                    beforeShow: function (a, b, c, d) {
-                        var fid = this.target.getAttribute('id').substr(10);
-                        if (!p4.edit.textareaIsDirty || edit_validField(null, "ask_ok") == true) {
-                            editField(null, fid);
-                            return(true);
-                        }
-                        else {
-                            return(false);
-                        }
-                    }
-                }
-            );
-        }
-        else {
-            $("#editSGtri_" + f, p4.edit.editBox).css("visibility", "hidden");
-        }
-    }
-
-    //$('#idFrameE .ww_status', p4.edit.editBox).html(nrecsel + " record(s) selected for editing");
 
     updateFieldDisplay();
 

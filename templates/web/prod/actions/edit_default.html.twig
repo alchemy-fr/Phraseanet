@@ -86,7 +86,7 @@
         {% set i = field.get_id() %}
         {% if field.is_readonly() is empty %}
             <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
-                <i id="editSGtri_{{i}}" style="visibility:hidden;" class="icon-caret-right"></i>
+                {#<i id="editSGtri_{{i}}" style="visibility:hidden;" class="icon-caret-right"></i>#}
                 <span class="icon-stack fieldTips" tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
                   <i class="icon-circle icon-stack-base"></i>
                   <i class="icon-info icon-light"></i>
@@ -180,6 +180,9 @@
                         <td style='width:30px; text-align:left'>
                             <input type='button' value='&#9658;' class='btn btn-inverse' onclick="edit_chgFld(event, 1);return(false);" />
                         </td>
+                        </tr>
+                        <tr>
+                            <td id="idFieldSuggestedValues" colspan="3" style="visibility:hidden;"></td>
                         </tr>
                     </table>
                 </div>
