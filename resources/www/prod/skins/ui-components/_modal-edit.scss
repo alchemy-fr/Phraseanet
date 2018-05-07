@@ -296,6 +296,14 @@
   color: $textSecondaryColor;
 }
 
+#idFieldSuggestedValues {
+  padding: 2px 13px 0px 10px;
+  select {
+    width: 100%;
+    background: #C6C6C6;
+
+  }
+}
 
 #ZTextMultiValued_values {
   background-color: $editTextMultiValueBg;
