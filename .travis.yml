@@ -5,6 +5,8 @@ branches:
   except:
     - /^3\..*$/
     - /^scrutinizer-.*$/
+    - master
+    - 4.0
 
 matrix:
   fast_finish: true
