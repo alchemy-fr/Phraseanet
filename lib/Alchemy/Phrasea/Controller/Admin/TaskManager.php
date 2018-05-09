@@ -73,7 +73,7 @@ class TaskManager implements ControllerProviderInterface
         /*
          * route /admin/scheduler/stop
          */
-        $controllers->get('/scheduler/stop', function (Application $app, Request $request) use ($app) {
+        $controllers->get('/scheduler/stop', function (Application $app, Request $request) {
 
             if (false === $app['phraseanet.configuration']['main']['task-manager']['enabled']) {
                 throw new RuntimeException('The use of the task manager is disabled on this instance.');
