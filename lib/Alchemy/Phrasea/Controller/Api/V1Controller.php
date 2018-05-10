@@ -2711,6 +2711,19 @@ class V1Controller extends Controller
     }
 
     /**
+     * Returns all collections available for the user
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserCollectionsAction(Request $request)
+    {
+        $ret = [
+            "collections" => $this->listUserAuthorizedCollections($this->getAuthenticatedUser()),
+        ];
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
      * Returns list of Metadata Fields from the databoxes on which the user has rights
      * @param User $user
      * @return array
@@ -2818,6 +2831,52 @@ class V1Controller extends Controller
         }
 
         return $ret;
+    }
+
+    /**
+     * Returns list of collection from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedCollections(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rights = $acl->get_bas_rights();
+        $bases = $acl->get_granted_base();
+
+        $grants = [];
+
+        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
+
+        foreach ($bases as $base) {
+            $baseGrants = [];
+
+            foreach ($rights as $right) {
+                if (!$acl->has_right_on_base($base->get_base_id(), $right)) {
+                    continue;
+                }
+
+                $baseGrants[] = $right;
+            }
+
+            $grants[] = [
+                'databox_id'    => $base->get_sbas_id(),
+                'base_id'       => $base->get_base_id(),
+                'collection_id' => $base->get_coll_id(),
+                'name'          => $base->get_name(),
+                'logo'          => $base->get_binary_minilogos() ? base64_encode($base->get_binary_minilogos()) : '',
+                'labels'        => [
+                    'fr' => $base->get_label('fr'),
+                    'en' => $base->get_label('en'),
+                    'de' => $base->get_label('de'),
+                    'nl' => $base->get_label('nl'),
+                ],
+                'rights'        => $baseGrants,
+                'statuses'      => $statusMapper->getRestrictedStatuses($base->get_base_id())
+            ];
+        }
+
+        return $grants;
     }
 
     public function deleteCurrentUserAction(Request $request)
