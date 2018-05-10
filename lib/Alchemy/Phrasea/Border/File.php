@@ -49,6 +49,7 @@ class File
     protected $originalName;
     protected $md5;
     protected $attributes;
+    public static $xmpTag = ['XMP-xmpMM:DocumentID'];
 
     /**
      * Constructor
@@ -102,6 +103,7 @@ class File
             'IPTC:UniqueDocumentID',
             'ExifIFD:ImageUniqueID',
             'Canon:ImageUniqueID',
+            'XMP-xmpMM:DocumentID',
         ];
 
         if (!$this->uuid) {
@@ -112,6 +114,9 @@ class File
             foreach ($availableUUIDs as $meta) {
                 if ($metadatas->containsKey($meta)) {
                     $candidate = $metadatas->get($meta)->getValue()->asString();
+                    if(in_array($meta, self::$xmpTag)){
+                        $candidate = self::sanitizeXmpUuid($candidate);
+                    }
                     if (Uuid::isValid($candidate)) {
                         $uuid = $candidate;
                         break;
@@ -286,5 +291,14 @@ class File
         }
 
         return new File($app, $media, $collection, $originalName);
+    }
+
+    /**
+     * Sanitize XMP UUID
+     * @param $uuid
+     * @return mixed
+     */
+    public static function sanitizeXmpUuid($uuid){
+        return str_replace('xmp.did:', '', $uuid);
     }
 }
