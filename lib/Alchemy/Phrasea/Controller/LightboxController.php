@@ -78,17 +78,39 @@ class LightboxController extends Controller
     {
         /** @var BasketElementRepository $repository */
         $repository = $this->app['repo.basket-elements'];
-
         $basketElement = $repository->findUserElement($sselcont_id, $this->getAuthenticatedUser());
+
+        $basket = $basketElement->getBasket();
+
+        $elements = $basket->getElements();
+        for ($i = 0; $i < count($elements); ++$i) {
+            if ($sselcont_id == $elements[$i]->getId()) {
+                $nextKey = $i + 1;
+                $prevKey = $i - 1;
+                if ($nextKey < count($elements)) {
+                    $nextId = $elements[$nextKey]->getId();
+                }
+                else {
+                    $nextId = null;
+                }
+                if ($prevKey >= 0) {
+                    $prevId = $elements[$prevKey]->getId();
+                }
+                else {
+                    $prevId = null;
+                }
+            }
+        }
 
         if ($this->app['browser']->isMobile()) {
             return $this->renderResponse('lightbox/basket_element.html.twig', [
                 'basket_element' => $basketElement,
-                'module_name'    => $basketElement->getRecord($this->app)->get_title()
+                'module_name'    => $basketElement->getRecord($this->app)->get_title(),
+                'nextId'         => $nextId,
+                'prevId'         => $prevId
             ]);
         }
 
-        $basket = $basketElement->getBasket();
 
         $ret = [];
         $ret['number'] = $basketElement->getRecord($this->app)->getNumber();
