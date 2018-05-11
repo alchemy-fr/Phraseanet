@@ -25,13 +25,14 @@
         }
 
         #content {
-            position:absolute;
+            position: fixed;
             top:50px;
             bottom: 0;
             right: 0;
             left: 0;
             text-align: center;
-            overflow: scroll;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 {% endblock %}
