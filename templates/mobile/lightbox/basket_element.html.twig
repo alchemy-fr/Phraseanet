@@ -31,6 +31,7 @@
             right: 0;
             left: 0;
             text-align: center;
+            overflow: scroll;
         }
     </style>
 {% endblock %}
@@ -66,9 +67,11 @@
       {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
           <input {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{{ 'validation:: OUI' | trans }}</label>
+            <label class="agreement_radio" style="width:110px;text-align:center;"
+                   for="radio-view-yes_{{ basket_element.getId() }}">{{ 'validation:: OUI' | trans }}</label>
           <input {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
-            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{{ 'validation:: NON' | trans }}</label>
+            <label class="agreement_radio" style="width:110px;text-align:center;"
+                   for="radio-view-no_{{ basket_element.getId() }}">{{ 'validation:: NON' | trans }}</label>
         </fieldset>
       {% endif %}
       <div style="text-align:center;margin:0 0 1em 0">
