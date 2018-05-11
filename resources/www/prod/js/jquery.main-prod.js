@@ -537,7 +537,6 @@ function initAnswerForm() {
                 catch(e) {}
 
                 if(datas.total_answers > 0) {
-                    console.log('saving');
                     sessionStorage.setItem('search', JSON.stringify(datas.query));
                 }
 
@@ -675,89 +674,26 @@ function parseColors(source) {
         if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
             _.forEach(facet.children, function(child) {
                 var title = child.title;
-                if(startWithUpperCase(title) && hasValidSquaredParenthesis(title)) {
-                    child.title = formatColorText(title);
-                }
+                child.title = formatColorText(title);
             });
         }
     });
     return source;
 }
 
-function startWithUpperCase(string) {
-    var regexp = /^[A-Z]/;
-    if (regexp.test(string)) {
-        return true;
-    }
-    return false;
-}
-
-function hasValidSquaredParenthesis(string) {
-    if (string.length <= 1)
-        return false;
-
-    var expression = string.split('');
-    var stack = [];
-    var hasSquareBrakets = false;
-
-    for (var i = 0; i < expression.length; i++) {
-        if (hasSquareParenthesis(expression[i])) {
-            if (isOpenParenthesis(expression[i])) {
-                hasSquareBrakets = true;
-                stack.push(expression[i]);
-            } else {
-                if (stack.length === 0) {
-                    return false
-                }
-                var top = stack.pop(); // pop off the top element from stack
-                if (!matches(top, expression[i])) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return stack.length === 0 && hasSquareBrakets ? true : false;
-}
-
-function hasSquareParenthesis(char) {
-    var str = '[]';
-    if (str.indexOf(char) > -1) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// *** Check if character is an opening bracket ***
-function isOpenParenthesis(parenthesisChar) {
-    for (var j = 0; j < tokens.length; j++) {
-        if (tokens[j][0] === parenthesisChar) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// *** Check if opening bracket matches closing bracket ***
-function matches(topOfStack, closedParenthesis) {
-    for (var k = 0; k < tokens.length; k++) {
-        if (tokens[k][0] === topOfStack && tokens[k][1] === closedParenthesis) {
-            return true;
-        }
-    }
-    return false;
-}
-
 function formatColorText(string) {
-    //get value between # symbol and closing square bracket
-    var regexp = /[^[\]]+(?=])/g;
+    //get color code from text if exist
+    var regexp = /^(.*)\[#([0-9a-fA-F]{6})] (.*)$/;
+
+
     var match = string.match(regexp);
-    if(match.length > 0 && match[0].charAt(0) === '#') {
-        //add color circle and re move color code from text;
-        var textWithoutColorCode = string.replace('[' + match + ']','');
-        return '<span class="color-dot" style="background-color: ' + match + '"></span>' + ' ' + textWithoutColorCode;
+    if(match && match[2] != null) {
+        var colorCode = '#' + match[2];
+        // //add color circle and re move color code from text;
+         var textWithoutColorCode = string.replace('[' + colorCode + ']','');
+         return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
     }
+
     return string;
 }
 
