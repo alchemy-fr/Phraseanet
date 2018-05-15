@@ -89,6 +89,7 @@
         {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
         {% set initialAppState = 'publication' %}
         {% endif %}
+        {% set savedHiddenFacetsList = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'hiddenFacetsList') %}
 
         window.prodApp = ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
@@ -138,7 +139,8 @@
                     },
                     {% endfor %}
                 ]
-            }
+            },
+            savedHiddenFacetsList: {{ savedHiddenFacetsList|json_encode()|raw }}
         });
 
         $(document).ready(function(){
@@ -744,6 +746,8 @@
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
                         {{ 'index::advance_search: disable-facet' | trans }}
                     </label>
+                    <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
+                    <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
         </div>
