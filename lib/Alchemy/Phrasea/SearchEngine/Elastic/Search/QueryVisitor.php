@@ -108,6 +108,9 @@ class QueryVisitor implements Visit
             case NodeTypes::TIMESTAMP_KEY:
                 return $this->visitTimestampKeyNode($element);
 
+            case NodeTypes::GEOLOCATION_KEY:
+                return $this->visitGeolocationKeyNode($element);
+
             case NodeTypes::METADATA_KEY:
                 return new AST\KeyValue\MetadataKey($this->visitString($element));
 
@@ -335,6 +338,11 @@ class QueryVisitor implements Visit
         return $this->handleBinaryExpression($node, function($left, $right) {
             return new AST\KeyValue\MatchExpression($left, $right);
         });
+    }
+
+    private function visitGeolocationKeyNode(TreeNode $node)
+    {
+        return AST\KeyValue\GeolocationKey::geolocation();
     }
 
     private function visitNativeKeyNode(TreeNode $node)

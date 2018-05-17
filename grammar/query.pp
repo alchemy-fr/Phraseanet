@@ -29,6 +29,7 @@
 %token  database        database
 %token  collection      collection
 %token  sha256          sha256
+%token  geolocation     geolocation
 %token  uuid            uuid
 %token  type            type
 %token  id              id|recordid
@@ -95,7 +96,8 @@ match_key:
   | <id>
 
 key:
-    timestamp_key()
+    geolocation_key()
+  | timestamp_key()
   | ::meta_prefix::  meta_key()
   | ::field_prefix:: field_key()
   |                  field_key()
@@ -103,6 +105,9 @@ key:
 #timestamp_key:
     <created_on>
   | <updated_on>
+
+#geolocation_key:
+    <geolocation>
 
 #meta_key:
   word_or_keyword()+
@@ -174,6 +179,7 @@ keyword:
   | <database>
   | <collection>
   | <sha256>
+  | <geolocation>
   | <uuid>
   | <type>
   | <id>

@@ -28,6 +28,7 @@ class NodeTypes
     const FLAG                = '#flag';
     const NATIVE_KEY          = '#native_key';
     const TIMESTAMP_KEY       = '#timestamp_key';
+    const GEOLOCATION_KEY     = '#geolocation_key';
     // Token types for leaf nodes
     const TOKEN_WORD          = 'word';
     const TOKEN_QUOTED_STRING = 'quoted';
