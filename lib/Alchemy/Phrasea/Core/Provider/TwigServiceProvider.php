@@ -130,14 +130,13 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addFilter(new \Twig_SimpleFilter('parseColor', function (\Twig_Environment $twig, $string) use ($app) {
             $re = '/^(.*)\[#([0-9a-fA-F]{6})]$/m';
             $stringArr = explode(';', $string);
-
             foreach ($stringArr as $key => $value) {
-                preg_match_all($re, $value, $matches);
+                preg_match_all($re, trim($value), $matches);
                 if ($matches && $matches[1] != null && $matches[2] != null) {
                     $colorCode = '#' . $matches[2][0];
                     $colorName = $matches[1][0];
 
-                    $stringArr[$key] = '<span class="color-dot" style="margin-right: 4px; background-color: ' . $colorCode . '"></span>' . trim($colorName) . '<br />';
+                    $stringArr[$key] = '<span class="color-dot" style="margin-right: 4px; background-color: ' . $colorCode . '"></span>' . $colorName . '<br />';
                 }
             }
 
