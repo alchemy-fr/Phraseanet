@@ -1093,6 +1093,17 @@ h4 {
   }
 }
 
+.color-dot {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #FFFFFF;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  margin-top: 3px;
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';
