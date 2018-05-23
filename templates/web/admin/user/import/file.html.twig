@@ -55,7 +55,7 @@ $(function () {
     $('#fileupload').fileupload({
         dataType: 'html',
         add: function(e, data) {
-            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].type)) {
+            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].name)) {
                 {% set supported_file_types = ['csv', 'rtf']|join(' | ') %}
                 alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
 
