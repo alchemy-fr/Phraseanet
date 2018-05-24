@@ -18,6 +18,10 @@
                         <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
                             {{ 'print:: image de choix et description avec planche contact' | trans }}
                     </label>
+                    <label for="RADI_CAP" class="radio">
+                        <input type="radio" name="lay" value="caption" id="RADI_CAP" />
+                            {{ 'print:: description' | trans }}
+                    </label>
                 </div>
                 {% endif %}
                 {% if printer.get_count_thumbnail() > 0 %}

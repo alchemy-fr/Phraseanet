@@ -25,6 +25,7 @@ class PDF
     const LAYOUT_PREVIEWCAPTIONTDM = 'previewCaptionTdm';
     const LAYOUT_THUMBNAILLIST = 'thumbnailList';
     const LAYOUT_THUMBNAILGRID = 'thumbnailGrid';
+    const LAYOUT_CAPTION = 'caption';
 
     public function __construct(Application $app, array $records, $layout)
     {
@@ -73,6 +74,8 @@ class PDF
                         continue 2;
                     }
                     break;
+                case self::LAYOUT_CAPTION:
+                    break;
             }
 
             $record->setNumber(count($list) + 1);
@@ -105,6 +108,9 @@ class PDF
                 break;
             case self::LAYOUT_THUMBNAILGRID:
                 $this->print_thumbnailGrid();
+                break;
+            case self::LAYOUT_CAPTION:
+                $this->print_caption();
                 break;
         }
 
@@ -313,6 +319,67 @@ class PDF
             $ndoc++;
         }
         $this->pdf->SetLeftMargin($lmargin);
+    }
+
+    protected function print_caption()
+    {
+        $this->pdf->AddPage();
+        $oldMargins = $this->pdf->getMargins();
+
+        $lmargin = $oldMargins['left'];
+        $rmargin = $oldMargins['right'];
+
+        foreach ($this->records as $rec) {
+            $title = "record : " . $rec->get_title();
+
+            $y = $this->pdf->GetY();
+            if($this->pdf->getPageHeight() - $y < 20){ // height of the footer is 15
+                $this->pdf->AddPage();
+                $y = $oldMargins['top'];
+            }
+
+            $t = \phrasea::bas_labels($rec->getBaseId(), $this->app);
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
+            $this->pdf->SetFillColor(220, 220, 220);
+            $this->pdf->SetLeftMargin($lmargin);
+            $this->pdf->SetRightMargin($rmargin);
+            $this->pdf->SetX($lmargin);
+            $this->pdf->SetY($y);
+
+            $this->pdf->out = false;
+            $this->pdf->MultiCell(140, 4, $title, "LTR", "L", 1);
+            $y2 = $this->pdf->GetY();
+            $h = $y2 - $y;
+            $this->pdf->out = true;
+            $this->pdf->SetX($lmargin);
+            $this->pdf->SetY($y);
+            $this->pdf->Cell(0, $h, "", "LTR", 1, "R", 1);
+            $this->pdf->SetX($lmargin);
+            $this->pdf->SetY($y);
+            $this->pdf->Cell(0, 4, $t, "", 1, "R");
+            $this->pdf->SetX($lmargin);
+            $this->pdf->SetY($y);
+            $this->pdf->MultiCell(140, 4, $title, "", "L");
+            $this->pdf->SetX($lmargin);
+            $this->pdf->SetY($y = $y2);
+            $this->pdf->SetY($y + 2);
+
+            foreach ($rec->get_caption()->get_fields() as $field) {
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $field->get_name() . " : ");
+
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $t = str_replace(
+                    ["&lt;", "&gt;", "&amp;"]
+                    , ["<", ">", "&"]
+                    , strip_tags($field->get_serialized_values())
+                );
+                $this->pdf->Write(5, $t);
+
+                $this->pdf->Write(6, "\n");
+            }
+            $this->pdf->SetY($this->pdf->GetY() + 10);
+        }
     }
 
     protected function print_preview($withtdm, $write_caption)
