@@ -19,7 +19,7 @@
                 </label>
                 <div class="controls">
                     <input id="label_off" onkeyup="inputChanged(this);return(false);" name="label_off"
-                           class="input-xlarge invalid" type="text" value="{{ status['labeloff'] }}">
+                           class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -84,7 +84,7 @@
                 </label>
                 <div class="controls">
                     <input id="label_on" onkeyup="inputChanged(this);return(false);" name="label_on"
-                           class="input-xlarge invalid" type="text" value="{{ status['labelon'] }}">
+                           class="input-xlarge" type="text" value="{{ status['labelon'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -168,20 +168,21 @@
 
 <script type="text/javascript">
     function inputChanged(elem) {
-        var validText = new RegExp(/[!@#$%^&*()]+/);
         if ($(elem).val().length > 0) {
             //check if contains special characters
-            if (validText.test($(elem).val())) {
+            if (isInvalid($(elem).val())) {
                 $(elem).css('border-color', '#F00');
-                $(elem).addClass('invalid');
             } else {
                 $(elem).css('border-color', '');
-                $(elem).removeClass('invalid')
             }
         } else {
             $(elem).css('border-color', '#F00');
-            $(elem).addClass('invalid');
         }
+    }
+
+    function isInvalid(string) {
+        var validText = new RegExp(/[!@#$%^&*()]+/);
+        return validText.test(string);
     }
 
 $(document).ready(function(){
@@ -238,7 +239,7 @@ $(document).ready(function(){
             $("[name=label_on]").css('border-color', '#F00');
             return;
         }
-        if ($("[name=label_off]").hasClass('invalid') || $("[name=label_on]").hasClass('invalid')) {
+        if (isInvalid($("[name=label_off]").val()) || isInvalid($("[name=label_on]").val())) {
             return;
         }
         if( selected_files.length > 0 ) {
