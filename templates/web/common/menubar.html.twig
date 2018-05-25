@@ -128,7 +128,7 @@
             {% else %}
               <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
                 <span>
-                  {{app.getAuthenticatedUser().getLogin()}}
+                  {{app.getAuthenticatedUser().getDisplayName()}}
                 </span>
               </a>
             {% endif %}
