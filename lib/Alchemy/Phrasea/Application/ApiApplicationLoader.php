@@ -19,6 +19,7 @@ use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Permalink;
+use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
 use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
@@ -137,6 +138,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->mount('/api/v1', new V1());
         $app->mount('/api/v2', new V2());
         $app->mount('/permalink/', new Permalink());
+        $app->mount('/login/', new Login());
         $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
         $app->mount('/include/minify/', new Minifier());
         $app->bindPluginRoutes('plugin.controller_providers.api');
