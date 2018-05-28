@@ -270,10 +270,10 @@
                     pub_wm: $this.val()
                 },
                 success: function(datas) {
-                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $this.closest('.action-block').prepend(html({
                         content:datas.msg
-                    });
-                    $this.closest('.action-block').prepend(html);
+                    }));
                 }
             });
         });

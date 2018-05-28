@@ -94,10 +94,10 @@
                     $this.prop('disabled',true);
                 },
                 success : function(datas) {
-                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $('#notification').html(html({
                         content:datas.msg
-                    });
-                    $('#notification').html(html);
+                    }));
                     AdminApp.LeftView.reloadTree('bases:bases', true);
                 },
                 complete : function() {
