@@ -19,6 +19,14 @@ $mainMenuBottomBorder: none !default;
   margin-bottom: $mainMenuMarginBottom;
   z-index: 100;
   box-sizing: border-box;
+  .show-menu {
+    display: none;
+    i {
+      font-size: 26px;
+      vertical-align: middle;
+      color: $mainMenuLinkActiveColor;
+    }
+  }
   ol {
     display: block;
     margin: 0;
@@ -91,6 +99,39 @@ $mainMenuBottomBorder: none !default;
         a {
           background: url('#{$iconsPath}icon_user.png') 15px 7px no-repeat;
           padding-left: 41px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 760px) {
+  #mainMenu {
+    .show-menu {
+      display: block;
+    }
+    #nav_menu {
+      display: none;
+      z-index: 1000;
+      ol {
+        position: static;
+      }
+      li.menu-bar-item {
+        width: 100%;
+        clear: both;
+        background: $mainMenuBackgroundColor;
+        border-bottom: 1px solid $mainMenuLinkActiveColor;
+        z-index: 1000;
+      }
+      li.menu-bar-item a {
+        width: 100%;
+        > span {
+          text-align: center;
+          font-size: 14px;
+          font-weight: bold;
+          &.selected {
+            border-top: none !important;
+          }
         }
       }
     }
