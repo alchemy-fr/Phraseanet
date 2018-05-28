@@ -26,10 +26,6 @@ $mainMenuBottomBorder: none !default;
       vertical-align: middle;
       color: $mainMenuLinkActiveColor;
     }
-    /*Show menu when invisible checkbox is checked*/
-    input[type=checkbox]:checked ~ #nav_menu {
-      display: block;
-    }
   }
   ol {
     display: block;
