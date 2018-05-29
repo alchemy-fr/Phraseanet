@@ -149,7 +149,9 @@ class LanguageController
             'error video editor'  => $translator->trans('prod:edit: only a media of type video can be edited'),
             'Chapters'            => $translator->trans('prod:edit: chapters'),
             'No hover to chapter' => $translator->trans('prod:edit: no overlaps for chapters'),
-            'suggested_values'    => $translator->trans('prod:edit: suggested_values')
+            'suggested_values'    => $translator->trans('prod:edit: suggested_values'),
+            'title notice'        => $translator->trans('prod:mapboxgl: title notice'),
+            'description notice'  => $translator->trans('prod:mapboxgl: description notice')
         ]);
     }
 }
