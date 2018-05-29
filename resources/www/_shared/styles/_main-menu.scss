@@ -33,6 +33,10 @@ $mainMenuBottomBorder: none !default;
     padding: 0;
     list-style: none outside none;
   }
+  #custom-link-container {
+    display: inline-block;
+    margin-left: 10px;
+  }
   #mainLogo {
     margin:0 10px;
     margin-top: 3px;
