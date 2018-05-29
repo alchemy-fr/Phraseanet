@@ -7,6 +7,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
+use igorw;
 
 class FacetsResponse
 {
@@ -55,12 +56,21 @@ class FacetsResponse
     private function buildBucketsValues($name, $buckets)
     {
         $values = array();
+
+        // does this aggregate has an output_formatter ? if not use a equality formatter
+        /** @var callable $formatter */
+        $formatter = igorw\get_in(
+            ElasticsearchOptions::getAggregableTechnicalFields(), [$name, 'output_formatter'],
+            function($v){return $v;}
+        );
+
         foreach ($buckets as $bucket) {
             if (!isset($bucket['key']) || !isset($bucket['doc_count'])) {
                 $this->throwAggregationResponseError();
             }
+
             $values[] = array(
-                'value' => $bucket['key'],
+                'value' => $formatter($bucket['key']),
                 'count' => $bucket['doc_count'],
                 'query' => $this->buildQuery($name, $bucket['key']),
             );
