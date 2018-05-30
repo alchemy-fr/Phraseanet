@@ -151,7 +151,8 @@ class LanguageController
             'No hover to chapter' => $translator->trans('prod:edit: no overlaps for chapters'),
             'suggested_values'    => $translator->trans('prod:edit: suggested_values'),
             'title notice'        => $translator->trans('prod:mapboxgl: title notice'),
-            'description notice'  => $translator->trans('prod:mapboxgl: description notice')
+            'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
+            'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
         ]);
     }
 }
