@@ -36,6 +36,60 @@ class RootController extends Controller
         ], $params));
     }
 
+    /**
+     * @param string $section
+     * @return array
+     */
+    private function getSectionParameters($section)
+    {
+        $available = [
+            'connected',
+            'registrations',
+            'taskmanager',
+            'base',
+            'bases',
+            'collection',
+            'user',
+            'users',
+        ];
+
+        $feature = 'connected';
+        $featured = false;
+        $position = explode(':', $section);
+        if (count($position) > 0) {
+            if (in_array($position[0], $available)) {
+                $feature = $position[0];
+
+                if (isset($position[1])) {
+                    $featured = $position[1];
+                }
+            }
+        }
+
+        $databoxes = $off_databoxes = [];
+        $acl = $this->getAclForUser();
+        foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
+            try {
+                if (!$acl->has_access_to_sbas($databox->get_sbas_id())) {
+                    continue;
+                }
+                $databox->get_connection();
+            } catch (\Exception $e) {
+                $off_databoxes[] = $databox;
+                continue;
+            }
+
+            $databoxes[] = $databox;
+        }
+
+        return [
+            'feature'       => $feature,
+            'featured'      => $featured,
+            'databoxes'     => $databoxes,
+            'off_databoxes' => $off_databoxes,
+        ];
+    }
+    
     public function displayTreeAction(Request $request)
     {
         try {
@@ -48,7 +102,7 @@ class RootController extends Controller
 
         return $this->render('admin/tree.html.twig', $params);
     }
-    
+
     public function testPathsAction(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
@@ -213,7 +267,7 @@ class RootController extends Controller
             'errorMsg' => $errorMsg
         ]);
     }
-
+    
     public  function deleteStatusBitAction(Request $request, $databox_id, $bit)
     {
         if (!$request->isXmlHttpRequest() || !array_key_exists($request->getMimeType('json'), array_flip($request->getAcceptableContentTypes()))) {
@@ -246,8 +300,8 @@ class RootController extends Controller
             'searchable' => $request->request->get('searchable') ? '1' : '0',
             'printable'  => $request->request->get('printable') ? '1' : '0',
             'name'       => $request->request->get('name', ''),
-            'labelon'    => $request->request->get('label_on', ''),
-            'labeloff'   => $request->request->get('label_off', ''),
+            'labelon'    => htmlentities($request->request->get('label_on', '')),
+            'labeloff'   => htmlentities($request->request->get('label_off', '')),
             'labels_on'  => $request->request->get('labels_on', []),
             'labels_off' => $request->request->get('labels_off', []),
         ];
@@ -351,59 +405,5 @@ class RootController extends Controller
         }
 
         return $this->app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
-    }
-    
-    /**
-     * @param string $section
-     * @return array
-     */
-    private function getSectionParameters($section)
-    {
-        $available = [
-            'connected',
-            'registrations',
-            'taskmanager',
-            'base',
-            'bases',
-            'collection',
-            'user',
-            'users',
-        ];
-
-        $feature = 'connected';
-        $featured = false;
-        $position = explode(':', $section);
-        if (count($position) > 0) {
-            if (in_array($position[0], $available)) {
-                $feature = $position[0];
-
-                if (isset($position[1])) {
-                    $featured = $position[1];
-                }
-            }
-        }
-
-        $databoxes = $off_databoxes = [];
-        $acl = $this->getAclForUser();
-        foreach ($this->getApplicationBox()->get_databoxes() as $databox) {
-            try {
-                if (!$acl->has_access_to_sbas($databox->get_sbas_id())) {
-                    continue;
-                }
-                $databox->get_connection();
-            } catch (\Exception $e) {
-                $off_databoxes[] = $databox;
-                continue;
-            }
-
-            $databoxes[] = $databox;
-        }
-
-        return [
-            'feature'       => $feature,
-            'featured'      => $featured,
-            'databoxes'     => $databoxes,
-            'off_databoxes' => $off_databoxes,
-        ];
     }
 }
