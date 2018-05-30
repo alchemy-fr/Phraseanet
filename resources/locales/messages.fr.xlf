@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-05-29T12:46:19Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2018-05-30T11:59:12Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1257,12 +1257,12 @@
       <trans-unit id="a80232c45008d73666e95544f7c9c8c0896536af" resname="Audio Samplerate">
         <source>Audio Samplerate</source>
         <target state="new">Audio Samplerate</target>
-        <jms:reference-file line="307">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="320">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec">
         <source>Audio codec</source>
         <target state="new">Audio codec</target>
-        <jms:reference-file line="317">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="330">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="27be4ad944410219f1a8dd01cc5e216a09c16646" resname="AudioSamplerate" approved="yes">
         <source>AudioSamplerate</source>
@@ -1828,7 +1828,7 @@
       <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace">
         <source>Colorspace</source>
         <target state="new">Colorspace</target>
-        <jms:reference-file line="327">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="340">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
         <source>Commande</source>
@@ -3251,7 +3251,7 @@
       <trans-unit id="2869d115faa9aa305076269dfbaf57c28cbd9fb6" resname="FlashFired">
         <source>FlashFired</source>
         <target state="new">FlashFired</target>
-        <jms:reference-file line="294">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="303">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="02893456d53323f0fdbbe9447fe5b3401f2102f7" resname="Flatten layers" approved="yes">
         <source>Flatten layers</source>
@@ -3310,7 +3310,7 @@
       <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate">
         <source>FrameRate</source>
         <target state="new">FrameRate</target>
-        <jms:reference-file line="302">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="315">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
         <source>Frequence d'echantillonage</source>
@@ -4226,7 +4226,7 @@
       <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType">
         <source>MimeType</source>
         <target state="new">MimeType</target>
-        <jms:reference-file line="332">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="345">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
         <source>Minimum number of letters before truncation</source>
@@ -4737,7 +4737,7 @@
       <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation">
         <source>Orientation</source>
         <target state="new">Orientation</target>
-        <jms:reference-file line="322">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="335">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name" approved="yes">
         <source>Original name</source>
@@ -6032,7 +6032,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="32e50dd99f3b67dc93272aa6c904b83d37f4f48d" resname="Shutter speed" approved="yes">
         <source>Shutter speed</source>
         <target state="translated">Vitesse d'obturateur</target>
-        <jms:reference-file line="289">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="292">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="98">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e4538baf30d4eb324ec64e4b48c1ca424dd3b773" resname="Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur." approved="yes">
@@ -7249,7 +7249,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="534048d6c768f47f83f67c0498e6d4ecf5cff4bb" resname="Video codec">
         <source>Video codec</source>
         <target state="new">Video codec</target>
-        <jms:reference-file line="312">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="325">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56b71e89fb1079caaadefd0889e9a22e8b0560e3" resname="Videos" approved="yes">
         <source>Videos</source>
@@ -11284,6 +11284,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>prod:mapboxgl: description notice</source>
         <target state="new">prod:mapboxgl: description notice</target>
         <jms:reference-file line="154">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog">
+        <source>prod:mapboxgl: title map dialog</source>
+        <target state="new">prod:mapboxgl: title map dialog</target>
+        <jms:reference-file line="155">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d7f5939616105e9e12962cca5eacff5064eb711" resname="prod:mapboxgl: title notice">
         <source>prod:mapboxgl: title notice</source>
