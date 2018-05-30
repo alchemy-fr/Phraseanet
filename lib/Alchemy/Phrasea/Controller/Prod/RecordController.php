@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
@@ -194,6 +196,8 @@ class RecordController extends Controller
         $trashCollectionsBySbasId = [];
 
         $manager = $this->getEntityManager();
+
+        /** @var \record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -207,6 +211,10 @@ class RecordController extends Controller
 
                 foreach ($attachedStories as $attachedStory) {
                     $manager->remove($attachedStory);
+                }
+
+                foreach($record->get_grouping_parents() as $story) {
+                    $this->getEventDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
                 }
 
                 $sbasId = $record->getDatabox()->get_sbas_id();
@@ -331,5 +339,13 @@ class RecordController extends Controller
         };
 
         return $this->app->json($renewed);
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }
