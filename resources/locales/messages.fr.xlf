@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2018-05-30T11:59:12Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,14 +7,14 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c03e9a1b443b7d9ac9a84e4d2cf55ebc016a9c5b" resname="                                Add">
+      <trans-unit id="c03e9a1b443b7d9ac9a84e4d2cf55ebc016a9c5b" resname="                                Add" approved="no">
         <source>                                Add</source>
-        <target state="new">                                Add</target>
+        <target state="needs-translation">Ajouter</target>
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="955ba3f1b3cb9a2d319b73af341dd94392f61e87" resname="                    The parameter &quot;force authentication&quot; forces the recipient(s) of the push to possess a Phraseanet account&#10;                    to see its contents.&#10;                    This avoids anonymous users to access to the content of the push if they were able to get the display&#10;                    url through a forwarded mail for example.&#10;                " approved="yes">
@@ -26,75 +26,75 @@
         <target state="translated">L'option Forcer l'authentification des utilisateurs contraint les destinataires à s'authentifier pour accéder au contenu diffusé. Cela interdit l'accès aux documents à des personnes auprès desquels l'URL aurait été divulguée notamment par un transfert d'e-mail.</target>
         <jms:reference-file line="168">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6">
+      <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
         <source>#3567c6</source>
-        <target state="new">#3567c6</target>
+        <target state="translated">#3567c6</target>
         <jms:reference-file line="81">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c18097cf04c5f24e6b201e44603c26f000cbf266" resname="#4497d5">
+      <trans-unit id="c18097cf04c5f24e6b201e44603c26f000cbf266" resname="#4497d5" approved="yes">
         <source>#4497d5</source>
-        <target state="new">#4497d5</target>
+        <target state="translated">#4497d5</target>
         <jms:reference-file line="80">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="654b7f2144322b13150ca53f8eb712644275fbbb" resname="#5aa53b">
+      <trans-unit id="654b7f2144322b13150ca53f8eb712644275fbbb" resname="#5aa53b" approved="yes">
         <source>#5aa53b</source>
-        <target state="new">#5aa53b</target>
+        <target state="translated">#5aa53b</target>
         <jms:reference-file line="78">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="81184afa6b2fb59a54a368a94c5af314882f4379" resname="#a1d0d0">
+      <trans-unit id="81184afa6b2fb59a54a368a94c5af314882f4379" resname="#a1d0d0" approved="yes">
         <source>#a1d0d0</source>
-        <target state="new">#a1d0d0</target>
+        <target state="translated">#a1d0d0</target>
         <jms:reference-file line="79">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="69760e828adabd5e543638f8b396d108e4e1c7f6" resname="#ad0800">
+      <trans-unit id="69760e828adabd5e543638f8b396d108e4e1c7f6" resname="#ad0800" approved="yes">
         <source>#ad0800</source>
-        <target state="new">#ad0800</target>
+        <target state="translated">#ad0800</target>
         <jms:reference-file line="71">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
         <jms:reference-file line="72">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8868030f047d29838dccd3ebd90a8cbcf5cf97b9" resname="#b151ee">
+      <trans-unit id="8868030f047d29838dccd3ebd90a8cbcf5cf97b9" resname="#b151ee" approved="yes">
         <source>#b151ee</source>
-        <target state="new">#b151ee</target>
+        <target state="translated">#b151ee</target>
         <jms:reference-file line="82">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="df800d7d3f6bec2f0c48d7b18ad0f7515b4ed8a4" resname="#b8d84e">
+      <trans-unit id="df800d7d3f6bec2f0c48d7b18ad0f7515b4ed8a4" resname="#b8d84e" approved="yes">
         <source>#b8d84e</source>
-        <target state="new">#b8d84e</target>
+        <target state="translated">#b8d84e</target>
         <jms:reference-file line="77">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4d3505d50f73a3440832d861060fc212eb2d929a" resname="#c875ea">
+      <trans-unit id="4d3505d50f73a3440832d861060fc212eb2d929a" resname="#c875ea" approved="yes">
         <source>#c875ea</source>
-        <target state="new">#c875ea</target>
+        <target state="translated">#c875ea</target>
         <jms:reference-file line="83">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cdd9fb48ed6b38bdf4cd732d30851062312f64b3" resname="#e46990">
+      <trans-unit id="cdd9fb48ed6b38bdf4cd732d30851062312f64b3" resname="#e46990" approved="yes">
         <source>#e46990</source>
-        <target state="new">#e46990</target>
+        <target state="translated">#e46990</target>
         <jms:reference-file line="84">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22a0112b6eafc281d17f1b98fb8405847d01f04b" resname="#f06006">
+      <trans-unit id="22a0112b6eafc281d17f1b98fb8405847d01f04b" resname="#f06006" approved="yes">
         <source>#f06006</source>
-        <target state="new">#f06006</target>
+        <target state="translated">#f06006</target>
         <jms:reference-file line="73">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="db6ca79114142b612eebf0ca5f80b94c80cbf453" resname="#f4ea5b">
+      <trans-unit id="db6ca79114142b612eebf0ca5f80b94c80cbf453" resname="#f4ea5b" approved="yes">
         <source>#f4ea5b</source>
-        <target state="new">#f4ea5b</target>
+        <target state="translated">#f4ea5b</target>
         <jms:reference-file line="76">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cc4fad5f043fc9875dcdc532a296ec359a6c39e1" resname="#f5842b">
+      <trans-unit id="cc4fad5f043fc9875dcdc532a296ec359a6c39e1" resname="#f5842b" approved="yes">
         <source>#f5842b</source>
-        <target state="new">#f5842b</target>
+        <target state="translated">#f5842b</target>
         <jms:reference-file line="74">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="590b78bf59d578b0efdd1a7b1a385e8004fa88e8" resname="#ffc322">
+      <trans-unit id="590b78bf59d578b0efdd1a7b1a385e8004fa88e8" resname="#ffc322" approved="yes">
         <source>#ffc322</source>
-        <target state="new">#ffc322</target>
+        <target state="translated">#ffc322</target>
         <jms:reference-file line="75">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cc996e2ae03790c84ef6edc0601ba0245d7cf1c" resname="#ffccd7">
+      <trans-unit id="0cc996e2ae03790c84ef6edc0601ba0245d7cf1c" resname="#ffccd7" approved="yes">
         <source>#ffccd7</source>
-        <target state="new">#ffccd7</target>
+        <target state="translated">#ffccd7</target>
         <jms:reference-file line="85">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9378053eb7743587671aa830ffd2c9f1b13ad1a" resname="%ElementsCount% records" approved="yes">
@@ -681,11 +681,10 @@
         <jms:reference-file line="353">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="56">prod/User/Add.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="983c5aed52d2f74bf36e97dc34dbce97fdd43f5b" resname="Add a&#10;                    new field">
+      <trans-unit id="983c5aed52d2f74bf36e97dc34dbce97fdd43f5b" resname="Add a&#10;                    new field" approved="no">
         <source>Add a
                     new field</source>
-        <target state="new">Add a
-                    new field</target>
+        <target state="needs-translation">Ajouter un champ</target>
         <jms:reference-file line="43">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5bc397abf190599d339e7a0543f2ba2a6dbc8e38" resname="Add a new field" approved="yes">
@@ -693,9 +692,9 @@
         <target state="translated">Ajouter un nouveau champ</target>
         <jms:reference-file line="47">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b70680b4c250c9244d3f2caf9e57f001e0f19657" resname="Add a position">
+      <trans-unit id="b70680b4c250c9244d3f2caf9e57f001e0f19657" resname="Add a position" approved="no">
         <source>Add a position</source>
-        <target state="new">Add a position</target>
+        <target state="needs-translation">Ajouter un position</target>
         <jms:reference-file line="117">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18a7d7025f09d8fd494b56d81e5208ec96510c99" resname="Add an admin" approved="yes">
@@ -703,19 +702,19 @@
         <target state="translated">Ajouter un administrateur Phraseanet</target>
         <jms:reference-file line="109">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c67e5003ccafc3da11bb6a633844ddac62f79fed" resname="Add an end point">
+      <trans-unit id="c67e5003ccafc3da11bb6a633844ddac62f79fed" resname="Add an end point" approved="no">
         <source>Add an end point</source>
-        <target state="new">Add an end point</target>
+        <target state="needs-translation">Ajout point de sortie</target>
         <jms:reference-file line="128">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="66de101c29885e5b369a8226a553bec652fd85fc" resname="Add an entry point">
+      <trans-unit id="66de101c29885e5b369a8226a553bec652fd85fc" resname="Add an entry point" approved="no">
         <source>Add an entry point</source>
-        <target state="new">Add an entry point</target>
+        <target state="needs-translation">Ajout point d'entré</target>
         <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f52464728021813d9d68069201d0ee44c284b890" resname="Add new range">
+      <trans-unit id="f52464728021813d9d68069201d0ee44c284b890" resname="Add new range" approved="no">
         <source>Add new range</source>
-        <target state="new">Add new range</target>
+        <target state="needs-translation">Nouveaux Chapitre</target>
         <jms:reference-file line="138">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f347a8ddd22508ed0310a2f9d8cf43dd96be34b1" resname="Add user" approved="yes">
@@ -753,9 +752,9 @@
         <target state="translated">Recherche avancée</target>
         <jms:reference-file line="270">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings">
+      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings" approved="no">
         <source>Advanced settings</source>
-        <target state="new">Advanced settings</target>
+        <target state="needs-translation">Réglages avancé</target>
         <jms:reference-file line="497">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8f3ed663adc3f670da96cfd59f14ca2d063439" resname="Affichage" approved="yes">
@@ -918,16 +917,16 @@
         <target state="translated">Autoriser à faire des diffusions</target>
         <jms:reference-file line="417">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc">
+      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc" approved="no">
         <source>Alphabetic asc</source>
-        <target state="new">Alphabetic asc</target>
+        <target state="needs-translation">Alphabétique asc</target>
         <jms:reference-file line="711">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="728">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="740">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc">
+      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc" approved="no">
         <source>Alphabetic desc</source>
-        <target state="new">Alphabetic desc</target>
+        <target state="needs-translation">Alphabétique desc</target>
         <jms:reference-file line="713">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebd447ea09611b090d7b8a12835ffaf79ea17e47" resname="Also delete records that rely on groupings." approved="yes">
@@ -1254,9 +1253,9 @@
         <jms:reference-file line="34">Media/Subdef/Audio.php</jms:reference-file>
         <jms:reference-file line="36">Media/Subdef/Video.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a80232c45008d73666e95544f7c9c8c0896536af" resname="Audio Samplerate">
+      <trans-unit id="a80232c45008d73666e95544f7c9c8c0896536af" resname="Audio Samplerate" approved="no">
         <source>Audio Samplerate</source>
-        <target state="new">Audio Samplerate</target>
+        <target state="needs-translation">Fréquence d'échantillonnage</target>
         <jms:reference-file line="320">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec">
@@ -1449,9 +1448,9 @@
         <target state="translated">Paniers mis à jour</target>
         <jms:reference-file line="186">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="15df8ed745621447f2a6335f48173649ec29dd82" resname="Binary data">
+      <trans-unit id="15df8ed745621447f2a6335f48173649ec29dd82" resname="Binary data" approved="yes">
         <source>Binary data</source>
-        <target state="new">Binary data</target>
+        <target state="translated">Données Binaire</target>
         <jms:reference-file line="34">Controller/Prod/SubdefsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d153e750805a50a0571d500f19bafd21ec10bd2e" resname="Bitrate" approved="yes">
@@ -1678,16 +1677,15 @@
         <target state="translated">Changer mon adresse e-mail</target>
         <jms:reference-file line="6">web/account/reset-email.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5cdfc5d8d0d17fa600980eeab2a255bfdf816b" resname="Change play speed">
+      <trans-unit id="da5cdfc5d8d0d17fa600980eeab2a255bfdf816b" resname="Change play speed" approved="no">
         <source>Change play speed</source>
-        <target state="new">Change play speed</target>
+        <target state="needs-translation">Vitesse de lecture</target>
         <jms:reference-file line="123">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e2723748c7df231e7381d554add9bbd1f30b445" resname="Changes for rotation will be applied only on&#10;          the sub-definitions of &quot;image&quot; type.">
+      <trans-unit id="1e2723748c7df231e7381d554add9bbd1f30b445" resname="Changes for rotation will be applied only on&#10;          the sub-definitions of &quot;image&quot; type." approved="no">
         <source>Changes for rotation will be applied only on
           the sub-definitions of "image" type.</source>
-        <target state="new">Changes for rotation will be applied only on
-          the sub-definitions of "image" type.</target>
+        <target state="needs-translation">Les rotations s'applique uniquement au fichier de type "Image".</target>
         <jms:reference-file line="96">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="18e03e2a37ba37df713f9665ef752fb8b40fc1e8" resname="Channels" approved="yes">
@@ -1810,9 +1808,9 @@
         <target state="translated">Collection vidée avec succès</target>
         <jms:reference-file line="131">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order">
+      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order" approved="yes">
         <source>Collection order</source>
-        <target state="new">Collection order</target>
+        <target state="translated">Ordre des collections</target>
         <jms:reference-file line="703">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f704cc39c26f37922029d5ff58c61b607d384521" resname="Color Depth" approved="yes">
@@ -1825,9 +1823,9 @@
         <target state="translated">Espace colorimétrique</target>
         <jms:reference-file line="62">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace">
+      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace" approved="no">
         <source>Colorspace</source>
-        <target state="new">Colorspace</target>
+        <target state="needs-translation">Espace colorimétrique</target>
         <jms:reference-file line="340">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
@@ -2091,11 +2089,10 @@
         <target state="translated">Total cumulé</target>
         <jms:reference-file line="56">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3075cecf6a2dbbe7e4a2b3a4d67228a4ba0ed145" resname="Current configuration contains some&#10;            errors">
+      <trans-unit id="3075cecf6a2dbbe7e4a2b3a4d67228a4ba0ed145" resname="Current configuration contains some&#10;            errors" approved="no">
         <source>Current configuration contains some
             errors</source>
-        <target state="new">Current configuration contains some
-            errors</target>
+        <target state="needs-translation">La configuration contient des erreurs</target>
         <jms:reference-file line="290">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="31b3c410ee3a3630f3efc08bae2fd9d06ec16ff4" resname="Current operations cannot be executed because the site is temporarily in maintenance mode. Wait a few minutes and try your request again" approved="yes">
@@ -2303,9 +2300,9 @@
         <target state="translated">Définir l'URL d'un Webhook</target>
         <jms:reference-file line="83">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="93603718ec74d5e4b9bc11e64f36a5d90f03f48e" resname="Defined by admin">
+      <trans-unit id="93603718ec74d5e4b9bc11e64f36a5d90f03f48e" resname="Defined by admin" approved="yes">
         <source>Defined by admin</source>
-        <target state="new">Defined by admin</target>
+        <target state="translated">Définit par l'admin</target>
         <jms:reference-file line="709">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b6bf506a535e9bf22431eace58b8f2f704dbd2a" resname="Defined in Apache configuration" approved="yes">
@@ -2560,9 +2557,9 @@
         <target state="translated">Téléchargement de documents</target>
         <jms:reference-file line="13">actions/Download/prepare.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7cec77b277c557a0d7c6f62b73691b0079b37639" resname="Drag and drop the pin to move position">
+      <trans-unit id="7cec77b277c557a0d7c6f62b73691b0079b37639" resname="Drag and drop the pin to move position" approved="no">
         <source>Drag and drop the pin to move position</source>
-        <target state="new">Drag and drop the pin to move position</target>
+        <target state="needs-translation">Glissé déposé l'icon pour modifier la position.</target>
         <jms:reference-file line="118">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e9069dbb48837c11e9c74fe440ccfd5d1cd6b0b" resname="Droits" approved="yes">
@@ -2622,9 +2619,9 @@
         <jms:reference-file line="10">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="46">actions/Feedback/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c989a5c3729db7aa928f90f4d56e107adbee954c" resname="Edit position">
+      <trans-unit id="c989a5c3729db7aa928f90f4d56e107adbee954c" resname="Edit position" approved="no">
         <source>Edit position</source>
-        <target state="new">Edit position</target>
+        <target state="needs-translation">Modifier la position</target>
         <jms:reference-file line="116">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d70cb368bda9b31e0c6894792a9ee58865d01d4" resname="Editer" approved="yes">
@@ -3248,9 +3245,9 @@
         <jms:reference-file line="87">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="298">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2869d115faa9aa305076269dfbaf57c28cbd9fb6" resname="FlashFired">
+      <trans-unit id="2869d115faa9aa305076269dfbaf57c28cbd9fb6" resname="FlashFired" approved="no">
         <source>FlashFired</source>
-        <target state="new">FlashFired</target>
+        <target state="needs-translation">Avec Flash</target>
         <jms:reference-file line="303">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="02893456d53323f0fdbbe9447fe5b3401f2102f7" resname="Flatten layers" approved="yes">
@@ -3307,9 +3304,9 @@
         <target state="translated">Nombre d'images par seconde</target>
         <jms:reference-file line="33">Media/Subdef/Video.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate">
+      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate" approved="no">
         <source>FrameRate</source>
-        <target state="new">FrameRate</target>
+        <target state="needs-translation">Cadence</target>
         <jms:reference-file line="315">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
@@ -3378,9 +3375,9 @@
         <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
         <jms:reference-file line="47">Media/Subdef/Unknown.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="621654fc14cd9c0d5f5009ff29c1ba0db747f162" resname="Geo Search">
+      <trans-unit id="621654fc14cd9c0d5f5009ff29c1ba0db747f162" resname="Geo Search" approved="no">
         <source>Geo Search</source>
-        <target state="new">Geo Search</target>
+        <target state="needs-translation">Recherche géolocalisé</target>
         <jms:reference-file line="274">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="efd1f5fd46c31701d2e70555e9ab45efe27b4048" resname="Geonames server address" approved="yes">
@@ -3393,9 +3390,9 @@
         <target state="translated">Obtenir une notification quand un export par e-mail échoue</target>
         <jms:reference-file line="72">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index">
+      <trans-unit id="05a07cd950e4b273afdde28fa0b591cc75524121" resname="Get setting form index" approved="no">
         <source>Get setting form index</source>
-        <target state="new">Get setting form index</target>
+        <target state="needs-translation">Obtenir des Réglages de l'index</target>
         <jms:reference-file line="97">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee485ef50d127d2c51fe0091051d8c390d03ed59" resname="Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." approved="yes">
@@ -3403,24 +3400,24 @@
         <target state="translated">Donne la possibilité à votre application de communiquer avec Phraseanet. Ce Webhook peut être utilisé pour déclencher des actions sur l'application distante.</target>
         <jms:reference-file line="85">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f9b0c22e143c938fbb3b27bcb023c4b1b7fcaa85" resname="Go 1 frame backward">
+      <trans-unit id="f9b0c22e143c938fbb3b27bcb023c4b1b7fcaa85" resname="Go 1 frame backward" approved="no">
         <source>Go 1 frame backward</source>
-        <target state="new">Go 1 frame backward</target>
+        <target state="needs-translation">Reculer d'une image</target>
         <jms:reference-file line="144">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4e2b39ab7844862245671d700262cd2796065995" resname="Go 1 frame forward">
+      <trans-unit id="4e2b39ab7844862245671d700262cd2796065995" resname="Go 1 frame forward" approved="no">
         <source>Go 1 frame forward</source>
-        <target state="new">Go 1 frame forward</target>
+        <target state="needs-translation">Avancer d'une Image</target>
         <jms:reference-file line="145">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="33e74229ea973f6b2cbcad4ed51164c57dbf90f5" resname="Go to end point">
+      <trans-unit id="33e74229ea973f6b2cbcad4ed51164c57dbf90f5" resname="Go to end point" approved="no">
         <source>Go to end point</source>
-        <target state="new">Go to end point</target>
+        <target state="needs-translation">Aller au point de sortie</target>
         <jms:reference-file line="146">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9a0e9534e78014aa447ad4d3d075a6c2192a63b7" resname="Go to start point">
+      <trans-unit id="9a0e9534e78014aa447ad4d3d075a6c2192a63b7" resname="Go to start point" approved="no">
         <source>Go to start point</source>
-        <target state="new">Go to start point</target>
+        <target state="needs-translation">Aller au point d'entrée</target>
         <jms:reference-file line="143">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61dedcf053ff33692baacbf7789c5d7195d9acbe" resname="Good" approved="yes">
@@ -3778,9 +3775,9 @@
         <target state="translated">Conserver la synchronisation entre Bridge et les API clientes.</target>
         <jms:reference-file line="41">TaskManager/Job/BridgeJob.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="266695479a949eec44dea9db4e15fba00163f04e" resname="Keyboard shortcuts">
+      <trans-unit id="266695479a949eec44dea9db4e15fba00163f04e" resname="Keyboard shortcuts" approved="no">
         <source>Keyboard shortcuts</source>
-        <target state="new">Keyboard shortcuts</target>
+        <target state="needs-translation">Raccourcis claviers</target>
         <jms:reference-file line="121">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa288d5bdc9be4c044885fa43c6f3758a1087d5a" resname="Keywords used for indexing purposes by search engines robots" approved="yes">
@@ -3855,9 +3852,9 @@
         <jms:reference-file line="38">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="103">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="89b86ab0e66f527166d98df92ddbcf5416ed58f6" resname="Language">
+      <trans-unit id="89b86ab0e66f527166d98df92ddbcf5416ed58f6" resname="Language" approved="no">
         <source>Language</source>
-        <target state="new">Language</target>
+        <target state="needs-translation">Langue</target>
         <jms:reference-file line="590">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="863cb39fbe7d70597076af1960b7ae4618d9e1bc" resname="Last Name" approved="yes">
@@ -4315,9 +4312,9 @@
         <target state="translated">Déplacer les %countable% enregistrements sélectionnés vers la collection choisie dans la liste.</target>
         <jms:reference-file line="19">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="578802532119842451cf2f32501f8960c08b5a83" resname="Move down range">
+      <trans-unit id="578802532119842451cf2f32501f8960c08b5a83" resname="Move down range" approved="no">
         <source>Move down range</source>
-        <target state="new">Move down range</target>
+        <target state="needs-translation">Déplacer le chapitre vers le bas</target>
         <jms:reference-file line="148">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a23e846598d5b848ec45e7cd72b01968931df4e0" resname="Move one record to the chosen collection in the list." approved="yes">
@@ -4325,9 +4322,9 @@
         <target state="translated">Déplacer l'enregistrement vers la collection choisie dans la liste.</target>
         <jms:reference-file line="17">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ac241824e51036d5d5e4776dff6bea366e965428" resname="Move up range">
+      <trans-unit id="ac241824e51036d5d5e4776dff6bea366e965428" resname="Move up range" approved="yes">
         <source>Move up range</source>
-        <target state="new">Move up range</target>
+        <target state="translated">Déplacer le chapitre vers le haut</target>
         <jms:reference-file line="147">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="912e8c55972e49b4ced938c1073b4f04179d6170" resname="Moves records" approved="yes">
@@ -4365,14 +4362,14 @@
         <target state="translated">Nom ou e-mail</target>
         <jms:reference-file line="175">admin/publications/fiche.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c32866abd2e56a7907abc6f3e140d9d27eff8c24" resname="Navigate to end point">
+      <trans-unit id="c32866abd2e56a7907abc6f3e140d9d27eff8c24" resname="Navigate to end point" approved="no">
         <source>Navigate to end point</source>
-        <target state="new">Navigate to end point</target>
+        <target state="needs-translation">Aller au point de sortie</target>
         <jms:reference-file line="130">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="88c17a83e03b3c1aeb617879a51bddeb39ede0e1" resname="Navigate to entry point">
+      <trans-unit id="88c17a83e03b3c1aeb617879a51bddeb39ede0e1" resname="Navigate to entry point" approved="no">
         <source>Navigate to entry point</source>
-        <target state="new">Navigate to entry point</target>
+        <target state="needs-translation">Aller au point d'entrée</target>
         <jms:reference-file line="129">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="611ce61a8afa84c06dd4ae06d9405b50d7cadc70" resname="Ne pas autoriser" approved="yes">
@@ -4470,9 +4467,9 @@
         <target state="translated">Aucune correspondance trouvée</target>
         <jms:reference-file line="8">web/geonames/city_list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8ff49677b7d397b0de712de733cd8bc88ef22d3" resname="No metadata available">
+      <trans-unit id="f8ff49677b7d397b0de712de733cd8bc88ef22d3" resname="No metadata available" approved="no">
         <source>No metadata available</source>
-        <target state="new">No metadata available</target>
+        <target state="needs-translation">Pas de méta données disponible</target>
         <jms:reference-file line="43">actions/Tools/metadata.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee0ccefc5da5a79647ce65575ea97814db7506b7" resname="No participants specified" approved="yes">
@@ -4672,14 +4669,14 @@
         <target state="translated">Un document ne peut être modifié.</target>
         <jms:reference-file line="7">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="380c40df62790a02a41c15dce1ad9c4296bf30ee" resname="One frame backward">
+      <trans-unit id="380c40df62790a02a41c15dce1ad9c4296bf30ee" resname="One frame backward" approved="no">
         <source>One frame backward</source>
-        <target state="new">One frame backward</target>
+        <target state="needs-translation">Reculer d'une image</target>
         <jms:reference-file line="126">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d08d68344cbb5ee29b2303d9c70398f87ac9a6f1" resname="One frame forward">
+      <trans-unit id="d08d68344cbb5ee29b2303d9c70398f87ac9a6f1" resname="One frame forward" approved="no">
         <source>One frame forward</source>
-        <target state="new">One frame forward</target>
+        <target state="needs-translation">Avancer d'une image</target>
         <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ae26e7b698cf33577df1bd9fd55ddd1d0771802" resname="Only %nbEditableDocuments% records can be modified." approved="yes">
@@ -5530,9 +5527,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="34">Media/Subdef/Image.php</jms:reference-file>
         <jms:reference-file line="34">Media/Subdef/Unknown.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="db7741b4a5e42acd8d4e758ae50075157a0c08b7" resname="Remove current Range">
+      <trans-unit id="db7741b4a5e42acd8d4e758ae50075157a0c08b7" resname="Remove current Range" approved="no">
         <source>Remove current Range</source>
-        <target state="new">Remove current Range</target>
+        <target state="needs-translation">Supprimer le chapitre</target>
         <jms:reference-file line="142">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc3585af6b531a557832fda9338e178f5c1012d8" resname="Remove from basket" approved="yes">
@@ -6135,9 +6132,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="99">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="16">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="970f057325af27424f32675051fea5366873b007" resname="Space bar">
+      <trans-unit id="970f057325af27424f32675051fea5366873b007" resname="Space bar" approved="yes">
         <source>Space bar</source>
-        <target state="new">Space bar</target>
+        <target state="translated">Barre espace</target>
         <jms:reference-file line="135">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="65b0c8a364240958c67c41a02d93ad751f5e3796" resname="Stamp logo" approved="yes">
@@ -6750,9 +6747,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="9">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="8">prod/Story/Reorder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop">
+      <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="no">
         <source>Toggle loop</source>
-        <target state="new">Toggle loop</target>
+        <target state="needs-translation">Boucle</target>
         <jms:reference-file line="132">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1141eb96836ed960ae0be11b9889597388b5df0" resname="Token" approved="yes">
@@ -8226,9 +8223,9 @@ La base de compte sera définitivement perdus.</target>
         <target state="translated">Êtes-vous sûr de vouloir vider la collection ?</target>
         <jms:reference-file line="127">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3e0962ce3e9eefc683221d80482eb2a8365283a4" resname="admin::base:collection: identifiant">
+      <trans-unit id="3e0962ce3e9eefc683221d80482eb2a8365283a4" resname="admin::base:collection: identifiant" approved="no">
         <source>admin::base:collection: identifiant</source>
-        <target state="new">admin::base:collection: identifiant</target>
+        <target state="needs-translation">Collection id ("base_id" coté API)</target>
         <jms:reference-file line="32">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="269b95b540fe8bf5ea80be9c379e8462b0f198aa" resname="admin::base:collection: minilogo actuel" approved="yes">
@@ -8784,9 +8781,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Un utilisateur s'est inscrit</target>
         <jms:reference-file line="29">Notification/Mail/MailInfoSomebodyAutoregistered.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation">
+      <trans-unit id="d515b5152446301602332e06b1d84bf3974ca24d" resname="admin::search-engine: general-aggregation" approved="yes">
         <source>admin::search-engine: general-aggregation</source>
-        <target state="new">admin::search-engine: general-aggregation</target>
+        <target state="translated">Réglage d'agrégation</target>
         <jms:reference-file line="5">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
@@ -8866,9 +8863,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Nouvel utilisateur</target>
         <jms:reference-file line="24">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
+      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="yes">
         <source>admin::userlist: filterguestuser</source>
-        <target state="new">admin::userlist: filterguestuser</target>
+        <target state="translated">Filtrer les utilisateurs invité</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
@@ -9454,29 +9451,29 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="56">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="72">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="751a7df4249ede5126600fd5e11560b3300c8dd5" resname="create_subdef_button_label">
+      <trans-unit id="751a7df4249ede5126600fd5e11560b3300c8dd5" resname="create_subdef_button_label" approved="no">
         <source>create_subdef_button_label</source>
-        <target state="new">create_subdef_button_label</target>
+        <target state="needs-translation">Ajouter une sous définition</target>
         <jms:reference-file line="321">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cbfca5bce768bcbbc805fe6c760e2a2f8822cd3d" resname="create_subdef_modal_access_class">
+      <trans-unit id="cbfca5bce768bcbbc805fe6c760e2a2f8822cd3d" resname="create_subdef_modal_access_class" approved="yes">
         <source>create_subdef_modal_access_class</source>
-        <target state="new">create_subdef_modal_access_class</target>
+        <target state="translated">Réglage de la sous definition</target>
         <jms:reference-file line="337">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c0ab98408d8927057da50bd859b54be94790671" resname="create_subdef_modal_access_class_document">
+      <trans-unit id="1c0ab98408d8927057da50bd859b54be94790671" resname="create_subdef_modal_access_class_document" approved="no">
         <source>create_subdef_modal_access_class_document</source>
-        <target state="new">create_subdef_modal_access_class_document</target>
+        <target state="needs-translation">Droits Document</target>
         <jms:reference-file line="339">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e89fa7a8810739fadead8de666e074cd01b5dca5" resname="create_subdef_modal_access_class_no_restriction">
+      <trans-unit id="e89fa7a8810739fadead8de666e074cd01b5dca5" resname="create_subdef_modal_access_class_no_restriction" approved="no">
         <source>create_subdef_modal_access_class_no_restriction</source>
-        <target state="new">create_subdef_modal_access_class_no_restriction</target>
+        <target state="needs-translation">Libre accès</target>
         <jms:reference-file line="341">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="864a4186d641bbd4bfc168879d9f6717fdb7b957" resname="create_subdef_modal_access_class_preview">
+      <trans-unit id="864a4186d641bbd4bfc168879d9f6717fdb7b957" resname="create_subdef_modal_access_class_preview" approved="yes">
         <source>create_subdef_modal_access_class_preview</source>
-        <target state="new">create_subdef_modal_access_class_preview</target>
+        <target state="translated">Droits sous-définition</target>
         <jms:reference-file line="340">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="551f21e97ef6df698ebcddb436321a4fb4596e3b" resname="create_subdef_modal_presets">
@@ -9802,9 +9799,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">help::help-section-bullet: quotation-marks-allow</target>
         <jms:reference-file line="29">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2c7c99c6e44d0f6117f812b18739f8990ebb8052" resname="help::help-section-bullet: remove-advance-search">
+      <trans-unit id="2c7c99c6e44d0f6117f812b18739f8990ebb8052" resname="help::help-section-bullet: remove-advance-search" approved="yes">
         <source>help::help-section-bullet: remove-advance-search</source>
-        <target state="new">help::help-section-bullet: remove-advance-search</target>
+        <target state="translated">Supprimer les filtres de recherche avancée</target>
         <jms:reference-file line="19">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="76544223abc0670157f5a270138a638283071678" resname="help::help-section-bullet: search-in-a-specific-field">
@@ -9812,29 +9809,29 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">help::help-section-bullet: search-in-a-specific-field</target>
         <jms:reference-file line="30">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ac8d5acf555e427edbdcb05033256148d4bf9204" resname="help::help-section-bullet: search-in-document">
+      <trans-unit id="ac8d5acf555e427edbdcb05033256148d4bf9204" resname="help::help-section-bullet: search-in-document" approved="yes">
         <source>help::help-section-bullet: search-in-document</source>
-        <target state="new">help::help-section-bullet: search-in-document</target>
+        <target state="translated">Rechercher en mode Documents ou en mode Reportages</target>
         <jms:reference-file line="18">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d37e6d50ca4af373ad217e5c6aa905f0deb49791" resname="help::help-section-bullet: use-EXCEPT-operator">
+      <trans-unit id="d37e6d50ca4af373ad217e5c6aa905f0deb49791" resname="help::help-section-bullet: use-EXCEPT-operator" approved="yes">
         <source>help::help-section-bullet: use-EXCEPT-operator</source>
-        <target state="new">help::help-section-bullet: use-EXCEPT-operator</target>
+        <target state="translated">L'opérateur SAUF permet d’exclure un terme de la recherche</target>
         <jms:reference-file line="28">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f1705105cd12c7037b4a27b97b9453602ac45ebd" resname="help::help-section-bullet: use-OR-between-terms">
+      <trans-unit id="f1705105cd12c7037b4a27b97b9453602ac45ebd" resname="help::help-section-bullet: use-OR-between-terms" approved="no">
         <source>help::help-section-bullet: use-OR-between-terms</source>
-        <target state="new">help::help-section-bullet: use-OR-between-terms</target>
+        <target state="needs-translation">L'opérateur OU permet de rechercher plusieurs termes contenus dans les notices des médias</target>
         <jms:reference-file line="27">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c012913adefe76f9285c687ed30146a950f95c2c" resname="help::help-section-title: search-tips">
+      <trans-unit id="c012913adefe76f9285c687ed30146a950f95c2c" resname="help::help-section-title: search-tips" approved="yes">
         <source>help::help-section-title: search-tips</source>
-        <target state="new">help::help-section-title: search-tips</target>
+        <target state="translated">Quelques astuces de recherche :</target>
         <jms:reference-file line="24">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d432c25580313c9fdcd73ee53506d69d852cd2cd" resname="help::help-section-title: sorry-no-result">
+      <trans-unit id="d432c25580313c9fdcd73ee53506d69d852cd2cd" resname="help::help-section-title: sorry-no-result" approved="yes">
         <source>help::help-section-title: sorry-no-result</source>
-        <target state="new">help::help-section-title: sorry-no-result</target>
+        <target state="translated">Désolé, votre recherche ne retourne aucun résultat.</target>
         <jms:reference-file line="15">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
@@ -9879,19 +9876,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">index::advance_search: facet-values-order</target>
         <jms:reference-file line="732">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dfb02fcdeb804315cd6ad8388efcfb4ccc4abf38" resname="index::advance_search: hidden-facet-values-order">
+      <trans-unit id="dfb02fcdeb804315cd6ad8388efcfb4ccc4abf38" resname="index::advance_search: hidden-facet-values-order" approved="no">
         <source>index::advance_search: hidden-facet-values-order</source>
-        <target state="new">index::advance_search: hidden-facet-values-order</target>
+        <target state="needs-translation">Facettes Masquées</target>
         <jms:reference-file line="749">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits">
+      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="no">
         <source>index::advance_search: order-by-hits</source>
-        <target state="new">index::advance_search: order-by-hits</target>
+        <target state="needs-translation">Trier les facettes par hits</target>
         <jms:reference-file line="738">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation">
+      <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="no">
         <source>index:advanced-preferences:: use truncation</source>
-        <target state="new">index:advanced-preferences:: use truncation</target>
+        <target state="needs-translation">Activer la troncature</target>
         <jms:reference-file line="312">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
@@ -10910,9 +10907,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="55">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="71">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description">
+      <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description" approved="no">
         <source>print:: description</source>
-        <target state="new">print:: description</target>
+        <target state="needs-translation">Description</target>
         <jms:reference-file line="23">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
@@ -11224,9 +11221,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Remplacer le terme</target>
         <jms:reference-file line="19">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="556186e33fc15d5397f8b5f7a6855e822b354f9b" resname="prod::toolbar : video editor">
+      <trans-unit id="556186e33fc15d5397f8b5f7a6855e822b354f9b" resname="prod::toolbar : video editor" approved="no">
         <source>prod::toolbar : video editor</source>
-        <target state="new">prod::toolbar : video editor</target>
+        <target state="needs-translation">Outils video</target>
         <jms:reference-file line="72">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ad73c8fd370f62ccd3bf50cd9cc3563aed5273c" resname="prod::tools: document" approved="yes">
@@ -11235,9 +11232,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="41">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record">
+      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record" approved="no">
         <source>prod:app trash: also-move-record</source>
-        <target state="new">prod:app trash: also-move-record</target>
+        <target state="needs-translation">Déplacer aussi les enregistrements</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete">
