@@ -205,6 +205,12 @@ class OAuth2Controller extends Controller
         $userAuthProvider = $this->getUserAuthProviderRepository()
             ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
 
+        if($userAuthProvider == null){
+            unset($params['state']);
+
+            return $this->app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
+        }
+
         try {
             $user = $this->getAuthenticationSuggestionFinder()->find($token);
         } catch (NotAuthenticatedException $e) {
