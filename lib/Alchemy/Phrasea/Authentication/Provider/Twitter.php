@@ -69,14 +69,16 @@ class Twitter extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate()
+    public function authenticate(array $params = array())
     {
+        $params = array_merge(['providerId' => $this->getId()], $params);
+
         $code = $this->twitter->request(
             'POST',
             $this->twitter->url('oauth/request_token', ''),
             ['oauth_callback' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                ['providerId' => $this->getId()],
+                $params,
                 UrlGenerator::ABSOLUTE_URL
             )]
         );
