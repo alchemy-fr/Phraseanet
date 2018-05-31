@@ -1,0 +1,102 @@
+<table cellspacing="0">
+    <tr class="personalise-logo-row-container">
+        <td>
+            {{ form_widget(form.originalChoiceInput, { 'attr': {'class': 'choice-radio'} }) }}
+            <div class="image-container">
+                <img id="original-image-placeholder" src="/assets/common/images/logo.png"/>
+            </div>
+            <a href="#">{{ 'prod::setup: download gabari' | trans }}</a>
+        </td>
+        <td>
+            {{ form_widget(form.personaliseChoiceInput) }}
+            <span id="help-text">{{ 'prod::setup: help text' | trans }}</span>
+            <span id="error-text"></span>
+            <div class="image-container" id="personalize-image-container">
+                <img id="personalise-image-placeholder"/>
+            </div>
+            <div>
+                {{ form_widget(form.personalizeLogoInput) }}
+                <button id="select-logo-btn">{{ 'prod::setup: select file' | trans }}</button>
+            </div>
+        </td>
+    </tr>
+    {{ form_widget(form.logoChoice) }}
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var errorDimension = '{{ 'prod::setup: error text dimension' | trans }}';
+        var errorFileType = '{{ 'prod::setup: error text file type' | trans }}';
+        //by default select original logo
+        $('#general_personalize-logo-choice_originalChoiceInput_0').attr('checked', true);
+        $('#general_personalize-logo-choice_logoChoice').val('original');
+
+        $('#help-text').show();
+        $('#personalize-image-container').hide();
+        $('#error-text').hide();
+
+        $('input[type=radio]').on('change', function () {
+            $('#general_personalize-logo-choice_logoChoice').val($(this).val());
+            $(this).closest('td').siblings().find('input').prop('checked', false);
+        });
+
+        $('#select-logo-btn').on('click', function (e) {
+            e.stopPropagation();
+            $('#general_personalize-logo-choice_personalizeLogoInput').trigger('click');
+        });
+
+        $("#general_personalize-logo-choice_personalizeLogoInput").change(function () {
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var image = new Image();
+                    image.src = e.target.result;
+
+                    //Validate the File Height and Width.
+                    image.onload = function () {
+                        var height = this.height;
+                        var width = this.width;
+
+                        //check dimensions
+                        if (height > 42 || width > 52) {
+                            debugger;
+                            $('#error-text').text(errorDimension);
+                            $('#error-text').show();
+                            $('#help-text').hide();
+                            $('#personalize-image-container').hide();
+                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                            return false;
+                        }
+
+                        //check file extension
+                        var ext = $('#general_personalize-logo-choice_personalizeLogoInput').val().split('.').pop().toLowerCase();
+                        if (ext != 'png') {
+                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                            $('#error-text').text(errorFileType);
+                            $('#error-text').show();
+                            $('#help-text').hide();
+                            $('#personalize-image-container').hide();
+                            return false;
+                        }
+
+                        $('#personalize-image-container').show();
+                        $('#error-text').hide();
+                        $('#help-text').hide();
+                        $('#personalise-image-placeholder').attr('src', e.target.result);
+                        return true;
+                    };
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    });
+
+</script>
+

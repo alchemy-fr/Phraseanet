@@ -38,16 +38,30 @@
         <fieldset>
             <legend>{{ daform.vars['label'] }}</legend>
             {% for formdata in daform %}
-                <div class="control-group">
-                    {{ form_errors(formdata) }}
-                    {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
-                    <div class="controls">
-                        {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
-                    </div>
+                {% if formdata.vars['attr'] is defined and formdata.vars['attr']['id'] is defined
+                and formdata.vars['attr']['id'] == 'personalize-logo-container' %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {% include 'admin/personalisation_logo.html.twig' with {'form': formdata} %}
+                        </div>
 
-                    <div>{{ formdata.vars['help_message'] }}</div>
-                    {{ form_rest(formdata) }}
-                </div>
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% else %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                        </div>
+
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% endif %}
             {% endfor %}
             {{ form_rest(daform) }}
         </fieldset>
