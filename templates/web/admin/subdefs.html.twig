@@ -244,12 +244,14 @@
             }
 
 
-            $("#dialog-form").dialog({
+            var subdefCreateDialog = $("#dialog-form").dialog({
                 autoOpen: false,
-                height: 420,
-                width: 300,
+                width: 382,
                 modal: true,
                 buttons: {
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    },
                     "Create a Subdef": function () {
                         var bValid = true;
 
@@ -268,15 +270,14 @@
                             $(this).dialog("close");
                             $('form.subdefs').submit();
                         }
-                    },
-                    Cancel: function () {
-                        $(this).dialog("close");
                     }
                 },
                 close: function () {
                     allFields.val("").removeClass("ui-state-error");
                 }
             });
+
+            subdefCreateDialog.closest('.ui-dialog').addClass('dialog_container');
 
             $("#create-subdef")
             // .button()
@@ -335,28 +336,37 @@
                 <label for="name">{{ 'create_subdef_modal_subdefinition_name' | trans }}</label>
                 <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
                 <label for="accessclass">{{ 'create_subdef_modal_access_class' | trans }}</label>
-                <select name="accessclass" id="accessclass">
-                    <option value="document">{{ 'create_subdef_modal_access_class_document' | trans }}</option>
-                    <option value="preview" selected="selected">{{ 'create_subdef_modal_access_class_preview' | trans }}</option>
-                    <option value="thumbnail">{{ 'create_subdef_modal_access_class_no_restriction' | trans }}</option>
-                </select>
+                <div class="selectdiv">
+                    <select name="accessclass" id="accessclass">
+                        <option value="document">{{ 'create_subdef_modal_access_class_document' | trans }}</option>
+                        <option value="preview"
+                                selected="selected">{{ 'create_subdef_modal_access_class_preview' | trans }}</option>
+                        <option value="thumbnail">{{ 'create_subdef_modal_access_class_no_restriction' | trans }}</option>
+                    </select>
+                </div>
                 <label for="subviewType">{{ 'create_subdef_modal_record_phraseanet_type' | trans }}</label>
-                <select name="subviewType" id="subviewType" onchange="subview_type(this)">
-                    <option>{{ 'Choisir' | trans }}</option>
-                    <option value="image">{{ 'image' | trans }}</option>
-                    <option value="video">{{ 'video' | trans }}</option>
-                    <option value="audio">{{ 'audio' | trans }}</option>
-                    <option value="document">{{ 'document' | trans }}</option>
-                    <option value="flash">{{ 'flash' | trans }}</option>
-                </select>
+                <div class="selectdiv">
+                    <select name="subviewType" id="subviewType" onchange="subview_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="image">{{ 'image' | trans }}</option>
+                        <option value="video">{{ 'video' | trans }}</option>
+                        <option value="audio">{{ 'audio' | trans }}</option>
+                        <option value="document">{{ 'document' | trans }}</option>
+                        <option value="flash">{{ 'flash' | trans }}</option>
+                    </select>
+                </div>
                 <label for="mediaType">{{ 'create_subdef_modal_preview_mediatype' | trans }}</label>
-                <select name="mediaType" id="mediaType" onchange="media_type(this)">
-                    <option>{{ 'Choisir' | trans }}</option>
-                </select>
+                <div class="selectdiv">
+                    <select name="mediaType" id="mediaType" onchange="media_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
                 <label for="presets">{{ 'create_subdef_modal_presets' | trans }}</label>
-                <select name="presets" id="presets">
-                    <option>{{ 'Choisir' | trans }}</option>
-                </select>
+                <div class="selectdiv">
+                    <select name="presets" id="presets">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
             </fieldset>
         </form>
     </div>

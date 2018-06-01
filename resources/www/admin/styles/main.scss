@@ -231,6 +231,139 @@ div.switch_right.unchecked {
 .ui-datepicker {
   z-index: 1500;
 }
+
+.dialog_container {
+  #template_add_dialog, #user_add_dialog, #dialog-form {
+    &.ui-dialog-content {
+      margin-bottom: 0;
+      margin-top: 8px;
+    }
+    form {
+      margin-bottom: 10px;
+    }
+    label {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #1d1d1d;
+    }
+    input[type=text] {
+      width: 94%;
+      background-color: #ffffff;
+      border: solid 1px #979797;
+    }
+  }
+}
+
+.dialog_container {
+  #dialog-form {
+    .selectdiv {
+      position: relative;
+    }
+    select::-ms-expand {
+      display: none;
+    }
+    .selectdiv:after {
+      content: "";
+      /* background-color: #000; */
+      background-image: url(/assets/common/images/icons/arrow.png);
+      background-position: center;
+      background-size: cover;
+      right: 18px;
+      top: 9px;
+      position: absolute;
+      width: 8px;
+      height: 12px;
+      pointer-events: none;
+    }
+    .selectdiv select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      display: block;
+      width: 98%;
+      height: 30px;
+      margin: 5px 0px;
+      padding: 0px 8px;
+      line-height: 1.75;
+      -ms-word-break: normal;
+      word-break: normal;
+      border: solid 1px #979797;
+      background-image: linear-gradient(16deg, transparent 50%, transparent 50%),
+      linear-gradient(135deg, transparent, transparent), linear-gradient(to right, #979797, #979797);
+      background-position: calc(100% - 3px) calc(1em + 2px), calc(100% - 4px) calc(1em + 2px), 100% 0;
+      background-size: 5px 5px, 5px 5px, 30px 2.5em;
+      background-repeat: no-repeat;
+      margin-bottom: 20px;
+    }
+    input[type=text] {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.dialog_container {
+  .ui-dialog-title {
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #4a4a4a;
+  }
+  .ui-dialog-titlebar-close {
+    border: none;
+    margin-right: 4px;
+  }
+  .ui-icon.ui-icon-closethick {
+    background-image: url("/assets/common/images/icons/cross-white.png");
+    background-position: center;
+    background-size: cover;
+  }
+  .ui-dialog-buttonpane {
+    border-top: solid 1px #979797;
+  }
+  .ui-dialog-buttonpane .ui-button {
+    border-radius: 15px;
+    background-color: #ffffff;
+    border: solid 1px #4a4a4a;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #1d1d1d;
+    height: 30px;
+    min-width: 135px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .ui-dialog-buttonpane .ui-button:nth-child(2) {
+    background-color: #4a4a4a;
+    color: #FFFFFF;
+  }
+  .ui-button-icon-only {
+    text-indent: -9999px;
+    background: transparent;
+  }
+  .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+    text-align: center;
+  }
+}
+
 /******* BOARD ****************************************************************/
 .board_section {
   margin: 0 0 30px;
