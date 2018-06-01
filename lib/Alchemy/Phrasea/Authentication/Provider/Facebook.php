@@ -50,13 +50,15 @@ class Facebook extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate()
+    public function authenticate(array $params = array())
     {
+        $params = array_merge(['providerId' => $this->getId()], $params);
+
         return new RedirectResponse(
             $this->facebook->getRedirectLoginHelper()->getLoginUrl(
                 $this->generator->generate(
                     'login_authentication_provider_callback',
-                    ['providerId' => $this->getId()],
+                    $params,
                     UrlGenerator::ABSOLUTE_URL
                 ),
                 ['email']

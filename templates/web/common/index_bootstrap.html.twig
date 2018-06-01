@@ -19,7 +19,6 @@
 
         <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
-        {#<script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>#}
         <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -29,8 +28,9 @@
         <script type="text/javascript"
                 src="/assets/vendors/underscore/underscore{% if not app.debug %}.min{% endif %}.js"></script>
         {% block rss %}{% endblock %}
-        {% block javascript %}{% endblock %}
-        <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
+        {% block javascript %}
+            <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui.js"></script>
+        {% endblock %}
     </head>
     <body class="PNB">
         <div id="mainContainer" class="PNB">

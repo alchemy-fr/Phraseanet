@@ -71,7 +71,7 @@
         {% set label %}
             {{ 'prod::toolbar : video editor' | trans }}
         {% endset %}
-        {% set actions = actions|merge( { 'video' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_videoeditor_btn', 'label' : label} }) %}
+        {% set actions = actions|merge( { 'video' : {'icon': "/assets/common/images/icons/icon-video-editor.png", 'class':'TOOL_videoeditor_btn', 'label' : label} }) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::CHGSTATUS')) %}
         {% set label %}

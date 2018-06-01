@@ -18,7 +18,8 @@
                     {{ 'admin::status: texte a afficher' | trans }}
                 </label>
                 <div class="controls">
-                    <input id="label_off" name="label_off" class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
+                    <input id="label_off" onkeyup="inputChanged(this);return(false);" name="label_off"
+                           class="input-xlarge" type="text" value="{{ status['labeloff'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -82,7 +83,8 @@
                     {{ 'admin::status: texte a afficher' | trans }}
                 </label>
                 <div class="controls">
-                    <input id="label_on" name="label_on" class="input-xlarge" type="text" value="{{ status['labelon'] }}">
+                    <input id="label_on" onkeyup="inputChanged(this);return(false);" name="label_on"
+                           class="input-xlarge" type="text" value="{{ status['labelon'] }}">
                 </div>
             </div>
             <div class="row-fluid">
@@ -165,7 +167,23 @@
 </form>
 
 <script type="text/javascript">
+    function inputChanged(elem) {
+        if ($(elem).val().length > 0) {
+            //check if contains special characters
+            if (isInvalid($(elem).val())) {
+                $(elem).css('border-color', '#F00');
+            } else {
+                $(elem).css('border-color', '');
+            }
+        } else {
+            $(elem).css('border-color', '#F00');
+        }
+    }
 
+    function isInvalid(string) {
+        var validText = new RegExp(/[!@#$%^&*()]+/);
+        return validText.test(string);
+    }
 
 $(document).ready(function(){
     var selected_files = [];
@@ -213,7 +231,17 @@ $(document).ready(function(){
     });
 
     $("#form_submitter").bind('click', function(){
-
+        if ($("[name=label_off]").val().length === 0) {
+            $("[name=label_off]").css('border-color', '#F00');
+            return;
+        }
+        if ($("[name=label_on]").val().length === 0) {
+            $("[name=label_on]").css('border-color', '#F00');
+            return;
+        }
+        if (isInvalid($("[name=label_off]").val()) || isInvalid($("[name=label_on]").val())) {
+            return;
+        }
         if( selected_files.length > 0 ) {
            $.each( selected_files, function(i, data) {
                 data.submit();

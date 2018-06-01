@@ -47,7 +47,7 @@
     $(document).ready(function(){
         var offsets = [
             {% for collection in collections|sort_collections %}
-                {% if not loop.first %},{% endif %} {{ collection.get_ord() }}
+                {% if not loop.first %},{% endif %} {{ loop.index }}
             {% endfor %}
         ];
         var select =  $("#coll-order");
@@ -91,13 +91,13 @@
                 data: {order: order},
                 url: '{{ path('admin_database_submit_collections_order', {'databox_id': app['request'].attributes.get('databox_id')}) }}',
                 beforeSend : function() {
-                    $this.prop('disabled',true)
+                    $this.prop('disabled',true);
                 },
                 success : function(datas) {
-                    var html = _.template($("#alert_"+ (datas.success ? "success" : "error") +"_tpl").html(), {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $('#notification').html(html({
                         content:datas.msg
-                    });
-                    $('#notification').html(html);
+                    }));
                     AdminApp.LeftView.reloadTree('bases:bases', true);
                 },
                 complete : function() {

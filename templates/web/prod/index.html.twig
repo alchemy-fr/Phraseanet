@@ -22,10 +22,10 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input class="ck_{{collection["base_id"]}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
+                                        <input class="ck_{{base_id}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
 
-                                            id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                            name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                            id="ck_{{base_id}}_{{unique_id}}" type="checkbox"
+                                            name="bases[]" value="{{base_id}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
                                     <td>
                                         <label style="line-height: 18px;"
@@ -89,6 +89,7 @@
         {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
         {% set initialAppState = 'publication' %}
         {% endif %}
+        {% set savedHiddenFacetsList = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'hiddenFacetsList') %}
 
         window.prodApp = ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
@@ -138,7 +139,8 @@
                     },
                     {% endfor %}
                 ]
-            }
+            },
+            savedHiddenFacetsList: {{ savedHiddenFacetsList|json_encode()|raw }}
         });
 
         $(document).ready(function(){
@@ -744,6 +746,8 @@
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
                         {{ 'index::advance_search: disable-facet' | trans }}
                     </label>
+                    <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
+                    <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
         </div>

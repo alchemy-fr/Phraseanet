@@ -19,7 +19,7 @@
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
-    "jake": "latest",
+    "jake": "^8.0.16",
     "js-fixtures": "^1.5.3",
     "mocha": "^4.1.0",
     "path": "^0.12.7",
@@ -37,8 +37,8 @@
   "scripts": {
     "dev": "./node_modules/.bin/gulp sync;",
     "build": "./node_modules/.bin/gulp build;",
-    "postinstall": "./node_modules/.bin/gulp install;",
-    "phraseanet-production-client": "npm uninstall phraseanet-production-client && npm install phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
+    "postinstall": "./node_modules/.bin/gulp -v && ./node_modules/.bin/gulp install;",
+    "phraseanet-production-client": "yarn remove phraseanet-production-client && yarn add phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
   },
   "dependencies": {
     "JSON2": "^0.1.0",
@@ -56,7 +56,6 @@
     "i18next": "^8.4.3",
     "jquery": "~1.11.3",
     "jquery-lazyload": "^1.9.7",
-    "jquery-mobile": "^1.5.0-alpha.1",
     "jquery-simplecolorpicker": "^0.3.1",
     "jquery-treeview": "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e",
     "jquery-ui": "^1.12.1",
@@ -65,10 +64,10 @@
     "jquery.cookie": "^1.4.1",
     "jquery.fancytree": "^2.27.0",
     "normalize-css": "^2.1.0",
-    "npm": "^5.6.0",
+    "npm": "^6.0.0",
     "npm-modernizr": "^2.8.3",
     "phraseanet-production-client": "^0.33.0",
-    "requirejs": "^2.1.22",
+    "requirejs": "^2.3.5",
     "tinymce": "^4.0.28",
     "underscore": "^1.8.3",
     "zxcvbn": "^4.4.2"

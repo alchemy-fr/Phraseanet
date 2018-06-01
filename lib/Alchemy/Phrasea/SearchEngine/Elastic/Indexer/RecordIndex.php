@@ -61,8 +61,8 @@ class RecordIndex implements MappingProvider
         // Collection name (still indexed for facets)
         $mapping->addStringField('collection_name')->disableAnalysis();
 
-        $mapping->addStringField('uuid')->disableIndexing();
-        $mapping->addStringField('sha256')->disableIndexing();
+        $mapping->addStringField('uuid')->disableAnalysis();
+        $mapping->addStringField('sha256')->disableAnalysis();
         $mapping->addStringField('original_name')->disableIndexing();
         $mapping->addStringField('mime')->disableAnalysis();
         $mapping->addStringField('type')->disableAnalysis();
@@ -72,6 +72,8 @@ class RecordIndex implements MappingProvider
         $mapping->addIntegerField('width')->disableIndexing();
         $mapping->addIntegerField('height')->disableIndexing();
         $mapping->addIntegerField('size')->disableIndexing();
+
+        $mapping->addGeoPointField('location');
 
         $mapping->addDateField('created_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
         $mapping->addDateField('updated_on', FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);

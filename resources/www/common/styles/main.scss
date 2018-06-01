@@ -2,6 +2,7 @@
  * Common stylesheet, builded into assets/common/styles/common.css
  */
 @import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
+@import './roboto.scss';
 @import '../../_shared/styles/variables';
 @import '../../vendors/bootstrap/bootstrap';
 @import '../../vendors/bootstrap/responsive';

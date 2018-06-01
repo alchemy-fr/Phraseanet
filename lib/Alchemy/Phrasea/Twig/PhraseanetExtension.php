@@ -66,7 +66,6 @@ class PhraseanetExtension extends \Twig_Extension
             /** @var \appbox $appbox */
             $appbox = $this->app['phraseanet.appbox'];
             $databox = $appbox->get_databox($record->getDataboxId());
-
             foreach ($databox->get_meta_structure() as $meta) {
                 /** @var \databox_field $meta */
                 if ($meta->get_name() === $fieldName) {
@@ -124,6 +123,31 @@ class PhraseanetExtension extends \Twig_Extension
         return $orders[$databoxId][$orderKey];
     }
 
+    /**
+     * @param \databox $databox
+     * @return array
+     */
+    private function retrieveDataboxFieldOrderings(\databox $databox)
+    {
+        $publicOrder = [];
+        $businessOrder = [];
+
+        foreach ($databox->get_meta_structure() as $field) {
+            $fieldName = $field->get_name();
+
+            if (!$field->isBusiness()) {
+                $publicOrder[] = $fieldName;
+            }
+
+            $businessOrder[] = $fieldName;
+        };
+
+        return [
+            'public'   => $publicOrder,
+            'business' => $businessOrder,
+        ];
+    }
+
     public function getRecordFlags(RecordInterface $record)
     {
         $recordStatuses = [];
@@ -157,24 +181,6 @@ class PhraseanetExtension extends \Twig_Extension
         return $recordStatuses;
     }
 
-    public function isGrantedOnDatabox($databoxId, $rights)
-    {
-        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
-
-            return false;
-        }
-
-        $rights = (array) $rights;
-        foreach ($rights as $right) {
-            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * returns true if user is authenticated and has all the passed rights on the base
      * todo : wtf $rights is an array since it's never called with more than 1 right in it ?
@@ -194,6 +200,24 @@ class PhraseanetExtension extends \Twig_Extension
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($rights as $right) {
             if (! $acl->has_right_on_base($baseId, $right)) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isGrantedOnDatabox($databoxId, $rights)
+    {
+        if (false === ($this->app->getAuthenticatedUser() instanceof User)) {
+
+            return false;
+        }
+
+        $rights = (array)$rights;
+        foreach ($rights as $right) {
+            if (false === $this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_sbas($databoxId, $right)) {
 
                 return false;
             }
@@ -267,11 +291,6 @@ class PhraseanetExtension extends \Twig_Extension
         return $this->getSubdefUrl($record, 'thumbnail');
     }
 
-    public function getThumbnailGifUrl(RecordInterface $record)
-    {
-        return $this->getSubdefUrl($record, 'thumbnailgif');
-    }
-
     public function getSubdefUrl(RecordInterface $record, $subdefName)
     {
         /** @var StaticMode $staticMode */
@@ -302,6 +321,11 @@ class PhraseanetExtension extends \Twig_Extension
         );
 
         return $path;
+    }
+
+    public function getThumbnailGifUrl(RecordInterface $record)
+    {
+        return $this->getSubdefUrl($record, 'thumbnailgif');
     }
 
     public function getSubdefSize(RecordInterface $record, $subdefName)
@@ -349,30 +373,5 @@ class PhraseanetExtension extends \Twig_Extension
     public function getName()
     {
         return 'phraseanet';
-    }
-
-    /**
-     * @param \databox $databox
-     * @return array
-     */
-    private function retrieveDataboxFieldOrderings(\databox $databox)
-    {
-        $publicOrder = [];
-        $businessOrder = [];
-
-        foreach ($databox->get_meta_structure() as $field) {
-            $fieldName = $field->get_name();
-
-            if (!$field->isBusiness()) {
-                $publicOrder[] = $fieldName;
-            }
-
-            $businessOrder[] = $fieldName;
-        };
-
-        return [
-            'public'   => $publicOrder,
-            'business' => $businessOrder,
-        ];
     }
 }

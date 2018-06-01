@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\DBAL\Connection;
@@ -747,6 +748,38 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         return $this->technical_data;
+    }
+
+    /**
+     * Return an array containing GPSPosition
+     *
+     * @return array
+     */
+    public function getPositionFromTechnicalInfos()
+    {
+        $positionTechnicalField = [
+            media_subdef::TC_DATA_LATITUDE,
+            media_subdef::TC_DATA_LONGITUDE
+        ];
+        $position = [];
+
+        foreach($positionTechnicalField as $field){
+            $fieldData = $this->get_technical_infos($field);
+
+            if($fieldData){
+                $position[$field] = $fieldData->getValue();
+            }
+        }
+
+        if(count($position) == 2){
+            return [
+                'isCoordComplete' => 1,
+                'latitude' => $position[media_subdef::TC_DATA_LATITUDE],
+                'longitude' => $position[media_subdef::TC_DATA_LONGITUDE]
+            ];
+        }
+
+        return ['isCoordComplete' => 0, 'latitude' => 'false', 'longitude' => 'false'];
     }
 
     /**

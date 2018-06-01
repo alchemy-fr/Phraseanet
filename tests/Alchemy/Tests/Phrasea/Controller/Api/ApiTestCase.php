@@ -101,7 +101,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     {
         $this->setToken($this->userAccessToken);
 
-        $route = '/api/v1/me/structure/';
+        $route = '/api/v1/me/structures/';
 
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
 
@@ -125,6 +125,16 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->assertArrayHasKey('subdefs', $content['response']);
+    }
+
+    public function testRouteMeCollections()
+    {
+        $this->setToken($this->userAccessToken);
+        $route = '/api/v1/me/collections/';
+        $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+        $this->assertArrayHasKey('collections', $content['response']);
     }
 
     protected function evaluateGoodUserItem($data, User $user)

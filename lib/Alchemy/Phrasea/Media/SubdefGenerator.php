@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
 
 class SubdefGenerator
@@ -36,6 +37,8 @@ class SubdefGenerator
      */
     private $logger;
     private $mediavorus;
+    private $tmpFilePath;
+    private $tmpFilesystem;
 
     public function __construct(Application $app, Alchemyst $alchemyst, FilesystemService $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
     {
@@ -48,7 +51,31 @@ class SubdefGenerator
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
+        if ($record->get_hd_file() !== null) {
+            $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
+            $metadatas = $mediaSource->getMetadatas();
+
+            if ($metadatas->containsKey('XMP-xmp:PageImage')) {
+                if(!isset($this->tmpFilesystem)){
+                    $this->tmpFilesystem = Manager::create();
+                }
+                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory();
+
+                try {
+                    $this->app['filesystem']->dumpFile($tmpDir.'/file.jpg', $metadatas->get('XMP-xmp:PageImage')->getValue()->asString());
+                    $this->tmpFilePath = $tmpDir.'/file.jpg';
+                } catch (\Exception $e) {
+                    $this->logger->error(sprintf('Unable to write temporary file : %s', $e->getMessage()));
+                }
+
+            }
+        }
+        $recordType = $record->getType();
+        if(isset($this->tmpFilePath) && $recordType != 'image'){
+            $recordType = 'image';
+        }
+
+        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($recordType)) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
             $subdefs = [];
         }
@@ -118,6 +145,13 @@ class SubdefGenerator
             $record->clearSubdefCache($subdefname);
         }
 
+        if(isset($this->tmpFilesystem)){
+            $this->tmpFilesystem->clean();
+        }
+        if(isset($this->tmpFilePath)){
+            unset($this->tmpFilePath);
+        }
+
         $this->dispatch(
             RecordEvents::SUB_DEFINITIONS_CREATED,
             new SubDefinitionsCreatedEvent(
@@ -135,8 +169,12 @@ class SubdefGenerator
 
                 return;
             }
+            if(isset($this->tmpFilePath)){
+                $this->alchemyst->turnInto($this->tmpFilePath , $pathdest, $subdef_class->getSpecs());
+            }else{
+                $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
+            }
 
-            $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
         } catch (MediaAlchemystException $e) {
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }

@@ -27,11 +27,16 @@ class EqualExpression extends Node
             throw new QueryException(sprintf('Value "%s" for key "%s" is not valid.', $this->value, $this->key));
         }
 
-        $query = [
-            'term' => [
-                $this->key->getIndexField($context, true) => $this->value
-            ]
-        ];
+        if(method_exists($this->key, "buildQuery")) {
+            $query = $this->key->buildQuery($this->value, $context);
+        }
+        else {
+            $query = [
+                'term' => [
+                    $this->key->getIndexField($context, true) => $this->value
+                ]
+            ];
+        }
 
         if ($this->key instanceof QueryPostProcessor) {
             return $this->key->postProcessQuery($query, $context);

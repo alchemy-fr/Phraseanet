@@ -318,9 +318,10 @@
 
 {% block content %}
     <p>
-        <button id="create-subdef" class="btn btn-success">{{ 'Create new subdef' | trans }}</button>
+        <button id="create-subdef" class="btn btn-success">{{ 'create_subdef_button_label' | trans }}</button>
     </p>
-    <div id="dialog-delete-subdef" title="{{ 'Delete the subdef ?' | trans }}" style="display:none;">
+
+    <div id="dialog-delete-subdef" title="{{ 'delete_subdef_dialog_label ?' | trans }}" style="display:none;">
         <p>
             <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
             {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
@@ -331,15 +332,15 @@
         <p class="validateTips"></p>
         <form>
             <fieldset>
-                <label for="name">{{ 'Subdef name' | trans }}</label>
+                <label for="name">{{ 'create_subdef_modal_subdefinition_name' | trans }}</label>
                 <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
-                <label for="accessclass">{{ 'classe d\'acces' | trans }}</label>
+                <label for="accessclass">{{ 'create_subdef_modal_access_class' | trans }}</label>
                 <select name="accessclass" id="accessclass">
-                    <option value="document">{{ 'document' | trans }}</option>
-                    <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
-                    <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
+                    <option value="document">{{ 'create_subdef_modal_access_class_document' | trans }}</option>
+                    <option value="preview" selected="selected">{{ 'create_subdef_modal_access_class_preview' | trans }}</option>
+                    <option value="thumbnail">{{ 'create_subdef_modal_access_class_no_restriction' | trans }}</option>
                 </select>
-                <label for="subviewType">{{ 'subviewType' | trans }}</label>
+                <label for="subviewType">{{ 'create_subdef_modal_record_phraseanet_type' | trans }}</label>
                 <select name="subviewType" id="subviewType" onchange="subview_type(this)">
                     <option>{{ 'Choisir' | trans }}</option>
                     <option value="image">{{ 'image' | trans }}</option>
@@ -348,11 +349,11 @@
                     <option value="document">{{ 'document' | trans }}</option>
                     <option value="flash">{{ 'flash' | trans }}</option>
                 </select>
-                <label for="mediaType">{{ 'mediatype' | trans }}</label>
+                <label for="mediaType">{{ 'create_subdef_modal_preview_mediatype' | trans }}</label>
                 <select name="mediaType" id="mediaType" onchange="media_type(this)">
                     <option>{{ 'Choisir' | trans }}</option>
                 </select>
-                <label for="presets">{{ 'Presets' | trans }}</label>
+                <label for="presets">{{ 'create_subdef_modal_presets' | trans }}</label>
                 <select name="presets" id="presets">
                     <option>{{ 'Choisir' | trans }}</option>
                 </select>
