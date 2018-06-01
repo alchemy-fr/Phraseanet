@@ -19,13 +19,13 @@ class PersonalisationLogoForm extends AbstractType
     {
         $builder->add('originalChoiceInput', 'choice', [
             'label'    => false,
-            'choices'  => ['original' => 'original'],
+            'choices'  => ['original' => 'original-choice-label'],
             'expanded' => true,
 
         ]);
         $builder->add('personaliseChoiceInput', 'choice', [
             'label'    => false,
-            'choices'  => ['personalise' => 'personalise'],
+            'choices'  => ['personalise' => 'personalise-choice-label'],
             'expanded' => true,
 
         ]);

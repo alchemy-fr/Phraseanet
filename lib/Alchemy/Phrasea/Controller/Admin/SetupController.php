@@ -46,6 +46,8 @@ class SetupController extends Controller
         }
 
         if ('POST' === $request->getMethod()) {
+            var_dump($request);
+            die('here');
             $form->submit($request->request->all());
 
             if ($form->isValid()) {
