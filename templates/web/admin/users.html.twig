@@ -308,21 +308,23 @@
             }).dialog('close');
 
             var buttons = {};
-            buttons[language.create_template] = function () {
-                check_new_user(true);
-            };
             buttons[language.annuler] = function () {
                 $('#template_add_dialog').dialog('close');
             };
+            buttons[language.create_template] = function () {
+                check_new_user(true);
+            };
 
-            $('#template_add_dialog').dialog({
+            var templateAddDialog = $('#template_add_dialog').dialog({
                 buttons: buttons,
                 modal: true,
                 resizable: false,
                 draggable: false,
-                width: 500
+                width: 382,
 
             }).dialog('close');
+
+            templateAddDialog.closest('.ui-dialog').addClass('template_add_dialog_container');
 
             function check_new_user(is_template) {
                 var container = is_template ? $('#template_add_dialog') : $('#user_add_dialog');

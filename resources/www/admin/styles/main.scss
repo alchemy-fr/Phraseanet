@@ -231,6 +231,74 @@ div.switch_right.unchecked {
 .ui-datepicker {
   z-index: 1500;
 }
+
+#template_add_dialog.ui-dialog-content {
+  margin-bottom: 0;
+  margin-top: 8px;
+}
+
+.template_add_dialog_container {
+  .ui-dialog-title {
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #4a4a4a;
+  }
+  .ui-dialog-titlebar-close {
+    border: none;
+    margin-right: 4px;
+  }
+  .ui-icon.ui-icon-closethick {
+    background-image: url("/assets/common/images/icons/button-close-gray.png");
+    background-position: center;
+  }
+  .ui-dialog-buttonpane .ui-button {
+    border-radius: 15px;
+    background-color: #ffffff;
+    border: solid 1px #4a4a4a;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #1d1d1d;
+    height: 30px;
+    min-width: 135px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .ui-dialog-buttonpane .ui-button:nth-child(2) {
+    background-color: #4a4a4a;
+    color: #FFFFFF;
+  }
+  #template_add_dialog {
+    form {
+      margin-bottom: 10px;
+    }
+    label: {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #1d1d1d;
+    }
+    #template-add-input {
+      width: 94%;
+      background-color: #ffffff;
+      border: solid 1px #979797;
+    }
+  }
+}
+
 /******* BOARD ****************************************************************/
 .board_section {
   margin: 0 0 30px;
