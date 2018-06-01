@@ -292,20 +292,22 @@
             });
 
             var buttons = {};
-            buttons[language.create_user] = function () {
-                check_new_user(false);
-            };
             buttons[language.annuler] = function () {
                 $('#user_add_dialog').dialog('close')
             };
+            buttons[language.create_user] = function () {
+                check_new_user(false);
+            };
 
-            $('#user_add_dialog').dialog({
+            var userAddDialog = $('#user_add_dialog').dialog({
                 buttons: buttons,
                 modal: true,
                 resizable: false,
                 draggable: false,
-                width: 500
+                width: 382,
             }).dialog('close');
+
+            userAddDialog.closest('.ui-dialog').addClass('dialog_container');
 
             var buttons = {};
             buttons[language.annuler] = function () {
@@ -324,7 +326,7 @@
 
             }).dialog('close');
 
-            templateAddDialog.closest('.ui-dialog').addClass('template_add_dialog_container');
+            templateAddDialog.closest('.ui-dialog').addClass('dialog_container');
 
             function check_new_user(is_template) {
                 var container = is_template ? $('#template_add_dialog') : $('#user_add_dialog');
