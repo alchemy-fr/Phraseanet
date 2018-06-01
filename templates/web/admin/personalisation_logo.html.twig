@@ -82,16 +82,6 @@
                         var height = this.height;
                         var width = this.width;
 
-                        //check dimensions
-                        if (height > 42 || width > 52) {
-                            $('#error-text').text(errorDimension);
-                            $('#error-text').show();
-                            $('#help-text').hide();
-                            $('#personalize-image-container').hide();
-                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
-                            return false;
-                        }
-
                         //check file extension
                         var ext = $('#general_personalize-logo-choice_personalizeLogoInput').val().split('.').pop().toLowerCase();
                         if (ext != 'png') {
@@ -102,6 +92,17 @@
                             $('#personalize-image-container').hide();
                             return false;
                         }
+
+                        //check dimensions
+                        if (height > 42 || width > 52) {
+                            $('#error-text').text(errorDimension);
+                            $('#error-text').show();
+                            $('#help-text').hide();
+                            $('#personalize-image-container').hide();
+                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                            return false;
+                        }
+
                         fileToUpload = input.files[0];
                         $('#personalize-image-container').show();
                         $('#error-text').hide();

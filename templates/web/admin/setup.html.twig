@@ -30,8 +30,7 @@
 </form>
 
 
-
-{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal'}}) }}
+{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal', 'id': 'setupForm'}}) }}
 {{ form_errors(form) }}
 {% for daform in form %}
     {% if daform.vars['label'] != null %}
