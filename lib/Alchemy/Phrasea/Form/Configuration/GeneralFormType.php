@@ -56,6 +56,12 @@ class GeneralFormType extends AbstractType
             'attr'        => ['min' => -1],
             'constraints' => new GreaterThanOrEqual(['value' => -1]),
         ]);
+        $builder->add('personalize-logo-choice', new PersonalisationLogoForm(), [
+            'label' => 'Design of personalization logo section',
+            'attr'  => [
+                'id' => 'personalize-logo-container'
+            ]
+        ]);
     }
 
     public function getName()
