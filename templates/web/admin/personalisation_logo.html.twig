@@ -44,10 +44,6 @@
             $(this).closest('td').siblings().find('input').prop('checked', false);
         });
 
-        $("#general_personalize-logo-choice_personalizeLogoInput").change(function () {
-            readURL(this);
-        });
-
         $("#download-image-template").on('click', function (event) {
             event.preventDefault();
             var imageInBase64 = $('#original-image-placeholder').attr('src');
@@ -69,56 +65,86 @@
             return result;
         };
 
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+        $("#setupForm").fileupload({
+            dataType: 'html',
+            add: function (e, data) {
+                $.each(data.files, function (i, file) {
+                    var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    var image = new Image();
-                    image.src = e.target.result;
+                    reader.readAsDataURL(data.files[0]);
+                    reader.data = data;
+                    reader.file = data.files[0];
 
-                    //Validate the File Height and Width.
-                    image.onload = function () {
-                        var height = this.height;
-                        var width = this.width;
+                    reader.onload = function (_file) {
+                        var image = new Image();
 
-                        //check file extension
-                        var ext = $('#general_personalize-logo-choice_personalizeLogoInput').val().split('.').pop().toLowerCase();
-                        if (ext != 'png') {
-                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
-                            $('#error-text').text(errorFileType);
-                            $('#error-text').show();
-                            $('#help-text').hide();
-                            $('#personalize-image-container').hide();
-                            return false;
+                        image.src = _file.target.result;
+                        image.file = this.file;
+                        image.data = this.data;
+                        image.onload = function () {
+                            var w = this.width,
+                                h = this.height;
+
+                            var ext = this.file.type.split('/').pop().toLowerCase();
+                            if (ext != 'png') {
+                                $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                                $('#error-text').text(errorFileType);
+                                $('#error-text').show();
+                                $('#help-text').hide();
+                                $('#personalize-image-container').hide();
+                                return false;
+                            }
+
+                            if (h > 42 || w > 52) {
+                                $('#error-text').text(errorDimension);
+                                $('#error-text').show();
+                                $('#help-text').hide();
+                                $('#personalize-image-container').hide();
+                                $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                                return false;
+                            }
+
+                            require([
+                                "blueimp.loadimage"
+                            ], function (loadImage) {
+                                loadImage(file, function (img) {
+                                    $('#personalize-image-container').show();
+                                    $('#error-text').hide();
+                                    $('#help-text').hide();
+                                    $('#personalize-image-container').empty().append(img);
+                                }, {
+                                    fileType: /^image\/(png)$/,
+                                    maxSize: 5242880, // 5MB
+                                    maxWidth: 52,
+                                    maxHeight: 42,
+                                });
+                            });
+
+                            fileToUpload = this.data;
                         }
+                    }
 
-                        //check dimensions
-                        if (height > 42 || width > 52) {
-                            $('#error-text').text(errorDimension);
-                            $('#error-text').show();
-                            $('#help-text').hide();
-                            $('#personalize-image-container').hide();
-                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
-                            return false;
-                        }
+                });
 
-                        fileToUpload = input.files[0];
-                        $('#personalize-image-container').show();
-                        $('#error-text').hide();
-                        $('#help-text').hide();
-                        $('#personalise-image-placeholder').attr('src', e.target.result);
-                        return true;
-                    };
-                }
-
-                reader.readAsDataURL(input.files[0]);
+                return false;
+            },
+            submit: function (e, data) {
+            },
+            done: function (e, data) {
             }
-        }
+        });
 
 
+        $("#submitSetupForm").bind('click', function () {
+            if (fileToUpload != null) {
+                fileToUpload.submit();
+            } else {
+                $("#setupForm").submit();
+            }
+        });
     });
 
 </script>
+
 
 
