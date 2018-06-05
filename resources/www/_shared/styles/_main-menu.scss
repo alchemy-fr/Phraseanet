@@ -10,6 +10,7 @@ $mainMenuLinkHoverColor: #000000 !default;
 $mainMenuMarginBottom: 0 !default;
 $mainMenuBottomBorder: none !default;
 
+
 #mainMenu {
   height: $mainMenuHeight;
   line-height: $mainMenuLineHeight;
@@ -19,12 +20,32 @@ $mainMenuBottomBorder: none !default;
   margin-bottom: $mainMenuMarginBottom;
   z-index: 100;
   box-sizing: border-box;
+  .arrow-up {
+    display: none;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 9px solid #d8d8d8;
+  }
+  .mobilemenu {
+    display: none;
+  }
+  .desktopmenu {
+    display: inline-block;
+  }
+  .inline {
+    display: inline-block !important;
+  }
   .show-menu {
     display: none;
     i {
       font-size: 26px;
       vertical-align: middle;
       color: $mainMenuLinkActiveColor;
+    }
+    img {
+      margin-top: 5px;
     }
   }
   ol {
@@ -33,9 +54,8 @@ $mainMenuBottomBorder: none !default;
     padding: 0;
     list-style: none outside none;
   }
-  #custom-link-container {
+  #nav_notification_container {
     display: inline-block;
-    margin-left: 10px;
   }
   #mainLogo {
     margin:0 10px;
@@ -110,34 +130,146 @@ $mainMenuBottomBorder: none !default;
 }
 
 @media screen and (max-width: 760px) {
+  .mobilemenu {
+    display: block;
+  }
   #mainMenu {
     .show-menu {
-      display: block;
+      display: inline-block;
+      cursor: pointer;
     }
-    #nav_menu {
+    .desktopmenu {
       display: none;
+    }
+    #nav_menu_container, #nav_customlink_container, #nav_account_container {
+      position: absolute;
+      top: 35px;
+      width: 172px;
       z-index: 1000;
-      ol {
-        position: static;
-      }
-      li.menu-bar-item {
-        width: 100%;
-        clear: both;
-        background: $mainMenuBackgroundColor;
-        border-bottom: 1px solid $mainMenuLinkActiveColor;
+      .nav_menu {
         z-index: 1000;
-      }
-      li.menu-bar-item a {
+        position: absolute;
+        border-radius: 5px;
+        background-color: #d8d8d8;
         width: 100%;
-        > span {
-          text-align: center;
-          font-size: 14px;
-          font-weight: bold;
-          &.selected {
-            border-top: none !important;
+        .bullet-type {
+          padding: 0;
+        }
+        .bullet-type:before {
+          content: "• ";
+        }
+        li.menu-bar-item {
+          left: 10px;
+          width: 151px;
+          clear: both;
+          border-bottom: 1px solid #b7b7b7;
+          z-index: 1000;
+        }
+        li.menu-bar-item a {
+          width: 100%;
+          > img {
+            float: left;
+            margin-top: 11px;
+            margin-right: 11px;
+            display: block;
+          }
+          > span {
+            text-align: left;
+            font-size: 14px;
+            font-family: Roboto;
+            font-weight: 500;
+            font-style: normal;
+            font-stretch: normal;
+            letter-spacing: normal;
+            color: #4a4a4a;
+            &.selected {
+              border-top: 3px solid transparent;
+            }
+          }
+        }
+        li.menu-bar-item:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+    #nav_menu_container {
+      top: 35px;
+      .nav_menu {
+        top: 9px;
+      }
+      .arrow-up {
+        left: 62px;
+        display: block;
+        position: absolute;
+      }
+    }
+    #nav_customlink_container {
+      display: none;
+      position: relative;
+      left: 10px;
+      width: auto;
+      .nav-wrapper-box {
+        position: absolute;
+        background: #d8d8d8;
+        border-radius: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        top: 9px;
+        .nav_menu {
+          position: relative;
+          li.menu-bar-item {
+            width: 100%;
+            left: 0;
+          }
+          li.menu-bar-item a {
+            > span {
+              padding: 0;
+              display: inline-block;
+            }
           }
         }
       }
+      .arrow-up {
+        left: 82px;
+        display: block;
+        position: absolute;
+      }
+    }
+    #nav_account_container {
+      position: relative;
+      right: 10px;
+      width: auto;
+      .nav-wrapper-box {
+        position: absolute;
+        right: 10px;
+        background: #d8d8d8;
+        border-radius: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        top: 9px;
+        .nav_menu {
+          position: relative;
+          li.menu-bar-item {
+            width: 100%;
+            left: 0;
+          }
+          li.menu-bar-item a {
+            > span {
+              padding: 0;
+              display: inline-block;
+            }
+          }
+        }
+      }
+      .arrow-up {
+        right: 23px;
+        display: block;
+        position: absolute;
+      }
+    }
+    #nav_notification_container {
+      float: right;
+      margin-right: 50px;
     }
   }
 }
