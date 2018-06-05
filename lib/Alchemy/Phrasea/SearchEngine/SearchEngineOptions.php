@@ -36,6 +36,7 @@ class SearchEngineOptions
     const TYPE_ALL = '';
     const SORT_RELEVANCE = 'relevance';
     const SORT_CREATED_ON = 'created_on';
+    const SORT_UPDATED_ON = 'updated_on';
     const SORT_RANDOM = 'random';
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
