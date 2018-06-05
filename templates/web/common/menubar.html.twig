@@ -122,7 +122,9 @@
           </li>
           <div id="nav_customlink_container" class="desktopmenu">
               <div class="arrow-up"></div>
-              <ol class="nav_menu"></ol>
+              <div class="nav-wrapper-box">
+                  <ol class="nav_menu"></ol>
+              </div>
           </div>
           <div id="nav_notification_container">
               {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
@@ -203,65 +205,68 @@
         </ol>
     </div>
 
-    <div class="PNB right mobilemenu" id="nav_account_container" style="left:auto;overflow:hidden;">
+    <div class="PNB right mobilemenu" id="nav_account_container">
         <div class="arrow-up"></div>
-        <ol class="nav_menu">
+        <div class="nav-wrapper-box">
+            <ol class="nav_menu">
 
-            <li class="menu-bar-item">
-                {% if app.getAuthenticator().isAuthenticated() %}
-                    {% if app.getAuthenticatedUser().isGuest %}
-                        <img src="/assets/common/images/icons/menu-name-user.png"/>
-                        <span>
-                {{ 'Guest' | trans }}
-              </span>
-                    {% else %}
-                        <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
+                <li class="menu-bar-item">
+                    {% if app.getAuthenticator().isAuthenticated() %}
+                        {% if app.getAuthenticatedUser().isGuest %}
                             <img src="/assets/common/images/icons/menu-name-user.png"/>
                             <span>
+                {{ 'Guest' | trans }}
+              </span>
+                        {% else %}
+                            <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
+                                <img src="/assets/common/images/icons/menu-name-user.png"/>
+                                <span>
                   {{ app.getAuthenticatedUser().getDisplayName() }}
+                </span>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </li>
+                <li class="menu-bar-item">
+                    {% if app.getAuthenticator().isAuthenticated() %}
+                        <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}"
+                           target="_self">
+                            <img src="/assets/common/images/icons/menu-logout.png"/>
+                            <span>
+                  {{ 'phraseanet:: deconnection' | trans }}
                 </span>
                         </a>
                     {% endif %}
-                {% endif %}
-            </li>
-            <li class="menu-bar-item">
-                {% if app.getAuthenticator().isAuthenticated() %}
-                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}" target="_self">
-                        <img src="/assets/common/images/icons/menu-logout.png"/>
+                </li>
+                <li class="menu-bar-item">
+                    <a target="_blank" href="https://docs.phraseanet.com/4.0/">
+                        <img src="/assets/common/images/icons/menu-help.png"/>
                         <span>
-                  {{ 'phraseanet:: deconnection' | trans }}
-                </span>
-                    </a>
-                {% endif %}
-            </li>
-            <li class="menu-bar-item">
-                <a target="_blank" href="https://docs.phraseanet.com/4.0/">
-                    <img src="/assets/common/images/icons/menu-help.png"/>
-                    <span>
               {{ 'phraseanet:: aide' | trans }}
-                        <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
-                              id="help-trigger"></span>
+                            <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
+                                  id="help-trigger"></span>
             </span>
-                </a>
-            </li>
-            {% if module is defined and module == "prod" %}
+                    </a>
+                </li>
+                {% if module is defined and module == "prod" %}
+                    <li class="menu-bar-item">
+                        <a href="#">
+                            <img src="/assets/common/images/icons/menu-help.png"/>
+                            <span style="" class="shortcuts-trigger">
+                        {{ 'phraseanet:: raccourcis clavier' | trans }}
+                    </span>
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="menu-bar-item">
                     <a href="#">
                         <img src="/assets/common/images/icons/menu-help.png"/>
-                        <span style="" class="shortcuts-trigger">
-                        {{ 'phraseanet:: raccourcis clavier' | trans }}
-                    </span>
+                        <span style="" class="infoDialog"
+                              infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</span>
                     </a>
                 </li>
-            {% endif %}
-            <li class="menu-bar-item">
-                <a href="#">
-                    <img src="/assets/common/images/icons/menu-help.png"/>
-                    <span style="" class="infoDialog"
-                          infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</span>
-                </a>
-            </li>
-        </ol>
+            </ol>
+        </div>
     </div>
 </div>
 
@@ -360,6 +365,7 @@
                 }
                 if ($('#nav_customlink_container').is(":hidden")) {
                     $('#nav_customlink_container').show();
+                    $('#nav_customlink_container').addClass('inline');
                 }
                 if ($('#nav_account_container').is(":visible")) {
                     $('#nav_account_container').hide();
@@ -371,6 +377,7 @@
                 if ($('#nav_menu_container').is(":visible")) {
                     $('#nav_menu_container').hide();
                 }
+                $('#nav_customlink_container').removeClass('inline');
 
             }
         });

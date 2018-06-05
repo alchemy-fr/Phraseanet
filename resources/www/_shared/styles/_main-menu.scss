@@ -34,6 +34,9 @@ $mainMenuBottomBorder: none !default;
   .desktopmenu {
     display: inline-block;
   }
+  .inline {
+    display: inline-block !important;
+  }
   .show-menu {
     display: none;
     i {
@@ -189,25 +192,79 @@ $mainMenuBottomBorder: none !default;
         }
       }
     }
-    #nav_customlink_container {
-      left: 10px;
+    #nav_menu_container {
+      top: 35px;
+      .nav_menu {
+        top: 9px;
+      }
       .arrow-up {
-        margin-left: 82px;
+        left: 62px;
         display: block;
+        position: absolute;
       }
     }
-    #nav_menu_container {
+    #nav_customlink_container {
+      display: none;
+      position: relative;
       left: 10px;
+      width: auto;
+      .nav-wrapper-box {
+        position: absolute;
+        background: #d8d8d8;
+        border-radius: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        top: 9px;
+        .nav_menu {
+          position: relative;
+          li.menu-bar-item {
+            width: 100%;
+            left: 0;
+          }
+          li.menu-bar-item a {
+            > span {
+              padding: 0;
+              display: inline-block;
+            }
+          }
+        }
+      }
       .arrow-up {
-        margin-left: 51px;
+        left: 82px;
         display: block;
+        position: absolute;
       }
     }
     #nav_account_container {
+      position: relative;
       right: 10px;
+      width: auto;
+      .nav-wrapper-box {
+        position: absolute;
+        right: 10px;
+        background: #d8d8d8;
+        border-radius: 5px;
+        padding-right: 10px;
+        padding-left: 10px;
+        top: 9px;
+        .nav_menu {
+          position: relative;
+          li.menu-bar-item {
+            width: 100%;
+            left: 0;
+          }
+          li.menu-bar-item a {
+            > span {
+              padding: 0;
+              display: inline-block;
+            }
+          }
+        }
+      }
       .arrow-up {
-        margin-left: 147px;
+        right: 23px;
         display: block;
+        position: absolute;
       }
     }
     #nav_notification_container {
