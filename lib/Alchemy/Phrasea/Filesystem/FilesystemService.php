@@ -205,6 +205,8 @@ class FilesystemService
                 return 'jpg';
             case 'png':
                 return 'png';
+            case 'pdf':
+                return 'pdf';
         }
 
         return null;
