@@ -120,7 +120,7 @@
           <li class="show-menu" id="toggle-menu-account" style="float: right;margin-right: 16px;">
               <img src="/assets/common/images/icons/menu-user.png"/>
           </li>
-          <div id="nav_customlink_container" class="desktopmenu">
+          <div id="nav_customlink_container">
               <div class="arrow-up"></div>
               <div class="nav-wrapper-box">
                   <ol class="nav_menu"></ol>
@@ -359,7 +359,7 @@
         var windowSize = $(window).width();
         $(window).resize(function (event) {
             windowSize = $(window).width();
-            if (windowSize > 760) {
+            if (windowSize > 1064) {
                 if ($('#nav_menu_container').is(":hidden")) {
                     $('#nav_menu_container').show();
                 }
@@ -370,7 +370,7 @@
                 if ($('#nav_account_container').is(":visible")) {
                     $('#nav_account_container').hide();
                 }
-            } else if (windowSize <= 760) {
+            } else if (windowSize <= 1064) {
                 if ($('#nav_customlink_container').is(":visible")) {
                     $('#nav_customlink_container').hide();
                 }
