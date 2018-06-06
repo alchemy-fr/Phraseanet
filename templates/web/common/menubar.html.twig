@@ -359,7 +359,7 @@
         var windowSize = $(window).width();
         $(window).resize(function (event) {
             windowSize = $(window).width();
-            if (windowSize > 760) {
+            if (windowSize > 1064) {
                 if ($('#nav_menu_container').is(":hidden")) {
                     $('#nav_menu_container').show();
                 }
@@ -370,7 +370,7 @@
                 if ($('#nav_account_container').is(":visible")) {
                     $('#nav_account_container').hide();
                 }
-            } else if (windowSize <= 760) {
+            } else if (windowSize <= 1064) {
                 if ($('#nav_customlink_container').is(":visible")) {
                     $('#nav_customlink_container').hide();
                 }
