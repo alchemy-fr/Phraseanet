@@ -126,28 +126,27 @@
                   <ol class="nav_menu"></ol>
               </div>
           </div>
-          <div id="nav_notification_container">
-              {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-                  <li id="notification_trigger">
-                      <a href="#" style="font-weight:bold;text-decoration:none;">
-            <span>
-              <button class="counter btn btn-danger" style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
-                      {{ app['events-manager'].get_unread_notifications_number }}
-                  {% endif %}
-              </button>
-                {{ 'Notifications' | trans }}
-            </span>
-                      </a>
-                  </li>
-              {% endif %}
-          </div>
       </ol>
 
     </div>
 
     <div class="PNB right desktopmenu" style="left:auto;overflow:hidden;">
         <ol>
+            {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+                <li class="notification_trigger">
+                    <a href="#" style="font-weight:bold;text-decoration:none;">
+            <span>
+              <button class="counter btn btn-danger"
+                      style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
+                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
+                      {{ app['events-manager'].get_unread_notifications_number }}
+                  {% endif %}
+              </button>
+                {{ 'Notifications' | trans }}
+            </span>
+                    </a>
+                </li>
+            {% endif %}
             <li class="user">
                 {% if app.getAuthenticator().isAuthenticated() %}
                     {% if app.getAuthenticatedUser().isGuest %}
@@ -203,6 +202,24 @@
                 {% endif %}
             </li>
         </ol>
+    </div>
+
+    <div class="mobilemenu" style="float: right;margin-right: 50px;">
+        {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+            <li class="notification_trigger">
+                <a href="#" style="font-weight:bold;text-decoration:none;">
+            <span>
+              <button class="counter btn btn-danger"
+                      style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
+                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
+                      {{ app['events-manager'].get_unread_notifications_number }}
+                  {% endif %}
+              </button>
+                {{ 'Notifications' | trans }}
+            </span>
+                </a>
+            </li>
+        {% endif %}
     </div>
 
     <div class="PNB right mobilemenu" id="nav_account_container">
