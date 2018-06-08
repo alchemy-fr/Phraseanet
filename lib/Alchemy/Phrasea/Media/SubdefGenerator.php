@@ -19,11 +19,16 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Specification\Image;
 use MediaVorus\MediaVorus;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
+use Unoconv\Exception\ExceptionInterface as UnoconvException;
+use Unoconv\Exception\RuntimeException;
+use Unoconv\Unoconv;
 
 class SubdefGenerator
 {
@@ -70,12 +75,8 @@ class SubdefGenerator
 
             }
         }
-        $recordType = $record->getType();
-        if(isset($this->tmpFilePath) && $recordType != 'image'){
-            $recordType = 'image';
-        }
 
-        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($recordType)) {
+        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
             $subdefs = [];
         }
@@ -169,14 +170,48 @@ class SubdefGenerator
 
                 return;
             }
-            if(isset($this->tmpFilePath)){
-                $this->alchemyst->turnInto($this->tmpFilePath , $pathdest, $subdef_class->getSpecs());
-            }else{
+
+            if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
+
+                $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
+
+            } elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                $this->generatePdfSubdef($record->get_hd_file()->getPathname(), $pathdest);
+
+            } else {
+
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
+
             }
 
         } catch (MediaAlchemystException $e) {
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
+    }
+
+    private function generatePdfSubdef($source, $pathdest)
+    {
+        try {
+            $mediafile = $this->app['mediavorus']->guess($source);
+        } catch (MediaVorusFileNotFoundException $e) {
+            throw new FileNotFoundException(sprintf('File %s not found', $source));
+        }
+
+        try {
+            if ($mediafile->getFile()->getMimeType() != 'application/pdf') {
+                $this->app['unoconv']->transcode(
+                    $mediafile->getFile()->getPathname(), Unoconv::FORMAT_PDF, $pathdest
+                );
+
+            } else {
+                copy($mediafile->getFile()->getPathname(), $pathdest);
+            }
+        } catch (UnoconvException $e) {
+            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
     }
 }

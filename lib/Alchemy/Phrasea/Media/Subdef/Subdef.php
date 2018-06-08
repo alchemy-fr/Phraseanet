@@ -22,6 +22,7 @@ interface Subdef
     const TYPE_VIDEO = 'video';
     const TYPE_AUDIO = 'audio';
     const TYPE_FLEXPAPER = 'flexpaper';
+    const TYPE_PDF = 'pdf';
     const TYPE_UNKNOWN = 'unknown';
 
     /**
