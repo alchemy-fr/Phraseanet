@@ -29,6 +29,8 @@ use Psr\Log\LoggerInterface;
 use Unoconv\Exception\ExceptionInterface as UnoconvException;
 use Unoconv\Exception\RuntimeException;
 use Unoconv\Unoconv;
+use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
+use MediaAlchemyst\Exception\FileNotFoundException;
 
 class SubdefGenerator
 {
