@@ -186,6 +186,10 @@ $proposalsFacetHoverColor: #FFF !default;
     cursor: pointer;
     line-height: 25px;
     display: inline-block;
+    .color-dot {
+      height: 16px;
+      width: 16px;
+    }
   }
 
   .facetFilter-gradient {

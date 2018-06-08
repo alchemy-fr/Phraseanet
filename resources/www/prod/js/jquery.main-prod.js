@@ -674,7 +674,7 @@ function parseColors(source) {
         if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
             _.forEach(facet.children, function(child) {
                 var title = child.title;
-                child.title = formatColorText(title);
+                child.title = formatColorText(title.toString());
             });
         }
     });
@@ -682,8 +682,9 @@ function parseColors(source) {
 }
 
 function formatColorText(string) {
+    var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     //get color code from text if exist
-    var regexp = /^(.*)\[#([0-9a-fA-F]{6})] (.*)$/;
+    var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
 
 
     var match = string.match(regexp);
@@ -691,10 +692,16 @@ function formatColorText(string) {
         var colorCode = '#' + match[2];
         // //add color circle and re move color code from text;
          var textWithoutColorCode = string.replace('[' + colorCode + ']','');
+         if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
+            textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
+         }
          return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
+    } else {
+        if (textLimit > 0 && string.length > textLimit) {
+            string = string.substring(0, textLimit) + '…';
+        }
+        return string;
     }
-
-    return string;
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
@@ -818,11 +825,11 @@ function getFacetsTree() {
                         s_label.setAttribute("title", facetFilter);
 
                         var length = 15;
-                        var facetFilterString = facetFilter;
-                        if (facetFilterString.length > length) {
-                            facetFilterString = facetFilterString.substring(0, length) + '…';
-                        }
-                        s_label.appendChild(document.createTextNode(facetFilterString));
+                        var facetFilterString = formatColorText(facetFilter.toString(), length);
+
+                        _.each($.parseHTML(facetFilterString), function (elem) {
+                            s_label.appendChild(elem);
+                        });
 
                         var s_closer = document.createElement("A");
                         s_closer.setAttribute("class", "facetFilter-closer");
