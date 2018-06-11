@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use Alchemy\Phrasea\Model\RecordInterface;
 use MediaAlchemyst\Specification\SpecificationInterface;
 
@@ -163,6 +164,8 @@ class FilesystemService
                 return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
             case SpecificationInterface::TYPE_SWF:
                 return 'swf';
+            case PdfSpecification::TYPE_PDF:
+                return 'pdf';
         }
 
         return null;
