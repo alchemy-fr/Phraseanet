@@ -9456,24 +9456,24 @@
         <target state="translated">Create new subview</target>
         <jms:reference-file line="321">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cbfca5bce768bcbbc805fe6c760e2a2f8822cd3d" resname="create_subdef_modal_access_class" approved="yes">
+      <trans-unit id="cbfca5bce768bcbbc805fe6c760e2a2f8822cd3d" resname="create_subdef_modal_access_class" approved="no">
         <source>create_subdef_modal_access_class</source>
-        <target state="translated">Create new subview</target>
+        <target state="needs-translation">Access right:</target>
         <jms:reference-file line="337">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c0ab98408d8927057da50bd859b54be94790671" resname="create_subdef_modal_access_class_document" approved="yes">
+      <trans-unit id="1c0ab98408d8927057da50bd859b54be94790671" resname="create_subdef_modal_access_class_document" approved="no">
         <source>create_subdef_modal_access_class_document</source>
-        <target state="translated">Access Class</target>
+        <target state="needs-translation">"Documents" Right</target>
         <jms:reference-file line="339">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e89fa7a8810739fadead8de666e074cd01b5dca5" resname="create_subdef_modal_access_class_no_restriction">
+      <trans-unit id="e89fa7a8810739fadead8de666e074cd01b5dca5" resname="create_subdef_modal_access_class_no_restriction" approved="no">
         <source>create_subdef_modal_access_class_no_restriction</source>
-        <target state="new">create_subdef_modal_access_class_no_restriction</target>
+        <target state="needs-translation">"Thumbnail" Right (No Restriction)</target>
         <jms:reference-file line="341">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="864a4186d641bbd4bfc168879d9f6717fdb7b957" resname="create_subdef_modal_access_class_preview" approved="yes">
         <source>create_subdef_modal_access_class_preview</source>
-        <target state="translated">Subview Type</target>
+        <target state="translated">"Subview" Right</target>
         <jms:reference-file line="340">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="551f21e97ef6df698ebcddb436321a4fb4596e3b" resname="create_subdef_modal_presets" approved="yes">
@@ -9481,14 +9481,14 @@
         <target state="translated">Presets</target>
         <jms:reference-file line="356">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="93cfba2c8424c0d8b843584dd4f5a1a3c5b88341" resname="create_subdef_modal_preview_mediatype">
+      <trans-unit id="93cfba2c8424c0d8b843584dd4f5a1a3c5b88341" resname="create_subdef_modal_preview_mediatype" approved="no">
         <source>create_subdef_modal_preview_mediatype</source>
-        <target state="new">create_subdef_modal_preview_mediatype</target>
+        <target state="needs-translation">Preview Media Type (mime type)</target>
         <jms:reference-file line="352">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="690c4e869ead8509af1c5a471b530989d88030d7" resname="create_subdef_modal_record_phraseanet_type">
+      <trans-unit id="690c4e869ead8509af1c5a471b530989d88030d7" resname="create_subdef_modal_record_phraseanet_type" approved="no">
         <source>create_subdef_modal_record_phraseanet_type</source>
-        <target state="new">create_subdef_modal_record_phraseanet_type</target>
+        <target state="needs-translation">Build subview for document Type:</target>
         <jms:reference-file line="343">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2b23c7ec49c8a2f4726f5d8c184a720b13b6081" resname="create_subdef_modal_subdefinition_name" approved="yes">
