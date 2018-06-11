@@ -53,7 +53,7 @@ class databox_subdefTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
         foreach ($object->getAvailableSubdefTypes() as $type) {
-            $this->assertInstanceOf(Subdef\Image::class, $type);
+            $this->assertInstanceOf(Subdef\Subdef::class, $type);
         }
 
         $this->assertTrue($object->isMetadataUpdateRequired());

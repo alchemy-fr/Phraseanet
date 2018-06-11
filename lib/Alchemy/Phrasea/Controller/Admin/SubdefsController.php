@@ -554,6 +554,11 @@ class SubdefsController extends Controller
                 ],
                 "form"        => [],
             ],
+            Subdef::TYPE_PDF => array(
+                "definitions" => array(
+                ),
+                "form" => array(),
+            ),
         ];
 
         return $config;
