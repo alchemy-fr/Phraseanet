@@ -358,6 +358,10 @@ class EditController extends Controller
                 $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
             }
 
+            if (isset($rec['technicalsdatas']) && is_array($rec['technicalsdatas'])){
+                $record->insertOrUpdateTechnicalDatas($rec['technicalsdatas']);
+            }
+
             $newstat = $record->getStatus();
             $statbits = ltrim($statbits, 'x');
             if (!in_array($statbits, ['', 'null'])) {

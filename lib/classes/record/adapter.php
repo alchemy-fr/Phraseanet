@@ -1339,6 +1339,37 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * Insert or update technical data
+     * $technicalDatas an array of name => value
+     *
+     * @param array $technicalDatas
+     */
+    public function insertOrUpdateTechnicalDatas($technicalDatas)
+    {
+        $technicalFields = media_subdef::getTechnicalFieldsList();
+        $sqlValues = null;
+
+        foreach($technicalDatas as $name => $value){
+            if(array_key_exists($name, $technicalFields)){
+                if(is_null($value)){
+                    $value = 0;
+                }
+                $sqlValues[] = [$this->getRecordId(), $name, $value, $value];
+            }
+        }
+
+        if($sqlValues){
+            $connection = $this->getDataboxConnection();
+            $connection->transactional(function (Connection $connection) use ($sqlValues) {
+                $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?');
+                array_walk($sqlValues, [$statement, 'execute']);
+            });
+
+            $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
+        }
+    }
+
+    /**
      * @param databox $databox
      * @param string     $sha256
      * @param integer    $record_id
