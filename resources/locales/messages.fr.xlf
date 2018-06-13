@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-06-13T09:51:40Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2018-06-13T12:47:30Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -7956,18 +7956,6 @@ La base de compte sera définitivement perdus.</target>
         <jms:reference-file line="308">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="175">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="827a0b54d7161c245d2c38f069ee8181a907e5dc" resname="action : supprimer de la base">
-        <source>action : supprimer de la base</source>
-        <target state="new">action : supprimer de la base</target>
-        <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="40b369289a585be187ef2b5966da487f681b1c9a" resname="action : supprimer du panier">
-        <source>action : supprimer du panier</source>
-        <target state="new">action : supprimer du panier</target>
-        <jms:reference-file line="15">prod/WorkZone/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="17">prod/WorkZone/Story.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="b88ca5fbb2e89cb79b08c981283383361be312bf" resname="action:: nouveau panier" approved="yes">
         <source>action:: nouveau panier</source>
         <target state="translated">Nouveau panier</target>
@@ -8999,6 +8987,18 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>base:: re-indexer</source>
         <target state="translated">Ré-indexer la base maintenant (selon le nombre de documents, cette opération peut durer plusieurs heures)</target>
         <jms:reference-file line="142">admin/databox/databox.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket">
+        <source>basket:action:delete record form basket</source>
+        <target state="new">basket:action:delete record form basket</target>
+        <jms:reference-file line="15">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="17">prod/WorkZone/Story.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="378b261cf0bdda80ad072999d7bed4361180c838" resname="basket:action:delete record form database">
+        <source>basket:action:delete record form database</source>
+        <target state="new">basket:action:delete record form database</target>
+        <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
         <source>be notified when a document is placed in quarantine</source>

@@ -12,7 +12,7 @@
         <div class="divider"></div>
         <button class="ui-corner-all TOOL_delete_selection_btn basket_window" data-selection-source="basket">
             <img src="/assets/common/images/icons/delete-selection.png"/>
-            <span>{{ 'action : supprimer du panier' | trans }}</span>
+            <span>{{ 'basket:action:delete record form basket' | trans }}</span>
         </button>
         <div class="divider"></div>
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
@@ -72,7 +72,7 @@
 
         <button class="ui-corner-all TOOL_trash_btn basket_window" data-selection-source="basket">
             <img src="/assets/common/images/icons/delete.png"/>
-            <span>{{ 'action : supprimer de la base' | trans }}</span>
+            <span>{{ 'basket:action:delete record form database' | trans }}</span>
         </button>
 
         {% if plugins['actionbar'] is not empty %}
