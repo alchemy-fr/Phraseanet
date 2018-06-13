@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2018-06-13T12:46:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -8887,9 +8887,9 @@
         <target state="translated">New User</target>
         <jms:reference-file line="24">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
+      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="no">
         <source>admin::userlist: filterguestuser</source>
-        <target state="new">admin::userlist: filterguestuser</target>
+        <target state="needs-translation">Show guest user.</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
@@ -8988,15 +8988,15 @@
         <target state="translated">Re-index database now (regarding quantity of documents, this operation can last several hours)</target>
         <jms:reference-file line="142">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket">
+      <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket" approved="no">
         <source>basket:action:delete record form basket</source>
-        <target state="new">basket:action:delete record form basket</target>
+        <target state="needs-translation">Delete form Basket</target>
         <jms:reference-file line="15">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="378b261cf0bdda80ad072999d7bed4361180c838" resname="basket:action:delete record form database">
+      <trans-unit id="378b261cf0bdda80ad072999d7bed4361180c838" resname="basket:action:delete record form database" approved="no">
         <source>basket:action:delete record form database</source>
-        <target state="new">basket:action:delete record form database</target>
+        <target state="needs-translation">Delete form Database.</target>
         <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
@@ -11359,19 +11359,22 @@ See documentation for more examples https://docs.phraseanet.com</target>
         <target state="needs-translation">Video tools</target>
         <jms:reference-file line="113">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice">
+      <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="yes">
         <source>prod:mapboxgl: description notice</source>
-        <target state="new">prod:mapboxgl: description notice</target>
+        <target state="translated">Right click to add a search area.
+Click on the zone to delete.
+Use grip for resize or move the area.
+It is possible to place several search areas</target>
         <jms:reference-file line="154">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog">
+      <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog" approved="no">
         <source>prod:mapboxgl: title map dialog</source>
-        <target state="new">prod:mapboxgl: title map dialog</target>
+        <target state="needs-translation">Geographic Search</target>
         <jms:reference-file line="155">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3d7f5939616105e9e12962cca5eacff5064eb711" resname="prod:mapboxgl: title notice">
+      <trans-unit id="3d7f5939616105e9e12962cca5eacff5064eb711" resname="prod:mapboxgl: title notice" approved="no">
         <source>prod:mapboxgl: title notice</source>
-        <target state="new">prod:mapboxgl: title notice</target>
+        <target state="needs-translation">Geographic Search</target>
         <jms:reference-file line="153">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
