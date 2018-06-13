@@ -793,6 +793,29 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     }
 
     /**
+     * matches a email against the auto-register whitelist
+     *
+     * @param string $email
+     * @return null|string  the user-model to apply if the email matches
+     */
+    public function getAutoregisterModel($email)
+    {
+        // try to match against the collection whitelist
+        if($this->isRegistrationEnabled()) {
+            if (($xml = @simplexml_load_string($this->get_prefs())) !== false) {
+                foreach ($xml->xpath('/baseprefs/registration/auto_register/email_whitelist/email') as $element) {
+                    if (preg_match($element['pattern'], $email) === 1) {
+                        return (string)$element['user_model'];
+                    }
+                }
+            }
+        }
+
+        // no match ? try against the databox whitelist
+        return $this->get_databox()->getAutoregisterModel($email);
+    }
+
+    /**
      * Gets terms of use.
      *
      * @return null|string
