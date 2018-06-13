@@ -1364,6 +1364,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?');
                 array_walk($sqlValues, [$statement, 'execute']);
             });
+
+            $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
         }
     }
 
