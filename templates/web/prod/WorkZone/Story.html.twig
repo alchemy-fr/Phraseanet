@@ -12,6 +12,11 @@
         </button>
 
         <div class="divider"></div>
+        <button class="ui-corner-all TOOL_delete_selection_btn story_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/delete-selection.png"/>
+            <span>{{ 'action : supprimer du panier' | trans }}</span>
+        </button>
+        <div class="divider"></div>
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
             <button class="ui-corner-all TOOL_ppen_btn story_window" data-selection-source="story">
@@ -71,7 +76,7 @@
         <button class="ui-corner-all TOOL_trash_btn story_window" data-selection-source="story">
             <img src="/assets/common/images/icons/delete.png"/>
             <input type="hidden" name="story_key" value="{{ Story.get_serialize_key() }}"/>
-            <span>{{ 'action : supprimer' | trans }}</span>
+            <span>{{ 'action : supprimer de la base' | trans }}</span>
         </button>
 
     </div>
