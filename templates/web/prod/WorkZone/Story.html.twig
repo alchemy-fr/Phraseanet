@@ -14,7 +14,7 @@
         <div class="divider"></div>
         <button class="ui-corner-all TOOL_delete_selection_btn story_window" data-selection-source="basket">
             <img src="/assets/common/images/icons/delete-selection.png"/>
-            <span>{{ 'action : supprimer du panier' | trans }}</span>
+            <span>{{ 'basket:action:delete record form basket' | trans }}</span>
         </button>
         <div class="divider"></div>
 
@@ -76,7 +76,7 @@
         <button class="ui-corner-all TOOL_trash_btn story_window" data-selection-source="story">
             <img src="/assets/common/images/icons/delete.png"/>
             <input type="hidden" name="story_key" value="{{ Story.get_serialize_key() }}"/>
-            <span>{{ 'action : supprimer de la base' | trans }}</span>
+            <span>{{ 'basket:action:delete record form database' | trans }}</span>
         </button>
 
     </div>
