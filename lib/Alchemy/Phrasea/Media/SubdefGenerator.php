@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image;
+use MediaAlchemyst\Specification\Video;
 use MediaVorus\MediaVorus;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use Neutron\TemporaryFilesystem\Manager;
@@ -173,6 +174,14 @@ class SubdefGenerator
                 return;
             }
 
+            $tmpDir = $this->app['conf']->get(['registry', 'executables', 'ffmpeg-tmp-directory']);
+            $destFile = null;
+
+            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir) && is_dir($tmpDir)){
+                $destFile = $pathdest;
+                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
+            }
+
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
 
                 $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
@@ -185,6 +194,11 @@ class SubdefGenerator
 
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
 
+            }
+
+            if($destFile){
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
             }
 
         } catch (MediaAlchemystException $e) {

@@ -67,6 +67,11 @@ class FilesystemService
         return $pathdest . $this->generateSubdefFilename($record, $subdef);
     }
 
+    public function generateTemporarySubdefPathname(\record_adapter $record, \databox_subdef $subdef, $tmpDir)
+    {
+        return $tmpDir . $this->generateSubdefFilename($record, $subdef);
+    }
+
     /**
      * @param RecordInterface $record
      * @param string|\SplFileInfo $source
