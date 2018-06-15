@@ -153,6 +153,7 @@ class LanguageController
             'title notice'        => $translator->trans('prod:mapboxgl: title notice'),
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
+            'create new user'     => $translator->trans('prod:push: create new user'),
         ]);
     }
 }
