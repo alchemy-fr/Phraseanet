@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image;
 use MediaAlchemyst\Exception\FileNotFoundException;
+use MediaAlchemyst\Specification\Video;
 use MediaVorus\MediaVorus;
 use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
@@ -172,6 +173,14 @@ class SubdefGenerator
                 return;
             }
 
+            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
+            $destFile = null;
+
+            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
+                $destFile = $pathdest;
+                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
+            }
+
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
 
                 $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
@@ -184,6 +193,11 @@ class SubdefGenerator
 
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
 
+            }
+
+            if($destFile){
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
             }
 
         } catch (MediaAlchemystException $e) {

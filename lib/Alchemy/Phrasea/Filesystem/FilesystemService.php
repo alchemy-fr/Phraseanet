@@ -67,6 +67,20 @@ class FilesystemService
         return $pathdest . $this->generateSubdefFilename($record, $subdef);
     }
 
+    public function generateTemporarySubdefPathname(\record_adapter $record, \databox_subdef $subdef, $tmpDir)
+    {
+        $tmpDir = \p4string::addEndSlash($tmpDir);
+        $ffmpegDir = $tmpDir."ffmpeg/";
+
+        if(!is_dir($ffmpegDir)){
+            $this->filesystem->mkdir($ffmpegDir);
+        }
+
+        $filenameSufix = $this->generateSubdefFilename($record, $subdef);
+
+        return $ffmpegDir . hash('sha256', $filenameSufix) . $filenameSufix;
+    }
+
     /**
      * @param RecordInterface $record
      * @param string|\SplFileInfo $source
