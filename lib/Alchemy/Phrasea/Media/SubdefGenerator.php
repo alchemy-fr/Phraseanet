@@ -174,10 +174,10 @@ class SubdefGenerator
                 return;
             }
 
-            $tmpDir = $this->app['conf']->get(['registry', 'executables', 'ffmpeg-tmp-directory']);
+            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
             $destFile = null;
 
-            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir) && is_dir($tmpDir)){
+            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
                 $destFile = $pathdest;
                 $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
             }
