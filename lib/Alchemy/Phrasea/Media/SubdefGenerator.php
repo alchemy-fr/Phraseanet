@@ -47,6 +47,7 @@ class SubdefGenerator
     private $mediavorus;
     private $tmpFilePath;
     private $tmpFilesystem;
+    private $tmpDirectory;
 
     public function __construct(Application $app, Alchemyst $alchemyst, FilesystemService $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
     {
@@ -55,6 +56,7 @@ class SubdefGenerator
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->mediavorus = $mediavorus;
+        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'tmp_files']);;
     }
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
@@ -174,12 +176,11 @@ class SubdefGenerator
                 return;
             }
 
-            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
             $destFile = null;
 
-            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
+            if(!empty($this->tmpDirectory)){
                 $destFile = $pathdest;
-                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
+                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $this->tmpDirectory);
             }
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
