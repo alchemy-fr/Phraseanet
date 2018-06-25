@@ -1512,6 +1512,37 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
+     * matches a email against the auto-register whitelist
+     *
+     * @param string $email
+     * @return null|string  the user-model to apply if the email matches
+     */
+    public function getAutoregisterModel($email)
+    {
+        if(!$this->isRegistrationEnabled()) {
+            return null;
+        }
+
+        $ret = User::USER_AUTOREGISTER; // default if there is no whitelist defined at all
+
+        // try to match against the whitelist
+        if( ($xml = $this->get_sxml_structure()) !== false) {
+            $wl = $xml->xpath('/record/registration/auto_register/email_whitelist');
+            if($wl !== false && count($wl) === 1) {
+                $ret = null;    // there IS a whitelist, the email must match
+
+                foreach ($wl[0]->xpath('email') as $element) {
+                    if (preg_match($element['pattern'], $email) === 1) {
+                        return (string)$element['user_model'];
+                    }
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
      * Return an array that can be used to restore databox.
      *
      * @return array
