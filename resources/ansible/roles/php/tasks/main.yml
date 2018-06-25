@@ -5,7 +5,7 @@
 
 - name: Install php5
   sudo: yes
-  apt: pkg=php5.6 state=latest
+  apt: pkg=php{{ phpversion }} state=latest
 
 - name: Install PHP Packages
   sudo: yes
