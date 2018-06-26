@@ -108,6 +108,9 @@ class QueryVisitor implements Visit
             case NodeTypes::TIMESTAMP_KEY:
                 return $this->visitTimestampKeyNode($element);
 
+            case NodeTypes::GEOLOCATION_KEY:
+                return $this->visitGeolocationKeyNode($element);
+
             case NodeTypes::METADATA_KEY:
                 return new AST\KeyValue\MetadataKey($this->visitString($element));
 
@@ -337,6 +340,11 @@ class QueryVisitor implements Visit
         });
     }
 
+    private function visitGeolocationKeyNode(TreeNode $node)
+    {
+        return AST\KeyValue\GeolocationKey::geolocation();
+    }
+
     private function visitNativeKeyNode(TreeNode $node)
     {
         $this->assertChildrenCount($node, 1);
@@ -346,6 +354,10 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::database();
             case NodeTypes::TOKEN_COLLECTION:
                 return AST\KeyValue\NativeKey::collection();
+            case NodeTypes::TOKEN_SHA256:
+                return AST\KeyValue\NativeKey::sha256();
+            case NodeTypes::TOKEN_UUID:
+                return AST\KeyValue\NativeKey::uuid();
             case NodeTypes::TOKEN_MEDIA_TYPE:
                 return AST\KeyValue\NativeKey::mediaType();
             case NodeTypes::TOKEN_RECORD_ID:

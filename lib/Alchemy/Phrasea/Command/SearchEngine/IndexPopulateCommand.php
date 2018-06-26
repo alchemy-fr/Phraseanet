@@ -23,7 +23,7 @@ class IndexPopulateCommand extends Command
     {
         $this
             ->setName('searchengine:index:populate')
-            ->setDescription('Populate search index')
+            ->setDescription('Populate search index <fg=yellow;>(Deprecated use searchengine:index instead)</>')
             ->addOption(
                 'thesaurus',
                 null,

@@ -88,7 +88,12 @@
                     modal: true,
                     title: "???",
                     autoOpen:false,
-                    width:400
+                    width: 400,
+                    open: function () {
+                        $("#NEWSY_DLG input[type=\"text\"]").on('click', function () {
+                            $(this).focus();
+                        });
+                    }
                 });
             }
 

@@ -5,5 +5,5 @@
 - name: Copy xdebug INI into mods-available folder.
   template: >
     src=xdebug.ini.j2
-    dest=/etc/php/5.6/mods-available/xdebug.ini
+    dest=/etc/php/{{ phpversion }}/mods-available/xdebug.ini
     owner=root group=root mode=644

@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
@@ -86,6 +88,7 @@ class RecordController extends Controller
             // get field's values
             $recordCaptions[$field->get_name()] = $field->get_serialized_values();
         }
+        $recordCaptions["technicalInfo"] = $record->getPositionFromTechnicalInfos();
 
         return $this->app->json([
             "desc"          => $this->render('prod/preview/caption.html.twig', [
@@ -189,7 +192,12 @@ class RecordController extends Controller
 
         $deleted = [];
 
+        /** @var \collection[] $trashCollectionsBySbasId */
+        $trashCollectionsBySbasId = [];
+
         $manager = $this->getEntityManager();
+
+        /** @var \record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -205,10 +213,34 @@ class RecordController extends Controller
                     $manager->remove($attachedStory);
                 }
 
-                $deleted[] = $record->getId();
-                $record->delete();
-            } catch (\Exception $e) {
+                foreach($record->get_grouping_parents() as $story) {
+                    $this->getEventDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+                }
 
+                $sbasId = $record->getDatabox()->get_sbas_id();
+                if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                    $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+                }
+                $deleted[] = $record->getId();
+                if($trashCollectionsBySbasId[$sbasId] !== null) {
+                    if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                        // record is already in trash so delete it
+                        $record->delete();
+                    } else {
+                        // move to trash collection
+                        $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
+                        // disable permalinks
+                        foreach($record->get_subdefs() as $subdef) {
+                            if( ($pl = $subdef->get_permalink()) ) {
+                                    $pl->set_is_activated(false);
+                            }
+                        }
+                    }
+                } else {
+                    // no trash collection, delete
+                    $record->delete();
+                }
+            } catch (\Exception $e) {
             }
         }
 
@@ -248,9 +280,46 @@ class RecordController extends Controller
             [\ACL::CANDELETERECORD]
         );
 
-        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-            'records'   => $records,
+        $filteredRecord = $this->filterRecordToDelete($records);
+
+        return $this->app->json([
+            'renderView'     => $this->render('prod/actions/delete_records_confirm.html.twig', [
+                'records'        => $records,
+                'filteredRecord' => $filteredRecord
+            ]),
+            'filteredRecord' => $filteredRecord
         ]);
+
+    }
+
+    private function filterRecordToDelete(RecordsRequest $records)
+    {
+        $trashCollectionsBySbasId = [];
+        $goingToTrash = [];
+        $delete = [];
+        foreach ($records as $record) {
+            $sbasId = $record->getDatabox()->get_sbas_id();
+            if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
+            }
+            if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                    // record is already in trash
+                    $delete[] = $record;
+                }
+                else {
+                    // will be moved to trash
+                    $goingToTrash[] = $record;
+                }
+            }
+            else {
+                // trash does not exist
+                $delete[] = $record;
+            }
+        }
+        //check if all values in array are true
+        //return (!in_array(false, $goingToTrash, true));
+        return ['trash' => $goingToTrash, 'delete' => $delete];
     }
 
     /**
@@ -270,5 +339,13 @@ class RecordController extends Controller
         };
 
         return $this->app->json($renewed);
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }

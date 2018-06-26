@@ -24,7 +24,7 @@ class IndexCreateCommand extends Command
     {
         $this
             ->setName('searchengine:index:create')
-            ->setDescription('Creates search index')
+            ->setDescription('Creates search index <fg=yellow;>(Deprecated use searchengine:index instead)</>')
             ->addOption('drop', 'd', InputOption::VALUE_NONE, 'Drops the index if it already exists.');
     }
 

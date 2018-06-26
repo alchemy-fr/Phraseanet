@@ -167,6 +167,103 @@ class OAuth2Controller extends Controller
         return '';
     }
 
+    public function authorizeWithProviderAction(Request $request, $providerId)
+    {
+        $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
+        $this->dispatch(PhraseaEvents::PRE_AUTHENTICATE, new PreAuthenticate($request, $context));
+
+        //Check for auth params, send error or redirect if not valid
+        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
+
+        /** @var ApiApplicationRepository $appRepository */
+        $appRepository = $this->app['repo.api-applications'];
+        if (null === $client = $appRepository->findByClientId($params['client_id'])) {
+            throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
+        }
+
+        $provider = $this->findProvider($providerId);
+
+        return $provider->authenticate($request->query->all());
+    }
+
+    public function authorizeCallbackAction(Request $request, $providerId)
+    {
+        $context = new Context(Context::CONTEXT_OAUTH2_NATIVE);
+        $provider = $this->findProvider($providerId);
+        $params = $this->oAuth2Adapter->getAuthorizationRequestParameters($request);
+
+        // triggers what's necessary
+        try {
+            $provider->onCallback($request);
+            $token = $provider->getToken();
+        } catch (NotAuthenticatedException $e) {
+            $this->getSession()->getFlashBag()->add('error', $this->app->trans('Unable to authenticate with %provider_name%', ['%provider_name%' => $provider->getName()]));
+
+            return $this->app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
+        }
+
+        $userAuthProvider = $this->getUserAuthProviderRepository()
+            ->findWithProviderAndId($token->getProvider()->getId(), $token->getId());
+
+        if($userAuthProvider == null){
+            unset($params['state']);
+
+            return $this->app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
+        }
+
+        try {
+            $user = $this->getAuthenticationSuggestionFinder()->find($token);
+        } catch (NotAuthenticatedException $e) {
+            $this->app->addFlash('error', $this->app->trans('Unable to retrieve provider identity'));
+
+            return $this->app->redirectPath('oauth2_authorize', array_merge(array('error' => 'login'), $params));
+        }
+
+        $this->getAuthenticator()->openAccount($userAuthProvider->getUser());
+        $event = new PostAuthenticate($request, new Response(), $user, $context);
+        $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
+
+        /** @var ApiApplicationRepository $appRepository */
+        $appRepository = $this->app['repo.api-applications'];
+        if (null === $client = $appRepository->findByClientId($params['client_id'])) {
+            throw new NotFoundHttpException(sprintf('Application with client id %s could not be found', $params['client_id']));
+        }
+
+        $this->oAuth2Adapter->setClient($client);
+
+        //check if current client is already authorized by current user
+        $clients = $appRepository->findAuthorizedAppsByUser($this->getAuthenticatedUser());
+        $appAuthorized = false;
+
+        foreach ($clients as $authClient) {
+            if ($client->getClientId() == $authClient->getClientId()) {
+                $appAuthorized = true;
+                break;
+            }
+        }
+
+        $account = $this->oAuth2Adapter->updateAccount($this->getAuthenticatedUser());
+
+        $params['account_id'] = $account->getId();
+
+        //if native app show template
+        if ($this->oAuth2Adapter->isNativeApp($params['redirect_uri'])) {
+            $params = $this->oAuth2Adapter->finishNativeClientAuthorization($appAuthorized, $params);
+
+            $r = new Response($this->render("api/auth/native_app_access_token.html.twig", $params));
+            $r->headers->set('Content-Type', 'text/html');
+
+            return $r;
+        }
+
+        $this->oAuth2Adapter->finishClientAuthorization($appAuthorized, $params);
+
+        // As OAuth2 library already outputs response content, we need to send an empty
+        // response to avoid breaking silex controller
+        return '';
+
+    }
+
     /**
      *  TOKEN ENDPOINT
      *  Token endpoint - used to exchange an authorization grant for an access token.
@@ -205,5 +302,42 @@ class OAuth2Controller extends Controller
     public function getApiAccountManipulator()
     {
         return $this->app['manipulator.api-account'];
+    }
+
+    /**
+     * @param  string $providerId
+     * @return ProviderInterface
+     */
+    private function findProvider($providerId)
+    {
+        try {
+            return $this->getAuthenticationProviders()->get($providerId);
+        } catch (InvalidArgumentException $e) {
+            throw new NotFoundHttpException('The requested provider does not exist');
+        }
+    }
+
+    /**
+     * @return ProvidersCollection
+     */
+    private function getAuthenticationProviders()
+    {
+        return $this->app['authentication.providers'];
+    }
+
+    /**
+     * @return UsrAuthProviderRepository
+     */
+    private function getUserAuthProviderRepository()
+    {
+        return $this->app['repo.usr-auth-providers'];
+    }
+
+    /**
+     * @return SuggestionFinder
+     */
+    private function getAuthenticationSuggestionFinder()
+    {
+        return $this->app['authentication.suggestion-finder'];
     }
 }

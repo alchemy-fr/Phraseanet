@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\Install;
 use Symfony\Component\Yaml\Yaml;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 
 /**
  * @group functional
@@ -20,7 +21,7 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
-        $template = 'fr';
+        $template = 'fr-simple';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
@@ -81,7 +82,7 @@ class InstallTest extends \PhraseanetTestCase
                         return true;
                         break;
                     default:
-                        return;
+                        return '';
                 }
             }));
 
@@ -93,7 +94,9 @@ class InstallTest extends \PhraseanetTestCase
             ->method('install')
             ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
 
-        $command = new Install('system:check');
+        $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
+
+        $command = new Install('system:check', $structureTemplate);
         $command->setHelperSet($helperSet);
         $command->setContainer(self::$DI['cli']);
         $this->assertEquals(0, $command->execute($input, $output));

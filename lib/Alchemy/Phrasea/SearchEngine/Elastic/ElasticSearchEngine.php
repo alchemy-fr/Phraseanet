@@ -139,6 +139,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
             SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
+            SearchEngineOptions::SORT_UPDATED_ON => $this->app->trans('date de modification'),
         ];
     }
 
@@ -201,6 +202,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->notImplemented();
     }
 
+    private function notImplemented()
+    {
+        throw new LogicException('Not implemented');
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -241,11 +247,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->notImplemented();
     }
 
-    private function notImplemented()
-    {
-        throw new LogicException('Not implemented');
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -273,35 +274,35 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($string, SearchEngineOptions $options = null)
+    public function query($queryText, SearchEngineOptions $options = null)
     {
         $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
-        $recordQuery = $query_compiler->compile($string, $context);
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+        $queryCompiled = $query_compiler->compile($queryText, $context);
 
-        $params = $this->createRecordQueryParams($recordQuery, $options, null);
+        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
 
         // ask ES to return field _version (incremental version number of document)
-        $params['body']['version'] = true;
+        $queryESLib['body']['version'] = true;
 
-        $params['body']['from'] = $options->getFirstResult();
-        $params['body']['size'] = $options->getMaxResults();
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
         if($this->options->getHighlight()) {
-            $params['body']['highlight'] = $this->buildHighlightRules($context);
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
         $aggs = $this->getAggregationQueryParams($options);
         if ($aggs) {
-            $params['body']['aggs'] = $aggs;
+            $queryESLib['body']['aggs'] = $aggs;
         }
 
-        $res = $this->client->search($params);
+        $res = $this->client->search($queryESLib);
 
         $results = new ArrayCollection();
-
         $n = 0;
         foreach ($res['hits']['hits'] as $hit) {
             $results[] = ElasticsearchRecordHydrator::hydrate($hit, $n++);
@@ -310,16 +311,13 @@ class ElasticSearchEngine implements SearchEngineInterface
         /** @var FacetsResponse $facets */
         $facets = $this->facetsResponseFactory->__invoke($res);
 
-        $query['ast'] = $query_compiler->parse($string)->dump();
-        $query['query_main'] = $recordQuery;
-        $query['query'] = $params['body'];
-        $query['query_string'] = json_encode($params['body'], JSON_PRETTY_PRINT);
-
         return new SearchEngineResult(
             $options,
-            $results,   // ArrayCollection of results
-            $string,    // the query as typed by the user
-            json_encode($query),
+            $results,      // ArrayCollection of results
+            $queryText,    // the query as typed by the user
+            $queryAST,
+            $queryCompiled,
+            $queryESLib,
             $res['took'],   // duration
             $options->getFirstResult(),
             $res['hits']['total'],  // available
@@ -331,131 +329,6 @@ class ElasticSearchEngine implements SearchEngineInterface
             $this->indexName,
             $facets
         );
-    }
-
-    private function buildHighlightRules(QueryContext $context)
-    {
-        $highlighted_fields = [];
-        foreach ($context->getHighlightedFields() as $field) {
-            switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
-                    $index_field = $field->getIndexField();
-                    $raw_index_field = $field->getIndexField(true);
-                    $highlighted_fields[$index_field] = [
-                        // Requires calling Mapping::enableTermVectors() on this field mapping
-                        'matched_fields' => [$index_field, $raw_index_field],
-                        'type' => 'fvh'
-                    ];
-                    break;
-                case FieldMapping::TYPE_FLOAT:
-                case FieldMapping::TYPE_DOUBLE:
-                case FieldMapping::TYPE_INTEGER:
-                case FieldMapping::TYPE_LONG:
-                case FieldMapping::TYPE_SHORT:
-                case FieldMapping::TYPE_BYTE:
-                    continue;
-                case FieldMapping::TYPE_DATE:
-                default:
-                    continue;
-            }
-        }
-
-        return [
-            'pre_tags' =>  ['[[em]]'],
-            'post_tags' =>  ['[[/em]]'],
-            'order' => 'score',
-            'fields' => $highlighted_fields
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function autocomplete($query, SearchEngineOptions $options)
-    {
-        $params = $this->createCompletionParams($query, $options);
-
-        $res = $this->client->suggest($params);
-
-        $ret = [
-            'text' => [],
-            'byField' => []
-        ];
-        foreach(array_keys($params['body']) as $fname) {
-            $t = [];
-            foreach($res[$fname] as $suggest) {    // don't know why there is a sub-array level
-                foreach($suggest['options'] as $option) {
-                    $text = $option['text'];
-                    if(!in_array($text, $ret['text'])) {
-                        $ret['text'][] = $text;
-                    }
-                    $t[] = [
-                        'label' => $text,
-                        'query' => $fname.':'.$text
-                    ];
-                }
-            }
-            if(!empty($t)) {
-                $ret['byField'][$fname] = $t;
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resetCache()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clearCache()
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clearAllCache(\DateTime $date = null)
-    {
-    }
-
-    private function createCompletionParams($query, SearchEngineOptions $options)
-    {
-        $body = [];
-        $context = [
-            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
-                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
-        ];
-
-        $base_ids = $options->getBasesIds();
-        if (count($base_ids) > 0) {
-            $context['base_id'] = $base_ids;
-        }
-
-        $search_context = $this->context_factory->createContext($options);
-        $fields = $search_context->getUnrestrictedFields();
-        foreach($fields as $field) {
-            if($field->getType() == FieldMapping::TYPE_STRING) {
-                $k = '' . $field->getName();
-                $body[$k] = [
-                    'text' => $query,
-                    'completion' => [
-                        'field' => "caption." . $field->getName() . ".suggest",
-                        'context' => &$context
-                    ]
-                ];
-            }
-        }
-
-        return [
-            'index' => $this->indexName,
-            'body'  => $body
-        ];
     }
 
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
@@ -486,66 +359,31 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $params;
     }
 
-    private function getAggregationQueryParams(SearchEngineOptions $options)
+    private function createSortQueryParams(SearchEngineOptions $options)
     {
-        $aggs = [];
-        // technical aggregates (enable + optional limit)
-        foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-            $size = $this->options->getAggregableFieldLimit($k);
-            if ($size !== databox_field::FACET_DISABLED) {
-                if ($size === databox_field::FACET_NO_LIMIT) {
-                    $size = ESField::FACET_NO_LIMIT;
-                }
-                $agg = [
-                    'terms' => [
-                        'field' => $f['field'],
-                        'size'  => $size
-                    ]
-                ];
-                $aggs[$k] = $agg;
-            }
-        }
-        // fields aggregates
-        $structure = $this->context_factory->getLimitedStructure($options);
-        foreach ($structure->getFacetFields() as $name => $field) {
-            // 2015-05-26 (mdarse) Removed databox filtering.
-            // It was already done by the ACL filter in the query scope, so no
-            // document that shouldn't be displayed can go this far.
-            $agg = [
-                'terms' => [
-                    'field' => $field->getIndexField(true),
-                    'size'  => $field->getFacetValuesLimit()
-                ]
-            ];
-            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
-        }
-        return $aggs;
-    }
+        $sort = [];
 
-    private function createACLFilters(SearchEngineOptions $options)
-    {
-        // No ACLs if no user
-        if (false === $this->app->getAuthenticator()->isAuthenticated()) {
-            return [];
+        if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
+            $sort['_score'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
+            $sort['created_on'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === SearchEngineOptions::SORT_UPDATED_ON) {
+            $sort['updated_on'] = $options->getSortOrder();
+        }
+        elseif ($options->getSortBy() === 'recordid') {
+            $sort['record_id'] = $options->getSortOrder();
+        }
+        else {
+            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
         }
 
-        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
-
-        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
-
-        if (count($grantedCollections) === 0) {
-            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        if (!array_key_exists('record_id', $sort)) {
+            $sort['record_id'] = $options->getSortOrder();
         }
 
-        $appbox = $this->app['phraseanet.appbox'];
-
-        $flagNamesMap = $this->getFlagsKey($appbox);
-        // Get flags rules
-        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
-        // Get intersection between collection ACLs and collection chosen by end user
-        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
-
-        return $this->buildACLsFilters($aclRules, $options);
+        return $sort;
     }
 
     private function createQueryFilters(SearchEngineOptions $options)
@@ -603,27 +441,6 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $filters;
     }
 
-    private function createSortQueryParams(SearchEngineOptions $options)
-    {
-        $sort = [];
-
-        if ($options->getSortBy() === null || $options->getSortBy() === SearchEngineOptions::SORT_RELEVANCE) {
-            $sort['_score'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === SearchEngineOptions::SORT_CREATED_ON) {
-            $sort['created_on'] = $options->getSortOrder();
-        } elseif ($options->getSortBy() === 'recordid') {
-            $sort['record_id'] = $options->getSortOrder();
-        } else {
-            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
-        }
-
-        if (! array_key_exists('record_id', $sort)) {
-            $sort['record_id'] = $options->getSortOrder();
-        }
-
-        return $sort;
-    }
-
     private function getFlagsKey(\appbox $appbox)
     {
         $flags = [];
@@ -636,6 +453,32 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
 
         return $flags;
+    }
+
+    private function createACLFilters(SearchEngineOptions $options)
+    {
+        // No ACLs if no user
+        if (false === $this->app->getAuthenticator()->isAuthenticated()) {
+            return [];
+        }
+
+        $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
+
+        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
+
+        if (count($grantedCollections) === 0) {
+            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+        }
+
+        $appbox = $this->app['phraseanet.appbox'];
+
+        $flagNamesMap = $this->getFlagsKey($appbox);
+        // Get flags rules
+        $flagRules = $this->getFlagsRules($appbox, $acl, $grantedCollections);
+        // Get intersection between collection ACLs and collection chosen by end user
+        $aclRules = $this->getACLsByCollection($flagRules, $flagNamesMap);
+
+        return $this->buildACLsFilters($aclRules, $options);
     }
 
     private function getFlagsRules(\appbox $appbox, \ACL $acl, array $collections)
@@ -768,5 +611,167 @@ class ElasticSearchEngine implements SearchEngineInterface
         else {
             return [];
         }
+    }
+
+    private function buildHighlightRules(QueryContext $context)
+    {
+        $highlighted_fields = [];
+        foreach ($context->getHighlightedFields() as $field) {
+            switch ($field->getType()) {
+                case FieldMapping::TYPE_STRING:
+                    $index_field = $field->getIndexField();
+                    $raw_index_field = $field->getIndexField(true);
+                    $highlighted_fields[$index_field . ".light"] = [
+                        // Requires calling Mapping::enableTermVectors() on this field mapping
+//                        'matched_fields' => [$index_field, $raw_index_field],
+                        'type' => 'fvh',
+                    ];
+                    break;
+                case FieldMapping::TYPE_FLOAT:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_INTEGER:
+                case FieldMapping::TYPE_LONG:
+                case FieldMapping::TYPE_SHORT:
+                case FieldMapping::TYPE_BYTE:
+                    continue;
+                case FieldMapping::TYPE_DATE:
+                default:
+                    continue;
+            }
+        }
+
+        return [
+            'pre_tags'  => ['[[em]]'],
+            'post_tags' => ['[[/em]]'],
+            'order'     => 'score',
+            'fields'    => $highlighted_fields
+        ];
+    }
+
+    private function getAggregationQueryParams(SearchEngineOptions $options)
+    {
+        $aggs = [];
+        // technical aggregates (enable + optional limit)
+        foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+            $size = $this->options->getAggregableFieldLimit($k);
+            if ($size !== databox_field::FACET_DISABLED) {
+                if ($size === databox_field::FACET_NO_LIMIT) {
+                    $size = ESField::FACET_NO_LIMIT;
+                }
+                $agg = [
+                    'terms' => [
+                        'field' => $f['field'],
+                        'size'  => $size
+                    ]
+                ];
+                $aggs[$k] = $agg;
+            }
+        }
+        // fields aggregates
+        $structure = $this->context_factory->getLimitedStructure($options);
+        foreach ($structure->getFacetFields() as $name => $field) {
+            // 2015-05-26 (mdarse) Removed databox filtering.
+            // It was already done by the ACL filter in the query scope, so no
+            // document that shouldn't be displayed can go this far.
+            $agg = [
+                'terms' => [
+                    'field' => $field->getIndexField(true),
+                    'size'  => $field->getFacetValuesLimit()
+                ]
+            ];
+            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
+        }
+
+        return $aggs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function autocomplete($query, SearchEngineOptions $options)
+    {
+        $params = $this->createCompletionParams($query, $options);
+
+        $res = $this->client->suggest($params);
+
+        $ret = [
+            'text'    => [],
+            'byField' => []
+        ];
+        foreach (array_keys($params['body']) as $fname) {
+            $t = [];
+            foreach ($res[$fname] as $suggest) {    // don't know why there is a sub-array level
+                foreach ($suggest['options'] as $option) {
+                    $text = $option['text'];
+                    if (!in_array($text, $ret['text'])) {
+                        $ret['text'][] = $text;
+                    }
+                    $t[] = [
+                        'label' => $text,
+                        'query' => $fname . ':' . $text
+                    ];
+                }
+            }
+            if (!empty($t)) {
+                $ret['byField'][$fname] = $t;
+            }
+        }
+
+        return $ret;
+    }
+
+    private function createCompletionParams($query, SearchEngineOptions $options)
+    {
+        $body = [];
+        $context = [
+            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
+        ];
+
+        $base_ids = $options->getBasesIds();
+        if (count($base_ids) > 0) {
+            $context['base_id'] = $base_ids;
+        }
+
+        $search_context = $this->context_factory->createContext($options);
+        $fields = $search_context->getUnrestrictedFields();
+        foreach ($fields as $field) {
+            if ($field->getType() == FieldMapping::TYPE_STRING) {
+                $k = '' . $field->getName();
+                $body[$k] = [
+                    'text'       => $query,
+                    'completion' => [
+                        'field'   => "caption." . $field->getName() . ".suggest",
+                        'context' => &$context
+                    ]
+                ];
+            }
+        }
+
+        return [
+            'index' => $this->indexName,
+            'body'  => $body
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resetCache()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearCache()
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearAllCache(\DateTime $date = null)
+    {
     }
 }

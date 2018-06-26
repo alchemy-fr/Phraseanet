@@ -22,10 +22,10 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input class="ck_{{collection["base_id"]}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
+                                        <input class="ck_{{base_id}} checkbas check-filters" style="*margin-top:-18px;" data-save="true"
 
-                                            id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
-                                            name="bases[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+                                            id="ck_{{base_id}}_{{unique_id}}" type="checkbox"
+                                            name="bases[]" value="{{base_id}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                     </td>
                                     <td>
                                         <label style="line-height: 18px;"
@@ -89,6 +89,7 @@
         {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
         {% set initialAppState = 'publication' %}
         {% endif %}
+        {% set savedHiddenFacetsList = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'hiddenFacetsList') %}
 
         window.prodApp = ProductionApplication.bootstrap({
             lang: "{{ app.locale }}",
@@ -138,12 +139,13 @@
                     },
                     {% endfor %}
                 ]
-            }
+            },
+            savedHiddenFacetsList: {{ savedHiddenFacetsList|json_encode()|raw }}
         });
 
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
-            prodApp.appEvents.emit('search.setFilterFacet', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") %}{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), "facet") }}{% else %}false{% endif %}")
+            prodApp.appEvents.emit('search.updateFacetData');
 
 
         });
@@ -173,7 +175,7 @@
             <div class="PNB wrapper">
                 <div class="tabs ui-tabs">
                     {% block tabs_panel %}
-                        <div id="retractableButton"><i class="icon-double-angle-left"></i></div>
+                        <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
                         <div id="baskets" class="PNB">
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
@@ -344,6 +346,9 @@
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_CREATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Added"|trans }}</option>
+                                                        {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON')) %}
+                                                        {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON')) %}
+                                                        <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_UPDATED_ON') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Date Updated"|trans }}</option>
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
@@ -443,12 +448,14 @@
                                                     <span id="ADVSRCH_DATE_SELECTORS">
                                                         {{ 'phraseanet::time:: de' | trans }}
                                                         <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <span class="add-on"><i class="fa fa-calendar"
+                                                                                    aria-hidden="true"></i></span>
                                                             <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_min" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                         {{ 'phraseanet::time:: a' | trans }}
                                                         <div class="input-prepend">
-                                                            <span class="add-on"><i class="icon-calendar"></i></span>
+                                                            <span class="add-on"><i class="fa fa-calendar"
+                                                                                    aria-hidden="true"></i></span>
                                                             <input onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" class="datepicker input-small" type="text" name="date_max" placeholder="{% trans %}YYYY/MM/DD{% endtrans %}" style="margin: 0;position: relative; z-index: 10001;" />
                                                         </div>
                                                     </span>
@@ -583,6 +590,16 @@
                     </div>
                 </div>
                 <div class="box">
+                    <h1>{{  'Language' | trans }} : {{ app['locale'] }}</h1>
+                    <label class="inline" for="language">
+                        <select onchange="window.location = $(this).val();" id="language">
+                            {% for code, language in app.getAvailableLanguages() if code != app['locale'] %}
+                                <option value="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+                <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'Mode de presentation' | trans }}</h1>
                         {% set mod = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'view') %}
@@ -703,11 +720,37 @@
                 </div>
                 <div class="box">
                     <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+                    <h1>{{ 'index::advance_search: facet-order' | trans }}</h1>
+                    <form class="form-inline">
+                        {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                        <label class="select" for="orderFacet">
+                            <select class="preferences-facet-order" name="orderFacet">
+                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                            </select>
+                        </label>
+                    </form>
+                    <h1>{{ 'index::advance_search: facet-values-order' | trans }}</h1>
+                    <form class="form-inline">
+                        {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
+                        <label class="select" for="facetValuesOrder">
+                            <select class="preferences-facet-values-order" name="facetValuesOrder">
+                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
+                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                            </select>
+                        </label>
+                    </form>
                     {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
                     <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
                         {{ 'index::advance_search: disable-facet' | trans }}
                     </label>
+                    <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
+                    <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
         </div>
@@ -733,10 +776,10 @@
                     </div>
                     <div class="PNB10" style="top:146px;">
                         <button id="left-btn" class="invisible-btn preview-navigate-action" data-direction="backward">
-                            <i class="icon-caret-left"></i>
+                            <i class="fa fa-caret-left" aria-hidden="true"></i>
                         </button>
                         <button id="right-btn" class="invisible-btn preview-navigate-action" data-direction="forward">
-                            <i class="icon-caret-right"></i>
+                            <i class="fa fa-caret-right" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>

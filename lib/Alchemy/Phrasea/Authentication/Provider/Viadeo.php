@@ -79,8 +79,10 @@ class Viadeo extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate()
+    public function authenticate(array $params = array())
     {
+        $params = array_merge(['providerId' => $this->getId()], $params);
+
         $state = $this->createState();
 
         $this->session->set('viadeo.provider.state', $state);
@@ -91,7 +93,7 @@ class Viadeo extends AbstractProvider
             'response_type' => 'code',
             'redirect_uri' => $this->generator->generate(
                 'login_authentication_provider_callback',
-                ['providerId' => $this->getId()],
+                $params,
                 UrlGenerator::ABSOLUTE_URL
             ),
         ]));

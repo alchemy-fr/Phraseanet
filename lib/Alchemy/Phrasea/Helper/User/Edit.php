@@ -712,6 +712,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $user = $this->app['repo.users']->find($usr_id);
             
             $this->app->getAclForUser($user)->apply_model($template, $base_ids);
+
+            $this->app['manipulator.user']->updateUser($user);
         }
 
         return $this;

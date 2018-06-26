@@ -48,16 +48,18 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li>
-                    <a method="POST" href="<%- scheduler['urls']['start'] %>">
-                        {{ 'Start' | trans }}
-                    </a>
-                </li>
-                <li>
-                    <a method="POST" href="<%- scheduler['urls']['stop'] %>">
-                        {{ 'Stop' | trans }}
-                    </a>
-                </li>
+                {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
+                    <li>
+                        <a method="POST" href="<%- scheduler['urls']['start'] %>">
+                            {{ 'Start' | trans }}
+                        </a>
+                    </li>
+                    <li>
+                        <a method="POST" href="<%- scheduler['urls']['stop'] %>">
+                            {{ 'Stop' | trans }}
+                        </a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="<%- scheduler['urls']['log'] %>">
                         {{ 'Logs' | trans }}

@@ -9,20 +9,20 @@
                         <form id="dashboard-form" class="form-inline" method="GET" action="{{ path("report_dashboard") }}">
                             <label for="dminDash" style="color:#eee">{{ "from"|trans|title }}</label>
                             <div class="input-prepend">
-                                <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                <span class="add-on"><i class="icon fa fa-calendar" aria-hidden="true"></i></span>
                                 <input id="dminDash" name="dmin" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "from"|trans }}" value="{{ "-1 month"|date("Y-m-d") }}">
                             </div>
                             <label for="dmaxDash" style="color:#eee">{{ "to"|trans|title }}</label>
                             <div class="input-prepend">
                                 to
-                                <span class="add-on"><i class="icon icon-calendar"></i></span>
+                                <span class="add-on"><i class="icon fa fa-calendar" aria-hidden="true"></i></span>
                                 <input id="dmaxDash" name="dmax" style="font-size: 14px;width:220px;" size="10" type="text" placeholder="{{ "to"|trans }}" value="{{ "now"|date("Y-m-d") }}">
                             </div>
                             <button class="btn submit-dashboard" type="button">{{ "Generate" | trans }}</button>
                         </form>
                         <div>
                             <span class="text-info" style="font-style: italic">
-                                <i class="icon icon-warning-sign"></i>
+                                <i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 {{
                                     "Report generation may take a long time to generate, depending on the number of collections and the period selected." | trans
                                 }}

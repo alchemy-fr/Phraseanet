@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\DBAL\Connection;
@@ -750,6 +751,38 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * Return an array containing GPSPosition
+     *
+     * @return array
+     */
+    public function getPositionFromTechnicalInfos()
+    {
+        $positionTechnicalField = [
+            media_subdef::TC_DATA_LATITUDE,
+            media_subdef::TC_DATA_LONGITUDE
+        ];
+        $position = [];
+
+        foreach($positionTechnicalField as $field){
+            $fieldData = $this->get_technical_infos($field);
+
+            if($fieldData){
+                $position[$field] = $fieldData->getValue();
+            }
+        }
+
+        if(count($position) == 2){
+            return [
+                'isCoordComplete' => 1,
+                'latitude' => $position[media_subdef::TC_DATA_LATITUDE],
+                'longitude' => $position[media_subdef::TC_DATA_LONGITUDE]
+            ];
+        }
+
+        return ['isCoordComplete' => 0, 'latitude' => 'false', 'longitude' => 'false'];
+    }
+
+    /**
      * @param TechnicalDataSet $dataSet
      * @internal
      */
@@ -1303,6 +1336,37 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
 
         return $this;
+    }
+
+    /**
+     * Insert or update technical data
+     * $technicalDatas an array of name => value
+     *
+     * @param array $technicalDatas
+     */
+    public function insertOrUpdateTechnicalDatas($technicalDatas)
+    {
+        $technicalFields = media_subdef::getTechnicalFieldsList();
+        $sqlValues = null;
+
+        foreach($technicalDatas as $name => $value){
+            if(array_key_exists($name, $technicalFields)){
+                if(is_null($value)){
+                    $value = 0;
+                }
+                $sqlValues[] = [$this->getRecordId(), $name, $value, $value];
+            }
+        }
+
+        if($sqlValues){
+            $connection = $this->getDataboxConnection();
+            $connection->transactional(function (Connection $connection) use ($sqlValues) {
+                $statement = $connection->prepare('INSERT INTO technical_datas (record_id, name, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?');
+                array_walk($sqlValues, [$statement, 'execute']);
+            });
+
+            $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
+        }
     }
 
     /**

@@ -14,15 +14,18 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use MediaVorus\Media\Document;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Colorspace extends AbstractChecker
 {
     protected $colorspaces;
+    protected $mediatypes;
 
     const COLORSPACE_RGB = 'rgb';
     const COLORSPACE_CMYK = 'cmyk';
     const COLORSPACE_GRAYSCALE = 'grayscale';
+    const COLORSPACE_RGBA = 'rgba';
 
     public function __construct(Application $app, array $options)
     {
@@ -30,7 +33,12 @@ class Colorspace extends AbstractChecker
             throw new \InvalidArgumentException('Missing "colorspaces" options');
         }
 
+        if (!isset($options['media_types'])) {
+            throw new \InvalidArgumentException('Missing "media_types" options');
+        }
+
         $this->colorspaces = array_map('strtolower', (array) $options['colorspaces']);
+        $this->mediatypes = $options['media_types'];
         parent::__construct($app);
     }
 
@@ -40,6 +48,8 @@ class Colorspace extends AbstractChecker
 
         if (0 === count($this->colorspaces)) {
             $boolean = true; //bypass color if empty array
+        } elseif (0 !== count($this->mediatypes) && $file->getMedia()->getType() !== NULL && !in_array($file->getMedia()->getType(), $this->mediatypes)) {
+            $boolean = true; //bypass color checker if media type is not in the config
         } elseif (method_exists($file->getMedia(), 'getColorSpace')) {
             $colorspace = null;
             switch ($file->getMedia()->getColorSpace())
@@ -53,6 +63,9 @@ class Colorspace extends AbstractChecker
                     break;
                 case \MediaVorus\Media\Image::COLORSPACE_GRAYSCALE:
                     $colorspace = self::COLORSPACE_GRAYSCALE;
+                    break;
+                case \MediaVorus\Media\Image::COLORSPACE_RGBA:
+                    $colorspace = self::COLORSPACE_RGBA;
                     break;
             }
 

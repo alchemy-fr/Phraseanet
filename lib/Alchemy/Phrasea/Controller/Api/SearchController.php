@@ -59,14 +59,14 @@ class SearchController extends Controller
 
         $result = $this->getSearchEngine()->query($query, $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getUserQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getQueryText());
 
         // log array of collectionIds (from $options) for each databox
         $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
         foreach ($collectionsReferencesByDatabox as $sbid => $references) {
             $databox = $this->findDataboxById($sbid);
             $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
-            $this->getSearchEngineLogger()->log($databox, $result->getUserQuery(), $result->getTotal(), $collectionsIds);
+            $this->getSearchEngineLogger()->log($databox, $result->getQueryText(), $result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();

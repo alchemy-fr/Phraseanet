@@ -16,5 +16,6 @@
     - composer
     - mailcatcher
     - node
+    - yarn
     - app
     - ffmpeg

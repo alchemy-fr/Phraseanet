@@ -15,7 +15,7 @@ gulp.task('copy-alchemy-embed', function(){
         return gulp.src('vendor/alchemy/embed-bundle/dist/**/*')
             .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
     }
-    return gulp.src(config.paths.vendors + 'alchemy-embed-medias/dist/**/*')
+    return gulp.src(config.paths.nodes + 'alchemy-embed-medias/dist/**/*')
         .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
 });
 gulp.task('watch-alchemy-embed-js', function() {

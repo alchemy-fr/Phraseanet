@@ -26,7 +26,9 @@
 {% block content %}
 <div id="home" data-role="page">
     <div data-role="header">
-    <a href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+        <a rel="external"
+           href="{{ path('lightbox') }}{% if basket.getValidation() %}#validation{% else %}#baskets{% endif %}"
+           data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{basket.getName()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>

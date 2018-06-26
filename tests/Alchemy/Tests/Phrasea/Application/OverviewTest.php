@@ -2,6 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Application;
 
+use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
@@ -254,7 +255,13 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
             ->method('getFile')
             ->will($this->returnValue($symfoFile));
 
-        self::$DI['app']['subdef.substituer']->substitute($story, $name, $media);
+        /** @var SubdefSubstituer $substituter */
+        $substituter = self::$DI['app']['subdef.substituer'];
+        if($name == 'document') {
+            $substituter->substituteDocument($story, $media);
+        } else {
+             $substituter->substituteSubdef($story, $name, $media);
+        }
 
         $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' =>  $story->getDataboxId(),

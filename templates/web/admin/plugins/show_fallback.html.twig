@@ -52,7 +52,7 @@
                     contentsDownloaded[e.target.hash] = true;
                 }, function(error) {
                     console.log(error);
-                    targetDiv.empty().html('<i class="icon-fire">{{ 'admin::plugins: retrieveConfigurationError'|trans }}</i>');
+                    targetDiv.empty().html('<i class="fa fa-fire" aria-hidden="true">{{ 'admin::plugins: retrieveConfigurationError'|trans }}</i>');
                 });
             }
         });

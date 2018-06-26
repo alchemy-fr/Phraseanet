@@ -36,7 +36,7 @@ define([
             tasksCollection: TaskManagerApp.tasksCollection,
             scheduler: TaskManagerApp.Scheduler
         });
-    }
+    };
 
     var load = function() {
         TaskManagerApp.refreshView.refreshAction();

@@ -33,13 +33,17 @@
 
 <div>
     <div class="well well-small">
-        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="icon-share"></i> {{ 'You can  download an example by clicking here' | trans }}</a>
+        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="fa fa-share-square-o"
+                                                                                     aria-hidden="true"></i> {{ 'You can  download an example by clicking here' | trans }}
+        </a>
     </div>
     <div class="well well-small">
-        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="icon-share"></i> {{ 'You can download the documentation here' | trans }}</a>
+        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="fa fa-share-square-o"
+                                                                                     aria-hidden="true"></i> {{ 'You can download the documentation here' | trans }}
+        </a>
     </div>
     <span class="btn btn-success fileinput-button">
-        <i class="icon-plus icon-white"></i>
+        <i class="fa fa-plus icon-white" aria-hidden="true"></i>
         <span>{% trans %}Select files...{% endtrans %}</span>
         <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
     </span>
@@ -51,7 +55,7 @@ $(function () {
     $('#fileupload').fileupload({
         dataType: 'html',
         add: function(e, data) {
-            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].type)) {
+            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].name)) {
                 {% set supported_file_types = ['csv', 'rtf']|join(' | ') %}
                 alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
 

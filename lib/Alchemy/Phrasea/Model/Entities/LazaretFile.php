@@ -387,6 +387,17 @@ class LazaretFile
     }
 
     /**
+     * @param LazaretCheck $checks
+     * @return string
+     */
+    public function getCheckerName(LazaretCheck $checks)
+    {
+        $checkNameTab = explode('\\', $checks->getCheckClassname());
+
+        return $checkNameTab[4];
+    }
+
+    /**
      * Get checks
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -394,6 +405,19 @@ class LazaretFile
     public function getChecks()
     {
         return $this->checks;
+    }
+
+    /**
+     * @return array $checkers
+     */
+    public function getChecksWhithNameKey()
+    {
+        $checkers = [];
+        foreach($this->checks as $check){
+            $checkers[$this->getCheckerName($check)] = $check;
+        }
+
+        return $checkers;
     }
 
     /**
@@ -439,7 +463,7 @@ class LazaretFile
                             'reasons' => []
                         ];
                     }
-                    $merged[$record->getRecordId()]['reasons'][] = $check->getReason($app['translator']);
+                    $merged[$record->getRecordId()]['reasons'][$this->getCheckerName($check)] = $check->getReason($app['translator']);
                 }
                 else {
                     $merged[$record->getRecordId()] = $record;

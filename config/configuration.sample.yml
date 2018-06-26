@@ -102,6 +102,7 @@ border-manager:
             enabled: false
             options:
                 colorspaces: [cmyk, grayscale, rgb]
+                media_types: [Image]
         -
             type: Checker\Dimension
             enabled: false
@@ -135,6 +136,7 @@ authentication:
             options:
                 app-id: ''
                 secret: ''
+                default-graph-version: 'v2.10'
         twitter:
             enabled: false
             options:
@@ -237,9 +239,40 @@ embed_bundle:
         player: flexpaper
         enable-pdfjs: true
 geocoding-providers:
-  -
-    name: 'mapBox'
-    public-key: ''
+    -
+        map-provider: mapboxWebGL
+        enabled: false
+        public-key: ''
+        map-layers:
+            -
+                name: Light
+                value: 'mapbox://styles/mapbox/light-v9'
+            -
+                name: Streets
+                value: 'mapbox://styles/mapbox/streets-v9'
+            -
+                name: Basic
+                value: 'mapbox://styles/mapbox/basic-v9'
+            -
+                name: Satellite
+                value: 'mapbox://styles/mapbox/satellite-v9'
+            -
+                name: Dark
+                value: 'mapbox://styles/mapbox/dark-v9'
+        transition-mapboxgl:
+            -
+                animate: true
+                speed: '2.2'
+                curve: '1.42'
+        default-position:
+            - '48.879162'
+            - '2.335062'
+        default-zoom: 5
+        marker-default-zoom: 9
+        geonames-field-mapping: true
+        cityfields: City, Ville
+        provincefields: Province
+        countryfields: Country, Pays
 workers:
   queue:
     worker-queue:

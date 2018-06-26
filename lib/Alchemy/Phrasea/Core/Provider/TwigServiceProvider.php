@@ -127,6 +127,23 @@ class TwigServiceProvider implements ServiceProviderInterface
             );
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
 
+        $twig->addFilter(new \Twig_SimpleFilter('parseColor', function (\Twig_Environment $twig, $string) use ($app) {
+            $re = '/^(.*)\[#([0-9a-fA-F]{6})]$/m';
+            $stringArr = explode(';', $string);
+
+            foreach ($stringArr as $key => $value) {
+                preg_match_all($re, trim($value), $matches);
+                if ($matches && $matches[1] != null && $matches[2] != null) {
+                    $colorCode = '#' . $matches[2][0];
+                    $colorName = $matches[1][0];
+
+                    $stringArr[$key] = '<span style="white-space: nowrap;"><span class="color-dot" style="margin-right: 4px; background-color: ' . $colorCode . '"></span>' . $colorName . '</span>';
+                }
+            }
+
+            return implode('; ', $stringArr);
+        }, ['needs_environment' => true, 'is_safe' => ['html']]));
+
         $twig->addFilter(new \Twig_SimpleFilter('bounce',
             function (\Twig_Environment $twig, $fieldValue, $fieldName, $searchRequest, $sbasId) {
                 // bounce value if it is present in thesaurus as well
@@ -143,6 +160,25 @@ class TwigServiceProvider implements ServiceProviderInterface
         $twig->addFilter(new \Twig_SimpleFilter('escapeDoubleQuote', function ($value) {
             return str_replace('"', '\"', $value);
         }));
+
+        $twig->addFilter(new \Twig_SimpleFilter('formatDuration',
+            function ($secondsInDecimals) {
+                $time = [];
+                $hours = floor($secondsInDecimals / 3600);
+                $secondsInDecimals -= $hours * 3600;
+                $minutes = floor($secondsInDecimals / 60);
+                $secondsInDecimals -= $minutes * 60;
+                $seconds = intVal($secondsInDecimals % 60, 10);
+                if ($hours > 0) {
+                    array_push($time, (strlen($hours) < 2) ? "0{$hours}" : $hours);
+                }
+                array_push($time, (strlen($minutes) < 2) ? "0{$minutes}" : $minutes);
+                array_push($time, (strlen($seconds) < 2) ? "0{$seconds}" : $seconds);
+                $formattedTime = implode(':', $time);
+
+                return $formattedTime;
+            }
+        ));
     }
 
     /**

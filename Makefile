@@ -8,7 +8,7 @@ install_composer:
 	composer install
 
 install_asset_dependencies:
-	npm install
+	yarn
 	./node_modules/.bin/gulp build
 
 install_assets:
@@ -17,7 +17,6 @@ install_assets:
 clean_assets:
 	rm -rf ./node_modules
 	rm -rf ./www/assets
-	rm -rf ./www/bower_components
 	mkdir ./node_modules
 	touch ./node_modules/.gitkeep
 

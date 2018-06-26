@@ -82,13 +82,16 @@ class RegistryFormManipulator
 
     private function filterNullValues(array &$array)
     {
-        return array_filter($array, function (&$value) {
+        foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = $this->filterNullValues($value);
+                $this->filterNullValues($value);
             }
+            else if ($key !== 'geonames-server' && $value === null) {
+                unset($array[$key]);
+            }
+        }
 
-            return null !== $value;
-        });
+        return $array;
     }
 
     private function getDefaultData(array $config)

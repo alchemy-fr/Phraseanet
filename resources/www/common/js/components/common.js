@@ -131,7 +131,7 @@ var commonModule = (function ($, p4) {
                 fix_notification_height();
 
             if ($('.notification.unread', box).length > 0) {
-                var trigger = $('#notification_trigger');
+                var trigger = $('.notification_trigger');
                 $('.counter', trigger)
                     .empty()
                     .append($('.notification.unread', box).length);
@@ -139,7 +139,7 @@ var commonModule = (function ($, p4) {
 
             }
             else
-                $('#notification_trigger .counter').css('visibility', 'hidden').empty();
+                $('.notification_trigger .counter').css('visibility', 'hidden').empty();
 
             if (data.changed.length > 0) {
                 var current_open = $('.SSTT.ui-state-active');

@@ -23,7 +23,6 @@ use Alchemy\Phrasea\Record\RecordWasRotated;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Reader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -38,13 +37,14 @@ class ToolsController extends Controller
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
 
-        $metadata = false;
+        $metadatas = false;
         $record = null;
         $recordAccessibleSubdefs = array();
 
         if (count($records) == 1) {
             /** @var \record_adapter $record */
             $record = $records->first();
+            $databox = $record->getDatabox();
 
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
@@ -82,27 +82,17 @@ class ToolsController extends Controller
                     );
                 }
             }
-
             if (!$record->isStory()) {
-                try {
-                    $metadata = $this->getExifToolReader()
-                        ->files($record->get_subdef('document')->getRealPath())
-                        ->first()->getMetadatas();
-                } catch (PHPExiftoolException $e) {
-                    // ignore
-                } catch (\Exception_Media_SubdefNotFound $e) {
-                    // ignore
-                }
+                $metadatas = true;
             }
         }
         $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/index.html.twig', [
-            'records'   => $records,
-            'record'    => $record,
-            'videoEditorConfig' => $conf->get(['video-editor']),
-            'recordSubdefs' => $recordAccessibleSubdefs,
-            'metadatas' => $metadata,
+            'records'           => $records,
+            'record'            => $record,
+            'recordSubdefs'     => $recordAccessibleSubdefs,
+            'metadatas'         => $metadatas,
         ]);
     }
 
@@ -202,7 +192,7 @@ class ToolsController extends Controller
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
-                    $this->getSubDefinitionSubstituer()->substitute($record, 'document', $media);
+                    $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
                     $record->insertTechnicalDatas($this->getMediaVorus());
                     $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
 
@@ -262,7 +252,7 @@ class ToolsController extends Controller
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
-            $this->getSubDefinitionSubstituer()->substitute($record, 'thumbnail', $media);
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, 'thumbnail', $media);
             $this->getDataboxLogger($record->getDatabox())
                 ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
@@ -426,11 +416,81 @@ class ToolsController extends Controller
 
         $media = $this->app->getMediaFromUri($fileName);
 
-        $this->getSubDefinitionSubstituer()->substitute($record, $subDefName, $media);
+        if($subDefName == 'document') {
+            $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
+        } else {
+            $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subDefName, $media);
+        }
         $this->getDataboxLogger($record->getDatabox())
           ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
+    }
+
+    /**
+     * @param $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveMetasAction(Request $request)
+    {
+        $record = new \record_adapter($this->app,
+            (int)$request->request->get("databox_id"),
+            (int)$request->request->get("record_id"));
+
+        $metadatas[0] = [
+            'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
+            'meta_id'        => '',
+            'value'          => $request->request->get("value")
+        ];
+        try {
+            $record->set_metadatas($metadatas);
+        }
+        catch (Exception $e) {
+            return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);
+        }
+
+        return $this->app->json(['success' => true, 'errorMessage' => '']);
+    }
+
+    public function videoEditorAction(Request $request)
+    {
+        $records = RecordsRequest::fromRequest($this->app, $request, false);
+
+        $metadatas = false;
+        $record = null;
+        $JSFields = [];
+
+        if (count($records) == 1) {
+            /** @var \record_adapter $record */
+            $record = $records->first();
+            $databox = $record->getDatabox();
+
+
+            foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
+                $fields[] = $meta;
+
+                /** @Ignore */
+                $JSFields[$meta->get_id()] = [
+                    'id'     => $meta->get_id(),
+                    'name'   => $meta->get_name(),
+                    '_value' => $record->getCaption([$meta->get_name()]),
+                ];
+            }
+
+            if (!$record->isStory()) {
+                $metadatas = true;
+            }
+        }
+        $conf = $this->getConf();
+
+        return $this->render('prod/actions/Tools/videoEditor.html.twig', [
+            'records'           => $records,
+            'record'            => $record,
+            'videoEditorConfig' => $conf->get(['video-editor']),
+            'metadatas'         => $metadatas,
+            'JSonFields'        => json_encode($JSFields),
+        ]);
     }
 }

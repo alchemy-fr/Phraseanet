@@ -37,6 +37,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'));
         });
     }
@@ -263,6 +264,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->get('/me/', 'controller.api.v1:getCurrentUserAction');
         $controllers->delete('/me/', 'controller.api.v1:deleteCurrentUserAction');
+        $controllers->get('/me/structures/', 'controller.api.v1:getCurrentUserStructureAction');
+        $controllers->get('/me/subdefs/', 'controller.api.v1:getCurrentUserSubdefsAction');
+        $controllers->get('/me/collections/', 'controller.api.v1:getCurrentUserCollectionsAction');
 
         $controllers->post('/me/request-collections/', 'controller.api.v1:createCollectionRequests');
         $controllers->post('/me/update-account/', 'controller.api.v1:updateCurrentUserAction');

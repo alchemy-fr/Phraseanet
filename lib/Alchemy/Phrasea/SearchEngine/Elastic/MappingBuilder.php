@@ -49,6 +49,15 @@ class MappingBuilder
      * @param string $name
      * @return FieldMapping
      */
+    public function addGeoPointField($name)
+    {
+        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_GEO_POINT));
+    }
+
+    /**
+     * @param string $name
+     * @return FieldMapping
+     */
     public function addObjectField($name)
     {
         return $this->mapping->addField(new ComplexFieldMapping($name, FieldMapping::TYPE_OBJECT));

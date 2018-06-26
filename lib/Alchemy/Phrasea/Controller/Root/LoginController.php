@@ -552,6 +552,7 @@ class LoginController extends Controller
         } while (null !== $this->getUserRepository()->findOneBy(['login' => $login]));
 
         $user = $this->getUserManipulator()->createUser($login, $this->getStringGenerator()->generateString(128));
+        $user->setGuest(true);
         $invite_user = $this->getUserRepository()->findByLogin(User::USER_GUEST);
 
         $usr_base_ids = array_keys($this->getAclForUser($user)->get_granted_base());

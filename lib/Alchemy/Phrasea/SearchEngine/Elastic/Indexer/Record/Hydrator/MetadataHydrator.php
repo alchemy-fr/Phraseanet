@@ -121,6 +121,9 @@ SQL;
     private function sanitizeValue($value, $type)
     {
         switch ($type) {
+            case FieldMapping::TYPE_STRING:
+                return str_replace("\0", "", $value);
+
             case FieldMapping::TYPE_DATE:
                 return $this->helper->sanitizeDate($value);
 
@@ -152,9 +155,18 @@ SQL;
         // Push this tag into object
         $position->set($tag_name, $value);
         // Try to output complete position
-        if ($position->isComplete()) {
-            $records[$id]['metadata_tags']['Longitude'] = $position->getSignedLongitude();
-            $records[$id]['metadata_tags']['Latitude'] = $position->getSignedLatitude();
+        if ($position->isCompleteComposite()) {
+            $lon = $position->getCompositeLongitude();
+            $lat = $position->getCompositeLatitude();
+
+            $records[$id]['metadata_tags']['Longitude'] = $lon;
+            $records[$id]['metadata_tags']['Latitude'] = $lat;
+
+            $records[$id]["location"] = [
+                "lat" => $lat,
+                "lon" => $lon
+            ];
+
             unset($this->gps_position_buffer[$id]);
         }
     }

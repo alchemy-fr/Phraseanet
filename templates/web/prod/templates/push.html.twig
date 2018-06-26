@@ -4,7 +4,7 @@
         <table>
             <tr>
                 <td class="icon">
-                    <img src="/assets/common/images/icons/user.png"/>
+                    <img src="/assets/common/images/icons/user-white.png"/>
                 </td>
                 <td class="infos">
                     <div style="margin:5px 10px 5px;">
@@ -66,13 +66,13 @@
 <script type="text/template" id="feedback_badge_tpl">
 <div class="badge badge_<%= user.usr_id %>">
     <a href="#" class="deleter">
-        <img src="/assets/prod/images/Push/close_badge.png"/>
+        <i class="fa fa-times-circle"></i>
     </a>
     <input name="id" value="<%= user.usr_id %>" type="hidden" />
     <table>
         <tr>
             <td class="icon">
-                <img src="/assets/common/images/icons/user.png"/>
+                <img src="/assets/common/images/icons/user-white.png"/>
             </td>
             <td class="infos">
                 <div>
@@ -90,18 +90,24 @@
                         </tr>
                         <tr class="toggles">
                             <td class="toggle status_on toggle_agree">
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/contributeur_off_badge.png" />
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/contributeur_badge.png" />
+                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off"
+                                     src="/assets/common/images/icons/grey-pen.png"/>
+                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on"
+                                     src="/assets/common/images/icons/dark-green-pen.png"/>
                                 <input type="hidden" name="participants[<%= user.usr_id %>][agree]" value="1" />
                             </td>
                             <td class="toggle status_off toggle_see_others">
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/see_other_off_badge.png" />
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/see_other_badge.png" />
+                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off"
+                                     src="/assets/common/images/icons/grey-user.png"/>
+                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on"
+                                     src="/assets/common/images/icons/dark-green-user.png"/>
                                 <input type="hidden" name="participants[<%= user.usr_id %>][see_others]" value="0" />
                             </td>
                             <td class="toggle status_off toggle_HD">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/download_off_badge.png" />
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/download_badge.png" />
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
+                                     src="/assets/common/images/icons/download-grey.png"/>
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
+                                     src="/assets/common/images/icons/dark-green-download.png"/>
                                 <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
                             </td>
                         </tr>
@@ -141,12 +147,12 @@
         </select>
     </div>
     <div class="control-group">
-        <label for="PushSendFormName">{% trans %}Name{% endtrans %}</label>
-        <input id="PushSendFormName" type="text" name="name" class="input-block-level"/>
+        <input id="PushSendFormName" placeholder="{% trans %}Name{% endtrans %}" type="text" name="name"
+               class="input-block-level"/>
     </div>
     <div class="control-group">
-        <label for="PushSendFormMessage">{% trans %}Message{% endtrans %}</label>
-        <textarea id="PushSendFormMessage" name="message" class="input-block-level" rows="6"></textarea>
+        <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
+                  class="input-block-level" rows="6"></textarea>
     </div>
     <div class="control-group">
         <label for="PushSendFormRecept" class="checkbox">
@@ -164,7 +170,7 @@
         </div>
         <div class="control-group info">
             <span class="help-inline" style="font-style: italic">
-                <i class="icon-info-sign"></i>
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
                 {% trans %}
                     The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
                     to see its contents.
@@ -180,13 +186,13 @@
 <script type="text/template" id="push_badge_tpl">
 <div class="badge badge_<%= user.usr_id %>">
     <a href="#" class="deleter">
-        <img src="/assets/prod/images/Push/close_badge.png"/>
+        <i class="fa fa-times-circle"></i>
     </a>
     <input name="id" value="<%= user.usr_id %>" type="hidden" />
     <table>
         <tr>
             <td class="icon">
-                <img src="/assets/common/images/icons/user.png"/>
+                <img src="/assets/common/images/icons/user-white.png"/>
             </td>
             <td class="infos">
                 <div>
@@ -204,8 +210,10 @@
                         </tr>
                         <tr class="toggles">
                             <td class="toggle status_off toggle_HD">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off" src="/assets/prod/images/Push/download_off_badge.png" />
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on" src="/assets/prod/images/Push/download_badge.png" />
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
+                                     src="/assets/common/images/icons/download-grey.png"/>
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
+                                     src="/assets/common/images/icons/dark-blue-download.png"/>
                                 <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
                             </td>
                         </tr>

@@ -96,7 +96,7 @@ img {
   }
   .lightbox_container {
     top: 30px;
-    overflow: hidden;
+    overflow: scroll;
   }
   .display_id {
     top: 5px;
@@ -284,12 +284,13 @@ img {
 }
 
 #right_column .right_column_wrapper {
-  top: 30px;
+  //top: 30px;
   bottom: 45px;
 }
 
 #right_column .right_column_wrapper.caption {
-  bottom: 85px;
+  bottom: 0px;
+  top: 30px;
 }
 
 #record_infos {

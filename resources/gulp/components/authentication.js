@@ -15,7 +15,7 @@ gulp.task('build-authentication-css', function(){
 
 gulp.task('build-authentication-js', function(){
     var authenticationGroup = [
-        config.paths.vendors + 'requirejs/require.js',
+        config.paths.nodes + 'requirejs/require.js',
         config.paths.dist + 'scripts/apps/login/home/config.js'
     ];
     return utils.buildJsGroup(authenticationGroup, 'authentication', 'authentication/js', debugMode);

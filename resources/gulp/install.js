@@ -17,12 +17,7 @@ gulp.task('clean:assetsPath', function(done){
     return del([config.paths.build + '/**/*'], done);
 });
 
-gulp.task('install-bower-dependencies', function(){
-    return gulp.src(['./bower.json'])
-        .pipe(install());
-});
-
-gulp.task('build-dependencies', ['install-bower-dependencies'], function(){
+gulp.task('build-dependencies', function () {
     gulp.start('build');
     gulp.start('build-css');
 });

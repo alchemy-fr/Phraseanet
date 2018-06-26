@@ -53,6 +53,42 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $flags = [];
     private $highlight = [];
 
+    public function asArray()
+    {
+        return [
+            '_index'         => $this->_index,
+            '_type'          => $this->_type,
+            '_id'            => $this->_id,
+            '_version'       => $this->_version,
+            '_score'         => $this->_score,
+            'databoxId'      => $this->databoxId,
+            'recordId'       => $this->recordId,
+            'collectionId'   => $this->collectionId,
+            'baseId'         => $this->baseId,
+            'collectionName' => $this->collectionName,
+            'mimeType'       => $this->mimeType,
+            'title'          => $this->title,
+            'originalName'   => $this->originalName,
+            'updated'        => $this->updated,
+            'created'        => $this->created,
+            'sha256'         => $this->sha256,
+            'width'          => $this->width,
+            'height'         => $this->height,
+            'size'           => $this->size,
+            'uuid'           => $this->uuid,
+            'position'       => $this->position,
+            'type'           => $this->type,
+            'status'         => $this->status,
+            'isStory'        => $this->isStory,
+            'caption'        => $this->caption,
+            'privateCaption' => $this->privateCaption,
+            'exif'           => $this->exif,
+            'subdefs'        => $this->subdefs,
+            'flags'          => $this->flags,
+            'highlight'      => $this->highlight,
+        ];
+    }
+
     /**
      * @param string $index
      * @param string $type

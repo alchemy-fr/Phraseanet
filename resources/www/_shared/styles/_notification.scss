@@ -1,10 +1,10 @@
 @import 'variables';
 
-#notification_trigger{
+.notification_trigger {
   cursor:pointer;
 }
 
-#notification_trigger .counter{
+.notification_trigger .counter {
   border:1px solid white;
   background:red;
   -moz-border-radius:8px;
@@ -17,16 +17,16 @@
   padding:2px 4px;
 }
 
-#notification_trigger.open a span{
+.notification_trigger.open a span {
   color:black;
 }
 
-#notification_trigger.open{
+.notification_trigger.open {
   background-color:white;
   border-bottom:1px solid white;
 }
 
-#notification_trigger.unread{
+.notification_trigger.unread {
 
 }
 
@@ -37,7 +37,7 @@
   border-top:none;
   position:absolute;
   height:150px;
-  top:30px;
+  top: 42px !important;
   overflow-y:auto;
   overflow-x:hidden;
   z-index:668;
