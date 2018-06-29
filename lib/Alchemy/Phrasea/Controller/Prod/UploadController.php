@@ -128,7 +128,20 @@ class UploadController extends Controller
         try {
             // Add file extension, so mediavorus can guess file type for octet-stream file
             $uploadedFilename = $file->getRealPath();
-            $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $renamedFilename = null;
+
+            if(!empty($this->app['conf']->get(['main', 'storage', 'tmp_files']))){
+                $tmpStorage = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'tmp_files'])).'upload/';
+
+                if(!is_dir($tmpStorage)){
+                    $this->getFilesystem()->mkdir($tmpStorage);
+                }
+
+                $renamedFilename = $tmpStorage. pathinfo($file->getRealPath(), PATHINFO_FILENAME) .'.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+            }else{
+                $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            }
 
             $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
