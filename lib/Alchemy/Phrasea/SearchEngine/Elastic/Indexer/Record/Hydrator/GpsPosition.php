@@ -34,12 +34,18 @@ class GpsPosition
         switch ($tag_name) {
             case self::LONGITUDE_TAG_NAME:
                 Assertion::numeric($value);
-                $this->longitude = (float) $value;
+                $value = (float) $value;
+                if($value >= -180.0 && $value <= 180.0 ) {
+                    $this->longitude = $value;
+                }
                 break;
 
             case self::LATITUDE_TAG_NAME:
                 Assertion::numeric($value);
-                $this->latitude = (float) $value;
+                $value = (float) $value;
+                if($value >= -90.0 && $value <= 90.0 ) {
+                    $this->latitude = $value;
+                }
                 break;
 
             case self::LONGITUDE_REF_TAG_NAME:
