@@ -35,7 +35,7 @@ class GpsPosition
             case self::LONGITUDE_TAG_NAME:
                 Assertion::numeric($value);
                 $value = (float) $value;
-                if($value >= 0.0 && $value <= 180.0 ) {
+                if($value >= -180.0 && $value <= 180.0 ) {
                     $this->longitude = $value;
                 }
                 break;
@@ -43,7 +43,7 @@ class GpsPosition
             case self::LATITUDE_TAG_NAME:
                 Assertion::numeric($value);
                 $value = (float) $value;
-                if($value >= 0.0 && $value <= 90.0 ) {
+                if($value >= -90.0 && $value <= 90.0 ) {
                     $this->latitude = $value;
                 }
                 break;
