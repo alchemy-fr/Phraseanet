@@ -115,5 +115,5 @@ Vagrant.configure("2") do |config|
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
 
-    config.vm.synced_folder "./", "/vagrant", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
+    config.vm.synced_folder "./", "/vagrant", type: "nfs"
 end
