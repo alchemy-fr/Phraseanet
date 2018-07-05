@@ -87,7 +87,7 @@ Vagrant.configure("2") do |config|
     # If ansible is in your path it will provision from your HOST machine
     # If ansible is not found in the path it will be instaled in the VM and provisioned from there
     if which('ansible-playbook')
-        config.vm.provision "ansible" do |ansible|
+        config.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "resources/ansible/playbook.yml"
             ansible.limit = 'all'
             ansible.verbose = 'vvv'
@@ -101,7 +101,7 @@ Vagrant.configure("2") do |config|
             }
         end
 
-        config.vm.provision "ansible", run: "always" do |ansible|
+        config.vm.provision "ansible_local", run: "always" do |ansible|
             ansible.playbook = "resources/ansible/playbook-always.yml"
             ansible.limit = 'all'
             ansible.verbose = 'v'
