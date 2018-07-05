@@ -51,6 +51,13 @@ class ApiApplicationManipulator implements ManipulatorInterface
         return $application;
     }
 
+    public function findByClientID($client_id)
+    {
+        return $this->repository->findOneBy([
+            'clientId' => $client_id
+        ]);
+    }
+
     public function delete(ApiApplication $application)
     {
         $this->om->remove($application);
