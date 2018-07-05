@@ -29,6 +29,30 @@
   args:
     chdir: /vagrant/
 
+- name: is configuration already loaded ?
+  stat: path=/vagrant/config/configuration-compiled.php
+  register: file
+
+- name: copy configuration if it exists
+  copy: src=/vagrant/config/configuration.yml dest=/vagrant/config/configuration-backuped.yml
+  when: file.stat.exists
+
+- name: copy compiled configuration if it exists
+  copy: src=/vagrant/config/configuration-compiled.php dest=/vagrant/config/configuration-backuped.php
+  when: file.stat.exists
+
+- name: remove configuration file
+  file:
+    state: absent
+    path: /vagrant/config/configuration.yml
+  when: file.stat.exists
+
+- name: remove compiled configuration
+  file:
+    state: absent
+    path: /vagrant/config/configuration-compiled.php
+  when: file.stat.exists
+
 - name: Run application setup
   become: yes
   become_user: vagrant
