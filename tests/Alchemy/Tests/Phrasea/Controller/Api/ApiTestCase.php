@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -459,6 +460,10 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
 
     protected function evaluateMeta($content, $version = null)
     {
+        if(mb_strpos($content['meta']['request'], '/api/v1') !== FALSE){
+            $version = V1::VERSION;
+        }
+
         $this->assertTrue(is_array($content), 'La reponse est un objet');
         $this->assertArrayHasKey('meta', $content);
         $this->assertArrayHasKey('response', $content);
