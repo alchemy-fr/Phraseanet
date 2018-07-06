@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 
-
 class patch_410alpha10a implements patchInterface
 {
     /** @var string */
@@ -62,11 +61,7 @@ class patch_410alpha10a implements patchInterface
     public function apply(base $databox, Application $app)
     {
         // create an api application for adobeCC
-
-        /** @var ApiApplicationRepository $repo */
-        $repo = $app['repo.api-applications'];
-        if(!$repo->findByClientId(\API_OAuth2_Application_adobeCCPlugin::CLIENT_ID)) {
-
+        if (null === $app['repo.api-applications']->findByClientId(\API_OAuth2_Application_adobeCCPlugin::CLIENT_ID)) {
             /** @var ApiApplicationManipulator $manipulator */
             $manipulator = $app['manipulator.api-application'];
 
