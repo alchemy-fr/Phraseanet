@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 
 
 class patch_410alpha10a implements patchInterface
@@ -62,10 +63,12 @@ class patch_410alpha10a implements patchInterface
     {
         // create an api application for adobeCC
 
-        /** @var ApiApplicationManipulator $manipulator */
-        $manipulator = $app['manipulator.api-application'];
+        /** @var ApiApplicationRepository $repo */
+        $repo = $app['repo.api-applications'];
+        if(!$repo->findByClientId(\API_OAuth2_Application_adobeCCPlugin::CLIENT_ID)) {
 
-        if($manipulator->findByClientID(\API_OAuth2_Application_adobeCCPlugin::CLIENT_ID) === null) {
+            /** @var ApiApplicationManipulator $manipulator */
+            $manipulator = $app['manipulator.api-application'];
 
             $application = $manipulator->create(
                 \API_OAuth2_Application_adobeCCPlugin::CLIENT_NAME,
