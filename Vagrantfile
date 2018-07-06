@@ -1,16 +1,4 @@
 Vagrant.require_version ">= 1.5"
-$php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
-
-unless Vagrant.has_plugin?('vagrant-hostmanager')
-    raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
-end
-
-unless $php.include?($phpVersion)
-    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
-end
-
-$root = File.dirname(File.expand_path(__FILE__))
 
 # Check to determine whether we're on a windows or linux/os-x host,
 # later on we use this to launch ansible in the supported way
@@ -25,6 +13,28 @@ def which(cmd)
     end
     return nil
 end
+
+if which('ip')
+    $env = "mac"
+else if which('ifconfig')
+        $env = "linux"
+    else
+        $env = "windows"
+    end
+end
+
+$php = [ "5.6", "7.0", "7.1", "7.2" ]
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
+
+unless Vagrant.has_plugin?('vagrant-hostmanager')
+    raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
+end
+
+unless $php.include?($phpVersion)
+    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
+end
+
+$root = File.dirname(File.expand_path(__FILE__))
 
 def config_net(config)
     config.hostmanager.aliases = [
@@ -41,11 +51,20 @@ def config_net(config)
         # vboxnet0 can be changed to use a specific private_network
         config.vm.network :private_network, type: "dhcp"
         config.vm.provider "virtualbox" do |vb|
-          vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+
+          if $env == "mac" || $env == "linux"
+              vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+          else
+              vb.customize ["modifyvm", :id, "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]
+          end
         end
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
-                `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+                if $env == "mac" || $env == "linux"
+                   `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+                else
+                   `"C:/Program Files/Oracle/VirtualBox/VBoxManage" guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]
+                end
             end
         end
     end
@@ -53,11 +72,15 @@ end
 
 # By default, the name of the VM is the project's directory name
 $hostname = File.basename($root).downcase
-if which('ip')
+
+if $env == "mac"
     # $hostIps = `ip addr show | grep inet | grep -v inet6 | cut -d' ' -f6 | cut -d'/' -f1`.split("\n");
     $hostIps = `ip addr show | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
-else
-    $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+else if $env == "linux"
+        $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
+    else
+        $hostIps = `resources/ansible/inventories/GetIpAdresses.cmd`
+    end
 end
 
 Vagrant.configure("2") do |config|
@@ -115,5 +138,9 @@ Vagrant.configure("2") do |config|
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
 
-    config.vm.synced_folder "./", "/vagrant", type: "nfs"
+    if $env == "mac" || $env == "linux"
+        config.vm.synced_folder "./", "/vagrant", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
+    else
+        config.vm.synced_folder "./", "/vagrant", type: "smb", mount_options: ["vers=3.02","mfsymlinks"]
+    end
 end
