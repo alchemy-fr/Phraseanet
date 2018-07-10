@@ -139,7 +139,7 @@ Vagrant.configure("2") do |config|
     end
 
     if $env == "mac" || $env == "linux"
-        config.vm.synced_folder "./", "/vagrant", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
+        config.vm.synced_folder "./", "/vagrant", type: "nfs"
     else
         config.vm.synced_folder "./", "/vagrant", type: "smb", mount_options: ["vers=3.02","mfsymlinks"]
     end
