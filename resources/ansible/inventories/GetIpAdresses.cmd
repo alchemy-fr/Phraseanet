@@ -14,8 +14,8 @@ for /f "usebackq tokens=*" %%a in (`ipconfig ^| findstr /i "ipv4"`) do (
       set _o3=%%e
       set _o4=%%f
       rem strip leading space from first octet
-      set _3octet=!_o1:~1!.!_o2!.!_o3!.
-      echo !_3octet!
+      set _4octet=!_o1:~1!.!_o2!.!_o3!.!_o4!
+      echo !_4octet!
       )
     )
   )
