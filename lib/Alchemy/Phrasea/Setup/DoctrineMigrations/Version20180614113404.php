@@ -16,7 +16,7 @@ class Version20180614113404 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('UPDATE Users SET guest = 1 WHERE login LIKE "guest%"');
+        $this->addSql('UPDATE Users SET guest = 1 WHERE login LIKE "guest%" OR login LIKE "(#deleted_guest%"');
     }
 
     /**
