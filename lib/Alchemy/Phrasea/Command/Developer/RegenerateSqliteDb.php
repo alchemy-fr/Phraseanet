@@ -251,6 +251,21 @@ class RegenerateSqliteDb extends Command
         $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
 
         $this->container['manipulator.api-application']->update($application);
+
+        $application = $this->container['manipulator.api-application']->create(
+            \API_OAuth2_Application_AdobeCCPlugin::CLIENT_NAME,
+            ApiApplication::DESKTOP_TYPE,
+            '',
+            'http://www.phraseanet.com',
+            null,
+            ApiApplication::NATIVE_APP_REDIRECT_URI
+        );
+
+        $application->setGrantPassword(true);
+        $application->setClientId(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID);
+        $application->setClientSecret(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_SECRET);
+
+        $this->container['manipulator.api-application']->update($application);
     }
 
     private function insertAuthFailures(EntityManager $em, \Pimple $DI)

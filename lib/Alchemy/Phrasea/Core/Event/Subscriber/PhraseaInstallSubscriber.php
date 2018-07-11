@@ -38,6 +38,7 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
     {
         $this->createNavigatorApplication();
         $this->createOfficePluginApplication();
+        $this->createAdobeCCPluginApplication();
         $this->generateProxies();
     }
 
@@ -73,6 +74,24 @@ class PhraseaInstallSubscriber implements EventSubscriberInterface
         $application->setGrantPassword(true);
         $application->setClientId(\API_OAuth2_Application_OfficePlugin::CLIENT_ID);
         $application->setClientSecret(\API_OAuth2_Application_OfficePlugin::CLIENT_SECRET);
+
+        $this->app['manipulator.api-application']->update($application);
+    }
+
+    private function createAdobeCCPluginApplication()
+    {
+        $application = $this->app['manipulator.api-application']->create(
+            \API_OAuth2_Application_AdobeCCPlugin::CLIENT_NAME,
+            ApiApplication::DESKTOP_TYPE,
+            '',
+            'http://www.phraseanet.com',
+            null,
+            ApiApplication::NATIVE_APP_REDIRECT_URI
+        );
+
+        $application->setGrantPassword(true);
+        $application->setClientId(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_ID);
+        $application->setClientSecret(\API_OAuth2_Application_AdobeCCPlugin::CLIENT_SECRET);
 
         $this->app['manipulator.api-application']->update($application);
     }
