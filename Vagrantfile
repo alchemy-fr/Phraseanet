@@ -1,5 +1,16 @@
 Vagrant.require_version ">= 1.5"
 
+class MyCustomError < StandardError
+	attr_reader :code
+
+	def initialize(code)
+		@code = code
+	end
+
+	def to_s
+	"[#{code} #{super}]"
+	end
+end
 # Check to determine whether we're on a windows or linux/os-x host,
 # later on we use this to launch ansible in the supported way
 # source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
@@ -56,6 +67,7 @@ def config_net(config)
               vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
           else
               vb.customize ["modifyvm", :id, "--hostonlyadapter2", "VirtualBox Host-Only Ethernet Adapter"]
+			  vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
           end
         end
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
@@ -79,7 +91,9 @@ if $env == "mac"
 else if $env == "linux"
         $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
     else
-        $hostIps = `resources/ansible/inventories/GetIpAdresses.cmd`
+        $hostIps = `resources/ansible/inventories/GetIpAdresses.cmd`;
+		# raise MyCustomError.new($hostIps), "HOST IP"
+
     end
 end
 
@@ -103,7 +117,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.box = "ubuntu/trusty64"
-    
+
     config.ssh.forward_agent = true
     config_net(config)
 
@@ -134,13 +148,19 @@ Vagrant.configure("2") do |config|
             }
         end
     else
-        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: ["default", $phpVersion]
+		# raise MyCustomError.new([$hostname, $phpVersion, $hostIps]), "HOST IP"
+		# raise MyCustomError.new($hostIps), "HOST IP"
+		# raise MyCustomError.new($hostIps), "HOST IP"
+
+        config.vm.provision :shell, path: "resources/ansible/windows.sh", args: [$hostname, $phpVersion, $hostIps]
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
 
     if $env == "mac" || $env == "linux"
         config.vm.synced_folder "./", "/vagrant", type: "nfs", mount_options: ['rw', 'vers=3', 'tcp', 'fsc']
     else
-        config.vm.synced_folder "./", "/vagrant", type: "smb", mount_options: ["vers=3.02","mfsymlinks"]
+#       config.vm.synced_folder "./", "/vagrant", type: "smb", mount_options: ["vers=3.02","mfsymlinks","noserverino"]
+        config.vm.synced_folder "./", "/vagrant"
+
     end
 end
