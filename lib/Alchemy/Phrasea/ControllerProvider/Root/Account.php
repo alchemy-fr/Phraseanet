@@ -42,6 +42,12 @@ class Account implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        $firewall = $this->getFirewall($app);
+
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
+        });
+
         // Displays current logged in user account
         $controllers->get('/', 'account.controller:displayAccount')
             ->bind('account');
