@@ -179,7 +179,15 @@ class ApiOrderController extends BaseOrderController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        $file = \set_export::build_zip($this->app, $token, $exportData, $token->getValue() . '.zip');
+
+        $tmpDownloadDir = \p4string::addEndSlash($this->app['tmp.download.path']);
+
+        if(is_null($tmpDownloadDir)){
+            $tmpDownloadDir = '';
+        }
+
+        $zipFile = $tmpDownloadDir.'order_'.$token->getValue() . '.zip';
+        $file = \set_export::build_zip($this->app, $token, $exportData, $zipFile);
 
         return $this->deliverFile($file, $exportName, DeliverDataInterface::DISPOSITION_INLINE, 'application/zip');
     }
