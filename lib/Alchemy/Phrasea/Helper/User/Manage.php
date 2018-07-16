@@ -91,7 +91,7 @@ class Manage extends Helper
             'sbas_id' => $this->request->get('sbas_id'),
             'base_id' => $this->request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
-            'show_special_users' => $this->request->get('show_special_users') ? true : false,
+            'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -110,7 +110,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
-            ->include_special_users($this->query_parms['show_special_users'])
+            ->include_invite($this->query_parms['filter_guest_user'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
             ->limit($offset_start, $results_quantity)
             ->execute();

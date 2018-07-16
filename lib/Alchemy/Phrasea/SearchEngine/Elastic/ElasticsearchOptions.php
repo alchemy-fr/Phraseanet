@@ -272,7 +272,7 @@ class ElasticsearchOptions
             ],
             'camera_model_aggregate' => [
                 'label' => 'Camera Model',
-                'field' => 'metadata_tags.CameraModel.raw',
+                'field' => 'metadata_tags.CameraModel',
                 'query' => 'meta.CameraModel:%s',
             ],
             'iso_aggregate' => [

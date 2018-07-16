@@ -35,7 +35,7 @@
             <fieldset class="admin_head_opts">
                 <span class="checkbox">
                     {{ 'admin::userlist: filterguestuser' | trans }}
-                    <input type="checkbox"  name="show_special_users" {% if parm['show_special_users'] %} checked="checked" {% endif %} style="margin-left:10px" />
+                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px" />
                 </span>
                 <br/>
                 <span>{{ 'Filter' | trans }}</span>

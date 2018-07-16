@@ -8,7 +8,7 @@ install_composer:
 	composer install
 
 install_asset_dependencies:
-	yarn
+	yarn upgrade
 	./node_modules/.bin/gulp build
 
 install_assets:

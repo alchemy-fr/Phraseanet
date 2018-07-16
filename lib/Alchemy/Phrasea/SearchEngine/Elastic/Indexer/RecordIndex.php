@@ -71,7 +71,7 @@ class RecordIndex implements MappingProvider
 
         $mapping->addIntegerField('width')->disableIndexing();
         $mapping->addIntegerField('height')->disableIndexing();
-        $mapping->addIntegerField('size')->disableIndexing();
+        $mapping->addLongField('size')->disableIndexing();
 
         $mapping->addGeoPointField('location');
 

@@ -109,7 +109,7 @@ class RegistrationSubscriber extends AbstractNotificationSubscriber
         $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur nom'), $registeredUser->getFirstName());
         $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur prenom'), $registeredUser->getLastName());
         $body .= sprintf("%s : %s\n", $this->app->trans('admin::compte-utilisateur email'), $registeredUser->getEmail());
-        $body .= sprintf("%s/%s\n", $registeredUser->get_job(), $registeredUser->getCompany());
+        $body .= sprintf("%s/%s\n", $registeredUser->getJob(), $registeredUser->getCompany());
 
         $readyToSend = false;
         try {

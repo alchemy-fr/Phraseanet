@@ -34,7 +34,6 @@
   with_items:
     - "{{ mariadb.appbox_db }}"
     - "{{ mariadb.databox_db }}"
-    - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
   mysql_db: name={{ mariadb.appbox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}

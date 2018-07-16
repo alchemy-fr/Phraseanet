@@ -208,10 +208,10 @@ class SubdefsController extends Controller
     protected function getSubviewsMapping()
     {
         $mapping = [
-            Type::TYPE_IMAGE    => [Subdef::TYPE_IMAGE],
+            Type::TYPE_IMAGE    => [Subdef::TYPE_IMAGE, Subdef::TYPE_PDF],
             Type::TYPE_VIDEO    => [Subdef::TYPE_IMAGE, Subdef::TYPE_VIDEO, Subdef::TYPE_ANIMATION],
             Type::TYPE_AUDIO    => [Subdef::TYPE_IMAGE, Subdef::TYPE_AUDIO],
-            Type::TYPE_DOCUMENT => [Subdef::TYPE_IMAGE, Subdef::TYPE_FLEXPAPER],
+            Type::TYPE_DOCUMENT => [Subdef::TYPE_IMAGE, Subdef::TYPE_FLEXPAPER, Subdef::TYPE_PDF],
             Type::TYPE_FLASH    => [Subdef::TYPE_IMAGE]
         ];
 
@@ -554,6 +554,11 @@ class SubdefsController extends Controller
                 ],
                 "form"        => [],
             ],
+            Subdef::TYPE_PDF => array(
+                "definitions" => array(
+                ),
+                "form" => array(),
+            ),
         ];
 
         return $config;
