@@ -202,6 +202,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $mediaTypeElement->appendChild($dom_struct->createTextNode($mediatype));
         $subdef->appendChild($mediaTypeElement);
 
+        $defaultPath = $this->databox->getSubdefStorage();
+        $pathElement = $dom_struct->createElement('path');
+        $pathElement->appendChild($dom_struct->createTextNode($defaultPath));
+        $subdef->appendChild($pathElement);
+
         $dom_xp = $this->databox->get_xpath_structure();
         $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
         $groups = $dom_xp->query($query);

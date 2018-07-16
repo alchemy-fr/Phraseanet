@@ -1473,6 +1473,16 @@ class databox extends base implements ThumbnailedElement
         ];
     }
 
+    /**
+     * Return the default subdef path
+     *
+     * @return string
+     */
+    public function getSubdefStorage(){
+
+        return p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'subdefs'])).$this->get_dbname()."/subdefs/";
+    }
+
     protected function retrieve_structure()
     {
         try {
