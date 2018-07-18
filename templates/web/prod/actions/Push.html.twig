@@ -262,28 +262,34 @@
 </div>
 
 <div id="ListManager" class="PNB PushBox" style="display:none;">
-    <div class="PNB theme-bg" style="left:10px;height:50px;bottom:auto;">
-        <h1>
-            <button class="back_link btn btn-inverse" style="margin-right: 5px;">
-                &lt;
+    <div class="PNB theme-bg" style="left:10px;height:50px;bottom:auto;width:210px;">
+        <div class="pull-left" style="width:210px">
+            <a class="back_link btn push-back-link" style="margin-right:5px;margin-top:18px;">
                 {% if context == 'Push' %}
-                    {{ 'Back to Push' | trans }}
+                    <img src="/assets/common/images/icons/chevron-left-white.png" class="image-normal">
+                    <img src="/assets/common/images/icons/chevron-left-blue.png" class="image-hover">
+                    <span>{{ 'Back to Push' | trans }}</span>
                 {% else %}
-                    {{ 'Back to Feedback' | trans }}
+                    <img src="/assets/common/images/icons/chevron-left-white.png" class="image-normal">
+                    <img src="/assets/common/images/icons/chevron-left-green.png" class="image-hover">
+                    <span>{{ 'Back to Feedback' | trans }}</span>
                 {% endif %}
-            </button>
+            </a>
             <span class="title">
                 {{ 'List Manager' | trans }}
             </span>
-        </h1>
+        </div>
+        <!-- <div class="pull-left" style="width:calc(100% - 220px)">
+
+        </div> -->
     </div>
     <div class="PNB" style="top:50px;">
-        <div class="PNB" style="width:320px;right:auto;">
+        <div class="PNB" style="width:220px;right:auto;">
             <div class="PNB10 content all-lists LeftColumn">
                 {% include 'prod/actions/Feedback/lists-all.html.twig' %}
             </div>
         </div>
-        <div class="editor PNB" style="left:320px;">
+        <div class="editor PNB" style="left:212px;top:-40px;">
             <div class="welcome">
                 <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
                 {% if lists|length == 0 %}
