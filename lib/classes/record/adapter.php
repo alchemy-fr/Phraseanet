@@ -1208,13 +1208,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             $log_id = $app['phraseanet.logger']($collection->get_databox())->get_id();
 
-            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)'
-                . ' VALUES (null, :log_id, now(), :record_id, "add", :coll_id,"")';
+            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, coll_id, action, final, comment)'
+                . ' VALUES (null, :log_id, now(), :record_id, :coll_id, "add", :final, "")';
             $stmt = $connection->prepare($sql);
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $story_id,
                 ':coll_id'   => $collection->get_coll_id(),
+                ':final'     => $collection->get_coll_id(),
             ]);
             $stmt->closeCursor();
         } catch (\Exception $e) {
@@ -1261,14 +1262,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             $log_id = $app['phraseanet.logger']($databox)->get_id();
 
-            $sql = "INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)"
-                . " VALUES (null, :log_id, now(), :record_id, 'add', :coll_id, '')";
+            $sql = "INSERT INTO log_docs (id, log_id, date, record_id, coll_id, action, final, comment)"
+                . " VALUES (null, :log_id, now(), :record_id, :coll_id, 'add', :final, '')";
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $record_id,
                 ':coll_id'   => $file->getCollection()->get_coll_id(),
+                ':final'     => $file->getCollection()->get_coll_id(),
             ]);
             $stmt->closeCursor();
         } catch (\Exception $e) {

@@ -13,11 +13,11 @@ use Alchemy\Phrasea\Application;
 
 class patch_410alpha12a implements patchInterface
 {
-    /** @var string */
-    private $release = '4.1.0-alpha.12';
+        /** @var string */
+        private $release = '4.1.0-alpha.12';
 
-    // source : https://www.npmjs.com/package/mime-db
-    private $mimes = '{
+        // source : https://www.npmjs.com/package/mime-db
+        private $mimes = '{
   "application/1d-interleaved-parityfec": {
     "source": "iana"
   },
@@ -7703,84 +7703,84 @@ class patch_410alpha12a implements patchInterface
 }';
 
 
-    /** @var array */
-    private $concern = [base::DATA_BOX];
+        /** @var array */
+        private $concern = [base::DATA_BOX];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get_release()
-    {
-        return $this->release;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDoctrineMigrations()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function require_all_upgrades()
-    {
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function concern()
-    {
-        return $this->concern;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(base $databox, Application $app)
-    {
-        $sql = "DROP TABLE IF EXISTS `ext2mime`";
-        $databox->get_connection()->executeQuery($sql);
-
-        $sql = "CREATE TEMPORARY TABLE `ext2mime` (\n"
-            . "  `ext` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',\n"
-            . "  `mime` varchar(256) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,\n"
-            . "  PRIMARY KEY (`ext`)\n"
-            . ") ENGINE=InnoDB DEFAULT CHARSET=latin1";
-        $databox->get_connection()->executeQuery($sql);
-
-        // some mimes give the same ext (conflict), we use the first one.
-        $sql = "INSERT IGNORE INTO `ext2mime` (`ext`, `mime`) VALUES (:ext, :mime)";
-        $stmt = $databox->get_connection()->prepare($sql);
-
-        $mimes = json_decode($this->mimes, true);   // as assoc
-        foreach($mimes as $mime=>$m) {
-            if(array_key_exists('extensions', $m) && is_array($m['extensions'])) {
-                foreach($m['extensions'] as $ext) {
-                    $stmt->execute([':ext'=>$ext, ':mime'=>$mime]);
-                }
-            }
+        /**
+         * {@inheritdoc}
+         */
+        public function get_release()
+        {
+                return $this->release;
         }
-        $stmt->closeCursor();
 
-        // patch the tables only for truncated values
+        /**
+         * {@inheritdoc}
+         */
+        public function getDoctrineMigrations()
+        {
+                return [];
+        }
 
-        // record.mime was char(40) ; subdef 64
-        $sql = "UPDATE `record` AS `r` INNER JOIN `ext2mime` AS `e` ON `e`.`ext` = RIGHT(`r`.`originalname`, LOCATE('.', REVERSE(`r`.`originalname`))-1)\n"
-            . "SET `r`.`mime`=`e`.`mime` WHERE LENGTH(`r`.`mime`)>39";
-        $databox->get_connection()->executeQuery($sql);
+        /**
+         * {@inheritdoc}
+         */
+        public function require_all_upgrades()
+        {
+                return false;
+        }
 
-        // subdef.mime was char(64)
-        $sql = "UPDATE `subdef` AS `s` INNER JOIN `ext2mime` AS `e` ON `e`.`ext` = RIGHT(`s`.`name`, LOCATE('.', REVERSE(`s`.`name`))-1)\n"
-            . "SET `s`.`mime`=`e`.`mime` WHERE LENGTH(`s`.`mime`)>63";
-        $databox->get_connection()->executeQuery($sql);
+        /**
+         * {@inheritdoc}
+         */
+        public function concern()
+        {
+                return $this->concern;
+        }
+
+        /**
+         * {@inheritdoc}
+         */
+        public function apply(base $databox, Application $app)
+        {
+                $sql = "DROP TABLE IF EXISTS `ext2mime`";
+                $databox->get_connection()->executeQuery($sql);
+
+                $sql = "CREATE TEMPORARY TABLE `ext2mime` (\n"
+                    . "  `ext` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',\n"
+                    . "  `mime` varchar(256) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,\n"
+                    . "  PRIMARY KEY (`ext`)\n"
+                    . ") ENGINE=InnoDB DEFAULT CHARSET=latin1";
+                $databox->get_connection()->executeQuery($sql);
+
+                // some mimes give the same ext (conflict), we use the first one.
+                $sql = "INSERT IGNORE INTO `ext2mime` (`ext`, `mime`) VALUES (:ext, :mime)";
+                $stmt = $databox->get_connection()->prepare($sql);
+
+                $mimes = json_decode($this->mimes, true);   // as assoc
+                foreach($mimes as $mime=>$m) {
+                        if(array_key_exists('extensions', $m) && is_array($m['extensions'])) {
+                                foreach($m['extensions'] as $ext) {
+                                        $stmt->execute([':ext'=>$ext, ':mime'=>$mime]);
+                                }
+                        }
+                }
+                $stmt->closeCursor();
+
+                // patch the tables only for truncated values
+
+                // record.mime was char(40) ; subdef 64
+                $sql = "UPDATE `record` AS `r` INNER JOIN `ext2mime` AS `e` ON `e`.`ext` = RIGHT(`r`.`originalname`, LOCATE('.', REVERSE(`r`.`originalname`))-1)\n"
+                    . "SET `r`.`mime`=`e`.`mime` WHERE LENGTH(`r`.`mime`)>39";
+                $databox->get_connection()->executeQuery($sql);
+
+                // subdef.mime was char(64)
+                $sql = "UPDATE `subdef` AS `s` INNER JOIN `ext2mime` AS `e` ON `e`.`ext` = RIGHT(`s`.`name`, LOCATE('.', REVERSE(`s`.`name`))-1)\n"
+                    . "SET `s`.`mime`=`e`.`mime` WHERE LENGTH(`s`.`mime`)>63";
+                $databox->get_connection()->executeQuery($sql);
 
 
-        $sql = "DROP TABLE IF EXISTS `ext2mime`";
-        $databox->get_connection()->executeQuery($sql);
-    }
+                $sql = "DROP TABLE IF EXISTS `ext2mime`";
+                $databox->get_connection()->executeQuery($sql);
+        }
 }

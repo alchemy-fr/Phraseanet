@@ -193,8 +193,7 @@ class FixAutoincrements extends Command
                 $databox,
                 'coll',
                 [
-                    'collusr'   => 'coll_id',
-                    'log_colls' => 'coll_id',
+                    'collusr' => 'coll_id',
                 ]
             );
         }

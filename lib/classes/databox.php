@@ -1202,7 +1202,7 @@ class databox extends base implements ThumbnailedElement
 
     public function clear_logs()
     {
-        foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
+        foreach (['log', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
             $this->get_connection()->delete($table, []);
         }
 
