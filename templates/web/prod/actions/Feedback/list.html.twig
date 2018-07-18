@@ -1,7 +1,7 @@
 {% import 'prod/actions/Feedback/ListsMacros.html.twig' as ListsMacros %}
 
 <div class="PNB10">
-    <div class="PNB theme-bg" style="height:40px; bottom:auto;">
+    <div class="PNB" style="height:40px; bottom:auto;">
         <table style="height: 40px;">
             <tr>
                 <td style="white-space:nowrap;">
@@ -56,7 +56,7 @@
         </div>
     </div>
     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-        <div class="PNB content readwrite grey-bg" style="display:none;top:40px;">
+        <div class="PNB content readwrite user_content" style="display:none;top:40px;">
             <form name="list-editor-search" method="POST" action="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}">
                 <div class="PNB10" style="height:160px;">
                     <div class="PNB" style="height:40px;bottom:auto;">
