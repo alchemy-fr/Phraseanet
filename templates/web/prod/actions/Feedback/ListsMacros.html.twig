@@ -102,7 +102,7 @@
 
 
 {% macro badgeReadonly(entry, role) %}
-  <div class="badge">
+  <div class="badge listmanager_badge">
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
     {# {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">

@@ -2,8 +2,11 @@
 <div class="PNB10" style="height: 46px;bottom:auto;line-height:26px;">
     <div class="pull-left">
         <div id="find-user">
-            <input class="search" name="users-search" placeholder="Users" type="text" style="width:210px;"/>
+            <input class="search" name="users-search" placeholder="{{ list.getName() }}" type="text" style="width:210px;"/>
         </div>
+        <p id="recommanded-users">
+
+        </p>
     </div>
      <div class="pull-left">
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
@@ -15,28 +18,61 @@
         {% endif %}
     </div>
      <div class="pull-right">
-        <a href="#" class="btn btn-push-orange" style="margin-top:2px;height:20px;line-height:22px;">
-            <span>
-                <img src="/assets/common/images/icons/orange-share.png" class="image-normal" style="margin-right: 15px;">
-                <img src="/assets/common/images/icons/white-share.png" class="image-hover" style="margin-right: 15px;">
-            </span>
-            {{ 'Share my list' | trans }}
-        </a>
+        {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+            <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" 
+                class="btn btn-push-orange list_sharer push-list-share-action" 
+                style="margin-top:2px;height:20px;line-height:22px;" 
+                title="{{ 'Share the list' | trans }}"
+                data-list-id="{{ list.getId() }}">
+                <span>
+                    <img src="/assets/common/images/icons/orange-share.png" class="image-normal" style="margin-right: 15px;">
+                    <img src="/assets/common/images/icons/white-share.png" class="image-hover" style="margin-right: 15px;">
+                </span>
+                {{ 'Share my list' | trans }}
+            </a>
+        {% endif %}
     </div>
 </div>
 <div class="PNB10" style="top:55px;">
     <div class="PNB content user_content readonly grey-bg">
         <div class="PNB10">
             <div class="PNB" style="height:25px; bottom:auto;">
-                <p>
+                <div class="pull-left">
+                    <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2>
                     {% set length = list.getEntries().count() %}
-                    <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}</span>
-                    {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                        <button class="EditToggle btn btn-inverse">{{ 'Edit' | trans }}</button>
-                    {% endif %}
-                </p>
+                    <span class="counter current">
+                        {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                    </span>
+                </div>
+                <div class="pull-right">
+                    <div class="pull-left" style="margin-right:45px;">
+                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                            <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px;">
+                                {{ 'Advanced mode' | trans }}
+                            </button>
+                        {% endif %}
+                    </div>
+                    <div class="pull-left">
+                        <button class="select-all push-add-user btn btn-push-orange orange-border"
+                        style="margin-right: 8px;">
+                            {{ 'Select all' | trans }}
+                        </button>
+                        <button class="unselect-all push-add-user btn btn-push-orange orange-border">
+                            {{ 'Deselect all' | trans }}
+                        </button>
+                    </div>
+                    <div class="pull-right">
+                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                            <button class="delete-selection btn btn-inverse listmanager-delete-list-action" 
+                            data-list-id="{{ list.getId() }}"
+                            style="margin-left:45px;">
+                                {{ 'Delete the selection' | trans }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="PNB" style="top:35px;overflow:auto;">
+            <div class="PNB" style="top:80px;overflow:auto;">
                 {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
                 {% for entry in list.getEntries() %}
                     {{ ListsMacros.badgeReadonly(entry, role) }}
@@ -64,7 +100,7 @@
                                 <h1>{{ list.getName() }}</h1>
                             {% endif %}
                         </td>
-                        <td style="text-align:right;white-space:nowrap;">
+                        {#<td style="text-align:right;white-space:nowrap;">
                             {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                                 <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" title="{{ 'Share the list' | trans }}"
                                 class="list_sharer push-list-share-action"
@@ -74,22 +110,19 @@
                                     {{ "Set sharing permission" | trans }}
                                 </a>
                             {% endif %}
-                        </td>
-                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                            <td style="text-align:right;white-space:nowrap;width:150px;">
-                                <button class="deleter btn btn-inverse listmanager-delete-list-action" data-list-id="{{ list.getId() }}">
-                                    {{ 'Delete' | trans }}
-                                </button>
-                            </td>
-                        {% endif %}
+                        </td>#}
                     </tr>
                 </table>
             </div>
             <form name="list-editor-search" method="POST" action="{{ path('prod_push_list_edit', { 'list_id' : list.getId() }) }}">
                 <div class="PNB10 list_editor_search" style="height:160px;">
                     <div class="PNB" style="height:40px;bottom:auto;">
-                        <button class="Refresher btn btn-inverse" type="button">&lt;{{ 'View' | trans }}</button>
-                        <select name="like_field">
+                        <a class="Refresher btn push-back-link btn-inverse" type="button">
+                            <img src="/assets/common/images/icons/chevron-left-white.png" class="image-normal">
+                            <img src="/assets/common/images/icons/chevron-left-blue.png" class="image-hover">
+                            <span>{{ 'See the list' | trans }}</span>
+                        </a>
+                        <select name="like_field" style="margin-right:30px;height:25px;">
                             <option value="usr_login">
                                 {{ 'Push::filter on login' | trans }}
                             </option>
@@ -110,31 +143,46 @@
                             </option>
                         </select>
                         {{ 'Push::filter starts' | trans }}
-                        <input type="text" value="" class="search" name="query">
-                        <button type="submit" class="btn btn-inverse">{{ 'boutton::chercher' | trans }}</button>
+                        <input type="text" value="" placeholder="Search" name="query" style="height:15px;margin:2px;">
+                        {# <button type="submit" class="btn btn-inverse">{{ 'boutton::chercher' | trans }}</button> #}
+                        <button class="list_refresh btn" style="margin-top:1px;height:25px;width:25px;line-height: 10px;">
+                            <img src="/assets/common/images/icons/orange-search.png" alt="Search" class="image-normal">
+                            <img src="/assets/common/images/icons/white-search.png" alt="Search" class="image-hover">
+                        </button>
                     </div>
-                    <div class="PNB" style="top:40px;height:120px;bottom:auto;">
+                    <div class="PNB list_editor_selector" style="top:40px;height:120px;bottom:auto;">
                         <table style="table-layout:fixed;width:100%;">
                             <tr>
-                                <td>
-                                    <label>{{ 'Activite' | trans }}</label>
-                                </td>
-                                <td>
-                                    <label>{{ 'Template' | trans }}</label>
-                                </td>
-                                <td >
+                                <th>
+                                    <label>{{ 'E-mail domain' | trans }}</label>
+                                </th>
+                                <th>
+                                    <label>{{ 'Activity' | trans }}</label>
+                                </th>
+                                <th>
                                     <label>{{ 'Company' | trans }}</label>
-                                </td>
-                                <td >
-                                    <label>{{ 'Country' | trans }}</label>
-                                </td>
-                                <td >
+                                </th>
+                                <th>
                                     <label>{{ 'Position' | trans }}</label>
-                                </td>
+                                </th>
+                                <th>
+                                    <label>{{ 'Country' | trans }}</label>
+                                </th>
+                                <th>
+                                    <label>{{ 'Template' | trans }}</label>
+                                </th>
                             </tr>
                             <tr>
                                 <td>
-                                    <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
+                                    <select size="5" multiple="multiple" name="Email[]" style="width:95%;">
+                                        <option value="">{{ 'All' | trans }}</option>
+                                        {% for Email in query.getRelatedActivities() %}
+                                            <option value="{{ Email }}">{{ Email }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Activity[]" style="width:95%;">
                                         <option value="">{{ 'All' | trans }}</option>
                                         {% for Activity in query.getRelatedActivities() %}
                                             <option value="{{ Activity }}">{{ Activity }}</option>
@@ -142,15 +190,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
-                                        <option value="">{{ 'All' | trans }}</option>
-                                        {% for Template in query.getRelatedTemplates() %}
-                                            <option value="{{ Template }}">{{ Template }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
+                                    <select size="5" multiple="multiple" name="Company[]" style="width:95%;">
                                         <option value="">{{ 'All' | trans }}</option>
                                         {% for Company in query.getRelatedCompanies() %}
                                             <option value="{{ Company }}">{{ Company }}</option>
@@ -158,7 +198,15 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
+                                    <select size="5" multiple="multiple" name="Position[]" style="width:95%;">
+                                        <option value="">{{ 'All' | trans }}</option>
+                                        {% for Position in query.getRelatedPositions() %}
+                                            <option value="{{ Position }}">{{ Position }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select size="5" multiple="multiple" name="Country[]" style="width:95%;">
                                         <option value="">{{ 'All' | trans }}</option>
                                         {% for Code, Country in query.getRelatedCountries() %}
                                             <option value="{{ Code }}">{{ Country }}</option>
@@ -166,10 +214,10 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
+                                    <select size="5" multiple="multiple" name="Template[]" style="width:95%;">
                                         <option value="">{{ 'All' | trans }}</option>
-                                        {% for Position in query.getRelatedPositions() %}
-                                            <option value="{{ Position }}">{{ Position }}</option>
+                                        {% for Template in query.getRelatedTemplates() %}
+                                            <option value="{{ Template }}">{{ Template }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
@@ -182,10 +230,8 @@
                 <input type="hidden" name="ord" value="{{ ord }}" />
                 <input type="hidden" name="type" value="fragment" />
             </form>
-            <div class="PNB content" style="top:230px;">
-                <div class="PNB10">
-                    {{ ListsMacros.ResultTable(query, results, list, sort, ord) }}
-                </div>
+            <div class="PNB10 content" style="top:240px;">
+                {{ ListsMacros.ResultTable(query, results, list, sort, ord) }}
             </div>
         </div>
     {% endif %}
