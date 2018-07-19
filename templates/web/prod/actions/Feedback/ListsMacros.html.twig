@@ -104,15 +104,15 @@
 {% macro badgeReadonly(entry, role) %}
   <div class="badge">
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
-    {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {# {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">
         <img src="/assets/prod/images/Push/close_badge.png">
       </a>
-    {% endif %}
+    {% endif %} #}
     <table>
       <tr>
-        <td>
-          <img src="/assets/common/images/icons/user.png"/>
+        <td class="listmanager_badge_img">
+          <img src="/assets/common/images/icons/user-white.png"/>
         </td>
         <td class="infos" >
           <span class="name">{{ entry.getUser().getDisplayName() }}</span>
