@@ -113,7 +113,7 @@ class SetupController extends Controller
         $elastic_settings = [
             'host' => (string) $elastic_settings['host'],
             'port' => (int) $elastic_settings['port'],
-            'index' => (string) (isset($elastic_settings['index_name']) ? $elastic_settings['index_name'] : $this->generateElasticIndex()),
+            'index' => (string) (isset($elastic_settings['index_name']) ? $elastic_settings['index_name'] : ''),
             'shards' => (int) $elastic_settings['shards'],
             'replicas' => (int) $elastic_settings['replicas'],
             'minScore' => (int) $elastic_settings['min_score'],
@@ -208,16 +208,5 @@ class SetupController extends Controller
                 'error' => $this->app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
             ]);
         }
-    }
-
-    /**
-     * @return string
-     */
-    private function generateElasticIndex()
-    {
-        return strtolower(sprintf('phraseanet_%s', str_replace(
-            array('/', '.'), array('', ''),
-            $this->app['random.medium']->generateString(16)
-        )));
     }
 }
