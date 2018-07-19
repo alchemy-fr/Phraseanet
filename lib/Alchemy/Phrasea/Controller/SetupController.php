@@ -197,6 +197,10 @@ class SetupController extends Controller
 
             $this->app->getAuthenticator()->openAccount($user);
 
+            if(empty($elastic_settings->getHost())){
+                $elastic_settings = ElasticsearchOptions::fromArray([]);
+            }
+
             $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 
             return $this->app->redirectPath('admin', [
