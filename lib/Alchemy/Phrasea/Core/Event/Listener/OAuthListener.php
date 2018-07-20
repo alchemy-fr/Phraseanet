@@ -13,6 +13,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Controller\Api\Result;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
@@ -72,7 +74,16 @@ class OAuthListener
 
         $oAuth2Account = $token->getAccount();
         // Sets the Api Version
-        $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
+
+        $CalledController = $request->attributes->get('_controller');
+        if(mb_strpos($CalledController, 'controller.api.v1') !== FALSE){
+            $request->attributes->set('api_version', V1::VERSION);
+        }elseif(mb_strpos($CalledController, 'controller.api.v2') !== FALSE){
+            $request->attributes->set('api_version', V2::VERSION);
+        }else{
+            $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
+        }
+
         $oAuth2App = $oAuth2Account->getApplication();
 
         /** @var PropertyAccess $conf */
