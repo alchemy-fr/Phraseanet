@@ -50,7 +50,9 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
-        $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)");
+        $path = $this->getApplication()->findDataboxById($this->databox_id)->getSubdefStorage();
+
+        $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)", $path);
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/", ['delete_subdef' => 'image_' . $name]);
         $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
         try {
@@ -63,7 +65,9 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
-        $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)");
+        $path = $this->getApplication()->findDataboxById($this->databox_id)->getSubdefStorage();
+
+        $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)", $path);
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/"
             , ['subdefs'                             => [
                 'image_' . $name
