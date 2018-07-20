@@ -23,7 +23,7 @@ use Silex\ServiceProviderInterface;
 
 class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '1.5.0';
+    const VERSION = '2.0.0';
 
     public static $extendedContentTypes = [
         'json' => ['application/vnd.phraseanet.record-extended+json'],
