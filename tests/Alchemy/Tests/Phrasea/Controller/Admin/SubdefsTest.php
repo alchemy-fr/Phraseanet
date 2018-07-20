@@ -50,7 +50,7 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
-        $path = $this->findDataboxById($this->databox_id)->getSubdefStorage();
+        $path = $this->getApplication()->findDataboxById($this->databox_id)->getSubdefStorage();
 
         $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)", $path);
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/", ['delete_subdef' => 'image_' . $name]);
@@ -65,7 +65,7 @@ class SubdefsTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $subdefs =  $this->getApplication()->findDataboxById($this->databox_id)->get_subdef_structure();
         $name = $this->getSubdefName();
-        $path = $this->findDataboxById($this->databox_id)->getSubdefStorage();
+        $path = $this->getApplication()->findDataboxById($this->databox_id)->getSubdefStorage();
 
         $subdefs->add_subdef("image", $name, "thumbnail", "image", "1280px JPG (preview Phraseanet)", $path);
         self::$DI['client']->request("POST", "/admin/subdefs/" .  $this->databox_id . "/"
