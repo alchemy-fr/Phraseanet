@@ -48,27 +48,33 @@
                     <div class="pull-left" style="margin-right:45px;">
                         {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                             <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px;">
+                                <span>
+                                    <img src="/assets/common/images/icons/orange-pen.png" class="image-normal" style="margin-right: 10px;">
+                                    <img src="/assets/common/images/icons/white-pen.png" class="image-hover" style="margin-right: 10px;">
+                                </span>
                                 {{ 'Advanced mode' | trans }}
                             </button>
                         {% endif %}
                     </div>
-                    <div class="pull-left">
-                        <button class="select-all push-add-user btn btn-push-orange orange-border"
-                        style="margin-right: 8px;">
-                            {{ 'Select all' | trans }}
-                        </button>
-                        <button class="unselect-all push-add-user btn btn-push-orange orange-border">
-                            {{ 'Deselect all' | trans }}
-                        </button>
-                    </div>
-                    <div class="pull-right">
-                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                            <button class="delete-selection btn btn-inverse listmanager-delete-list-action" 
-                            data-list-id="{{ list.getId() }}"
-                            style="margin-left:45px;">
-                                {{ 'Delete the selection' | trans }}
+                    <div class="options pull-left">
+                        <div class="pull-left">
+                            <button class="select-all push-add-user btn btn-push-orange orange-border"
+                            style="margin-right: 8px;">
+                                {{ 'Select all' | trans }}
                             </button>
-                        {% endif %}
+                            <button class="unselect-all push-add-user btn btn-push-orange orange-border">
+                                {{ 'Deselect all' | trans }}
+                            </button>
+                        </div>
+                        <div class="pull-right">
+                            {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                                <button class="delete-selection btn btn-inverse listmanager-delete-list-action" 
+                                data-list-id="{{ list.getId() }}"
+                                style="margin-left:45px;">
+                                    {{ 'Delete the selection' | trans }}
+                                </button>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
