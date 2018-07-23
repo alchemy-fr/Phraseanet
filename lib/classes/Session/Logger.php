@@ -32,6 +32,7 @@ class Session_Logger
     const EVENT_EXPORTDOWNLOAD = 'download';
     const EVENT_EXPORTFTP = 'ftp';
     const EVENT_EXPORTMAIL = 'mail';
+    const EVENT_MOVE_FROM = 'collection_from';
     const EVENT_MOVE = 'collection';
     const EVENT_PRINT = 'print';
     const EVENT_PUSH = 'push';
@@ -41,7 +42,6 @@ class Session_Logger
 
     /**
      *
-     * @param Application $app
      * @param databox     $databox
      * @param integer     $log_id
      *

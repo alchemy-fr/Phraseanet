@@ -529,6 +529,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $this->app['phraseanet.logger']($this->getDatabox())
+            ->log($this, Session_Logger::EVENT_MOVE_FROM, $this->getCollectionId(), '');
+
         $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = [
