@@ -2514,15 +2514,15 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default>null</default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
             <name>action</name>
-            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','collection_from','-')</type>
+            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','collection_from','')</type>
             <null></null>
             <extra></extra>
-            <default>-</default>
+            <default></default>
             <comment></comment>
             <collation>ascii_bin</collation>
           </field>
