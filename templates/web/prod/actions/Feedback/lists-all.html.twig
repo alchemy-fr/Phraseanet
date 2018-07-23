@@ -19,9 +19,9 @@
             <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list" class="image-hover">
           </a>
         </div>
-        <ul class="list">
+        <ul class="lists">
           {% for list in lists %}
-            <li class="lists_manager_list" style="padding:0;position:relative;" 
+            <li class="list lists_manager_list" style="padding:0;position:relative;" 
             data-list-id= {{ list.getId() }}>
               <a href="#" class="list_link list-edit-action" data-list-id="{{  list.getId() }}">
                 {#{% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}#}
