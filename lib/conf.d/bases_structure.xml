@@ -2695,6 +2695,14 @@
             </fields>
           </index>
         </indexes>
+        <field>
+          <name>coll_id</name>
+          <type>int(11) unsigned</type>
+          <null>YES</null>
+          <extra></extra>
+          <default></default>
+          <comment></comment>
+        </field>
         <engine>InnoDB</engine>
       </table>
 

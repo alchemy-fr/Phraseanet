@@ -1605,14 +1605,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function log_view($log_id, $referrer, $gv_sit)
     {
-        $sql = "INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)"
-            . " VALUES (null, :log_id, now(), :rec, :referrer, :site)";
+        $sql = "INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id, coll_id)"
+            . " VALUES (null, :log_id, now(), :rec, :referrer, :site, :collid)";
 
         $params = [
             ':log_id'   => $log_id
             , ':rec'      => $this->getRecordId()
             , ':referrer' => $referrer
-            , ':site'     => $gv_sit,
+            , ':site'     => $gv_sit
+            , ':collid'   => $this->getCollectionId()
         ];
         $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute($params);
