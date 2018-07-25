@@ -29,4 +29,4 @@ cp /vagrant/resources/ansible/inventories/dev /etc/ansible/hosts -f
 chmod 666 /etc/ansible/hosts
 cat /vagrant/resources/ansible/files/authorized_keys >> /home/vagrant/.ssh/authorized_keys
 
-sudo ansible-playbook /vagrant/resources/ansible/playbook.yml -e hostname=$1 -e phpversion=$2 --connection=local
+sudo ansible-playbook /vagrant/resources/ansible/playbook.yml -e "hostname=$1 phpversion=$2 host_addresses=$3" --connection=local
