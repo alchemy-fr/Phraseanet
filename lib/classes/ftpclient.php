@@ -401,6 +401,10 @@ class ftpclient
         $current_dir = $this->pwd();
         $contents = ftp_rawlist($this->connexion, $current_dir,  ! ! $recursive);
 
+        if($contents === false){
+            throw new Exception('Vérifier les paramètres ftp ou mettre en mode passive');
+        }
+
         $list = [];
 
         foreach ($contents as $content) {

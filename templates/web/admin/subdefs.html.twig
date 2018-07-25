@@ -192,7 +192,7 @@
             $("#dialog:ui-dialog").dialog("destroy");
 
             var name = $("#name"), accessclass = $("#accessclass"), subviewType = $("#subviewType"),
-                mediaType = $("#mediaType"), presets = $("#presets"),
+                mediaType = $("#mediaType"), presets = $("#presets"), subviewPath = $("#subviewPath"),
                 allFields = $([]).add(name).add(accessclass).add(subviewType).add(mediaType).add(presets),
                 tips = $(".validateTips");
 
@@ -214,6 +214,16 @@
                     return false;
                 } else {
                     return true;
+                }
+            }
+
+            function isNotEmpty(o){
+                if(o.val().length > 0){
+                    return true;
+                }else{
+                    o.addClass("ui-state-error");
+                    updateTips("Path is required");
+                    return false;
                 }
             }
 
@@ -260,6 +270,7 @@
                         bValid = bValid && checkLength(name, "subdef name", 3, 16);
                         bValid = bValid && checkSpecialChar(name);
                         bValid = bValid && checkPresence(subviewType.val(), name);
+                        bValid = bValid && isNotEmpty(subviewPath);
 
                         if (bValid) {
                             $('input[name="add_subdef[group]"]').val(subviewType.val());
@@ -267,6 +278,7 @@
                             $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
                             $('input[name="add_subdef[class]"]').val(accessclass.val());
                             $('input[name="add_subdef[presets]"]').val(presets.val());
+                            $('input[name="add_subdef[path]"]').val(subviewPath.val());
                             $(this).dialog("close");
                             $('form.subdefs').submit();
                         }
@@ -367,6 +379,8 @@
                         <option>{{ 'Choisir' | trans }}</option>
                     </select>
                 </div>
+                <label for="subviewPath">{{ 'Path' | trans }}</label>
+                <input type="text" name="subviewPath" id="subviewPath" class="text ui-widget-content ui-corner-all" value="{{ databox.getSubdefStorage }}" />
             </fieldset>
         </form>
     </div>
@@ -599,6 +613,7 @@
         <input type="hidden" name="add_subdef[mediaType]" value=""/>
         <input type="hidden" name="add_subdef[class]" value=""/>
         <input type="hidden" name="add_subdef[presets]" value=""/>
+        <input type="hidden" name="add_subdef[path]" value=""/>
     </form>
 
     <div style="display:none;">

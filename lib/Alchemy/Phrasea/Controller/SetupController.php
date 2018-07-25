@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
 use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
@@ -82,6 +83,7 @@ class SetupController extends Controller
             'locale'              => $this->app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
             'available_templates' => $st->getNames(),
+            'elasticOptions'      =>  ElasticsearchOptions::fromArray([]),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
@@ -105,6 +107,20 @@ class SetupController extends Controller
 
         $appbox_name = $request->request->get('ab_name');
         $databox_name = $request->request->get('db_name');
+
+        $elastic_settings = $request->request->get('elasticsearch_settings');
+
+        $elastic_settings = [
+            'host' => (string) $elastic_settings['host'],
+            'port' => (int) $elastic_settings['port'],
+            'index' => (string) (isset($elastic_settings['index_name']) ? $elastic_settings['index_name'] : ''),
+            'shards' => (int) $elastic_settings['shards'],
+            'replicas' => (int) $elastic_settings['replicas'],
+            'minScore' => (int) $elastic_settings['min_score'],
+            'highlight' => (bool) (isset($elastic_settings['highlight']) ? $elastic_settings['highlight'] : false)
+        ];
+
+        $elastic_settings = ElasticsearchOptions::fromArray($elastic_settings);
 
         try {
             $abInfo = [
@@ -180,6 +196,12 @@ class SetupController extends Controller
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
+
+            if(empty($elastic_settings->getHost())){
+                $elastic_settings = ElasticsearchOptions::fromArray([]);
+            }
+
+            $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 
             return $this->app->redirectPath('admin', [
                 'section' => 'taskmanager',

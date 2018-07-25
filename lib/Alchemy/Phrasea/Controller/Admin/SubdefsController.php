@@ -53,7 +53,7 @@ class SubdefsController extends Controller
 
         $databox = $this->findDataboxById((int) $sbas_id);
 
-        $add_subdef = ['class' => null, 'name' => null, 'group' => null, 'mediaType' => null, 'presets' => null];
+        $add_subdef = ['class' => null, 'name' => null, 'group' => null, 'mediaType' => null, 'presets' => null, 'path' => null];
         foreach ($add_subdef as $k => $v) {
             if (!isset($toadd_subdef[$k]) || trim($toadd_subdef[$k]) === '') {
                 unset($add_subdef[$k]);
@@ -69,7 +69,7 @@ class SubdefsController extends Controller
             $subdefs = $databox->get_subdef_structure();
             $subdefs->delete_subdef($group, $name);
         }
-        elseif (count($add_subdef) === 5) {
+        elseif (count($add_subdef) === 6) {
             $subdefs = $databox->get_subdef_structure();
 
             $group = $add_subdef['group'];
@@ -79,8 +79,9 @@ class SubdefsController extends Controller
             $class = $add_subdef['class'];
             $preset = $add_subdef['presets'];
             $mediatype = $add_subdef['mediaType'];
+            $path = $add_subdef['path'];
 
-            $subdefs->add_subdef($group, $name, $class, $mediatype, $preset);
+            $subdefs->add_subdef($group, $name, $class, $mediatype, $preset, $path);
 
             if ($preset !== "Choose") {
                 $options = [];
@@ -154,6 +155,7 @@ class SubdefsController extends Controller
             }
 
         } else {
+
             $subdefs = $databox->get_subdef_structure();
 
             foreach ($Parmsubdefs as $post_sub) {
