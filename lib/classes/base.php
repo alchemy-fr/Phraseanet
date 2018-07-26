@@ -139,6 +139,11 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_connection()
     {
+        if($this->connection->ping() === false){
+            $this->connection->close();
+            $this->connection->connect();
+        }
+
         return $this->connection;
     }
 
