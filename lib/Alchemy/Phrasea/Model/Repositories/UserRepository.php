@@ -23,6 +23,18 @@ use Alchemy\Phrasea\Model\Entities\User;
 class UserRepository extends EntityRepository
 {
     /**
+     * Finds an User by its primary key / identifier.
+     *
+     * @inheritdoc
+     *
+     * @return User|null
+     */
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    /**
      * Finds admins.
      *
      * @return User[]

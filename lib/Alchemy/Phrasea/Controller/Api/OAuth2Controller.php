@@ -13,8 +13,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
 use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
+use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
+use Alchemy\Phrasea\Authentication\ProvidersCollection;
+use Alchemy\Phrasea\Authentication\SuggestionFinder;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
@@ -22,6 +26,9 @@ use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -103,7 +110,7 @@ class OAuth2Controller extends Controller
                     return $this->app->redirectPath('oauth2_authorize', array_merge(array('error' => 'account-locked'), $params));
                 }
 
-                $user = $this->app['repo.users']->find($usrId);
+                $user = $this->getUserRepository()->find($usrId);
                 $this->getAuthenticator()->openAccount($user);
                 $event = new PostAuthenticate($request, new Response(), $user, $context);
                 $this->dispatch(PhraseaEvents::POST_AUTHENTICATE, $event);
@@ -115,6 +122,8 @@ class OAuth2Controller extends Controller
             }
         }
 
+        $account = $this->oAuth2Adapter->updateAccount($this->getAuthenticatedUser());
+
         //check if current client is already authorized by current user
         $clients = $appRepository->findAuthorizedAppsByUser($this->getAuthenticatedUser());
 
@@ -124,8 +133,6 @@ class OAuth2Controller extends Controller
                 break;
             }
         }
-
-        $account = $this->oAuth2Adapter->updateAccount($this->getAuthenticatedUser());
 
         $params['account_id'] = $account->getId();
 
@@ -231,6 +238,8 @@ class OAuth2Controller extends Controller
 
         $this->oAuth2Adapter->setClient($client);
 
+        $account = $this->oAuth2Adapter->updateAccount($this->getAuthenticatedUser());
+
         //check if current client is already authorized by current user
         $clients = $appRepository->findAuthorizedAppsByUser($this->getAuthenticatedUser());
         $appAuthorized = false;
@@ -241,8 +250,6 @@ class OAuth2Controller extends Controller
                 break;
             }
         }
-
-        $account = $this->oAuth2Adapter->updateAccount($this->getAuthenticatedUser());
 
         $params['account_id'] = $account->getId();
 
@@ -279,7 +286,7 @@ class OAuth2Controller extends Controller
             throw new HttpException(400, 'This route requires the use of the https scheme: ' . $config->get(['main', 'api_require_ssl']), null, ['content-type' => 'application/json']);
         }
 
-        $this->oAuth2Adapter->grantAccessToken($request);
+        $this->oAuth2Adapter->grantAccessToken();
         ob_flush();
         flush();
 
@@ -339,5 +346,13 @@ class OAuth2Controller extends Controller
     private function getAuthenticationSuggestionFinder()
     {
         return $this->app['authentication.suggestion-finder'];
+    }
+
+    /**
+     * @return UserRepository
+     */
+    private function getUserRepository()
+    {
+        return $this->app['repo.users'];
     }
 }
