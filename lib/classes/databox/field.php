@@ -947,9 +947,10 @@ class databox_field implements cache_cacheableInterface
             throw new \Exception_InvalidArgument();
         }
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sql);
         $stmt->execute([':name'   => $name, ':sorter' => $sorter]);
-        $id = $databox->get_connection()->lastInsertId();
+        $id = $connection->lastInsertId();
         $stmt->closeCursor();
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);

@@ -1239,7 +1239,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             . " (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)"
             . " VALUES (:coll_id, null, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid, :originalname, :mime)";
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sql);
 
         $stmt->execute([
             ':coll_id'          => $file->getCollection()->get_coll_id(),
@@ -1252,7 +1253,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ]);
         $stmt->closeCursor();
 
-        $record_id = $databox->get_connection()->lastInsertId();
+        $record_id = $connection->lastInsertId();
 
         $record = new self($app, $databox->get_sbas_id(), $record_id);
 
