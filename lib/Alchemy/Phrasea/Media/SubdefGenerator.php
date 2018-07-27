@@ -178,9 +178,9 @@ class SubdefGenerator
 
             $destFile = null;
 
-            if(!empty($this->tmpDirectory)){
+            if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
                 $destFile = $pathdest;
-                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $this->tmpDirectory);
+                $pathdest = $this->filesystem->generateTemporaryFfmpegPathname($record, $subdef_class, $this->tmpDirectory);
             }
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
