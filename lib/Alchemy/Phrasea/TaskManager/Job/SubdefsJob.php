@@ -68,6 +68,8 @@ class SubdefsJob extends AbstractJob
             return;
         }
 
+        $app->getApplicationBox()->get_connection();
+
         foreach ($app->getDataboxes() as $databox) {
             if (!$this->isStarted()) {
                 break;
