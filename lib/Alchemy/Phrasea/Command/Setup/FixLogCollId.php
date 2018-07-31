@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command\Developer;
+namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,7 +32,7 @@ class FixLogCollId extends Command
     private $databoxes;
 
     /** @var int */
-    private $batchsize;
+    private $batch_size;
     /** @var bool */
     private $dry;
     /** @var bool */
@@ -54,7 +54,7 @@ class FixLogCollId extends Command
 
         $this->setDescription('Fix empty (null) coll_id in "log_docs" and "log_view" tables.');
         $this->addOption('databox',            null, InputOption::VALUE_OPTIONAL, 'Mandatory : The id (or dbname or viewname) of the databox');
-        $this->addOption('batchsize',          null, InputOption::VALUE_OPTIONAL, 'work on a batch of n entries (default=100000)');
+        $this->addOption('batch_size',         null, InputOption::VALUE_OPTIONAL, 'work on a batch of n entries (default=100000)');
         $this->addOption('dry',                null, InputOption::VALUE_NONE,     'dry run, list but don\'t act');
         $this->addOption('show_sql',           null, InputOption::VALUE_NONE,     'show sql pre-selecting records');
         $this->addOption('keep_tmp_table',     null, InputOption::VALUE_NONE,     'keep the working "tmp_coll" table (help debug)');
@@ -99,16 +99,16 @@ class FixLogCollId extends Command
         }
 
         // get options
-        $this->batchsize      = $input->getOption('batchsize');
+        $this->batch_size      = $input->getOption('batch_size');
         $this->show_sql       = $input->getOption('show_sql') ? true : false;
         $this->dry            = $input->getOption('dry') ? true : false;
         $this->keep_tmp_table = $input->getOption('keep_tmp_table') ? true : false;
 
-        if(is_null($this->batchsize)) {
-            $this->batchsize = 100000;
+        if(is_null($this->batch_size)) {
+            $this->batch_size = 100000;
         }
-        if($this->batchsize < 1) {
-            $output->writeln(sprintf('<error>batchsize must be > 0</error>'));
+        if($this->batch_size < 1) {
+            $output->writeln(sprintf('<error>batch_size must be > 0</error>'));
             $argsOK = false;
         }
 
@@ -155,7 +155,7 @@ class FixLogCollId extends Command
             'minmax' => [
                 'msg' => "Get a batch",
                 'sql' => "SELECT MIN(`id`) AS `minid`, MAX(`id`) AS `maxid` FROM\n"
-                        . "  (SELECT `id` FROM `log_docs` WHERE ISNULL(`coll_id`) ORDER BY `id` DESC LIMIT " . $this->batchsize . ") AS `t",
+                        . "  (SELECT `id` FROM `log_docs` WHERE ISNULL(`coll_id`) ORDER BY `id` DESC LIMIT " . $this->batch_size . ") AS `t",
                 'fetch' => false,
                 'code' => function(ResultStatement $stmt) {
                     $row = $stmt->fetch();
@@ -211,7 +211,7 @@ class FixLogCollId extends Command
                         . " ON `tmp_colls`.`record_id` = `log_docs`.`record_id`\n"
                         . "    AND `log_docs`.`id` >= `tmp_colls`.`from_id`\n"
                         . "    AND (`log_docs`.`id` < `tmp_colls`.`to_id` OR ISNULL(`tmp_colls`.`to_id`))\n"
-                        . " SET `log_docs`.`coll_id` = `tmp_colls`.`coll_id",
+                        . " SET `log_docs`.`coll_id` = `tmp_colls`.`coll_id`",
                 'fetch' => false,
                 'code' => null,
                 'playdry' => self::PLAYDRY_NONE,

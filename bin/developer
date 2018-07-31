@@ -22,7 +22,6 @@ use Alchemy\Phrasea\Command\Developer\RoutesDumper;
 use Alchemy\Phrasea\Command\Developer\SetupTestsDbs;
 use Alchemy\Phrasea\Command\Developer\Uninstaller;
 use Alchemy\Phrasea\Command\Developer\TranslationDumper;
-use Alchemy\Phrasea\Command\Developer\FixLogCollId;
 
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
@@ -79,7 +78,6 @@ $cli->command(new Uninstaller());
 $cli->command(new JsFixtures());
 $cli->command(new IniReset());
 $cli->command(new SetupTestsDbs());
-$cli->command(new FixLogCollId());
 $cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
 
 
