@@ -166,6 +166,8 @@ class SubdefGenerator
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
+        $start = microtime(true);
+
         try {
             if (null === $record->get_hd_file()) {
                 $this->logger->info('No HD file found, aborting');
@@ -201,7 +203,22 @@ class SubdefGenerator
             }
 
         } catch (MediaAlchemystException $e) {
+            $start = 0;
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
+        }
+
+        $stop = microtime(true);
+        if($start){
+            $duration = $stop - $start;
+
+            $this->logger->info(sprintf('Subdef %s generated, duration = %s / sbasid=%s / databox=%s / recordid=%s',
+                    $subdef_class->get_name(),
+                    date('H:i:s', $duration),
+                    $record->getDatabox()->get_sbas_id(),
+                    $record->getDatabox()->get_dbname(),
+                    $record->getRecordId()
+                )
+            );
         }
     }
 
