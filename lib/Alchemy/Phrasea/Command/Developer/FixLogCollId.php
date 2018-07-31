@@ -11,12 +11,12 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Doctrine\DBAL\Driver\ResultStatement;
 
 
 class FixLogCollId extends Command
@@ -28,12 +28,8 @@ class FixLogCollId extends Command
     private $input;
     /** @var OutputInterface */
     private $output;
-    /** @var bool */
-    private $argsOK;
     /** @var \Databox[] */
     private $databoxes;
-    /** @var  connection */
-    private $connection;
 
     /** @var int */
     private $batchsize;
@@ -64,42 +60,6 @@ class FixLogCollId extends Command
         $this->addOption('keep_tmp_table',     null, InputOption::VALUE_NONE,     'keep the working "tmp_coll" table (help debug)');
 
         $this->setHelp("help");
-    }
-
-    /**
-     * merge options so one can mix csv-option and/or multiple options
-     * ex. with keepUnique = false :  --opt=a,b --opt=c --opt=b  ==> [a,b,c,b]
-     * ex. with keepUnique = true  :  --opt=a,b --opt=c --opt=b  ==> [a,b,c]
-     *
-     * @param InputInterface $input
-     * @param string $optionName
-     * @param int $option
-     * @return array
-     */
-    private function getOptionAsArray(InputInterface $input, $optionName, $option)
-    {
-        $ret = [];
-        foreach($input->getOption($optionName) as $v0) {
-            foreach(explode(',', $v0) as $v) {
-                $v = trim($v);
-                if($option & self::OPTION_ALL_VALUES || !in_array($v, $ret)) {
-                    $ret[] = $v;
-                }
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * print a string if verbosity >= verbose (-v)
-     * @param string $s
-     */
-    private function verbose($s)
-    {
-        if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->output->write($s);
-        }
     }
 
     /**
@@ -160,7 +120,7 @@ class FixLogCollId extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $time_start = new \DateTime();
+        // $time_start = new \DateTime();
 
         if(!$this->sanitizeArgs($input, $output)) {
             return -1;
@@ -179,7 +139,7 @@ class FixLogCollId extends Command
                         . "  SUM(IF(`coll_id`=0, 1, 0)) AS `z`\n"
                         . "  FROM `log_docs`",
                 'fetch' => false,
-                'code' => function($stmt) {
+                'code' => function(ResultStatement $stmt) {
                     $row = $stmt->fetch();
                     if(is_null($row['n'])) {
                         // no coll_id ?
@@ -197,7 +157,7 @@ class FixLogCollId extends Command
                 'sql' => "SELECT MIN(`id`) AS `minid`, MAX(`id`) AS `maxid` FROM\n"
                         . "  (SELECT `id` FROM `log_docs` WHERE ISNULL(`coll_id`) ORDER BY `id` DESC LIMIT " . $this->batchsize . ") AS `t",
                 'fetch' => false,
-                'code' => function($stmt) {
+                'code' => function(ResultStatement $stmt) {
                     $row = $stmt->fetch();
                     $this->output->writeln("");
                     $this->output->writeln(sprintf("minid: %s ; maxid : %s\n", is_null($row['minid']) ? 'null' : $row['minid'], is_null($row['maxid']) ? 'null' : $row['maxid']));
@@ -213,15 +173,16 @@ class FixLogCollId extends Command
                 'msg' => "Empty working table",
                 'sql' => "TRUNCATE TABLE `tmp_colls`",
                 'fetch' => false,
-                'code' => function($row) {},
+                'code' => null,
                 'playdry' => self::PLAYDRY_NONE,
             ],
 
             'offset' => [
                 'msg' => "Make room for \"collection_from\" actions",
-                'sql' => "UPDATE `log_docs` SET `id`=`id` * 2 WHERE `id` >= :minid AND `id` <= :maxid ORDER BY `id` DESC",
+                'sql' => "UPDATE `log_docs` SET `id` = `id` * 2 WHERE `id` >= :minid AND `id` <= :maxid ORDER BY `id` DESC",
                 'fetch' => false,
-                'code' => function($stmt) {
+                'code' =>
+                    function(/** @noinspection PhpUnusedParameterInspection */ $stmt) {
                     // fix new minmax values since id was changed
                     $this->parm_v = [$this->parm_v[0] << 1, $this->parm_v[1] << 1];
                 },
@@ -240,7 +201,7 @@ class FixLogCollId extends Command
                         . "  )\n"
                         . "  AS `t` GROUP BY `r1_id` ORDER BY `record_id` ASC, `from_id` ASC",
                 'fetch' => false,
-                'code' => function($stmt) {},
+                'code' => null,
                 'playdry' => self::PLAYDRY_NONE,
             ],
 
@@ -252,7 +213,7 @@ class FixLogCollId extends Command
                         . "    AND (`log_docs`.`id` < `tmp_colls`.`to_id` OR ISNULL(`tmp_colls`.`to_id`))\n"
                         . " SET `log_docs`.`coll_id` = `tmp_colls`.`coll_id",
                 'fetch' => false,
-                'code' => function($stmt) {},
+                'code' => null,
                 'playdry' => self::PLAYDRY_NONE,
             ],
 
@@ -262,19 +223,29 @@ class FixLogCollId extends Command
                         . " SELECT `r1`.`id`-1 AS `id`, `r1`.`log_id`, `r1`.`date`, `r1`.`record_id`, 'collection_from' AS `action`, `r1`.`final`,\n"
                         . "        SUBSTRING_INDEX(GROUP_CONCAT(`r2`.`coll_id` ORDER BY `r1`.`id` DESC), ',', 1) AS `coll_id`\n"
                         . " FROM `log_docs` AS `r1` LEFT JOIN `log_docs` AS `r2`\n"
-                        . "   ON `r2`.`record_id`=`r1`.`record_id` AND `r2`.`id` < `r1`.`id` AND `r2`.`action` IN('collection', 'add')\n"
+                        . "   ON `r2`.`record_id` = `r1`.`record_id` AND `r2`.`id` < `r1`.`id` AND `r2`.`action` IN('collection', 'add')\n"
                         . " WHERE `r1`.`action` = 'collection' AND `r1`.`id` >= :minid AND `r1`.`id` <= :maxid\n"
                         . " GROUP BY `r1`.`id`",
                 'fetch' => false,
-                'code' => function($stmt) {},
+                'code' => null,
                 'playdry' => self::PLAYDRY_NONE,
             ],
 
             'fix_unfound' => [
                 'msg' => "Set missing coll_id to 0",
-                'sql' => "UPDATE `log_docs` SET `coll_id`=0 WHERE `id` >= :minid AND `id` <= :maxid AND ISNULL(`coll_id`)",
+                'sql' => "UPDATE `log_docs` SET `coll_id` = 0 WHERE `id` >= :minid AND `id` <= :maxid AND ISNULL(`coll_id`)",
                 'fetch' => false,
-                'code' => function($stmt) {},
+                'code' => null,
+                'playdry' => self::PLAYDRY_NONE,
+            ],
+
+            'fix_view' => [
+                'msg' => "Fix \"log_view.coll_id\"",
+                'sql' => "UPDATE `tmp_colls` AS `c` INNER JOIN `log_view` AS `v`\n"
+                        . " ON `v`.`record_id` = `c`.`record_id` AND `v`.`date` >= `c`.`from_date` AND (`v`.`date` < `c`.`to_date` OR ISNULL(`c`.`to_date`))\n"
+                        . " SET `v`.`coll_id` = `c`.`coll_id`",
+                'fetch' => false,
+                'code' => null,
                 'playdry' => self::PLAYDRY_NONE,
             ],
         ];
@@ -333,7 +304,7 @@ class FixLogCollId extends Command
                         $stmt = $databox->get_connection()->prepare($sql);
                         $stmt->execute();
                     }
-                    if(!$this->dry || ($work['playdry'] & self::PLAYDRY_CODE)) {
+                    if($work['code'] && (!$this->dry || ($work['playdry'] & self::PLAYDRY_CODE))) {
                         $code = $work['code'];
                         $code($stmt);
                     }
@@ -343,11 +314,11 @@ class FixLogCollId extends Command
                 }
 
                 if($this->dry) {
-                    // since there is no change it may loop forever
+                    // since there was no changes it will loop forever
                     $this->again = false;
                 }
-
             }
+
 
             if (!$this->keep_tmp_table) {
                 $this->output->writeln(sprintf("<info> ----------------- Drop working table -----------------</info>"));
@@ -366,8 +337,4 @@ class FixLogCollId extends Command
         return 0;
     }
 
-    private function runSQL($work)
-    {
-
-    }
 }
