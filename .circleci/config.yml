@@ -15,11 +15,6 @@ jobs:
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
-        command: |-
-          ln -fs << $HOME/.phpenv/versions/7.0.24/libexec/apache2/libphp5.so/usr/lib/apache2/modules/libphp5.so;
-          phpenv global 7.0.24 2>/dev/null
-    - run:
-        working_directory: ~/alchemy-fr/Phraseanet
         command: nvm install stable && nvm alias default stable
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
