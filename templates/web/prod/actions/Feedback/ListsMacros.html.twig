@@ -86,14 +86,12 @@
     </table>
   </div>
   <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
-    {% set length = list.getEntries().count() %}
-    <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}</span>
     {% if query.get_page() > 1 %}
-      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {{ 'Previous' | trans }}</a>
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">&laquo; {{ 'Previous' | trans }}</a>
     {% endif %}
     {{ query.get_page() }} / {{ query.get_total_page() }}
     {% if query.get_page() < query.get_total_page() %}
-      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} ></a>
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} &raquo;</a>
     {% endif %}
   </div>
 </div>
