@@ -32,7 +32,6 @@ class Session_Logger
     const EVENT_EXPORTDOWNLOAD = 'download';
     const EVENT_EXPORTFTP = 'ftp';
     const EVENT_EXPORTMAIL = 'mail';
-    const EVENT_MOVE_FROM = 'collection_from';
     const EVENT_MOVE = 'collection';
     const EVENT_PRINT = 'print';
     const EVENT_PUSH = 'push';
@@ -64,17 +63,18 @@ class Session_Logger
         return $this->id;
     }
 
-    public function log(record_adapter $record, $action, $final, $comment)
+    public function log(record_adapter $record, $action, $final, $comment, $coll_id_from=null)
     {
         $sql = 'INSERT INTO log_docs
-          (id, log_id, date, record_id, coll_id, action, final, comment)
-          VALUES (null, :log_id, NOW(), :record_id, :coll_id, :action, :final, :comm)';
+          (id, log_id, date, record_id, coll_id_from, coll_id, action, final, comment)
+          VALUES (null, :log_id, NOW(), :record_id, :coll_id_from, :coll_id, :action, :final, :comm)';
 
         $stmt = $this->databox->get_connection()->prepare($sql);
 
         $params = [
             ':log_id'    => $this->get_id(),
             ':record_id' => $record->getRecordId(),
+            ':coll_id_from' => $coll_id_from,
             ':coll_id' => $record->getCollectionId(),
             ':action'    => $action,
             ':final' => $final,

@@ -529,8 +529,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
-        $this->app['phraseanet.logger']($this->getDatabox())
-            ->log($this, Session_Logger::EVENT_MOVE_FROM, $this->getCollectionId(), '');
+        $coll_id_from = $this->getCollectionId();
 
         $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
@@ -546,7 +545,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->base_id = $collection->get_base_id();
 
         $this->app['phraseanet.logger']($this->getDatabox())
-            ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
+            ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
         $this->delete_data_from_cache();
 
