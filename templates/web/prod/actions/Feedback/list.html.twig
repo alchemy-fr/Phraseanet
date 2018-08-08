@@ -96,6 +96,10 @@
                                 <form class="form-inline" method="POST" name="SaveName" action="{{ path('prod_lists_list_update', { 'list_id' : list.getId() }) }}">
                                     <label style="margin-right: 45px;">{{ 'List Name' | trans }}</label>
                                     <input type="text" name="name" class="text_input_white orange_text" style="margin: 0 5px;" value="{{ list.getName() }}"/>
+                                    {% set length = list.getEntries().count() %}
+                                    <span class="counter current">
+                                        {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                                    </span>
                                     <button class="saveList pull-right orange_text">
                                         <img src="/assets/common/images/icons/orange-save.png" class="image-normal">
                                         <img src="/assets/common/images/icons/white-save.png" class="image-hover">
