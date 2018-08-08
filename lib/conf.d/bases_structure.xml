@@ -2510,16 +2510,8 @@
             <comment></comment>
           </field>
           <field>
-            <name>coll_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
             <name>action</name>
-            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','collection_from','')</type>
+            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','')</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -2538,6 +2530,22 @@
             <name>comment</name>
             <type>text</type>
             <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id_from</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>
@@ -2563,6 +2571,13 @@
             <type>INDEX</type>
             <fields>
               <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id_from</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
             </fields>
           </index>
           <index>
@@ -2650,6 +2665,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -2694,15 +2717,14 @@
               <field>site_id</field>
             </fields>
           </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
+            </fields>
+          </index>
         </indexes>
-        <field>
-          <name>coll_id</name>
-          <type>int(11) unsigned</type>
-          <null>YES</null>
-          <extra></extra>
-          <default></default>
-          <comment></comment>
-        </field>
         <engine>InnoDB</engine>
       </table>
 
