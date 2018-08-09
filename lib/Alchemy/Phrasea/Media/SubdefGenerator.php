@@ -213,9 +213,15 @@ class SubdefGenerator
         if($start){
             $duration = $stop - $start;
 
-            $this->logger->info(sprintf('Subdef %s generated, duration = %s / sbasid=%s / databox=%s / recordid=%s',
+            $originFileSize = $this->sizeHumanReadable($record->get_hd_file()->getSize());
+            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+
+            $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
-                    date('H:i:s', $duration),
+                    date('H:i:s', mktime(0,0, $duration)),
+                    $originFileSize,
+                    $subdef_class->get_name(),
+                    $generatedFileSize,
                     $record->getDatabox()->get_sbas_id(),
                     $record->getDatabox()->get_dbname(),
                     $record->getRecordId()
@@ -248,5 +254,10 @@ class SubdefGenerator
             throw $e;
         }
 
+    }
+
+    private function sizeHumanReadable($bytes) {
+        $i = floor(log($bytes, 1024));
+        return round($bytes / pow(1024, $i), [0,0,2,2,3][$i]).['B','kB','MB','GB'][$i];
     }
 }
