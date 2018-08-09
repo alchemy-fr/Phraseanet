@@ -839,19 +839,19 @@ class User_Query
         }
 
         if ($this->activities) {
-            $sql .= $this->generate_field_constraints('activite', $this->activities);
+            $sql .= $this->generate_field_constraints('activity', $this->activities);
         }
 
         if ($this->positions) {
-            $sql .= $this->generate_field_constraints('fonction', $this->positions);
+            $sql .= $this->generate_field_constraints('job', $this->positions);
         }
 
         if ($this->countries) {
-            $sql .= $this->generate_field_constraints('pays', $this->countries);
+            $sql .= $this->generate_field_constraints('country', $this->countries);
         }
 
         if ($this->companies) {
-            $sql .= $this->generate_field_constraints('societe', $this->companies);
+            $sql .= $this->generate_field_constraints('company', $this->companies);
         }
 
         if ($this->templates) {
