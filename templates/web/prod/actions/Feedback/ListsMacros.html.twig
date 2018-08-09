@@ -86,14 +86,12 @@
     </table>
   </div>
   <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
-    {% set length = list.getEntries().count() %}
-    <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}</span>
     {% if query.get_page() > 1 %}
-      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {{ 'Previous' | trans }}</a>
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">&laquo; {{ 'Previous' | trans }}</a>
     {% endif %}
     {{ query.get_page() }} / {{ query.get_total_page() }}
     {% if query.get_page() < query.get_total_page() %}
-      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} ></a>
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} &raquo;</a>
     {% endif %}
   </div>
 </div>
@@ -102,17 +100,17 @@
 
 
 {% macro badgeReadonly(entry, role) %}
-  <div class="badge">
+  <div class="badge listmanager_badge">
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
-    {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+    {#{% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
       <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">
         <img src="/assets/prod/images/Push/close_badge.png">
       </a>
-    {% endif %}
+    {% endif %}#}
     <table>
       <tr>
-        <td>
-          <img src="/assets/common/images/icons/user.png"/>
+        <td class="listmanager_badge_img">
+          <img src="/assets/common/images/icons/user-white.png"/>
         </td>
         <td class="infos" >
           <span class="name">{{ entry.getUser().getDisplayName() }}</span>

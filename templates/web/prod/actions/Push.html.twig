@@ -60,7 +60,7 @@
                     <div class="list-container">
                         <span class="main-title">
                             <img src="/assets/common/images/icons/list-grey.png"/>{{ 'Lists' | trans }}</span>
-                        <ul class="list">
+                        <ul class="lists">
                             {% for list in lists %}
                                 <li class="list" style="padding:6px 2px;position: relative;"
                                     data-list-id= {{ list.getId() }}>
@@ -262,39 +262,41 @@
 </div>
 
 <div id="ListManager" class="PNB PushBox" style="display:none;">
-    <div class="PNB theme-bg" style="left:10px;height:50px;bottom:auto;">
-        <h1>
-            <button class="back_link btn btn-inverse" style="margin-right: 5px;">
-                &lt;
+    <div class="PNB" style="width:220px;">
+        <div style="padding:10px">
+            <a class="back_link btn push-back-link" style="margin-right:5px;margin-top:5px;">
                 {% if context == 'Push' %}
-                    {{ 'Back to Push' | trans }}
+                    <img src="/assets/common/images/icons/chevron-left-white.png" class="image-normal">
+                    <img src="/assets/common/images/icons/chevron-left-blue.png" class="image-hover">
+                    <span>{{ 'Back to Push' | trans }}</span>
                 {% else %}
-                    {{ 'Back to Feedback' | trans }}
+                    <img src="/assets/common/images/icons/chevron-left-white.png" class="image-normal">
+                    <img src="/assets/common/images/icons/chevron-left-green.png" class="image-hover">
+                    <span>{{ 'Back to Feedback' | trans }}</span>
                 {% endif %}
-            </button>
-            <span class="title">
-                {{ 'List Manager' | trans }}
-            </span>
-        </h1>
-    </div>
-    <div class="PNB" style="top:50px;">
-        <div class="PNB" style="width:320px;right:auto;">
-            <div class="PNB10 content all-lists LeftColumn">
-                {% include 'prod/actions/Feedback/lists-all.html.twig' %}
-            </div>
+            </a>
         </div>
-        <div class="editor PNB" style="left:320px;">
-            <div class="welcome">
-                <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
-                {% if lists|length == 0 %}
-                    <p class="welcome">
-                        {{ 'Start by creating one by using the "add" button on the left !' | trans }}
-                    </p>
-                {% else %}
-                    <p class="welcome">
-                        {{ 'Select a list on the left and edit it !' | trans }}
-                    </p>
-                {% endif %}
+        <div class="PNB10 all-lists LeftColumn" style="top:55px;">
+            {% include 'prod/actions/Feedback/lists-all.html.twig' %}
+        </div>
+    </div>
+    <div class="PNB" style="left:220px;">
+        <div class="editor PNB">
+            <div class="PNB" style="top: 45px;">
+                <div class="PNB10 content user_content grey-bg">
+                    <div class="welcome">
+                        <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
+                        {% if lists|length == 0 %}
+                            <p class="welcome">
+                                {{ 'Start by creating one by using the "add" button on the left !' | trans }}
+                            </p>
+                        {% else %}
+                            <p class="welcome">
+                                {{ 'Select a list on the left and edit it !' | trans }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
