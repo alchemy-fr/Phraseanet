@@ -7,6 +7,7 @@ branches:
     - /^scrutinizer-.*$/
     - master
     - 4.0
+    - Symfony-4
 
 matrix:
   fast_finish: true
