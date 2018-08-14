@@ -2,10 +2,10 @@
 <div class="PNB10" style="height: 46px;bottom:auto;line-height:26px;">
     <div class="pull-left">
         <div id="find-user">
-            <input class="search" name="users-search" placeholder="{{ list.getName() }}" type="text" style="width:210px;"/>
+            <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
         </div>
         <p id="recommanded-users">
-         
+
         </p>
     </div>
     <div class="pull-left">
@@ -58,11 +58,11 @@
                     </div>
                     <div class="options pull-left">
                         <div class="pull-left">
-                            <button class="select-all push-add-user btn btn-push-orange orange-border"
+                            <button class="select-all btn btn-push-orange orange-border"
                             style="margin-right: 8px;">
                                 {{ 'Select all' | trans }}
                             </button>
-                            <button class="unselect-all push-add-user btn btn-push-orange orange-border">
+                            <button class="unselect-all btn btn-push-orange orange-border">
                                 {{ 'Deselect all' | trans }}
                             </button>
                         </div>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="PNB" style="top:80px;overflow:auto;">
+            <div class="PNB badges" style="top:80px;overflow:auto;">
                 {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
                 {% for entry in list.getEntries() %}
                     {{ ListsMacros.badgeReadonly(entry, role) }}

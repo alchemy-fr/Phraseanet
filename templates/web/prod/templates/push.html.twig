@@ -224,4 +224,42 @@
     </table>
 </div>
 </script>
+<script type="text/template" id="list_manager_badge_tpl">
+<div class="badge badge_<%= user.usr_id %> listmanager_badge">
+    <input type="hidden" value="<%= user.usr_id %>" name="id">
+    <table>
+      <tr>
+        <td class="listmanager_badge_img">
+          <img src="/assets/common/images/icons/user-white.png"/>
+        </td>
+        <td class="infos">
+                <div>
+                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                    <table>
+                        <tr>
+                            <td colspan="3">
+                                <span class="name"><%= user.display_name %></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <span class="subtite"><%= user.subtitle || '' %></span>
+                            </td>
+                        </tr>
+                        <tr class="toggles">
+                            <td class="toggle status_off toggle_HD">
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
+                                     src="/assets/common/images/icons/download-grey.png"/>
+                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
+                                     src="/assets/common/images/icons/dark-blue-download.png"/>
+                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+      </tr>
+    </table>
+</div>
+</script>
 
