@@ -66,6 +66,8 @@ class DatabaseMaintenanceService
 
     public function upgradeDatabase(\base $base, $applyPatches)
     {
+       $this->reconnect();
+
         $recommends = [];
         $allTables = [];
 
@@ -126,6 +128,8 @@ class DatabaseMaintenanceService
      */
     public function alterTableEngine($tableName, $engine, array & $recommends)
     {
+        $this->reconnect();
+
         $sql = 'ALTER TABLE `' . $tableName . '` ENGINE = ' . $engine;
 
         try {
@@ -145,6 +149,8 @@ class DatabaseMaintenanceService
      */
     public function createTable(\SimpleXMLElement $table)
     {
+        $this->reconnect();
+
         $field_stmt = $defaults_stmt = [];
 
         $create_stmt = "CREATE TABLE IF NOT EXISTS `" . $table['name'] . "` (";
@@ -270,6 +276,8 @@ class DatabaseMaintenanceService
 
     public function upgradeTable(\SimpleXMLElement $table)
     {
+        $this->reconnect();
+
         $correct_table = ['fields' => [], 'indexes' => [], 'collation' => []];
         $alter = $alter_pre = $return = [];
 
@@ -476,6 +484,8 @@ class DatabaseMaintenanceService
         }
 
         foreach ($alter_pre as $a) {
+            $this->reconnect();
+
             try {
                 $this->connection->exec($a);
             } catch (\Exception $e) {
@@ -488,6 +498,8 @@ class DatabaseMaintenanceService
         }
 
         foreach ($alter as $a) {
+            $this->reconnect();
+
             try {
                 $this->connection->exec($a);
             } catch (\Exception $e) {
@@ -561,6 +573,7 @@ class DatabaseMaintenanceService
         $this->app['swiftmailer.transport'] = null;
 
         foreach ($list_patches as $patch) {
+
             // Gets doctrine migrations required for current patch
             foreach ($patch->getDoctrineMigrations() as $doctrineVersion) {
                 /** @var \Doctrine\DBAL\Migrations\Version $version */
@@ -579,6 +592,8 @@ class DatabaseMaintenanceService
 
                     // Execute migration if not marked as migrated and not already applied by an older patch
                     if (!$migration->isAlreadyApplied()) {
+                        $this->reconnect();
+
                         $version->execute('up');
                         continue;
                     }
@@ -586,9 +601,13 @@ class DatabaseMaintenanceService
                     // Or mark it as migrated
                     $version->markMigrated();
                 } else {
+                    $this->reconnect();
+
                     $version->execute('up');
                 }
             }
+
+            $this->reconnect();
 
             if (false === $patch->apply($base, $this->app)) {
                 $success = false;
@@ -596,5 +615,13 @@ class DatabaseMaintenanceService
         }
 
         return $success;
+    }
+
+    private function reconnect()
+    {
+        if($this->connection->ping() === false) {
+            $this->connection->close();
+            $this->connection->connect();
+        }
     }
 }
