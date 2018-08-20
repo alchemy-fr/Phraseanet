@@ -10,7 +10,7 @@
     </div>
     <div class="pull-left">
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
-            <a href="#" class="push-add-user btn btn-push-orange" style="width:120px;margin-left:30px;margin-top:2px;">
+            <a href="#" class="push-add-user push-add-user-listmanager btn btn-push-orange" style="width:120px;margin-left:30px;margin-top:2px;">
                 <img src="/assets/common/images/icons/orange-plus.png" class="image-normal">
                 <img src="/assets/common/images/icons/white-plus.png" class="image-hover">
                 {{ 'Create a user' | trans }}
