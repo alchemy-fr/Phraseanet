@@ -11,6 +11,9 @@ branches:
   except:
     - /^3\..*$/
     - /^scrutinizer-.*$/
+    - master
+    - 4.0
+    - Symfony-4
 
 matrix:
   fast_finish: true
