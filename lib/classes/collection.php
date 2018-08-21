@@ -801,26 +801,17 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
     public function getAutoregisterModel($email)
     {
         // try to match against the collection whitelist
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) searching autoregisterModel on coll id=%s for email=%s\n", __FILE__, __LINE__, $this->get_base_id(), $email), FILE_APPEND);
         if($this->isRegistrationEnabled()) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Registration is Enabled\n", __FILE__, __LINE__), FILE_APPEND);
             if (($xml = @simplexml_load_string($this->get_prefs())) !== false) {
                 foreach ($xml->xpath('/baseprefs/registration/auto_register/email_whitelist/email') as $element) {
-                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) matching email=%s against pattern=%s\n", __FILE__, __LINE__, $email, (string)($element['pattern'])), FILE_APPEND);
                     if (preg_match($element['pattern'], $email) === 1) {
-                        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) -> match ! returning model=%s\n", __FILE__, __LINE__, (string)$element['user_model']), FILE_APPEND);
                         return (string)$element['user_model'];
                     }
-                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) -> not matching\n", __FILE__, __LINE__), FILE_APPEND);
                 }
             }
         }
-        else {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Registration IS NOT Enabled\n", __FILE__, __LINE__), FILE_APPEND);
-        }
 
         // no match ? try against the databox whitelist
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) no match on coll, trying databox\n", __FILE__, __LINE__), FILE_APPEND);
         return $this->get_databox()->getAutoregisterModel($email);
     }
 
