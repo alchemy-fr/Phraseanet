@@ -1519,12 +1519,9 @@ class databox extends base implements ThumbnailedElement
      */
     public function getAutoregisterModel($email)
     {
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) searching autoregisterModel on dbox id=%s for email=%s\n", __FILE__, __LINE__, $this->get_sbas_id(), $email), FILE_APPEND);
         if(!$this->isRegistrationEnabled()) {
-            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Registration IS NOT Enabled\n", __FILE__, __LINE__), FILE_APPEND);
             return null;
         }
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Registration is Enabled\n", __FILE__, __LINE__), FILE_APPEND);
 
         $ret = User::USER_AUTOREGISTER; // default if there is no whitelist defined at all
 
@@ -1532,24 +1529,16 @@ class databox extends base implements ThumbnailedElement
         if( ($xml = $this->get_sxml_structure()) !== false) {
             $wl = $xml->xpath('/record/registration/auto_register/email_whitelist');
             if($wl !== false && count($wl) === 1) {
-                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) /record/registration/auto_register/email_whitelist found, email MUST match \n", __FILE__, __LINE__), FILE_APPEND);
                 $ret = null;    // there IS a whitelist, the email must match
 
                 foreach ($wl[0]->xpath('email') as $element) {
-                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) matching email=%s against pattern=%s\n", __FILE__, __LINE__, $email, (string)($element['pattern'])), FILE_APPEND);
                     if (preg_match($element['pattern'], $email) === 1) {
-                        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) -> match ! returning model=%s\n", __FILE__, __LINE__, (string)$element['user_model']), FILE_APPEND);
                         return (string)$element['user_model'];
                     }
-                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) -> not matching\n", __FILE__, __LINE__), FILE_APPEND);
                 }
-            }
-            else {
-                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) no /record/registration/auto_register/email_whitelist/*\n", __FILE__, __LINE__), FILE_APPEND);
             }
         }
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) returning %s\n", __FILE__, __LINE__, var_export(User::USER_AUTOREGISTER, true)), FILE_APPEND);
         return $ret;
     }
 
