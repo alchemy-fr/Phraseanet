@@ -197,7 +197,7 @@ class RegistrationService
         }
 
         $user = $this->userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
-        
+
         if (isset($data['geonameid'])) {
             $this->userManipulator->setGeonameId($user, $data['geonameid']);
         }
@@ -215,6 +215,7 @@ class RegistrationService
             $this->attachProviderToUser($provider, $user);
             $this->entityManager->flush();
         }
+
         if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
             $acl = $this->aclProvider->get($user);
             foreach ($authorizedCollections as $baseId => $collection) {
