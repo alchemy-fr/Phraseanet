@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\ControllerProvider\Api\OAuth2;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\ControllerProvider\Api\Report;
 use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
@@ -34,6 +35,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->register(new OAuth2());
         $app->register(new V1());
         $app->register(new V2());
+        $app->register(new Report());
         $app->register(new JsonSchemaServiceProvider());
     }
 
@@ -132,6 +134,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->mount('/datafiles/', new Datafiles());
         $app->mount('/api/v1', new V1());
         $app->mount('/api/v2', new V2());
+        $app->mount('/api/report', new Report());
         $app->mount('/permalink/', new Permalink());
         $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
         $app->mount('/include/minify/', new Minifier());
