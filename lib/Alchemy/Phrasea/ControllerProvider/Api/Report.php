@@ -10,9 +10,11 @@
 namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Report\Controller\ApiReportController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
+use Alchemy\Phrasea\Report\Controller\ApiReportController;
+use Alchemy\Phrasea\Report\ReportConnectionsService;
+use Alchemy\Phrasea\Report\ReportRootService;
 use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
@@ -30,6 +32,23 @@ class Report extends Api implements ControllerProviderInterface, ServiceProvider
             function (PhraseaApplication $app) {
                 return (new ApiReportController($app))
                     ->setJsonBodyHelper($app['json.body_helper']);
+            }
+        );
+
+        $app['report.root'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new ReportRootService(
+                    $app->getAclForUser($app->getAuthenticatedUser())
+                ));
+            }
+        );
+
+        $app['report.connections'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new ReportConnectionsService(
+                    $app['conf']->get(['main', 'key']),
+                    $app['phraseanet.appbox']
+                ));
             }
         );
     }

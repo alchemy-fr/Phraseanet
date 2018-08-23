@@ -14,32 +14,10 @@ use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\ExportEvent;
-use Alchemy\Phrasea\Core\Event\OrderEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Http\DeliverDataInterface;
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\Order;
-use Alchemy\Phrasea\Model\Entities\Token;
-use Alchemy\Phrasea\Order\OrderElementTransformer;
-use Alchemy\Phrasea\Order\OrderFiller;
-use Alchemy\Phrasea\Order\OrderTransformer;
-use Alchemy\Phrasea\Order\OrderViewBuilder;
-use Alchemy\Phrasea\Record\RecordReferenceCollection;
+use Alchemy\Phrasea\Report\ReportConnectionsService;
+use Alchemy\Phrasea\Report\ReportRootService;
 use Doctrine\Common\Collections\ArrayCollection;
-use League\Fractal\Manager;
-use League\Fractal\Pagination\PagerfantaPaginatorAdapter;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\ResourceInterface;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiReportController extends BaseReportController
 {
@@ -49,8 +27,11 @@ class ApiReportController extends BaseReportController
 
     public function rootAction(Request $request)
     {
+        /** @var ReportRootService $rootReport */
+        $rootReport = $this->app['report.root'];
+
         $ret = [
-            'granted' => $this->getGranted()
+            'granted' => $rootReport->getGranted()
         ];
 
         $result = Result::create($request, $ret);
@@ -60,8 +41,11 @@ class ApiReportController extends BaseReportController
 
     public function connectionsAction(Request $request, $sbasId)
     {
+        /** @var ReportConnectionsService $connectionsReport */
+        $connectionsReport = $this->app['report.connections'];
+
         $ret = [
-            'connections' => $this->getConnections($request, $sbasId)
+            'connections' => $connectionsReport->getConnections($request, $sbasId)
         ];
 
         $result = Result::create($request, $ret);
