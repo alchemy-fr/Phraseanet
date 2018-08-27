@@ -14,41 +14,33 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 
 
-class ReportRootService
+class ReportRootService extends ReportService
 {
     use JsonBodyAware;
 
-    private $acl;
-
-    /**
-     * @param \ACL $acl
-     */
-    public function __construct(\ACL $acl)
-    {
-        $this->acl = $acl;
-    }
 
     public function getGranted()
     {
-        $granted = [];
+        $databoxes = [];
 
         /** @var \collection $collection */
         foreach ($this->acl->get_granted_base([\ACL::CANREPORT]) as $collection) {
-            if (!isset($granted[$collection->get_sbas_id()])) {
-                $granted[$collection->get_sbas_id()] = [
-                    'id' => $collection->get_sbas_id(),
+            $sbas_id = $collection->get_sbas_id();
+            if (!isset($databoxes[$sbas_id])) {
+                $databoxes[$sbas_id] = [
+                    'id' => $sbas_id,
                     'name' => $collection->get_databox()->get_viewname(),
                     'collections' => []
                 ];
             }
-            $granted[$collection->get_sbas_id()]['collections'][] = [
-                'id' => $collection->get_coll_id(),
-                'base_id' => $collection->get_base_id(),
+            $databoxes[$sbas_id]['collections'][$collection->get_base_id()] = [
+                'id' => $collection->get_base_id(),
+                'coll_id' => $collection->get_coll_id(),
                 'name' => $collection->get_name()
             ];
         }
 
-        return $granted;
+        return ['databoxes' => $databoxes];
     }
 
 }

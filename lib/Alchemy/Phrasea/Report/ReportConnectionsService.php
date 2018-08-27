@@ -13,37 +13,16 @@ namespace Alchemy\Phrasea\Report;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Doctrine\DBAL\Connection;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class ReportConnectionsService
+class ReportConnectionsService extends ReportService
 {
     use JsonBodyAware;
 
-    private $appKey;
-    private $appbox;
 
-    /**
-     * @param string $appKey
-     * @param \appbox $appbox
-     */
-    public function __construct($appKey, \appbox $appbox)
-    {
-        $this->appKey = $appKey;
-        $this->appbox = $appbox;
-
-        //parent::__construct($app);
-        //$id = $this->getAuthenticator()->getUser()->getId();
-        //$app->getAuthenticatedUser();
-        // $this->getAuthenticatedUser()->isAdmin();
-    }
-
-    public function  getConnections(Request $request, $sbasId)
+    public function  getConnections($sbasId, $dmin, $dmax, $group)
     {
         $parms = [];
-        $group = $request->get('group');
         switch($group) {
             case null:
                 $sql = "SELECT * FROM `log`\n"
@@ -53,8 +32,9 @@ class ReportConnectionsService
                 $sql = "SELECT `usrid`, `user`, MIN(`date`) AS `dmin`, MAX(`date`) AS dmax, SUM(1) AS `nb` FROM `log`\n"
                     . " WHERE {{GlobalFilter}}\n"
                     . " GROUP BY `usrid`\n"
-                    // . " ORDER BY nb ASC\n"
-                    . " WITH ROLLUP";
+                    . " ORDER BY `nb` DESC\n"
+                    // . " WITH ROLLUP"
+                ;
                 break;
             case 'nav':
             case 'nav,version':
@@ -66,11 +46,11 @@ class ReportConnectionsService
                     ',',
                     array_map(function($g) {return '`'.$g.'`';}, explode(',', $group))
                 );
-                $sql = "SELECT ".$group.", SUM(1) AS `nb` FROM `log`\n"
+                $sql = "SELECT " . $group . ", SUM(1) AS `nb` FROM `log`\n"
                     . " WHERE {{GlobalFilter}}\n"
-                    . " GROUP BY ".$group."\n"
-                    // . " ORDER BY nb ASC\n"
-                    . " WITH ROLLUP"
+                    . " GROUP BY " . $group . "\n"
+                    . " ORDER BY `nb` DESC\n"
+                    // . " WITH ROLLUP"
                 ;
                 break;
             default:
@@ -80,42 +60,19 @@ class ReportConnectionsService
 
         $sql = str_replace(
             '{{GlobalFilter}}',
-            "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
+            // "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
+            "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             $sql
         );
         $parms = array_merge(
             $parms,
             [   ':site' => $this->appKey,
-                ':dmin' => $request->get('dmin'),
-                ':dmax' => $request->get('dmax')
+                ':dmin' => $dmin,
+                ':dmax' => $dmax
             ]
         );
 
         return $this->playSql($sbasId, $sql, $parms);
-    }
-
-    private function playSql($sbasId, $sql, $parms)
-    {
-        $stmt = $this->findDbConnectionOr404($sbasId)->prepare($sql);
-        $stmt->execute($parms);
-        $ret = $stmt->fetchAll();
-        $stmt->closeCursor();
-
-        return $ret;
-    }
-
-    /**
-     * @param int $sbasId
-     * @return Connection
-     */
-    protected function findDbConnectionOr404($sbasId)
-    {
-        $db = $this->appbox->get_databox(($sbasId));
-        if(!$db) {
-            throw new NotFoundHttpException('Order not found');
-        }
-
-        return $db->get_connection();
     }
 
 }

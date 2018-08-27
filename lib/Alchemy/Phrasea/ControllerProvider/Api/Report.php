@@ -14,6 +14,7 @@ use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Report\Controller\ApiReportController;
 use Alchemy\Phrasea\Report\ReportConnectionsService;
+use Alchemy\Phrasea\Report\ReportDownloadsService;
 use Alchemy\Phrasea\Report\ReportRootService;
 use Silex\Application;
 use Silex\Controller;
@@ -30,14 +31,19 @@ class Report extends Api implements ControllerProviderInterface, ServiceProvider
     {
         $app['controller.api.v2.report'] = $app->share(
             function (PhraseaApplication $app) {
-                return (new ApiReportController($app))
-                    ->setJsonBodyHelper($app['json.body_helper']);
+                return (new ApiReportController(
+                    $app,
+                    $app->getAclForUser($app->getAuthenticatedUser())
+                )
+                )->setJsonBodyHelper($app['json.body_helper']);
             }
         );
 
         $app['report.root'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new ReportRootService(
+                    $app['conf']->get(['main', 'key']),
+                    $app['phraseanet.appbox'],
                     $app->getAclForUser($app->getAuthenticatedUser())
                 ));
             }
@@ -47,7 +53,18 @@ class Report extends Api implements ControllerProviderInterface, ServiceProvider
             function (PhraseaApplication $app) {
                 return (new ReportConnectionsService(
                     $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox']
+                    $app['phraseanet.appbox'],
+                    $app->getAclForUser($app->getAuthenticatedUser())
+                ));
+            }
+        );
+
+        $app['report.downloads'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new ReportDownloadsService(
+                    $app['conf']->get(['main', 'key']),
+                    $app['phraseanet.appbox'],
+                    $app->getAclForUser($app->getAuthenticatedUser())
                 ));
             }
         );
@@ -87,9 +104,13 @@ class Report extends Api implements ControllerProviderInterface, ServiceProvider
         ;
 
         $controllers
-            ->get('/{sbasId}/connections/', 'controller.api.v2.report:connectionsAction')
+            ->get('/connections/{sbasId}/', 'controller.api.v2.report:connectionsAction')
             ->assert('sbasId', '\d+')
-            // ->bind('api_v2_report_root');
+        ;
+
+        $controllers
+            ->get('/downloads/{sbasId}/', 'controller.api.v2.report:downloadsAction')
+            ->assert('sbasId', '\d+')
         ;
 
         return $controllers;

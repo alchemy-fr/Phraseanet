@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Report\ReportConnectionsService;
+use Alchemy\Phrasea\Report\ReportDownloadsService;
 use Alchemy\Phrasea\Report\ReportRootService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,32 @@ class ApiReportController extends BaseReportController
         $connectionsReport = $this->app['report.connections'];
 
         $ret = [
-            'connections' => $connectionsReport->getConnections($request, $sbasId)
+            'connections' => $connectionsReport->getConnections(
+                $sbasId,
+                $request->get('dmin'),
+                $request->get('dmax'),
+                $request->get('group')
+            )
+        ];
+
+        $result = Result::create($request, $ret);
+
+        return $result->createResponse();
+    }
+
+    public function downloadsAction(Request $request, $sbasId)
+    {
+        /** @var ReportDownloadsService $downloadsReport */
+        $downloadsReport = $this->app['report.downloads'];
+
+        $ret = [
+            'donwloads' => $downloadsReport->getDownloads(
+                $sbasId,
+                $request->get('dmin'),
+                $request->get('dmax'),
+                $request->get('group'),
+                $request->get('base[]')
+            )
         ];
 
         $result = Result::create($request, $ret);

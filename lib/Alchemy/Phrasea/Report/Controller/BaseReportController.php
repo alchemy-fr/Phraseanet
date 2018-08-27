@@ -13,47 +13,25 @@ namespace Alchemy\Phrasea\Report\Controller;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Controller;
-use Doctrine\DBAL\Connection;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class BaseReportController extends Controller
 {
     use JsonBodyAware;
 
+    private $acl;
+
     /**
      * @param Application $app
+     * @param \ACL $acl
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, \ACL $acl)
     {
         parent::__construct($app);
+        $this->acl = $acl;
         //$id = $this->getAuthenticator()->getUser()->getId();
-        //$app->getAuthenticatedUser();
+        $app->getAuthenticatedUser();
         // $this->getAuthenticatedUser()->isAdmin();
-    }
-
-    private function playSql($sbasId, $sql, $parms)
-    {
-        $stmt = $this->findDbConnectionOr404($sbasId)->prepare($sql);
-        $stmt->execute($parms);
-        $ret = $stmt->fetchAll();
-        $stmt->closeCursor();
-
-        return $ret;
-    }
-
-    /**
-     * @param int $sbasId
-     * @return Connection
-     */
-    protected function findDbConnectionOr404($sbasId)
-    {
-        $db = $this->findDataboxById($sbasId);
-        if(!$db) {
-            throw new NotFoundHttpException('Order not found');
-        }
-
-        return $db->get_connection();
     }
 
 }
