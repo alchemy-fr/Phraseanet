@@ -244,6 +244,52 @@ class QueryController extends Controller
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
+                . '<a href="#" class="detailed_info_btn"><img src="/assets/common/images/icons/dots.png" class="image-normal"><img src="/assets/common/images/icons/dots-darkgreen-hover.png" class="image-hover"></a>'
+                . '<div class="detailed_info">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nb</th>
+                                <th>Type</th>
+                                <th>File size</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td>6</td>
+                                <td>Total</td>
+                                <td>24.20 Mb</td>
+                                <td>00:25:17</td>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Audio</td>
+                                <td>1 Mb</td>
+                                <td>00:04:31</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Documents</td>
+                                <td>20 Kb</td>
+                                <td>N/A</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Images</td>
+                                <td>400 Kb</td>
+                                <td>N/A</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Video</td>
+                                <td>19 Mb</td>
+                                <td>00:20:36</td>
+                            </tr>
+                        </tbody>
+                    </table></div>'
                 . '</div><a href="#" class="search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
                 . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
 
