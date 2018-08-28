@@ -13,17 +13,17 @@ namespace Alchemy\Phrasea\Report;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Report\Report;
+use Alchemy\Phrasea\Report\ReportInterface;
 
 
-class ReportConnectionsService extends ReportService
+class ReportConnections extends Report implements ReportInterface
 {
-    use JsonBodyAware;
+    private $appKey;
 
-
-    public function  getConnections($sbasId, $dmin, $dmax, $group)
+    public function  getSql()
     {
-        $parms = [];
-        switch($group) {
+        switch($this->parms['group']) {
             case null:
                 $sql = "SELECT * FROM `log`\n"
                     . " WHERE {{GlobalFilter}}";
@@ -44,7 +44,7 @@ class ReportConnectionsService extends ReportService
             case 'res':
                 $group = implode(
                     ',',
-                    array_map(function($g) {return '`'.$g.'`';}, explode(',', $group))
+                    array_map(function($g) {return '`'.$g.'`';}, explode(',', $this->parms['group']))
                 );
                 $sql = "SELECT " . $group . ", SUM(1) AS `nb` FROM `log`\n"
                     . " WHERE {{GlobalFilter}}\n"
@@ -58,21 +58,28 @@ class ReportConnectionsService extends ReportService
                 break;
         }
 
-        $sql = str_replace(
+        return str_replace(
             '{{GlobalFilter}}',
             // "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             $sql
         );
-        $parms = array_merge(
-            $parms,
-            [   ':site' => $this->appKey,
-                ':dmin' => $dmin,
-                ':dmax' => $dmax
-            ]
-        );
+    }
 
-        return $this->playSql($sbasId, $sql, $parms);
+    public function getSqlParms()
+    {
+        return [
+            ':site' => $this->appKey,
+            ':dmin' => $this->parms['dmin'],
+            ':dmax' => $this->parms['dmax']
+        ];
+    }
+
+    public function setAppKey($appKey)
+    {
+        $this->appKey = $appKey;
+
+        return $this;
     }
 
 }

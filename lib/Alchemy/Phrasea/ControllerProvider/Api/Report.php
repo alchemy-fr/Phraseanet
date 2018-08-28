@@ -13,8 +13,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Report\Controller\ApiReportController;
-use Alchemy\Phrasea\Report\ReportConnectionsService;
-use Alchemy\Phrasea\Report\ReportDownloadsService;
+use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRootService;
 use Silex\Application;
 use Silex\Controller;
@@ -39,29 +38,19 @@ class Report extends Api implements ControllerProviderInterface, ServiceProvider
             }
         );
 
+        $app['report.factory'] = $app->share(
+            function (PhraseaApplication $app) {
+                return (new ReportFactory(
+                    $app['conf']->get(['main', 'key']),
+                    $app['phraseanet.appbox'],
+                    $app->getAclForUser($app->getAuthenticatedUser())
+                ));
+            }
+        );
+
         $app['report.root'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new ReportRootService(
-                    $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox'],
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
-
-        $app['report.connections'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ReportConnectionsService(
-                    $app['conf']->get(['main', 'key']),
-                    $app['phraseanet.appbox'],
-                    $app->getAclForUser($app->getAuthenticatedUser())
-                ));
-            }
-        );
-
-        $app['report.downloads'] = $app->share(
-            function (PhraseaApplication $app) {
-                return (new ReportDownloadsService(
                     $app['conf']->get(['main', 'key']),
                     $app['phraseanet.appbox'],
                     $app->getAclForUser($app->getAuthenticatedUser())

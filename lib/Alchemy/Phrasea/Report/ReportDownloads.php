@@ -11,27 +11,24 @@
 namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 
-class ReportDownloadsService extends ReportService
+class ReportDownloads extends Report implements ReportInterface
 {
-    use JsonBodyAware;
+    private $appKey;
 
+    /** @var  \ACL */
+    private $acl;
 
-    public function  getDownloads($sbasId, $dmin, $dmax, $group, $bases)
+    public function  getSql()
     {
-        $parms = [];
-
-        $conn = $this->findDbConnectionOr404($sbasId);
-        switch($group) {
+        switch ($this->parms['group']) {
             case null:
                 $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                     . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`"
                     . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                    . " WHERE {{GlobalFilter}}"
-                    ;
+                    . " WHERE {{GlobalFilter}}";
                 break;
             case 'user':
                 $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
@@ -39,8 +36,7 @@ class ReportDownloadsService extends ReportService
                     . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                     . " WHERE {{GlobalFilter}}"
                     . " GROUP BY `l`.`usrid`\n"
-                    . " ORDER BY `nb` DESC\n"
-                    // . " WITH ROLLUP"
+                    . " ORDER BY `nb` DESC\n"// . " WITH ROLLUP"
                 ;
                 break;
             case 'record':
@@ -49,8 +45,7 @@ class ReportDownloadsService extends ReportService
                     . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
                     . " WHERE {{GlobalFilter}}"
                     . " GROUP BY `l`.`usrid`\n"
-                    . " ORDER BY `nb` DESC\n"
-                    // . " WITH ROLLUP"
+                    . " ORDER BY `nb` DESC\n"// . " WITH ROLLUP"
                 ;
                 break;
             default:
@@ -58,8 +53,9 @@ class ReportDownloadsService extends ReportService
                 break;
         }
 
-        $collIds = $this->getCollIds($sbasId, $bases);
-        $collIds = join(',', array_map(function($collId) use($conn) {return $conn->quote($collId);}, $collIds));
+        $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
+        $collIds = join(',', $collIds);
+
         $sql = str_replace(
             '{{GlobalFilter}}',
             "`action`='download' AND `ld`.`coll_id` IN(" . $collIds . ")\n"
@@ -67,15 +63,31 @@ class ReportDownloadsService extends ReportService
             . " AND `ld`.`final`='document'",
             $sql
         );
-        $parms = array_merge(
-            $parms,
-            [   ':site' => $this->appKey,
-                ':dmin' => $dmin,
-                ':dmax' => $dmax
-            ]
-        );
 
-        return $this->playSql($sbasId, $sql, $parms);
+        return $sql;
+    }
+
+    public function getSqlParms()
+    {
+        return [
+            ':site' => $this->appKey,
+            ':dmin' => $this->parms['dmin'],
+            ':dmax' => $this->parms['dmax']
+        ];
+    }
+
+    public function setAppKey($appKey)
+    {
+        $this->appKey = $appKey;
+
+        return $this;
+    }
+
+    public function setACL($acl)
+    {
+        $this->acl = $acl;
+
+        return $this;
     }
 
 }

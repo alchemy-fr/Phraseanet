@@ -14,11 +14,13 @@ use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\Report\ReportConnectionsService;
-use Alchemy\Phrasea\Report\ReportDownloadsService;
+use Alchemy\Phrasea\Report\ReportConnections;
+use Alchemy\Phrasea\Report\ReportDownloads;
+use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRootService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class ApiReportController extends BaseReportController
 {
@@ -42,40 +44,44 @@ class ApiReportController extends BaseReportController
 
     public function connectionsAction(Request $request, $sbasId)
     {
-        /** @var ReportConnectionsService $connectionsReport */
-        $connectionsReport = $this->app['report.connections'];
+        /** @var ReportFactory $reportFactory */
+        $reportFactory = $this->app['report.factory'];
 
-        $ret = [
-            'connections' => $connectionsReport->getConnections(
-                $sbasId,
-                $request->get('dmin'),
-                $request->get('dmax'),
-                $request->get('group')
-            )
-        ];
+        /** @var ReportConnections $report */
+        $report = $reportFactory->createReport(
+            ReportFactory::CONNECTIONS,
+            $sbasId,
+            [
+                'dmin' => $request->get('dmin'),
+                'dmax' => $request->get('dmax'),
+                'group' => $request->get('group'),
+            ]
+        );
 
+        $ret = $report->getContent();
         $result = Result::create($request, $ret);
-
         return $result->createResponse();
     }
 
     public function downloadsAction(Request $request, $sbasId)
     {
-        /** @var ReportDownloadsService $downloadsReport */
-        $downloadsReport = $this->app['report.downloads'];
+        /** @var ReportFactory $reportFactory */
+        $reportFactory = $this->app['report.factory'];
 
-        $ret = [
-            'donwloads' => $downloadsReport->getDownloads(
-                $sbasId,
-                $request->get('dmin'),
-                $request->get('dmax'),
-                $request->get('group'),
-                $request->get('base[]')
-            )
-        ];
+        /** @var ReportDownloads $report */
+        $report = $reportFactory->createReport(
+            ReportFactory::DOWNLOADS,
+            $sbasId,
+            [
+                'dmin' => $request->get('dmin'),
+                'dmax' => $request->get('dmax'),
+                'group' => $request->get('group'),
+                'bases' => $request->get('base[]')
+            ]
+        );
 
+        $ret = $report->getContent();
         $result = Result::create($request, $ret);
-
         return $result->createResponse();
     }
 

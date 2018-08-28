@@ -14,10 +14,26 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 
 
-class ReportRootService extends ReportService
+class ReportRootService
 {
     use JsonBodyAware;
 
+
+    protected $appKey;
+    protected $appbox;
+    protected $acl;
+
+    /**
+     * @param string $appKey
+     * @param \appbox $appbox
+     * @param \ACL acl
+     */
+    public function __construct($appKey, \appbox $appbox, \ACL $acl)
+    {
+        $this->appKey = $appKey;
+        $this->appbox = $appbox;
+        $this->acl = $acl;
+    }
 
     public function getGranted()
     {
