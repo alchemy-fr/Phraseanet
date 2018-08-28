@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
     config.ssh.forward_agent = true
     config_net(config)
 
-    config.vm.provision :shell, inline: "fallocate -l 4G /swapfile && chmod 0600 /swapfile && mkswap /swapfile && swapon /swapfile && echo '/swapfile none swap sw 0 0' >> /etc/fstab"
+    config.vm.provision :shell, inline: "swapoff -a && fallocate -l 4G /swapfile && chmod 0600 /swapfile && mkswap /swapfile && swapon /swapfile && echo '/swapfile none swap sw 0 0' >> /etc/fstab"
     config.vm.provision :shell, inline: "sudo sysctl vm.swappiness=10 && sudo sysctl vm.vfs_cache_pressure=50"
 
     # If ansible is in your path it will provision from your HOST machine
