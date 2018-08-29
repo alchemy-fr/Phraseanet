@@ -1,7 +1,8 @@
 <table cellspacing="0">
     <tr class="personalise-logo-row-container">
         <td>
-            {{ form_widget(form.originalChoiceInput, { 'attr': {'class': 'choice-radio'} }) }}
+            {{ form_widget(form.logoChoice[0]) }}
+            {{ form_label(form.logoChoice[0]) }}
             <div class="image-container">
                 <img id="original-image-placeholder" alt="gabari"
                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAACOCAYAAABg4BtLAAADgUlEQVR4Xu2czyt8URjGnyErWfgLWClLCUuxsmCDoijJwpo0GT+S/EhSFmyUErGQ2LBQFrJEmrKxmuIvsLRAo3vM+M5M3c6drnO/hs8s77n3zPu+zznP8z4zZyaWTqfT+gOvGIn+MpRB9JcBKhAF0RKtAEu3RIHzDTsworFYLG+SbEOVvV7YYP2v636ZkmhhZUA0s6RZugXmyPXeZY8GtWnsUfbop+5GTVLsUfZowRqAjCAjyMgpG8O6sC6s+1kBPmHIrATXdsxvfsgIMoKMIKO8NQAZOTYBsC6sC+vCurBubgVcyw6sC+vCurAurAvr5lTgu2QHeUFekBfkBXlBXpCXfxUoVl/RUXQUHUVH0VF0FB1FR78qwBkGn9aI370UFoZjrI6/waap9ykw7gX3gnvBveBecC+4F9wL7sWvI8pex73gXjIV4OcgmUIUa6++637cC+4F94J7wb3gXnAvuBfcC+4l25LSGdEZ0RnRGdEZ0RnRGdEZ0RnRGfmsAY7fcPymRP9FzsZqP3088LdpPz0RW3wkaqtQqY2DaKkhZosXRG0VKnb88fFRy8vLOj4+1uvrqzo6OjQ5OamGhgYVdl3Fzh3k/kgQfXh40PDwsK6vr/Niqqmp0e7urlpbW4PEGuoe54m+vLxobGxM5+fnWlxcVE9Pj8rKynR0dKSZmRk1Nzdra2tL1dXVoRKxPew80fv7e/X29hpE4/G4ysvLTUzv7+9aXV3VxsaGTk9P1djYaIs11LjzRA8PDw2iucm8vb3p8vJS09PTur291f7+vgYGBkIlYnvYeaLr6+tmH3oJ19XVKZlMam5uTmdnZ1+xeSSVSCRssYYad57owsKCLi4utLS0pO3tbe3t7amqqsos55GREbNP29vbNTs7GyoR28POE/UQHR8f/4qjs7NT8/PzRlZSqZT6+/sNQZU8ogcHBxocHFRTU5PRUQ89j3W9193dnbq6uuQVo6+vzwZKqHHniGaTmZiYMKSUe0LMS3Btbe13sO7z87NGR0d1c3Nj5KS7u9sgc3JyYuSmra1Nm5ubqqysDIWY7WHniHoBXF1daWhoSE9PT3nxtLS0aGdnR/X19bY4Q49Hkqh3EtSTlZWVFdMhVVRUGAKamppSbW1t6CSCTBBJokECcX0PibqucNTzg2jUFXf9fiDqusJRzw+iUVfc9fuBqOsKRz3/n0H0A2kqGPz1ouCnAAAAAElFTkSuQmCC"/>
@@ -9,11 +10,15 @@
             <a id="download-image-template" href="#">{{ 'prod::setup: download gabari' | trans }}</a>
         </td>
         <td>
-            {{ form_widget(form.personaliseChoiceInput) }}
+            {{ form_widget(form.logoChoice[1]) }}
+            {{ form_label(form.logoChoice[1]) }}
+            <br>
             <span id="help-text">{{ 'prod::setup: help text' | trans }}</span>
             <span id="error-text"></span>
             <div class="image-container" id="personalize-image-container">
-                <img id="personalise-image-placeholder"/>
+                {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    <img id="personalise-image-placeholder" src="/custom/minilogos/personalize_logo.png"/>
+                {% endif %}
             </div>
             <div>
                 {{ form_widget(form.personalizeLogoInput) }}
@@ -21,8 +26,8 @@
                        id="select-logo-btn">{{ 'prod::setup: select file' | trans }}</label>
             </div>
         </td>
+        {{ form_widget(form.personalizeFile) }}
     </tr>
-    {{ form_widget(form.logoChoice) }}
 </table>
 
 <script type="text/javascript">
@@ -31,18 +36,17 @@
 
         var errorDimension = '{{ 'prod::setup: error text dimension' | trans }}';
         var errorFileType = '{{ 'prod::setup: error text file type' | trans }}';
-        //by default select original logo
-        $('#general_personalize-logo-choice_originalChoiceInput_0').attr('checked', true);
-        $('#general_personalize-logo-choice_logoChoice').val('original');
 
         $('#help-text').show();
-        $('#personalize-image-container').hide();
-        $('#error-text').hide();
 
-        $('input[type=radio]').on('change', function () {
-            $('#general_personalize-logo-choice_logoChoice').val($(this).val());
-            $(this).closest('td').siblings().find('input').prop('checked', false);
-        });
+        // show personalize logo if exist
+        {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+            $('#personalize-image-container').show();
+        {% else %}
+            $('#personalize-image-container').hide();
+        {% endif %}
+
+        $('#error-text').hide();
 
         $("#download-image-template").on('click', function (event) {
             event.preventDefault();
@@ -78,6 +82,7 @@
                     reader.onload = function (_file) {
                         var image = new Image();
 
+                        fileToUpload = _file.target.result;
                         image.src = _file.target.result;
                         image.file = this.file;
                         image.data = this.data;
@@ -120,7 +125,26 @@
                                 });
                             });
 
-                            fileToUpload = this.data;
+                            var fd = new FormData();
+                            fd.append("fileToUpload", fileToUpload);
+                            $.ajax({
+                                type: 'POST',
+                                url: '{{ path('setup_send_personalize_logo') }}',
+                                data: fd,
+                                processData: false,
+                                contentType: false,
+                                async: false,
+                                success: function (data) {
+                                    if(data === 'success'){
+                                        $('#general_personalize-logo-choice_personalizeFile').val(true);
+                                    }else{
+                                        $('#general_personalize-logo-choice_personalizeFile').val(false);
+                                    }
+
+                                    console.log(data);
+                                }
+
+                            });
                         }
                     }
 
@@ -134,14 +158,6 @@
             }
         });
 
-
-        $("#submitSetupForm").bind('click', function () {
-            if (fileToUpload != null) {
-                fileToUpload.submit();
-            } else {
-                $("#setupForm").submit();
-            }
-        });
     });
 
 </script>

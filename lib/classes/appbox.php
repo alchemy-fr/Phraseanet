@@ -95,6 +95,23 @@ class appbox extends base
         return $this;
     }
 
+    public function write_application_logo(Filesystem $filesystem, $blob)
+    {
+        $logo_path = $this->app['root.path'] . '/www/custom/minilogos/personalize_logo.png';
+
+        $data = str_replace('data:image/png;base64,', '', $blob);
+        $data = str_replace(' ', '+', $data);
+        $data = base64_decode($data);
+
+        try{
+            $filesystem->dumpFile($logo_path, $data);
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+
+        return 'success';
+    }
+
     /**
      *
      * @param  collection $collection
