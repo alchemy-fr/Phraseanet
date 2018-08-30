@@ -5,8 +5,10 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\EmbedProvider\EmbedServiceProvider;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\ControllerProvider as Providers;
+use Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider;
 use Assert\Assertion;
 use Silex\ControllerProviderInterface;
+
 
 class RouteLoader
 {
@@ -53,6 +55,7 @@ class RouteLoader
         '/prod/records/edit'           => Providers\Prod\Edit::class,
         '/prod/records/movecollection' => Providers\Prod\MoveCollection::class,
         '/prod/records/property'       => Providers\Prod\Property::class,
+        '/prod/report/'                => ProdReportControllerProvider::class,
         '/prod/share/'                 => Providers\Prod\Share::class,
         '/prod/story'                  => Providers\Prod\Story::class,
         '/prod/subdefs'                => Providers\Prod\Subdefs::class,

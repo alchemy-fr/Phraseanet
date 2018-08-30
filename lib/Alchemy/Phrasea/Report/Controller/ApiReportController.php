@@ -10,11 +10,7 @@
 
 namespace Alchemy\Phrasea\Report\Controller;
 
-use Alchemy\Phrasea\Application\Helper\DelivererAware;
-use Alchemy\Phrasea\Application\Helper\FilesystemAware;
-use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
-use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Alchemy\Phrasea\Report\ReportFactory;
@@ -25,10 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ApiReportController extends BaseReportController
 {
-    use DelivererAware;
-    use FilesystemAware;
-    use JsonBodyAware;
-
     public function rootAction(Request $request)
     {
         /** @var ReportRootService $rootReport */
@@ -59,16 +51,9 @@ class ApiReportController extends BaseReportController
             ]
         );
 
-        $report->setFormat(Report::FORMAT_CSV);
+        $result = Result::create($request, $report->getContent());
 
-        $report->render();
-
-        return null;
-/*
-        $ret = $report->getContent();
-        $result = Result::create($request, $ret);
         return $result->createResponse();
-*/
     }
 
     public function downloadsAction(Request $request, $sbasId)
@@ -88,8 +73,8 @@ class ApiReportController extends BaseReportController
             ]
         );
 
-        $ret = $report->getContent();
-        $result = Result::create($request, $ret);
+        $result = Result::create($request, $report->getContent());
+
         return $result->createResponse();
     }
 

@@ -27,8 +27,9 @@ class ReportRows implements \Iterator
     private $sql;
     private $sqlParms;
     private $keyName;
+    private $keyValue;
 
-    public function __construct(Connection $connection, $sql, $sqlParms, $keyName = 'id')
+    public function __construct(Connection $connection, $sql, $sqlParms, $keyName = null)
     {
         $this->connection = $connection;
         $this->sql = $sql;
@@ -50,6 +51,7 @@ class ReportRows implements \Iterator
         }
         $this->stmt = $this->connection->prepare($this->sql);
         $this->stmt->execute($this->sqlParms);
+        $this->keyValue = -1;   // so the first key is 0 (in case ther is no keyName)
         $this->next();
     }
 
@@ -65,11 +67,12 @@ class ReportRows implements \Iterator
 
     public function key()
     {
-        return $this->row ? $this->row[$this->keyName] : null;
+        return $this->row ? ($this->keyName ? $this->row[$this->keyName] : $this->keyValue) : null;
     }
 
     public function next()
     {
         $this->row = $this->stmt->fetch();
+        $this->keyValue++;
     }
 }

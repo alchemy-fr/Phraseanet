@@ -36,11 +36,15 @@ abstract class Report
         $this->parms = $parms;
     }
 
+    abstract function getName();
+
     abstract function getSql();
 
     abstract function getSqlParms();
 
     abstract function getColumnTitles();
+
+    abstract function getKeyName();
 
     public function getRows()
     {
@@ -48,7 +52,7 @@ abstract class Report
             $this->databox->get_connection(),
             $this->getSql(),
             $this->getSqlParms(),
-            'id'
+            $this->getKeyName()
         );
     }
 
@@ -89,7 +93,12 @@ abstract class Report
 
     public function setFormat($format)
     {
-        if(!in_array($format, [self::FORMAT_CSV, self::FORMAT_ODS, self::FORMAT_XLSX])) {
+        if(!in_array($format, [
+            //self::FORMAT_XLS,
+            self::FORMAT_CSV,
+            self::FORMAT_ODS,
+            self::FORMAT_XLSX,
+        ])) {
             throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $format));
         }
         $this->format = $format;
@@ -97,14 +106,19 @@ abstract class Report
         return $this;
     }
 
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
     public function render()
     {
         switch($this->format) {
+            //case self::FORMAT_XLS:
             case self::FORMAT_CSV:
             case self::FORMAT_ODS:
-            //case self::FORMAT_XLS:
             case self::FORMAT_XLSX:
-                $this->renderAsExcel($this->format);
+                $this->renderAsExcel();
                 break;
             default:
                 // should not happen since format is checked before
@@ -112,31 +126,24 @@ abstract class Report
         }
     }
 
-    private function renderAsExcel($format)
+    private function renderAsExcel()
     {
-        switch($format) {
+        switch($this->format) {
             //case self::FORMAT_XLS:
             //    $excel = new Excel(Excel::FORMAT_XLS);
             //    header('Content-Type: application/vnd.ms-excel');
             //    break;
             case self::FORMAT_XLSX:
-                $excel = new Excel(Excel::FORMAT_XLSX, "myfile.xlsx");
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment;filename="myfile.xlsx"');
+                $excel = new Excel(Excel::FORMAT_XLSX, $this->getName() . ".xlsx");
                 break;
             case self::FORMAT_ODS:
-                $excel = new Excel(Excel::FORMAT_ODS, "myfile.ods");
-                header('Content-Type: application/vnd.oasis.opendocument.spreadsheet');
-                header('Content-Disposition: attachment;filename="myfile.ods"');
+                $excel = new Excel(Excel::FORMAT_ODS, $this->getName() . ".ods");
                 break;
             case self::FORMAT_CSV:
             default:
-                $excel = new Excel(Excel::FORMAT_CSV, "myfile.csv");
-                header('Content-Type: text/csv');
-                header('Content-Disposition: attachment;filename="myfile.csv"');
+                $excel = new Excel(Excel::FORMAT_CSV, $this->getName() . ".csv");
                 break;
         }
-        header('Cache-Control: max-age=0');
 
         $excel->addRow($this->getColumnTitles());
 

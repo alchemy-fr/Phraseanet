@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Alchemy\Phrasea\Report\ControllerProvider\Api;
+namespace Alchemy\Phrasea\Report\ControllerProvider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\ControllerProvider\Api\Api;
@@ -22,7 +22,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
 
-class ReportApi extends Api implements ControllerProviderInterface, ServiceProviderInterface
+class ApiReportControllerProvider extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 
@@ -35,8 +35,7 @@ class ReportApi extends Api implements ControllerProviderInterface, ServiceProvi
                 return (new ApiReportController(
                     $app,
                     $app->getAclForUser($app->getAuthenticatedUser())
-                )
-                )->setJsonBodyHelper($app['json.body_helper']);
+                ));
             }
         );
 
