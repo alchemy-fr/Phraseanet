@@ -13,6 +13,8 @@ namespace Alchemy\Phrasea\Report;
 
 Interface ReportInterface
 {
+    public function getColumnTitles();
+
     public function getSql();
 
     public function getSqlParms();

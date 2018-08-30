@@ -21,14 +21,54 @@ class ReportConnections extends Report implements ReportInterface
 {
     private $appKey;
 
-    public function  getSql()
+    /* those vars will be set once by computeVars() */
+    private $sql = null;
+    private $columnTitles = [];
+
+
+    public function getColumnTitles()
     {
+        $this->computeVars();
+        return $this->columnTitles;
+    }
+
+    public function getSql()
+    {
+        $this->computeVars();
+        return $this->sql;
+    }
+
+    public function getSqlParms()
+    {
+        return [
+            ':site' => $this->appKey,
+            ':dmin' => $this->parms['dmin'],
+            ':dmax' => $this->parms['dmax']
+        ];
+    }
+
+    public function setAppKey($appKey)
+    {
+        $this->appKey = $appKey;
+
+        return $this;
+    }
+
+
+    private function computeVars()
+    {
+        if(!is_null($this->sql)) {
+            // vars already computed
+            return;
+        }
+
         switch($this->parms['group']) {
             case null:
                 $sql = "SELECT * FROM `log`\n"
                     . " WHERE {{GlobalFilter}}";
                 break;
             case 'user':
+                $this->columnTitles = ['user_id', 'user', 'min_date', 'max_date', 'nb_downloads'];
                 $sql = "SELECT `usrid`, `user`, MIN(`date`) AS `dmin`, MAX(`date`) AS dmax, SUM(1) AS `nb` FROM `log`\n"
                     . " WHERE {{GlobalFilter}}\n"
                     . " GROUP BY `usrid`\n"
@@ -58,28 +98,12 @@ class ReportConnections extends Report implements ReportInterface
                 break;
         }
 
-        return str_replace(
+        $this->sql = str_replace(
             '{{GlobalFilter}}',
             // "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             $sql
         );
-    }
-
-    public function getSqlParms()
-    {
-        return [
-            ':site' => $this->appKey,
-            ':dmin' => $this->parms['dmin'],
-            ':dmax' => $this->parms['dmax']
-        ];
-    }
-
-    public function setAppKey($appKey)
-    {
-        $this->appKey = $appKey;
-
-        return $this;
     }
 
 }

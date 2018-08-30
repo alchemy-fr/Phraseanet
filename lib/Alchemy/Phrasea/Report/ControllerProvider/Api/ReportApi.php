@@ -7,9 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Alchemy\Phrasea\ControllerProvider\Api;
+namespace Alchemy\Phrasea\Report\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\ControllerProvider\Api\Api;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Report\Controller\ApiReportController;
@@ -20,7 +21,8 @@ use Silex\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class Report extends Api implements ControllerProviderInterface, ServiceProviderInterface
+
+class ReportApi extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 

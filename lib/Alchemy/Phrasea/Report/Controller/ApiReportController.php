@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application\Helper\DelivererAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
+use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Alchemy\Phrasea\Report\ReportFactory;
@@ -58,9 +59,16 @@ class ApiReportController extends BaseReportController
             ]
         );
 
+        $report->setFormat(Report::FORMAT_CSV);
+
+        $report->render();
+
+        return null;
+/*
         $ret = $report->getContent();
         $result = Result::create($request, $ret);
         return $result->createResponse();
+*/
     }
 
     public function downloadsAction(Request $request, $sbasId)
