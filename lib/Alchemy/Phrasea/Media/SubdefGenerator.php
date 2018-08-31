@@ -170,6 +170,7 @@ class SubdefGenerator
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
         $start = microtime(true);
+        $destFile = null;
 
         try {
             if (null === $record->get_hd_file()) {
@@ -177,8 +178,6 @@ class SubdefGenerator
 
                 return;
             }
-
-            $destFile = null;
 
             if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
                 $destFile = $pathdest;
@@ -214,7 +213,12 @@ class SubdefGenerator
             $duration = $stop - $start;
 
             $originFileSize = $this->sizeHumanReadable($record->get_hd_file()->getSize());
-            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+
+            if($destFile){
+                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
+            }else{
+                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+            }
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
