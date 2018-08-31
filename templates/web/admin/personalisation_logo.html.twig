@@ -5,7 +5,7 @@
             {{ form_label(form.logoChoice[0]) }}
             <div class="image-container">
                 <img id="original-image-placeholder" alt="gabari"
-                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAaCAYAAACzdqxAAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0MDc2M0ZDM0NBMzYxMUU0QUYwRUQwNENCREZBRkU5NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0MDc2M0ZDNENBMzYxMUU0QUYwRUQwNENCREZBRkU5NSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQwNzYzRkMxQ0EzNjExRTRBRjBFRDA0Q0JERkFGRTk1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQwNzYzRkMyQ0EzNjExRTRBRjBFRDA0Q0JERkFGRTk1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8++5z4uQAABShJREFUeNqklWtsFUUUx8/M7uzeJ+29LdbaAo225SG0lxQoREUIBozGGBMTo8aYxkRDEC0RA2qMhkBoNEatIRC+EIPyUvmgDRED1moRqKVWWu0tlF4o2FZKH9D23ruvGc/s7UtSpNFNzp7ZnZnf+c+ZF8AUHiHEPLRjQvAT6CPwfx+EpKF9KMzExXjVxrbBo+UXhRlvx3870EL/1pfcAkjRlYHgb5tnv+ozat5dCE4SeMgLSkAHT8nmX9W8J8JA1C3Ybg8hRNwWjNBSfH/idEfVRNW6AjF4KTBax8MI9gMoXgJK+oxhFvnoHPEXWIhZh/D6ScEIzEJXwRNDDyQObdTsP2tmUB370HExPNMDig9ARTAdCUDSV1+i92zhGPE7bPImBuhzwQhk6NeDbZUPH/2036zeWUSYCUTnaA6aNRZeTB9XTH2o2stH5GlAczc2kqynMD3KdvyzW4JbzJbG5GDlprlg9evUg409CNQk2HbBMoALzvKhWoFQcANQ/aY8spwELaiMEn+hoILz0E/H62yRv7hDmAS4gfIMBYRFQJgUTQWQJoXJtFDiejLZtHvu7m/s6bCwNkyFAOvLD3Ys2nv8Qrjv4fI6Gsob4AiWcLAUF85NWaYuzF0ACAfK/6G0J3tb3atXV/IN9b8vwT83qDtEtL/Ot2cc3rpjST1EeviqtfVC+LkwsNpSXdXcxKlAPiiSjv+J6ubWzFrfuJuUX3i6Lrak+Wpn7shCICruJmN03qVv+7a6YKA2yEteWNsQtqJporWqgMgaF5ZKgVsMPxL7nq+6tu3naDGnLRqldHzJgpBNIIkh8IOPwe2kQVt3HVgUPdY73br/rdM0PKdXYDqIzG+g8PrlnO2nn/xlln/zD/WLk2ZSm2yTqTBBLY5ARpNDcb+TV7rS/3j/89LMlcvO5yx9NBbPJ+bHUZ75zY+1pcSnA/FpUtMkOxcTReRSdsEkpVqMVY49V6tPTfttaMWNQ+1BPdrZlK6nqTIrqeWNBY6N6UQwpkLF4aUYgqdUwxhbPkabGmqu9cyMzMTJTBgcEkPhDIfzM37dLsYuquCTKE5N7WgKUjaalgGina3yFs4aVL0l4wcA7jimKbhZSxLXWK8ORjfzmffCTenAEdCRHPOxOtzAHTX0TqdHyyxiGJAJB5et4tYpjIGq6eg1IIxl2IlgxnC30qpk96Wrqp014dxBxSSVCg586AIE2mJkeoTh8aHbBlYR15iSGomKQEX3oGqGYM01qrLZ8Rshx7bNM75pHQsIcTRKqEeV9AHBGuqd0Fz8jmjEAncq3MU6Yd9iMomGUAS7QIRTFeGahgGZQmlaiW3k9DH9cid2y6CoKPHO1/vAF07jpmWAZSfBQLUm+tS3CagGHO6kgAh2VeteUD0e0LHMdD9oug/CwWCg4sE1BqPKgAQvK4rM2VVb90Xva2+UNdqYU9MFmyk4li0MYDt4ysn8IlDCmUeaD80PXq8XnivObTr8WGH30jt8B3GckYkHfRjd1qGh4TWvv/IePXWiKc+joiKmg4Z+flFhV2x1KVzqj2fjygCG/1W0ortCVyruy00GmXIS+29CoV23upoWou1sbYnpG9ZW5A/0Dgd0VYcFxbO7uh9/CDquG9lyEjOCgeHty/POzQt5cO3Aywg8OZXbWV4AZY7txPbvPdKwPPK8eOmZLZ3PVjV1rtjfKA6c622wHH4R27w4cvH+p+u/Mh5PtO/bc6T5s5ae5rjlyOu/8nbX/1QDFKPVoFWjzZ9Kn78FGADjnoHwJIC7sQAAAABJRU5ErkJggg=="/>
+                     src="data:image/png;base64,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"/>
             </div>
             <a id="download-image-template" href="#">{{ 'prod::setup: download gabari' | trans }}</a>
         </td>
@@ -17,7 +17,10 @@
             <span id="error-text"></span>
             <div class="image-container" id="personalize-image-container">
                 {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
-                    <img id="personalise-image-placeholder" src="/custom/minilogos/personalize_logo.png"/>
+                    {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
+                    {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
+
+                    <img id="personalise-image-placeholder" src="{{ personalise_path }}"/>
                 {% endif %}
             </div>
             <div>
@@ -27,6 +30,7 @@
             </div>
         </td>
         {{ form_widget(form.personalizeFile) }}
+        {{ form_widget(form.fileType) }}
     </tr>
 </table>
 
@@ -91,7 +95,7 @@
                                 h = this.height;
 
                             var ext = this.file.type.split('/').pop().toLowerCase();
-                            if (ext != 'png') {
+                            if (ext != 'png' && ext != 'svg+xml') {
                                 $('#general_personalize-logo-choice_personalizeLogoInput').val("");
                                 $('#error-text').text(errorFileType);
                                 $('#error-text').show();
@@ -100,7 +104,7 @@
                                 return false;
                             }
 
-                            if (h > 42 ) {
+                            if (h > 41 || w > 120 ) {
                                 $('#error-text').text(errorDimension);
                                 $('#error-text').show();
                                 $('#help-text').hide();
@@ -118,10 +122,9 @@
                                     $('#help-text').hide();
                                     $('#personalize-image-container').empty().append(img);
                                 }, {
-                                    fileType: /^image\/(png)$/,
                                     maxSize: 5242880, // 5MB
-                                    maxWidth: 52,
-                                    maxHeight: 42,
+                                    maxWidth: 120,
+                                    maxHeight: 41,
                                 });
                             });
 
@@ -137,6 +140,10 @@
                                 success: function (data) {
                                     if(data === 'success'){
                                         $('#general_personalize-logo-choice_personalizeFile').val(true);
+                                        if(ext==='svg+xml'){
+                                            ext = 'svg';
+                                        }
+                                        $('#general_personalize-logo-choice_fileType').val(ext);
                                     }else{
                                         $('#general_personalize-logo-choice_personalizeFile').val(false);
                                     }

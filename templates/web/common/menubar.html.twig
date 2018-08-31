@@ -6,8 +6,10 @@
             <span class="title">
                 {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'logoChoice']) == 'personalize' and
                 app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
+                    {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
 
-                    <img src="/custom/minilogos/personalize_logo.png" alt="" id="mainLogo">
+                    <img src="{{ personalise_path }}" alt="" id="mainLogo">
 
                 {% else %}
 

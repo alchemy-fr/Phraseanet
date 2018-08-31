@@ -36,6 +36,10 @@ class PersonalisationLogoFormType extends AbstractType
             'label' => false,
         ]);
 
+        $builder->add('fileType', 'hidden', [
+            'label' => false,
+        ]);
+
     }
 
     public function getName()

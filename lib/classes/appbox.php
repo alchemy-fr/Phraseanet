@@ -97,14 +97,18 @@ class appbox extends base
 
     public function write_application_logo(Filesystem $filesystem, $blob)
     {
-        $logo_path = $this->app['root.path'] . '/www/custom/minilogos/personalize_logo.png';
+        $logo_path = $this->app['root.path'] . '/www/custom/minilogos/personalize_logo.';
 
-        $data = str_replace('data:image/png;base64,', '', $blob);
-        $data = str_replace(' ', '+', $data);
+        list($type, $imageData) = explode(';', $blob);
+        list(,$extension) = explode('/',$type);
+        list(,$imageData)      = explode(',', $imageData);
+
+        $data = str_replace(' ', '+', $imageData);
         $data = base64_decode($data);
+        $extension= ($extension=='svg+xml')?'svg':$extension;
 
         try{
-            $filesystem->dumpFile($logo_path, $data);
+            $filesystem->dumpFile($logo_path.$extension, $data);
         }catch(\Exception $e){
             return $e->getMessage();
         }
