@@ -214,9 +214,9 @@ class SubdefGenerator
             $originFileSize = $this->hummanReadable($record->get_hd_file()->getSize());
 
             if($destFile){
-                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
+                $generatedFileSize = $this->hummanReadable(filesize($destFile));
             }else{
-                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+                $generatedFileSize = $this->hummanReadable(filesize($pathdest));
             }
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
