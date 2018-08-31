@@ -34,4 +34,3 @@ See https://docs.phraseanet.com/Devel/
 Phraseanet is licensed under GPL-v3 license.
 
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
