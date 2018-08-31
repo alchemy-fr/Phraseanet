@@ -189,14 +189,16 @@ class RegistrationService
         if ($providerId !== null) {
             $provider = $this->oauthProviderCollection->get($providerId);
         }
-
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) selectedCollections = %s\n", __FILE__, __LINE__, var_export($selectedCollections, true)), FILE_APPEND);
         $authorizedCollections = $this->getAuthorizedCollections($selectedCollections);
 
         if (!isset($data['login'])) {
             $data['login'] = $data['email'];
         }
 
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Creating user with (login=%s) ; (email=%s)\n", __FILE__, __LINE__, $data['login'], $data['email']), FILE_APPEND);
         $user = $this->userManipulator->createUser($data['login'], $data['password'], $data['email'], false);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) Created user (id=%s) ; (login=%s) ; (email=%s)\n", __FILE__, __LINE__, $user->getId(), $user->getLogin(), $user->getEmail()), FILE_APPEND);
 
         if (isset($data['geonameid'])) {
             $this->userManipulator->setGeonameId($user, $data['geonameid']);
@@ -215,12 +217,16 @@ class RegistrationService
             $this->attachProviderToUser($provider, $user);
             $this->entityManager->flush();
         }
-
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "configuration/registry/registration/auto-register-enabled ?"), FILE_APPEND);
         if ($this->configuration->get(['registry', 'registration', 'auto-register-enabled'])) {
+            file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "configuration/registry/registration/auto-register-enabled !"), FILE_APPEND);
             $acl = $this->aclProvider->get($user);
             foreach ($authorizedCollections as $baseId => $collection) {
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) searching AutoregisterModel for authorizedCollection id=%s\n", __FILE__, __LINE__, var_export($baseId, true)), FILE_APPEND);
                 if( ($model = $collection->getAutoregisterModel($data['email'])) !== null) {
+                    file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) model=%s\n", __FILE__, __LINE__, var_export($model, true)), FILE_APPEND);
                     if( ($template_user = $this->userRepository->findByLogin($model)) !== null) {
+                        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) found template user id=%s\n", __FILE__, __LINE__, var_export($template_user->getId(), true)), FILE_APPEND);
                         $acl->apply_model($template_user, [$baseId]);
                     }
                 }

@@ -56,6 +56,23 @@ class patch_390alpha18a extends patchAbstract
      */
     public function apply(base $appbox, Application $app)
     {
+
+        $app['orm.em']->getConnection()->executeUpdate('
+            DELETE la FROM LazaretAttributes la
+            INNER JOIN LazaretFiles lf ON (la.`lazaret_file_id` = lf.`id`)
+            INNER JOIN LazaretSessions ls ON (ls.id = lf.lazaret_session_id)
+            LEFT JOIN Users u ON (ls.user_id = u.id)
+            WHERE u.id IS NULL'
+        );
+
+        $app['orm.em']->getConnection()->executeUpdate('
+            DELETE lc FROM LazaretChecks lc
+            INNER JOIN LazaretFiles lf ON (lc.`lazaret_file_id` = lf.`id`)
+            INNER JOIN LazaretSessions ls ON (ls.id = lf.lazaret_session_id)
+            LEFT JOIN Users u ON (ls.user_id = u.id)
+            WHERE u.id IS NULL'
+        );
+
         $app['orm.em']->getConnection()->executeUpdate('
             DELETE lf FROM LazaretFiles lf
             INNER JOIN LazaretSessions ls ON (ls.id = lf.lazaret_session_id)
