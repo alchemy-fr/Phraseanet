@@ -8,9 +8,8 @@ php:
   - 5.6
 
 branches:
-  except:
-    - /^3\..*$/
-    - /^scrutinizer-.*$/
+  only:
+    - 3.8
 
 matrix:
   fast_finish: true
