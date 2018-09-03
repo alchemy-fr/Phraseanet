@@ -8,12 +8,8 @@ php:
   - 5.6
 
 branches:
-  except:
-    - /^3\..*$/
-    - /^scrutinizer-.*$/
-    - master
-    - 4.0
-    - Symfony-4
+  only:
+    - 3.8
 
 matrix:
   fast_finish: true
