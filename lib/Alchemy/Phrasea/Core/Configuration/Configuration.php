@@ -234,19 +234,11 @@ class Configuration implements ConfigurationInterface
 
     private function dumpFile($file, $content, $mod = 0600)
     {
-        $tmpFile = tempnam(dirname($file), basename($file));
-
-        if (false !== @file_put_contents($tmpFile, $content)) {
-            // rename does not work on Win32 before 5.2.6
-            if (@rename($tmpFile, $file)) {
-                @chmod($file, $mod & ~umask());
-
-                return;
-            }
+        if(false === @file_put_contents($file, $content)){
+            throw new RuntimeException(sprintf('Unable to write %s', $file));
+        }else{
+            @chmod($file, $mod & ~umask());
         }
-
-        unlink($tmpFile);
-        throw new RuntimeException(sprintf('Unable to write %s', $file));
     }
 
     private function eraseFile($file)
