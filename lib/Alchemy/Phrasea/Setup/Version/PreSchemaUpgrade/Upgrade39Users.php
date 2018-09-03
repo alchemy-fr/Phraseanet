@@ -249,7 +249,7 @@ class Upgrade39Users implements PreSchemaUpgradeInterface
             ],
             "ValidationSessions" => [
                 "referenced_by" => [
-                    "ValidationParticipants" => "validation_session_id"
+                    "ValidationParticipants" => "ValidationSession_id"
                 ],
                 'field' => ['initiator_id'],
             ],
