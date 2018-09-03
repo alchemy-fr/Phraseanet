@@ -234,12 +234,11 @@ class Configuration implements ConfigurationInterface
 
     private function dumpFile($file, $content, $mod = 0600)
     {
-        @chmod($file, $mod & ~umask());
-
-        if (false === @file_put_contents($file, $content)) {
+        if(false === @file_put_contents($file, $content)){
             throw new RuntimeException(sprintf('Unable to write %s', $file));
+        }else{
+            @chmod($file, $mod & ~umask());
         }
-
     }
 
     private function eraseFile($file)
