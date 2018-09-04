@@ -232,7 +232,7 @@ class Configuration implements ConfigurationInterface
         return file_get_contents($file);
     }
 
-    private function dumpFile($file, $content, $mod = 0600)
+    private function dumpFile($file, $content, $mod = 0650)
     {
         if(false === @file_put_contents($file, $content)){
             throw new RuntimeException(sprintf('Unable to write %s', $file));
