@@ -4,7 +4,18 @@
       <ol>
         <li>
             <span class="title">
-              <img src="/assets/common/images/logo.png" alt="" id="mainLogo">
+                {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'logoChoice']) == 'personalize' and
+                app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
+                    {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
+
+                    <img src="{{ personalise_path }}" alt="" id="mainLogo">
+
+                {% else %}
+
+                    <img src="/assets/common/images/logo.png" alt="" id="mainLogo">
+
+                {% endif %}
             </span>
         </li>
           <li class="show-menu" id="toggle-menu-main">

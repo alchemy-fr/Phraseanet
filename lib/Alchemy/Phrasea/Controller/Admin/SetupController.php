@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\RegistryFormManipulator;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class SetupController extends Controller
@@ -60,5 +61,16 @@ class SetupController extends Controller
         return $this->renderResponse('admin/setup.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    public function sendPersonaliseLogo(Request $request)
+    {
+        if(null !== $blob = $request->request->get('fileToUpload')){
+            $result = $this->app->getApplicationBox()->write_application_logo($this->app['filesystem'], $blob);
+
+            return new JsonResponse($result);
+        }
+
+        return new JsonResponse('No file send');
     }
 }

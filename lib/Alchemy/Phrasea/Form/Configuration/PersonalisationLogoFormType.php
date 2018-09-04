@@ -13,28 +13,33 @@ namespace Alchemy\Phrasea\Form\Configuration;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class PersonalisationLogoForm extends AbstractType
+class PersonalisationLogoFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('originalChoiceInput', 'choice', [
+        $builder->add('logoChoice', 'choice', [
             'label'    => false,
-            'choices'  => ['original' => 'original-choice-label'],
+            'choices'  => [
+                'original' => 'original logo',
+                'personalize' => 'personalize logo'
+            ],
             'expanded' => true,
+            'multiple' => false,
 
         ]);
-        $builder->add('personaliseChoiceInput', 'choice', [
-            'label'    => false,
-            'choices'  => ['personalise' => 'personalise-choice-label'],
-            'expanded' => true,
 
-        ]);
         $builder->add('personalizeLogoInput', 'file', [
             'label' => false,
         ]);
-        $builder->add('logoChoice', 'hidden', [
+
+        $builder->add('personalizeFile', 'hidden', [
             'label' => false,
         ]);
+
+        $builder->add('fileType', 'hidden', [
+            'label' => false,
+        ]);
+
     }
 
     public function getName()
