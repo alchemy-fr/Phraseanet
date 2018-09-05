@@ -1,8 +1,9 @@
 function searchEngineConfigurationFormInit(indexExists) {
-    $("#dropIndexConfirmDialog").dialog({
+    var dropIndexDialog = $("#dropIndexConfirmDialog").dialog({
         autoOpen: false,
         modal: true,
         title: "Drop index",
+        width: 382,
         buttons: [
             {
                 text: "Ok",
@@ -18,6 +19,10 @@ function searchEngineConfigurationFormInit(indexExists) {
                 }
             }
         ]
+    }).closest('.ui-dialog').addClass('dialog_container');
+    dropIndexDialog.find('.ui-dialog-buttonpane button').css({
+        float: 'right',
+        marginRight: '23px'
     });
 
     if(indexExists) {
