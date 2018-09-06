@@ -308,7 +308,7 @@
             function delete_subdef(name) {
                 $("#dialog-delete-subdef").dialog({
                     resizable: false,
-                    height: 140,
+                    width: 382,
                     modal: true,
                     buttons: {
                         "Delete subdef": function () {
@@ -320,7 +320,13 @@
                             $(this).dialog("destroy");
                         }
                     }
+                })
+                .closest('.ui-dialog').addClass('dialog_container')
+                .find('.ui-dialog-buttonpane button').css({
+                    float: 'right',
+                    marginRight: '23px'
                 });
+                
             }
 
         });
@@ -334,9 +340,9 @@
         <button id="create-subdef" class="btn btn-success">{{ 'create_subdef_button_label' | trans }}</button>
     </p>
 
-    <div id="dialog-delete-subdef" title="{{ 'delete_subdef_dialog_label ?' | trans }}" style="display:none;">
+    <div id="dialog-delete-subdef" title="{{ 'Delete the subview ?' | trans }}" style="display:none;">
         <p>
-            <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+            {# <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span> #}
             {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
         </p>
     </div>
