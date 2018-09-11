@@ -120,7 +120,7 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
-    public function findChildren(array $storyIds, $user = null)
+    public function findChildren(array $storyIds, $user = null, $offset = 0, $max_items = null)
     {
         if (!$storyIds) {
             return [];
@@ -145,6 +145,12 @@ class LegacyRecordRepository implements RecordRepository
 
         if (null !== $user) {
             $this->addUserFilter($builder, $user);
+        }
+
+        if($max_items){
+            $builder->addOrderBy('s.ord', 'ASC')
+                ->setFirstResult($offset)
+                ->setMaxResults($max_items);
         }
 
         $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());

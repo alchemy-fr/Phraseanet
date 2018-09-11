@@ -29,6 +29,7 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -1178,7 +1179,8 @@ class V1Controller extends Controller
         $searchView = $this->buildSearchView(
             $result,
             $includeResolver->resolve($fractal),
-            $this->resolveSubdefUrlTTL($request)
+            $this->resolveSubdefUrlTTL($request),
+            $request
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1233,9 +1235,10 @@ class V1Controller extends Controller
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
+     * @param Request $request
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, Request $request)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
@@ -1253,6 +1256,12 @@ class V1Controller extends Controller
         $resultView = new SearchResultView($result);
 
         if ($stories->count() > 0) {
+            $storie_max_items = null;
+
+            if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
+                $storie_max_items = (int)$request->get('storie_max_items')?:10;
+            }
+
             $user = $this->getAuthenticatedUser();
             $children = [];
 
@@ -1261,7 +1270,7 @@ class V1Controller extends Controller
 
                 $selections = $this->findDataboxById($databoxId)
                     ->getRecordRepository()
-                    ->findChildren($storyIds, $user);
+                    ->findChildren($storyIds, $user,0, $storie_max_items);
                 $children[$databoxId] = array_combine($storyIds, $selections);
             }
 
@@ -1631,6 +1640,15 @@ class V1Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
+        $offset = 0;
+        $max_items = null;
+        if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
+            $max_items = (int)$request->get('max_items')?:10;
+            $page = (int)$request->get('page')?:1;
+
+            $offset = $max_items * ($page - 1);
+        }
+
         $caption = $story->get_caption();
 
         $format = function (\caption_record $caption, $dcField) {
@@ -1672,7 +1690,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
+            'records'       => $this->listRecords($request, array_values($story->getChildren($offset, $max_items)->get_elements())),
         ];
     }
 
