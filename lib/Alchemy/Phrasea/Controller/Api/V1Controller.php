@@ -1180,7 +1180,7 @@ class V1Controller extends Controller
             $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request),
-            $request
+            $this->getStorieMaxItems($request)
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1235,10 +1235,10 @@ class V1Controller extends Controller
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
-     * @param Request $request
+     * @param int|null $storie_max_items
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, Request $request)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $storie_max_items = null)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
@@ -1256,12 +1256,6 @@ class V1Controller extends Controller
         $resultView = new SearchResultView($result);
 
         if ($stories->count() > 0) {
-            $storie_max_items = null;
-
-            if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
-                $storie_max_items = (int)$request->get('storie_max_items')?:10;
-            }
-
             $user = $this->getAuthenticatedUser();
             $children = [];
 
@@ -1358,6 +1352,21 @@ class V1Controller extends Controller
         }
 
         return $resultView;
+    }
+
+    /**
+     * @param Request $request
+     * @return int|null
+     */
+    private function getStorieMaxItems(Request $request)
+    {
+        $storie_max_items = null;
+
+        if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
+            $storie_max_items = (int)$request->get('storie_max_items')?:10;
+        }
+
+        return $storie_max_items;
     }
 
     /**
