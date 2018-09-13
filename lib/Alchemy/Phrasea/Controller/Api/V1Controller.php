@@ -1235,10 +1235,10 @@ class V1Controller extends Controller
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
-     * @param int|null $storie_max_items
+     * @param int|null $story_max_items
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $storie_max_items = null)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $story_max_items = null)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
@@ -1264,7 +1264,7 @@ class V1Controller extends Controller
 
                 $selections = $this->findDataboxById($databoxId)
                     ->getRecordRepository()
-                    ->findChildren($storyIds, $user,0, $storie_max_items);
+                    ->findChildren($storyIds, $user,0, $story_max_items);
                 $children[$databoxId] = array_combine($storyIds, $selections);
             }
 
@@ -1360,13 +1360,13 @@ class V1Controller extends Controller
      */
     private function getStorieMaxItems(Request $request)
     {
-        $storie_max_items = null;
+        $story_max_items = null;
 
         if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
-            $storie_max_items = (int)$request->get('storie_max_items')?:10;
+            $story_max_items = (int)$request->get('story_max_items')?:10;
         }
 
-        return $storie_max_items;
+        return $story_max_items;
     }
 
     /**
