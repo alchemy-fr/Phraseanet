@@ -1,5 +1,5 @@
 {% import 'prod/actions/Feedback/ListsMacros.html.twig' as ListsMacros %}
-<div class="PNB10" style="height: 46px;bottom:auto;line-height:26px;">
+<div class="PNB10 editor_header" style="height: 46px;bottom:auto;line-height:26px;">
     <div class="pull-left">
         <div id="find-user">
             <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
@@ -34,56 +34,62 @@
     </div>
 </div>
 <div class="PNB10" style="top:55px;">
-    <div class="PNB content user_content readonly grey-bg">
-        <div class="PNB10">
-            <div class="PNB" style="height:25px; bottom:auto;">
-                <div class="pull-left">
-                    <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2>
-                    {% set length = list.getEntries().count() %}
-                    <span class="counter current">
-                        {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
-                    </span>
+    <div class="PNB content user_content readselect grey-bg">
+        <div class="PNB10 header" style="height:25px; bottom:auto;">
+            <div class="pull-left">
+                <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2>
+                {% set length = list.getEntries().count() %}
+                <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                </span>
+            </div>
+            <div class="pull-right">
+                <div class="pull-left" style="margin-right:45px;">
+                    {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                        <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px;">
+                            <span>
+                                <img src="/assets/common/images/icons/orange-pen.png" class="image-normal" style="margin-right: 10px;">
+                                <img src="/assets/common/images/icons/white-pen.png" class="image-hover" style="margin-right: 10px;">
+                            </span>
+                            {{ 'Advanced mode' | trans }}
+                        </button>
+                    {% endif %}
                 </div>
-                <div class="pull-right">
-                    <div class="pull-left" style="margin-right:45px;">
-                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                            <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px;">
-                                <span>
-                                    <img src="/assets/common/images/icons/orange-pen.png" class="image-normal" style="margin-right: 10px;">
-                                    <img src="/assets/common/images/icons/white-pen.png" class="image-hover" style="margin-right: 10px;">
-                                </span>
-                                {{ 'Advanced mode' | trans }}
+                <div class="options pull-left">
+                    <div class="pull-left">
+                        <button class="select-all btn btn-push-orange orange-border"
+                        style="margin-right: 8px;">
+                            {{ 'Select all' | trans }}
+                        </button>
+                        <button class="unselect-all btn btn-push-orange orange-border">
+                            {{ 'Deselect all' | trans }}
+                        </button>
+                    </div>
+                    <div class="pull-right">
+                        {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                            <button class="delete-selection btn btn-inverse listmanager-delete-list-action" 
+                            data-list-id="{{ list.getId() }}"
+                            style="margin-left:45px;">
+                                {{ 'Delete the selection' | trans }}
                             </button>
                         {% endif %}
                     </div>
-                    <div class="options pull-left">
-                        <div class="pull-left">
-                            <button class="select-all btn btn-push-orange orange-border"
-                            style="margin-right: 8px;">
-                                {{ 'Select all' | trans }}
-                            </button>
-                            <button class="unselect-all btn btn-push-orange orange-border">
-                                {{ 'Deselect all' | trans }}
-                            </button>
-                        </div>
-                        <div class="pull-right">
-                            {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-                                <button class="delete-selection btn btn-inverse listmanager-delete-list-action" 
-                                data-list-id="{{ list.getId() }}"
-                                style="margin-left:45px;">
-                                    {{ 'Delete the selection' | trans }}
-                                </button>
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="PNB badges" style="top:80px;overflow:auto;">
-                {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
-                {% for entry in list.getEntries() %}
-                    {{ ListsMacros.badgeReadonly(entry, role) }}
-                {% endfor %}
-            </div>
+        </div>
+        <div class="PNB badges" style="top:80px;overflow:auto;">
+            {# {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
+            {% for entry in list.getEntries() %}
+                {{ ListsMacros.badgeReadonly(entry, role) }}
+            {% endfor %} #}
+        </div>
+        <div class="PNB10 footer">
+            <form class="list_saver">
+                <button id="saveListFooter" class="saveList orange_text" style="display:none">
+                    <img src="/assets/common/images/icons/orange-save.png" class="image-normal"/>
+                    <img src="/assets/common/images/icons/white-save.png" class="image-hover"/>
+                    <span>{{ "Save the list" | trans }}</span>
+                </button>
+            </form>
         </div>
     </div>
     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
