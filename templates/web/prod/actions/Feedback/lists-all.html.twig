@@ -22,16 +22,16 @@
   <ul class="lists">
     {% for list in lists %}
       <li class="list lists_manager_list" style="padding:0;position:relative;" data-list-id="{{  list.getId() }}">
-        <a href="#" class="list_link list-edit-action" data-list-id="{{  list.getId() }}">
+        <a href="{{ path('prod_push_lists_list', { 'list_id' : list.getId() }) }}" class="list_link list-edit-action" data-list-id="{{  list.getId() }}">
           {#{% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}#}
             {#<img src="/assets/prod/images/Push/list-icon.png" />#}
           {#{% else %}#}
             {#<img src="/assets/common/images/icons/SHARE16.png" />#}
           {#{% endif %}#}
           {{ list.getName() }}
-          <span class="counter">({{ list.getEntries().count() }})</span>
+          (<span class="counter">{{ list.getEntries().count() }}</span>)
         </a>
-        <button class="list-trash-btn">
+        <button class="list-trash-btn" style="display: none;">
           <img src="/assets/common/images/icons/delete-black.png" class="image-normal"/>
           <img src="/assets/common/images/icons/delete-white.png" class="image-hover"/>
         </button>
