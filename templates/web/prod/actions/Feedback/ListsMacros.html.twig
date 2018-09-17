@@ -1,6 +1,6 @@
 {% macro ResultTable(query, results, list, sort, ord) %}
 <div id="list-editor-search-results" class="list-editor-results PNB">
-  <div class="PNB" style="overflow-y:scroll;overflow-x:hidden;bottom:20px;">
+  <div class="PNB" style="overflow-x:hidden;bottom:20px;padding-bottom:20px;">
     <table style="width:100%;table-layout:fixed;">
         <thead>
           <tr>
@@ -85,13 +85,15 @@
         </tbody>
     </table>
   </div>
-  <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
+  <div class="PNB list_editor_results_footer" style="top:auto;height:20px;text-align:right;line-height:20px;">
+    <span class="textinfo">
+      {{ query.get_page() }} / {{ query.get_total_page() }} {{ 'Pages' | trans }}
+    </span>
     {% if query.get_page() > 1 %}
-      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">&laquo; {{ 'Previous' | trans }}</a>
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#"><span></span> {{ 'Previous' | trans }}</a>
     {% endif %}
-    {{ query.get_page() }} / {{ query.get_total_page() }}
     {% if query.get_page() < query.get_total_page() %}
-      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} &raquo;</a>
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} <span></span></a>
     {% endif %}
   </div>
 </div>
