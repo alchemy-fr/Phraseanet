@@ -874,7 +874,7 @@ class ArchiveJob extends AbstractJob
 
                 $rid = $story->getRecordId();
 
-                $this->log('debug', sprintf('story %s created', $rid));
+                $this->log('info', sprintf('story %s created', $rid));
 
                 if ($genericdoc) {
                     try {
@@ -1191,12 +1191,12 @@ class ArchiveJob extends AbstractJob
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
 
-        $this->log('debug', sprintf("Archiving file '%s'", $path . '/' . $file));
+        $this->log('info', sprintf("Archiving file '%s'", $path . '/' . $file));
         if ($captionFileName !== null) {
-            $this->log('debug', sprintf(' ' . (" (caption in '%s')"), $captionFileName));
+            $this->log('info', sprintf(' ' . (" (caption in '%s')"), $captionFileName));
         }
         if ($grp_rid !== 0) {
-            $this->log('debug', sprintf(' ' . (" into GRP rid=%s"), $grp_rid));
+            $this->log('info', sprintf(' ' . (" into GRP rid=%s"), $grp_rid));
         }
 
         try {
