@@ -1,5 +1,5 @@
 {% import 'prod/actions/Feedback/ListsMacros.html.twig' as ListsMacros %}
-<div class="PNB10 editor_header" style="height: 46px;bottom:auto;line-height:26px;">
+<div class="PNB10 editor_header" style="height: 46px;bottom:auto;line-height:26px;padding:0 20px 0 18px;">
     <div class="pull-left">
         <div id="find-user">
             <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
@@ -45,11 +45,7 @@
             <div class="pull-right">
                 <div class="pull-left" style="margin-right:45px;">
                     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-                        <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px;">
-                            <span>
-                                <img src="/assets/common/images/icons/orange-pen.png" class="image-normal" style="margin-right: 10px;">
-                                <img src="/assets/common/images/icons/white-pen.png" class="image-hover" style="margin-right: 10px;">
-                            </span>
+                        <button class="EditToggle btn btn-push-orange btn-orange-inverse" style="line-height: 22px; width:128px;">
                             {{ 'Advanced mode' | trans }}
                         </button>
                     {% endif %}
@@ -57,10 +53,10 @@
                 <div class="options pull-left">
                     <div class="pull-left">
                         <button class="select-all btn btn-push-orange orange-border"
-                        style="margin-right: 8px;">
+                        style="margin-right: 8px; width:128px;">
                             {{ 'Select all' | trans }}
                         </button>
-                        <button class="unselect-all btn btn-push-orange orange-border">
+                        <button class="unselect-all btn btn-push-orange orange-border" style="width:128px;">
                             {{ 'Deselect all' | trans }}
                         </button>
                     </div>
@@ -76,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <div class="PNB badges" style="top:80px;overflow:auto;">
+        <div class="PNB10 badges" style="top:80px;overflow:auto;margin-left:3px;">
             {# {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
             {% for entry in list.getEntries() %}
                 {{ ListsMacros.badgeReadonly(entry, role) }}
