@@ -29,7 +29,8 @@ class ProdReportControllerProvider implements ControllerProviderInterface, Servi
         $app['controller.prod.report'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new ProdReportController(
-                    $app,
+                    $app['report.factory'],
+                    $app['conf']->get(['registry', 'modules', 'anonymous-report']),
                     $app->getAclForUser($app->getAuthenticatedUser())
                 ));
             }

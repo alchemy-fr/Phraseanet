@@ -15,7 +15,7 @@ use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Alchemy\Phrasea\Report\Controller\ApiReportController;
 use Alchemy\Phrasea\Report\ReportFactory;
-use Alchemy\Phrasea\Report\ReportRootService;
+use Alchemy\Phrasea\Report\ReportService;
 use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
@@ -26,6 +26,7 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 {
     use ControllerProviderTrait;
 
+
     const VERSION = '2.0.0';
 
     public function register(Application $app)
@@ -33,7 +34,9 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
         $app['controller.api.v2.report'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new ApiReportController(
-                    $app,
+                    $app['report.factory'],
+                    $app['report.service'],
+                    $app['conf']->get(['registry', 'modules', 'anonymous-report']),
                     $app->getAclForUser($app->getAuthenticatedUser())
                 ));
             }
@@ -49,9 +52,9 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
             }
         );
 
-        $app['report.root'] = $app->share(
+        $app['report.service'] = $app->share(
             function (PhraseaApplication $app) {
-                return (new ReportRootService(
+                return (new ReportService(
                     $app['conf']->get(['main', 'key']),
                     $app['phraseanet.appbox'],
                     $app->getAclForUser($app->getAuthenticatedUser())
@@ -87,7 +90,7 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
                 throw new AccessDeniedHttpException('Current user does not have access to the basket');
             }
         }
-*/
+        */
         $controllers
             ->get('/', 'controller.api.v2.report:rootAction')
             // ->bind('api_v2_report_root');
@@ -105,7 +108,7 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 
         return $controllers;
     }
-
+    /*
     private function addReportMiddleware(Application $app, Controller $controller)
     {
         // $controller
@@ -114,4 +117,5 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 
         return $controller;
     }
+    */
 }

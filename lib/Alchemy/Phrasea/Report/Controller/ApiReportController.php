@@ -10,24 +10,50 @@
 
 namespace Alchemy\Phrasea\Report\Controller;
 
+use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Alchemy\Phrasea\Report\ReportFactory;
-use Alchemy\Phrasea\Report\ReportRootService;
+use Alchemy\Phrasea\Report\ReportService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 
 class ApiReportController extends BaseReportController
 {
+    use JsonBodyAware;
+
+    private $reportFactory;
+    private $reportService;
+    private $anonymousReport;
+    private $acl;
+
+
+    /**
+     * @param ReportFactory $reportFactory
+     * @param ReportService $reportService
+     * @param Bool $anonymousReport
+     * @param \ACL $acl
+     */
+    public function __construct(ReportFactory $reportFactory, ReportService $reportService, $anonymousReport, \ACL $acl)
+    {
+        $this->reportFactory   = $reportFactory;
+        $this->reportService   = $reportService;
+        $this->anonymousReport = $anonymousReport;
+        $this->acl             = $acl;
+    }
+
+    /**
+     * route api/report
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function rootAction(Request $request)
     {
-        /** @var ReportRootService $rootReport */
-        $rootReport = $this->app['report.root'];
-
         $ret = [
-            'granted' => $rootReport->getGranted()
+            'granted' => $this->reportService->getGranted()
         ];
 
         $result = Result::create($request, $ret);
@@ -35,19 +61,24 @@ class ApiReportController extends BaseReportController
         return $result->createResponse();
     }
 
+    /**
+     * route api/report/connections
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function connectionsAction(Request $request, $sbasId)
     {
-        /** @var ReportFactory $reportFactory */
-        $reportFactory = $this->app['report.factory'];
-
         /** @var ReportConnections $report */
-        $report = $reportFactory->createReport(
+        $report = $this->reportFactory->createReport(
             ReportFactory::CONNECTIONS,
             $sbasId,
             [
-                'dmin' => $request->get('dmin'),
-                'dmax' => $request->get('dmax'),
-                'group' => $request->get('group'),
+                'dmin'      => $request->get('dmin'),
+                'dmax'      => $request->get('dmax'),
+                'group'     => $request->get('group'),
+                'anonymize' => $this->anonymousReport,
             ]
         );
 
@@ -56,20 +87,25 @@ class ApiReportController extends BaseReportController
         return $result->createResponse();
     }
 
+    /**
+     * route api/report/downloads
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function downloadsAction(Request $request, $sbasId)
     {
-        /** @var ReportFactory $reportFactory */
-        $reportFactory = $this->app['report.factory'];
-
         /** @var ReportDownloads $report */
-        $report = $reportFactory->createReport(
+        $report = $this->reportFactory->createReport(
             ReportFactory::DOWNLOADS,
             $sbasId,
             [
-                'dmin' => $request->get('dmin'),
-                'dmax' => $request->get('dmax'),
-                'group' => $request->get('group'),
-                'bases' => $request->get('base[]')
+                'dmin'      => $request->get('dmin'),
+                'dmax'      => $request->get('dmax'),
+                'group'     => $request->get('group'),
+                'bases'     => $request->get('base'),
+                'anonymize' => $this->anonymousReport,
             ]
         );
 

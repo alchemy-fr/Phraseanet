@@ -18,7 +18,7 @@ abstract class Report
 {
     const FORMAT_CSV  = 'format_csv';
     const FORMAT_ODS  = 'format_ods';
-    const FORMAT_XLS  = 'format_xls';
+    // const FORMAT_XLS  = 'format_xls';
     const FORMAT_XLSX = 'format_xlsx';
 
     private $format = self::FORMAT_CSV;
@@ -26,9 +26,6 @@ abstract class Report
     /** @var  \databox */
     protected $databox;
     protected $parms;
-
-    // protected $sql = null;
-    // protected $sqlParms = null;
 
     public function __construct(\databox $databox, $parms)
     {
@@ -45,6 +42,11 @@ abstract class Report
     abstract function getColumnTitles();
 
     abstract function getKeyName();
+
+    protected function getDatabox()
+    {
+        return $this->databox;
+    }
 
     public function getRows()
     {

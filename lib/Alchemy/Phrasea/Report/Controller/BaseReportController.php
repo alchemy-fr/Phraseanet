@@ -11,27 +11,8 @@
 namespace Alchemy\Phrasea\Report\Controller;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
-use Alchemy\Phrasea\Controller\Controller;
 
 
-class BaseReportController extends Controller
+class BaseReportController
 {
-    use JsonBodyAware;
-
-    private $acl;
-
-    /**
-     * @param Application $app
-     * @param \ACL $acl
-     */
-    public function __construct(Application $app, \ACL $acl)
-    {
-        parent::__construct($app);
-        $this->acl = $acl;
-        //$id = $this->getAuthenticator()->getUser()->getId();
-        $app->getAuthenticatedUser();
-        // $this->getAuthenticatedUser()->isAdmin();
-    }
-
 }

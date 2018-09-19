@@ -15,7 +15,13 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 
 
-
+/**
+ * Class ReportRows
+ *
+ * iterate over a recordset
+ *
+ * @package Alchemy\Phrasea\Report
+ */
 class ReportRows implements \Iterator
 {
     private $row;

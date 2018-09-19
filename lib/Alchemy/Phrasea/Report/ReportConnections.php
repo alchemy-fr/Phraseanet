@@ -77,18 +77,37 @@ class ReportConnections extends Report implements ReportInterface
             case null:
                 $this->name = "Connections";
                 $this->columnTitles = ['id', 'date', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'nav', 'version', 'os', 'res', 'ip', 'user_agent'];
-                $sql = "SELECT `id`, `date`, `usrid`, `user`, `fonction`, `societe`, `activite`, `pays`, `nav`, `version`, `os`, `res`, `ip`, `user_agent` FROM `log`\n"
-                    . " WHERE {{GlobalFilter}}";
+                if($this->parms['anonymize']) {
+                    $sql = "SELECT `id`, `date`,\n"
+                        . "        `usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        `nav`, `version`, `os`, `res`, `ip`, `user_agent` FROM `log`\n"
+                        . " WHERE {{GlobalFilter}}";
+                }
+                else {
+                    $sql = "SELECT `id`, `date`,\n"
+                        . "        `usrid`, `user`, `fonction`, `societe`, `activite`, `pays`,\n"
+                        . "        `nav`, `version`, `os`, `res`, `ip`, `user_agent` FROM `log`\n"
+                        . " WHERE {{GlobalFilter}}";
+                }
                 $this->keyName = null;
                 break;
             case 'user':
                 $this->name = "Connections per user";
-                $this->columnTitles = ['user_id', 'user', 'min_date', 'max_date', 'nb'];
-                $sql = "SELECT `usrid`, `user`, MIN(`date`) AS `dmin`, MAX(`date`) AS `dmax`, SUM(1) AS `nb` FROM `log`\n"
-                    . " WHERE {{GlobalFilter}}\n"
-                    . " GROUP BY `usrid`\n"
-                    . " ORDER BY `nb` DESC"
-                ;
+                $this->columnTitles = ['user_id', 'user', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
+                if($this->parms['anonymize']) {
+                    $sql = "SELECT `usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        MIN(`date`) AS `dmin`, MAX(`date`) AS `dmax`, SUM(1) AS `nb` FROM `log`\n"
+                        . " WHERE {{GlobalFilter}}\n"
+                        . " GROUP BY `usrid`\n"
+                        . " ORDER BY `nb` DESC";
+                }
+                else {
+                    $sql = "SELECT `usrid`, `user`, `fonction`, `societe`, `activite`, `pays`,\n"
+                        . "        MIN(`date`) AS `dmin`, MAX(`date`) AS `dmax`, SUM(1) AS `nb` FROM `log`\n"
+                        . " WHERE {{GlobalFilter}}\n"
+                        . " GROUP BY `usrid`\n"
+                        . " ORDER BY `nb` DESC";
+                }
                 $this->keyName = 'usrid';
                 break;
             case 'nav':
@@ -119,8 +138,9 @@ class ReportConnections extends Report implements ReportInterface
 
         $this->sql = str_replace(
             '{{GlobalFilter}}',
-            // "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
-            "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
+            "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
+            // here : diabled "site", to test on an imported dataset from another instance
+            // "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
             $sql
         );
     }

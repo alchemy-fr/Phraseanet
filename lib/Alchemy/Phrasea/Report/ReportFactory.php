@@ -14,6 +14,13 @@ use Alchemy\Phrasea\Application;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
+/**
+ * Class ReportFactory
+ *
+ * published as service $app['report.factory']
+ *
+ * @package Alchemy\Phrasea\Report
+ */
 class ReportFactory
 {
     const CONNECTIONS = 'connections';
@@ -36,6 +43,13 @@ class ReportFactory
         $this->acl = $acl;
     }
 
+    /**
+     * @param $table
+     * @param null $sbasId
+     * @param null $parms
+     *
+     * @return ReportConnections | ReportDownloads
+     */
     public function createReport($table, $sbasId=null, $parms=null)
     {
         switch($table) {

@@ -35,9 +35,32 @@ class ProdReportController extends BaseReportController
         ],
     ];
 
+    private $reportFactory;
+    private $anonymousReport;
+    private $acl;
+
     private $extension = null;
 
 
+    /**
+     * @param ReportFactory $reportFactory
+     * @param Bool $anonymousReport
+     * @param \ACL $acl
+     */
+    public function __construct(ReportFactory $reportFactory, $anonymousReport, \ACL $acl)
+    {
+        $this->reportFactory   = $reportFactory;
+        $this->anonymousReport = $anonymousReport;
+        $this->acl             = $acl;
+    }
+
+    /**
+     * route prod/report/connections
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return StreamedResponse
+     */
     public function connectionsAction(Request $request, $sbasId)
     {
         if(!($extension = $request->get('format'))) {
@@ -48,18 +71,15 @@ class ProdReportController extends BaseReportController
         }
         $this->extension = $extension;
 
-
-        /** @var ReportFactory $reportFactory */
-        $reportFactory = $this->app['report.factory'];
-
         /** @var ReportConnections $report */
-        $report = $reportFactory->createReport(
+        $report = $this->reportFactory->createReport(
             ReportFactory::CONNECTIONS,
             $sbasId,
             [
-                'dmin' => $request->get('dmin'),
-                'dmax' => $request->get('dmax'),
-                'group' => $request->get('group'),
+                'dmin'      => $request->get('dmin'),
+                'dmax'      => $request->get('dmax'),
+                'group'     => $request->get('group'),
+                'anonymize' => $this->anonymousReport,
             ]
         );
 
@@ -76,36 +96,41 @@ class ProdReportController extends BaseReportController
         return $response;
     }
 
+    /**
+     * route prod/report/downloads
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return StreamedResponse
+     */
     public function downloadsAction(Request $request, $sbasId)
     {
-        if(!($type = $request->get('type'))) {
-            $type = 'csv';
+        if(!($extension = $request->get('format'))) {
+            $extension = 'csv';
         }
-        if(!array_key_exists($type, self::$mapFromExtension)) {
-            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $type));
+        if(!array_key_exists($extension, self::$mapFromExtension)) {
+            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
         }
-
-
-        /** @var ReportFactory $reportFactory */
-        $reportFactory = $this->app['report.factory'];
+        $this->extension = $extension;
 
         /** @var ReportDownloads $report */
-        $report = $reportFactory->createReport(
+        $report = $this->reportFactory->createReport(
             ReportFactory::DOWNLOADS,
             $sbasId,
             [
-                'dmin' => $request->get('dmin'),
-                'dmax' => $request->get('dmax'),
-                'group' => $request->get('group'),
-                'bases' => $request->get('base[]')
-            ]
+                'dmin'      => $request->get('dmin'),
+                'dmax'      => $request->get('dmax'),
+                'group'     => $request->get('group'),
+                'bases'     => $request->get('base[]'),
+                'anonymize' => $this->anonymousReport,
+           ]
         );
 
-        $report->setFormat(self::$mapFromExtension[$type]['format']);
+        $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
 
         $response = new StreamedResponse();
 
-        $this->setHeadersFromFormat($response, $type);
+        $this->setHeadersFromFormat($response, $report);
 
         $response->setCallback(function() use($report) {
             $report->render();

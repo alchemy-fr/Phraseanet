@@ -11,14 +11,10 @@
 namespace Alchemy\Phrasea\Report;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 
 
-class ReportRootService
+class ReportService
 {
-    use JsonBodyAware;
-
-
     protected $appKey;
     protected $appbox;
     protected $acl;
@@ -35,6 +31,10 @@ class ReportRootService
         $this->acl = $acl;
     }
 
+    /**
+     * return bases allowed for reporting, grouped by databox
+     * @return array
+     */
     public function getGranted()
     {
         $databoxes = [];

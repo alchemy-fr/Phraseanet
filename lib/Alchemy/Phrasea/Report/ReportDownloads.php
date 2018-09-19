@@ -85,24 +85,40 @@ class ReportDownloads extends Report implements ReportInterface
         switch ($this->parms['group']) {
             case null:
                 $this->name = "Downloads";
-                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id'];
-                $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                    . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`"
-                    . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                    . " WHERE {{GlobalFilter}}"
-                ;
+                $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef'];
+                if($this->parms['anonymize']) {
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
+                        . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " WHERE {{GlobalFilter}}";
+                }
+                else {
+                    $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
+                        . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " WHERE {{GlobalFilter}}";
+                }
                 $this->keyName = 'id';
                 break;
             case 'user':
                 $this->name = "Downloads by user";
                 $this->columnTitles = ['usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'min_date', 'max_date', 'nb'];
-                $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                    . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
-                    . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                    . " WHERE {{GlobalFilter}}"
-                    . " GROUP BY `l`.`usrid`\n"
-                    . " ORDER BY `nb` DESC"
-                ;
+                if($this->parms['anonymize']) {
+                    $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
+                        . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
+                        . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " WHERE {{GlobalFilter}}"
+                        . " GROUP BY `l`.`usrid`\n"
+                        . " ORDER BY `nb` DESC";
+                }
+                else {
+                    $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
+                        . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
+                        . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
+                        . " WHERE {{GlobalFilter}}"
+                        . " GROUP BY `l`.`usrid`\n"
+                        . " ORDER BY `nb` DESC";
+                }
                 $this->keyName = 'usrid';
                 break;
             case 'record':
@@ -122,16 +138,44 @@ class ReportDownloads extends Report implements ReportInterface
                 break;
         }
 
+        // get acl-filtered coll_id(s) as already sql-quoted
         $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
-        $collIds = join(',', $collIds);
 
-        $this->sql = str_replace(
-            '{{GlobalFilter}}',
-            "`action`='download' AND `ld`.`coll_id` IN(" . $collIds . ")\n"
-            . " AND (TRUE OR `l`.`site` =  :site) AND !ISNULL(`l`.`usrid`) AND `ld`.`date` >= :dmin AND `ld`.`date` <= :dmax\n"
-            . " AND `ld`.`final`='document'",
-            $sql
-        );
+        if(!empty($collIds)) {
+
+            // filter subdefs by class
+            $subdefsToReport = ['document' => $this->databox->get_connection()->quote('document')];
+            foreach ($this->getDatabox()->get_subdef_structure() as $subGroup) {
+                foreach ($subGroup->getIterator() as $sub) {
+                    if(in_array($sub->get_class(), ['document', 'preview'])) {
+                        // keep only unique names
+                        $subdefsToReport[$sub->get_name()] = $this->databox->get_connection()->quote($sub->get_name());
+                    }
+                }
+            }
+
+            $subdefsToReport = join(',', $subdefsToReport);
+
+            $this->sql = str_replace(
+                '{{GlobalFilter}}',
+                "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+                . " AND `l`.`site` =  :site AND !ISNULL(`l`.`usrid`) AND `ld`.`date` >= :dmin AND `ld`.`date` <= :dmax\n"
+                // here : diabled "site", to test on an imported dataset from another instance
+                // . " AND (TRUE OR `l`.`site` =  :site) AND !ISNULL(`l`.`usrid`) AND `ld`.`date` >= :dmin AND `ld`.`date` <= :dmax\n"
+                . " AND `ld`.`final` IN(" . $subdefsToReport . ")",
+                $sql
+            );
+        }
+
+        if(is_null($this->sql)) {
+            // no collections report ?
+            // keep the sql intact (to match placeholders/parameters), but enforce empty result
+            $this->sql = str_replace(
+                '{{GlobalFilter}}',
+                "FALSE",
+                $sql
+            );
+        }
     }
 
 }
