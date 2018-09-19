@@ -21,7 +21,7 @@
         {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
             <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" 
                 class="btn btn-push-orange list_sharer push-list-share-action" 
-                style="margin-top:2px;height:20px;line-height:22px;" 
+                style="margin-top:2px;height:17px;line-height:19px;" 
                 title="{{ 'Share the list' | trans }}"
                 data-list-id="{{ list.getId() }}">
                 <span>
@@ -102,7 +102,7 @@
                                     <span class="counter current">
                                         {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
                                     </span>
-                                    <button class="saveList pull-right orange_text">
+                                    <button class="saveList btn btn-push-orange pull-right">
                                         <img src="/assets/common/images/icons/orange-save.png" class="image-normal">
                                         <img src="/assets/common/images/icons/white-save.png" class="image-hover">
                                         {{ 'Save' | trans }}
