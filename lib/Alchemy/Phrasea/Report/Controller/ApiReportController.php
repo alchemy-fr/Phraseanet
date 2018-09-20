@@ -114,4 +114,31 @@ class ApiReportController extends BaseReportController
         return $result->createResponse();
     }
 
+    /**
+     * route api/report/databox
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function databoxAction(Request $request, $sbasId)
+    {
+        /** @var ReportDatabox $report */
+        $report = $this->reportFactory->createReport(
+            ReportFactory::DATABOX,
+            $sbasId,
+            [
+                'dmin'      => $request->get('dmin'),
+                'dmax'      => $request->get('dmax'),
+                'group'     => $request->get('group'),
+                'bases'     => $request->get('base'),
+                'anonymize' => $this->anonymousReport,
+            ]
+        );
+
+        $result = Result::create($request, $report->getContent());
+
+        return $result->createResponse();
+    }
+
 }

@@ -25,6 +25,7 @@ class ReportFactory
 {
     const CONNECTIONS = 'connections';
     const DOWNLOADS   = 'downloads';
+    const DATABOX     = 'databox';
 
     protected $appKey;
     protected $appbox;
@@ -55,19 +56,29 @@ class ReportFactory
         switch($table) {
             case self::CONNECTIONS:
                 return (new ReportConnections(
-                    $this->findDbOr404($sbasId),
-                    $parms
-                ))
-                ->setAppKey($this->appKey);
+                        $this->findDbOr404($sbasId),
+                        $parms
+                    ))
+                    ->setAppKey($this->appKey);
                 break;
 
             case self::DOWNLOADS:
                 return (new ReportDownloads(
-                    $this->findDbOr404($sbasId),
-                    $parms
-                ))
-                ->setAppKey($this->appKey)
-                ->setACL($this->acl);
+                        $this->findDbOr404($sbasId),
+                        $parms
+                    ))
+                    ->setAppKey($this->appKey)
+                    ->setACL($this->acl);
+                break;
+
+            case self::DATABOX:
+                return (new ReportDatabox(
+                        $this->findDbOr404($sbasId),
+                        $parms
+                    ))
+                    ->setAppKey($this->appKey)
+                    // ->setACL($this->acl)
+                    ;
                 break;
 
             default:

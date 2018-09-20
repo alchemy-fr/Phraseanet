@@ -106,6 +106,11 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
             ->assert('sbasId', '\d+')
         ;
 
+        $controllers
+            ->get('/databox/{sbasId}/', 'controller.api.v2.report:databoxAction')
+            ->assert('sbasId', '\d+')
+        ;
+
         return $controllers;
     }
     /*
