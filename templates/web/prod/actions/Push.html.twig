@@ -60,6 +60,15 @@
                     <span class="main-title">
                         <img src="/assets/common/images/icons/list-grey.png"/>{{ 'Lists' | trans }}
                     </span>
+
+                    <a href="{{ path('prod_lists_all') }}" class="list_refresh push-refresh-list-action btn pull-right" style="margin-top: -2px;">
+                        {% if context == 'Push' %}
+                            <img src="/assets/common/images/icons/blue-refresh.png" alt="Refresh list" class="image-normal">
+                        {% else %}
+                            <img src="/assets/common/images/icons/green-refresh.png" alt="Refresh list" class="image-normal">
+                        {% endif %}
+                        <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list" class="image-hover">
+                    </a>
                 </div>
                 <ul class="lists">
                     {% for list in lists %}
