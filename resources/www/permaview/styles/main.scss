@@ -101,6 +101,7 @@ dd {
     white-space: nowrap;
   }
   dd {
-    margin-left: 180px;
+    display: inline-block;
+    float: left;
   }
 }
