@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Alchemy\Phrasea\Report\ReportFactory;
+use Alchemy\Phrasea\Report\ReportRecords;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -121,13 +122,57 @@ class ProdReportController extends BaseReportController
                 'dmin'      => $request->get('dmin'),
                 'dmax'      => $request->get('dmax'),
                 'group'     => $request->get('group'),
-                'bases'     => $request->get('base[]'),
+                'bases'     => $request->get('base'),
                 'anonymize' => $this->anonymousReport,
-           ]
+            ]
         );
 
         $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
 
+        $response = new StreamedResponse();
+
+        $this->setHeadersFromFormat($response, $report);
+
+        $response->setCallback(function() use($report) {
+            $report->render();
+        });
+
+        return $response;
+    }
+
+    /**
+     * route prod/report/records
+     *
+     * @param Request $request
+     * @param $sbasId
+     * @return StreamedResponse
+     */
+    public function recordsAction(Request $request, $sbasId)
+    {
+        if(!($extension = $request->get('format'))) {
+            $extension = 'csv';
+        }
+        if(!array_key_exists($extension, self::$mapFromExtension)) {
+            throw new \InvalidArgumentException(sprintf("bad format \"%s\" for report", $extension));
+        }
+        $this->extension = $extension;
+
+        /** @var ReportRecords $report */
+        $report = $this->reportFactory->createReport(
+            ReportFactory::RECORDS,
+            $sbasId,
+            [
+                'dmin'  => $request->get('dmin'),
+                'dmax'  => $request->get('dmax'),
+                'group' => $request->get('group'),
+                'base'  => $request->get('base'),
+                'meta'  => $request->get('meta'),
+            ]
+        );
+
+        $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
+
+set_time_limit(600);
         $response = new StreamedResponse();
 
         $this->setHeadersFromFormat($response, $report);

@@ -139,7 +139,7 @@ class ReportDownloads extends Report implements ReportInterface
         }
 
         // get acl-filtered coll_id(s) as already sql-quoted
-        $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
+        $collIds = $this->getCollIds($this->acl, $this->parms['base']);
 
         if(!empty($collIds)) {
 

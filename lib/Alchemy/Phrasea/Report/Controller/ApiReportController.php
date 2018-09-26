@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
 use Alchemy\Phrasea\Report\ReportFactory;
+use Alchemy\Phrasea\Report\ReportRecords;
 use Alchemy\Phrasea\Report\ReportService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,24 +116,24 @@ class ApiReportController extends BaseReportController
     }
 
     /**
-     * route api/report/databox
+     * route api/report/records
      *
      * @param Request $request
      * @param $sbasId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function databoxAction(Request $request, $sbasId)
+    public function recordsAction(Request $request, $sbasId)
     {
-        /** @var ReportDatabox $report */
+        /** @var ReportRecords $report */
         $report = $this->reportFactory->createReport(
-            ReportFactory::DATABOX,
+            ReportFactory::RECORDS,
             $sbasId,
             [
-                'dmin'      => $request->get('dmin'),
-                'dmax'      => $request->get('dmax'),
-                'group'     => $request->get('group'),
-                'bases'     => $request->get('base'),
-                'anonymize' => $this->anonymousReport,
+                'dmin'  => $request->get('dmin'),
+                'dmax'  => $request->get('dmax'),
+                'group' => $request->get('group'),
+                'base'  => $request->get('base'),
+                'meta'  => $request->get('meta'),
             ]
         );
 

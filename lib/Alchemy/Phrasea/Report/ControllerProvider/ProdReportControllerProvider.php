@@ -69,6 +69,11 @@ class ProdReportControllerProvider implements ControllerProviderInterface, Servi
             ->assert('sbasId', '\d+')
         ;
 
+        $controllers
+            ->get('/records/{sbasId}/', 'controller.prod.report:recordsAction')
+            ->assert('sbasId', '\d+')
+        ;
+
         return $controllers;
     }
 }

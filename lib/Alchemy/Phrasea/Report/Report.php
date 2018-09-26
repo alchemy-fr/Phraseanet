@@ -151,9 +151,10 @@ abstract class Report
 
         foreach($this->getRows() as $k=>$row) {
             $excel->addRow($row);
+flush();
         }
 
-        $excel ->render();
+        $excel->render();
     }
 
 }

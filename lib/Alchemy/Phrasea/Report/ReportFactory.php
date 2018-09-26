@@ -25,7 +25,7 @@ class ReportFactory
 {
     const CONNECTIONS = 'connections';
     const DOWNLOADS   = 'downloads';
-    const DATABOX     = 'databox';
+    const RECORDS     = 'records';
 
     protected $appKey;
     protected $appbox;
@@ -59,7 +59,8 @@ class ReportFactory
                         $this->findDbOr404($sbasId),
                         $parms
                     ))
-                    ->setAppKey($this->appKey);
+                    ->setAppKey($this->appKey)
+                    ;
                 break;
 
             case self::DOWNLOADS:
@@ -68,16 +69,16 @@ class ReportFactory
                         $parms
                     ))
                     ->setAppKey($this->appKey)
-                    ->setACL($this->acl);
+                    ->setACL($this->acl)
+                    ;
                 break;
 
-            case self::DATABOX:
-                return (new ReportDatabox(
+            case self::RECORDS:
+                return (new ReportRecords(
                         $this->findDbOr404($sbasId),
                         $parms
                     ))
-                    ->setAppKey($this->appKey)
-                    // ->setACL($this->acl)
+                    ->setACL($this->acl)
                     ;
                 break;
 
