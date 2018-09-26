@@ -998,7 +998,7 @@ class V1Controller extends Controller
         $adapt = ($request->get('adapt')===null || !(\p4field::isno($request->get('adapt'))));
         $ret['adapt'] = $adapt;
         if($request->get('name') == 'document') {
-            $this->getSubdefSubstituer()->substituteDocument($record, $media, $adapt);
+            $this->getSubdefSubstituer()->substituteDocument($record, $media, true);    // true: force subdefs re-creation
         }
         else {
             $this->getSubdefSubstituer()->substituteSubdef($record, $request->get('name'), $media, $adapt);
