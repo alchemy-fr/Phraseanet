@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 
 
 class patch_410alpha13a implements patchInterface
@@ -59,7 +63,28 @@ class patch_410alpha13a implements patchInterface
         $sql = "DROP TABLE IF EXISTS `log_colls`";
         $databox->get_connection()->prepare($sql)->execute();
 
-        $sql = "ALTER TABLE `log_docs` ADD `coll_id` INT(11) UNSIGNED NULL DEFAULT NULL, ADD INDEX(coll_id)";
+        /*
+         * no need to do those ops, it's done by system:upgrade after fixing the xml scheme
+         *
+        $sql = "ALTER TABLE `log_docs`\n"
+            . "CHANGE `action` `action` ENUM(\n"
+            . "  'push',\n"
+            . "  'add',\n"
+            . "  'validate',\n"
+            . "  'edit',\n"
+            . "  'collection',\n"
+            . "  'status',\n"
+            . "  'print',\n"
+            . "  'substit',\n"
+            . "  'publish',\n"
+            . "  'download',\n"
+            . "  'mail',\n"
+            . "  'ftp',\n"
+            . "  'delete',\n"
+            . "  'collection_from',\n"
+            . "  ''\n"
+            . ")\n"
+            . "CHARACTER SET ascii BINARY  NOT NULL  DEFAULT ''";
         try {
             $databox->get_connection()->prepare($sql)->execute();
         }
@@ -67,57 +92,24 @@ class patch_410alpha13a implements patchInterface
             // no-op
         }
 
-        $sql = "CREATE TEMPORARY TABLE `tmp_colls` (\n"
-            . " `id` int(11) unsigned NOT NULL,\n"
-            . " `coll_id` int(11) unsigned NOT NULL,\n"
-            . " PRIMARY KEY (`id`)\n"
-            . ")";
-        $databox->get_connection()->prepare($sql)->execute();
-
-        $tsql = [
-            [
-                'sql' => "TRUNCATE tmp_colls",
-                'stmt' => null,
-            ],
-            [
-                'sql' => "INSERT INTO tmp_colls\n"
-                        . "   SELECT id, COALESCE(SUBSTRING_INDEX(GROUP_CONCAT(final ORDER BY r2_id DESC), ',', 1), 0) AS coll_id FROM\n"
-                        . "   (\n"
-                        . "    SELECT r1.record_id, r1.id, r2.id AS r2_id, r2.final FROM\n"
-                        . "     (select id, record_id FROM log_docs WHERE ISNULL(coll_id) LIMIT 1000000) AS r1\n"
-                        . "     LEFT JOIN log_docs AS r2\n"
-                        . "     ON r2.record_id=r1.record_id AND r2.action IN('add', 'collection') AND r2.id<=r1.id\n"
-                        . "   )\n"
-                        . "   AS t GROUP BY id",
-                'stmt' => null,
-            ],
-            [
-                'sql' => "UPDATE tmp_colls INNER JOIN log_docs USING(id) SET log_docs.coll_id=tmp_colls.coll_id",
-                'stmt' => null,
-            ]
-        ];
-        foreach($tsql as $k => $v) {
-            $tsql[$k]['stmt'] = $databox->get_connection()->prepare($v['sql']);
+        $sql = "ALTER TABLE `log_docs` ADD `coll_id` INT(11) UNSIGNED NULL DEFAULT NULL,\n"
+            . "  ADD INDEX(coll_id)";
+        try {
+            $databox->get_connection()->prepare($sql)->execute();
+        }
+        catch(\Exception $e) {
+            // no-op (the field exists ?)
         }
 
-
-        $nchanged = 0;
-        do {
-            foreach($tsql as $k => $v) {
-                printf("%s\n\n", $v['sql']);
-                /** @var \Doctrine\DBAL\Driver\Statement $stmt */
-                $stmt = $v['stmt'];
-                $stmt->execute();
-                $nchanged = $stmt->rowCount();
-                $stmt->closeCursor();
-            }
+        $sql = "ALTER TABLE `log_view` ADD `coll_id` INT(11) UNSIGNED NULL DEFAULT NULL,\n"
+            . "  ADD INDEX(coll_id)";
+        try {
+            $databox->get_connection()->prepare($sql)->execute();
         }
-        while($nchanged != 0);
-
-
-        $sql = "DROP TABLE `tmp_colls`";
-        $databox->get_connection()->prepare($sql)->execute();
-
+        catch(\Exception $e) {
+            // no-op (the field exists ?)
+        }
+        */
 
         return true;
     }
