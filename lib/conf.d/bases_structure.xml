@@ -3717,7 +3717,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(40)</type>
+            <type>char(255)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -3980,7 +3980,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(64)</type>
+            <type>char(255)</type>
 
             <null></null>
             <extra></extra>
