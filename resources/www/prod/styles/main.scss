@@ -8,8 +8,22 @@
 @import '../../_shared/styles/main';
 
 #ADVSRCH_SORT_ZONE {
-  margin-bottom: 10px;
-  margin-top: 15px;
+  position: absolute;
+  left: 255px;
+  margin-top: -57px;
+
+  > span {
+    margin-right: 5px;
+  }
+  select.input-medium {
+    height: 22px;
+    width: 120px;
+    color: #000;
+    font-size: 12px;
+    margin-right: 10px;
+    background-color: #f8f8f8;
+    border: 0 none;
+  }
 }
 
 #idFrameC {
