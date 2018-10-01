@@ -71,8 +71,7 @@ form.phrasea_query input.query {
 .adv_options #sbasfiltercont hr {
   margin: 10px 0;
   border: 0;
-  border-top: 1px solid #666666;
-  border-bottom: 1px solid #AAAAAA;
+  border-top: 1px solid #7b7b7b;
 }
 
 #adv_search .sbasglob .sbas_list,
@@ -97,18 +96,52 @@ form.phrasea_query input.query {
   color: $lightTextColor;
 }
 
+.clksbas {
+  margin-bottom: 15px;
+  .checkbox {
+    padding-top: 0;
+    padding-left: 10px;
+  }
+  input[type="checkbox"] {
+    margin: 0;
+    float: none;
+    margin-right: 10px;
+  }
+}
+.deployer_toggle {
+  margin-right: 15px;
+}
+
+.basChild_list {
+  position: absolute;
+  padding: 0;
+  margin: 0 0 0 58px;
+  list-style: none;
+  width: calc(50% - 100px);
+}
+
 .clkbas {
   white-space: normal;
-  margin:0 5px;
-  -webkit-column-break-inside:avoid;
-  -moz-column-break-inside:avoid;
-  -o-column-break-inside:avoid;
-  -ms-column-break-inside:avoid;
-  column-break-inside:avoid;
+  margin: 0 0 10px;
+  float: left;
+  width: 30%;
+  // -webkit-column-break-inside:avoid;
+  // -moz-column-break-inside:avoid;
+  // -o-column-break-inside:avoid;
+  // -ms-column-break-inside:avoid;
+  // break-inside:avoid;
+  .checkbox {
+    padding-top: 0;
+    padding-left: 0;
+  }
+  input[type="checkbox"] {
+    margin: 0;
+    float: none;
+    margin-right: 10px;
+  }
   span {
     cursor: pointer;
     font-weight: bold;
-    margin: 0 5px;
   }
 }
 

@@ -151,7 +151,7 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
+    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_field:visible', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
@@ -1187,6 +1187,8 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function () {
 
+    var multi_term_select_html = $('.multiple_term_wrapper').html();
+
     $('input[name=search_type]').bind('click', function () {
         console.log('search bind')
         var $this = $(this);
@@ -1201,11 +1203,46 @@ $(document).ready(function () {
         }
     });
 
+    $('input[name=terms_type]').on('click', function () {
+        var $this = $(this);
+        // console.log('terms type: ' + $this.attr('class'));
+        var multi_select = $('.multiple_term_select');
+        var single_select = $('.single_term_select');
+
+        if ($this.hasClass('multiple_terms')) {
+            single_select.hide();
+            multi_select.show();
+        }
+        else if ($this.hasClass('single_terms')) {
+            single_select.show();
+            multi_select.hide();
+        }
+    });
+
+    $('.multiple_term_select select.term_select_field').on('change', function () {
+        var $this = $(this);
+        // if option is selected
+        if($this.val()) {
+            $this.siblings().prop('disabled', false);
+        }
+        else {
+            $this.siblings().prop('disabled', 'disabled');
+        }
+    });
+    
+    $('.add_new_term').on('click', function (event) {
+        event.preventDefault();
+        if ($('.multiple_term_select select.term_select_field').last().val() !== '') {
+            $('.multiple_term_wrapper').last().append('<div class="multiple_term_wrapper">' + multi_term_select_html + '</div>');
+        }
+    });
+
     $('.adv_search_button').on('click', function () {
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
         var options = {
+            title: 'Advanced search',
             size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
             loading: false,
             closeCallback: function (dialog) {
@@ -1219,6 +1256,7 @@ $(document).ready(function () {
 
         $dialog = p4.Dialog.Create(options);
 
+        $dialog.getDomElement().closest('.ui-dialog').addClass('advanced_search_dialog_container');
         searchForm.appendTo($dialog.getDomElement());
 
         $dialog.getDomElement().find('.adv_options').show();
