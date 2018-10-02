@@ -151,8 +151,8 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_field:visible', container);
-    var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title', container);
+    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
+    var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
 
@@ -165,11 +165,11 @@ function checkFilters(save) {
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
 
-    statusFilters.removeClass('danger_indicator danger');
+    statusFilters.removeClass('danger');
     $.each($('#ADVSRCH_SB_ZONE .field_switch'), function(index,el){
         if( $(el).prop('checked') === true ) {
             danger = true;
-            statusFilters.addClass('danger_indicator danger');
+            statusFilters.addClass('danger');
         }
     });
 
@@ -1187,7 +1187,7 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function () {
 
-    var multi_term_select_html = $('.multiple_term_wrapper').html();
+    var multi_term_select_html = $('.term_select_wrapper').html();
 
     $('input[name=search_type]').bind('click', function () {
         console.log('search bind')
@@ -1203,24 +1203,8 @@ $(document).ready(function () {
         }
     });
 
-    $('input[name=terms_type]').on('click', function () {
-        var $this = $(this);
-        // console.log('terms type: ' + $this.attr('class'));
-        var multi_select = $('.multiple_term_select');
-        var single_select = $('.single_term_select');
-
-        if ($this.hasClass('multiple_terms')) {
-            single_select.hide();
-            multi_select.show();
-        }
-        else if ($this.hasClass('single_terms')) {
-            single_select.show();
-            multi_select.hide();
-        }
-    });
-
-    $('.multiple_term_select select.term_select_field').on('change', function () {
-        var $this = $(this);
+    $(document).on('change', 'select.term_select_field', function () {
+        var $this = $(this);        
         // if option is selected
         if($this.val()) {
             $this.siblings().prop('disabled', false);
@@ -1230,10 +1214,20 @@ $(document).ready(function () {
         }
     });
     
+    $(document).on('click', '.term_deleter', function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        
+        $this.closest('.term_select_wrapper').remove();
+    });
+
     $('.add_new_term').on('click', function (event) {
         event.preventDefault();
-        if ($('.multiple_term_select select.term_select_field').last().val() !== '') {
-            $('.multiple_term_wrapper').last().append('<div class="multiple_term_wrapper">' + multi_term_select_html + '</div>');
+        if ($('select.term_select_field').length === 0) {
+            $('.term_select').prepend('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
+        }
+        else if ($('select.term_select_field').last().val() !== '') {
+            $('.term_select_wrapper').last().after('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
         }
     });
 
