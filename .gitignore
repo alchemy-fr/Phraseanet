@@ -53,12 +53,6 @@
 # Exclude dependencies folder
 /vendor
 
-# Exclude package's binaries folder except the Phraseanet's ones
-/bin
-!/bin/console
-!/bin/developer
-!/bin/setup
-
 # Exclude composer
 composer.phar
 
