@@ -1,0 +1,29 @@
+- name: Install
+  apt: pkg="php{{ phpversion }}-dev" state=present
+  when: php.pecl_packages is defined
+
+- name: Update pecl chennel
+  shell: pecl channel-update pecl.php.net
+
+- name: Install Package
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.package }}
+  register: pecl_result
+  changed_when: "'already installed' not in pecl_result.stdout"
+  failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
+  with_items: '{{ php.pecl_packages }}'
+  when: php.pecl_packages is defined
+
+- name: Create extension .ini file
+  template: >
+    src="extension.tpl"
+    dest="/etc/php/{{ phpversion }}/mods-available/{{ item.name }}.ini"
+    owner="root"
+    group="root"
+    mode=0644
+  with_items: '{{ php.pecl_packages }}'
+  when: php.pecl_packages is defined
+
+- name: Enable extension
+  shell: phpenmod {{ item.name }}
+  with_items: '{{ php.pecl_packages }}'
+  when: php.pecl_packages is defined

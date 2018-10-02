@@ -1,0 +1,106 @@
+@import '../../_shared/styles/variables';
+
+$textPrimaryColor: #FFFFFF; //#b1b1b1;
+$textPrimaryHoverColor: #FFFFFF;
+
+$darkBackgroundColor: #212121;
+$mediumBackgroundColor: #3b3b3b;
+$mediumBorderColor: #303030;
+$lightBackgroundColor: #414141;
+
+$mainMenuBackgroundColor: $mediumBackgroundColor;
+$mainMenuBottomBorder: 1px solid $mediumBorderColor;
+$mainMenuHeight: 41px;
+$mainMenuMarginBottom: 0;
+$mainMenuLinkColor: #b1b1b1;
+$mainMenuLinkBackgroundHoverColor: transparent;
+$mainMenuLinkHoverColor: $textPrimaryHoverColor;
+@import '../../_shared/styles/main-menu';
+
+.PNB {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+body {
+  color: $textPrimaryColor;
+  background-color: $darkBackgroundColor;
+  font-size: $mediumFontSize;
+  font-family: $defaultFontFamily;
+  overflow: auto;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: bold;
+  padding: 30px 0 20px;
+}
+
+.content-container {
+  width: 70%;
+  max-width: 860px;
+  background-color: #414141;
+  padding: 0 20px;
+  margin: 0 auto;
+  height: 100%;
+  position: relative !important;
+}
+
+.preview {
+  iframe {
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+.caption {
+  padding: 30px 0 20px;
+}
+
+dl {
+  margin-bottom: 20px;
+}
+
+dt,
+dd {
+  line-height: 20px;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-left: 10px;
+}
+
+.dl-horizontal {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    line-height: 0;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+  dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  dd {
+    margin-left: 180px;
+  }
+}

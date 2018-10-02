@@ -1,0 +1,292 @@
+#admin-field-app .row-top {
+  min-height: 60px;
+  border-bottom: 1px solid #000;
+}
+
+#admin-field-app .row-bottom {
+  position: relative;
+}
+
+#admin-field-app .right-block {
+  border-left: 1px dashed #000;
+  overflow: auto;
+  min-height: 200px;
+}
+
+#admin-field-app h4 {
+  padding: 10px 0;
+}
+
+#admin-field-app .lng-label a {
+  color: #aaa;
+  text-transform: capitalize;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#admin-field-app .lng-label.select a {
+  color: #0080FF;
+}
+
+#admin-field-app #collection-fields li {
+  background: #FFF;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  height:  55px;
+}
+
+#admin-field-app ul.inline li {
+  display: inline-block;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+#admin-field-app #collection-fields li .trigger-click {
+  cursor: pointer;
+}
+
+#admin-field-app #collection-fields li.border-bottom{
+  border-bottom: 1px solid #ccc;
+}
+
+#admin-field-app #collection-fields li table {
+  table-layout: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#admin-field-app #collection-fields li .field-name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #666;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#admin-field-app #collection-fields li .field-tag {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#admin-field-app #collection-fields li .handle {
+  width: 10%;
+  vertical-align: middle;
+  text-align: center;
+  cursor: move;
+}
+
+#admin-field-app #collection-fields li .trigger-click {
+  padding: 10px;
+}
+
+#admin-field-app #collection-fields li .position {
+  width: 10%;
+  vertical-align: bottom;
+  text-align: center;
+}
+
+#admin-field-app #collection-fields li .chip {
+  width: 10%;
+}
+
+#admin-field-app #collection-fields li .handle, #admin-field-app #collection-fields li .position {
+  color: #ccc;
+  border-right: 1px solid #ccc;
+}
+
+#admin-field-app #collection-fields li.last {
+  border-bottom: 1px solid #ccc;
+}
+
+#admin-field-app #collection-fields li.selected {
+  border-top-color: #0080FF;
+  background: #FFF;
+  color: #000;
+}
+
+#admin-field-app #collection-fields li.last.selected {
+  border-bottom-color: #0080FF;
+}
+
+#admin-field-app #collection-fields li.last.selected.error {
+  border-bottom-color: #9d261d;
+}
+
+#admin-field-app #collection-fields li.selected + li {
+  border-top-color: #0080FF;
+}
+
+#admin-field-app #collection-fields li.selected.error {
+  border-top-color: #9d261d;
+}
+
+#admin-field-app #collection-fields li.selected.error + li {
+  border-top-color: #9d261d;
+}
+
+#admin-field-app #collection-fields li.selected .field-name {
+  color: #0080FF;
+}
+
+#admin-field-app #collection-fields li.error .field-name {
+  color: #9d261d;
+}
+
+#admin-field-app .item-list-placeholder {
+  border-top: 1px solid #ccc;
+  background-color: red;
+  height: 70px;
+}
+
+#admin-field-app .add-field-block {
+  margin-bottom: 0px;
+}
+
+#admin-field-app .add-field-block .control-label {
+  width: 80px;
+  text-align: left;
+}
+
+#admin-field-app .add-field-block .controls {
+  margin-left: 100px;
+}
+
+#admin-field-app .edit-form label {
+  width: 160px;
+}
+
+#admin-field-app .edit-form select {
+  min-width: 220px;
+}
+
+#admin-field-app .sidebar-add-block {
+  margin-top: 20px;
+}
+#admin-field-app .sidebar-search-block {
+  margin: 20px 0;
+}
+
+#admin-field-app .list-block {
+  height: 450px;
+  min-height: 130px;
+  overflow: auto;
+  position: relative;
+}
+
+#admin-field-app .edit-block {
+  padding: 5px 20px;
+}
+
+#admin-field-app .edit-block table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+#admin-field-app .edit-block table label {
+  margin: 0px;
+  width: auto;
+}
+
+#admin-field-app .edit-block table td:first-child {
+  width: 130px;
+}
+
+#admin-field-app .edit-block td {
+  height: 25px;
+}
+
+#admin-field-app .edit-block .dces-help-block {
+  height: auto;
+}
+
+#admin-field-app .info {
+  color: #aaa;
+  padding: 10px;
+}
+
+#admin-field-app .edit-block .edit-order {
+  height: 50px;
+}
+
+#admin-field-app .edit-block .edit-order td {
+  height: 50px;
+}
+
+#admin-field-app .edit-block .edit-label {
+  height: 75px;
+}
+
+#admin-field-app .edit-block .edit-label ul {
+  margin: 0;
+}
+
+#admin-field-app .edit-block .edit-name td {
+  font-size: 28px;
+  color: #0080FF;
+  height: 42px;
+  line-height: 42px;
+  font-weight: bold
+}
+
+#admin-field-app .save-all{
+  padding: 15px;
+  margin-bottom: 8px;
+}
+
+#admin-field-app .overlay {
+  zoom: 1;
+  filter: alpha(opacity=50);
+  opacity: 0.5;
+  background: #fff;
+  position: absolute;
+  width:  100%;
+  height: 100%;
+  z-index: 2000;
+}
+
+#admin-field-app .list-field-error li {
+  color: #9d261d;
+}
+
+#admin-field-app .save-block.loading {
+  background: url('#{$iconsPath}loaderFFF.gif') #fff no-repeat center right;
+}
+
+/* jquery ui autocomplete style */
+.ui-autocomplete-admin-field {
+  list-style-type: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 180px;
+  background: #FFF;
+  max-width: 300px;
+  -webkit-box-shadow: 0 10px 6px -6px #777;
+  -moz-box-shadow: 0 10px 6px -6px #777;
+  box-shadow: 0 10px 6px -6px #777;
+}
+
+.ui-autocomplete-admin-field li {
+  padding: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-autocomplete-admin-field li:hover {
+  padding: 5px;
+  background: #ccc;
+}
+
+.ui-autocomplete-admin-field li a {
+  text-decoration: none;
+}
+
+.ui-autocomplete-admin-field li a:hover {
+  text-decoration: none;
+  background: none;
+  color: #000;
+  border: none;
+}

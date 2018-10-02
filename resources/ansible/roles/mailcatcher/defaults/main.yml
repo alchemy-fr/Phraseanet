@@ -1,0 +1,8 @@
+---
+mailcatcher_gem: mailcatcher
+mailcatcher_user: mailcatcher
+mailcatcher_smtp_ip: '0.0.0.0'
+mailcatcher_smtp_port: '1025'
+mailcatcher_http_ip: '0.0.0.0'
+mailcatcher_http_port: '1080'
+mailcatcher_log_path: '/var/log/mailcatcher'

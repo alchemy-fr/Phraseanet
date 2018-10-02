@@ -1,0 +1,105 @@
+---
+server:
+    install: '1'
+    packages:
+        - vim
+        - git
+        - imagemagick
+        - htop
+        - iotop
+        - pkg-config
+        - libzmq3-dev
+        - supervisor
+        - ruby-dev
+        - sqlite3
+        - libsqlite3-dev
+        - memcached
+        - build-essential
+        - libssl-dev
+        - unoconv
+        - swftools
+        - xpdf
+        - libav-tools
+        - gpac
+    timezone: UTC
+    locales:
+        - en_GB.UTF-8
+        - fr_FR.UTF-8
+        - de_DE.UTF-8
+        - nl_NL.UTF-8
+repositories:
+    php: 'ppa:ondrej/php'
+    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    elasticsearch: 'ppa:webupd8team/java'
+    rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
+    yarn: 'https://dl.yarnpkg.com/debian/'
+vagrant_local:
+    install: '1'
+    vm:
+        base_box: trusty64
+        memory: '4096'
+        sharedfolder: ./
+        useVagrantCloud: '1'
+        syncType: nfs
+nginx:
+    install: '1'
+    docroot: /vagrant
+mariadb:
+    install: '1'
+    root_password: toor
+    appbox_db: ab_master
+    databox_db: db_master
+    alt_databox_db: db_alt
+    user: phraseanet
+    password: phraseanet
+    dump: ''
+elasticsearch:
+    install: '1'
+    port: '9200'
+    version: '2.3.3'
+    plugins:
+        - {name: 'analysis-icu'}
+php:
+    install: '1'
+    ppa: php
+    version: '{{ phpversion }}'
+    packages:
+        - 'php{{ phpversion }}-cli'
+        - 'php{{ phpversion }}-fpm'
+        - 'php{{ phpversion }}-intl'
+        - 'php{{ phpversion }}-mcrypt'
+        - 'php{{ phpversion }}-enchant'
+        - 'php{{ phpversion }}-gd'
+        - 'php{{ phpversion }}-memcache'
+        - 'php{{ phpversion }}-xml'
+        - 'php{{ phpversion }}-xmlrpc'
+        - 'php{{ phpversion }}-memcached'
+        - 'php{{ phpversion }}-mbstring'
+        - 'php{{ phpversion }}-curl'
+        - 'php{{ phpversion }}-mysql'
+        - 'php{{ phpversion }}-imagick'
+        - 'php{{ phpversion }}-zip'
+        - 'php{{ phpversion }}-sqlite3'
+        - 'php{{ phpversion }}-bcmath'
+        - 'php-pear'
+        - 'php{{ phpversion }}-dev'
+    pecl_packages:
+        - {name: zmq, package: zmq-beta}
+        - {name: amqp, package: amqp-1.9.3}
+node:
+    install: '1'
+    version: '9.4.0'
+xdebug:
+    install: '1'
+    idekey: 'PHPSTORM'
+    port: '10001'
+
+composer:
+    install: '1'
+
+mailcatcher:
+    install: '1'
+
+ffmpeg:
+    install: '1'
+    version: '3.1.10'

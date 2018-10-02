@@ -1,0 +1,75 @@
+server {
+    listen  80;
+
+    root {{ nginx.docroot }};
+    index index.html index.php;
+
+    server_name dev.{{ hostname }}.vb;
+
+    location @rewriteapp {
+      root {{ nginx.docroot }}/www;
+      index index.html index.htm index.php;
+      rewrite ^(.*)$ /index_dev.php/$1 last;
+    }
+
+    location / {
+      root {{ nginx.docroot }}/www;
+        try_files $uri $uri/ @rewriteapp;
+    }
+
+    location /api {
+      root {{ nginx.docroot }}/www;
+      rewrite ^(.*)$ /api_dev.php/$1 last;
+    }
+
+    location ~ ^/(index|index_dev|api|api_dev)\.php(/|$) {
+        root {{ nginx.docroot }}/www;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php/php{{ phpversion }}-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH /usr/local/bin:/usr/bin:/bin;
+        include fastcgi_params;
+    }
+
+    sendfile off;
+    client_max_body_size 2g;
+}
+
+server {
+    listen  80;
+
+    root {{ nginx.docroot }};
+    index index.html index.php;
+
+    server_name www.{{ hostname }}.vb;
+
+    location @rewriteapp {
+      root {{ nginx.docroot }}/www;
+      index index.html index.htm index.php;
+      rewrite ^(.*)$ /index.php/$1 last;
+    }
+
+    location / {
+      root {{ nginx.docroot }}/www;
+        try_files $uri $uri/ @rewriteapp;
+    }
+
+    location /api {
+      root {{ nginx.docroot }}/www;
+      rewrite ^(.*)$ /api.php/$1 last;
+    }
+
+    location ~ ^/(index|index_dev|api)\.php(/|$) {
+        root {{ nginx.docroot }}/www;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/var/run/php/php{{ phpversion }}-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH /usr/local/bin:/usr/bin:/bin;
+        include fastcgi_params;
+    }
+
+    sendfile off;
+    client_max_body_size 2g;
+}

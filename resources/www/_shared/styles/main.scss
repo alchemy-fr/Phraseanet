@@ -1,0 +1,76 @@
+@import 'variables';
+
+/** skin/common/main.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
+  overflow: hidden;
+}
+
+
+img{
+  border:none;
+}
+
+#MODALDL{
+  z-index:1200;
+}
+
+#tooltip{
+  color:black;
+  position:absolute;
+  z-index:32000;
+  overflow:hidden;
+  hr{
+    margin: 8px 0;
+  }
+  .popover {
+    max-width: none;
+    width: auto;
+  }
+}
+
+.PNB
+{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+.PNB10
+{
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  bottom:10px;
+}
+
+.documentTips {
+  height: 100%;
+}
+
+input.checkbox{
+  background:transparent;
+  border:none;
+}
+
+#ui-datepicker-div{
+  display:none;
+}
+
+
+.ui-dialog-titlebar {
+  min-height: 20px;
+}
+
+.ui-dialog[aria-describedby="p4_alerts"]{
+  z-index:2000 !important;
+}
+
+@import 'geonames';
+@import "notification";
+// @import "main-menu";

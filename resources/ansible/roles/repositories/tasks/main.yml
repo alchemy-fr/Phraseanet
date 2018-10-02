@@ -1,0 +1,41 @@
+---
+# PHP
+- name: Add ppa Repository
+  sudo: yes
+  apt_repository: repo={{ repositories.php }} update_cache=yes
+
+# Elasticsearch
+- name: Add dependencies repository
+  apt_repository: repo={{ repositories.elasticsearch }} update_cache=yes
+
+# MariaDB
+- name: Add MariaDB-Repository
+  sudo: yes
+  apt_repository: repo='{{ repositories.mariadb }} {{ ansible_distribution_release }} main' state=present
+  register: mariadb_repository
+
+- name: Add Key for MariaDB Repository
+  sudo: yes
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
+
+# RabbitMQ
+- name: Add rabbitmq package repository
+  sudo: yes
+  shell: echo {{ repositories.rabbitmq }} > /etc/apt/sources.list.d/rabbitmq.list
+
+- name: Install rabbitmq package repository
+  sudo: yes
+  shell: wget https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+
+- name: Install rabbitmq package repository key
+  sudo: yes
+  shell: apt-key add rabbitmq-signing-key-public.asc
+
+- name: Remove signing key
+  sudo: yes
+  shell: rm rabbitmq-signing-key-public.asc
+
+# Update APT
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes

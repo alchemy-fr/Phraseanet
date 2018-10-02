@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<record>
+    <path>{{datapathnoweb}}{{basename}}/documents</path>
+    <subdefs>
+        <subdefgroup name="image">
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>1024</size>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <strip>no</strip>
+                <quality>75</quality>
+                <meta>yes</meta>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>240</size>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <quality>75</quality>
+                <meta>no</meta>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview_mobile" downloadable="false">
+                <size>480</size>
+                <resolution>72</resolution>
+                <strip>yes</strip>
+                <quality>75</quality>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <meta>no</meta>
+                <devices>handheld</devices>
+                <label lang="fr">Prévisualisation Mobile</label>
+                <label lang="en">Mobile Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
+                <size>150</size>
+                <resolution>72</resolution>
+                <strip>yes</strip>
+                <quality>75</quality>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <meta>no</meta>
+                <devices>handheld</devices>
+                <label lang="fr">Vignette mobile</label>
+                <label lang="en">Mobile Thumbnail</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="video">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>240</size>
+                <devices>screen</devices>
+                <mediatype>image</mediatype>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>240</size>
+                <mediatype>gif</mediatype>
+                <delay>150</delay>
+                <devices>screen</devices>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Animation GIF</label>
+                <label lang="en">GIF Animation</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <writeDatas>yes</writeDatas>
+                <acodec>libfaac</acodec>
+                <vcodec>libx264</vcodec>
+                <devices>screen</devices>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="preview_webm" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>748</size>
+                <mediatype>video</mediatype>
+                <devices>screen</devices>
+                <bitrate>1000</bitrate>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <acodec>libvorbis</acodec>
+                <fps>25</fps>
+                <GOPsize>25</GOPsize>
+                <vcodec>libvpx</vcodec>
+                <label lang="fr">Prévisualisation WebM</label>
+                <label lang="en">WebM Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="audio">
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>240</size>
+                <devices>screen</devices>
+                <writeDatas>no</writeDatas>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>audio</mediatype>
+                <writeDatas>yes</writeDatas>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>48000</audiosamplerate>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="preview_mobile" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>audio</mediatype>
+                <devices>handheld</devices>
+                <label lang="fr">Prévisualisation Mobile</label>
+                <label lang="en">Mobile Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="document">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <size>240</size>
+                <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>flexpaper</mediatype>
+                <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="flash">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>240</size>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <devices>screen</devices>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>800</size>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+        </subdefgroup>
+    </subdefs>
+
+    <description>
+        <Title src="XMP-dc:Title" thumbtitle="1" report="1" />
+        <Creator src="XMP-dc:Creator" report="1" />
+        <Subject src="XMP-dc:Subject" multi="1"/>
+        <Description src="XMP-dc:Description" report="0" />
+        <Publisher src="XMP-dc:Publisher" type="date" report="0" />
+        <Contributor src="XMP-dc:Contributor" report="0"/>
+        <Date src="XMP-dc:Date" type="date" report="0" />
+        <Type src="XMP-dc:Type" report="1" />
+        <Format src="XMP-dc:Format" report="0" />
+        <Identifier src="XMP-dc:Identifier" report="1" />
+        <Source src="XMP-dc:Source" report="0" />
+        <Language src="XMP-dc:Language" report="0" />
+        <Relation src="XMP-dc:Relation" report="0" />
+        <Coverage src="XMP-dc:Coverage" report="1" />
+        <Rights src="XMP-dc:Rights" report="0" />
+        <Comments src="" business="1" report="0" />
+        <Filename src="Phraseanet:tf-basename" readonly="1" type="text" report="1"/>
+        <CameraDevice src="IFD0:Model" readonly="1" report="0" />
+        <Latitude src="GPS:GPSLatitude" readonly="1" report="0" />
+        <Longitude src="GPS:GPSLongitude" readonly="1" report="0"/>
+        <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
+        <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
+    </description>
+
+    <statbits>
+        <bit n="4" labelOn="Caption filled" searchable="0" printable="0" labelOff="Caption not filled">
+          <label switch="off" code="de">Nicht gefüllt</label>
+          <label switch="off" code="en">Caption not filled</label>
+          <label switch="off" code="fr">Média non renseigné</label>
+          <label switch="off" code="nl"/>
+          <label switch="on" code="de">Gefüllt</label>
+          <label switch="on" code="en">Caption filled</label>
+          <label switch="on" code="fr">Média renseigné</label>
+          <label switch="on" code="nl"/>
+        </bit>
+    </statbits>
+</record>

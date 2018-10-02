@@ -1,0 +1,27 @@
+{
+    "name": "Class Connector",
+    "description" : "A custom class connector",
+    "keywords"    : ["connector"],
+    "authors" : [
+        {
+            "name"     : "Author name",
+            "homepage" : "http://example.com",
+            "email"    : "email@example.com"
+        }
+    ],
+    "homepage" : "http://example.com/project/example",
+    "license"     : "MIT",
+    "version"     : "0.1",
+    "minimum-phraseanet-version": "3.8",
+    "maximum-phraseanet-version": "3.9",
+    "Commands" : [
+        {
+            "class": "Vendor\\Connector\\CustomCommand"
+        }
+    ],
+    "services" : [
+        {
+            "class": "Vendor\\Connector\\PluginServiceInterface"
+        }
+    ]
+}

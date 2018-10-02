@@ -1,0 +1,18 @@
+---
+# Watch repositories task to retrieve repository add
+- name: Install php{{ phpversion }}
+  sudo: yes
+  apt: pkg=php{{ phpversion }} state=latest
+
+- name: Install php{{ phpversion }}-fpm
+  sudo: yes
+  apt: pkg=php{{ phpversion }}-fpm state=latest
+
+- name: Install PHP Packages
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items: '{{ php.packages }}'
+  when: php.packages is defined
+
+- include: configure.yml
+- include: pecl.yml

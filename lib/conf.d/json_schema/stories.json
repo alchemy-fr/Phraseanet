@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Story collection",
+    "description": "A collection of stories from Phraseanet",
+    "type": "object",
+    "properties": {
+        "stories": {
+            "description": "The actual collection",
+            "type": "array",
+            "items": {
+                "$ref": "story.json"
+            }
+        }
+    },
+    "required": ["stories"]
+}

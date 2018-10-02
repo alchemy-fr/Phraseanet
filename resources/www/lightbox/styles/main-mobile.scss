@@ -1,0 +1,27 @@
+@import './jquery-mobile/jquery-validator';
+
+.nav_button {
+  width: 90%;
+  margin: 0px auto;
+  padding: 4px;
+  .ui-btn {
+    height: 36px !important;
+    width: 36px !important;
+    font-size: 16px !important;
+    border-radius: 19px;
+  }
+  .ui-btn::after {
+    height: 30px !important;
+    width: 30px !important;
+    margin-left: -15px;
+    margin-top: -15px;
+  }
+}
+
+#left-btn {
+  float: left;
+}
+
+#right-btn {
+  float: right;
+}

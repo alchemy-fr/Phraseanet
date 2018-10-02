@@ -1,0 +1,9 @@
+[program:mailcatcher]
+command=/usr/local/bin/mailcatcher  --http-ip {{ mailcatcher_http_ip }} --http-port {{ mailcatcher_http_port }} --smtp-ip {{ mailcatcher_smtp_ip }} --smtp-port {{ mailcatcher_smtp_port }} -f
+priority=100
+autostart=true
+autorestart=true
+user={{ mailcatcher_user }}
+stdout_logfile={{ mailcatcher_log_path }}/program_mailcatcher.log
+stderr_logfile={{ mailcatcher_log_path }}/program_mailcatcher.error
+environment=PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin'
