@@ -8,7 +8,7 @@
     form.phrasea_query input.search.query {
         padding-left: 6px;
         padding-right: 30px;
-        background-image: url("/assets/common/images/icons/search-black.png");
+        background-image: url("/assets/common/images/icons/research-dark.png");
         background-position: right 7px center;
         height: 26px;
         width: 420px;
@@ -32,7 +32,7 @@
         .adv_options label.radio.inline {
             font-size: 14px;
             margin-right: 15px;
-            margin-bottom: 5px;
+            margin-bottom: 7px;
             input {
                 margin-right: 15px;
             }
@@ -61,10 +61,19 @@
                     background: #dadada;
                 }
             }
+            .danger.danger_indicator {
+                background-color: #ffffff;
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px #2196f3;
+            }
         }
         .control-group {
             float: left;
             margin-left: 15px;
+        }
+        .danger .danger_indicator, .danger.danger_indicator {
+            border-color: #2475b5;
+            background-color: #2196f3;
+            color: #ffffff;
         }
     }
     .custom_select_dark {
@@ -128,7 +137,12 @@
         .status-section-title {
             position: relative;
             font-size: 15px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            .danger_indicator {
+                padding: 4px 5px;
+                border-radius: 6px;
+                margin-left: -5px;
+              }
         }
     }
     .btn_dark {
@@ -147,20 +161,20 @@
     .btn-toolbar .btn_dark {
         margin: 0 19px;
     }
-    .multiple_term_select {
-        height: 115px;
+    .term_select {
+        height: 135px;
         overflow-y: auto;
         select, input {
             height: 24px;
             color: #000;
             font-size: 12px;
-            margin-right: 4px;
+            margin: 0 7px 10px 0;
             background-color: #f8f8f8;
             border-radius: 5px;
             border: 0 none;
         }
     }
-    .multiple_term_select input {
+    .term_select input {
         height: 20px;
         padding-left: 10px;
     }
@@ -168,7 +182,7 @@
         height: 24px;
         color: #000;
         font-size: 12px;
-        margin-right: 13px;
+        margin: 5px 13px 0 0;
         background-color: #f8f8f8;
         border-radius: 5px;
         border: 0 none;
@@ -220,14 +234,47 @@
             font-size: 20px;
         }
     }
-    #ADVSRCH_SB_ZONE tbody tr td:first-child {
-        padding-left: 32px;
+    #ADVSRCH_SB_ZONE {
+        tbody:before {
+        /* spacing between thead and tbody */
+            line-height: 1em;
+            content: ".";
+            color: #3D3D3D;
+            display: block;
+        }
+        tbody .checkbox.inline {
+            padding-top: 0;
+        }
+        tbody tr td:first-child {
+            padding-left: 32px;
+        }
+    }
+    .term_deleter {
+        width: 12px !important;
+        height: 12px !important;
+        display: inline-block !important;
+        background: transparent url("/assets/common/images/icons/close-white.png") no-repeat !important;
+        background-size: 12px !important;
+        cursor: pointer;
+    }
+    .term_deleter:hover {
+        background-image: url("/assets/common/images/icons/close-blue.png") !important;
+    }
+    .term_deleter:disabled {
+        background: transparent url("/assets/common/images/icons/close-grey.png") no-repeat !important;
+        background-size: 12px !important;
+    }
+    .term_deleter:disabled:hover {
+        background-image: url("/assets/common/images/icons/close-grey.png") !important;
     }
 }
 
 #info-box-trigger {
     float: right;
     cursor: pointer;
+    z-index: 2;
+    position: relative;
+    
     &:hover + #info-box {
         display: block !important;;
     }
@@ -297,6 +344,14 @@
     &:hover input ~ .custom_checkbox,
     &:hover input ~ .custom_radio {
       background-color: #ccc;
+    }
+    &:hover input:checked ~ .custom_checkbox,
+    &:hover input:checked ~ .custom_radio {
+      background-color: #2196F3;
+    }
+    .danger_indicator {
+        padding: 2px 5px;
+        border-radius: 6px;
     }
 }
 

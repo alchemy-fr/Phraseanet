@@ -69,7 +69,7 @@ form.phrasea_query input.query {
 #adv_search .sbasglob hr,
 .adv_options .sbasglob hr,
 .adv_options #sbasfiltercont hr {
-  margin: 10px 0;
+  margin: 15px 0;
   border: 0;
   border-top: 1px solid #7b7b7b;
 }
@@ -105,7 +105,6 @@ form.phrasea_query input.query {
   input[type="checkbox"] {
     margin: 0;
     float: none;
-    margin-right: 10px;
   }
 }
 .deployer_toggle {
@@ -113,18 +112,18 @@ form.phrasea_query input.query {
 }
 
 .basChild_list {
-  position: absolute;
+  position: relative;
   padding: 0;
-  margin: 0 0 0 58px;
+  margin: 0 0 0 63px;
   list-style: none;
-  width: calc(50% - 100px);
+  width: calc(100% - 40px);
 }
 
 .clkbas {
   white-space: normal;
   margin: 0 0 10px;
   float: left;
-  width: 30%;
+  width: 33%;
   // -webkit-column-break-inside:avoid;
   // -moz-column-break-inside:avoid;
   // -o-column-break-inside:avoid;
