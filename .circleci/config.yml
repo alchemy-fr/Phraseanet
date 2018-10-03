@@ -8,7 +8,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
-    - image: circleci/7.2-fpm-stretch-node-browsers-legacy
+    - image: circleci/php:7.2-fpm-stretch-node-browsers-legacy
       command: /sbin/init
     steps:
     - checkout
