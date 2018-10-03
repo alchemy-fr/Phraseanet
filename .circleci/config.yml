@@ -8,7 +8,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
-    - image: circleci/php:7.1-fpm
+    - image: circleci/php:7.1-fpm-jessie
       command: /sbin/init
     steps:
     - checkout
