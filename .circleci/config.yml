@@ -13,9 +13,9 @@ jobs:
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    - run:
-        working_directory: ~/alchemy-fr/Phraseanet
-        command: nvm install stable && nvm alias default stable
+#    - run:
+#        working_directory: ~/alchemy-fr/Phraseanet
+#        command: nvm install stable && nvm alias default stable
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
         command: 'sudo service memcached status || sudo service memcached start; sudo
