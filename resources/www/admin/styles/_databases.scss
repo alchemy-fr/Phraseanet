@@ -1,0 +1,82 @@
+/******* DATABASES ************************************************************/
+.db_recommand {
+  color: #333333;
+  font-weight: bold;
+}
+.db_exception {
+  margin-top: 10px;
+  background-color: #ffe000;
+}
+.db_infos {
+  width: 100%;
+  padding-bottom: 10px;
+}
+.db_infos h2 {
+  line-height: 22px;
+}
+.db_infos input[type="text"],
+.db_infos input[type="password"],
+.db_infos input[type="submit"],
+.db_infos select,
+.db_infos textarea,
+.db_infos ul {
+  margin-bottom: 9px;
+}
+/******* DATABASE *************************************************************/
+.db_box {
+  margin: 0 10px 10px;
+}
+.db_box p {
+  margin: 0 0 9px;
+}
+#INDEX_P_BAR p {
+  margin: 0;
+  padding: 0;
+}
+div[id$="_indexed_bar"] {
+  width: 0;
+  height: 15px;
+  position: absolute;
+  z-index: 6;
+  background: #dbd8cc;
+}
+div[id$="_indexed_percent"] {
+  width: 198px;
+  height: 13px;
+  position: absolute;
+  z-index: 10;
+  border: 1px solid #333333;
+  line-height: 15px;
+  text-align: center;
+}
+.logo_box {
+  margin: 0 10px 10px;
+}
+.logo_box hr {
+  border-top: 1px solid #cccccc;
+  margin-bottom: 10px;
+}
+.logo_box div[id^="printLogoDIV_"] {
+  margin: 0 0 5px 0;
+  display: none;
+}
+/******* DATABASE - FIELDS ****************************************************/
+#field_adder .help-block label {
+  color: #666666;
+}
+#form_struct {
+  margin: 10px 0;
+}
+#form_struct thead tr th:not(:first-child) {
+  min-width: 70px;
+  text-align: center;
+}
+
+a.btn {
+  text-decoration: none;
+}
+
+.status-img {
+  max-width: 16px;
+  max-heigh: 16px;
+}

@@ -1,0 +1,140 @@
+/******* TABLES ***************************************************************/
+div.center {
+  width: 100%;
+  margin: auto;
+}
+.tableTitle {
+  margin: 20px auto;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: underline;
+}
+table.whoisTable {
+  margin: auto;
+  border: #000000 1px solid;
+  table-layout: fixed;
+}
+table.whoisTable tr {
+  border: #cccccc 1px solid;
+}
+table.whoisTable tr:hover {
+  background-color: #f2f0e9;
+}
+table.whoisTable td {
+  padding: 3px;
+}
+table.whoisTable td.colTitle {
+  width: 120px;
+  text-align: left;
+}
+table.whoisTable td.colValue {
+  width: 60px;
+  text-align: right;
+}
+.spacehr {
+  margin-top: 40px;
+  margin-bottom: 30px;
+  border-top: 1px solid #cccccc;
+}
+table.admintable {
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+}
+table.admintable tr {
+  height: 28px;
+  vertical-align: middle;
+}
+table.admintable tr.selected:hover {
+  background-color: #aaa8a5;
+}
+table.admintable thead {
+  background-color: #dbd8cc;
+}
+table.admintable thead th {
+  padding: 3px;
+  text-align: left;
+  font-weight: bold;
+}
+table.admintable tbody tr.even {
+  background-color: #f2f0e9;
+}
+table.admintable tbody tr.selected {
+  background-color: #aaa8a5;
+}
+table.admintable tbody tr:hover {
+  background-color: #aaa8a5;
+  cursor: pointer;
+}
+table.admintable tbody td {
+  padding: 3px;
+}
+table.admintable tbody.dropdown {
+  cursor: pointer;
+}
+table.admintable .centered {
+  text-align: center;
+}
+/******* USERS TABLE **********************************************************/
+#users th.sortable {
+  cursor: pointer;
+}
+#users th.sortable span {
+  margin: 0 5px;
+}
+#users th.sortable span.ord_notifier {
+  display: none;
+}
+#users th.sortable.hover {
+  background-color: #aaa8a5;
+}
+#users th.sortable.sorted {
+  background-color: #aaa8a5;
+}
+#users th.sortable.sorted span.ord_notifier {
+  display: inline;
+}
+/******* EDIT-USERS TABLE *****************************************************/
+td.users_col {
+  width: 23px;
+  border: 0px solid transparent;
+  vertical-align: middle;
+  text-align: center;
+}
+td.users_col.options {
+  color: #afafaf;
+  cursor: pointer;
+}
+/******* TOOLTIP CONNECTED USERS **********************************************/
+#tooltip-usr {
+  position: relative;
+  top: 0;
+  left: 0;
+  color: #333333;
+}
+#tooltip-usr #tabledescexp {
+  table-layout: fixed;
+  width: 300px;
+}
+#tooltip-usr #tabledescexp td {
+  border: none;
+  text-align: left;
+}
+#tooltip-usr #tabledescexp td strong {
+  font-weight: bold;
+}
+#tooltip-usr #tabledescexp td.tooltip-title {
+  background-color: #aaa8a5;
+  border: 1px solid #aaa8a5;
+  margin: 10px auto;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.detail-table tr.even {
+  background-color: #FAFBDF;
+}

@@ -1,0 +1,196 @@
+$workzoneBackgroundColor: $darkBackgroundColor !default; //$mediumBackgroundColor !default;
+$workzoneTopBorder: none !default;
+$workzoneTabTopBorder: 1px solid $darkBorderColor !default;
+$workzoneBorderTopColor: $mediumBorderColor !default;
+$tabHeight: 86px !default;
+$subTabHeight: 46px !default;
+
+
+$workzoneTabContentBackgroundColor: $workzoneBackgroundColor !default;
+
+$workzoneTabBackgroundColor: $workzoneBackgroundColor !default;
+$workzoneTabTextColor: $mediumTextColor !default;
+
+$workzoneTabActiveBackgroundColor: $tabContentBackgroundColor !default;
+$workzoneTabActiveTextColor: $lightTextColor !default;
+
+$workzoneTabDisabledBackgroundColor: $tabBackgroundColor !default;
+$workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
+
+
+/**
+ * Workzone
+ */
+#idFrameC {
+  top: 0 !important;
+  min-width: 360px;
+  bottom: 0 !important;
+  &.closed {
+    min-width: 0;
+  }
+  #retractableButton {
+    cursor: pointer;
+    width: 70px;
+    height: 85px;
+    float: right;
+    text-align: center;
+    line-height: 85px;
+    margin-bottom: -20px;
+    i {
+      font-size: 23px;
+      color: $mediumTextColor;
+    }
+  }
+  .wrapper {
+    background-color: $workzoneBackgroundColor;
+    right: 10px;
+    border-top: $workzoneTopBorder; //$workzoneBorderTop;
+  }
+
+  .ui-tabs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    .ui-tabs-nav {
+      background-color: $workzoneTabContentBackgroundColor;
+      top: 0;
+      left: 10px;
+      right: 10px;
+      //margin-top: 21px;
+      // border-top: 1px solid $workzoneTabTopBorder;
+      border-radius: 0;
+      height: $subTabHeight;
+      border-bottom: 1px solid $workzoneTabBorderBottom;
+      box-sizing: border-box;
+      li {
+        width: auto;
+        height: $tabHeight;
+        display: inline-block;
+        background-color: $workzoneTabBackgroundColor;
+        z-index: 10;
+        border-radius: 0;
+        margin: 0;
+        box-sizing: border-box;
+        &.proposals_WZ {
+          &.ui-state-active {
+            a {
+              border-bottom: 3px solid $proposalColor;
+            }
+          }
+          &.active {
+            img.proposals_off {
+              display: none;
+            }
+          }
+          img.proposals_on {
+            display: none;
+          }
+        }
+
+        /*&.proposals_WZ.ui-state-active a {
+          border-bottom: 3px solid #4c5d84;
+        }*/
+        &.thesaurus.ui-state-active a {
+          border-bottom: 3px solid $thesaurusColor;
+        }
+        &.baskets.ui-state-active a {
+          border-bottom: 3px solid $basketsColor;
+        }
+        &.plugins.ui-state-active a {
+          border-bottom: 3px solid $pluginsColor;
+        }
+
+
+        a {
+          padding: 0;
+          margin: 0;
+          border-radius: 0;
+          &.escamote {
+            margin: 25px 25px 0 0;
+          }
+        }
+        &:hover {
+          a {
+            background-color: $workzoneTabBgHover;
+            border-bottom: 3px solid $workzoneTabBgHover;
+          }
+        }
+        &.ui-state-active {
+          a {
+            background-color: $workzoneTabBgActive;
+            border-bottom: 1px solid $thesaurusColor;
+            // height: 82px;
+          }
+        }
+      }
+    }
+    .ui-tabs-panel {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+  }
+  ul.prod-icon-menu {
+    width: 100%;
+  }
+  .prod-icon-menu {
+    .WZtabs, .WZplugins {
+      display: block;
+      width: 70px;
+      height: 82px;
+      line-height: 82px;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .WZbasketTab {
+      display: block;
+      background-image: url('#{$iconsPath}workzone32.png');
+      background-repeat: no-repeat;
+      background-position: 9px 25px;
+      width: 70px;
+      height: 82px;
+    }
+  }
+  .closed {
+    .prod-icon-menu li {
+      clear: left;
+    }
+  }
+  .ui-tabs-panel,
+  .ui-resizable-handle {
+    display: none;
+  }
+  .tools {
+    padding: 7px 0 7px 0;
+    text-align: left !important;
+    button {
+      background-color: transparent;
+      border: none;
+      width: 16px;
+      height: 22px;
+      cursor: pointer;
+      padding: 0;
+    }
+    label {
+      display: inline;
+      margin: 0 15px 0 0;
+      float: left;
+      font-size: $smallFontSize;
+      color: $workzoneToolsLabelColor;
+      line-height: 22px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.alert_datas_changed a {
+  color: #404040;
+  text-decoration: underline;
+}

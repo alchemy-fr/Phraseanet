@@ -1,0 +1,43 @@
+---
+# Retrieve the current hostname, because {{ ansible_hostname }} still contains the old name
+- shell: hostname
+  register: current_hostname
+
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes
+  when: mariadb_repository.changed
+
+- name: mariadb | Install MariaDB Packages
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+
+- name: mariadb | Update root password for all root accounts
+  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ mariadb.root_password }} login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - "{{ current_hostname.stdout | lower }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: mariadb | Ensure anonymous users are not in the database
+  mysql_user: name='' host={{ item }} state=absent login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - localhost
+    - "{{ current_hostname.stdout | lower }}"
+
+- name: mariadb | Create databases
+  mysql_db: name={{ item }} state=present login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - "{{ mariadb.appbox_db }}"
+    - "{{ mariadb.databox_db }}"
+
+- name: mariadb | Import dump
+  mysql_db: name={{ mariadb.appbox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
+  when: mariadb.dump
+
+- name: mariadb | Create users
+  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL,GRANT state=present login_user=root login_password={{ mariadb.root_password }}

@@ -1,0 +1,10 @@
+---
+- name: Install NVM
+  become: yes
+  become_user: vagrant
+  shell: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | /bin/bash creates=/home/vagrant/.nvm/nvm.sh
+
+- name: Install specific nodejs version
+  become: yes
+  become_user: vagrant
+  shell: export NVM_DIR="$HOME/.nvm" &&. ~/.nvm/nvm.sh && nvm install {{ node.version }} && nvm alias default {{ node.version }}

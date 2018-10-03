@@ -1,0 +1,142 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace KonsoleKommander;
+
+use Alchemy\Phrasea\Command\BuildMissingSubdefs;
+use Alchemy\Phrasea\Command\BuildSubdefs;
+use Alchemy\Phrasea\Command\Plugin\ListPlugin;
+use Alchemy\Phrasea\Command\SearchEngine\Debug\QueryParseCommand;
+use Alchemy\Phrasea\Command\SearchEngine\Debug\QuerySampleCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexCreateCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexDropCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexManipulateCommand;
+use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
+use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
+use Alchemy\Phrasea\Command\MailTest;
+use Alchemy\Phrasea\Command\Compile\Configuration;
+use Alchemy\Phrasea\Command\RecordAdd;
+use Alchemy\Phrasea\Command\RescanTechnicalDatas;
+use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Command\Plugin\AddPlugin;
+use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
+use Alchemy\Phrasea\Command\CheckConfig;
+use Alchemy\Phrasea\Command\SearchEngine\MappingUpdateCommand;
+use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
+use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
+use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
+use Alchemy\Phrasea\Command\Setup\XSendFileMappingGenerator;
+use Alchemy\Phrasea\Command\Task\SchedulerPauseTasks;
+use Alchemy\Phrasea\Command\Task\SchedulerResumeTasks;
+use Alchemy\Phrasea\Command\Task\SchedulerRun;
+use Alchemy\Phrasea\Command\Task\SchedulerState;
+use Alchemy\Phrasea\Command\Task\TaskList;
+use Alchemy\Phrasea\Command\Task\TaskRun;
+use Alchemy\Phrasea\Command\Task\TaskStart;
+use Alchemy\Phrasea\Command\Task\TaskState;
+use Alchemy\Phrasea\Command\Task\TaskStop;
+use Alchemy\Phrasea\Command\UpgradeDBDatas;
+
+require_once __DIR__ . '/../lib/autoload.php';
+
+$version = new Version();
+$cli = new CLI("
+  _____  _    _ _____            _____ ______          _   _ ______ _______
+ |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
+ | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
+ |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |
+ | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |
+ |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|
+  _  __                 _       _  __                             _
+ | |/ /___ _ _  ___ ___| |___  | |/ /___ _ __  _ __  __ _ _ _  __| |___ _ _
+ | ' </ _ \ ' \(_-</ _ \ / -_) | ' </ _ \ '  \| '  \/ _` | ' \/ _` / -_) '_|
+ |_|\_\___/_||_/__/\___/_\___| |_|\_\___/_|_|_|_|_|_\__,_|_||_\__,_\___|_|
+
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license' for details.\n\n"
+    . ' KONSOLE KOMMANDER', $version->getName() . ' ' . $version->getNumber());
+
+if (!$cli['phraseanet.configuration-tester']->isInstalled()) {
+    throw new \RuntimeException('Phraseanet is not installed, use setup command instead');
+}
+
+if (!$cli['phraseanet.configuration-tester']->isUpToDate()) {
+    throw new \RuntimeException('Phraseanet is not up-to-date, use setup command instead');
+}
+
+$cli->command(new \module_console_aboutAuthors('about:authors'));
+$cli->command(new \module_console_aboutLicense('about:license'));
+
+$cli->command(new CheckConfig('check:config'));
+
+$cli->command(new UpgradeDBDatas('system:upgrade-datas'));
+
+$cli->command(new \module_console_systemMailCheck('system:mail-check'));
+$cli->command(new \module_console_systemBackupDB('system:backup-db'));
+$cli->command(new \module_console_systemClearCache('system:clear-cache'));
+$cli->command(new \module_console_systemExport('system:export'));
+
+$cli->command(new TaskRun());
+$cli->command(new TaskList());
+$cli->command(new TaskState());
+$cli->command(new SchedulerResumeTasks());
+$cli->command(new SchedulerPauseTasks());
+$cli->command(new SchedulerState());
+$cli->command(new SchedulerRun());
+$cli->command(new TaskList());
+$cli->command(new TaskStart());
+$cli->command(new TaskStop());
+
+$cli->command(new MailTest('mail:test'));
+
+$cli->command(new \module_console_fieldsList('fields:list'));
+$cli->command(new \module_console_fieldsDelete('fields:delete'));
+$cli->command(new \module_console_fieldsRename('fields:rename'));
+$cli->command(new \module_console_fieldsMerge('fields:merge'));
+
+$cli->command(new CreateCollection('collection:create'));
+$cli->command(new CreateDataboxCommand('databox:create'));
+
+$cli->command(new RecordAdd('records:add'));
+$cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
+$cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
+$cli->command(new BuildSubdefs('records:build-subdefs'));
+
+$cli->command(new AddPlugin());
+$cli->command(new ListPlugin());
+$cli->command(new RemovePlugin());
+$cli->command(new Configuration());
+$cli->command(new H264ConfigurationDumper());
+$cli->command(new H264MappingGenerator());
+$cli->command(new XSendFileConfigurationDumper());
+$cli->command(new XSendFileMappingGenerator());
+
+$cli->command(new IndexManipulateCommand());
+$cli->command(new IndexCreateCommand());
+$cli->command(new IndexDropCommand());
+$cli->command(new MappingUpdateCommand());
+$cli->command(new IndexPopulateCommand());
+$cli->command(new QueryParseCommand());
+$cli->command(new QuerySampleCommand());
+$cli->command(new FindConceptsCommand());
+
+$cli->command($cli['alchemy_worker.commands.run_dispatcher_command']);
+$cli->command($cli['alchemy_worker.commands.run_worker_command']);
+$cli->command($cli['alchemy_worker.commands.show_configuration']);
+
+$cli->loadPlugins();
+
+$cli->run();

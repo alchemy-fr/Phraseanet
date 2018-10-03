@@ -1,0 +1,125 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Core\Version;
+use Alchemy\Phrasea\Command\Developer\APIRoutesDumper;
+use Alchemy\Phrasea\Command\Developer\Behat;
+use Alchemy\Phrasea\Command\Developer\ComposerInstall;
+use Alchemy\Phrasea\Command\Developer\IniReset;
+use Alchemy\Phrasea\Command\Developer\InstallAll;
+use Alchemy\Phrasea\Command\Developer\JsFixtures;
+use Alchemy\Phrasea\Command\Developer\RegenerateSqliteDb;
+use Alchemy\Phrasea\Command\Developer\RoutesDumper;
+use Alchemy\Phrasea\Command\Developer\SetupTestsDbs;
+use Alchemy\Phrasea\Command\Developer\Uninstaller;
+use Alchemy\Phrasea\Command\Developer\TranslationDumper;
+
+use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
+// DBAL Commands
+use Doctrine\DBAL\Tools\Console\Command\RunSqlCommand;
+use Doctrine\DBAL\Tools\Console\Command\ImportCommand;
+// ORM Commands
+use Doctrine\ORM\Tools\Console\Command\ClearCache\MetadataCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\ResultCommand;
+use Doctrine\ORM\Tools\Console\Command\ClearCache\QueryCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\DropCommand;
+use Doctrine\ORM\Tools\Console\Command\EnsureProductionSettingsCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertDoctrine1SchemaCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateRepositoriesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateEntitiesCommand;
+use Doctrine\ORM\Tools\Console\Command\GenerateProxiesCommand;
+use Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand;
+use Doctrine\ORM\Tools\Console\Command\RunDqlCommand;
+use Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand;
+// Migration Commands
+use Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand;
+
+require_once __DIR__ . '/../lib/autoload.php';
+
+$version = new Version();
+$cli = new CLI("
+ ___  ___  _  _  ___  __    __  ___  ___  ___     ____  __    __  __    ___
+(   \(  _)( )( )(  _)(  )  /  \(  ,\(  _)(  ,)   (_  _)/  \  /  \(  )  / __)
+ ) ) )) _) \\//  ) _) )(__( () )) _/ ) _) )  \     )( ( () )( () ))(__ \__ \
+(___/(___) (__) (___)(____)\__/(_)  (___)(_)\_)   (__) \__/  \__/(____)(___/
+
+ Phraseanet Copyright (C) 2004 Alchemy
+ This program comes with ABSOLUTELY NO WARRANTY.
+ This is free software, and you are welcome to redistribute it
+ under certain conditions; type `about:license' for details.\n\n"
+            . ' Phraseanet Developer Tools ', $version->getName() . ' ' . $version->getNumber());
+
+$cli->command(new TranslationDumper());
+
+$cli->command(new InstallAll());
+$cli->command(new ComposerInstall());
+$cli->command(new RegenerateSqliteDb());
+$cli->command(new APIRoutesDumper());
+$cli->command(new RoutesDumper());
+$cli->command(new Behat());
+$cli->command(new Uninstaller());
+$cli->command(new JsFixtures());
+$cli->command(new IniReset());
+$cli->command(new SetupTestsDbs());
+$cli->command(new \module_console_systemTemplateGenerator('system:generate-templates'));
+
+
+$cli['console']->addCommands([
+    // DBAL Commands
+    new RunSqlCommand(),
+    new ImportCommand(),
+    // ORM Commands
+    new MetadataCommand(),
+    new ResultCommand(),
+    new QueryCommand(),
+    new CreateCommand(),
+    new UpdateCommand(),
+    new DropCommand(),
+    new EnsureProductionSettingsCommand(),
+    new ConvertDoctrine1SchemaCommand(),
+    new GenerateRepositoriesCommand(),
+    new GenerateEntitiesCommand(),
+    new GenerateProxiesCommand(),
+    new ConvertMappingCommand(),
+    new RunDqlCommand(),
+    new ValidateSchemaCommand(),
+    // Migrations Commands
+    new DiffCommand(),
+    new ExecuteCommand(),
+    new GenerateCommand(),
+    new MigrateCommand(),
+    new StatusCommand(),
+    new VersionCommand(),
+]);
+
+if ($cli['configuration.store']->isSetup()) {
+    $cli->loadPlugins();
+    $helpers = [
+        'db' => new ConnectionHelper($cli['orm.em']->getConnection()),
+        'em' => new EntityManagerHelper($cli['orm.em'])
+    ];
+
+    $helperSet = $cli['console']->getHelperSet();
+    foreach ($helpers as $name => $helper) {
+        $helperSet->set($helper, $name);
+    }
+}
+
+$cli->run();

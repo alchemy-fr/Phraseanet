@@ -1,0 +1,221 @@
+$iconsPath: '../../../assets/common/images/icons/';
+@import '../../_shared/styles/variables';
+body, html {
+  font-family: $defaultFontFamily;
+  font-size: $mediumFontSize;
+  color: white;
+  background-color: #000000;
+}
+
+code {
+  border: 2px dotted #CCCCCC;
+  border-radius: 5px 5px 5px 5px;
+  display: block;
+  font-family: 'Bitstream Vera Sans Mono', 'Courier', monospace;
+  margin: 10px;
+  padding: 10px 20px;
+  width: 70%;
+}
+
+a,
+a:hover,
+a:visited {
+  color: #3CAADC;
+}
+
+.PNB10 {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  overflow: auto;
+}
+
+.PNB {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+input, select {
+  border: none;
+  background: white;
+  margin: 2px;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.steps .wrapper {
+  background-color: #111111;
+  overflow: auto;
+  height: 410px;
+  position: relative;
+}
+
+.steps .wrapper .wrapper_left {
+  right: 240px;
+  overflow-x: hidden;
+}
+
+.steps .buttons {
+  background-color: #111111;
+  height: 40px;
+}
+
+.steps .buttons table {
+  width: 80%;
+  margin: 0px auto;
+}
+
+.steps {
+  background-color: #414141;
+  padding: 10px;
+  border-radius: 10px;
+  height: 450px;
+}
+
+.steps,
+.header {
+  width: 840px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.header h1 {
+  font-size: 3em;
+  font-weight: normal;
+  color: #3CAADC;
+}
+
+.header h1 .version_number,
+.header h1 .version_name {
+  font-size: 0.6em;
+  font-weight: bold;
+  color: #e41370;
+}
+
+.database_exists, .not_writable, .wrong_database {
+  background-color: orange;
+  color: black;
+  padding: 5px;
+  font-wright: bold;
+}
+
+.main_content_table {
+  width: 520px;
+  margin: 0 20px;
+}
+
+.main_content_wrapper {
+  width: 100%;
+  border: none;
+  height: 100%;
+  vertical-align: middle;
+}
+
+p.error {
+  font-weight: bold;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: center;
+  border: 1px dotted #EA1919;
+  padding-left: 20px;
+  background: url('#{$iconsPath}delete.png') no-repeat left center;
+}
+
+.main_content_wrapper td .warning {
+  vertical-align: middle;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: url('#{$iconsPath}alert.png') no-repeat left center;
+}
+
+.section_title {
+  height: 50px;
+  bottom: auto;
+}
+
+.side_infos {
+  width: 220px;
+  left: auto;
+  overflow: hidden;
+}
+
+.side_infos .table_wrapper {
+  background: none repeat scroll 0 0 #414141;
+  border-radius: 10px 10px 10px 10px;
+  height: 380px;
+  position: relative;
+  top: 10px;
+  width: 100%;
+  font-size: 1.1em;
+}
+
+.side_infos table {
+  width: 200px;
+  height: 350px;
+  position: relative;
+  left: 10px;
+  top: 10px;
+}
+
+.side_infos table tr {
+  vertical-align: middle;
+}
+
+p {
+  margin: 10px 0;
+  line-height: 20px;
+}
+
+h2 {
+  text-align: left;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.optional_ab_datas {
+  display: none;
+}
+
+h3 {
+  font-size: 1.2em;
+  margin: 10px 0;
+  font-weight: bold
+}
+
+ul, dl {
+  position: relative;
+  float: left;
+  width: 360px;
+  list-style-type: none;
+  padding: 0 0 0 40px;
+  margin: 5px 0;
+  border: 1px solid #404040;
+}
+
+li {
+  margin: 5px 0;
+  padding: 5px 5px 5px 30px;
+  background-image: url('#{$iconsPath}ok.png');
+  background-repeat: no-repeat;
+  background-position: 5px center;
+}
+
+li.non-blocker {
+  background-image: url('#{$iconsPath}alert.png');
+}
+
+li.blocker {
+  background-image: url('#{$iconsPath}delete.png');
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  background-image: none;
+}
+
+@import '../../vendors/jquery-validate.password/styles/jquery.validate.password';

@@ -1,0 +1,118 @@
+{
+    "name": "Phraseanet Plugin Schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the plugin",
+            "required": true
+        },
+        "description": {
+            "type": "string",
+            "description": "The description of the plugin",
+            "required": true
+        },
+        "keywords": {
+            "type": "array",
+            "description": "An array of keywords",
+            "items": {
+                "type": "string",
+                "description": "A keyword"
+            }
+        },
+        "authors": {
+            "type": "array",
+            "description": "An array of authors",
+            "items": {
+                "type": "object",
+                "description": "An author",
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The author name",
+                        "required": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The author email",
+                        "format": "email"
+                    },
+                    "homepage": {
+                        "type": "string",
+                        "description": "The author website URL",
+                        "format": "uri"
+                    }
+                }
+            }
+        },
+        "homepage": {
+            "type": "string",
+            "description": "The homepage of the plugin"
+        },
+        "license": {
+            "type": [
+                "string",
+                "array"
+            ],
+            "description": "The license of the plugin"
+        },
+        "version": {
+            "type": "string",
+            "description": "The version of the plugin"
+        },
+        "minimum-phraseanet-version": {
+            "type": "string",
+            "description": "The minimum phraseanet version for the plugin, including the one provided."
+        },
+        "maximum-phraseanet-version": {
+            "type": "string",
+            "description": "The maximum phraseanet version for the plugin, excluding the one provided"
+        },
+        "twig-paths": {
+            "type": "array",
+            "description": "An array of optional relative Twig paths to register",
+            "items": {
+                "type": "string",
+                "description": "A Twig path relative to the plugin root directory."
+            }
+        },
+        "commands": {
+            "type": "array",
+            "description": "An array of commands to register.",
+            "items": {
+                "type": "object",
+                "description": "A command",
+                "properties": {
+                    "class": {
+                        "type": "string",
+                        "description": "The plugin command name"
+                    }
+                }
+            }
+        },
+        "services": {
+            "type": "array",
+            "description": "An array of services to register.",
+            "items": {
+                "type": "object",
+                "description": "A service",
+                "properties": {
+                    "class": {
+                        "type": "string",
+                        "description": "The plugin service provider"
+                    }
+                }
+            }
+        },
+        "extra": {
+            "type": [
+                "object",
+                "array"
+            ],
+            "description": "Arbitrary extra data that can be used by custom installers.",
+            "additionalProperties": true
+        }
+    }
+}

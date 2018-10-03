@@ -1,0 +1,5 @@
+---
+xdebug:
+    settings:
+        remote_enable: On
+        remote_connect_back: On
