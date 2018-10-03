@@ -61,19 +61,10 @@
                     background: #dadada;
                 }
             }
-            .danger.danger_indicator {
-                background-color: #ffffff;
-                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px #2196f3;
-            }
         }
         .control-group {
             float: left;
             margin-left: 15px;
-        }
-        .danger .danger_indicator, .danger.danger_indicator {
-            border-color: #2475b5;
-            background-color: #2196f3;
-            color: #ffffff;
         }
     }
     .custom_select_dark {
