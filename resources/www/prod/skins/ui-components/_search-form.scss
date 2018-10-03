@@ -35,9 +35,13 @@ form.phrasea_query input.query {
   }
   .danger .danger_indicator,
   .danger.danger_indicator {
-    border-color: #c9c900;
-    background-color: #FCEC98;
-    color: #000000;
+    border-color: #2475b5;
+    background-color: #2196f3;
+    color: #ffffff;
+  }
+  .advance_search_action .danger.danger_indicator {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px #2196f3;
   }
 
 }
