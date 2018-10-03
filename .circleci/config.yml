@@ -8,7 +8,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
-    - image: circleci/php:7.1-fpm-jessie-node
+    - image: circleci/php:7.1-fpm-jessie-node-mysql
       command: /sbin/init
     steps:
     - checkout
@@ -16,6 +16,8 @@ jobs:
 #    - run:
 #        working_directory: ~/alchemy-fr/Phraseanet
 #        command: nvm install stable && nvm alias default stable
+    - run: apt-get -y install memcached netcat
+    - run: apt-get -y install redis-server
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
         command: 'sudo service memcached status || sudo service memcached start; sudo
