@@ -35,6 +35,7 @@ class QueryController extends Controller
     public function query(Request $request)
     {
         $query = (string) $request->request->get('qry');
+        $fake_query = (string) $request->request->get('fake_qry');
 
         // since the query comes from a submited form, normalize crlf,cr,lf ...
         $query = StringHelper::crlfNormalize($query);
@@ -67,7 +68,7 @@ class QueryController extends Controller
             $result = $engine->query($query, $options);
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
-                $userManipulator->setUserSetting($user, 'start_page_query', $query);
+                $userManipulator->setUserSetting($user, 'start_page_query', $fake_query);
             }
 
             foreach ($options->getDataboxes() as $databox) {
