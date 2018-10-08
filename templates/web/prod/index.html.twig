@@ -350,7 +350,7 @@
 
                                                     <div class="term_select">
                                                         <div class="term_select_wrapper">
-                                                            <select class="term_select_field" name="fields[]" onchange="checkFilters(true);"
+                                                            <select class="term_select_field" onchange="checkFilters(true);"
                                                             style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
@@ -370,8 +370,8 @@
                                                         <button class="add_new_term"><span>&plus;</span> Add</button>
                                                     </div>
 
-                                                    {# <div class="single_term_select" style="display:none;">
-                                                        <select class="term_select_field" size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                    <div style="display:none;">
+                                                        <select class="term_select_multiple" size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
                                                             <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                             {% for field_id, field in search_datas['fields'] %}
                                                                 {% if field['type'] != 'date' %}
@@ -379,7 +379,7 @@
                                                                 {% endif %}
                                                             {% endfor %}
                                                         </select>
-                                                    </div> #}
+                                                    </div>
                                                 </div>
 
                                                 <div id="ADVSRCH_DATE_ZONE">
