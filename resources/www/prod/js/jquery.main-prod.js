@@ -151,7 +151,7 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
+    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
@@ -1203,16 +1203,38 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('change', 'select.term_select_field', function () {
+    var previousVal;
+    $(document).on('focus', 'select.term_select_field', function () {
+        previousVal = $(this).val();
+    })
+    .on('change', 'select.term_select_field', function () {
         var $this = $(this);        
         // if option is selected
         if($this.val()) {
             $this.siblings().prop('disabled', false);
+
+            $('.term_select_multiple option').each(function (index, el) {
+                var $el = $(el);
+                if($this.val() === $el.val()) {
+                    $el.prop('selected', true);
+                }
+                else if (previousVal === $el.val()) {
+                    $el.prop('selected', false);
+                }
+            });
         }
         else {
             $this.siblings().prop('disabled', 'disabled');
+
+            $('.term_select_multiple option').each(function (index, el) {
+                var $el = $(el);
+                if(previousVal === $el.val()) {
+                    $el.prop('selected', false);
+                }
+            });
         }
     });
+
     
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
