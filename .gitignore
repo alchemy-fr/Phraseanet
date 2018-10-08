@@ -27,8 +27,8 @@
 /www/scripts/tests/fixtures
 
 # Exclude configuration folder exception the configuration sample file
-/config
-!/config/configuration.sample.yml
+#/config
+#!/config/configuration.sample.yml
 
 # Exclude generated proxies from doctrine2
 /resources/proxies
@@ -74,3 +74,8 @@ pimple.json
 playbook.retry
 npm-debug.log
 
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
