@@ -10,7 +10,7 @@ jobs:
 
     docker:
     # Primary container image where all steps run.
-    - image: circleci/php:7.1-fpm-jessie-node
+    - image: circleci/php:7.1-fpm-jessie
       command: /sbin/init
 
     # Redis Secondary container image on common network.
