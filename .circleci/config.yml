@@ -20,7 +20,7 @@ jobs:
     - image: circleci/mariadb:latest
 
     # RabbitMQ Secondary container image on common network.
-    - image: circleci/rabbitmq:latest
+#    - image: circleci/rabbitmq:latest
 
     steps:
     - checkout
@@ -49,9 +49,9 @@ jobs:
         working_directory: ~/alchemy-fr/Phraseanet
         command: 'sudo service mysql status || sudo service mysql start'
 
-    - run:
-        working_directory: ~/alchemy-fr/Phraseanet
-        command: 'sudo service rabbitmq-server status || sudo service rabbitmq-server start'
+#    - run:
+#        working_directory: ~/alchemy-fr/Phraseanet
+#        command: 'sudo service rabbitmq-server status || sudo service rabbitmq-server start'
 
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
