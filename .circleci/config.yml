@@ -7,23 +7,52 @@ jobs:
     environment:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+
     docker:
-    - image: circleci/php:7.1-fpm-jessie-node-mysql
+    # Primary container image where all steps run.
+    - image: circleci/php:7.1-fpm-jessie-node
       command: /sbin/init
+
+    # Redis Secondary container image on common network.
+    - image: circleci/redis:latest
+
+    # MariaDB Secondary container image on common network.
+    - image: circleci/mariadb:latest
+
+    # RabbitMQ Secondary container image on common network.
+    - image: circleci/rabbitmq:latest
+
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
 #    - run:
 #        working_directory: ~/alchemy-fr/Phraseanet
 #        command: nvm install stable && nvm alias default stable
-    - run: apt-get -y install memcached netcat
-    - run: apt-get -y install redis-server
+
+    # install memcached
+#    - run: apt-get -y install memcached netcat
+
+    # install redis
+#    - run: apt-get -y install redis-server
+
+    # install redis
+
+#    - run:
+#        working_directory: ~/alchemy-fr/Phraseanet
+#        command: 'sudo service memcached status || sudo service memcached start'
+
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
-        command: 'sudo service memcached status || sudo service memcached start; sudo
-          redis-cli ping >/dev/null 2>&1 || sudo service redis-server start; sudo
-          service mysql status || sudo service mysql start; sudo service rabbitmq-server
-          status || sudo service rabbitmq-server start; '
+        command: 'sudo redis-cli ping >/dev/null 2>&1 || sudo service redis-server start'
+
+    - run:
+        working_directory: ~/alchemy-fr/Phraseanet
+        command: 'sudo service mysql status || sudo service mysql start'
+
+    - run:
+        working_directory: ~/alchemy-fr/Phraseanet
+        command: 'sudo service rabbitmq-server status || sudo service rabbitmq-server start'
+
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
