@@ -1,9 +1,12 @@
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 form.phrasea_query input.query {
-  padding-left: 30px;
+  padding-left: 6px;
+  padding-right: 30px;
   font-size: 16px;
   margin: 0;
   width: 59%;
+  background-position: right 7px center;
+  background-image: url('#{$iconsPath}research-dark.png');
 }
 
 .searchFormWrapper {
@@ -40,11 +43,8 @@ form.phrasea_query input.query {
     color: #ffffff;
   }
   .advance_search_action .danger.danger_indicator {
-    color: #555;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px #2196f3;
+    background-image: url('#{$iconsPath}research-white.png');
   }
-
 }
 #adv_search {
   table {
@@ -104,12 +104,11 @@ form.phrasea_query input.query {
 .clksbas {
   margin-bottom: 15px;
   .checkbox {
-    padding-top: 0;
-    padding-left: 10px;
+    padding: 0;
   }
   input[type="checkbox"] {
     margin: 0;
-    float: none;
+    position: absolute;
   }
 }
 .deployer_toggle {

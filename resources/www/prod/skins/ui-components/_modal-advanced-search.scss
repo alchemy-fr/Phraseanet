@@ -6,10 +6,7 @@
     padding: 0;
 
     form.phrasea_query input.search.query {
-        padding-left: 6px;
         padding-right: 30px;
-        background-image: url("/assets/common/images/icons/research-dark.png");
-        background-position: right 7px center;
         height: 26px;
         width: 420px;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
@@ -148,6 +145,41 @@
             background: #dadada;
             color: #000000 !important;
         }
+    }
+    .base-section-title {
+        font-size: 15px;
+        margin-bottom: 20px;
+        .danger_indicator {
+            padding: 4px 5px;
+            border-radius: 6px;
+        }
+    }
+    .clksbas {
+        .base_indicator {
+            padding: 4px 8px;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background-color: #fff;
+            color: #000;
+        }
+        .custom_checkbox_label {
+            .custom_checkbox {
+                position: relative;
+                top: 0;
+                padding: 4px 8px;
+                color: #000;
+                background-color: #eb9300;
+                border-top-right-radius: 6px;
+                border-bottom-right-radius: 6px;
+            }
+            input:checked ~ .custom_checkbox {
+                background-color: #bbb;
+                color: #000;
+            }
+        }
+    }
+    .clksbas.danger .custom_checkbox_label .custom_checkbox {
+        background-color: #eb9300 !important;
     }
     .btn-toolbar .btn_dark {
         margin: 0 19px;

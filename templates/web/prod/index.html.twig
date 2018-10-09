@@ -2,24 +2,25 @@
     {% set unique_id = module.getRandom() %}
     {% for base in search_datas['bases'] %}
         {% set sbas_id = base['sbas_id'] %}
-        <div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom: 10px;">
+        <div class="sbas_list sbas_{{sbas_id}}">
             <input type="hidden" name="reference" value="{{sbas_id}}"/>
             <div class="clksbas">
                 <span  onclick="deploy(this, '.sbascont_{{sbas_id}}' );" class="deployer_toggle deployer_closed" ></span>
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox custom_checkbox_label" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <input type="checkbox" checked id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
                        onchange="clksbas(this, {{sbas_id}});" />
-                    <span class="custom_checkbox"></span>
                     
-                    <span class="danger_indicator">
+                    <span class="base_indicator">
                         {{sbas_id|sbas_labels(app)}}
+                    </span>
+                    <span class="custom_checkbox">
                         <span class="infos_sbas_{{sbas_id}}">
                             {{base["collections"]|length}}/{{base['collections']|length}}
                         </span>
                     </span>
                 </label>
             </div>
-            <div class="sbascont sbascont_{{sbas_id}}" style="display:none;">
+            <div class="sbascont sbascont_{{sbas_id}}" style="display:none; margin-bottom: 8px;">
                 <ul class="basChild_{{sbas_id}} basChild_list">
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
@@ -244,6 +245,9 @@
                                             {{ 'use truncation' | trans }}
                                         </label>
                                         <div id="ADVSRCH_SBAS_ZONE" class="sbasglob">
+                                            <label class="base-section-title">
+                                                <span class="danger_indicator">Date(s) from field(s)</span>
+                                            </label>
                                             <div class="btn-toolbar">
                                                 <input class="btn btn_dark" type="button"
                                                     value="{{ 'boutton:: selectionner toutes les bases' | trans }}" onclick="checkBases(true);" />
@@ -350,8 +354,7 @@
 
                                                     <div class="term_select">
                                                         <div class="term_select_wrapper">
-                                                            <select class="term_select_field" onchange="checkFilters(true);"
-                                                            style="vertical-align:middle; width:30%;">
+                                                            <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                     {% if field['type'] != 'date' %}
@@ -371,7 +374,7 @@
                                                     </div>
 
                                                     <div style="display:none;">
-                                                        <select class="term_select_multiple" size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle; width:99%;">
+                                                        <select class="term_select_multiple" size="8" multiple name="fields[]" style="vertical-align:middle; width:99%;">
                                                             <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                             {% for field_id, field in search_datas['fields'] %}
                                                                 {% if field['type'] != 'date' %}
