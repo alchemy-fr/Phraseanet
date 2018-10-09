@@ -64,7 +64,7 @@
 #  args:
 #    chdir: /vagrant/
 
-- name: Make exiftool executable
-  file:
-    path: /vagrant/vendor/phpexiftool/exiftool/exiftool
-    mode: 0755
+#- name: Make exiftool executable
+#  file:
+#    path: /vagrant/vendor/phpexiftool/exiftool/exiftool
+#    mode: 0755
