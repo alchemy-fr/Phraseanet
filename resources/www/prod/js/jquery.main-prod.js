@@ -192,15 +192,23 @@ function checkFilters(save) {
         });
 
         // display the number of selected colls for the databox
-        $('.infos_sbas_' + sbas_id).empty().append(nbSelectedColls + '/' + nbCols);
+        if (nbSelectedColls == nbCols) {
+            $('.infos_sbas_' + sbas_id).empty().append(nbCols);
+            $(this).siblings(".clksbas").removeClass("danger");
+            $(this).siblings(".clksbas").find(".custom_checkbox_label input").prop("checked", "checked");
+        }
+        else {
+            $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#fff;">' + nbSelectedColls + '</span> / ' + nbCols);
+            $(this).siblings(".clksbas").addClass("danger");
+        }
 
         // if one coll is not checked, show danger
         if(nbSelectedColls != nbCols) {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).addClass("danger");
+            $("#ADVSRCH_SBAS_ZONE").addClass("danger");
             danger = true;
         }
-        else {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).removeClass("danger");
+        else if (nbSelectedColls == nbCols && danger == false) {
+            $("#ADVSRCH_SBAS_ZONE").removeClass("danger");
         }
 
         if(nbSelectedColls == 0) {
@@ -1208,7 +1216,8 @@ $(document).ready(function () {
         previousVal = $(this).val();
     })
     .on('change', 'select.term_select_field', function () {
-        var $this = $(this);        
+        var $this = $(this);
+
         // if option is selected
         if($this.val()) {
             $this.siblings().prop('disabled', false);
@@ -1233,13 +1242,23 @@ $(document).ready(function () {
                 }
             });
         }
+        checkFilters(true);
     });
 
     
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
+        var rowOption = $this.siblings('.term_select_field');
         
+        $('.term_select_multiple option').each(function (index, el) {
+            var $el = $(el);
+            if(rowOption.val() == $el.val()) {
+                console.log('delete: ' + $el.val());
+                $el.prop('selected', false);
+            }
+        });
+        checkFilters(true);
         $this.closest('.term_select_wrapper').remove();
     });
 
