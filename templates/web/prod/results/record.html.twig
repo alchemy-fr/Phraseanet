@@ -5,7 +5,9 @@
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
      class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }}"
-     {% if settings.handle_dblclick %}onDblClick="openPreview(this, '{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');"{% endif %}>
+     {% if settings.handle_dblclick %}onDblClick="openPreview(this, '{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');"{% endif %}
+     data-record_id="{{ record.recordId }}"
+     >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.getTitle(app.locale) }}">

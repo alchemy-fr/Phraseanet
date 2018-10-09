@@ -54,6 +54,9 @@ class LazaretPathBooker
      */
     public function bookFile($filename, $suffix = '')
     {
+        // stripped all non-alpha-numeric in filename
+        $filename = preg_replace("/[^a-zA-Z0-9-_.]/", '', $filename);
+
         $output = $this->tmpPath .'/lzrt_' . substr($filename, 0, 3) . '_' . $suffix . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         $infos = pathinfo($output);
         $n = 0;

@@ -262,14 +262,10 @@
             var elements = [];
             var nbElement = 0;
 
-            if(nbProposals > 1){ // we got more than one proposals
+            if(nbProposals >= 1){
                 elements = $(".selected", container);
                 nbElement = elements.length;
-            }else if(nbProposals == 1){
-                elements = container.find(".records-subititution");
-                nbElement = 1
-            }
-            else{
+            }else{
                 return false;
             }
 
