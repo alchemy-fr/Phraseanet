@@ -125,12 +125,12 @@
         .status-section-title {
             position: relative;
             font-size: 15px;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
             .danger_indicator {
-                padding: 4px 5px;
+                padding: 4px 8px;
                 border-radius: 6px;
-                margin-left: -5px;
-              }
+                margin-left: -7px;
+            }
         }
     }
     .btn_dark {
@@ -150,7 +150,7 @@
         font-size: 15px;
         margin-bottom: 20px;
         .danger_indicator {
-            padding: 4px 5px;
+            padding: 4px 8px;
             border-radius: 6px;
         }
     }
