@@ -31,6 +31,10 @@ class APIClientsFormType extends AbstractType
         $builder->add('office-enabled', 'checkbox', [
             'label'        => 'Authorize Microsoft Office Plugin to connect.',
         ]);
+
+        $builder->add('adobe_cc-enabled', 'checkbox', [
+            'label'        => 'Authorize Adobe cc Plugin to connect.',
+        ]);
     }
 
     public function getName()
