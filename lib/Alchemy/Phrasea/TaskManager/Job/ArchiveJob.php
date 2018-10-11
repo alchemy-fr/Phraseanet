@@ -70,7 +70,7 @@ class ArchiveJob extends AbstractJob
     {
         $app = $data->getApplication();
 
-        $app['debug'] = true;
+        // $app['debug'] = true;
 
         $task = $data->getTask();
 
