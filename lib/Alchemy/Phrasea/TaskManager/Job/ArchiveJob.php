@@ -69,6 +69,9 @@ class ArchiveJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
+
+        // $app['debug'] = true;
+
         $task = $data->getTask();
 
         $settings = simplexml_load_string($task->getSettings());
@@ -233,15 +236,17 @@ class ArchiveJob extends AbstractJob
     {
         $nnew = 0;
 
-        if (false !== $sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) {
+        $magicfile = $magicmethod = null;
+
+        if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) !== false) {
 
             // test for magic file
             if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                 $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                if ($magicmethod == 'LOCK' && true === $app['filesystem']->exists($path . '/' . $magicfile)) {
-                    return;
-                } elseif ($magicmethod == 'UNLOCK' && false === $app['filesystem']->exists($path . '/' . $magicfile)) {
-                    return;
+                if ($magicmethod == 'LOCK' && ($app['filesystem']->exists($path . '/' . $magicfile) === true)) {
+                    return 0;
+                } elseif ($magicmethod == 'UNLOCK' && ($app['filesystem']->exists($path . '/' . $magicfile) === false)) {
+                    return 0;
                 }
             }
 
@@ -282,6 +287,16 @@ class ArchiveJob extends AbstractJob
                 $stat = stat($path . '/' . $file);
                 foreach (["size", "ctime", "mtime"] as $k) {
                     $n->setAttribute($k, $stat[$k]);
+                }
+                // special file
+                if($file == '.phrasea.xml') {
+                    $n->setAttribute('match', '*');
+                }
+                // special file
+                if($file === $magicfile) {
+                    $n->setAttribute('match', '*');
+                    $node->setAttribute('magicfile', $magicfile);
+                    $node->setAttribute('magicmethod', $magicmethod);
                 }
                 $nnew++;
             }
@@ -463,12 +478,12 @@ class ArchiveJob extends AbstractJob
                 // this is a file
                 if (!$n->getAttribute('match')) {
                     // because match can be set before
-                    if ($name == '.phrasea.xml') {
-                        // special file(s) always ok
-                        $n->setAttribute('match', '*');
-                    } else {
+                    //if ($name == '.phrasea.xml') {
+                    //    // special file(s) always ok
+                    //    $n->setAttribute('match', '*');
+                    //} else {
                         $this->checkMatch($dom, $n, $tmask);
-                    }
+                    //}
                 }
             }
         }
