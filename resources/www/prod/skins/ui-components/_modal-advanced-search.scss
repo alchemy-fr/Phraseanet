@@ -156,7 +156,7 @@
     }
     .clksbas {
         .base_indicator {
-            padding: 4px 8px;
+            padding: 6px 8px 2px;
             border-top-left-radius: 6px;
             border-bottom-left-radius: 6px;
             background-color: #fff;
@@ -168,18 +168,19 @@
                 top: 0;
                 padding: 4px 8px;
                 color: #000;
-                background-color: #eb9300;
+                background-color: #ffffff;
                 border-top-right-radius: 6px;
                 border-bottom-right-radius: 6px;
             }
             input:checked ~ .custom_checkbox {
-                background-color: #bbb;
+                background-color: #d7edff;
                 color: #000;
             }
         }
     }
     .clksbas.danger .custom_checkbox_label .custom_checkbox {
-        background-color: #eb9300 !important;
+        background-color: #ffffff !important;
+        border-left: 1px solid #b3b3b3;
     }
     .btn-toolbar .btn_dark {
         margin: 0 19px;

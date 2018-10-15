@@ -198,7 +198,7 @@ function checkFilters(save) {
             $(this).siblings(".clksbas").find(".custom_checkbox_label input").prop("checked", "checked");
         }
         else {
-            $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#fff;">' + nbSelectedColls + '</span> / ' + nbCols);
+            $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
             $(this).siblings(".clksbas").addClass("danger");
         }
 

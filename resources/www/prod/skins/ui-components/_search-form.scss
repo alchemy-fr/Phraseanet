@@ -110,6 +110,9 @@ form.phrasea_query input.query {
     margin: 0;
     position: absolute;
   }
+  label {
+    font-weight: bold;
+  }
 }
 .deployer_toggle {
   margin-right: 15px;
@@ -121,9 +124,7 @@ form.phrasea_query input.query {
   margin: 0 0 0 63px;
   list-style: none;
   width: calc(100% - 70px);
-  max-height: 330px;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 
 .clkbas {
