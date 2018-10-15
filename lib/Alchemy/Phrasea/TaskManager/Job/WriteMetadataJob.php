@@ -65,6 +65,7 @@ class WriteMetadataJob extends AbstractJob
         $settings = simplexml_load_string($jobData->getTask()->getSettings());
         $clearDoc = (bool) (string) $settings->cleardoc;
         $MWG = (bool) (string) $settings->mwg;
+        $app =  $jobData->getApplication();
 
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
@@ -172,9 +173,31 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($subdefs as $name => $file) {
+                    $xResolution = $yResolution = 72;
+                    foreach($app->getMediaFromUri($file)->getMetadatas() as $meta){
+                        if(preg_match('/XResolution/', $meta->getTag()->getTagName())){
+                            $xResolution = floatval($meta->getValue()->asString());
+                        }
+
+                        if(preg_match('/YResolution/', $meta->getTag()->getTagName())){
+                            $yResolution = floatval($meta->getValue()->asString());
+                        }
+                    }
+
                     $writer->erase($name != 'document' || $clearDoc, true);
                     try {
                         $writer->write($file, $metadata);
+
+                        $image = $app['imagine']->open($file);
+
+                        if(class_exists('\Gmagick')) {
+                            $imagick = $image->getGmagick();
+                        }else {
+                            $imagick = $image->getImagick();
+                        }
+
+                        $imagick->setimageresolution($xResolution, $yResolution);
+                        $imagick->writeimage();
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
