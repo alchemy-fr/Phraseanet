@@ -173,7 +173,7 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($subdefs as $name => $file) {
-                    $xResolution = $yResolution = 72;
+                    $xResolution = $yResolution = 0;
                     foreach($app->getMediaFromUri($file)->getMetadatas() as $meta){
                         if(preg_match('/XResolution/', $meta->getTag()->getTagName())){
                             $xResolution = floatval($meta->getValue()->asString());
@@ -196,8 +196,10 @@ class WriteMetadataJob extends AbstractJob
                             $imagick = $image->getImagick();
                         }
 
-                        $imagick->setimageresolution($xResolution, $yResolution);
-                        $imagick->writeimage();
+                        if($xResolution != 0 && $yResolution != 0){
+                            $imagick->setimageresolution($xResolution, $yResolution);
+                            $imagick->writeimage();
+                        }
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
