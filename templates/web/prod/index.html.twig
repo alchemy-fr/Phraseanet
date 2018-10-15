@@ -346,12 +346,12 @@
                                                     <label for="multiple-terms" class="radio inline custom_checkbox_label">
                                                         <input type="radio" class="multiple_terms" name="terms_type" checked="checked" id="multiple-terms"/>
                                                         <span class="custom_radio"></span>
-                                                        {{ 'Contains all terms' | trans }}
+                                                        {{ 'All these conditions' | trans }}
                                                     </label>
                                                     <label for="single-terms" class="radio inline custom_checkbox_label">
                                                         <input type="radio" class="single_terms" name="terms_type" id="single-terms"/>
                                                         <span class="custom_radio"></span>
-                                                        {{ 'One of these terms' | trans }}
+                                                        {{ 'One of these conditions' | trans }}
                                                     </label>
 
                                                     <div class="term_select">
@@ -366,7 +366,7 @@
                                                             </select>
                                                             <select disabled style="vertical-align:middle; width: 23%;">
                                                                 <option value="contains">{{ 'Contains' | trans }}</option>
-                                                                <option value="excludes">{{ 'Excludes' | trans }}</option>
+                                                                <option value="equals">{{ 'Equals' | trans }}</option>
                                                             </select>
                                                             <input disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
                                                             <input class="term_deleter" style="margin-bottom: 4px;">
