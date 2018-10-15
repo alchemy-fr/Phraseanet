@@ -1,6 +1,6 @@
 {% macro bas_list(module, search_datas) %}
     {% set unique_id = module.getRandom() %}
-    <div style="max-height: 400px; overflow-x: hidden;">
+    <div style="max-height: 57vh; overflow-x: hidden;">
     {% for base in search_datas['bases'] %}
         {% set sbas_id = base['sbas_id'] %}
         <div class="sbas_list sbas_{{sbas_id}}">
