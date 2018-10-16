@@ -1245,6 +1245,7 @@ $(document).ready(function () {
                 }
             });
         }
+        $this.blur();
         checkFilters(true);
     });
 
