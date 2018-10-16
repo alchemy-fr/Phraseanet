@@ -120,7 +120,9 @@
     #sbasfiltercont {
         margin-top: 60px;
         padding-left: 20px;
+        padding-bottom: 20px;
         border-left: 1px solid #7b7b7b;
+        height: calc(100% - 60px);
         
         .status-section-title {
             position: relative;
@@ -391,5 +393,10 @@
         form.phrasea_query input.search.query {
             width: calc(100% - 146px);
         }
+    }
+}
+@media screen and (max-width: 1024px) {
+    .clkbas {
+        width: 50%;
     }
 }
