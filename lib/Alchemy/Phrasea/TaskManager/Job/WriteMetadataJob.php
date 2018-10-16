@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
+use MediaAlchemyst\Specification\Image;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
@@ -83,12 +84,14 @@ class WriteMetadataJob extends AbstractJob
                 $type = $record->getType();
 
                 $subdefs = [];
+                $specs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
                     $write_document = (($token & PhraseaTokens::WRITE_META_DOC) && $name == 'document');
                     $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && $this->isSubdefMetadataUpdateRequired($databox, $type, $name));
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                         $subdefs[$name] = $subdef->getRealPath();
+                        $specs[$name] = $subdef->getDataboxSubdef()->getSpecs();
                     }
                 }
 
@@ -174,29 +177,26 @@ class WriteMetadataJob extends AbstractJob
 
                 foreach ($subdefs as $name => $file) {
                     $xResolution = $yResolution = 0;
-                    foreach($app->getMediaFromUri($file)->getMetadatas() as $meta){
-                        if(preg_match('/XResolution/', $meta->getTag()->getTagName())){
-                            $xResolution = floatval($meta->getValue()->asString());
-                        }
-
-                        if(preg_match('/YResolution/', $meta->getTag()->getTagName())){
-                            $yResolution = floatval($meta->getValue()->asString());
-                        }
+                    if( $specs[$name] instanceof Image){
+                        $xResolution = $specs[$name]->getResolutionX();
+                        $yResolution = $specs[$name]->getResolutionY();
                     }
 
                     $writer->erase($name != 'document' || $clearDoc, true);
                     try {
                         $writer->write($file, $metadata);
 
+                        /** @var \Imagine\Imagick\Image $image */
                         $image = $app['imagine']->open($file);
 
                         if(class_exists('\Gmagick')) {
                             $imagick = $image->getGmagick();
                         }else {
+                            /** @var \Imagick $imagick */
                             $imagick = $image->getImagick();
                         }
 
-                        if($xResolution != 0 && $yResolution != 0){
+                        if($xResolution != 0 && $yResolution != 0 && $name != 'document'){
                             $imagick->setimageresolution($xResolution, $yResolution);
                             $imagick->writeimage();
                         }
