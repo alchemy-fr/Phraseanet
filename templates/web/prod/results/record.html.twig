@@ -13,7 +13,7 @@
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.getTitle(app.locale) }}">
-                {{ record.getTitle(app.locale)|highlight }}
+                {{ record.getTitle(app.locale)|e|highlight }}
             </div>
             <div class="status">
                 {% for flag in record_flags(record) %}
