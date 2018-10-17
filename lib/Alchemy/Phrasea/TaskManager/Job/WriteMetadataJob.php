@@ -91,7 +91,9 @@ class WriteMetadataJob extends AbstractJob
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                         $subdefs[$name] = $subdef->getRealPath();
-                        $specs[$name] = $subdef->getDataboxSubdef()->getSpecs();
+                        if($name != 'document'){
+                            $specs[$name] = $subdef->getDataboxSubdef()->getSpecs();
+                        }
                     }
                 }
 
