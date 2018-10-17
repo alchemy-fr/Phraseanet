@@ -36,12 +36,34 @@
   args:
     chdir: /vagrant/
 
+- name: Creates DB TMP directory
+  file: path=/tmp/database state=directory
+  when: mariadb.dump
+
+- name: DB | Download
+  get_url:
+    url: "{{ mariadb.dump }}"
+    dest: /tmp/database/SAMPLE_DB.zip
+    timeout: 7200
+  when: mariadb.dump
+
+- name: ffmpeg | Unzip
+  shell: unzip SAMPLE_DB.zip -d /tmp/database/
+  args:
+    chdir: "/tmp/database"
+  when: mariadb.dump
+
+- name: mariadb | Import dump
+  mysql_db: name={{ mariadb.alt_databox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target="/tmp/database/db_alch_dataset_parade_v0.1/base parade db_elastic_test_base_parade09-10-2017.sql"
+  when: mariadb.dump
+
 - name: Create extra databox
   become: yes
   become_user: vagrant
   shell: 'php bin/console databox:create {{ mariadb.alt_databox_db }} admin@{{ hostname }}.vb'
   args:
     chdir: /vagrant/
+  when: mariadb.dump == ""
 
 - name: Enable debugger for host IP addresses
   shell: php bin/setup system:config add debugger.allowed-ips "{{ item }}"

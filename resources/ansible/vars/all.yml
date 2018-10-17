@@ -21,6 +21,7 @@ server:
         - xpdf
         - libav-tools
         - gpac
+        - unzip
     timezone: UTC
     locales:
         - en_GB.UTF-8
@@ -52,7 +53,7 @@ mariadb:
     alt_databox_db: db_alt
     user: phraseanet
     password: phraseanet
-    dump: ''
+    dump: ''   #'https://s3-eu-west-1.amazonaws.com/alchemy-datasets-test/db_alch_dataset_parade_v0.2.zip'
 elasticsearch:
     install: '1'
     port: '9200'
@@ -70,10 +71,8 @@ php:
         - 'php{{ phpversion }}-mcrypt'
         - 'php{{ phpversion }}-enchant'
         - 'php{{ phpversion }}-gd'
-        - 'php{{ phpversion }}-memcache'
         - 'php{{ phpversion }}-xml'
         - 'php{{ phpversion }}-xmlrpc'
-        - 'php{{ phpversion }}-memcached'
         - 'php{{ phpversion }}-mbstring'
         - 'php{{ phpversion }}-curl'
         - 'php{{ phpversion }}-mysql'
@@ -81,11 +80,11 @@ php:
         - 'php{{ phpversion }}-zip'
         - 'php{{ phpversion }}-sqlite3'
         - 'php{{ phpversion }}-bcmath'
+        - 'php-redis'
         - 'php-pear'
+        - 'php-zmq'
+        - 'php-amqp'
         - 'php{{ phpversion }}-dev'
-    pecl_packages:
-        - {name: zmq, package: zmq-beta}
-        - {name: amqp, package: amqp-1.9.3}
 node:
     install: '1'
     version: '9.4.0'
