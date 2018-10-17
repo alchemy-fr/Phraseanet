@@ -179,7 +179,7 @@ class WriteMetadataJob extends AbstractJob
 
                 foreach ($subdefs as $name => $file) {
                     $xResolution = $yResolution = 0;
-                    if( $specs[$name] instanceof Image){
+                    if( $name != 'document' && $specs[$name] instanceof Image){
                         $xResolution = $specs[$name]->getResolutionX();
                         $yResolution = $specs[$name]->getResolutionY();
                     }
