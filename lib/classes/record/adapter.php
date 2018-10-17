@@ -1068,6 +1068,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_xml($xml);
         unset($xml);
 
+        $this->write_metas();
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
