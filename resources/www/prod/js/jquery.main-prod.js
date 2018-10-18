@@ -686,13 +686,13 @@ function loadFacets(facets) {
                         }
                     });
 
-                    ul.append('<button class="see_more_btn" data-facet="facet_' + i + '">See more</button>');
-                    $('.see_more_btn').on('click', function() {
-                        li_s.show();
-                        $(this).hide();
-                        return false;
-                    });
+                    ul.append('<button class="see_more_btn">See more</button>');
                 }
+            });
+            $('.see_more_btn').on('click', function() {
+                $(this).closest('ul').children().show();
+                $(this).hide();
+                return false;
             });
         });
 }
