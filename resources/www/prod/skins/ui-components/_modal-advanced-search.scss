@@ -94,13 +94,13 @@
             }
         }
     }
-    .btn.btn_lightgrey {
+    .reset_button {
         display: inline-block !important;
         font-weight: 500 !important;
         color: #4b4b4b !important;
         font-size: 14px !important;
         background: #e2e2e2 url("/assets/common/images/icons/refresh-darkgrey.png") no-repeat left 13px center;
-        width: 117px !important;
+        min-width: 117px !important;
         height: 30px;
         padding-left: 40px;
         background-size: 18px;
