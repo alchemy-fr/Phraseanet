@@ -674,8 +674,25 @@ function loadFacets(facets) {
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
-            _.each($('#proposals').find('.fancytree-expanded'), function (element) {
+            _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
                 $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+
+                var li_s = $(element).next().children('li');
+                var ul = $(element).next();
+                if(li_s.length > 5) {
+                    _.each(li_s, function(el, i) {
+                        if(i > 4) {
+                            $(el).hide();
+                        }
+                    });
+
+                    ul.append('<button class="see_more_btn">See more</button>');
+                }
+            });
+            $('.see_more_btn').on('click', function() {
+                $(this).closest('ul').children().show();
+                $(this).hide();
+                return false;
             });
         });
 }
