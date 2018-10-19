@@ -66,7 +66,6 @@ class WriteMetadataJob extends AbstractJob
         $settings = simplexml_load_string($jobData->getTask()->getSettings());
         $clearDoc = (bool) (string) $settings->cleardoc;
         $MWG = (bool) (string) $settings->mwg;
-        $app =  $jobData->getApplication();
 
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
