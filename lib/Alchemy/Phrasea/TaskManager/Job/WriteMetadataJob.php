@@ -178,30 +178,17 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($subdefs as $name => $file) {
-                    $xResolution = $yResolution = 0;
+
                     if( $name != 'document' && $specs[$name] instanceof Image){
-                        $xResolution = $specs[$name]->getResolutionX();
-                        $yResolution = $specs[$name]->getResolutionY();
+                        $resolution['xresolution'] = $specs[$name]->getResolutionX();
+                        $resolution['yresolution'] = $specs[$name]->getResolutionY();
+                    }else{
+                        $resolution = [];
                     }
 
                     $writer->erase($name != 'document' || $clearDoc, true);
                     try {
-                        $writer->write($file, $metadata);
-
-                        /** @var \Imagine\Imagick\Image $image */
-                        $image = $app['imagine']->open($file);
-
-                        if(class_exists('\Gmagick')) {
-                            $imagick = $image->getGmagick();
-                        }else {
-                            /** @var \Imagick $imagick */
-                            $imagick = $image->getImagick();
-                        }
-
-                        if($xResolution != 0 && $yResolution != 0 && $name != 'document'){
-                            $imagick->setimageresolution($xResolution, $yResolution);
-                            $imagick->writeimage();
-                        }
+                        $writer->write($file, $metadata, null, $resolution);
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {
