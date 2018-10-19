@@ -176,7 +176,7 @@ class RegistrationManager
         }
 
         if ($isTimeLimited && $isOutDated && $isPending) {
-            $userRegistration['type'] = 'out-time';
+            $userRegistration['type'] = 'out-dated';
 
             return  $userRegistration;
         }

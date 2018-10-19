@@ -201,6 +201,7 @@ class AccountController extends Controller
      */
     public function accountAccess()
     {
+        //var_dump($this->getRegistrationManager()->getRegistrationSummary($this->getAuthenticatedUser()));die;
         return $this->render('account/access.html.twig', [
             'inscriptions' => $this->getRegistrationManager()->getRegistrationSummary($this->getAuthenticatedUser())
         ]);
