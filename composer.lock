@@ -12,7 +12,7 @@
             "version": "6.0.039",
             "source": {
                 "type": "git",
-                "url": "git@github.com:alchemy-fr/tcpdf-clone.git",
+                "url": "https://github.com/alchemy-fr/tcpdf-clone.git",
                 "reference": "2ba0248a7187f1626df6c128750650416267f0e7"
             },
             "dist": {
@@ -135,7 +135,7 @@
             "version": "0.3.6",
             "source": {
                 "type": "git",
-                "url": "git@github.com:alchemy-fr/embed-bundle.git",
+                "url": "https://github.com/alchemy-fr/embed-bundle.git",
                 "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351"
             },
             "dist": {
@@ -422,16 +422,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95"
+                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/7372ca4e43473328bf06bca810558fbad7bb2f95",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
+                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
                 "shasum": ""
             },
             "require": {
@@ -491,7 +491,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2017-05-18 19:04:04"
+            "time": "2018-10-19 13:28:17"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -3062,12 +3062,12 @@
             "version": "0.6.x-dev",
             "source": {
                 "type": "git",
-                "url": "git@github.com:alchemy-fr/imagine.git",
+                "url": "https://github.com/alchemy-fr/Imagine.git",
                 "reference": "6605d13e3b24f335fe80099c193546671158c041"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/imagine/zipball/6605d13e3b24f335fe80099c193546671158c041",
+                "url": "https://api.github.com/repos/alchemy-fr/Imagine/zipball/6605d13e3b24f335fe80099c193546671158c041",
                 "reference": "6605d13e3b24f335fe80099c193546671158c041",
                 "shasum": ""
             },
@@ -3421,7 +3421,7 @@
             "target-dir": "JMS/TranslationBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:alchemy-fr/JMSTranslationBundle.git",
+                "url": "https://github.com/alchemy-fr/JMSTranslationBundle.git",
                 "reference": "aff66e65736d9fddbd17cac5a5f0c6fd044c6a92"
             },
             "dist": {
@@ -5001,7 +5001,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/9deddd9fc64853356d688a1514318abb2d9f3d4b",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/cba9a022f6e44e3a8779874570372c56cd51b145",
                 "reference": "ccffea64be8575eaa7ad09cd16dfeedfa4711607",
                 "shasum": ""
             },
