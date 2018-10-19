@@ -178,12 +178,11 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($subdefs as $name => $file) {
+                    $resolution = [];
 
                     if( $name != 'document' && $specs[$name] instanceof Image){
-                        $resolution['xresolution'] = $specs[$name]->getResolutionX();
-                        $resolution['yresolution'] = $specs[$name]->getResolutionY();
-                    }else{
-                        $resolution = [];
+                        $resolution[] = $specs[$name]->getResolutionX();  //xresolution
+                        $resolution[] = $specs[$name]->getResolutionY();  //yresolution
                     }
 
                     $writer->erase($name != 'document' || $clearDoc, true);
