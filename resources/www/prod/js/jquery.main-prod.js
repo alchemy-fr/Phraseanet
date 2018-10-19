@@ -152,6 +152,7 @@ function checkFilters(save) {
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
+    var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
@@ -161,6 +162,7 @@ function checkFilters(save) {
 
     // hide all the fields in the "fields" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
+    $("option.dbx", fieldsSelectFake).hide().prop("disabled", true);
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
@@ -224,6 +226,7 @@ function checkFilters(save) {
             $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
             $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
+            $(".db_"+sbas_id, fieldsSelectFake).show().prop("disabled", false);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
             // show again the relevant fields in "date field" select
@@ -671,8 +674,25 @@ function loadFacets(facets) {
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
-            _.each($('#proposals').find('.fancytree-expanded'), function (element) {
+            _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
                 $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+
+                var li_s = $(element).next().children('li');
+                var ul = $(element).next();
+                if(li_s.length > 5) {
+                    _.each(li_s, function(el, i) {
+                        if(i > 4) {
+                            $(el).hide();
+                        }
+                    });
+
+                    ul.append('<button class="see_more_btn">See more</button>');
+                }
+            });
+            $('.see_more_btn').on('click', function() {
+                $(this).closest('ul').children().show();
+                $(this).hide();
+                return false;
             });
         });
 }
@@ -1242,6 +1262,7 @@ $(document).ready(function () {
                 }
             });
         }
+        $this.blur();
         checkFilters(true);
     });
 

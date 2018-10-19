@@ -238,7 +238,7 @@
 
 
                         <div class="controls controls-row adv_options" style="display:none;">
-                            <table style="width:100%; table-layout:fixed;">
+                            <table style="width:100%; height:100%; table-layout:fixed;">
                                 <tr>
                                     <td style="width:50%; vertical-align:top;">
                                         {% set useTruncation = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'use_truncation') %}
@@ -400,7 +400,7 @@
                                                         </div>
                                                     </label>
                                                     <span>
-                                                        <select name="date_field" class="input-medium" onchange="checkFilters(true);">
+                                                        <select name="date_field" class="input-medium" onchange="checkFilters(true);" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}

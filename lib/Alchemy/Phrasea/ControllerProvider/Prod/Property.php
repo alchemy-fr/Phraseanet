@@ -25,7 +25,9 @@ class Property implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.prod.property'] = $app->share(function (PhraseaApplication $app) {
-            return (new PropertyController($app));
+            return (new PropertyController($app))
+                ->setDataboxLoggerLocator($app['phraseanet.logger'])
+            ;
         });
     }
 
