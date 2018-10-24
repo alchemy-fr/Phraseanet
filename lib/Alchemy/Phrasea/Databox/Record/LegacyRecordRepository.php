@@ -148,7 +148,7 @@ class LegacyRecordRepository implements RecordRepository
         }
 
         if($max_items){
-            $builder->having('s.ord >= '. $offset .' and ord < '. ($offset + $max_items))
+            $builder->having('s.ord >= '. $offset .' and s.ord < '. ($offset + $max_items))
                     ->addOrderBy('s.ord', 'ASC');
         }
 
