@@ -129,67 +129,30 @@ class LegacyRecordRepository implements RecordRepository
         $connection = $this->databox->get_connection();
 
         $selects = $this->getRecordSelects();
-        array_unshift($selects, 's.rid_parent as story_id');
+        array_unshift($selects, 's.rid_parent as story_id', 's.ord');
 
-        $sql = null;
-        $params = [];
-        $types = [];
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->select($selects)
+            ->from('regroup', 's')
+            ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
+            ->where(
+                's.rid_parent IN (:storyIds)',
+                'r.parent_record_id = 0'
+            )
+            ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
+        ;
+
+        if (null !== $user) {
+            $this->addUserFilter($builder, $user);
+        }
 
         if($max_items){
-
-            foreach($storyIds as $key => $storyId){
-                $builder = $connection->createQueryBuilder();
-                $builder
-                    ->select($selects)
-                    ->from('regroup', 's')
-                    ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
-                    ->where(
-                        's.rid_parent = :storyId'.$key,
-                        'r.parent_record_id = 0'
-                    )
-                    ->setParameter('storyId'.$key, $storyId)
-                ;
-
-                if (null !== $user) {
-                    $this->addUserFilter($builder, $user);
-                }
-
-                $builder->addOrderBy('s.ord', 'ASC')
-                    ->setFirstResult($offset)
-                    ->setMaxResults($max_items);
-
-                if(is_null($sql)){
-                    $sql = '('. $builder->getSQL() .')';
-                }else{
-                    $sql = $sql. ' UNION ' . '('. $builder->getSQL(). ')';
-                }
-
-                $params = array_merge($params, $builder->getParameters());
-                $types = array_merge($types, $builder->getParameterTypes());
-
-            }
-
-            $data = $connection->fetchAll($sql, $params, $types);
-
-        }else{
-            $builder = $connection->createQueryBuilder();
-            $builder
-                ->select($selects)
-                ->from('regroup', 's')
-                ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
-                ->where(
-                    's.rid_parent IN (:storyIds)',
-                    'r.parent_record_id = 0'
-                )
-                ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
-            ;
-
-            if (null !== $user) {
-                $this->addUserFilter($builder, $user);
-            }
-
-            $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
+            $builder->having('s.ord >= '. $offset .' and ord < '. ($offset + $max_items))
+                    ->addOrderBy('s.ord', 'ASC');
         }
+
+        $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
 
         $records = $this->mapRecordsFromResultSet($data);
 
