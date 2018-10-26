@@ -1180,7 +1180,7 @@ class V1Controller extends Controller
             $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request),
-            $this->getStorieMaxItems($request)
+            (int)$request->get('story_max_items')?:10
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1352,21 +1352,6 @@ class V1Controller extends Controller
         }
 
         return $resultView;
-    }
-
-    /**
-     * @param Request $request
-     * @return int|null
-     */
-    private function getStorieMaxItems(Request $request)
-    {
-        $story_max_items = null;
-
-        if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
-            $story_max_items = (int)$request->get('story_max_items')?:10;
-        }
-
-        return $story_max_items;
     }
 
     /**
@@ -1649,14 +1634,10 @@ class V1Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
-        $offset = 0;
-        $max_items = null;
-        if($request->getAcceptableContentTypes() == V1::$extendedContentTypes['json']){
-            $max_items = (int)$request->get('max_items')?:10;
-            $page = (int)$request->get('page')?:1;
+        $max_items = (int)$request->get('max_items')?:10;
+        $page = (int)$request->get('page')?:1;
 
-            $offset = $max_items * ($page - 1) + 1;
-        }
+        $offset = $max_items * ($page - 1) + 1;
 
         $caption = $story->get_caption();
 
