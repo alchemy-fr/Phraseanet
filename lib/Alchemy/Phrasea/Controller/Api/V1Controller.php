@@ -1264,7 +1264,7 @@ class V1Controller extends Controller
 
                 $selections = $this->findDataboxById($databoxId)
                     ->getRecordRepository()
-                    ->findChildren($storyIds, $user,0, $story_max_items);
+                    ->findChildren($storyIds, $user,1, $story_max_items);
                 $children[$databoxId] = array_combine($storyIds, $selections);
             }
 
@@ -1655,7 +1655,7 @@ class V1Controller extends Controller
             $max_items = (int)$request->get('max_items')?:10;
             $page = (int)$request->get('page')?:1;
 
-            $offset = $max_items * ($page - 1);
+            $offset = $max_items * ($page - 1) + 1;
         }
 
         $caption = $story->get_caption();
