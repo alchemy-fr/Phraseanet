@@ -352,12 +352,12 @@
                                                     </label>
                                                     
                                                     <label for="multiple-terms" class="radio inline custom_checkbox_label">
-                                                        <input type="radio" class="multiple_terms" name="terms_type" checked="checked" id="multiple-terms"/>
+                                                        <input type="radio" class="multiple_terms" name="must_match" value="ALL" checked="checked" id="multiple-terms"/>
                                                         <span class="custom_radio"></span>
                                                         {{ 'All these conditions' | trans }}
                                                     </label>
                                                     <label for="single-terms" class="radio inline custom_checkbox_label">
-                                                        <input type="radio" class="single_terms" name="terms_type" id="single-terms"/>
+                                                        <input type="radio" class="single_terms" name="must_match" value="ONE" id="single-terms"/>
                                                         <span class="custom_radio"></span>
                                                         {{ 'One of these conditions' | trans }}
                                                     </label>
