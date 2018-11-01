@@ -2128,7 +2128,7 @@ class ThesaurusController extends Controller
                                 $sy = $sy_list->appendChild($ret->createElement("sy"));
 
                                 $sy->setAttribute("id", $n->getAttribute("id"));
-                                $sy->setAttribute("v", $t = $n->getAttribute("v"));
+                                $sy->setAttribute("v", htmlspecialchars($t = $n->getAttribute("v")));
                                 $sy->setAttribute("w", $n->getAttribute("w"));
                                 $sy->setAttribute("hits", '');
                                 $sy->setAttribute("lng", $lng = $n->getAttribute("lng"));
@@ -2177,7 +2177,7 @@ class ThesaurusController extends Controller
                                 $firstsy = $goodsy = null;
                                 for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                                     if ($n2->nodeName == "sy") {
-                                        $t = $n2->getAttribute("v");
+                                        $t = htmlspecialchars($n2->getAttribute("v"));
                                         if (! $firstsy) {
                                             $firstsy = $t;
                                         }

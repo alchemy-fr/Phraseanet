@@ -19,7 +19,7 @@
                 <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
               {% endif %}
               <img src='/assets/common/images/icons/basket.png' title=''/>
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -99,7 +99,7 @@
               {% else %}
                 <img src='/assets/common/images/icons/basket.png' title=''/>
               {% endif %}
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -208,7 +208,7 @@
             <span>
             {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
             <img src='/assets/common/images/icons/story.png' title=''/>
-            {{ story.getRecord(app).get_title() }}
+            {{ story.getRecord(app).get_title()|e }}
             </span>
           </a>
           <div class="menu">
