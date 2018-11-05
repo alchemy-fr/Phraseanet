@@ -45,7 +45,7 @@
         "phpexiftool/exiftool": "10.10",
         "ramsey/uuid": "^3.0",
         "roave/security-advisories": "dev-master",
-        "sensio/framework-extra-bundle": "^5.1",
+
         "simple-bus/doctrine-orm-bridge": "^4.0",
         "simple-bus/jms-serializer-bridge": "^1.0",
         "simple-bus/message-bus": "^2.1",
@@ -56,7 +56,7 @@
         "symfony/flex": "^1.1",
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
-        "symfony/http-foundation": "*",
+
         "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "*",
         "symfony/process": "*",
@@ -66,7 +66,7 @@
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/web-link": "*",
-        "symfony/yaml": "*",
+
         "themattharris/tmhoauth": "~0.7",
         "twig/extensions": "^1.5",
         "twig/twig": "^2.5",
