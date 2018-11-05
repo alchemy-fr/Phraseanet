@@ -1217,7 +1217,7 @@ class databox extends base implements ThumbnailedElement
             if ($domct !== false) {
                 $nodesToDel = [];
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if(!($n->getAttribute('delbranch'))){
+                    if($n->nodeType == XML_ELEMENT_NODE && !($n->getAttribute('delbranch'))){
                         $nodesToDel[] = $n;
                     }
                 }

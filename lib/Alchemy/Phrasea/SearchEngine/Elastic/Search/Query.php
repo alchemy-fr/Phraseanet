@@ -27,8 +27,9 @@ class Query
     {
         $query = $this->root->buildQuery($context);
         if ($query === null) {
-            $query = [];
-            $query['bool']['must'] = [];
+            //$query = ['bool'=> ['must' => []]];
+            // a null query shoud return no results !
+            $query = ['constant_score'=> ['filter' => new \stdClass]];
         }
 
         return $query;
