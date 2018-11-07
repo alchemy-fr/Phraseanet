@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     working_directory: ~/alchemy-fr/Phraseanet
-    parallelism: 2
+    parallelism: 1
     shell: /bin/bash --login
     environment:
       CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
