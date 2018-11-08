@@ -21,7 +21,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 
-class ApiReportController extends BaseReportController
+class ApiReportController
 {
     use JsonBodyAware;
 

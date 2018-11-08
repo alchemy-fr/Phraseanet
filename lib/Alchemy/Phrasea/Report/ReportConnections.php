@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 
-class ReportConnections extends Report implements ReportInterface
+class ReportConnections extends Report
 {
     private $appKey;
 
@@ -31,12 +31,6 @@ class ReportConnections extends Report implements ReportInterface
         return $this->columnTitles;
     }
 
-    public function getSql()
-    {
-        $this->computeVars();
-        return $this->sql;
-    }
-
     public function getKeyName()
     {
         $this->computeVars();
@@ -49,15 +43,6 @@ class ReportConnections extends Report implements ReportInterface
         return $this->name;
     }
 
-    public function getSqlParms()
-    {
-        return [
-            ':site' => $this->appKey,
-            ':dmin' => $this->parms['dmin'],
-            ':dmax' => $this->parms['dmax']
-        ];
-    }
-
     public function setAppKey($appKey)
     {
         $this->appKey = $appKey;
@@ -65,10 +50,19 @@ class ReportConnections extends Report implements ReportInterface
         return $this;
     }
 
+    public function getAllRows($callback)
+    {
+        $this->computeVars();
+        $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
+        while (($row = $stmt->fetch())) {
+            $callback($row);
+        }
+        $stmt->closeCursor();
+    }
 
     private function computeVars()
     {
-        if(!is_null($this->sql)) {
+        if(!is_null($this->name)) {
             // vars already computed
             return;
         }
@@ -136,13 +130,20 @@ class ReportConnections extends Report implements ReportInterface
                 break;
         }
 
-        $this->sql = str_replace(
-            '{{GlobalFilter}}',
-            "`site` =  :site AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
-            // here : diabled "site", to test on an imported dataset from another instance
-            // "(TRUE OR `site` =  :site) AND !ISNULL(`usrid`) AND `date` >= :dmin AND `date` <= :dmax",
-            $sql
-        );
+        $filter = "`usrid`>0";
+        // next line : comment to disable "site", to test on an imported dataset from another instance
+        // . "  AND `site` = " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+
+        if($this->parms['dmin']) {
+            $filter .= "\n  AND `log`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
+        }
+        if($this->parms['dmax']) {
+            $filter .= "\n  AND `log`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+        }
+
+        $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($this->sql, true)), FILE_APPEND);
     }
 
 }

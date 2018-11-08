@@ -31,39 +31,31 @@ abstract class Report
     {
         $this->databox = $databox;
         $this->parms = $parms;
+
+        $this->databox->get_connection()->getWrappedConnection()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
     }
 
     abstract function getName();
 
-    abstract function getSql();
-
-    abstract function getSqlParms();
-
     abstract function getColumnTitles();
 
     abstract function getKeyName();
+
+    abstract function getAllRows($callback);
 
     protected function getDatabox()
     {
         return $this->databox;
     }
 
-    public function getRows()
-    {
-        return new ReportRows(
-            $this->databox->get_connection(),
-            $this->getSql(),
-            $this->getSqlParms(),
-            $this->getKeyName()
-        );
-    }
-
     public function getContent()
     {
         $ret = [];
-        foreach($this->getRows() as $k=>$r) {
-            $ret[] = $r;
-        }
+        $this->getAllRows(
+            function($row) use($ret) {
+                $ret[] = $row;
+            }
+        );
 
         return $ret;
     }
@@ -149,10 +141,15 @@ abstract class Report
 
         $excel->addRow($this->getColumnTitles());
 
-        foreach($this->getRows() as $k=>$row) {
-            $excel->addRow($row);
-flush();
-        }
+        $n = 0;
+        $this->getAllRows(
+            function($row) use($excel, $n) {
+                $excel->addRow($row);
+                if($n++ % 10000 === 0) {
+                    flush();
+                }
+            }
+        );
 
         $excel->render();
     }

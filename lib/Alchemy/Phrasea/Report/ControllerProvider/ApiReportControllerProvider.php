@@ -84,16 +84,8 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
         */
 
         $controllers->before(new OAuthListener());
-        /*
-        if ($request->attributes->has('basket')) {
-            if (!$app['acl.basket']->hasAccess($request->attributes->get('basket'), $app->getAuthenticatedUser())) {
-                throw new AccessDeniedHttpException('Current user does not have access to the basket');
-            }
-        }
-        */
         $controllers
             ->get('/', 'controller.api.v2.report:rootAction')
-            // ->bind('api_v2_report_root');
         ;
 
         $controllers
@@ -113,14 +105,4 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 
         return $controllers;
     }
-    /*
-    private function addReportMiddleware(Application $app, Controller $controller)
-    {
-        // $controller
-        //     ->before($app['middleware.report.converter'])
-        //     ->before($app['middleware.report.user-access']);
-
-        return $controller;
-    }
-    */
 }

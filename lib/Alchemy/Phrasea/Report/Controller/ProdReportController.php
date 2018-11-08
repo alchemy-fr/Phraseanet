@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
-class ProdReportController extends BaseReportController
+class ProdReportController
 {
     private static $mapFromExtension = [
         'csv' => [

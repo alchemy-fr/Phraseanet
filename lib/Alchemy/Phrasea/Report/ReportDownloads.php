@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 
 
-class ReportDownloads extends Report implements ReportInterface
+class ReportDownloads extends Report
 {
     private $appKey;
 
@@ -34,12 +34,6 @@ class ReportDownloads extends Report implements ReportInterface
         return $this->columnTitles;
     }
 
-    public function getSql()
-    {
-        $this->computeVars();
-        return $this->sql;
-    }
-
     public function getKeyName()
     {
         $this->computeVars();
@@ -50,15 +44,6 @@ class ReportDownloads extends Report implements ReportInterface
     {
         $this->computeVars();
         return $this->name;
-    }
-
-    public function getSqlParms()
-    {
-        return [
-            ':site' => $this->appKey,
-            ':dmin' => $this->parms['dmin'],
-            ':dmax' => $this->parms['dmax']
-        ];
     }
 
     public function setAppKey($appKey)
@@ -75,9 +60,19 @@ class ReportDownloads extends Report implements ReportInterface
         return $this;
     }
 
+    public function getAllRows($callback)
+    {
+        $this->computeVars();
+        $stmt = $this->databox->get_connection()->executeQuery($this->sql, []);
+        while (($row = $stmt->fetch())) {
+            $callback($row);
+        }
+        $stmt->closeCursor();
+    }
+
     private function computeVars()
     {
-        if(!is_null($this->sql)) {
+        if(!is_null($this->name)) {
             // vars already computed
             return;
         }
@@ -107,7 +102,7 @@ class ReportDownloads extends Report implements ReportInterface
                     $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " WHERE {{GlobalFilter}}"
+                        . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `l`.`usrid`\n"
                         . " ORDER BY `nb` DESC";
                 }
@@ -115,7 +110,7 @@ class ReportDownloads extends Report implements ReportInterface
                     $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " WHERE {{GlobalFilter}}"
+                        . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `l`.`usrid`\n"
                         . " ORDER BY `nb` DESC";
                 }
@@ -127,7 +122,7 @@ class ReportDownloads extends Report implements ReportInterface
                 $sql = "SELECT `ld`.`record_id`,\n"
                     . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                     . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                    . " WHERE {{GlobalFilter}}"
+                    . " WHERE {{GlobalFilter}}\n"
                     . " GROUP BY `l`.`usrid`\n"
                     . " ORDER BY `nb` DESC"
                 ;
@@ -156,26 +151,28 @@ class ReportDownloads extends Report implements ReportInterface
 
             $subdefsToReport = join(',', $subdefsToReport);
 
-            $this->sql = str_replace(
-                '{{GlobalFilter}}',
-                "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
-                . " AND `l`.`site` =  :site AND !ISNULL(`l`.`usrid`) AND `ld`.`date` >= :dmin AND `ld`.`date` <= :dmax\n"
-                // here : diabled "site", to test on an imported dataset from another instance
-                // . " AND (TRUE OR `l`.`site` =  :site) AND !ISNULL(`l`.`usrid`) AND `ld`.`date` >= :dmin AND `ld`.`date` <= :dmax\n"
-                . " AND `ld`.`final` IN(" . $subdefsToReport . ")",
-                $sql
-            );
-        }
+            $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+                // next line : comment to disable "site", to test on an imported dataset from another instance
+                //. "  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+                . "  AND `l`.`usrid`>0\n"
+                . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
-        if(is_null($this->sql)) {
+            if($this->parms['dmin']) {
+                $filter .= "\n  AND `ld`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
+            }
+            if($this->parms['dmax']) {
+                $filter .= "\n  AND `ld`.`date` <= " . $this->databox->get_connection()->quote($this->parms['dmax']);
+            }
+        }
+        else {
             // no collections report ?
             // keep the sql intact (to match placeholders/parameters), but enforce empty result
-            $this->sql = str_replace(
-                '{{GlobalFilter}}',
-                "FALSE",
-                $sql
-            );
+            $filter = "FALSE";
         }
+
+        $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);
+
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($this->sql, true)), FILE_APPEND);
     }
 
 }
