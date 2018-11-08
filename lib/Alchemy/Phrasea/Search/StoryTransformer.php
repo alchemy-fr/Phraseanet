@@ -50,15 +50,16 @@ class StoryTransformer extends TransformerAbstract
         $story = $storyView->getStory();
 
         return [
-            '@entity@' => 'http://api.phraseanet.com/api/objects/story',
-            'databox_id' => $story->getDataboxId(),
-            'story_id' => $story->getRecordId(),
-            'updated_on' => NullableDateTime::format($story->getUpdated()),
-            'created_on' => NullableDateTime::format($story->getUpdated()),
-            'collection_id' => $story->getCollectionId(),
-            'base_id' => $story->getBaseId(),
-            'uuid' => $story->getUuid(),
-            'record_count' => count($storyView->getChildren())
+            '@entity@'          => 'http://api.phraseanet.com/api/objects/story',
+            'databox_id'        => $story->getDataboxId(),
+            'story_id'          => $story->getRecordId(),
+            'updated_on'        => NullableDateTime::format($story->getUpdated()),
+            'created_on'        => NullableDateTime::format($story->getUpdated()),
+            'collection_id'     => $story->getCollectionId(),
+            'base_id'           => $story->getBaseId(),
+            'uuid'              => $story->getUuid(),
+            'record_count'      => count($storyView->getChildren()),
+            'total_story_items' => $storyView->getStoryTotalItems()
         ];
     }
 

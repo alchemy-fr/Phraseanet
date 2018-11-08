@@ -1773,6 +1773,37 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * @param  $storyId
+     * @return int
+     * @throws \Exception
+     */
+    public function getStoryTotalItems($storyId)
+    {
+        if (!is_int($storyId)) {
+            throw new \Exception('Only integer for the storyId');
+        }
+
+        $sql = "SELECT count(*) as nb
+                FROM regroup s
+                INNER JOIN record r ON r.record_id = s.rid_child
+                WHERE (s.rid_parent = :storyId) AND (r.parent_record_id = 0)"
+        ;
+
+        $connection = $this->getDataboxConnection();
+
+        $stmt = $connection->prepare($sql);
+
+        $stmt->execute([':storyId' => $storyId]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $stmt->closeCursor();
+
+        return $row ?(int) $row['nb'] : 0;
+
+    }
+
     /** {@inheritdoc} */
     public function getDataboxId()
     {

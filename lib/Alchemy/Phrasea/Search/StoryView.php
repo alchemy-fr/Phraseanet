@@ -25,6 +25,10 @@ class StoryView
      * @var RecordView[]
      */
     private $children = [];
+    /**
+     * @var int
+     */
+    private $storyTotalItems = 0;
 
     /**
      * @param \record_adapter $story
@@ -58,5 +62,21 @@ class StoryView
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * @param $totalItems
+     */
+    public function setStoryTotalItems($totalItems)
+    {
+        $this->storyTotalItems = $totalItems;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStoryTotalItems()
+    {
+        return $this->storyTotalItems;
     }
 }
