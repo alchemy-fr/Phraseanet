@@ -134,7 +134,7 @@ class ReportDownloads extends Report
         }
 
         // get acl-filtered coll_id(s) as already sql-quoted
-        $collIds = $this->getCollIds($this->acl, $this->parms['base']);
+        $collIds = $this->getCollIds($this->acl, $this->parms['bases']);
 
         if(!empty($collIds)) {
 
@@ -152,8 +152,10 @@ class ReportDownloads extends Report
             $subdefsToReport = join(',', $subdefsToReport);
 
             $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+
                 // next line : comment to disable "site", to test on an imported dataset from another instance
-                //. "  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+                . "  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+
                 . "  AND `l`.`usrid`>0\n"
                 . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
@@ -172,7 +174,7 @@ class ReportDownloads extends Report
 
         $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($this->sql, true)), FILE_APPEND);
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
     }
 
 }

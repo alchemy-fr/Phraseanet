@@ -132,7 +132,7 @@ class ReportConnections extends Report
 
         $filter = "`usrid`>0";
         // next line : comment to disable "site", to test on an imported dataset from another instance
-        // . "  AND `site` = " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+        . "  AND `site` = " . $this->databox->get_connection()->quote($this->appKey) . "\n"
 
         if($this->parms['dmin']) {
             $filter .= "\n  AND `log`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
