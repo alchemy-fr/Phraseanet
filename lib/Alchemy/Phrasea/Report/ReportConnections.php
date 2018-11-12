@@ -132,7 +132,7 @@ class ReportConnections extends Report
 
         $filter = "`usrid`>0";
         // next line : comment to disable "site", to test on an imported dataset from another instance
-        . "  AND `site` = " . $this->databox->get_connection()->quote($this->appKey) . "\n"
+        $filter .= "  AND `site` = " . $this->databox->get_connection()->quote($this->appKey);
 
         if($this->parms['dmin']) {
             $filter .= "\n  AND `log`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
@@ -143,7 +143,7 @@ class ReportConnections extends Report
 
         $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($this->sql, true)), FILE_APPEND);
+        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($this->sql, true)), FILE_APPEND);
     }
 
 }

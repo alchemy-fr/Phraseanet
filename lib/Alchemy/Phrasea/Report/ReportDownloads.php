@@ -152,12 +152,11 @@ class ReportDownloads extends Report
             $subdefsToReport = join(',', $subdefsToReport);
 
             $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+                    . "  AND `l`.`usrid`>0\n"
+                    . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
                 // next line : comment to disable "site", to test on an imported dataset from another instance
-                . "  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey) . "\n"
-
-                . "  AND `l`.`usrid`>0\n"
-                . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
+            $filter .= "\n  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey);
 
             if($this->parms['dmin']) {
                 $filter .= "\n  AND `ld`.`date` >= " . $this->databox->get_connection()->quote($this->parms['dmin']);
@@ -174,7 +173,7 @@ class ReportDownloads extends Report
 
         $this->sql = str_replace('{{GlobalFilter}}', $filter, $sql);
 
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
+        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, $this->sql), FILE_APPEND);
     }
 
 }
