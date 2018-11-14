@@ -77,6 +77,7 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Prod\Push::class => [],
             Prod\Query::class => [],
             Prod\Record::class => [],
+            \Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider::class => [],
             Prod\Root::class => [],
             Prod\Share::class => [],
             Prod\Story::class => [],
