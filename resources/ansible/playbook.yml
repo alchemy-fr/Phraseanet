@@ -9,7 +9,7 @@
     - vagrant_local
     - nginx
     - mariadb
-    - elasticsearch
+#    - elasticsearch
     - rabbitmq
     - php
     - xdebug
@@ -18,4 +18,4 @@
     - node
     - yarn
     - app
-    - ffmpeg
+#    - ffmpeg

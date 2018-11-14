@@ -20,7 +20,7 @@
 #  ignore_errors: yes
 #  args:
 #    chdir: /vagrant/
-#
+
 #- name: Install assets
 #  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_assets
 #  become: yes
@@ -35,7 +35,7 @@
 #  shell: 'php bin/setup system:install --email=admin@{{ hostname }}.vb --password=admin --db-host=127.0.0.1 --db-port=3306 --db-user={{ mariadb.user }} --db-password={{ mariadb.password }} --db-template=en-simple --appbox={{ mariadb.appbox_db }} --databox={{ mariadb.databox_db }} --server-name=www.{{ hostname }}.vb --data-path=/vagrant/datas -y'
 #  args:
 #    chdir: /vagrant/
-#
+
 #- name: Create extra databox
 #  become: yes
 #  become_user: vagrant
@@ -43,17 +43,17 @@
 #  args:
 #    chdir: /vagrant/
 
-- name: Enable debugger for host IP addresses
-  shell: php bin/setup system:config add debugger.allowed-ips "{{ item }}"
-  with_items: '{{ host_addresses }}'
-  args:
-    chdir: /vagrant/
+#- name: Enable debugger for host IP addresses
+#  shell: php bin/setup system:config add debugger.allowed-ips "{{ item }}"
+#  with_items: '{{ host_addresses }}'
+#  args:
+#    chdir: /vagrant/
 
 #- name: Disable API SSL requirement
 #  shell: php bin/setup system:config set main.api_require_ssl false
 #  args:
 #    chdir: /vagrant/
-#
+
 #- name: Enable API routes
 #  shell: php bin/setup system:config set registry.api-clients.api-enable true
 #  args:
