@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,7 +15,7 @@ class FacetsResponse
     private $escaper;
     private $facets = array();
 
-    public function __construct(Escaper $escaper, array $response)
+    public function __construct(Escaper $escaper, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
 
