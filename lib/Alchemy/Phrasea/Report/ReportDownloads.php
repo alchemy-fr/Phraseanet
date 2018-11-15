@@ -83,16 +83,14 @@ class ReportDownloads extends Report
                 $this->columnTitles = ['id', 'usrid', 'user', 'fonction', 'societe', 'activite', 'pays', 'date', 'record_id', 'coll_id', 'subdef'];
                 if($this->parms['anonymize']) {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `lc`.`coll_id`, `ld`.`final`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " INNER JOIN `log_colls` AS `lc` ON `ld`.`log_id` = `lc`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 else {
                     $sql = "SELECT `ld`.`id`, `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
-                        . "        `ld`.`date`, `ld`.`record_id`, `lc`.`coll_id`, `ld`.`final`"
+                        . "        `ld`.`date`, `ld`.`record_id`, `ld`.`coll_id`, `ld`.`final`"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " INNER JOIN `log_colls` AS `lc` ON `ld`.`log_id` = `lc`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}";
                 }
                 $this->keyName = 'id';
@@ -104,7 +102,6 @@ class ReportDownloads extends Report
                     $sql = "SELECT `l`.`usrid`, '-' AS `user`, '-' AS `fonction`, '-' AS `societe`, '-' AS `activite`, '-' AS `pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " INNER JOIN `log_colls` AS `lc` ON `ld`.`log_id` = `lc`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `l`.`usrid`\n"
                         . " ORDER BY `nb` DESC";
@@ -113,7 +110,6 @@ class ReportDownloads extends Report
                     $sql = "SELECT `l`.`usrid`, `l`.`user`, `l`.`fonction`, `l`.`societe`, `l`.`activite`, `l`.`pays`,\n"
                         . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                         . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                        . " INNER JOIN `log_colls` AS `lc` ON `ld`.`log_id` = `lc`.`log_id`\n"
                         . " WHERE {{GlobalFilter}}\n"
                         . " GROUP BY `l`.`usrid`\n"
                         . " ORDER BY `nb` DESC";
@@ -126,7 +122,6 @@ class ReportDownloads extends Report
                 $sql = "SELECT `ld`.`record_id`,\n"
                     . "        MIN(`ld`.`date`) AS `dmin`, MAX(`ld`.`date`) AS `dmax`, SUM(1) AS `nb`\n"
                     . " FROM `log_docs` AS `ld` INNER JOIN `log` AS `l` ON `l`.`id`=`ld`.`log_id`\n"
-                    . " INNER JOIN `log_colls` AS `lc` ON `ld`.`log_id` = `lc`.`log_id`\n"
                     . " WHERE {{GlobalFilter}}\n"
                     . " GROUP BY `l`.`usrid`\n"
                     . " ORDER BY `nb` DESC"
@@ -156,7 +151,7 @@ class ReportDownloads extends Report
 
             $subdefsToReport = join(',', $subdefsToReport);
 
-            $filter = "`action`='download' AND `lc`.`coll_id` IN(" . join(',', $collIds) . ")\n"
+            $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
                 . "  AND `l`.`usrid`>0\n"
                 . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
