@@ -177,7 +177,8 @@ class DataboxesController extends Controller
         catch (\Exception $exception) {
             return $this->app->redirectPath('admin_databases', [
                 'success' => 0,
-                'error' => 'mount-failed'
+                // 'error' => 'mount-failed'
+                'error' => $exception->getMessage()
             ]);
         }
     }
