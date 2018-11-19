@@ -360,7 +360,7 @@ $(document).ready(function () {
                     var formatedFile = {
                         id: 'file-' + index,
                         size: typeof file.size !== "undefined" ? UploaderManager.Formater.size(file.size) : '',
-                        name: file.name,
+                        name: encodeURI(file.name),
                         type: typeof file.type !== "undefined" ? file.type : '',
                         uploadIndex: UploaderManager.getUploadIndex(),
                         language: language
@@ -445,7 +445,7 @@ $(document).ready(function () {
 
         //Set new context in download-box
         $.each(data.files, function (index, file) {
-            var params = $.extend({}, file, {language: language, id:'file-'+index});
+            var params = $.extend({}, file, {language: language, id:'file-'+index, name: encodeURI(file.name)});
             var html = _.template($("#download_items_tpl").html(), params);
 
             UploaderManager.getDownloadBox().append(html);
