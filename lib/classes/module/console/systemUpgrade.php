@@ -133,8 +133,23 @@ class module_console_systemUpgrade extends Command
         } else {
             $output->write('<info>Canceled</info>', true);
         }
-        $output->write('Finished !', true);
+        $output->write('System upgrade Finished !', true);
 
-        return 0;
+        // need to fix autoincrements after system:upgrade
+        $output->write('Start fixing autoincrements !', true);
+
+        $fixAutoincrementCommand = $this->getApplication()->find('system:fix-autoincrements');
+
+        $arguments = array(
+            'command' => 'system:fix-autoincrements',
+        );
+
+        $fixAutoincrementInput = new ArrayInput($arguments);
+
+        $returnCode = $fixAutoincrementCommand->run($fixAutoincrementInput, $output);
+
+        $output->write('Fixing autoincrements finished after system:upgrade', true);
+
+        return $returnCode;
     }
 }
