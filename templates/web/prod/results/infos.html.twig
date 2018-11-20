@@ -29,20 +29,16 @@
         var esQuery = JSON.parse($('#esqueryData').text());
         var paths = [];
 
-
         // Loop the top level
         $.each(esQuery, testQuery);
 
         function testQuery(key, value) {
-
-            // ...do what you like with `key` and `value`
 
             if (value !== null && typeof value === "object") {
                 if(key === 'multi_match') {
                     var testValue = value.fields[0];
                     if(testValue.startsWith('concept_path')) {
                         paths.push(value.query);
-                        console.log(value.query);
                     }
                 }
                 else {
@@ -51,8 +47,6 @@
                 }
             }
         }
-        
-        console.log(esQuery);
 
         $.each(paths, function(i, path) {
             $('#esqueryDataPaths').append(path + '\n');
