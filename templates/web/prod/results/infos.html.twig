@@ -17,12 +17,46 @@
     </div>
     <div class="esqueryDataDiv">
         <textarea id="esqueryData">{{ esquery }}</textarea>
+        <textarea id="esqueryDataPaths" style="display:block; height: 80px;"></textarea>
     </div>
     {% endif %}
 </div>
 
 <script language="javascript">
     $(document).ready(function(){
+
+        var esqueryDataDiv = $('.esqueryDataDiv');
+        var esQuery = JSON.parse($('#esqueryData').text());
+        var paths = [];
+
+
+        // Loop the top level
+        $.each(esQuery, testQuery);
+
+        function testQuery(key, value) {
+
+            // ...do what you like with `key` and `value`
+
+            if (value !== null && typeof value === "object") {
+                if(key === 'multi_match') {
+                    var testValue = value.fields[0];
+                    if(testValue.startsWith('concept_path')) {
+                        paths.push(value.query);
+                        console.log(value.query);
+                    }
+                }
+                else {
+                    // Recurse into children
+                    $.each(value, testQuery);
+                }
+            }
+        }
+        
+        console.log(esQuery);
+
+        $.each(paths, function(i, path) {
+            $('#esqueryDataPaths').append(path + '\n');
+        });
 
         var copyElContentClipboard = function(elId) {
             var copyEl = document.getElementById(elId);
