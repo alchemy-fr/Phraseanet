@@ -322,7 +322,7 @@ function infoDialog(el) {
             resizable: false,
             draggable: false,
             width: 600,
-            height: 500,
+            height: 600,
             modal: true,
             overlay: {
                 backgroundColor: '#000',

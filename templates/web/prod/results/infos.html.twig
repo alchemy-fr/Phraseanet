@@ -12,12 +12,12 @@
     </div>
     dans index {{ results.getIndexes() }}
     {% if not(esquery is null) %}
-    <div>
-        <a href="#" id="esqueryCopy">{{ 'copyClipboardLabel' | trans }}</a>
-    </div>
     <div class="esqueryDataDiv">
+        <textarea id="esqueryDataPaths" style="display:block; height: 180px;" placeholder="{{ 'No thesaurus concept query' | trans }}"></textarea>
+        <div style="overflow: hidden;">
+            <a href="#" id="esqueryCopy">{{ 'copyClipboardLabel' | trans }}</a>
+        </div>
         <textarea id="esqueryData">{{ esquery }}</textarea>
-        <textarea id="esqueryDataPaths" style="display:block; height: 80px;"></textarea>
     </div>
     {% endif %}
 </div>
