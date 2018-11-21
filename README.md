@@ -1,15 +1,15 @@
 Phraseanet 4.0 - Digital Asset Management application
 =====================================================
 
-
-
-
 [![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
+
 # Features :
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
- - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
-
+ - RestFull APIS
+ - Elasticsearch search engine
+ - Multiple resolution assets generation
+ 
 # Documentation :
 
 https://docs.phraseanet.com/
