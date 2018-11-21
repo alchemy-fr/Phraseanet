@@ -21,13 +21,22 @@ You **must** not download the source from GitHub, but download a packaged versio
 
 https://www.phraseanet.com/download/
 
-And follow the install steps described at https://docs.phraseanet.com/Admin/
+And follow the install steps described at https://docs.phraseanet.com/4.0/en/Admin/Install.html
+
+# Try Phraseanet :
+
+You can also download a testing preinstalle Virtual Machine in OVA format here :
+
+https://www.phraseanet.com/download/
 
 # Development :
 
 For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
 
-See https://docs.phraseanet.com/Devel/
+git clone 
+vagrant up 
+
+For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
 
 # License :
 
