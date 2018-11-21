@@ -6,7 +6,7 @@ Phraseanet 4.0 - Digital Asset Management application
 # Features :
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
- - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
+ - RestFull APIS
  - Elasticsearch search engine
  - Multiple resolution assets generation
 
@@ -32,8 +32,8 @@ https://www.phraseanet.com/download/
 
 For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
 
-git clone 
-vagrant up 
+- git clone 
+- vagrant up 
 
 For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
 
