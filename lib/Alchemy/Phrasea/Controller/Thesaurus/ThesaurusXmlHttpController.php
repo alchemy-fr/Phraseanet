@@ -1371,7 +1371,7 @@ class ThesaurusXmlHttpController extends Controller
                     if ($t[1])
                         $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape(
                                 $unicode->remove_indexer_chars($t[1])) . '\')';
-                    $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+                    $q2 = '//sy[' . $q2 .']';
 
                     $q .= $q2;
 
