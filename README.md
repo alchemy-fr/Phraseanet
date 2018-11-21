@@ -9,7 +9,6 @@ Phraseanet 4.0 - Digital Asset Management application
 
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS (See Developer Documentation https://docs.phraseanet.com/Devel)
- - Bridge to Youtube/Dailymotion/Flickr
 
 # Documentation :
 
@@ -25,7 +24,7 @@ And follow the install steps described at https://docs.phraseanet.com/4.0/en/Adm
 
 # Try Phraseanet :
 
-You can also download a testing preinstalle Virtual Machine in OVA format here :
+You can also download a testing pre installed Virtual Machine in OVA format here :
 
 https://www.phraseanet.com/download/
 
