@@ -32,8 +32,8 @@ https://www.phraseanet.com/download/
 
 For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
 
-git clone 
-vagrant up 
+- git clone 
+- vagrant up 
 
 For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
 
