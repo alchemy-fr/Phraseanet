@@ -1373,7 +1373,6 @@ class ThesaurusXmlHttpController extends Controller
                         $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
                     }
 
-
                     $q .= $q2;
 
                     $nodes = $xpath->query($q);
