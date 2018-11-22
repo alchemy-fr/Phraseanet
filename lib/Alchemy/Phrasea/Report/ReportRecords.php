@@ -72,8 +72,6 @@ class ReportRecords extends Report
                     . "  AND r.record_id >= " . $row['from'] . " AND r.record_id <= " . $row['to'] . "\n"
                     . "GROUP BY `record_id`\n";
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($sql, true)), FILE_APPEND);
-
                 $stmt = $this->databox->get_connection()->executeQuery($sql, []);
                 $rows = $stmt->fetchAll();
                 $stmt->closeCursor();

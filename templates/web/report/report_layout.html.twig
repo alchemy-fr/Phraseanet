@@ -4,29 +4,21 @@
     <div id="form-container" style="margin-top:50px;" >
         <div id="mainTabs">
             <ul id="navigation">
-              <li><a href="#dash">{{ "report:: Dashboard" | trans }}</a></li>
-                <li><a href="#report-connexions">{{ "report:: Connexion" | trans }}</a></li>
-              <li><a href="#report-telechargement">{{ "report:: telechargements" | trans }}</a></li>
-               <li><a href="#report-activite">{{ "report:: activite du site" | trans }}</a></li>
+                <li><a href="#report-connections">{{ "report:: Connexion" | trans }}</a></li>
+                <li><a href="#report-downloads">{{ "report:: telechargements" | trans }}</a></li>
+                <li><a href="#report-records">{{ "report:: Databox content" | trans }}</a></li>
             </ul>
 
-            {% block report_dashboard_layout %}
-            {% endblock report_dashboard_layout %}
+            {% block report_connections_layout %}
+            {% endblock report_connections_layout %}
 
+            {% block report_downloads_layout %}
+            {% endblock report_downloads_layout %}
 
-            {% block report_connexion_layout %}
-            {% endblock report_connexion_layout %}
+            {% block report_records_layout %}
+            {% endblock report_records_layout %}
 
-
-
-            {% block report_telechargement_layout %}
-            {% endblock report_telechargement_layout %}
-
-
-            {% block report_activite_layout %}
-            {% endblock report_activite_layout %}
-
-        {# END MAINTABS #}
+            {# END MAINTABS #}
         </div>
         {# END FORM CONTAINER #}
     </div>
