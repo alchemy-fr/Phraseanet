@@ -1314,12 +1314,7 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
-        if (null === $lng = $request->get('lng')) {
-            $data = explode('_', $this->app['locale']);
-            if (count($data) > 0) {
-                $lng = $data[0];
-            }
-        }
+        $lng = $request->get('lng');
 
         $html = '';
         $sbid = (int) $request->get('sbid');
@@ -1371,7 +1366,12 @@ class ThesaurusXmlHttpController extends Controller
                     if ($t[1])
                         $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape(
                                 $unicode->remove_indexer_chars($t[1])) . '\')';
-                    $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+
+                    if($lng == null){
+                        $q2 = '//sy[' . $q2 . ']';
+                    }else{
+                        $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+                    }
 
                     $q .= $q2;
 
