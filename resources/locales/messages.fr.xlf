@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-11-07T11:51:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2018-11-22T11:11:08Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -530,7 +530,7 @@
       <trans-unit id="123328affd9ccbf569617c058422eb0104017f47" resname="API Webhook" approved="yes">
         <source>API Webhook</source>
         <target state="translated">Webhook API</target>
-        <jms:reference-file line="45">TaskManager/Job/WebhookJob.php</jms:reference-file>
+        <jms:reference-file line="58">TaskManager/Job/WebhookJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="62a3ad0fef668c4e2a220f6982de94942fbf1d1e" resname="AR">
         <source>AR</source>
@@ -3044,9 +3044,9 @@
       <trans-unit id="7f7bf810a272a035f6da919a27124160567c0b3f" resname="Erreur lors de la tentative ; errreur : %message%" approved="yes">
         <source>Erreur lors de la tentative ; errreur : %message%</source>
         <target state="translated">Erreur lors de la tentative. Le message d'erreur est : %message%</target>
-        <jms:reference-file line="135">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
-        <jms:reference-file line="483">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
-        <jms:reference-file line="495">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="139">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="493">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
+        <jms:reference-file line="507">Core/Database/DatabaseMaintenanceService.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd8b889cda696b61ee9c4d197f3d93e93c1ab8e6" resname="Erreur lors de votre authentification" approved="yes">
         <source>Erreur lors de votre authentification</source>
@@ -4578,6 +4578,11 @@
         <jms:reference-file line="8">WorkZone/Browser/Results.html.twig</jms:reference-file>
         <jms:reference-file line="111">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query">
+        <source>No thesaurus concept query</source>
+        <target state="new">No thesaurus concept query</target>
+        <jms:reference-file line="16">prod/results/infos.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6866c8b666718aff85382e93b25ef50cd321669b" resname="No users selected" approved="yes">
         <source>No users selected</source>
         <target state="translated">Aucun utilisateur sélectionné</target>
@@ -4671,7 +4676,7 @@
       <trans-unit id="18ee7ad22bf04f818fd95599481303c7f7d1b29f" resname="Notify third party application when an event occurs in Phraseanet" approved="yes">
         <source>Notify third party application when an event occurs in Phraseanet</source>
         <target state="translated">Notifier l'application tierce lorsqu'un événement se produit dans Phraseanet</target>
-        <jms:reference-file line="61">TaskManager/Job/WebhookJob.php</jms:reference-file>
+        <jms:reference-file line="74">TaskManager/Job/WebhookJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ccc3824ae2ffdfea7482564cbc8cf35de78766d" resname="Notify users about this publication" approved="yes">
         <source>Notify users about this publication</source>
@@ -9546,7 +9551,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="a70a59b9120185471e5b45630f8ba24d5516f590" resname="copyClipboardLabel" approved="yes">
         <source>copyClipboardLabel</source>
         <target state="translated">Copier dans le presse-papier</target>
-        <jms:reference-file line="16">prod/results/infos.html.twig</jms:reference-file>
+        <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
         <jms:reference-file line="46">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="56">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="72">prod/Share/record.html.twig</jms:reference-file>
@@ -11619,7 +11624,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Sans titre</target>
-        <jms:reference-file line="934">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="936">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e1fd199951b7475ef26b375b42056b7619abdfb9" resname="report :: aucun resultat trouve" approved="yes">
         <source>report :: aucun resultat trouve</source>
