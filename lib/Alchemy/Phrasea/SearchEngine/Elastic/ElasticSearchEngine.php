@@ -681,12 +681,23 @@ class ElasticSearchEngine implements SearchEngineInterface
             // 2015-05-26 (mdarse) Removed databox filtering.
             // It was already done by the ACL filter in the query scope, so no
             // document that shouldn't be displayed can go this far.
-            $agg = [
-                'terms' => [
-                    'field' => $field->getIndexField(true),
-                    'size'  => $field->getFacetValuesLimit()
-                ]
-            ];
+
+           if($field->isFacet() && $field->getThesaurusRoots() != null){
+               $agg = [
+                   'terms' => [
+                       'field' => $field->getConceptPathIndexField(),
+                       'size'  => $field->getFacetValuesLimit()
+                   ]
+               ];
+           }else{
+               $agg = [
+                   'terms' => [
+                       'field' => $field->getIndexField(true),
+                       'size'  => $field->getFacetValuesLimit()
+                   ]
+               ];
+           }
+
             $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
         }
 
