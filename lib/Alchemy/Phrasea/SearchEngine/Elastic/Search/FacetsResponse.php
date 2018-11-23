@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,11 +13,14 @@ use igorw;
 class FacetsResponse
 {
     private $escaper;
+    private $searchEngineStructure;
     private $facets = array();
 
-    public function __construct(Escaper $escaper, array $response)
+    public function __construct(Escaper $escaper, array $response, GlobalStructure $searchEngineStructure)
     {
         $this->escaper = $escaper;
+
+        $this->searchEngineStructure = $searchEngineStructure;
 
         if (!isset($response['aggregations'])) {
             return;
@@ -81,12 +85,28 @@ class FacetsResponse
 
     private function buildQuery($name, $value)
     {
+        $field = $this->searchEngineStructure->get($this->escaper->escapeWord($name));
+
         if(array_key_exists($name, ElasticsearchOptions::getAggregableTechnicalFields())) {
+
             $q = ElasticsearchOptions::getAggregableTechnicalFields()[$name]['query'];
             $ret = sprintf($q, $this->escaper->escapeWord($value));
-        }
-        else {
+
+        }elseif($field->getThesaurusRoots() != null && $field->isFacet()){
+
+            $tQquery = explode("/",  $this->escaper->escapeWord($value));
+            $query = str_replace('-', ' ', end($tQquery));
+
+            if(intval($query)){
+                $ret = '';
+            }else{
+                $ret = sprintf('[%s]', $query);
+            }
+
+        }else{
+
             $ret = sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($value));
+
         }
 
         return $ret;
