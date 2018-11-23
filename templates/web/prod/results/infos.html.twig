@@ -35,7 +35,7 @@
                 if(key === 'multi_match') {
                     var testValue = value.fields[0];
                     if(testValue.startsWith('concept_path')) {
-                        pathField.append(path + '\n');
+                        pathField.append(value.query + '\n');
                     }
                 }
                 else {
