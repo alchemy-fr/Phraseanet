@@ -289,7 +289,11 @@ var p4 = p4 || {};
                 header.next().addClass('loading');
             },
             success: function (data) {
-                header.removeClass('unread');
+                var imgSrc = $('.workzone-menu-title', header).find('img').attr('src');
+                if(header.hasClass('unread')) {
+                    $('.workzone-menu-title', header).find('img').attr('src', imgSrc.replace('-Unread',''));
+                    header.removeClass('unread');
+                }
 
                 var dest = header.next();
                 if (dest.data("ui-droppable")) {
