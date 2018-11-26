@@ -91,19 +91,21 @@ Menu contextuel
     font-weight: bold;
     color: $darkerTextColor;
     &:hover {
-      background-color: #454545;
+      background-color: #7f7f7f;
     }
   }
   a {
-    padding: 10px 16px 10px 10px;
+    padding: 9px 16px 9px 10px;
     font-size: 14px;
     font-weight: 500;
     display: block;
     img {
-      width: 20px;
+      width: 24px;
+      margin-bottom: -2px;
     }
     span {
       margin-left: 8px;
+      vertical-align: initial;
     }
   }
 }/* Flat theme End */
