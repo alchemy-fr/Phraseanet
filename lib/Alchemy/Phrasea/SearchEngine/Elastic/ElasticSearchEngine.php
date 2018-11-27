@@ -660,7 +660,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 }
                 $agg = [
                     'terms' => [
-                        'field' => $f['field'],
+                        'field' => $f['esfield'],
                         'size'  => $size
                     ]
                 ];
