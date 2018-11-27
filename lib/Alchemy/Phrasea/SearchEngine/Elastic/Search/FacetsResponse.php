@@ -79,6 +79,8 @@ class FacetsResponse
         }
     }
 
+
+
     /**
      * @return ArrayCollection
      */
