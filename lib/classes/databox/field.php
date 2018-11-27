@@ -441,6 +441,16 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * get all localized labels
+     *
+     * @return string[]
+     */
+    public function get_labels()
+    {
+        return $this->labels;
+    }
+
+    /**
      * @param string $name
      * @return databox_field
      *
