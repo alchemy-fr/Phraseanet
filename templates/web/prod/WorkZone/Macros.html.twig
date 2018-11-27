@@ -89,11 +89,7 @@
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               {% if basket.getValidation() %}
-                {% if not basket.isRead() %}
-                <img src='/assets/common/images/icons/Basket-Feedback-Unread.png' title=''/>
-                {% else %}
                 <img src='/assets/common/images/icons/Basket-Feedback.png' title=''/>
-                {% endif %}
               {% elseif basket.getPusher() %}
                 {% if not basket.isRead() %}
                   <img src='/assets/common/images/icons/Basket-Push-Unread.png' style="max-height: 22px;" title=''/>
