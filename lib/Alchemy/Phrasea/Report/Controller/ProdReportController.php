@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Report\Controller;
 
+use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Report\Report;
 use Alchemy\Phrasea\Report\ReportConnections;
 use Alchemy\Phrasea\Report\ReportDownloads;
@@ -16,10 +17,11 @@ use Alchemy\Phrasea\Report\ReportFactory;
 use Alchemy\Phrasea\Report\ReportRecords;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
-class ProdReportController
+class ProdReportController extends Controller
 {
     private static $mapFromExtension = [
         'csv' => [
@@ -53,6 +55,19 @@ class ProdReportController
         $this->reportFactory   = $reportFactory;
         $this->anonymousReport = $anonymousReport;
         $this->acl             = $acl;
+    }
+
+    /**
+     * route prod/report/connections
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function indexAction(Request $request)
+    {
+        return new Response($this->render('prod/report/index.html.twig', [
+            'truc' => "hello"
+        ]));
     }
 
     /**

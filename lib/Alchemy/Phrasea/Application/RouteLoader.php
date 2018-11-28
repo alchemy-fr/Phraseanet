@@ -63,8 +63,6 @@ class RouteLoader
         '/prod/upload/'                => Providers\Prod\Upload::class,
         '/prod/WorkZone'               => Providers\Prod\WorkZone::class,
         '/prod/'                       => Providers\Prod\Root::class,
-        '/report/activity'             => Providers\Report\Activity::class,
-        '/report/informations'         => Providers\Report\Information::class,
         '/report/'                     => Providers\Report\Root::class,
         '/session/'                    => Providers\Root\Session::class,
         '/setup'                       => Providers\Setup::class,

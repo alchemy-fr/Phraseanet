@@ -87,8 +87,6 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Prod\Upload::class => [],
             Prod\UsrLists::class => [],
             Prod\WorkZone::class => [],
-            Report\Activity::class => [],
-            Report\Information::class => [],
             Report\Root::class => [],
             Root\Account::class => [],
             Root\Developers::class => [],

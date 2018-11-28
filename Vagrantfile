@@ -36,13 +36,17 @@ def config_net(config)
     # Assign static IP if present in network config
     if File.file?($root + "/.network.conf")
         ipAddress = File.read($root + "/.network.conf")
-        #config.vm.network :private_network, ip: ipAddress
+        config.vm.network :private_network, ip: "192.168.56.104"
+        config.vm.network :public_network, bridge:"en0: Ethernet"
     else
         # vboxnet0 can be changed to use a specific private_network
         config.vm.network :private_network, type: "dhcp"
         config.vm.provider "virtualbox" do |vb|
           vb.customize ["modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 `VBoxManage guestproperty get #{vm.id} "/VirtualBox/GuestInfo/Net/1/V4/IP"`.split()[1]

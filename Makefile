@@ -5,7 +5,7 @@ install:
 	make install_assets
 
 install_composer:
-	composer install
+	composer install --ignore-platform-reqs
 
 install_asset_dependencies:
 	npm install
