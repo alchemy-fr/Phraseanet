@@ -205,7 +205,7 @@ class QueryController extends Controller
                         'multi'    => $field->is_multi(),
                     ];
                     if (!isset($fieldLabels[$name])) {
-                        $fieldLabels[$name] = $field->get_label($this->app['locale']);
+                        $fieldLabels[$name] = htmlspecialchars($field->get_label($this->app['locale']));
                     }
                 }
             }
