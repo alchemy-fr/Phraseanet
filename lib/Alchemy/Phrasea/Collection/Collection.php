@@ -124,7 +124,7 @@ EOT;
      */
     public function setName($name)
     {
-        $name = trim(strip_tags($name));
+        $name = trim($name);
 
         if ($name === '') {
             throw new \InvalidArgumentException();
