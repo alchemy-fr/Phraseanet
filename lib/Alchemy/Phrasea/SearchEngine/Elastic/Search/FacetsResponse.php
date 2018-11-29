@@ -70,7 +70,7 @@ class FacetsResponse
             }
 
             $values[] = array(
-                'value' => $formatter($bucket['key']),
+                'value' => htmlspecialchars($formatter($bucket['key'])),
                 'count' => $bucket['doc_count'],
                 'query' => $this->buildQuery($name, $bucket['key']),
             );
