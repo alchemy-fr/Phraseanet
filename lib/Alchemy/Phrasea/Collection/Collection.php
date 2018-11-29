@@ -124,7 +124,7 @@ EOT;
      */
     public function setName($name)
     {
-        $name = trim($name);
+        $name = trim(preg_replace("'<[^>]*>'", "", $name));
 
         if ($name === '') {
             throw new \InvalidArgumentException();
