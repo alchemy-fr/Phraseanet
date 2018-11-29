@@ -107,6 +107,8 @@ class V1Controller extends Controller
     const OBJECT_TYPE_STORY = 'http://api.phraseanet.com/api/objects/story';
     const OBJECT_TYPE_STORY_METADATA_BAG = 'http://api.phraseanet.com/api/objects/story-metadata-bag';
 
+    const API_LOG_COMMENT = 'By API';
+
     /**
      * Return an array of key-values information about scheduler
      *
@@ -1978,6 +1980,9 @@ class V1Controller extends Controller
         }
 
         $record->set_metadatas($metadata);
+
+        $this->getDataboxLogger($record->getDatabox())
+             ->log($record, \Session_Logger::EVENT_EDIT, '', self::API_LOG_COMMENT);
 
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
