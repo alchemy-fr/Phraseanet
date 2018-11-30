@@ -11270,9 +11270,9 @@
         <target state="translated">Per users</target>
         <jms:reference-file line="16">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
+      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="no">
         <source>report:: 1 - Periode</source>
-        <target state="translated">1 - Time space</target>
+        <target state="needs-translation">1 - Time Range</target>
         <jms:reference-file line="3">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="87cb22fb5598f714cf44b13ef0d2fcfa0fe1e01a" resname="report:: 2 - Base" approved="no">
