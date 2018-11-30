@@ -67,8 +67,9 @@
 
                     {% for collection in databox.collections %}
                     <li>
-                        <label class="checkbox">
+                        <label class="checkbox custom_checkbox_label">
                             <input name="base[]" checked="checked" type="checkbox" value="{{ collection.base_id }}">
+                            <span class="custom_checkbox"></span>
                             {{ collection.name }}
                         </label>
                     </li>

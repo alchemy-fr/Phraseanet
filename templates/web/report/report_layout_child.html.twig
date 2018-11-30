@@ -98,8 +98,9 @@
                         {% for sbas_id,databox in granted_bases %}
                             {% for meta in databox.metas %}
                             <li>
-                                <label class="checkbox">
+                                <label class="checkbox custom_checkbox_label">
                                     <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                    <span class="custom_checkbox"></span>
                                     {{ meta }}
                                 </label>
                             </li>

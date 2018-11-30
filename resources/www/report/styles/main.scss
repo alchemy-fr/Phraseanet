@@ -49,6 +49,7 @@ $select-height: 26px;
           margin: 0;
           border: 0 none;
           border-radius: 0;
+          background: transparent;
           overflow: hidden;
           &:first-child a {
             border-top-left-radius: 5px;
@@ -166,6 +167,24 @@ $select-height: 26px;
             }
             ul {
               margin: 0;
+            }
+            .custom_checkbox_label {
+              position: relative;
+              input {
+                opacity: 0;
+                cursor: pointer;
+              }
+              .custom_checkbox {
+                position: absolute;
+                top: 5px;
+                left: 0;
+                height: 11px;
+                width: 11px;
+                background: transparent url('/assets/common/images/icons/unchecked.png') no-repeat;
+              }
+              input:checked ~ .custom_checkbox {
+                background-image: url('/assets/common/images/icons/checked.png')
+              }
             }
           }
           // custom select
