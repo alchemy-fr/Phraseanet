@@ -13,6 +13,7 @@ jobs:
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+    - run: phpenv global 7.1.3
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
         command: nvm install v10.12.0 && nvm alias default v10.12.0
