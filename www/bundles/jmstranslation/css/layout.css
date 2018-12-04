@@ -1,0 +1,12 @@
+body > .container {
+	margin-top: 50px;
+}
+
+.jms-translation-anchor {
+	padding-top: 50px;
+	margin-top: -50px;
+}
+
+.jms-sources-list-item {
+	word-break: break-all;
+}

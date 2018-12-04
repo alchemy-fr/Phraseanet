@@ -45,7 +45,7 @@
         "phpexiftool/exiftool": "10.10",
         "ramsey/uuid": "^3.0",
         "roave/security-advisories": "dev-master",
-        "sensio/framework-extra-bundle": "^5.1",
+        "sensio/framework-extra-bundle": "^5.2",
         "simple-bus/doctrine-orm-bridge": "^4.0",
         "simple-bus/jms-serializer-bridge": "^1.0",
         "simple-bus/message-bus": "^2.1",

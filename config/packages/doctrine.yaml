@@ -1,21 +1,21 @@
 parameters:
-    # Adds a fallback DATABASE_URL if the env var is not set.
-    # This allows you to run cache:warmup even if your
-    # environment variables are not available yet.
-    # You should not need to change this value.
-    env(DATABASE_URL): ''
+    env(DATABASE_APPBOX_URL): 'mysql://root:toor@127.0.0.1:3306/ab_master'
+    env(DATABASE_DATABOX_URL): 'mysql://root:toor@127.0.0.1:3306/db_master'
 
 doctrine:
     dbal:
-        # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '5.7'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
-
-        url: '%env(resolve:DATABASE_URL)%'
+        default_connection: appbox
+        connections:
+            appbox:
+                url: '%env(DATABASE_APPBOX_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+            databox:
+                url: '%env(DATABASE_DATABOX_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
