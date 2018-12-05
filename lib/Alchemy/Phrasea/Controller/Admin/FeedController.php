@@ -186,7 +186,7 @@ class FeedController extends Controller
             $filesystem = $this->app['filesystem'];
             $rootPath = $this->app['root.path'];
             $filesystem->copy($tmpname, $rootPath . '/config/feed_' . $feed->getId() . '.jpg');
-            $filesystem->copy($tmpname, sprintf('%s/www/custom/feed_%d.jpg', $rootPath, $feed->getId()));
+            $filesystem->copy($tmpname, sprintf('%s/public/custom/feed_%d.jpg', $rootPath, $feed->getId()));
 
             $filesystem->remove($tmpname);
 

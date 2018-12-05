@@ -63,10 +63,10 @@ class JsFixtures extends Command
     private function copy(OutputInterface $output, $data)
     {
         foreach ($data as $paths) {
-            $output->writeln(sprintf("Generating %s", $this->container['root.path'] . '/www/scripts/tests/fixtures/'.$paths['target']));
+            $output->writeln(sprintf("Generating %s", $this->container['root.path'] . '/public/scripts/tests/fixtures/'.$paths['target']));
             $this->container['filesystem']->copy(
                 $this->container['root.path'] . '/templates/web/'.$paths['source'],
-                $this->container['root.path'] . '/www/scripts/tests/fixtures/'.$paths['target']
+                $this->container['root.path'] . '/public/scripts/tests/fixtures/'.$paths['target']
             );
         }
     }
@@ -114,7 +114,7 @@ class JsFixtures extends Command
         // force load of non cached template
         $app['twig']->enableAutoReload();
         $client = new Client($app);
-        $fixturePath =  'www/scripts/tests/fixtures';
+        $fixturePath =  'public/scripts/tests/fixtures';
         $target = sprintf('%s/%s/%s', $app['root.path'],$fixturePath, $to);
         $output->writeln(sprintf("Generating %s", $target));
 

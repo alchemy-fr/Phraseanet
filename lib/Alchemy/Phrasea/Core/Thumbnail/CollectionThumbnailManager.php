@@ -24,7 +24,7 @@ class CollectionThumbnailManager extends AbstractThumbnailManager implements Thu
         }
 
         $logoFile = $this->rootPath . '/config/' . $thumbnailType . '/' . $element->getRootIdentifier();
-        $custom_path = $this->rootPath . '/www/custom/' . $thumbnailType . '/' . $element->getRootIdentifier();
+        $custom_path = $this->rootPath . '/public/custom/' . $thumbnailType . '/' . $element->getRootIdentifier();
 
         foreach ([$logoFile, $custom_path] as $target) {
             $this->copyFile($target, $filename);

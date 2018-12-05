@@ -2,7 +2,7 @@
 
 
 // TODO: bower, tmp-assets
-// TODO: asset, www/assets
+// TODO: asset, public/assets
 var gulp = require('gulp');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');

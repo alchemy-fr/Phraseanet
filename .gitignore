@@ -13,18 +13,18 @@
 /.idea
 
 # Exclude javascript dependencies folder
-/www/assets
-/www/bower_components
+/public/assets
+/public/bower_components
 /tmp-assets
 
 # Exclude thumbnails folder
-/www/thumbnails
+/public/thumbnails
 
 # Exclude node.js dependencies folder
 /node_modules
 
 # Exclude compiled javascript test fixture folder
-/www/scripts/tests/fixtures
+/public/scripts/tests/fixtures
 
 # Exclude configuration folder exception the configuration sample file
 #/config
@@ -45,7 +45,7 @@
 # Exclude plugin folder
 /plugins
 # Excluse assets plugin folder
-/www/plugins
+/public/plugins
 
 # Exclude folder for storing documents (images, videos, PDF) and their sub-definitions
 /datas
@@ -64,7 +64,7 @@ behat.yml
 /vagrant
 
 # Exclude crossdomain.xml file it's generated
-/www/crossdomain.xml
+/public/crossdomain.xml
 
 # Exclude jison files
 grammar/query.js

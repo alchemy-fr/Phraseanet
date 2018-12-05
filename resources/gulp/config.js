@@ -2,10 +2,10 @@ var path = require("path");
 var fs = require("fs");
 var gutil = require("gulp-util");
 var configPaths = {
-    src: 'resources/www/',
-    vendors: 'www/bower_components/',
-    build: 'www/assets/',
-    dist: 'www/',
+    src: 'resources/public/',
+    vendors: 'public/bower_components/',
+    build: 'public/assets/',
+    dist: 'public/',
     nodes: 'node_modules/'
 };
 

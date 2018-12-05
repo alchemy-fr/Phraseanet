@@ -22,7 +22,7 @@ class DataboxThumbnailManager extends AbstractThumbnailManager implements Thumbn
         }
 
         $logoFile = $this->rootPath . '/config/minilogos/' . $thumbnailType . '_' . $element->getRootIdentifier() . '.jpg';
-        $custom_path = $this->rootPath . '/www/custom/minilogos/' . $thumbnailType . '_' . $element->getRootIdentifier() . '.jpg';
+        $custom_path = $this->rootPath . '/public/custom/minilogos/' . $thumbnailType . '_' . $element->getRootIdentifier() . '.jpg';
 
         foreach ([$logoFile, $custom_path] as $target) {
             $this->copyFile($target, $filename);

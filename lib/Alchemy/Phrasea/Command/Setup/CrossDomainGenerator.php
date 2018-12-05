@@ -42,7 +42,7 @@ class CrossDomainGenerator extends Command
         $xml = $dumper->dump($configuration);
         $output->writeln("Generating crossdomain.xml");
 
-        $this->container['filesystem']->dumpFile($this->container['root.path'].'/www/crossdomain.xml', $xml);
+        $this->container['filesystem']->dumpFile($this->container['root.path'].'/public/crossdomain.xml', $xml);
 
         return ;
     }
