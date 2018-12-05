@@ -243,9 +243,9 @@ class recordutils_image
             $texts = $xpprefs->query('text', $stamp);
             $fontsize = "100%";
             for ($i = 0; $i < $texts->length; $i++) {
-                if (($tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
+                if (((int)$tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
                     if (substr($tmpfontsize, -1) == '%') {
-                        $tmpfontsize = (int) ($tmpfontsize * $image_width / 4000);
+                        $tmpfontsize = (int) ($tmpfontsize * (int)$image_width / 4000);
                     } else {
                         $tmpfontsize = (int) $tmpfontsize;
                     }
