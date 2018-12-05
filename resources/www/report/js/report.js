@@ -4,7 +4,7 @@
  */
 
 
-//#############START DOCUMENT READY ######################################//
+//############# START DOCUMENT READY ######################################//
 $(document).ready(function () {
 
     //do tabs and resize window on show
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
     $(".select_one").each(function(){
         var $this = $(this),
-        numberOfOptions = $(this).children('option').length;
+            numberOfOptions = $(this).children('option').length;
 
         $this.addClass('select-hidden');
         $this.wrap('<div class="custom_select"></div>');
@@ -51,27 +51,31 @@ $(document).ready(function () {
       
         $listItems.click(function(e) {
             e.stopPropagation();
+            var value = $(this).attr('rel');
             $styledSelect.text($(this).text()).removeClass('active');
-            $this.val($(this).attr('rel'));
-            $this.data('action', $(this).attr('data-action'))
-            console.log($this.data('action'));
+            $this.val(value);
+            $this.data('action', $(this).attr('data-action'));
             $list.hide();
+        });
+
+        $(".form2 .select-options li").click(function(e) {
+            e.stopPropagation();
+            var value = $(this).attr('rel'),
+                form = $(this).closest('form');
+            $(".form2 .collist", form).hide();
+            $(".form2 .collist-" + value, form).show();
         });
       
         $(document).click(function() {
             $styledSelect.removeClass('active');
             $list.hide();
         });
-
     });
 
     /** disable submit button if no date (dmin or dmax) **/
     $('.dmin, .dmax').on('change', function() {
-        console.log(this);
-        
         var $this = $(this);
         var container = $this.closest('.inside-container');
-        console.log(container);
         
         if ($this.val().length == 0) {
             $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
@@ -83,8 +87,23 @@ $(document).ready(function () {
         }
     });
 
+    $('.form2 .collist').each(function() {
+        var $this = $(this),
+            form = $this.closest('form'),
+            i = $this.closest('form').find('.sbas_select').val()
+        ;
+
+        $this.hide();        
+        $(".collist-" + i, form).show();
+    });
+
+    $('.form2').each(function() {
+        if ($(this).html().trim() === '')
+            $(this).hide();
+    });
+
 });
-//#############END DOCUMENT READY ######################################//
+//############# END DOCUMENT READY ######################################//
 
 /**
  *
@@ -106,20 +125,6 @@ function bindEvents() {
         form.submit();
 
         return false;   // prevent button to submit form
-    });
-
-    /**
-     * "databox" radios
-     */
-    $('.select_one').bind('click', function () {
-        var form = $(this).closest("form");
-        var sbas_id = $(this).val();
-
-        $(".collist", form).hide();
-        $(".collist input", form).prop("disabled", true);
-
-        $(".collist-"+sbas_id, form).show();
-        $(".collist-"+sbas_id+" input", form).prop("disabled", false);
     });
 
     /**
