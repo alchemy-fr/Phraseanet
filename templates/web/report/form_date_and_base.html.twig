@@ -5,7 +5,7 @@
             <label for="dmin">{{ "report:: Du (date)" | trans }}</label>
                 <div class="input-prepend">
                     <span class="add-on"></span>
-                    <input class= "dmin" name="dmin" type="text" 
+                    <input class="dmin" name="dmin" type="text" 
                         value="{{ "-1 month"|date("Y-m-d") }}" size="10"
                         placeholder="{{ "YYYY-MM-DD" | trans }}"
                     />
@@ -15,8 +15,8 @@
             <label for="dmax">{{ "report:: Au (date)" | trans }}</label>
             <div class="input-prepend">
                 <span class="add-on"></span>
-                <input class= "dmin" name="dmin" type="text" 
-                    value="{{ "-1 month"|date("Y-m-d") }}" size="10"
+                <input class="dmax" name="dmax" type="text" 
+                    value="{{ "now"|date("Y-m-d") }}" size="10"
                     placeholder="{{ "YYYY-MM-DD" | trans }}"
                 />
             </div>
@@ -24,7 +24,7 @@
     </div>
     <div class="form2 form_content">
         <div class="form_titre">{{ "report:: 2 - Base" | trans }}</div>
-        <select class="select_one select_base" name="sbas">
+        <select class="select_one sbas_select" name="sbas">
             {% for sbas_id,databox in granted_bases %}
                 <option 
                     value="{{ sbas_id }}"
@@ -48,35 +48,33 @@
     </div>
     <div class="form2 form_content">
         {% if displayCollections == true %}
-        <div class="form_titre">
-            {{ "report:: 3 - Collections" | trans }}
-        </div>
-        <div class="collist">
-            <div class="collist_buttons">
-                <button class="select-all btn btn-mini" data-target_selector="#chkcol-{{ tab }} input:checkbox">
-                    {% trans %}Select all{% endtrans %}
-                </button>
-                <button class="unselect-all btn btn-mini" data-target_selector="#chkcol-{{ tab }} input:checkbox">
-                    {% trans %}Deselect all{% endtrans %}
-                </button>
+            <div class="form_titre">
+                {{ "report:: 3 - Collections" | trans }}
             </div>
+            {% for sbas_id,databox in granted_bases %}
+                <div class="collist collist-{{ sbas_id }}">
+                    <div class="collist_buttons">
+                        <button class="select-all btn btn-mini" data-target_selector="#chkcol-{{ tab }}-{{ sbas_id }} input:checkbox">
+                            {% trans %}Select all{% endtrans %}
+                        </button>
+                        <button class="unselect-all btn btn-mini" data-target_selector="#chkcol-{{ tab }}-{{ sbas_id }} input:checkbox">
+                            {% trans %}Deselect all{% endtrans %}
+                        </button>
+                    </div>
 
-            <ul id="chkcol-{{ tab }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
-
-                {% for sbas_id,databox in granted_bases %}
-
-                    {% for collection in databox.collections %}
-                    <li>
-                        <label class="checkbox custom_checkbox_label">
-                            <input name="base[]" checked="checked" type="checkbox" value="{{ collection.base_id }}">
-                            <span class="custom_checkbox"></span>
-                            {{ collection.name }}
-                        </label>
-                    </li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
+                    <ul id="chkcol-{{ tab }}-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
+                        {% for collection in databox.collections %}
+                        <li>
+                            <label class="checkbox custom_checkbox_label">
+                                <input name="base[]" checked="checked" type="checkbox" value="{{ collection.base_id }}">
+                                <span class="custom_checkbox"></span>
+                                {{ collection.name }}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
         {% endif %}
     </div>
 {% endblock form_date_and_base %}
