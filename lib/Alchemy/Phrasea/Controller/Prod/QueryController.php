@@ -327,6 +327,10 @@ class QueryController extends Controller
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
                 $fieldsInfosByName[$k] = $f;
                 $fieldsInfosByName[$k]['trans_label'] = $this->app->trans($f['label']);
+                $fieldsInfosByName[$k]['labels'] = [];
+                foreach($this->app->getAvailableLanguages() as $locale => $lng) {
+                    $fieldsInfosByName[$k]['labels'][$locale] = $this->app->trans($f['label'], [], "messages", $locale);
+                }
             }
 
             // add databox fields
@@ -338,17 +342,22 @@ class QueryController extends Controller
                 foreach ($databox->get_meta_structure() as $field) {
                     $name = $field->get_name();
                     $fieldsInfos[$sbasId][$name] = [
-                      'label' => $field->get_label($this->app['locale']),
-                      'type' => $field->get_type(),
+                      'label'    => $field->get_label($this->app['locale']),
+                      'labels'   => $field->get_labels(),
+                      'type'     => $field->get_type(),
                       'business' => $field->isBusiness(),
-                      'multi' => $field->is_multi(),
+                      'multi'    => $field->is_multi(),
                     ];
+
+                    // infos on the "same" field (by name) on multiple databoxes !!!
+                    // label(s) can be inconsistants : the first databox wins
                     if (!isset($fieldsInfosByName[$name])) {
                         $fieldsInfosByName[$name] = [
-                            'label' => $field->get_label($this->app['locale']),
-                            'type' => $field->get_type(),
-                            'field' => $field->get_name(),
-                            'query' => "field." . $field->get_name() . ":%s",
+                            'label'       => $field->get_label($this->app['locale']),
+                            'labels'      => $field->get_labels(),
+                            'type'        => $field->get_type(),
+                            'field'       => $field->get_name(),
+                            'query'       => "field." . $field->get_name() . ":%s",
                             'trans_label' => $field->get_label($this->app['locale']),
                         ];
                         $field->get_label($this->app['locale']);
@@ -399,6 +408,7 @@ class QueryController extends Controller
                     $f = $fieldsInfosByName[$facetName];
 
                     $facet['label'] = $f['trans_label'];
+                    $facet['labels'] = $f['labels'];
                     $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
                     $facets[] = $facet;
 
