@@ -59,7 +59,7 @@ class patch_386alpha2a implements patchInterface
 
         $parser = new CrossDomainParser();
         try {
-            $crossDomainConfig = $parser->parse($app['root.path'].'/www/crossdomain.xml');
+            $crossDomainConfig = $parser->parse($app['root.path'].'/public/crossdomain.xml');
         } catch (RuntimeException $e) {
             $crossDomainConfig = array(
                 'allow-access-from' => array(

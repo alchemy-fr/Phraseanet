@@ -36,7 +36,7 @@ class FilesystemRequirements extends RequirementCollection implements Requiremen
             $baseDir . '/tmp/lazaret',
             $baseDir . '/tmp/download',
             $baseDir . '/cache',
-            $baseDir . '/www/custom',
+            $baseDir . '/public/custom',
         ];
 
         foreach ($paths as $path) {

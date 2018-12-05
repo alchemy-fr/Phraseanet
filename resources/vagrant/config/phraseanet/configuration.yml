@@ -71,9 +71,9 @@ main:
         subdefs: null
         cache: /tmp/phraseanet/cache
         log : /tmp/phraseanet/log
-        download: /var/www/phraseanet/tmp/download
-        lazaret: /var/www/phraseanet/tmp/lazaret
-        caption: /var/www/phraseanet/tmp/caption
+        download: /var/public/phraseanet/tmp/download
+        lazaret: /var/public/phraseanet/tmp/lazaret
+        caption: /var/public/phraseanet/tmp/caption
     bridge:
         youtube:
             enabled: false

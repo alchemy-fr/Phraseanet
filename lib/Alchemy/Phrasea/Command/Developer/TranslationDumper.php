@@ -49,7 +49,7 @@ class TranslationDumper extends Command
                 $this->container['root.path'].'/lib',
                 $this->container['root.path'].'/templates',
                 $this->container['root.path'].'/bin',
-                $this->container['root.path'].'/www',
+                $this->container['root.path'].'/public',
             ])
         ;
         if ($input->hasParameterOption('--keep') || $input->hasParameterOption('--keep=true')) {

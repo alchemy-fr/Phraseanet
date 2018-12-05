@@ -76,11 +76,11 @@ class patch_384alpha2a implements patchInterface
 
             $fs->rename($file->getRealPath(), $app['root.path'].'/config/status/' . $uniqid . '-' . $suffix);
 
-            if ($fs->exists($app['root.path'] . '/www/custom/status/' . $file->getFileName())) {
-                $fs->remove($app['root.path'] . '/www/custom/status/' . $file->getFileName());
+            if ($fs->exists($app['root.path'] . '/public/custom/status/' . $file->getFileName())) {
+                $fs->remove($app['root.path'] . '/public/custom/status/' . $file->getFileName());
             }
         }
 
-        $app['filesystem']->mirror($app['root.path'] . '/config/status/', $app['root.path'] . '/www/custom/status/');
+        $app['filesystem']->mirror($app['root.path'] . '/config/status/', $app['root.path'] . '/public/custom/status/');
     }
 }

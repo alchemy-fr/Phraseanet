@@ -548,7 +548,7 @@ class Application extends SilexApplication
         // plugin path
         $this['plugin.path'] = $this['root.path'].'/plugins';
         // thumbnails path
-        $this['thumbnail.path'] = $this['root.path'].'/www/thumbnails';
+        $this['thumbnail.path'] = $this['root.path'].'/public/thumbnails';
 
         $factory = new ApplicationPathServiceGenerator();
 

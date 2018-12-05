@@ -110,7 +110,7 @@ class MinifierController
         \Minify::setCache(isset($min_cachePath) ? $min_cachePath : '', $min_cacheFileLocking);
 
         // required to work well :(
-        $_SERVER['DOCUMENT_ROOT'] = __DIR__ . '/../../../../www/';
+        $_SERVER['DOCUMENT_ROOT'] = __DIR__ . '/../../../../public/';
         \Minify::$isDocRootSet = true;
 
         $min_serveOptions['minifierOptions']['text/css']['symlinks'] = $min_symlinks;

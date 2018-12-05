@@ -13,21 +13,21 @@
   args:
     chdir: /vagrant/
 
-#- name: Install assets dependencies
-#  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_asset_dependencies
-#  become: yes
-#  become_user: vagrant
-#  ignore_errors: yes
-#  args:
-#    chdir: /vagrant/
+- name: Install assets dependencies
+  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_asset_dependencies
+  become: yes
+  become_user: vagrant
+  ignore_errors: yes
+  args:
+    chdir: /vagrant/
 
-#- name: Install assets
-#  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_assets
-#  become: yes
-#  become_user: vagrant
-#  ignore_errors: yes
-#  args:
-#    chdir: /vagrant/
+- name: Install assets
+  shell: export NVM_DIR="$HOME/.nvm" &&. "$NVM_DIR/nvm.sh" && make install_assets
+  become: yes
+  become_user: vagrant
+  ignore_errors: yes
+  args:
+    chdir: /vagrant/
 
 #- name: Run application setup
 #  become: yes

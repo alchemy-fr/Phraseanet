@@ -7,23 +7,23 @@ server {
     server_name dev.{{ hostname }}.vb;
 
     location @rewriteapp {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
       index index.html index.htm index.php;
       rewrite ^(.*)$ /index_dev.php/$1 last;
     }
 
     location / {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
         try_files $uri $uri/ @rewriteapp;
     }
 
     location /api {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
       rewrite ^(.*)$ /api_dev.php/$1 last;
     }
 
     location ~ ^/(index|index_dev|api|api_dev)\.php(/|$) {
-        root {{ nginx.docroot }}/www;
+        root {{ nginx.docroot }}/public;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php{{ phpversion }}-fpm.sock;
         fastcgi_index index.php;
@@ -45,23 +45,23 @@ server {
     server_name www.{{ hostname }}.vb;
 
     location @rewriteapp {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
       index index.html index.htm index.php;
       rewrite ^(.*)$ /index.php/$1 last;
     }
 
     location / {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
         try_files $uri $uri/ @rewriteapp;
     }
 
     location /api {
-      root {{ nginx.docroot }}/www;
+      root {{ nginx.docroot }}/public;
       rewrite ^(.*)$ /api.php/$1 last;
     }
 
     location ~ ^/(index|index_dev|api)\.php(/|$) {
-        root {{ nginx.docroot }}/www;
+        root {{ nginx.docroot }}/public;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php{{ phpversion }}-fpm.sock;
         fastcgi_index index.php;

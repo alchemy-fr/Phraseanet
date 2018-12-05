@@ -313,11 +313,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->file = $this->getSubstituteFilename();
         $this->etag = null;
 
-        $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/substitution/';
+        $this->path = $this->app['root.path'] . '/public/assets/common/images/icons/substitution/';
         $this->url = Url::factory('/assets/common/images/icons/substitution/' . $this->file);
 
         if (!file_exists($this->getRealPath())) {
-            $this->path = $this->app['root.path'] . '/www/assets/common/images/icons/';
+            $this->path = $this->app['root.path'] . '/public/assets/common/images/icons/';
             $this->file = 'substitution.png';
             $this->url = Url::factory('/assets/common/images/icons/' . $this->file);
         }

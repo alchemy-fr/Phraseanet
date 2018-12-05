@@ -116,7 +116,7 @@ class databox_status
             throw new Exception_Upload_CannotWriteFile();
         }
 
-        $custom_path = $app['root.path'] . '/www/custom/status/';
+        $custom_path = $app['root.path'] . '/public/custom/status/';
 
         $app['filesystem']->mkdir($custom_path, 0750);
 

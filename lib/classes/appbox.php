@@ -97,7 +97,7 @@ class appbox extends base
 
     public function write_application_logo(Filesystem $filesystem, $blob)
     {
-        $logo_path = $this->app['root.path'] . '/www/custom/minilogos/personalize_logo.';
+        $logo_path = $this->app['root.path'] . '/public/custom/minilogos/personalize_logo.';
 
         list($type, $imageData) = explode(';', $blob);
         list(,$extension) = explode('/',$type);
@@ -209,11 +209,11 @@ class appbox extends base
         $app['filesystem']->remove($finder);
 
         foreach ([
-            'config/custom_files/' => 'www/custom/',
-            'config/minilogos/'    => 'www/custom/minilogos/',
-            'config/stamp/'        => 'www/custom/stamp/',
-            'config/status/'       => 'www/custom/status/',
-            'config/wm/'           => 'www/custom/wm/',
+            'config/custom_files/' => 'public/custom/',
+            'config/minilogos/'    => 'public/custom/minilogos/',
+            'config/stamp/'        => 'public/custom/stamp/',
+            'config/status/'       => 'public/custom/status/',
+            'config/wm/'           => 'public/custom/wm/',
         ] as $source => $target) {
             $app['filesystem']->mirror($this->app['root.path'] . '/' . $source, $this->app['root.path'] . '/' . $target, null, array('override' => true));
         }
