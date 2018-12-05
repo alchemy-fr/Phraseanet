@@ -117,7 +117,8 @@ abstract class Command extends SymfoCommand implements CommandInterface
         $duration = ceil($seconds) . ' seconds';
 
         if ($duration > 60) {
-            $duration = round(floatval($duration / 60), 1) . ' minutes';
+            $duration = round($duration / 60, 1);
+            $duration.= ' minutes';
         } elseif ($duration > 3600) {
             $duration = round($duration / (60 * 60), 1) . ' hours';
         } elseif ($duration > (24 * 60 * 60)) {
