@@ -179,7 +179,7 @@ class GooglePlus extends AbstractProvider
 
             $token = @json_decode($this->client->getAccessToken(), true);
 
-            if (JSON_ERROR_NONE !== json_last_error()) {
+            if (JSON_ERROR_NONE !== json_last_error() && $token != null) {
                 throw new NotAuthenticatedException('Unable to parse Google+ JSON');
             }
 
