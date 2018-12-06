@@ -239,7 +239,7 @@ class GooglePlus extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
             throw new NotAuthenticatedException('Unable to parse Google+ JSON');
         }
 
