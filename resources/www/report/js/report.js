@@ -72,21 +72,6 @@ $(document).ready(function () {
         });
     });
 
-    /** disable submit button if no date (dmin or dmax) **/
-    $('.dmin, .dmax').on('change', function() {
-        var $this = $(this);
-        var container = $this.closest('.inside-container');
-        
-        if ($this.val().length == 0) {
-            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
-            $this.siblings('.add-on').addClass('disabled_image');
-        }
-        else {
-            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
-            $this.siblings('.add-on').removeClass('disabled_image');
-        }
-    });
-
     $('.form2 .collist').each(function() {
         var $this = $(this),
             form = $this.closest('form'),
@@ -115,7 +100,7 @@ function bindEvents() {
     **/
     $('.formsubmiter').bind('click', function () {
         var form = $($(this).attr('data-form_selector'));
-        var action = form.find("select.select_base");
+        var action = form.find("select.sbas_select");
         if(action.length != 1) {    // should never happen with select !
             return false;   // prevent button to submit form
         }
@@ -125,6 +110,23 @@ function bindEvents() {
         form.submit();
 
         return false;   // prevent button to submit form
+    });
+
+    /**
+     * disable submit button if no date (dmin or dmax) *
+     */
+    $('.dmin, .dmax').bind('change', function() {
+        var $this = $(this);
+        var container = $this.closest('.inside-container');
+        
+        if ($this.val().length == 0) {
+            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
+            $this.siblings('.add-on').addClass('disabled_image');
+        }
+        else {
+            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
+            $this.siblings('.add-on').removeClass('disabled_image');
+        }
     });
 
     /**
