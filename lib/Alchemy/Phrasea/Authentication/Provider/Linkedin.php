@@ -167,7 +167,7 @@ class Linkedin extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
             throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
         }
 
@@ -210,7 +210,7 @@ class Linkedin extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
             throw new NotAuthenticatedException('Unable to parse Linkedin JSON identity');
         }
 
