@@ -144,7 +144,7 @@ class Github extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
+        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
             throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
         }
 
