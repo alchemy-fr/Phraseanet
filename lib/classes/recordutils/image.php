@@ -214,7 +214,7 @@ class recordutils_image
                     $logopos = @strtoupper($v->item(0)->getAttribute('position'));
                     if (($logowidth = trim($v->item(0)->getAttribute('width'))) != '') {
                         if (substr($logowidth, -1) == '%') {
-                            $logo_reswidth = (int) ($logowidth * $image_width / 100);
+                            $logo_reswidth = (int) (floatval($logowidth) * floatval($image_width) / 100);
                         } else {
                             $logo_reswidth = (int) $logowidth;
                         }
@@ -245,7 +245,7 @@ class recordutils_image
             for ($i = 0; $i < $texts->length; $i++) {
                 if (((int)$tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
                     if (substr($tmpfontsize, -1) == '%') {
-                        $tmpfontsize = (int) ($tmpfontsize * (int)$image_width / 4000);
+                        $tmpfontsize = (int) (floatval($tmpfontsize) * intval($image_width) / 4000);
                     } else {
                         $tmpfontsize = (int) $tmpfontsize;
                     }
