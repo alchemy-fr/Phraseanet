@@ -4,7 +4,7 @@
  */
 
 
-//#############START DOCUMENT READY ######################################//
+//############# START DOCUMENT READY ######################################//
 $(document).ready(function () {
 
     //do tabs and resize window on show
@@ -13,14 +13,97 @@ $(document).ready(function () {
     reportDatePicker();
     bindEvents();
 
-    /**
-     * check the first databox on each tab (form), so the rest of the ux (coll list, fields, ...) is updated
-     */
+    /** custom select boxes **/
+
     $(".select_one").each(function(){
-        $(".sbas-radio", $(this)).first().click();
+        var $this = $(this),
+            numberOfOptions = $(this).children('option').length;
+
+        $this.addClass('select-hidden');
+        $this.wrap('<div class="custom_select"></div>');
+        $this.after('<div class="select-styled"></div>');
+
+        var $styledSelect = $this.next('div.select-styled');
+        $styledSelect.text($this.children('option').eq(0).text());
+
+        var $list = $('<ul />', {
+            'class': 'select-options'
+        }).insertAfter($styledSelect);
+
+        for (var i = 0; i < numberOfOptions; i++) {
+            $('<li />', {
+                text: $this.children('option').eq(i).text(),
+                rel: $this.children('option').eq(i).val(),
+                'data-action': $this.children('option').eq(i).data('action')
+
+            }).appendTo($list);
+        }
+
+        var $listItems = $list.children('li');
+  
+        $styledSelect.click(function(e) {
+            e.stopPropagation();
+            $('div.select-styled.active').not(this).each(function(){
+                $(this).removeClass('active').next('ul.select-options').hide();
+            });
+            $(this).toggleClass('active').next('ul.select-options').toggle();
+        });
+      
+        $listItems.click(function(e) {
+            e.stopPropagation();
+            var value = $(this).attr('rel');
+            $styledSelect.text($(this).text()).removeClass('active');
+            $this.val(value);
+            $this.data('action', $(this).attr('data-action'));
+            $list.hide();
+        });
+
+        $(".form2 .select-options li").click(function(e) {
+            e.stopPropagation();
+            var value = $(this).attr('rel'),
+                form = $(this).closest('form');
+            $(".form2 .collist", form).hide();
+            $(".form2 .collist-" + value, form).show();
+        });
+      
+        $(document).click(function() {
+            $styledSelect.removeClass('active');
+            $list.hide();
+        });
     });
+
+    /** disable submit button if no date (dmin or dmax) **/
+    $('.dmin, .dmax').on('change', function() {
+        var $this = $(this);
+        var container = $this.closest('.inside-container');
+        
+        if ($this.val().length == 0) {
+            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
+            $this.siblings('.add-on').addClass('disabled_image');
+        }
+        else {
+            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
+            $this.siblings('.add-on').removeClass('disabled_image');
+        }
+    });
+
+    $('.form2 .collist').each(function() {
+        var $this = $(this),
+            form = $this.closest('form'),
+            i = $this.closest('form').find('.sbas_select').val()
+        ;
+
+        $this.hide();        
+        $(".collist-" + i, form).show();
+    });
+
+    $('.form2').each(function() {
+        if ($(this).html().trim() === '')
+            $(this).hide();
+    });
+
 });
-//#############END DOCUMENT READY ######################################//
+//############# END DOCUMENT READY ######################################//
 
 /**
  *
@@ -32,30 +115,16 @@ function bindEvents() {
     **/
     $('.formsubmiter').bind('click', function () {
         var form = $($(this).attr('data-form_selector'));
-        var action = form.find("input.sbas-radio:checked");
-        if(action.length != 1) {    // should never happen with radios !
+        var action = form.find("select.select_base");
+        if(action.length != 1) {    // should never happen with select !
             return false;   // prevent button to submit form
         }
-        action = $(action[0]).attr("data-action");
+        action = action.find(':selected').data('action');
 
         form.attr("action", action);
         form.submit();
 
         return false;   // prevent button to submit form
-    });
-
-    /**
-     * "databox" radios
-     */
-    $('.sbas-radio').bind('click', function () {
-        var form = $(this).closest("form");
-        var sbas_id = $(this).attr("data-sbasid");
-
-        $(".collist", form).hide();
-        $(".collist input", form).prop("disabled", true);
-
-        $(".collist-"+sbas_id, form).show();
-        $(".collist-"+sbas_id+" input", form).prop("disabled", false);
     });
 
     /**

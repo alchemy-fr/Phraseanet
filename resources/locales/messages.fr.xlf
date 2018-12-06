@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2018-11-26T13:13:56Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2018-11-30T11:35:24Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -286,11 +286,6 @@
         <target state="translated">%total% réponses</target>
         <jms:reference-file line="156">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3d850bddc9385d23589a2204c4583dcc0d62ffe5" resname="%total_count% results" approved="yes">
-        <source>%total_count% results</source>
-        <target state="translated">%total_count% résultats</target>
-        <jms:reference-file line="35">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="99d2e1a7e8d0ba4a7132282b53b15e503b91c2cb" resname="%user% a envoye son rapport de validation de %title%" approved="yes">
         <source>%user% a envoye son rapport de validation de %title%</source>
         <target state="translated">%user% a envoyé son rapport de validation pour %title%</target>
@@ -409,7 +404,6 @@
         <target state="translated">1 résultat</target>
         <jms:reference-file line="10">WorkZone/Browser/Results.html.twig</jms:reference-file>
         <jms:reference-file line="113">WorkZone/Browser/Results.html.twig</jms:reference-file>
-        <jms:reference-file line="33">web/report/generate_tab.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fbe42fc27804535bb12503b7990343d52141318c" resname="10 tags maximum" approved="yes">
         <source>10 tags maximum</source>
@@ -829,9 +823,9 @@
         <jms:reference-file line="131">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="139">actions/Feedback/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cff1e86ef3cd4771d8b9a289d1e75a465d5b48a7" resname="All these conditions">
+      <trans-unit id="cff1e86ef3cd4771d8b9a289d1e75a465d5b48a7" resname="All these conditions" approved="no">
         <source>All these conditions</source>
-        <target state="new">All these conditions</target>
+        <target state="needs-translation">Toutes les conditions</target>
         <jms:reference-file line="357">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f5920cee28837f31429fd82f7bc5a335272a436" resname="All values" approved="yes">
@@ -1510,11 +1504,6 @@
         <target state="translated">Champs</target>
         <jms:reference-file line="123">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="23cb1ba2135af54bb7f9dc4ac628c8c16b1274c8" resname="CSV export" approved="yes">
-        <source>CSV export</source>
-        <target state="translated">Export CSV</target>
-        <jms:reference-file line="22">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="07d75a5073e3247c7ac54d3a797d3f777b421863" resname="Camera Model" approved="yes">
         <source>Camera Model</source>
         <target state="translated">Type d'appareil numérique</target>
@@ -1755,11 +1744,6 @@
         <target state="translated">Cocher toute la colonne</target>
         <jms:reference-file line="39">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9f6dde6e53de78e748cd510d4dcd153b38a0b855" resname="Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report" approved="yes">
-        <source>Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report</source>
-        <target state="translated">Cochez les cases correspondantes aux colonnes que vous désirez voir apparaître dans le Report</target>
-        <jms:reference-file line="4">web/report/listColumn.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="3db8c513d71fe9dd08684c52c36e0a9d5bc591c5" resname="Code d'acces" approved="yes">
         <source>Code d'acces</source>
         <target state="translated">Code d'accès</target>
@@ -1920,9 +1904,9 @@
         <target state="translated">Consulter en ligne les prérequis et la configuration du serveur Web</target>
         <jms:reference-file line="316">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="33e15d008d511f3101566a2e25203ef2a3f605a0" resname="Contains">
+      <trans-unit id="33e15d008d511f3101566a2e25203ef2a3f605a0" resname="Contains" approved="no">
         <source>Contains</source>
-        <target state="new">Contains</target>
+        <target state="needs-translation">Contient</target>
         <jms:reference-file line="376">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="34326e71e2592544dedcb84077a6317dc5a5e700" resname="Continuer ?" approved="yes">
@@ -2214,9 +2198,9 @@
         <target state="translated">Date de modification</target>
         <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)">
+      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)" approved="no">
         <source>Date(s) from field(s)</source>
-        <target state="new">Date(s) from field(s)</target>
+        <target state="needs-translation">Date(s)</target>
         <jms:reference-file line="402">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b98c9b528241fc8135fb9fd472c7db12ec14964" resname="De" approved="yes">
@@ -2394,7 +2378,8 @@
         <source>Deselect all</source>
         <target state="translated">Tout désélectionner</target>
         <jms:reference-file line="193">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="27">web/report/form_date_and_base.html.twig</jms:reference-file>
+        <jms:reference-file line="93">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="60">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
         <source>Detailed view URL</source>
@@ -2894,9 +2879,9 @@
         <target state="translated">Envoi avec succès</target>
         <jms:reference-file line="447">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals">
+      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals" approved="no">
         <source>Equals</source>
-        <target state="new">Equals</target>
+        <target state="needs-translation">Egale</target>
         <jms:reference-file line="377">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab546c237a6685e5c75689266cfa715eeb21b7db" resname="Erreur" approved="yes">
@@ -3198,11 +3183,6 @@
         <target state="translated">Filtrer</target>
         <jms:reference-file line="36">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7a02ef54f4fa28248414c42efbf3c45d2942326" resname="Filtrer" approved="yes">
-        <source>Filtrer</source>
-        <target state="translated">Filtrer</target>
-        <jms:reference-file line="62">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="3bed1192b5d08579f152b36e0fee14728f4ca728" resname="Find a user" approved="yes">
         <source>Find a user</source>
         <target state="translated">Chercher un utilisateur</target>
@@ -3325,24 +3305,14 @@
         <target state="translated">Paramètres généraux</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fc45f9b7a9a6e8b48f0e28821ec1981804dd1eb6" resname="Generate" approved="yes">
-        <source>Generate</source>
-        <target state="translated">Générer</target>
-        <jms:reference-file line="21">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="1738f829e68f7add441844e11cae6237acf401d1" resname="Generate dashboard" approved="yes">
-        <source>Generate dashboard</source>
-        <target state="translated">Générer le tableau de bord</target>
-        <jms:reference-file line="52">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="9f1b4c9f85fcbbf355fdd3c97210173b63551aa6" resname="Generates a flexpaper flash file" approved="yes">
         <source>Generates a flexpaper flash file</source>
         <target state="translated">Générer un fichier flexpaper flash</target>
         <jms:reference-file line="32">Media/Subdef/FlexPaper.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file">
+      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file" approved="no">
         <source>Generates a pdf file</source>
-        <target state="new">Generates a pdf file</target>
+        <target state="needs-translation">Générer un fichier PDF</target>
         <jms:reference-file line="24">Media/Subdef/Pdf.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d40d73fbcffe62e09f9430c0043ec2e7011a801b" resname="Generates a video file" approved="yes">
@@ -3425,17 +3395,6 @@
         <source>Great</source>
         <target state="translated">Excellente</target>
         <jms:reference-file line="153">Controller/Root/LoginController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="325f1aa7d25c7b35a2006768bef41b1e7727d444" resname="Groupement des resultats sur le champ %name%" approved="yes">
-        <source>Groupement des resultats sur le champ %name%</source>
-        <target state="translated">Groupement des résultats sur le champ %name%</target>
-        <jms:reference-file line="607">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="754">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="42c8f672af9a6da3268b6f4a99958d6e735607b1" resname="Grouper" approved="yes">
-        <source>Grouper</source>
-        <target state="translated">Grouper</target>
-        <jms:reference-file line="66">web/report/generate_tab.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d36ed42d18a32e092664742ba0e0879f66ff0439" resname="Groupez 2 ou plusieurs mots avec des guillemets: &quot;Michael Jackson&quot;" approved="yes">
         <source>Groupez 2 ou plusieurs mots avec des guillemets: "Michael Jackson"</source>
@@ -4465,9 +4424,9 @@
         <jms:reference-file line="8">WorkZone/Browser/Results.html.twig</jms:reference-file>
         <jms:reference-file line="111">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query">
+      <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query" approved="no">
         <source>No thesaurus concept query</source>
-        <target state="new">No thesaurus concept query</target>
+        <target state="needs-translation">Pas de recherche Thesaurus</target>
         <jms:reference-file line="16">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6866c8b666718aff85382e93b25ef50cd321669b" resname="No users selected" approved="yes">
@@ -4638,9 +4597,9 @@
         <target state="translated">Un document ne peut être modifié.</target>
         <jms:reference-file line="23">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c15c49205663ceff94e31db82030bb5da10df870" resname="One of these conditions">
+      <trans-unit id="c15c49205663ceff94e31db82030bb5da10df870" resname="One of these conditions" approved="no">
         <source>One of these conditions</source>
-        <target state="new">One of these conditions</target>
+        <target state="needs-translation">Une de ces conditions</target>
         <jms:reference-file line="362">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ae26e7b698cf33577df1bd9fd55ddd1d0771802" resname="Only %nbEditableDocuments% records can be modified." approved="yes">
@@ -5294,11 +5253,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="43">WorkZone/Browser/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="73">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8434c52b54f0df88fc7f845d21a20f6a6d5ff880" resname="Receiver" approved="yes">
-        <source>Receiver</source>
-        <target state="translated">Destinataire</target>
-        <jms:reference-file line="595">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="da14ea4ea4ade5295d38ee6c0cd689aee3cd62ba" resname="Reception d'un rapport de validation" approved="yes">
         <source>Reception d'un rapport de validation</source>
         <target state="translated">Réception d'un rapport de validation</target>
@@ -5513,11 +5467,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Report</source>
         <target state="translated">Afficher dans Phraseanet Report</target>
         <jms:reference-file line="228">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="c0d6afbb9a5d52be258437c6100523c0ca890975" resname="Report generation may take a long time to generate, depending on the number of collections and the period selected." approved="yes">
-        <source>Report generation may take a long time to generate, depending on the number of collections and the period selected.</source>
-        <target state="translated">En fonction du nombre de collections et de l'intervalle de dates, la génération du Report peut prendre du temps.</target>
-        <jms:reference-file line="27">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="859ca6c24228b6fe9c9010bed75d2933884d7b49" resname="Request access" approved="yes">
         <source>Request access</source>
@@ -5802,9 +5751,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Voir les résultats de la demande de validation</target>
         <jms:reference-file line="81">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd6294adde442e65458da9640beeafed76f7f66a" resname="Select a field">
+      <trans-unit id="fd6294adde442e65458da9640beeafed76f7f66a" resname="Select a field" approved="no">
         <source>Select a field</source>
-        <target state="new">Select a field</target>
+        <target state="needs-translation">Choisir un champs</target>
         <jms:reference-file line="368">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68679be6d90db68ca5ceebaded92d5d83de8761c" resname="Select a list on the left and edit it !" approved="yes">
@@ -5821,7 +5770,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Select all</source>
         <target state="translated">Tout sélectionner</target>
         <jms:reference-file line="192">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="24">web/report/form_date_and_base.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="57">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7c83f0d10a0a04ab6ae1ceb098113b081e9bc4d5" resname="Select all collections" approved="yes">
         <source>Select all collections</source>
@@ -5840,9 +5790,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="56">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="121">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="49fae2071d9672ce46d9fbadda409a3fa0cbc238" resname="Selected base(s)">
+      <trans-unit id="49fae2071d9672ce46d9fbadda409a3fa0cbc238" resname="Selected base(s)" approved="no">
         <source>Selected base(s)</source>
-        <target state="new">Selected base(s)</target>
+        <target state="needs-translation">Rechercher dans les Bases</target>
         <jms:reference-file line="259">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c418c187fb3108749d7156765e7b9b16a51215f" resname="Selected files" approved="yes">
@@ -5881,11 +5831,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Send to Twitter</source>
         <target state="translated">Envoyer vers Twitter</target>
         <jms:reference-file line="22">prod/Share/record.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="35f49dcfbfb2e03fdce327671e82bf173b1ccb8b" resname="Sent" approved="yes">
-        <source>Sent</source>
-        <target state="translated">Envoyé</target>
-        <jms:reference-file line="199">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="31f38dffd0e514c2f0c21da7a49966442217f792" resname="Sent documents (mail)" approved="yes">
         <source>Sent documents (mail)</source>
@@ -6729,12 +6674,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="115">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="120">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7e4c9fa228eb48d2c3526022f4fad0106db3d08" resname="Trier" approved="yes">
-        <source>Trier</source>
-        <target state="translated">Trier</target>
-        <jms:reference-file line="49">web/report/generate_tab.html.twig</jms:reference-file>
-        <jms:reference-file line="50">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="6e764776541fbe428a3566f42ee7956312af98b7" resname="Trier par" approved="yes">
         <source>Trier par</source>
         <target state="translated">Trier par</target>
@@ -7152,9 +7091,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Validations envoyées</target>
         <jms:reference-file line="31">WorkZone/Browser/Browser.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links">
+      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links" approved="no">
         <source>Validity period of the download links</source>
-        <target state="new">Validity period of the download links</target>
+        <target state="needs-translation">Durée de validité des liens de téléchargement</target>
         <jms:reference-file line="61">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db671097785924a80ca79c2a37675116e90899e8" resname="Vers quel API voulez vous vous connecter ?" approved="yes">
@@ -7491,6 +7430,12 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Write Metas</source>
         <target state="translated">Ecriture des métadonnées</target>
         <jms:reference-file line="447">web/admin/subdefs.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d3f8f7b810c4b08f0b4ac4e47fdf8d265a10d869" resname="YYYY-MM-DD">
+        <source>YYYY-MM-DD</source>
+        <target state="new">YYYY-MM-DD</target>
+        <jms:reference-file line="10">web/report/form_date_and_base.html.twig</jms:reference-file>
+        <jms:reference-file line="20">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ebeadaf2d2237a35176827d093952ad6cc88f5e" resname="YYYY/MM/DD" approved="yes">
         <source>YYYY/MM/DD</source>
@@ -9412,11 +9357,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Dans les catégories</target>
         <jms:reference-file line="168">lib/classes/queries.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="efa8808d6f8c8597743781236bd79cbe60350bfc" resname="cocher tout" approved="yes">
-        <source>cocher tout</source>
-        <target state="translated">Tout cocher</target>
-        <jms:reference-file line="7">web/report/listColumn.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="6bca60e4b2d44b5623e626f9ff951ba6605e975f" resname="collection.label.unknown" approved="yes">
         <source>collection.label.unknown</source>
         <target state="translated">Collection inconnue</target>
@@ -9432,12 +9372,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Utilisation prévue</target>
         <jms:reference-file line="105">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="305">web/common/dialog_export.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0652e436f42d75f5672a8bd9ae2f398a55115d51" resname="configuration" approved="yes">
-        <source>configuration</source>
-        <target state="translated">Configuration</target>
-        <jms:reference-file line="534">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="682">Controller/Report/ActivityController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40d512859945a062fe97bb7954f25378b55a90d4" resname="confirm::Etes-vous sûre?" approved="yes">
         <source>confirm::Etes-vous sûre?</source>
@@ -9658,14 +9592,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="244">Controller/Prod/ToolsController.php</jms:reference-file>
         <jms:reference-file line="273">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8969980f2b8fd935f45cdd92a39dca6a4010d04" resname="filtrer les resultats sur la colonne %colonne%" approved="yes">
-        <source>filtrer les resultats sur la colonne %colonne%</source>
-        <target state="translated">filtrer les résultats sur la colonne %colonne%</target>
-        <jms:reference-file line="561">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="132">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="385">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="709">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="6117e45ab57f8660d866a21ca5e9d2c31dbc1945" resname="flash" approved="yes">
         <source>flash</source>
         <target state="translated">Flash</target>
@@ -9734,12 +9660,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>forms::operation effectuee OK</source>
         <target state="translated">Modifications effectuées</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0b1e95cfd9775191a7224d0a218ae79187e80c1d" resname="from" approved="yes">
-        <source>from</source>
-        <target state="translated">De</target>
-        <jms:reference-file line="10">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="13">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45b162f3c09db4eb9ecea5e048393a7ccaab4f7d" resname="help::help-section-bullet: check-spelling" approved="yes">
         <source>help::help-section-bullet: check-spelling</source>
@@ -9823,24 +9743,24 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Préférences sur les facettes</target>
         <jms:reference-file line="792">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f830d57f4cedb2a49c7b109f9b91b0f8ba83e8b" resname="index::advance_search: facet-order">
+      <trans-unit id="2f830d57f4cedb2a49c7b109f9b91b0f8ba83e8b" resname="index::advance_search: facet-order" approved="no">
         <source>index::advance_search: facet-order</source>
-        <target state="new">index::advance_search: facet-order</target>
+        <target state="needs-translation">Ordre d'affichage des facettes</target>
         <jms:reference-file line="793">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5a25478cdd7fe21258071c4f3a5d9920225f9356" resname="index::advance_search: facet-tech-order">
+      <trans-unit id="5a25478cdd7fe21258071c4f3a5d9920225f9356" resname="index::advance_search: facet-tech-order" approved="no">
         <source>index::advance_search: facet-tech-order</source>
-        <target state="new">index::advance_search: facet-tech-order</target>
+        <target state="needs-translation">Ordre technique</target>
         <jms:reference-file line="799">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6b9516a3c46d7ad246a9fbb3df693ba6c783c986" resname="index::advance_search: facet-values-order">
+      <trans-unit id="6b9516a3c46d7ad246a9fbb3df693ba6c783c986" resname="index::advance_search: facet-values-order" approved="no">
         <source>index::advance_search: facet-values-order</source>
-        <target state="new">index::advance_search: facet-values-order</target>
+        <target state="needs-translation">Ordre des valeurs de facette</target>
         <jms:reference-file line="805">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits">
+      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="yes">
         <source>index::advance_search: order-by-hits</source>
-        <target state="new">index::advance_search: order-by-hits</target>
+        <target state="translated">Par occurrences</target>
         <jms:reference-file line="811">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
@@ -10428,9 +10348,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Monter une base provenant d'un serveur different  de l'application box</target>
         <jms:reference-file line="103">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6cb5c0796bbc3bf1d892ba5be804a7e53595ea1d" resname="phraseanet:: Preferences">
+      <trans-unit id="6cb5c0796bbc3bf1d892ba5be804a7e53595ea1d" resname="phraseanet:: Preferences" approved="no">
         <source>phraseanet:: Preferences</source>
-        <target state="new">phraseanet:: Preferences</target>
+        <target state="needs-translation">Préférences</target>
         <jms:reference-file line="191">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2751058550fb9a63ba3ffa07152ec68f594dec2a" resname="phraseanet:: Un email vient de vous etre envoye" approved="yes">
@@ -10546,7 +10466,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Sous-définition</target>
         <jms:reference-file line="93">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="685">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="352">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c33ce7e20779d5b34c1c812406e2f22b779a45d0" resname="phraseanet:: thesaurus" approved="yes">
         <source>phraseanet:: thesaurus</source>
@@ -10752,16 +10671,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>phraseanet::utilisateurs</source>
         <target state="translated">Utilisateurs</target>
         <jms:reference-file line="66">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="152">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7cf383c0af92a038f4aa629bfc8292876459b08d" resname="phrseanet:: sous definition" approved="yes">
-        <source>phrseanet:: sous definition</source>
-        <target state="translated">Sous-définition</target>
-        <jms:reference-file line="282">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="34">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="52">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="273">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="281">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1aa787fe0cfb373575fc2c0f6f826e7c6dc9fd41" resname="preview" approved="yes">
         <source>preview</source>
@@ -11149,9 +11058,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Déplacer à la corbeille les enregistrements lier a ces reportages.</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete">
+      <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete" approved="no">
         <source>prod:app trash: record-delete</source>
-        <target state="needs-translation">Enregistrement(s) définitivement supprimé !</target>
+        <target state="needs-translation">Enregistrement(s) définitivement supprimé(s) !</target>
         <jms:reference-file line="40">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -11254,9 +11163,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="17">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="22">prod/results/feeds.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="aa9ad912bb5495802feb4738958c197a8e2de1dc" resname="rechercher dans tous les champs">
+      <trans-unit id="aa9ad912bb5495802feb4738958c197a8e2de1dc" resname="rechercher dans tous les champs" approved="no">
         <source>rechercher dans tous les champs</source>
-        <target state="new">rechercher dans tous les champs</target>
+        <target state="needs-translation">Rechercher dans tous les champs</target>
         <jms:reference-file line="388">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0dea865dcd106d77e52ea8bffe6f87e2add0ac53" resname="recordtype" approved="yes">
@@ -11354,108 +11263,58 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Sans titre</target>
         <jms:reference-file line="903">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e1fd199951b7475ef26b375b42056b7619abdfb9" resname="report :: aucun resultat trouve" approved="yes">
-        <source>report :: aucun resultat trouve</source>
-        <target state="translated">Aucun résultat trouvé</target>
-        <jms:reference-file line="115">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="dde6a50f70eb651f8e8b72e4d19c826ed474f62f" resname="report :: configurer le tableau" approved="yes">
-        <source>report :: configurer le tableau</source>
-        <target state="translated">Configurer le tableau</target>
-        <jms:reference-file line="15">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="4b5e07be61a6dbe3f4b635225bed3513f93472a5" resname="report :: filtrer" approved="yes">
-        <source>report :: filtrer</source>
-        <target state="translated">Filtrer</target>
-        <jms:reference-file line="62">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f9891f9435be957f4dd0901856d8cb2e49e48f9f" resname="report :: grouper" approved="yes">
-        <source>report :: grouper</source>
-        <target state="translated">Grouper</target>
-        <jms:reference-file line="66">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="089ca06ac338646a81d97f218405812b04d88182" resname="report :: imprimer le tableau" approved="yes">
-        <source>report :: imprimer le tableau</source>
-        <target state="translated">Imprimer le tableau</target>
-        <jms:reference-file line="18">web/report/generate_tab.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="1c2a928659706b02208f44cfe76294f5a3c3e788" resname="report:: (connexions) Globales" approved="yes">
-        <source>report:: (connexions) Globales</source>
-        <target state="translated">Toutes les connexions</target>
-        <jms:reference-file line="87">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="daaac8fc71cfa4f27496b88c286789c66aeb104a" resname="report:: (connexions) OS et navigateurs" approved="yes">
-        <source>report:: (connexions) OS et navigateurs</source>
-        <target state="translated">Plateformes et navigateurs</target>
-        <jms:reference-file line="91">web/report/report_layout_child.html.twig</jms:reference-file>
+      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
+        <source>report:: (connexions)</source>
+        <target state="new">report:: (connexions)</target>
+        <jms:reference-file line="14">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a190fa937cca670cc7ae51eb822dd4e7adffc03" resname="report:: (connexions) Par utilisateurs" approved="yes">
         <source>report:: (connexions) Par utilisateurs</source>
         <target state="translated">Groupé par utilisateurs</target>
-        <jms:reference-file line="71">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="68ed1e7f53fb514c611feeb9849a396352d28fd2" resname="report:: (telechargement) Global" approved="yes">
-        <source>report:: (telechargement) Global</source>
-        <target state="translated">Tous les téléchargements</target>
-        <jms:reference-file line="135">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="9f849cd5fb7a65d33e1ec022c8f0e28cd25c63d3" resname="report:: (telechargement) Par documents sur la base" approved="yes">
-        <source>report:: (telechargement) Par documents sur la base</source>
-        <target state="translated">Par document, sur la base</target>
-        <jms:reference-file line="143">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="de74bbae455a47c9404da8d0883534456eddd1e5" resname="report:: (telechargement) Par jours base par base" approved="yes">
-        <source>report:: (telechargement) Par jours base par base</source>
-        <target state="translated">Par Jour</target>
-        <jms:reference-file line="139">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="16">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
         <source>report:: 1 - Periode</source>
         <target state="translated">1 - Période</target>
-        <jms:reference-file line="4">web/report/form_date_and_base.html.twig</jms:reference-file>
+        <jms:reference-file line="3">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dff8c22d33c5488a01a5834535dff916fe5d6487" resname="report:: 2 - Bases" approved="yes">
-        <source>report:: 2 - Bases</source>
-        <target state="translated">2 - Bases</target>
-        <jms:reference-file line="19">web/report/form_date_and_base.html.twig</jms:reference-file>
+      <trans-unit id="87cb22fb5598f714cf44b13ef0d2fcfa0fe1e01a" resname="report:: 2 - Base" approved="no">
+        <source>report:: 2 - Base</source>
+        <target state="needs-translation">Bases</target>
+        <jms:reference-file line="26">web/report/form_date_and_base.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="49e279e2253aaf0d8aebad389584f5c7c77e5a78" resname="report:: 3 - Collections" approved="no">
+        <source>report:: 3 - Collections</source>
+        <target state="needs-translation">Collections exportées</target>
+        <jms:reference-file line="52">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a807c0ef7e32813081616c65bbc134acdf30666b" resname="report:: 3 - Type de report" approved="yes">
         <source>report:: 3 - Type de report</source>
         <target state="translated">3 - Type de report</target>
-        <jms:reference-file line="67">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="115">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="171">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="11">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="60">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bbf54f30e0791db4dc06243d939468640ddb6cc5" resname="report:: 4 - Fields" approved="no">
+        <source>report:: 4 - Fields</source>
+        <target state="needs-translation">Champs exportés</target>
+        <jms:reference-file line="85">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67272ff4fb66e47f6a5e55c7171e994c69b6f162" resname="report:: Au (date)" approved="yes">
         <source>report:: Au (date)</source>
         <target state="translated">Au</target>
-        <jms:reference-file line="12">web/report/form_date_and_base.html.twig</jms:reference-file>
-        <jms:reference-file line="9">web/report/ajax_report_dashboard.html.twig</jms:reference-file>
+        <jms:reference-file line="15">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10f8b6e84219c04ef9961e1710b17e0904746fab" resname="report:: Connexion" approved="yes">
         <source>report:: Connexion</source>
         <target state="translated">Connexions</target>
         <jms:reference-file line="666">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="8">web/report/report_layout.html.twig</jms:reference-file>
-        <jms:reference-file line="59">web/report/ajax_data_content.html.twig</jms:reference-file>
-        <jms:reference-file line="108">web/report/ajax_data_content.html.twig</jms:reference-file>
+        <jms:reference-file line="9">web/report/report_layout.html.twig</jms:reference-file>
         <jms:reference-file line="22">web/report/all_content.html.twig</jms:reference-file>
-        <jms:reference-file line="8">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="13">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="17">web/report/chart.html.twig</jms:reference-file>
-        <jms:reference-file line="43">web/report/chart.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="70a2e2ecaac5729f9c103110e2f37f915c722526" resname="report:: Cumul telechargements &amp; connexions" approved="yes">
-        <source><![CDATA[report:: Cumul telechargements & connexions]]></source>
-        <target state="translated">Téléchargements et connexions</target>
-        <jms:reference-file line="25">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="6543d1226df7dd63e1df3071abb9e42be332413a" resname="report:: Dashboard" approved="yes">
-        <source>report:: Dashboard</source>
-        <target state="translated">Tableau de bord</target>
-        <jms:reference-file line="7">web/report/report_layout.html.twig</jms:reference-file>
-        <jms:reference-file line="2">web/report/ajax_dashboard_content.html.twig</jms:reference-file>
-        <jms:reference-file line="21">web/report/ajax_report_dashboard.html.twig</jms:reference-file>
+      <trans-unit id="afa9685c95f7dff29cb2ad048da368c6e3dbadbc" resname="report:: Databox content" approved="no">
+        <source>report:: Databox content</source>
+        <target state="needs-translation">Contenus</target>
+        <jms:reference-file line="11">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afa00f7f0e9cf982c242e1a53235360b4aac707d" resname="report:: Detail des connexions" approved="yes">
         <source>report:: Detail des connexions</source>
@@ -11470,19 +11329,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="b00438fba3b211fc47deec5e6ccae27ef9d7c216" resname="report:: Du (date)" approved="yes">
         <source>report:: Du (date)</source>
         <target state="translated">Du</target>
-        <jms:reference-file line="6">web/report/form_date_and_base.html.twig</jms:reference-file>
-        <jms:reference-file line="5">web/report/ajax_report_dashboard.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="de563e5406946f25c4f6cb63311dbea280ef5cc5" resname="report:: Enlever le filtre" approved="yes">
-        <source>report:: Enlever le filtre</source>
-        <target state="translated">Enlever le filtre</target>
-        <jms:reference-file line="5">web/report/colFilter.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7d66db3bd34ddc505fd6721d4ffabfa19c4f005f" resname="report:: Grouper par" approved="yes">
-        <source>report:: Grouper par</source>
-        <target state="translated">Grouper par</target>
-        <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="119">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="5">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f326bdbbc7dec4c7f61a0e4b22465d0479c0d64" resname="report:: Heures" approved="yes">
         <source>report:: Heures</source>
@@ -11493,7 +11340,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report:: IP</source>
         <target state="translated">IP</target>
         <jms:reference-file line="72">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="154">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b4276e87d8e054cabe49ed3b9bf7ee9f6599cba" resname="report:: Information sur l'enregistrement numero %number%" approved="yes">
         <source>report:: Information sur l'enregistrement numero %number%</source>
@@ -11515,97 +11361,37 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Information sur les utilisateurs correspondant à %critere%</target>
         <jms:reference-file line="415">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="449ab664cb3a86585e7942d12693cfe75ca80e9b" resname="report:: Les questions les plus posees" approved="yes">
-        <source>report:: Les questions les plus posees</source>
-        <target state="translated">Questions les plus posées</target>
-        <jms:reference-file line="181">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="67">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
+      <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report" approved="no">
+        <source>report:: Phraseanet report</source>
+        <target state="needs-translation">Phraseanet Report</target>
+        <jms:reference-file line="6">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a5c2d01ec9cd2716cb44a02ba1851d82de40aa8a" resname="report:: Plateforme" approved="yes">
         <source>report:: Plateforme</source>
         <target state="translated">Plateforme</target>
         <jms:reference-file line="160">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7745037fc8189172f2a349bed3b123b9ac4222df" resname="report:: Utilisateurs les plus actifs" approved="yes">
-        <source>report:: Utilisateurs les plus actifs</source>
-        <target state="translated">Utilisateurs les plus actifs</target>
-        <jms:reference-file line="31">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="37">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="43">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="49">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="89e1f53ec411b155207ca8489388aafffe430392" resname="report:: Volumetrie des questions posees sur %home_title%" approved="yes">
-        <source>report:: Volumetrie des questions posees sur %home_title%</source>
-        <target state="translated">Volumétrie des questions posées sur  %home_title%</target>
-        <jms:reference-file line="41">web/report/dashboard_macro.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="0deee30b968da91f95a0daf3b988fb8613bcf4f5" resname="report:: activite" approved="yes">
         <source>report:: activite</source>
         <target state="translated">Activité</target>
         <jms:reference-file line="672">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="217">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="286">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="285">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="80">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="123">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="b6c3ea1902c9399e1093a448712995eae208adab" resname="report:: activite document ajoute" approved="yes">
-        <source>report:: activite document ajoute</source>
-        <target state="translated">Documents ajoutés</target>
-        <jms:reference-file line="17">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0d7f08a0cf0531e4e366cc80a773e2f9ad1b5e22" resname="report:: activite document edite" approved="yes">
-        <source>report:: activite document edite</source>
-        <target state="translated">Documents édités</target>
-        <jms:reference-file line="21">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ca241fec577d1f3f2ea4f18ba45d9c0e3fba73a4" resname="report:: activite du site" approved="yes">
-        <source>report:: activite du site</source>
-        <target state="translated">Activité du site</target>
-        <jms:reference-file line="189">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="10">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4bdfeb6e1b025de825e5a05e564a3c58622ffe5" resname="report:: activite par heure" approved="yes">
         <source>report:: activite par heure</source>
         <target state="translated">Activité par heure (moyenne)</target>
         <jms:reference-file line="96">module/report/activity.php</jms:reference-file>
-        <jms:reference-file line="7">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ea76b4d0267c77fa551c829102db6366204f4b52" resname="report:: activite par jour" approved="yes">
-        <source>report:: activite par jour</source>
-        <target state="translated">Activité par jour</target>
-        <jms:reference-file line="12">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="6">web/report/chart.html.twig</jms:reference-file>
-        <jms:reference-file line="30">web/report/chart.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="395a5695445d90bc2b53cd146a4aeb877a473155" resname="report:: adresse" approved="yes">
-        <source>report:: adresse</source>
-        <target state="translated">Adresse</target>
-        <jms:reference-file line="42">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="432">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="82c2454cb127671a7f8bfb0dd6b8140affa1d868" resname="report:: ajoute" approved="yes">
-        <source>report:: ajoute</source>
-        <target state="translated">Ajouté</target>
-        <jms:reference-file line="196">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="48808e405192603e079ef1ccbbc1a1df98e317bd" resname="report:: collections" approved="yes">
         <source>report:: collections</source>
         <target state="translated">Collections</target>
         <jms:reference-file line="96">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="665">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="283">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="53">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="282">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6a1193a920be0725a4560344ca10db36147ffd34" resname="report:: commentaire" approved="yes">
         <source>report:: commentaire</source>
         <target state="translated">Commentaire</target>
         <jms:reference-file line="99">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="667">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="284">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="54">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="283">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="51f822380b654c4fc5adb28eb0643f37aac0d89b" resname="report:: copyright" approved="yes">
         <source>report:: copyright</source>
@@ -11618,160 +11404,52 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="69">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="669">classes/module/report.php</jms:reference-file>
         <jms:reference-file line="670">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="153">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="215">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="280">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="33">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="46">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="50">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="58">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="272">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="279">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0fa74ac37777e4846a6b7521f508fe82f30fbc28" resname="report:: document" approved="yes">
-        <source>report:: document</source>
-        <target state="translated">Documents</target>
-        <jms:reference-file line="31">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="270">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="292">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="193">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="56">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e125eaf6fca2110f86b6ebba60371a4875c87e03" resname="report:: document ajoute" approved="yes">
         <source>report:: document ajoute</source>
         <target state="translated">Documents ajoutés</target>
         <jms:reference-file line="46">module/report/add.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3b1da6e09ede169472dc0f7c993a2244b370f5f0" resname="report:: documents les plus telecharges" approved="yes">
-        <source>report:: documents les plus telecharges</source>
-        <target state="translated">Documents les plus téléchargés</target>
-        <jms:reference-file line="55">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="562beb1d0fc9d02c136608897f50040ba8227991" resname="report:: edite" approved="yes">
-        <source>report:: edite</source>
-        <target state="translated">Edité</target>
-        <jms:reference-file line="197">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="3d92b0d797813422ee66dbddda64e6f1f084b371" resname="report:: edited documents" approved="yes">
         <source>report:: edited documents</source>
         <target state="translated">Documents édités</target>
         <jms:reference-file line="46">module/report/edit.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="98d23f79f60fb1e256100832301d040710dea789" resname="report:: email" approved="yes">
-        <source>report:: email</source>
-        <target state="translated">E-mail</target>
-        <jms:reference-file line="41">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="431">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="fd08db9190c0edd6acd0ad385708b302e8c972ea" resname="report:: fichier" approved="yes">
         <source>report:: fichier</source>
         <target state="translated">Fichier</target>
         <jms:reference-file line="681">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="353">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b64c2533c7b357659df3ea9dfb02aec00e95283f" resname="report:: fonction" approved="yes">
         <source>report:: fonction</source>
         <target state="translated">Fonction</target>
         <jms:reference-file line="671">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="216">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="285">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="284">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="78">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="121">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7371da035f95b6a29593e199feaae2e2882ef328" resname="report:: historique des connexions" approved="yes">
-        <source>report:: historique des connexions</source>
-        <target state="translated">Historique des connexions</target>
-        <jms:reference-file line="88">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ec7fa3164a52b7983e9ca8ac683dbcf279b1ca4a" resname="report:: historique des questions" approved="yes">
-        <source>report:: historique des questions</source>
-        <target state="translated">Historique des questions</target>
-        <jms:reference-file line="108">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="bb8aaa1753d6ae6e697f9ecbe83939c4c1e274f9" resname="report:: historique des telechargements" approved="yes">
-        <source>report:: historique des telechargements</source>
-        <target state="translated">Historique des téléchargements</target>
-        <jms:reference-file line="98">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="400">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="8ebc8d8e0aeeb34323009f7ac75fdd9f42763ba4" resname="report:: identifiant" approved="yes">
-        <source>report:: identifiant</source>
-        <target state="translated">Identifiant</target>
-        <jms:reference-file line="39">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="429">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="48b9186d83e31f25e35119e7be71d4e2210c1954" resname="report:: jour" approved="yes">
         <source>report:: jour</source>
         <target state="translated">Jour</target>
-        <jms:reference-file line="289">Controller/Report/ActivityController.php</jms:reference-file>
         <jms:reference-file line="28">web/report/all_content.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="dc0c59066058c42d9fafce659f68c2219c40953f" resname="report:: module" approved="yes">
-        <source>report:: module</source>
-        <target state="translated">Module</target>
-        <jms:reference-file line="432">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3aa60d109af43ca18e495aec94997a7885ce9029" resname="report:: modules" approved="yes">
         <source>report:: modules</source>
         <target state="translated">Modules</target>
         <jms:reference-file line="339">module/report/nav.php</jms:reference-file>
         <jms:reference-file line="75">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="155">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="47">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="639e7baf3ce4f23e399e47a2f29958adaa26f8ba" resname="report:: navigateur" approved="yes">
         <source>report:: navigateur</source>
         <target state="translated">Navigateur</target>
         <jms:reference-file line="103">module/report/nav.php</jms:reference-file>
-        <jms:reference-file line="411">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f5626f82ffbe13488f3fc8a706c90e52d7845fb" resname="report:: navigateurs et plateforme" approved="yes">
         <source>report:: navigateurs et plateforme</source>
         <target state="translated">Navigateurs et Plateformes</target>
         <jms:reference-file line="277">module/report/nav.php</jms:reference-file>
-        <jms:reference-file line="417">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="58caf40106dec978fc4988c3bd7893b38ede9d83" resname="report:: nom" approved="yes">
-        <source>report:: nom</source>
-        <target state="translated">Nom</target>
-        <jms:reference-file line="40">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="430">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="da20260fb0ffb7f91e8659e3ccf8feb8ee778993" resname="report:: nombre" approved="yes">
         <source>report:: nombre</source>
         <target state="translated">Nombre</target>
         <jms:reference-file line="675">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="412">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="418">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="423">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="428">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="433">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="75">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="227">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="138">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="189">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="99117f398785adcf45e8499ad8d1443c621ca4e8" resname="report:: nombre de documents" approved="yes">
-        <source>report:: nombre de documents</source>
-        <target state="translated">Nombre de documents</target>
-        <jms:reference-file line="83">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="e29ea3e14febc313f90283459d28f04a05ec19a7" resname="report:: nombre de preview" approved="yes">
-        <source>report:: nombre de preview</source>
-        <target state="translated">Nombre de sous-définitions</target>
-        <jms:reference-file line="84">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="52a2c7c51c95719594e526c51995fec2cff55c9a" resname="report:: nombre de reponses" approved="yes">
-        <source>report:: nombre de reponses</source>
-        <target state="translated">Nombre de réponses</target>
-        <jms:reference-file line="139">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="190">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="93456bfa01cd90120e67a0eca305d3f7a94a3842" resname="report:: nombre de vue" approved="yes">
-        <source>report:: nombre de vue</source>
-        <target state="translated">Nombre de vues</target>
-        <jms:reference-file line="80">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26d00286d5aecf7cfda0e1395c4208440409b8c0" resname="report:: non-renseigne" approved="yes">
         <source>report:: non-renseigne</source>
@@ -11791,8 +11469,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="117">module/report/validate.php</jms:reference-file>
         <jms:reference-file line="114">module/report/edit.php</jms:reference-file>
         <jms:reference-file line="117">module/report/sent.php</jms:reference-file>
-        <jms:reference-file line="9">web/report/colFilter.html.twig</jms:reference-file>
-        <jms:reference-file line="15">web/report/colFilter.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="07c06c0cac8bd3e3507a72d6cb7fa1ee23a6bf13" resname="report:: page d'accueil" approved="yes">
         <source>report:: page d'accueil</source>
@@ -11806,68 +11482,15 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">par %user_infos%</target>
         <jms:reference-file line="61">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a3817f71ee24b8f9847baa3f3d2088e43114faff" resname="report:: par utilisateurs" approved="yes">
-        <source>report:: par utilisateurs</source>
-        <target state="translated">Par utilisateur</target>
-        <jms:reference-file line="130">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="45882e1904416b4c1e53b2d47a6f192e4c0e1c14" resname="report:: pays" approved="yes">
         <source>report:: pays</source>
         <target state="translated">Pays</target>
         <jms:reference-file line="673">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="218">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="287">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="286">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="81">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="124">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="eda7d4be8f5577170dd7f9c72b3f82d265b93637" resname="report:: plateforme" approved="yes">
-        <source>report:: plateforme</source>
-        <target state="translated">Plateforme</target>
-        <jms:reference-file line="422">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0e1edcbd4dbff06db1c2530bb1b8ea321fa6c86d" resname="report:: poids" approved="yes">
-        <source>report:: poids</source>
-        <target state="translated">Poids</target>
-        <jms:reference-file line="36">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="275">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="bed7cfb242a47b51f45d31d6f7534f53e4343f66" resname="report:: poids document" approved="yes">
-        <source>report:: poids document</source>
-        <target state="translated">Poids des documents téléchargés</target>
-        <jms:reference-file line="45">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="cc3a07e0f69d3e9fc7067b6053727ae59f701f76" resname="report:: poids preview" approved="yes">
-        <source>report:: poids preview</source>
-        <target state="translated">Poids des sous-définitions téléchargées</target>
-        <jms:reference-file line="51">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="74">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb41f1fd9d2f3c6bb5ab0cb3c13b59eff29a2d99" resname="report:: pourcentage" approved="yes">
         <source>report:: pourcentage</source>
         <target state="translated">Pourcentage</target>
         <jms:reference-file line="676">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="413">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="419">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="424">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="429">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="434">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="e8f9a2fcac1f24e878349bd855fd00cd2014dd1d" resname="report:: preview" approved="yes">
-        <source>report:: preview</source>
-        <target state="translated">Sous-définitions</target>
-        <jms:reference-file line="291">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="62">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="14ea0ad72add93f38be10e87f3b4b08c58e31936" resname="report:: preview les plus telecharges" approved="yes">
-        <source>report:: preview les plus telecharges</source>
-        <target state="translated">Sous-définitions les plus téléchargées</target>
-        <jms:reference-file line="61">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="59bf65358205d118e78e021aa3a14a066612beb3" resname="report:: pushe" approved="yes">
-        <source>report:: pushe</source>
-        <target state="translated">Poussé</target>
-        <jms:reference-file line="195">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2fa04c59764b5ce330158195b45e3f0f71c430b1" resname="report:: pushed documents" approved="yes">
         <source>report:: pushed documents</source>
@@ -11880,12 +11503,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="43">module/report/question.php</jms:reference-file>
         <jms:reference-file line="102">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="668">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="214">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="57">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="137">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="188">Controller/Report/ActivityController.php</jms:reference-file>
-        <jms:reference-file line="69">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="73">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9ef4ecd16724b3218cf46f9956b8b157498c3a1" resname="report:: questions" approved="yes">
         <source>report:: questions</source>
@@ -11901,55 +11518,27 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report:: questions sans reponses</source>
         <target state="translated">Questions sans réponses</target>
         <jms:reference-file line="212">module/report/activity.php</jms:reference-file>
-        <jms:reference-file line="185">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb18670b89f5cefede425401428a70189f654ea" resname="report:: record id" approved="yes">
         <source>report:: record id</source>
         <target state="translated">recordId</target>
         <jms:reference-file line="90">module/report/filter.php</jms:reference-file>
         <jms:reference-file line="678">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="281">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="351">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="32">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="51">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="271">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="dafda7f4df37c3e876cc478aa3b5733e1ee72bba" resname="report:: recordid" approved="yes">
-        <source>report:: recordid</source>
-        <target state="translated">recordId</target>
-        <jms:reference-file line="147">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a11e1e1373aae28668cdf7a08486e767283bbaa2" resname="report:: resolution" approved="yes">
         <source>report:: resolution</source>
         <target state="translated">Définition</target>
         <jms:reference-file line="217">module/report/nav.php</jms:reference-file>
-        <jms:reference-file line="427">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="c137593838c7cdfab2c2e386539151b90b4e45ed" resname="report:: site" approved="yes">
-        <source>report:: site</source>
-        <target state="translated">Site</target>
-        <jms:reference-file line="79">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="4b47102c55ce755def67c13bd17568180f253c83" resname="report:: site d'ou les photo sont les plus consultees" approved="yes">
-        <source>report:: site d'ou les photo sont les plus consultees</source>
-        <target state="translated">Site d'où les documents sont les plus consultés (Référent)</target>
-        <jms:reference-file line="78">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44139fc886784bf1efa8198f67265ce6e84a286d" resname="report:: societe" approved="yes">
         <source>report:: societe</source>
         <target state="translated">Société</target>
         <jms:reference-file line="674">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="219">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="288">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="287">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="79">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="122">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a36015011c70e326dcef4351b2aa63355e68ee38" resname="report:: taille" approved="yes">
         <source>report:: taille</source>
         <target state="translated">Taille</target>
         <jms:reference-file line="683">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="355">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2382e7d59ab82111739acaea80c65d01aa5f248" resname="report:: telechargement" approved="yes">
         <source>report:: telechargement</source>
@@ -11960,54 +11549,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report:: telechargements</source>
         <target state="translated">Téléchargements</target>
         <jms:reference-file line="44">module/report/download.php</jms:reference-file>
-        <jms:reference-file line="350">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="9">web/report/report_layout.html.twig</jms:reference-file>
-        <jms:reference-file line="26">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="57">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="63">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="26297a76b38e5df1ac25352f5f3063349e94992b" resname="report:: telechargements document" approved="yes">
-        <source>report:: telechargements document</source>
-        <target state="translated">Documents téléchargés</target>
-        <jms:reference-file line="33">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
+        <jms:reference-file line="10">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="338e3b26caf39e2f5a23b29047a353b99655817d" resname="report:: telechargements par jour" approved="yes">
         <source>report:: telechargements par jour</source>
         <target state="translated">Téléchargements par jour</target>
         <jms:reference-file line="269">module/report/activity.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46b1963bc2dee84ba3e8dbe3aa1beb05e5f1bc8c" resname="report:: telechargements preview" approved="yes">
-        <source>report:: telechargements preview</source>
-        <target state="translated">Sous-définitions téléchargées</target>
-        <jms:reference-file line="39">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="fdf87efee0312793d6f07abe5dfd8017a8d2cdab" resname="report:: telephone" approved="yes">
-        <source>report:: telephone</source>
-        <target state="translated">Téléphone</target>
-        <jms:reference-file line="43">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="433">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="94c22d8bf4371687e036c83c828703cf00887ce8" resname="report:: titre" approved="yes">
-        <source>report:: titre</source>
-        <target state="translated">Titre</target>
-        <jms:reference-file line="35">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="274">Controller/Report/InformationController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="1d4c2c8fdf71cb515e7cff4e311e6b253e85bd64" resname="report:: total des telechargements" approved="yes">
-        <source>report:: total des telechargements</source>
-        <target state="translated">Total des téléchargements</target>
-        <jms:reference-file line="290">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f82c48bb319dc1043607f84df4058022eb8efe09" resname="report:: toutes les questions" approved="yes">
-        <source>report:: toutes les questions</source>
-        <target state="translated">Historique des questions</target>
-        <jms:reference-file line="177">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="83a8ccb59af870b7f987c86298c4202245b45065" resname="report:: type" approved="yes">
         <source>report:: type</source>
         <target state="translated">Définition</target>
         <jms:reference-file line="682">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="354">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="96383afe0eb9f0bfa7c5675c43cf4c91ba574d01" resname="report:: type d'action" approved="yes">
         <source>report:: type d'action</source>
@@ -12018,30 +11570,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report:: utilisateur</source>
         <target state="translated">Utilisateur</target>
         <jms:reference-file line="664">classes/module/report.php</jms:reference-file>
-        <jms:reference-file line="213">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="446">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="82">Controller/Report/ActivityController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="91205c26aeb3508157493bd6061deaa0f88472c1" resname="report:: utilisateurs" approved="yes">
-        <source>report:: utilisateurs</source>
-        <target state="translated">Utilisateurs</target>
-        <jms:reference-file line="279">Controller/Report/RootController.php</jms:reference-file>
-        <jms:reference-file line="280">Controller/Report/InformationController.php</jms:reference-file>
-        <jms:reference-file line="32">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="38">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="44">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="50">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <jms:reference-file line="68">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="891b8069620627c198fe372a8b49534f99eea2c3" resname="report:: validated documents" approved="yes">
         <source>report:: validated documents</source>
         <target state="translated">Documents validés</target>
         <jms:reference-file line="46">module/report/validate.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="9eb84fccd4c8c325b4e18275f2657b48a8734355" resname="report:: valide" approved="yes">
-        <source>report:: valide</source>
-        <target state="translated">Validé</target>
-        <jms:reference-file line="198">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1d900ae5b08909338f17350122691995bf9174b9" resname="report:: visualiseur cooliris" approved="yes">
         <source>report:: visualiseur cooliris</source>
@@ -12054,11 +11587,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report::Changement de collection vers : %coll_name%</source>
         <target state="translated">Changement de collection vers : %coll_name%</target>
         <jms:reference-file line="27">prod/preview/short_history.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="19b4d8a8be30b7ffef27c51a9821d3d6415e9f2d" resname="report::Connexion" approved="yes">
-        <source>report::Connexion</source>
-        <target state="translated">Connexions</target>
-        <jms:reference-file line="27">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="419829b982162d12659c70a94a0aa6aafaa8df13" resname="report::Connexions" approved="yes">
         <source>report::Connexions</source>
@@ -12083,7 +11611,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="339f9743dbb91b02034bec976942c35a8323a473" resname="report::Heures" approved="yes">
         <source>report::Heures</source>
         <target state="translated">Heures</target>
-        <jms:reference-file line="58">web/report/ajax_data_content.html.twig</jms:reference-file>
         <jms:reference-file line="23">web/report/all_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0f6f1e90647a3d5f5d7e170268881acc65f33f59" resname="report::Impression des formats : %format%" approved="yes">
@@ -12146,50 +11673,31 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>report::activite</source>
         <target state="translated">Activité</target>
         <jms:reference-file line="81">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="157">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="002c70f6ab109c3160dc534f93c03d56b342cf10" resname="report::ajout du documentt" approved="yes">
         <source>report::ajout du documentt</source>
         <target state="translated">Ajout du document</target>
         <jms:reference-file line="53">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4d3fc1f99d957aa50573f067f78ad75cd7ef9842" resname="report::aucune precision" approved="yes">
-        <source>report::aucune precision</source>
-        <target state="translated">Aucun filtre</target>
-        <jms:reference-file line="145">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="de28bcec9376030978303c519bd3d5ef776ea7bd" resname="report::fonction" approved="yes">
         <source>report::fonction</source>
         <target state="translated">Fonction</target>
         <jms:reference-file line="78">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="156">Controller/Report/RootController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="b04965bc5402acc4541bf683229cbd0af38dce6e" resname="report::la description contient" approved="yes">
-        <source>report::la description contient</source>
-        <target state="translated">la description contient</target>
-        <jms:reference-file line="146">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="20f07835433875d2e66adcb6a4203981359500b7" resname="report::pays" approved="yes">
         <source>report::pays</source>
         <target state="translated">Pays</target>
         <jms:reference-file line="84">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="158">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="afacc25a02d9dee7b2e85d3d86835ff4dba28822" resname="report::societe" approved="yes">
         <source>report::societe</source>
         <target state="translated">Société</target>
         <jms:reference-file line="87">module/report/filter.php</jms:reference-file>
-        <jms:reference-file line="159">Controller/Report/RootController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3fc0f2a0d459b0ae67244939abeda1868f5b1a51" resname="report::supression du document" approved="yes">
         <source>report::supression du document</source>
         <target state="translated">Suppression du document</target>
         <jms:reference-file line="51">prod/preview/short_history.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f80375b1b5a6632f3a2db88b757e1734865ad753" resname="report::version" approved="yes">
-        <source>report::version</source>
-        <target state="translated">Version</target>
-        <jms:reference-file line="226">Controller/Report/InformationController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="386c42eb4d167d87be7f7f68faf1aafce1be237e" resname="reportage" approved="yes">
         <source>reportage</source>
@@ -13122,17 +12630,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>thumbnail validation</source>
         <target state="translated">Validation de la vignette</target>
         <jms:reference-file line="589">actions/Tools/index.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="4374aaee247fb237ce6c97d5c8d64bbe474d16de" resname="to" approved="yes">
-        <source>to</source>
-        <target state="translated">to</target>
-        <jms:reference-file line="15">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="19">web/report/report_layout_child.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="14a21e497a8468e9df7f078d92c8c97420f0bf60" resname="tout decocher" approved="yes">
-        <source>tout decocher</source>
-        <target state="translated">Tout décocher</target>
-        <jms:reference-file line="11">web/report/listColumn.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e96ed809b61066d6ea96ba9afc8747a042b361a" resname="tout le monde" approved="yes">
         <source>tout le monde</source>
