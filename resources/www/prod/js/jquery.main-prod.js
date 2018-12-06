@@ -16,7 +16,6 @@ var bodySize = {
 };
 
 var facets = null;
-
 var lastFilterResults = [];
 
 var ORDER_BY_BCT = "ORDER_BY_BCT";
@@ -523,7 +522,7 @@ function initAnswerForm() {
         loadFacets(lastFilterResults);
 
         var data = $this.serializeArray();
-        var jsonData = serializeJSON(data);
+        var jsonData = serializeJSON(data, selectedFacetValues, facets);
 
         console.log(jsonData);
 
@@ -965,17 +964,16 @@ function facetCombinedSearch() {
     newSearch(q);
 }
 
-function serializeJSON(data) {
+function serializeJSON(data, selectedFacetValues, facets) {
+    console.log(selectedFacetValues, facets);
+    
     var json = {},
         obj = {},
         bases = [],
         statuses = [],
         fields = [],
-        aggregates = [],
-        databoxName = function(id, col) {            
-            var str = $.trim($('#ADVSRCH_SB_ZONE_' + id + ' td:nth-child('+ (col + 1) +') .custom_checkbox_label').text());
-            return str.replace(/ /g,"_");
-        };
+        aggregates = []
+    ;
 
     $.each(data, function(i, el) {
         obj[el.name] = el.value;
@@ -994,7 +992,7 @@ function serializeJSON(data) {
             $.each(statuses, function(i, status) {
                 
                 if (status.databox === databoxId) {                    
-                    for (let j = 0; j < status.status.length; j++) {
+                    for (var j = 0; j < status.status.length; j++) {
                         var st = status.status[j].name;
                         var st_id = st.substr(0, st.indexOf(':'));
                         
@@ -1010,7 +1008,7 @@ function serializeJSON(data) {
                     'databox': databoxId,
                     'status': [
                         {
-                            'name': databoxRow + ':' + databoxName(databoxId, col),
+                            'index': databoxRow,
                             'value': !!(parseInt(el.value))
                         }
                     ]
@@ -1031,29 +1029,43 @@ function serializeJSON(data) {
         }
     }); 
     
-    $('.fancytree-node.fancytree-folder').each(function(i, el) {
+    $(facets).each(function(i, el) {
         
-        var facetFilterTitle = $(el).find('.fancytree-title').text();
-        var facetFilterTitleS = facetFilterTitle.replace(/\s+/, '-');
-        var negated = false,
-            enabled = true,
-            nodeEl = $(el).find('[class^="facetFilter_"]');
+        var facetFilterTitle = el.label,
+            facetType = el.type,
+            facetField = el.field,
+            facetRawVal,
+            facetQuery,
+            negated = false,
+            enabled = true
+        ;
 
-        if (nodeEl.is('[class$="_EXCEPT"]')) {
-            negated = true;
-        }
+        $('.fancytree-node.fancytree-folder').each(function (i, node) {
+            var nodeTitile = $(node).find('.fancytree-title').text();                    
+            if (nodeTitile === facetFilterTitle) {
+                if ($(node).find('[class^="facetFilter_"]').is('[class$="_EXCEPT"]')) {
+                    negated = true;
+                }
+            }
+        });
 
         _.each(selectedFacetValues[facetFilterTitle], function(facet) {
             var query = facet.value.query;
-            var value = query.substr(0, query.indexOf(':'));
-            
-            aggregates.push({
-                'type': facetFilterTitleS.toUpperCase() + '-AGGREGATE',
-                'field': value.startsWith('meta') ? value.replace('meta', 'metadata_tags') : value,
-                'value': facet.value.label,
-                'negated': negated,
-                'enabled': enabled
-            });
+            for (var i = 0; i < el.values.length; i++) {                        
+                if (el.values[i].query === query) {
+                    facetRawVal = el.values[i].raw_value;
+                    facetQuery = el.values[i].query;
+                }
+            }
+            if(facetQuery === query) {
+                aggregates.push({
+                    'type': facetType,
+                    'field': facetField,
+                    'value': facetRawVal,
+                    'negated': negated,
+                    'enabled': enabled
+                });
+            }
         });
     });
     
@@ -1069,7 +1081,7 @@ function serializeJSON(data) {
     json['bases'] = bases;
     json['statuses'] = statuses;
     json['query'] = {
-        '_ux_zone': $('.menu-bar .selectd').text().toUpperCase(),
+        '_ux_zone': $('.menu-bar .selected').text().trim().toUpperCase(),
         'type': 'CLAUSES',
         'must_match': 'ALL',
         'enabled': true,
