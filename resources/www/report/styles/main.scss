@@ -26,7 +26,7 @@ $select-height: 26px;
 }
 
 .report_wrapper {
-  padding-bottom: 50px;
+  padding-bottom: 24px;
 
   #form-container {
     width: 860px;
@@ -154,10 +154,11 @@ $select-height: 26px;
                 height: 22px;
                 border-radius: 12px;
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-                width: 94px;
+                min-width: 94px;
                 margin-left: 26px;
                 font-size: 11px;
                 font-weight: 500;
+                padding: 0 10px;
                 &:hover {
                   background: #ddd;
                   color: #000;
@@ -169,6 +170,9 @@ $select-height: 26px;
             }
             ul {
               margin: 0;
+              li {
+                display: table;
+              }
             }
             .custom_checkbox_label {
               position: relative;
