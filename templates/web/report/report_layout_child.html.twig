@@ -11,10 +11,9 @@
                 <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
                 
                 <select class="select_one" name="group">
-                    <option value="" id="connections_">{{ "report:: (connexions)" | trans }}</option>
-                    {% if not anonymous %}
+                    {# {% if not anonymous %}
                     <option value="user" id="connections_user">{{ "report:: (connexions) Par utilisateurs" | trans }}</option>
-                    {% endif %}
+                    {% endif %} #}
                     
                     {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
                         {% set l="report:: (connexions) #{x}" %}
