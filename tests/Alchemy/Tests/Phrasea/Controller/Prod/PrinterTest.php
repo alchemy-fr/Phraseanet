@@ -62,6 +62,7 @@ class PrinterTest extends \PhraseanetAuthenticatedWebTestCase
             if(!$response->isOk()){
                 $this->markTestSkipped('Unable to print');
             }
+
             $this->assertTrue($response->isOk());
             $this->assertEquals("application/pdf", $response->headers->get("content-type"));
             $this->assertEquals(0, $response->getMaxAge());
