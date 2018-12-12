@@ -57,8 +57,7 @@ def config_net(config)
     # Assign static IP if present in network config
     if File.file?($root + "/.network.conf")
         ipAddress = File.read($root + "/.network.conf")
-        config.vm.network :private_network, ip: "192.168.56.104"
-        config.vm.network :public_network, bridge:"en0: Ethernet"
+        #config.vm.network :private_network, ip: ipAddress
     else
         # vboxnet0 can be changed to use a specific private_network
         config.vm.network :private_network, type: "dhcp"
