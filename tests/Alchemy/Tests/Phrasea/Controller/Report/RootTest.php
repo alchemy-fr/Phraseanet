@@ -29,4 +29,4 @@ class RootTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertTrue($response->isOk());
     }
-
+}
