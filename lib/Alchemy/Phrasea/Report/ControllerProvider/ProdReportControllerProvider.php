@@ -58,20 +58,27 @@ class ProdReportControllerProvider implements ControllerProviderInterface, Servi
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
+        
+        $controllers
+            ->get('/', 'controller.prod.report:indexAction')
+        ;
 
         $controllers
             ->get('/connections/{sbasId}/', 'controller.prod.report:connectionsAction')
             ->assert('sbasId', '\d+')
+            ->bind('report2_connections')
         ;
 
         $controllers
             ->get('/downloads/{sbasId}/', 'controller.prod.report:downloadsAction')
             ->assert('sbasId', '\d+')
+            ->bind('report2_downloads')
         ;
 
         $controllers
             ->get('/records/{sbasId}/', 'controller.prod.report:recordsAction')
             ->assert('sbasId', '\d+')
+            ->bind('report2_records')
         ;
 
         return $controllers;

@@ -70,6 +70,9 @@ def config_net(config)
 			  vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
           end
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+        
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 if $env == "mac" || $env == "linux"
