@@ -58,7 +58,7 @@
             {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
 
             {% block form_records %}
-            <div class="form3 form_content">
+            <div class="form3 form_content form_content_checkboxes">
                 <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
 
                 {% for sbas_id,databox in granted_bases %}
