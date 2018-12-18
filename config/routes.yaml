@@ -5,3 +5,7 @@ index:
 test:
     path: /test
     controller: App\Controller\DefaultController::test
+
+showUsers:
+    path: /users
+    controller: App\Controller\DefaultController::showUsers

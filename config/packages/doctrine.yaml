@@ -1,6 +1,6 @@
 parameters:
-    env(DATABASE_APPBOX_URL): 'mysql://root:toor@127.0.0.1:3306/ab_master'
-    env(DATABASE_DATABOX_URL): 'mysql://root:toor@127.0.0.1:3306/db_master'
+    env(DATABASE_APPBOX_URL): 'mysql://root:toor@localhost:3306/ab_master'
+    env(DATABASE_DATABOX_URL): 'mysql://root:toor@localhost:3306/db_master'
 
 doctrine:
     dbal:
@@ -10,12 +10,18 @@ doctrine:
                 url: '%env(DATABASE_APPBOX_URL)%'
                 driver: 'pdo_mysql'
                 server_version: '5.7'
-                charset: utf8mb4
+                charset: utf8
+                default_table_options:
+                    charset: utf8
+                    collate: utf8_unicode_ci
             databox:
                 url: '%env(DATABASE_DATABOX_URL)%'
                 driver: 'pdo_mysql'
                 server_version: '5.7'
-                charset: utf8mb4
+                charset: utf8
+                default_table_options:
+                    charset: utf8
+                    collate: utf8_unicode_ci
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore

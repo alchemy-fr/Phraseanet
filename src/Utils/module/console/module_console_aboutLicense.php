@@ -2,10 +2,6 @@
 
 namespace App\Utils\module\console;
 
-
-
-
-
 /*
  * This file is part of Phraseanet
  *
@@ -17,24 +13,21 @@ namespace App\Utils\module\console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Command\Command;
 
 class module_console_aboutLicense extends Command
 {
 
-    public function __construct($name = null)
+    protected function configure()
     {
-        parent::__construct($name);
-
-        $this->setDescription('Displays this program license');
-
-        return $this;
+        $this
+            ->setName('about:license')
+            ->setDescription('Displays this program license.')
+        ;
     }
 
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
-
-        return 0;
     }
 }

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Story",
+  "description": "A story from Phraseanet",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The unique identifier for a story",
+      "type": "string"
+    },
+    "story_id": {
+      "description": "The identifier for a record contextualized by the databox",
+      "type": "integer"
+    },
+    "databox_id": {
+      "description": "The databox identifier where the record is localized",
+      "type": "integer"
+    },
+    "base_id": {
+      "description": "The base identifier where the record is localized",
+      "type": "integer"
+    }
+  },
+  "required": ["base_id"]
+}

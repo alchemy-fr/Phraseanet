@@ -1,0 +1,28 @@
+name: Phraseanet Migrations
+migrations_namespace: Alchemy\Phrasea\Setup\DoctrineMigrations
+migrations_directory: lib/Alchemy/Phrasea/Setup/DoctrineMigrations
+table_name: doctrine_migration_versions
+
+migrations:
+  - {version: '20131118000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FeedMigration'}
+  - {version: '20131118000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\WorkzoneMigration'}
+  - {version: '20131118000003', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\LazaretMigration'}
+  - {version: '20131118000004', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\TaskMigration'}
+  - {version: '20131118000005', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\AuthFailureMigration'}
+  - {version: '20131118000006', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\SessionMigration'}
+  - {version: '20131118000007', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FtpCredentialMigration'}
+  - {version: '20131118000008', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\OrderMigration'}
+  - {version: '20131118000009', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserMigration'}
+  - {version: '20131118000010', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserQueryMigration'}
+  - {version: '20131118000011', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserSettingMigration'}
+  - {version: '20131118000012', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserNotificationSettingMigration'}
+  - {version: '20131118000013', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\FtpExportMigration'}
+  - {version: '20140219000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserFieldMigration'}
+  - {version: '20140219000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\DeleteUsrIdFieldMigration'}
+  - {version: '20140219000003', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserListMigration'}
+  - {version: '20140219000004', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\UserAuthProviderMigration'}
+  - {version: '20140226000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\RegistrationMigration'}
+  - {version: '20140305000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\TokenMigration'}
+  - {version: '20140324000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\ApiMigration'}
+  - {version: '20140314000001', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\AggregateTokenMigration'}
+  - {version: '20140314000002', class: 'Alchemy\Phrasea\Setup\DoctrineMigrations\PresetMigration'}
