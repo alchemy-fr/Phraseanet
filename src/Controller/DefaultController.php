@@ -55,4 +55,19 @@ class DefaultController extends Controller
         );
 
     }
+
+    public function showUsers()
+    {
+
+        $query = $this->get('doctrine.dbal.appbox_connection')->fetchAll('SELECT * FROM Users');
+        var_dump($query);
+
+        return new Response(
+            '<html>
+                <body>
+                    Created users<br><br>
+                </body>
+            </html>'
+        );
+    }
 }
