@@ -91,7 +91,7 @@
         padding: 3px;
         margin: 0 5px 0 0;
         table td {
-          width: 20px;
+          width: 24px;
         }
       }
       .workzone-menu-title {
@@ -102,10 +102,13 @@
         display: block;
       }
       img {
-        max-height: 20px;
+        max-height: 24px;
         vertical-align: middle;
         cursor: help;
         margin-right: 9px;
+      }
+      img.basket_title {
+        margin: -5px 9px 0 -9px;
       }
     }
     .menu {
