@@ -2,7 +2,7 @@
 
 {% block report_connections_layout %}
     <div id="report-connections" class="inside-container">
-        <form class="form row-fluid" id="report-connections-form" >
+        <form class="form row-fluid" id="report-connections-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "connections", 'route': "report2_connections", 'displayCollections':false } %}
 
@@ -28,7 +28,7 @@
 
 {% block report_downloads_layout %}
     <div id="report-downloads" class="inside-container">
-        <form class="form row-fluid" id="report-downloads-form" >
+        <form class="form row-fluid" id="report-downloads-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "downloads", 'route': "report2_downloads", 'displayCollections': true }  %}
 
@@ -53,7 +53,7 @@
 
 {% block report_records_layout %}
     <div id="report-records" class="inside-container">
-        <form class="form row-fluid" id="report-records-form" >
+        <form class="form row-fluid" id="report-records-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
 
