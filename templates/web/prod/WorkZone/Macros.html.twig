@@ -349,19 +349,22 @@
                     {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
                   </td>
                   <td style="width:100%;">
-                      <table style=width:100%>
+                      <table style="width:100%">
                           {% for choice in basket_element.getValidationDatas() %}
                               {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
+                                  <td style="position: relative;"> 
+                                    <span class="feedback_user_name">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                                    <span class="line_separator"></span>
+                                  </td>
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
                                             <img style="cursor:help;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/red-uncheck.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
                                         <img style="cursor:help;" src='/assets/common/images/icons/vote-admin.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />

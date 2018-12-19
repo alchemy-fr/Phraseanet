@@ -316,6 +316,22 @@ span.ww_winTitle {
 .chim-wrapper {
   position: relative;
   float: left;
+  margin-bottom: 20px;
+}
+
+.chim-wrapper span.feedback_user_name {
+  position: relative;
+  background: #292929;
+  padding-right: 9px;
+  z-index: 1;
+}
+.chim-wrapper span.line_separator {
+  position: absolute;
+  height: 45%;
+  width: calc(100% - 5px);
+  left: 0;
+  top: 0;
+  border-bottom: 1px solid #343434;
 }
 
 #tooltip {
