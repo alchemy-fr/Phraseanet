@@ -122,6 +122,27 @@ class LinkedinTest extends ProviderTestCase
             ->method('getStatusCode')
             ->will($this->returnValue(200));
 
+        $response->expects($this->any())
+            ->method('getBody')
+            ->with($this->equalTo(true))
+            ->will($this->returnValue(json_encode([
+                'positions' => [
+                    '_total' => 1,
+                    'values' => [
+                        [
+                            'company' => [
+                                'name' => self::COMPANY
+                            ]
+                        ]
+                    ]
+                ],
+                'emailAddress' => self::EMAIL,
+                'firstName'    => self::FIRSTNAME,
+                'id'           => self::ID,
+                'pictureUrl'   => self::IMAGEURL,
+                'lastName'     => self::LASTNAME,
+            ])));
+
         $requestGet->expects($this->any())
             ->method('send')
             ->will($this->returnValue($response));
