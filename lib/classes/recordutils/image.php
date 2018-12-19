@@ -199,6 +199,7 @@ class recordutils_image
             $domprefs->normalizeDocument();
 
             $text_width = $image_width;
+            $image_widthValue = floatval($image_width);
 
             $logopos = null;
 
@@ -211,27 +212,29 @@ class recordutils_image
                 if ($v->length > 0) {
                     $logo_reswidth = $logo_phywidth;
                     $logo_resheight = $logo_phyheight;
+
                     $logopos = @strtoupper($v->item(0)->getAttribute('position'));
                     if (($logowidth = trim($v->item(0)->getAttribute('width'))) != '') {
-                        if (substr($logowidth, -1) == '%') {
-                            $logo_reswidth = (int) (floatval($logowidth) * floatval($image_width) / 100);
+                        $logowidthValue = floatval($logowidth);
+                        if ('%' == substr($logowidth, -1)) {
+                            $logo_reswidth = (int) ($logowidthValue * $image_widthValue / 100);
                         } else {
-                            $logo_reswidth = (int) $logowidth;
+                            $logo_reswidth = (int) $logowidthValue;
                         }
                         $logo_resheight = (int) ($logo_phyheight * ($logo_reswidth / $logo_phywidth));
                     }
 
                     if ($logopos == 'LEFT' || $logopos == 'RIGHT') {
-                        if ($logo_reswidth > $image_width / 2) {
+                        if ($logo_reswidth > $image_widthValue / 2) {
                             // logo too large, resize please
-                            $logo_reswidth = (int) ($image_width / 2);
+                            $logo_reswidth = (int) ($image_widthValue / 2);
                             $logo_resheight = (int) ($logo_phyheight * ($logo_reswidth / $logo_phywidth));
                         }
                         $text_width -= $logo_reswidth;
                         if ($logopos == 'LEFT') {
                             $logo_xpos = 0;
                         } else {
-                            $logo_xpos = ($image_width - $logo_reswidth);
+                            $logo_xpos = ($image_widthValue - $logo_reswidth);
                         }
                     }
                 }
@@ -244,8 +247,9 @@ class recordutils_image
             $fontsize = "100%";
             for ($i = 0; $i < $texts->length; $i++) {
                 if (((int)$tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
-                    if (substr($tmpfontsize, -1) == '%') {
-                        $tmpfontsize = (int) (floatval($tmpfontsize) * intval($image_width) / 4000);
+                    $tmpfontsizeValue = floatval($tmpfontsize);
+                    if ('%' == substr($tmpfontsize, -1)) {
+                        $tmpfontsize = (int) ($tmpfontsizeValue * $image_widthValue / 4000);
                     } else {
                         $tmpfontsize = (int) $tmpfontsize;
                     }
