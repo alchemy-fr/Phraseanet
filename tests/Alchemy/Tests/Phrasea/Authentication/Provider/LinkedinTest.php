@@ -12,6 +12,8 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
  */
 class LinkedinTest extends ProviderTestCase
 {
+    const TOKEN = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789';
+
     public function provideDataForFailingCallback()
     {
         $state = md5(mt_rand());
@@ -141,6 +143,7 @@ class LinkedinTest extends ProviderTestCase
                 'id'           => self::ID,
                 'pictureUrl'   => self::IMAGEURL,
                 'lastName'     => self::LASTNAME,
+                'access_token' => self::TOKEN,
             ])));
 
         $requestGet->expects($this->any())
