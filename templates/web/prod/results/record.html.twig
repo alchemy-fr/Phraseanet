@@ -107,27 +107,36 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <div class="context-menu context-menu-theme-vista">
+                                    <div class="context-menu context-menu-theme-flat">
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANPUTINALBUM')]) and not record.story %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
-                                                    {{ 'action : ajouter au panier' | trans }}
+                                                    <a title="{{ 'action : ajouter au panier' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/basket-1.png" alt="{{ 'action : ajouter au panier' | trans }}">
+                                                        <span>{{ 'action : ajouter au panier' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDPREVIEW')]) or granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDHD')]) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
-                                                     onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
-                                                    {{ 'action : exporter' | trans }}
+                                                onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
+                                                    <a title="{{ 'action : exporter' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/export-shadow.png" alt="{{ 'action : exporter' | trans }}">
+                                                        <span>{{ 'action : exporter' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner"
-                                                 onclick="evt_print('{{record.id}}');return(false);">
-                                                {{ 'action : print' | trans }}
+                                                onclick="evt_print('{{record.id}}');return(false);">
+                                                <a title="{{ 'action : print' | trans }}" href="#">
+                                                    <img style="cursor:pointer;" src="/assets/common/images/icons/print-shadow.png" alt="{{ 'action : print' | trans }}">
+                                                    <span>{{ 'action : print' | trans }}</span>
+                                                </a>
                                             </div>
                                         </div>
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
@@ -137,7 +146,10 @@
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"
                                                          onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
-                                                        {{ 'reponses:: partager' | trans }}
+                                                        <a title="{{ 'action : partager' | trans }}" href="#">
+                                                            <img style="cursor:pointer;" src="/assets/common/images/icons/Share.png" alt="{{ 'action : partager' | trans }}">
+                                                            <span>{{ 'action : partager' | trans }}</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             {% endif %}

@@ -1808,6 +1808,10 @@ $(document).ready(function () {
         delay: 200
     });
 
+    $('.basket_title').tooltip({
+        extraClass: 'tooltip_flat'
+    });
+
     $('#idFrameC .tabs').tabs({
         activate: function (event, ui) {
             if (ui.newTab.context.hash == "#thesaurus_tab") {

@@ -21,10 +21,12 @@ $select-width: 330px;
 $select-height: 26px; 
 
 /* Report layout */
-.report_wrapper {
+#mainContent {
   background-color: $reportBackgroundColor;
-  height: 100%;
-  padding-bottom: 50px;
+}
+
+.report_wrapper {
+  padding-bottom: 24px;
 
   #form-container {
     width: 860px;
@@ -100,7 +102,7 @@ $select-height: 26px;
         }
         .form_content {
           position: relative;
-          padding: 23px 27px 25px;
+          padding: 16px 27px 10px;
 
           .form_titre {
             font-size: 22px;
@@ -109,7 +111,7 @@ $select-height: 26px;
           .control-group {
             display: inline-block;
             margin-right: 24px;
-            margin-bottom: 0;
+            margin-bottom: 6px;
 
             label {
               display: inline;
@@ -118,7 +120,7 @@ $select-height: 26px;
             .input-prepend {
               margin: 0;
               
-              .dmin {
+              .dmin, .dmax {
                 border: 0 none;
                 height: 16px;
                 border-radius: 0 6px 6px 0;
@@ -152,13 +154,14 @@ $select-height: 26px;
                 height: 22px;
                 border-radius: 12px;
                 box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-                width: 94px;
+                min-width: 94px;
                 margin-left: 26px;
                 font-size: 11px;
                 font-weight: 500;
+                padding: 0 10px;
                 &:hover {
                   background: #ddd;
-                  color: #fff;
+                  color: #000;
                 }
                 &:focus {
                   outline: none;
@@ -167,9 +170,17 @@ $select-height: 26px;
             }
             ul {
               margin: 0;
+              li {
+                display: table;
+              }
             }
             .custom_checkbox_label {
               position: relative;
+              margin-bottom: 0;
+              padding-bottom: 3px;
+              &:last-child {
+                padding-bottom: 0;
+              }
               input {
                 opacity: 0;
                 cursor: pointer;
@@ -246,6 +257,7 @@ $select-height: 26px;
             background-color: darken($select-background, 5);
             border-radius: 5px;
             opacity: .93;
+            overflow: hidden;
             li {
               margin: 0;
               line-height: 26px;
