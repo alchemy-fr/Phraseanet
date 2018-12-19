@@ -10,6 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 
 class TimestampKey implements Key, Typed
 {
+    /** @var  string $type */
     private $type;
     private $index_field;
 
