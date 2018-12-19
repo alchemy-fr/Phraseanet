@@ -995,6 +995,29 @@ h4 {
   }
 }
 
+#tooltip.tooltip_flat {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 15px;
+
+  .popover {
+    background-color: #535353;
+    width: 100% !important;
+    border: 0 none;
+    border-radius: 0;
+
+    .popover-inner {
+      border: 0 none;
+      border-radius: 6px;
+
+      .popover-content {
+        background-color: #535353;
+        padding: 10px;
+      }
+    }
+  }
+}
+
 .dragover {
   BACKGROUND-COLOR: #fff100
 }
