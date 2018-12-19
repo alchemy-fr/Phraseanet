@@ -13,7 +13,9 @@ class NativeKey implements Key
     const TYPE_MEDIA_TYPE = 'media_type';
     const TYPE_RECORD_IDENTIFIER = 'record_identifier';
 
+    /** @var  string $type */
     private $type;
+
     private $key;
 
     public static function database()
