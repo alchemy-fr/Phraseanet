@@ -167,7 +167,7 @@ class Linkedin extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Unable to parse LinkedIn JSON');
         }
 
