@@ -144,7 +144,7 @@ class Github extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
         }
 
@@ -167,7 +167,7 @@ class Github extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info, invalid status code.');
         }
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Error while retrieving user info, unable to parse JSON.');
         }
 
@@ -209,7 +209,7 @@ class Github extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Error while parsing json');
         }
 
