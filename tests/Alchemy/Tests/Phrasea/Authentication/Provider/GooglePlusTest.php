@@ -12,6 +12,8 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
  */
 class GooglePlusTest extends ProviderTestCase
 {
+    const TOKEN = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789';
+
     public function testGetSetGoogleClient()
     {
         $provider = $this->getProvider();
@@ -109,6 +111,13 @@ class GooglePlusTest extends ProviderTestCase
         $provider->getGoogleClient()->expects($this->once())
             ->method('verifyIdToken')
             ->will($this->returnValue($ticket));
+
+        $provider->getGoogleClient()->expects($this->once())
+            ->method('getAccessToken')
+            ->will($this->returnValue(json_encode([
+                'id_token' => self::TOKEN,
+            ])));
+
 
         return [
             [$provider, $request],
