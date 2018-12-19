@@ -316,6 +316,19 @@ span.ww_winTitle {
 .chim-wrapper {
   position: relative;
   float: left;
+  .note_tips_holder {
+    .image-hover {
+      display: none;
+    }
+    &:hover {
+      .image-hover {
+        display: block;
+      }
+      .image-normal {
+        display: none;
+      }
+    }
+  }
 }
 
 #tooltip {
@@ -999,6 +1012,7 @@ h4 {
   border-radius: 5px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
   margin-left: 15px;
+  min-width: 280px !important;
 
   .popover {
     background-color: #535353;

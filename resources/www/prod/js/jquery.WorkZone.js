@@ -324,7 +324,9 @@ var p4 = p4 || {};
                     tolerance: 'pointer'
                 });
 
-                $('.noteTips, .captionRolloverTips', dest).tooltip();
+                $('.noteTips, .captionRolloverTips', dest).tooltip({
+                    extraClass: 'tooltip_flat'
+                });
 
                 dest.find('.CHIM').draggable({
                     helper: function () {
