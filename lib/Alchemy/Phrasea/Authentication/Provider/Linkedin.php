@@ -208,9 +208,9 @@ class Linkedin extends AbstractProvider
             throw new NotAuthenticatedException('Error while retrieving user info');
         }
 
-        $data = @json_decode($response->getBody(true), true);
+        $data = $response->json();
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (JSON_ERROR_NONE !== json_last_error()) {
             throw new NotAuthenticatedException('Unable to parse Linkedin JSON identity');
         }
 
