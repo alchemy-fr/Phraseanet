@@ -173,6 +173,7 @@ class GooglePlusTest extends ProviderTestCase
 
         $provider->setGuzzleClient($guzzle);
         $provider->getSession()->set('google-plus.provider.id', '12345678');
+        $provider->getSession()->set('google-plus.provider.token', json_encode(['access_token' => self::TOKEN]));
 
         $people = $this->getMockBuilder('Google_PeopleServiceResource')
             ->disableOriginalConstructor()
