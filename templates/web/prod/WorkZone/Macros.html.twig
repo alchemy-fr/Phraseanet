@@ -369,7 +369,10 @@
                                   </td>
                                   <td style="width:25px;">
                                   {% if choice.getNote() != '' %}
-                                       <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
+                                      <span class="note_tips_holder">
+                                        <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="image-normal" />
+                                        <img style="cursor:help;" src='/assets/common/images/icons/file-edit-hover.png' class="noteTips image-hover" title="{{choice.getNote()|nl2br}}" />
+                                      </span>
                                   {% endif %}
                                   </td>
                               </tr>
