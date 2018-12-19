@@ -47,10 +47,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $client->request('GET', '/prod/upload/flash-version/');
         $response = $client->getResponse();
 
-        if($response->getStatusCode() != 200){
-            $this->markTestSkipped('Unable to upload');
-        }
-
         $this->assertEquals(200, $response->getStatusCode());
     }
 
@@ -63,10 +59,6 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
         $client = self::$DI['client'];
         $client->request('GET', '/prod/upload/');
         $response = $client->getResponse();
-
-        if($response->getStatusCode() != 200){
-            $this->markTestSkipped('Unable to upload');
-        }
 
         $this->assertEquals(200, $response->getStatusCode());
     }
