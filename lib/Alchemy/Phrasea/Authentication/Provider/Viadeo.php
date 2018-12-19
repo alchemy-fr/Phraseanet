@@ -159,7 +159,7 @@ class Viadeo extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Unable to parse Viadeo access_token response.');
         }
 
@@ -182,7 +182,7 @@ class Viadeo extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Unable to parse Viadeo user informations response.');
         }
 
@@ -225,7 +225,7 @@ class Viadeo extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Unable to parse Viadeo identity.');
         }
 
@@ -251,7 +251,7 @@ class Viadeo extends AbstractProvider
 
         $data = @json_decode($response->getBody(true), true);
 
-        if (JSON_ERROR_NONE !== json_last_error() && $data != null) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAuthenticatedException('Unable to parse Viadeo career informations.');
         }
 
