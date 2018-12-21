@@ -524,12 +524,21 @@ function initAnswerForm() {
         var data = $this.serializeArray();
         var jsonData = serializeJSON(data, selectedFacetValues, facets);
 
-        console.log(jsonData);
+        data.push({
+            name: 'jsQuery',
+            value: jsonData
+        },
+        {
+            name: 'fullTextQry',
+            value: buildQ(jsonData.query)
+        });
+
+        console.log(data);
 
         answAjax = $.ajax({
             type: method,
             url: $this.attr('action'),
-            data: jsonData,
+            data: data,
             dataType: 'json',
             beforeSend: function (formData) {
                 if (answAjaxrunning && answAjax.abort)
@@ -1076,7 +1085,7 @@ function serializeJSON(data, selectedFacetValues, facets) {
     json['perpage'] = parseInt($('#nperpage_value').val());
     json['page'] = obj.pag === "" ? 1 : parseInt(obj.pag);
     json['use_truncation'] = obj.truncation === "on" ? true : false;
-    json['phrasea_recordtype'] = obj.search_type === 0 ? 'RECORD' : 'STORY';
+    json['phrasea_recordtype'] = obj.search_type == 0 ? 'RECORD' : 'STORY';
     json['phrasea_mediatype'] = obj.record_type.toUpperCase();
     json['bases'] = bases;
     json['statuses'] = statuses;
@@ -1116,9 +1125,99 @@ function serializeJSON(data, selectedFacetValues, facets) {
         ]
     }
 
-    return JSON.stringify(json);
+    return json;
 }
 
+var _ALL_Clause_ = "(created_on>1900/01/01)";
+ 
+function buildQ(clause) {
+    if(clause.enabled == false) {
+        return "";
+    }
+    switch(clause.type) {
+        case "CLAUSES":
+            var t_pos = [];
+            var t_neg = [];
+            for(var i=0; i<clause.clauses.length; i++) {
+                var _clause = clause.clauses[i];
+                var _sub_q = buildQ(_clause);
+                if(_sub_q !== "()" && _sub_q !== "") {
+                    if(_clause.negated == true) {
+                        t_neg.push(_sub_q);
+                    }
+                    else {
+                        t_pos.push(_sub_q);
+                    }
+                }
+            }
+            if(t_pos.length > 0) {
+                // some "yes" clauses
+                if(t_neg.length > 0) {
+                    // some "yes" and and some "neg" clauses
+                    if(clause.must_match=="ONE") {
+                        // some "yes" and and some "neg" clauses, one is enough to match
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        t_pos.push(neg);
+                        return "(" + t_pos.join(" OR ") + ")";
+                    }
+                    else {
+                        // some "yes" and and some "neg" clauses, all must match
+                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                    }
+                }
+                else {
+                    // only "yes" clauses
+                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                }
+            }
+            else {
+                // no "yes" clauses
+                if(t_neg.length > 0) {
+                    // only "neg" clauses
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ONE" ? " OR " : " AND ") + "))";
+                }
+                else {
+                    // no clauses at all
+                    return "";
+                }
+            }
+  
+        case "FULLTEXT":
+            return "(" + clause.value + ")";
+  
+        case "DATE-FIELD":
+            var t="";
+            if(clause.from ) {
+                t = clause.field + ">=" + clause.from;
+            }
+            if(clause.to) {
+                t += (t?" AND ":"") + clause.field + "<=" + clause.to;
+            }
+            return "(" + t + ")";
+  
+        case "TEXT-FIELD":
+            return clause.field + clause.operator + "\"" + clause.value + "\"";
+  
+        case "GEO-DISTANCE":
+            return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
+  
+        case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "COLOR-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+  
+        case "NUMBER-AGGREGATE":
+            return clause.field + "=" + clause.value;
+  
+        case "BOOL-AGGREGATE":
+            return clause.field + "=" + (clause.value ? '1' : '0');
+  
+        default :
+            console.error("Unknown clause type \"" + clause.type + "\"");
+            return null;
+    }
+};
 
 $(document).ready(function() {
 });
