@@ -47,14 +47,14 @@
     <span class="dropdownButton">
         <div class="btn-group">
             <button id="TOOL_disktt" class="default_action TOOL_disktt_btn results_window btn btn-inverse">
-                <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image"/> {{ 'action : exporter' | trans }}
+                <img src="/assets/common/images/icons/disktt_history.png" class="btn-image"/> {{ 'action : exporter' | trans }}
             </button>
             <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
                 <li>
                     <a class="TOOL_print_btn results_window">
-                        <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image"/>
+                        <img src="/assets/common/images/icons/print_history.png" class="btn-image"/>
                         {{ 'action : print' | trans }}
                     </a>
                 </li>
@@ -67,7 +67,7 @@
         {% set label %}
         {{ 'action : editer' | trans }}
         {% endset %}
-        {% set actions = actions|merge( { 'edit' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+        {% set actions = actions|merge( { 'edit' : {'icon': "/assets/common/images/icons/edit-pen.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::CHGSTATUS')) %}
         {% set label %}
@@ -89,7 +89,7 @@
                 {% for action in actions %}
                     {% if loop.first %}
                         <button class="default_action {{ action.class }} results_window btn btn-inverse">
-                            <img src="{{ action.icon }}" height="16" width="16" class="btn-image"/> {{ action.label }}
+                            <img src="{{ action.icon }}" class="btn-image"/> {{ action.label }}
                         </button>
                     {% endif %}
                 {% endfor %}
@@ -100,7 +100,7 @@
                         {% if not loop.first %}
                             <li>
                                 <a class="{{ action.class }} results_window">
-                                    <img src="{{ action.icon }}" height="16" width="16" class="btn-image"/>
+                                    <img src="{{ action.icon }}" class="btn-image"/>
                                     {{ action.label }}
                                 </a>
                             </li>
@@ -117,7 +117,7 @@
             <div class="btn-group">
                 {% for action in actions %}
                     <button class="{{ action.class }} results_window btn btn-inverse">
-                        <img src="{{ action.icon }}"  height="16" width="16" class="btn-image"/> {{ action.label }}
+                        <img src="{{ action.icon }}" class="btn-image"/> {{ action.label }}
                     </button>
                 {% endfor %}
             </div>
@@ -128,28 +128,28 @@
         <span class="dropdownButton">
             <div class="btn-group">
                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/push16.png" height="16" width="16" class="btn-image"/> {{ 'action : push' | trans }}
+                    <img src="/assets/common/images/icons/push-icon.png" class="btn-image"/> {{ 'action : push' | trans }}
                 </button>
                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
                             class="caret"></span></button>
                 <ul class="dropdown-menu">
                     <li>
                         <a class="TOOL_feedback_btn results_window">
-                            <img src="/assets/common/images/icons/feedback16.png" height="16" width="16" class="btn-image"/>
+                            <img src="/assets/common/images/icons/feedback-icon.png" class="btn-image"/>
                             {{ 'Feedback' | trans }}
                         </a>
                     </li>
                     {#<li class="divider"></li>#}
                     {#<li>#}
                         {#<a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}">#}
-                            {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/>#}
+                            {#<img src="/assets/common/images/icons/door.png" class="btn-image"/>#}
                             {#{{ 'action : bridge' | trans }}#}
                         {#</a>#}
                     {#</li>#}
                     <li class="divider"></li>
                     <li>
                         <a class="TOOL_publish_btn results_window">
-                            <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
+                            <img src="/assets/common/images/icons/rss-publish.png" class="btn-image"/>
                             {{ 'action : publier' | trans }}
                         </a>
                     </li>
@@ -160,7 +160,7 @@
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
                                         {% if action.icon %}
-                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                         {% endif %}
 
                                         {% set label = action.label %}
@@ -177,14 +177,14 @@
         <span class="dropdownButton">
             <div class="btn-group">
                 <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/push16.png" height="16" width="16" class="btn-image"/> {{ 'action : push' | trans }}
+                    <img src="/assets/common/images/icons/push-icon.png" class="btn-image"/> {{ 'action : push' | trans }}
                 </button>
                 <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
                             class="caret"></span></button>
                 <ul class="submenu dropdown-menu">
                     <li>
                         <a class="TOOL_feedback_btn results_window">
-                            <img src="/assets/common/images/icons/feedback16.png" height="16" width="16" class="btn-image"/>
+                            <img src="/assets/common/images/icons/feedback-icon.png" class="btn-image"/>
                             {{ 'Feedback' | trans }}
                         </a>
                     </li>
@@ -195,7 +195,7 @@
                                 <li>
                                     <a class="results_window {{ action.classes|default('') }}">
                                         {% if action.icon %}
-                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                         {% endif %}
 
                                         {% set label = action.label %}
@@ -212,10 +212,10 @@
         <span class="dropdownButton">
             <div class="btn-group">
                 {#<button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse">#}
-                    {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}#}
+                    {#<img src="/assets/common/images/icons/door.png" class="btn-image"/> {{ 'action : bridge' | trans }}#}
                 {#</button>#}
                 <button class="TOOL_publish_btn results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
+                    <img src="/assets/common/images/icons/rss-publish.png"  class="btn-image"/>
                     {{ 'action : publier' | trans }}
                 </button>
                 {% if plugins.actionbar is not empty %}
@@ -228,7 +228,7 @@
                                     <li>
                                         <a class="results_window {{ action.classes|default('') }}">
                                             {% if action.icon %}
-                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                             {% endif %}
 
                                             {% set label = action.label %}
@@ -251,7 +251,7 @@
                 <button class="default_action results_window btn btn-inverse">
                     <a class="results_window {{ action.classes|default('') }}">
                         {% if action.icon %}
-                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" />
                         {% endif %}
                         {% set label = action.label %}
                         {% trans from plugin.PluginLocale %}label{% endtrans %}
@@ -266,7 +266,7 @@
                         <li>
                             <a class="results_window {{ action.classes|default('') }}">
                                 {% if action.icon %}
-                                    <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                    <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                 {% endif %}
                                 {% set label = action.label %}
                                 {% trans from plugin.PluginLocale %}label{% endtrans %}
@@ -289,7 +289,7 @@
         <span class="classicButton">
             <div class="btn-group">
                 <button class="TOOL_imgtools_btn results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/imgtools_history.png" height="16" width="16" class="btn-image"/> {{ 'action : outils' | trans }}
+                    <img src="/assets/common/images/icons/imgtools_history.png" class="btn-image"/> {{ 'action : outils' | trans }}
                 </button>
             </div>
         </span>
@@ -298,7 +298,7 @@
         <span class="classicButton">
             <div class="btn-group">
                 <button class="TOOL_trash_btn results_window btn btn-inverse">
-                    <img src="/assets/common/images/icons/delete.png" height="16" width="16" class="btn-image"/> {{ 'action : supprimer' | trans }}
+                    <img src="/assets/common/images/icons/delete.png" class="btn-image"/> {{ 'action : supprimer' | trans }}
                 </button>
             </div>
         </span>
