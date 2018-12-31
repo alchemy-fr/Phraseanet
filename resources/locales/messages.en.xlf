@@ -3388,7 +3388,7 @@
       </trans-unit>
       <trans-unit id="779f61efcfe62182d0052c9526f3910378764758" resname="Graphiste (preview au rollover)" approved="yes">
         <source>Graphiste (preview au rollover)</source>
-        <target state="translated">Graphist (preview on rollover)</target>
+        <target state="translated">Graphist (preview on thumbnail rollover)</target>
         <jms:reference-file line="703">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd846adf34307e77ff7d457b28a426470fc0bad9" resname="Great" approved="yes">
@@ -3484,7 +3484,7 @@
       </trans-unit>
       <trans-unit id="e195951cb1946935a88fdd9ee6735e0f6ddc120b" resname="Iconographe (description au rollover)" approved="yes">
         <source>Iconographe (description au rollover)</source>
-        <target state="translated">Iconograph (caption on rollover)</target>
+        <target state="translated">Iconograph (caption on thumbnail rollover)</target>
         <jms:reference-file line="699">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="474ae52625b87d7628ae7b20a499329a99e07119" resname="Id" approved="yes">
