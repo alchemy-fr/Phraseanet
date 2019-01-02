@@ -27,5 +27,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    phraseanet.structure-template:
+        class: App\Core\Configuration\StructureTemplate
+        public: true
+
+    phraseanet.installer:
+        class: App\Setup\Installer
+        public: true
