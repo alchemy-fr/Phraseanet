@@ -35,14 +35,14 @@ else if which('ifconfig')
 end
 
 $php = [ "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "7.1";
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "7.2";
 
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
 
 unless $php.include?($phpVersion)
-    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
+    raise "You should specify php version before running vagrant\n\n (Available : 7.1, 7.2 | default => 7.2)\n\n Exemple: phpversion='7.2' vagrant up \n\n"
 end
 
 $root = File.dirname(File.expand_path(__FILE__))

@@ -67,7 +67,7 @@ php:
         - 'php{{ phpversion }}-cli'
         - 'php{{ phpversion }}-fpm'
         - 'php{{ phpversion }}-intl'
-        - 'php{{ phpversion }}-mcrypt'
+        # - 'php{{ phpversion }}-mcrypt'
         - 'php{{ phpversion }}-enchant'
         - 'php{{ phpversion }}-gd'
         - 'php{{ phpversion }}-memcache'

@@ -29,6 +29,11 @@
   args:
     chdir: /vagrant/
 
+- name: Make bin/console executable
+  file:
+    path: /vagrant/bin/console
+    mode: 0755
+
 #- name: Run application setup
 #  become: yes
 #  become_user: vagrant
