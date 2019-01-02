@@ -16,12 +16,12 @@ class Version
     /**
      * @var string
      */
-    private $number = '4.1.0-alpha.12';
+    private $number = '4.5.0-dev.1';
 
     /**
      * @var string
      */
-    private $name = 'Buxus';
+    private $name = 'Symphoniae-Quattuor';
 
     /**
      * @return string

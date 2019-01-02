@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils\module\console;
+namespace App\Command\About;
 
 /*
  * This file is part of Phraseanet
@@ -15,20 +15,19 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-class module_console_aboutAuthors extends Command
+class License extends Command
 {
 
     protected function configure()
     {
         $this
-            ->setName('about:authors')
-            ->setDescription('Lists authors and contributors.')
+            ->setName('about:license')
+            ->setDescription('Displays this program license.')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
+        $output->writeln(file_get_contents(__DIR__ . '/../../../LICENSE'));
     }
-
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 use App\Core\Version;
 
-class SetupAbout extends Command
+class About extends Command
 {
     protected function configure()
     {
@@ -46,15 +46,14 @@ class SetupAbout extends Command
 
         $output->writeln($out_txt);
 
+        $output->writeln('');
+
         $command = $this->getApplication()->find('about:authors');
         $command->run(new ArrayInput(array('command' => 'about:authors')), $output);
 
+        $output->writeln('');
+
         $command = $this->getApplication()->find('about:license');
         $command->run(new ArrayInput(array('command' => 'about:license')), $output);
-       // $output->writeln('Finished.');
     }
-
-
-
-
 }
