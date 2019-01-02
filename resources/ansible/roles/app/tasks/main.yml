@@ -34,6 +34,11 @@
     path: /vagrant/bin/console
     mode: 0755
 
+- name: Make bin/phpunit executable
+  file:
+    path: /vagrant/bin/phpunit
+    mode: 0755
+
 #- name: Run application setup
 #  become: yes
 #  become_user: vagrant
