@@ -77,15 +77,14 @@
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
                                 <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                                  <img src="/assets/common/images/icons/icon-caption.png">
+                                  <img src="/assets/common/images/icons/iconograph.png">
                                 </span>
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
                             <span class="icon-stack captionRolloverTips"
                                   tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-list icon-light"></i>
+                              <img src="/assets/common/images/icons/icon-caption.png">
                             </span>
                         {% endif %}
 
