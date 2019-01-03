@@ -1491,7 +1491,7 @@ $(document).ready(function () {
         }
 
         $('#idFrameC').attr('data-status', 'open');
-        $('.WZbasketTab').css('background-position', '9px 25px');
+        $('.WZbasketTab').css('background-position', '9px 21px');
         $('#idFrameC').removeClass('closed');
     });
 
@@ -1507,7 +1507,7 @@ $(document).ready(function () {
             $('#idFrameC').attr('data-status', 'closed');
             $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
             $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
-            $('.WZbasketTab').css('background-position', '15px 25px');
+            $('.WZbasketTab').css('background-position', '15px 21px');
             $('#idFrameC').addClass('closed');
             previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
         }else{
@@ -1517,7 +1517,7 @@ $(document).ready(function () {
             $('#rightFrame').width($(window).width()-360);
             $('#idFrameC').attr('data-status', 'open');
             $('.ui-resizable-handle, #basket_menu_trigger').show();
-            $('.WZbasketTab').css('background-position', '9px 25px');
+            $('.WZbasketTab').css('background-position', '9px 21px');
             $('#idFrameC').removeClass('closed');
             $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
@@ -1806,6 +1806,10 @@ $(document).ready(function () {
 
     $('.basketTips').tooltip({
         delay: 200
+    });
+
+    $('.basket_title').tooltip({
+        extraClass: 'tooltip_flat'
     });
 
     $('#idFrameC .tabs').tabs({

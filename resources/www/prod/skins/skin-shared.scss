@@ -316,6 +316,34 @@ span.ww_winTitle {
 .chim-wrapper {
   position: relative;
   float: left;
+  margin-bottom: 20px;
+  .note_tips_holder {
+    .image-hover {
+      display: none;
+    }
+    &:hover {
+      .image-hover {
+        display: block;
+      }
+      .image-normal {
+        display: none;
+      }
+    }
+  }
+  span.feedback_user_name {
+    position: relative;
+    background: #292929;
+    padding-right: 9px;
+    z-index: 1;
+  }
+  span.line_separator {
+    position: absolute;
+    height: 45%;
+    width: calc(100% - 5px);
+    left: 0;
+    top: 0;
+    border-bottom: 1px solid #343434;
+  }
 }
 
 #tooltip {
@@ -992,6 +1020,30 @@ h4 {
   hr {
     background-color: $darkerTextColor;
     border-color: $darkerBorderColor;
+  }
+}
+
+#tooltip.tooltip_flat {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 15px;
+  min-width: 280px !important;
+
+  .popover {
+    background-color: #535353;
+    width: 100% !important;
+    border: 0 none;
+    border-radius: 0;
+
+    .popover-inner {
+      border: 0 none;
+      border-radius: 6px;
+
+      .popover-content {
+        background-color: #535353;
+        padding: 10px;
+      }
+    }
   }
 }
 

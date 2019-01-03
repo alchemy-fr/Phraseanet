@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,27 +15,71 @@ class FacetsResponse
     private $escaper;
     private $facets = array();
 
-    public function __construct(Escaper $escaper, array $response)
+    public function __construct(Escaper $escaper, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
 
         if (!isset($response['aggregations'])) {
             return;
         }
+
+        $atf = ElasticsearchOptions::getAggregableTechnicalFields();
+
         foreach ($response['aggregations'] as $name => $aggregation) {
+            $tf = null;
+            $valueFormatter = function($v){ return $v; };    // default equality formatter
+
+            if(array_key_exists($name, $atf)) {
+                $tf = $atf[$name];
+                if(array_key_exists('output_formatter', $tf)) {
+                    $valueFormatter = $tf['output_formatter'];
+                }
+            }
+
             $aggregation = AggregationHelper::unwrapPrivateFieldAggregation($aggregation);
             if (!isset($aggregation['buckets'])) {
                 $this->throwAggregationResponseError();
             }
-            $values = $this->buildBucketsValues($name, $aggregation['buckets']);
-            if ($values) {
-                $this->facets[] = array(
+
+            $values = [];
+            foreach ($aggregation['buckets'] as $bucket) {
+                if (!isset($bucket['key']) || !isset($bucket['doc_count'])) {
+                    $this->throwAggregationResponseError();
+                }
+                if($tf) {
+                    // the field is one of the hardcoded tech fields
+                    $value = [
+                        'value'     => $valueFormatter($bucket['key']),
+                        'raw_value' => $bucket['key'],
+                        'count'     => $bucket['doc_count'],
+                        'query'     => sprintf($tf['query'], $this->escaper->escapeWord($bucket['key']))
+                    ];
+                }
+                else {
+                    // the field is a normal field
+                    $value = [
+                        'value'     => $bucket['key'],
+                        'raw_value' => $bucket['key'],
+                        'count'     => $bucket['doc_count'],
+                        'query'     => sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($bucket['key']))
+                    ];
+                }
+
+                $values[] = $value;
+            }
+
+            if (count($values) > 0) {
+                $this->facets[] = [
+                    // 'type' => $tf ? $tf['type'] : null,
                     'name' => $name,
+                    'field' => $tf ? $tf['field'] : sprintf('field.%s', $name),
                     'values' => $values,
-                );
+                ];
             }
         }
     }
+
+
 
     /**
      * @return ArrayCollection
@@ -51,45 +96,6 @@ class FacetsResponse
         }
 
         return $suggestions;
-    }
-
-    private function buildBucketsValues($name, $buckets)
-    {
-        $values = array();
-
-        // does this aggregate has an output_formatter ? if not use a equality formatter
-        /** @var callable $formatter */
-        $formatter = igorw\get_in(
-            ElasticsearchOptions::getAggregableTechnicalFields(), [$name, 'output_formatter'],
-            function($v){return $v;}
-        );
-
-        foreach ($buckets as $bucket) {
-            if (!isset($bucket['key']) || !isset($bucket['doc_count'])) {
-                $this->throwAggregationResponseError();
-            }
-
-            $values[] = array(
-                'value' => htmlspecialchars($formatter($bucket['key'])),
-                'count' => $bucket['doc_count'],
-                'query' => $this->buildQuery($name, $bucket['key']),
-            );
-        }
-
-        return $values;
-    }
-
-    private function buildQuery($name, $value)
-    {
-        if(array_key_exists($name, ElasticsearchOptions::getAggregableTechnicalFields())) {
-            $q = ElasticsearchOptions::getAggregableTechnicalFields()[$name]['query'];
-            $ret = sprintf($q, $this->escaper->escapeWord($value));
-        }
-        else {
-            $ret = sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($value));
-        }
-
-        return $ret;
     }
 
     private function throwAggregationResponseError()
