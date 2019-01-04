@@ -1,0 +1,279 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        resize();
+
+        $(window).resize(function(){
+            resize();
+        });
+
+        var $form = $("form#accept-registration");
+        var $mainBtnAction = $(".btn-all-action", $form);
+        var $basesBtnAction = $(".btn-single-action", $form);
+
+        $(".btn-all-action, .btn-single-action").on("uncheck-all", function(event) {
+            $("button", $(event.currentTarget)).removeClass("active");
+        }).on("uncheck-deny", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $denyButton = $(".deny-checker", $btnGroup);
+
+            if ($denyButton.hasClass("active")) {
+                $denyButton.removeClass("active");
+                $(".deny-checker", $mainBtnAction).removeClass("active");
+            }
+        }).on("check-deny", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $denyButton = $(".deny-checker", $btnGroup);
+
+            if (false === $denyButton.hasClass("active")) {
+                $btnGroup.trigger("uncheck-all");
+                $denyButton.addClass("active");
+
+                var nbActiveButton = $(".deny-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".deny-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".deny-checker", $mainBtnAction).addClass("active");
+                }
+            }
+        }).on("check-accept", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $acceptBtn = $(".accept-checker", $btnGroup);
+
+            if (false === $acceptBtn.hasClass("active"))  {
+                $btnGroup.trigger('uncheck-deny');
+                $acceptBtn.addClass("active");
+
+                var nbActiveButton = $(".accept-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-checker", $mainBtnAction).addClass("active");
+                }
+            }
+        }).on("uncheck-accept", function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $acceptBtn = $(".accept-checker", $btnGroup);
+
+            if ($acceptBtn.hasClass("active")) {
+                $acceptBtn.removeClass("active");
+                $(".accept-checker", $mainBtnAction).removeClass("active");
+
+                $btnGroup.trigger("uncheck-hd");
+                $btnGroup.trigger("uncheck-watermark");
+            }
+        }).on('check-hd', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $hdBtn = $(".accept-hd-checker", $btnGroup);
+
+            if (false === $hdBtn.hasClass("active")) {
+                $hdBtn.addClass('active');
+
+                var nbActiveButton = $(".accept-hd-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-hd-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-hd-checker", $mainBtnAction).addClass("active");
+                }
+
+                $btnGroup.trigger('uncheck-deny').trigger('check-accept');
+            }
+        }).on('uncheck-hd', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $hdBtn = $(".accept-hd-checker", $btnGroup);
+
+            if ($hdBtn.hasClass("active")) {
+                $hdBtn.removeClass("active");
+                $(".accept-hd-checker", $mainBtnAction).removeClass("active");
+            }
+        }).on('check-watermark', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $watermarkBtn = $(".accept-watermark-checker", $btnGroup);
+
+            if (false === $watermarkBtn.hasClass("active")) {
+                $watermarkBtn.addClass('active');
+
+                var nbActiveButton = $(".accept-watermark-checker.active", $basesBtnAction).length;
+                var totalBtn = $(".accept-watermark-checker", $basesBtnAction).length;
+
+                if (nbActiveButton === totalBtn) {
+                    $(".accept-watermark-checker", $mainBtnAction).addClass("active");
+                }
+
+                $btnGroup.trigger('uncheck-deny').trigger('check-accept');
+            }
+        }).on('uncheck-watermark', function(event) {
+            var $btnGroup = $(event.currentTarget);
+            var $watermarkBtn = $(".accept-watermark-checker", $btnGroup);
+
+            if ($watermarkBtn.hasClass("active")) {
+                $watermarkBtn.removeClass('active');
+                $(".accept-watermark-checker", $mainBtnAction).removeClass("active");
+            }
+        });
+
+        $.each([
+            $('.deny-checker', $basesBtnAction),
+            $('.accept-checker', $basesBtnAction),
+            $('.accept-hd-checker', $basesBtnAction),
+            $('.accept-watermark-checker', $basesBtnAction)
+        ], function(i, buttons) {
+            buttons.bind("click", function(event) {
+                var $this = $(this);
+                var $btnGroup = $this.closest('.btn-group');
+                var event = $this.data('event');
+
+                if ($this.hasClass("active")) {
+                    $btnGroup.trigger("uncheck-"+ event);
+                } else {
+                    $btnGroup.trigger('check-' + event);
+                }
+            });
+        });
+
+        $.each([
+            $('.deny-checker', $mainBtnAction),
+            $('.accept-checker', $mainBtnAction),
+            $('.accept-hd-checker', $mainBtnAction),
+            $('.accept-watermark-checker', $mainBtnAction)
+        ], function(i, buttons) {
+            buttons.bind("click", function(event) {
+                var $this = $(this);
+                var event = $this.data('event');
+
+                if ($this.hasClass("active")) {
+                    $mainBtnAction.trigger("uncheck-"+ event);
+                    $basesBtnAction.trigger("uncheck-"+ event);
+                } else {
+                    $mainBtnAction.trigger('check-' + event);
+                    $basesBtnAction.trigger('check-' + event);
+                }
+            });
+        });
+
+        $(".submit", $form).bind("click", function (event) {
+            $(".btn.active", $basesBtnAction).each(function() {
+                $("<input>").attr("type", "hidden").attr("name", this.name).val(this.value).appendTo($form);
+            });
+
+            $form.submit();
+        });
+    });
+</script>
+
+<div class="page-header">
+     <h1>{{ 'admin:: demandes en cours' | trans }}</h1>
+</div>
+
+{% if app['request'].query.get('success') == '1' %}
+        <div class="alert alert-success">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {{ 'Requests for the application registrations were recorded successfully' | trans }}
+        </div>
+{% endif %}
+
+{% if user_registrations | length > 0 %}
+    <form id="accept-registration" action="{{ path('users_submit_registrations') }}" method="post">
+        <div class="btn-group btn-all-action">
+            <button data-event="deny" class="btn deny-checker" type="button">
+                <img title="{{ 'admin:: refuser l\'acces' | trans }}" src="/assets/common/images/icons/delete.gif"/>
+            </button>
+            <button data-event="accept" class="btn accept-checker" type="button">
+                <img title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}" src="/assets/common/images/icons/cmdok.gif"/>
+            </button>
+            <button data-event="hd" class="btn accept-hd-checker" type="button">
+                <span title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">HD</span>
+            </button>
+            <button data-event="watermark" class="btn accept-watermark-checker" type="button">
+                <span title="{{ 'admin:: watermarquer les documents' | trans }}">W</span>
+            </button></td>
+        </div>
+
+        <table class="table table-condensed" style="margin:0; table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th>{{ 'Informations' | trans }}</th>
+                    <th>{{ 'admin::collection' | trans }}</th>
+                    <th>{{ 'Models' | trans }}</th>
+                </tr>
+            </thead>
+        </table>
+
+        <div class="registration-wrapper PNB" style="top:160px;bottom: 50px;overflow: auto">
+        <div  id="registrations">
+            {% for user_registration in user_registrations %}
+                {% set user = user_registration['user'] %}
+                <div class="well well-small">
+                    <table class="table" style="table-layout: fixed;">
+                        <tr>
+                            <td>
+                                <dl class="dl-horizontal">
+                                    <dt>{{ 'admin::compte-utilisateur identifiant' | trans }}</dt>
+                                    <dd>{{ user.getLogin() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur nom' | trans }} / {{ 'admin::compte-utilisateur prenom' | trans }}</dt>
+                                    <dd>{{ user.getLastName() }} {{ user.getFirstName() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur email' | trans }}</dt>
+                                    <dd>{{ user.getEmail() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur societe' | trans }}</dt>
+                                    <dd>{{ user.getCompany() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur poste' | trans }}</dt>
+                                    <dd>{{ user.getJob() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur activite' | trans }}</dt>
+                                    <dd>{{ user.getActivity() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur telephone' | trans }}</dt>
+                                    <dd>{{ user.getPhone() }}</dd>
+                                    <dt>{{ 'admin::compte-utilisateur adresse' | trans }}</dt>
+                                    <dd>{{ user.getAddress() }}</dd>
+                                    <dd>{{ user.getZipCode() }}</dd>
+                                    <dd>{{ user.getCity() }}</dd>
+                                    <dd>{{ user.getCountry() }}</dd>
+                                </dl>
+                            </td>
+                            <td>
+                                {% for basId, registration in user_registration['registrations'] %}
+                                    <div>
+                                        {{ app['date-formatter'].getPrettyString(registration.getUpdated()) }}
+                                    </div>
+                                    <span style="font-weight:bold;font-size:14px;word-wrap: break-word;">
+                                        {{ basId| bas_labels(app) }}
+                                    </span>
+                                    {% set btn_value = user.getId() ~ "_" ~  basId %}
+                                    <div class="btn-group btn-single-action" style="margin:auto auto 5px 0;">
+                                        <button data-event="deny" value="{{ btn_value }}" type="button" name="deny[]" class="btn deny-checker" title="{{ 'admin:: refuser l\'acces' | trans }}">
+                                            <img title="{{ 'admin:: refuser l\'acces' | trans }}" src='/assets/common/images/icons/delete.gif' />
+                                        </button>
+                                        <button data-event="accept" value="{{ btn_value }}" type="button" name="accept[]" class="btn accept-checker" title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}">
+                                            <img title="{{ 'admin:: donner les droits de telechargement et consultation de previews' | trans }}" src='/assets/common/images/icons/cmdok.gif' />
+                                        </button>
+                                        <button data-event="hd" value="{{ btn_value }}" type="button" name="accept_hd[]" class="btn accept-hd-checker" title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">
+                                            <span title="{{ 'admin:: donner les droits de telechargements de preview et hd' | trans }}">HD</span>
+                                        </button>
+                                        <button data-event="watermark" value="{{ btn_value }}" type="button" name="watermark[]" class="btn accept-watermark-checker" title="{{ 'admin:: watermarquer les documents' | trans }}">
+                                            <span title="{{ 'admin:: watermarquer les documents' | trans }}">W</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <div>{{ 'admin:: appliquer le modele' | trans }}</div>
+                                <select name="template[]" id="{{ 'model_' ~ user.getId() }}" onchange="modelChecker('{{ user.getId() }}')">
+                                    <option value="">{{ 'None' | trans }}</option>
+                                    {% for model in models %}
+                                        <option value="{{ user.getId() ~ '_' ~ model.getId() }}">{{ model.getLogin() }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+        </div>
+
+        <div class="PNB" style="top:auto;height: 30px;">
+            <button type="button" class="btn btn-primary submit">{{ 'boutton::valider' | trans }}</button>
+        </div>
+    </form>
+ {% else %}
+    {{ 'No application for registration has been recorded' | trans }}
+ {% endif %}

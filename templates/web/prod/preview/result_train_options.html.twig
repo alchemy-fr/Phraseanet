@@ -1,0 +1,18 @@
+
+<div id="PREVIEWCURRENTCONT" class="PNB10">
+    <div style="margin:2px 0;" class="cont_infos">
+        <button class="preview-navigate-action" data-direction="backward">
+            <i class="fa fa-caret-left" aria-hidden="true"></i>
+        </button>
+        <span class="preview-start-slideshow-action"
+              id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }} </span>
+        <span class="preview-stop-slideshow-action"
+              id="stop_slide"> {{ 'preview:: arreter le diaporama' | trans }} </span>
+        <button class="preview-navigate-action" data-direction="forward">
+            <i class="fa fa-caret-right" aria-hidden="true"></i>
+        </button><br/>
+    </div>
+</div>
+<div id="PREVIEWTOOL" style="top:0;bottom:auto;">
+    {% include 'prod/preview/tools.html.twig' %}
+</div>

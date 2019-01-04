@@ -1,0 +1,124 @@
+
+{% set nbReceivedDocuments = records.received().count() %}
+{% set nbEditableDocuments = records.count() %}
+
+<div id='tabs-records-property'>
+
+    {# if multi databox edit abort #}
+    {% if records.databoxes() | length > 1 %}
+        <div class="well-small">
+            {{ 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' | trans }}
+        </div>
+    {% else %}
+
+        {% set databox = records.databoxes|first %}
+        {# This value is fetched when click on 2nd tab #}
+        <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
+
+        <ul>
+            <li><a href="#property-status">{{ 'Records Statut' | trans }}</a></li>
+            {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+            <li><a href="{{ path('display_type_property', { 'lst' : records.serializedList() } ) }}">{{ 'Records type' | trans }}&nbsp;<span>&nbsp;</span></a></li>
+        </ul>
+
+        <div id="property-status">
+            <p class="header">
+                <h4 style='text-align:center;'>
+                    {% if nbReceivedDocuments == 1 %}
+                        {% trans %}You have selected one record.{% endtrans %}
+                    {% else %}
+                        {% trans with {'%nbReceivedDocuments%' : nbReceivedDocuments} %}You have selected %nbReceivedDocuments% records.{% endtrans %}
+                    {% endif %}
+
+                      {% if nbEditableDocuments == 0 %}
+                        {% trans %}None of the records can be modified.{% endtrans %}
+                      {% else %}
+                        {% if nbEditableDocuments < nbReceivedDocuments %}
+                            {% if nbEditableDocuments == 1 %}
+                                {% trans %}Only one record can be modified.{% endtrans %}
+                            {% else %}
+                                {% trans with {'%nbEditableDocuments%' : nbEditableDocuments} %}Only %nbEditableDocuments% records can be modified.{% endtrans %}
+                            {% endif %}
+                      {% endif %}
+                    {% endif %}
+                </h4>
+            </p>
+
+            <form style='padding:15px;' name="change-records-status" action="{{ path('change_status') }}" method="POST">
+                <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
+                {% set sbasId = databox.get_sbas_id() %}
+
+                <table style='width:auto;margin:0 auto'>
+                    <thead>
+                        <tr>
+                            <th colspan="6">
+                                {{ databox.get_label(app['locale'])|title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style='border-bottom:1px solid #FFF;'>
+                            <td colspan="6" style='font-size:11px;text-align:center'>
+                               {% trans %}Status edition{% endtrans %}</i>
+                            </td>
+                        </tr>
+                        {% for bit,values in status %}
+                            <tr>
+                                <td style='text-align:right'>
+                                    {% if values['img_off'] is not empty %}
+                                        <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}">
+                                            <img src="{{ values['img_off'] }}" width="16" height="16" />
+                                        </label>
+                                    {% endif %}
+                                </td>
+                                <td style='text-align:right'>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" {% if values['flag'] == 2 %}style='color:#FF3333'{% endif%}>
+                                        {{ values['labels_off_i18n'][app['locale']] }}
+                                    </label>
+                                </td>
+                                <td style='text-align:right'>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-off'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" {% if values['flag'] == 0 %}checked="checked"{% endif%} value="0"/>
+                                </td>
+                                <td style='text-align:left'>
+                                    <input id="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" type="radio" name="status[{{ sbasId }}][{{ bit }}]" {% if values['flag'] == 1 %}checked="checked"{% endif%} value="1"/>
+                                </td>
+                                <td style='text-align:left'>
+                                    <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}" {% if values['flag'] == 2 %}style='color:#FF3333'{% endif%}>
+                                        {{ values['labels_on_i18n'][app['locale']] }}
+                                    </label>
+                                </td>
+                                <td style='text-align:left'>
+                                    {% if values['img_on'] is not empty %}
+                                        <label for="status-radio-{{ sbasId ~ "-" ~ bit ~ '-on'}}">
+                                            <img src="{{ values['img_on'] }}" width="16" height="16" />
+                                        </label>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        {% if records.stories.count > 0 %}
+                            <tr>
+                                <td colspan="6">
+                                    <input type="checkbox" name="apply_to_children[{{ sbasId }}]"/>
+                                    {% trans %}Apply status on story children.{% endtrans %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tfoot>
+                </table>
+                <div class="form-actions" style="background:transparent">
+                {% if nbEditableDocuments > 0 %}
+                    <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
+                {% endif %}
+                    <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+                    <span class="form-action-loader" style="display:none;">
+                        <img src="/assets/common/images/icons/loader414141.gif" />
+                    </span>
+                </div>
+            </form>
+        </div>
+        <div id="type-status"></div>
+</div>
+{% endif %}

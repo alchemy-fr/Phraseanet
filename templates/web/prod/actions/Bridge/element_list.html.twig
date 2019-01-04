@@ -1,0 +1,111 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+{% import "prod/actions/Bridge/paginator.html.twig" as pages %}
+
+
+{% block menu %}
+<table style="width:100%; height:40px;">
+    <tr>
+        <td style="width:20px;">
+            <form name="bridge_selection">
+                <input class="bridge_all_selector" type="checkbox" value="">
+                <input type="hidden" name="elements_list" value="" />
+            </form>
+        </td>
+        {% if adapter_action == 'load-elements' %}
+            {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelements.html.twig' %}
+        {% elseif adapter_action == 'load-containers' %}
+            {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainers.html.twig' %}
+        {% endif %}
+
+        {% include actiontemplate %}
+
+        <td style="text-align:right;padding-right:2%">
+            {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
+            {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
+        </td>
+    </tr>
+</table>
+{% endblock %}
+
+{% block response %}
+    {%for element in elements.get_elements%}
+      <div class="element {{ loop.index is odd ? 'odd' : 'even' }}">
+        <table style="width:100%;">
+          <tr>
+            <td style="width:20px;">
+              <input class="bridge_element_selector" type="checkbox" value="{{element.get_id}}"/>
+            </td>
+            <td style="width:130px";>
+              {% if element.get_thumbnail != "" %}
+                <div style="position:relative;">
+                  <img src="{{element.get_thumbnail}}" class="thumbnail api_thumbnail"/>
+                  {% if element.get_duration != "" %}
+                  <span class="duration_time">
+                    {{element.get_duration}}
+                  </span>
+                  {% endif %}
+                </div>
+              {% else %}
+                <span>{{ 'Imagette indisponible' | trans }}</span>
+              {% endif %}
+            </td>
+            <td class="informations">
+              <div>
+                {% if element.get_url != '' %}
+                <a href='{{element.get_url}}' target="_blank">
+                {% endif %}
+                  <span class="title">
+                    {{element.get_title|default('untitled'|trans)}}
+                  </span>
+                {% if element.get_url != '' %}
+                </a>
+                {% endif %}
+              </div>
+              <div>
+                <p class="description">
+                {% if element.get_description is not empty %}
+                  {{element.get_description}}
+                {% else %}
+                  {{ 'Aucune description.' | trans }}
+                {% endif %}
+                </p>
+              </div>
+                <br/>
+              <div>
+                {{ app['date-formatter'].getPrettyString(element.get_created_on) }}
+
+                {% if element.get_category != '' %}
+                  {% set category = element.get_category %}
+                  {% trans with {'%category%' : category} %}dans %category%{% endtrans %}
+                {% endif %}
+              </div>
+              {% if not element.is_private is none %}
+              <div>
+                {% if element.is_private %}
+                  {{ 'Confidentialite : privee' | trans }}
+                {% else %}
+                  {{ 'Confidentialite : publique' | trans }}
+                {% endif %}
+              </div>
+              {% endif %}
+            </td>
+            <td class="special">
+              {% set information_template = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/element_informations.html.twig' %}
+              {% include information_template %}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align:right;">
+              {% if adapter_action == 'load-elements' %}
+                  {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actionelement.html.twig' %}
+              {% elseif adapter_action == 'load-containers' %}
+                  {% set actiontemplate = 'prod/actions/Bridge/' ~ account.get_api().get_connector().get_name() ~ '/actioncontainer.html.twig' %}
+              {% endif %}
+
+              {% include actiontemplate %}
+            </td>
+          </tr>
+        </table>
+      </div>
+    {% endfor %}
+{% endblock %}

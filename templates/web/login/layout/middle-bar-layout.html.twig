@@ -1,0 +1,22 @@
+{% extends "login/layout/base-layout.html.twig" %}
+
+{% block content_scaffholding %}
+     <div class="row-fluid">
+        <div class="span4 offset4">
+            <div class="authentication-sidebar">
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% include "login/include/language-block.html.twig" %}
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        {% block  content %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

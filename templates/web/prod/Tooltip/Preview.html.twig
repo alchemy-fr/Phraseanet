@@ -1,0 +1,9 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %} {{ record.get_title() }} {% endset %}
+{% set width = null %}
+{% set maxwidth = null %}
+
+{% block content %}
+    {% include 'common/preview.html.twig' %}
+{% endblock %}

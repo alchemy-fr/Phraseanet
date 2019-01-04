@@ -1,0 +1,9 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %}{{ 'Technical Informations' | trans }}{% endset %}
+{% set width = 280 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    {% include 'common/technical_datas.html.twig' %}
+{% endblock %}

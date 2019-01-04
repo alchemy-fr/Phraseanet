@@ -1,0 +1,29 @@
+<div id="admin-field-app" class="container-fluid">
+    {# sbas_id is saved in the dom and used to fetch right models and collections #}
+    <div class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>{% trans %}Danger zone !{% endtrans %}</strong><br>
+        <span>{% trans %}See documentation about structure manipulation.{% endtrans %}</span>
+    </div>
+    <input type="hidden" name="current_sbas_id" value="{{ sbas_id }}">
+    <div class="row-fluid row-top">
+        <div class="span4 save-block">
+            {# set loading state, this will be removed once backbone application is fully loaded #}
+            <img src="/assets/common/images/icons/loaderFFF.gif"/>
+            {% trans %}Loading database documentary structure ...{% endtrans %}
+        </div>
+        <div class="span8">
+            <div class="block-alert"></div>
+        </div>
+    </div>
+    <div class="row-fluid row-bottom hidden">
+        <div class="left-block span4"></div>
+        <div class="right-block span8"></div>
+    </div>
+</div>
+
+{# include js templates #}
+{% include 'admin/fields/templates.html.twig' %}
+
+{# bootstrap admin field backbone application #}
+<script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/fields/main.js' }) }}"></script>

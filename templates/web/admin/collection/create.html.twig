@@ -1,0 +1,61 @@
+<div class="page-header">
+    <h1>{{ 'admin::base:collection: Creer une collection' | trans }}</h1>
+</div>
+
+{% if app['request'].get('error') == 'name' %}
+        <div class="alert alert-error">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {{ 'admin:: La collection n\'a pas ete creee : vous devez donner un nom a votre collection' | trans }}
+        </div>
+
+{% elseif app['request'].get('error') == 'error' %}
+        <div class="alert alert-error">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            {{ 'An error occured, please retry or contact an admin if problem persist' | trans }}
+        </div>
+{% endif %}
+
+<div class="well-small">
+    <form class="form-horizontal" method='post' action='{{ path('admin_database_submit_collection', {'databox_id': app['request'].get('databox_id')}) }}'>
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="cnm">{{ 'admin::base:collection: Nom de la nouvelle collection :' | trans }}</label>
+                <div class="controls">
+                    <input id="cnm" name="name" class="input-xlarge" type="text">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ccusrothercoll">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces" | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" id="ccusrothercoll" name="ccusrothercoll">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                     {% if app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) | length > 0 %}
+                        <select id="othcollsel" name="othcollsel" disabled>
+                            <option>{{ "choisir" | trans }}</option>
+                            {% for collection in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) %}
+                               <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">{{ 'boutton::valider' | trans }}</button>
+                <a href='{{ path('admin_database', {'databox_id': app['request'].get('databox_id')}) }}' target='right' class="btn ajax">{{ 'boutton::annuler' | trans }}</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $("#ccusrothercoll").bind('click', function(){
+        if($(this).is(':checked')) {
+            $("#othcollsel").attr("disabled", false);
+        } else {
+            $("#othcollsel").attr("disabled", true);
+        }
+    });
+</script>

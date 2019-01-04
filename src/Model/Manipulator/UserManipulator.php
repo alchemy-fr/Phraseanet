@@ -13,6 +13,7 @@ namespace App\Model\Manipulator;
 
 use Alchemy\Geonames\Connector as GeonamesConnector;
 use Alchemy\Geonames\Exception\ExceptionInterface as GeonamesExceptionInterface;
+use App\Authentication\Phrasea\SimplePasswordEncoder;
 use App\Core\Event\User\CreatedEvent;
 use App\Entity\UserNotificationSetting;
 use App\Entity\UserQuery;
@@ -21,6 +22,7 @@ use App\Model\Manager\UserManager;
 use App\Entity\User;
 use App\Exception\RuntimeException;
 use App\Exception\InvalidArgumentException;
+use RandomLib\Factory;
 use RandomLib\Generator;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
@@ -29,87 +31,64 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Core\Event\User\UserEvents;
 use App\Core\Event\User\DeletedEvent;
 
+use Doctrine\DBAL\Driver\Connection;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use App\Repository\UserRepository;
+
+
+
 
 /**
  * Manages common operations for the users.
  */
 class UserManipulator implements ManipulatorInterface
 {
-    /**
-     * @var PasswordEncoderInterface
-     */
-    protected $passwordEncoder;
 
-    /**
-     * @var UserManager
-     */
     private $manager;
-
-    /**
-     * @var GeonamesConnector
-     */
-    private $geonamesConnector;
-
-    /**
-     * @var Generator
-     */
-    private $generator;
-
-    /**
-     * @var EntityRepository
-     */
+    private $entityManager;
+    private $objectManager;
+    private $container;
     private $repository;
-
-    /**
-     * @var EventDispatcherInterface
-     */
+    private $passwordEncoder;
     private $dispatcher;
 
-    /**
-     * @param UserManager $manager
-     * @param PasswordEncoderInterface $passwordEncoder
-     * @param GeonamesConnector $connector
-     * @param EntityRepository $repo
-     * @param Generator $generator
-     * @param EventDispatcherInterface $dispatcher
-     */
-    public function __construct(
+
+    public function __construct
+    (
         UserManager $manager,
-        PasswordEncoderInterface $passwordEncoder,
-        GeonamesConnector $connector,
-        EntityRepository $repo,
-        Generator $generator,
+        EntityManagerInterface $entityManager,
+        \Doctrine\Common\Persistence\ObjectManager $objectManager,
+        ContainerInterface $container,
+        UserRepository $repository,
+        SimplePasswordEncoder $passwordEncoder,
         EventDispatcherInterface $dispatcher
     )
     {
         $this->manager = $manager;
-        $this->generator = $generator;
+        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
+        $this->container = $container;
+        $this->repository = $repository;
         $this->passwordEncoder = $passwordEncoder;
-        $this->geonamesConnector = $connector;
-        $this->repository = $repo;
         $this->dispatcher = $dispatcher;
     }
 
-    /**
-     * Creates a user and returns it.
-     *
-     * @param string  $login
-     * @param string  $password
-     * @param string  $email
-     * @param Boolean $admin
-     *
-     * @return User
-     *
-     * @throws InvalidArgumentException if login or email is not valid.
-     * @throws RuntimeException         if login or email already exists.
-     */
     public function createUser($login, $password, $email = null, $admin = false)
     {
-        $user = $this->manager->create();
+
+        $datetime = new \DateTime();
+
+        $user = new User();
         $this->doSetLogin($user, $login);
         $this->doSetEmail($user, $email);
         $this->doSetPassword($user, $password);
         $user->setAdmin($admin);
+        $user->setCreated($datetime);
+        $user->setUpdated($datetime);
         $this->manager->update($user);
 
         $this->dispatcher->dispatch(
@@ -330,7 +309,11 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetPassword(User $user, $password)
     {
-        $user->setNonce($this->generator->generateString(64));
+
+        $factory = new Factory();
+        $nonce = $factory->getLowStrengthGenerator()->generateString(64);
+        $user->setNonce($nonce);
+
         $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
         $user->setSaltedPassword(true);
     }
@@ -339,7 +322,7 @@ class UserManipulator implements ManipulatorInterface
      * Sets the login for a user.
      *
      * @param User  $user
-     * @param sring $login
+     * @param string $login
      *
      * @throws InvalidArgumentException if login is not valid.
      * @throws RuntimeException         if login already exists.
@@ -364,9 +347,9 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetEmail(User $user, $email)
     {
-        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
-            throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
-        }
+//        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
+//            throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
+//        }
 
         if (null !== $this->repository->findByEmail($email)) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));

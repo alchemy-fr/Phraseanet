@@ -1,0 +1,113 @@
+{% extends "login/layout/sidebar-layout.html.twig" %}
+
+{% import "login/common/macros.html.twig" as auth_macro %}
+{% import "common/macros.html.twig" as macro %}
+
+{% block title %}
+    {{ "Register" | trans }}
+{% endblock %}
+
+{% block sidebar %}
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="text-title">
+                    {{ "Inscription" | trans }}
+                </div>
+                <div class="sidebar-hint">
+                    {% trans with {'%instance_title%' : instance_title} %}Complete the fields below to register on %instance_title%!{% endtrans %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                {{ auth_macro.flashes() }}
+                <form
+                     novalidate
+                     name="registerForm"
+                     method="POST"
+                     action="{{ path("login_register_classic") }}"
+                     data-geonames-server-adress="{{ geonames_server_uri }}"
+                >
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.email, "registerForm", 'fa fa-envelope') }}
+                        </div>
+                    </div>
+
+                    {{ auth_macro.repeatedInput(form.password, "registerForm", 'fa fa-lock') }}
+
+                    {% for field in registration_fields %}
+                        {% set name = field['name'] %}
+                        {% if name in registration_optional_fields|keys %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    {{ auth_macro.fieldInput(attribute(form, name|camelize), "registerForm") }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    {%  if has_terms_of_use %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {% set label %}
+                                    <a target="_blank" href="{{ path("login_cgus") }}">
+                                        {{ "I have read the terms of use" | trans }}
+                                    </a>
+                                {% endset %}
+
+                                {{ auth_macro.checkboxInput(form['accept-tou'], label) }}
+                            </div>
+                        </div>
+                    {%  endif %}
+
+                    {# form.collections is not defined if current instance is configured with auto collection selection #}
+                    {% if form.collections is defined %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ auth_macro.selectInput(form.collections) }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form_rest(form) }}
+
+                    {% if recaptcha_display %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ macro.captcha() }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <button type="submit" class="btn btn-success btn-trigger">
+                                {{ "Request access" | trans }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        authenticateApp.bootstrap({
+            state: 'register'
+        });
+    </script>
+{% endblock %}

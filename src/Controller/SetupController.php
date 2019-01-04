@@ -22,17 +22,21 @@ use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SetupController extends Controller
 {
+
+
+
 
     public function rootInstaller(Request $request)
     {
         $requirementsCollection = $this->getRequirementsCollection();
 
         return $this->render('/setup/index.html.twig', [
-            'locale'                 => $this->app['locale'],
-            'available_locales'      => Application::getAvailableLanguages(),
+            'locale'                 => $request->getLocale(),
+            'available_locales'      => \App\Application::getAvailableLanguages(),
             'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'requirementsCollection' => $requirementsCollection,
         ]);
@@ -52,15 +56,15 @@ class SetupController extends Controller
         ];
     }
 
-    public function displayUpgradeInstructions()
+    public function displayUpgradeInstructions(Request $request)
     {
         return $this->render('/setup/upgrade-instructions.html.twig', [
-            'locale'              => $this->app['locale'],
-            'available_locales'   => Application::getAvailableLanguages(),
+            'locale'                 => $request->getLocale(),
+            'available_locales'      => \App\Application::getAvailableLanguages(),
         ]);
     }
 
-    public function getInstallForm(Request $request)
+    public function getInstallForm(Request $request, TranslatorInterface $translator)
     {
         $warnings = [];
 
@@ -74,26 +78,26 @@ class SetupController extends Controller
         }
 
         if ($request->getScheme() == 'http') {
-            $warnings[] = $this->app->trans('It is not recommended to install Phraseanet without HTTPS support');
+            $warnings[] = $translator->trans('It is not recommended to install Phraseanet without HTTPS support');
         }
 
         /** @var StructureTemplate $st */
-        $st = $this->app['phraseanet.structure-template'];
+        $st = $this->get('phraseanet.structure-template');
 
         return $this->render('/setup/step2.html.twig', [
-            'locale'              => $this->app['locale'],
-            'available_locales'   => Application::getAvailableLanguages(),
+            'locale'                 => $request->getLocale(),
+            'available_locales'      => \App\Application::getAvailableLanguages(),
             'available_templates' => $st->getNames(),
             'elasticOptions'      =>  ElasticsearchOptions::fromArray([]),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
-            'discovered_binaries' => \setup::discover_binaries(),
+            'discovered_binaries' => \App\Utils\setup::discover_binaries(),
             'rootpath'            => realpath(__DIR__ . '/../../../../'),
         ]);
     }
 
-    public function doInstall(Request $request)
+    public function doInstall(Request $request, TranslatorInterface $translator)
     {
         set_time_limit(360);
 
@@ -130,14 +134,15 @@ class SetupController extends Controller
                 'user'     => $database_user,
                 'password' => $database_password,
                 'dbname'   => $appbox_name,
+                'driver' => 'pdo_mysql'
             ];
 
-            /** @var Connection $abConn */
-            $abConn = $this->app['dbal.provider']($abInfo);
+            $config = new \Doctrine\DBAL\Configuration();
+            $abConn = \Doctrine\DBAL\DriverManager::getConnection($abInfo, $config);
             $abConn->connect();
         } catch (\Exception $e) {
-            return $this->app->redirectPath('install_step2', [
-                'error' => $this->app->trans('Appbox is unreachable'),
+            return $this->redirectToRoute('install_step2', [
+                'error' => $translator->trans('Appbox is unreachable'),
             ]);
         }
 
@@ -149,28 +154,29 @@ class SetupController extends Controller
                     'user'     => $database_user,
                     'password' => $database_password,
                     'dbname'   => $databox_name,
+                    'driver' => 'pdo_mysql'
                 ];
 
                 /** @var Connection $dbConn */
-                $dbConn = $this->app['dbal.provider']($dbInfo);
+                $dbConn = \Doctrine\DBAL\DriverManager::getConnection($dbInfo, $config);
                 $dbConn->connect();
             }
         } catch (\Exception $e) {
-            return $this->app->redirectPath('install_step2', [
-                'error' => $this->app->trans('Databox is unreachable'),
+            return $this->redirectToRoute('install_step2', [
+                'error' => $translator->trans('Databox is unreachable'),
             ]);
         }
 
-        $this->app['dbs.options'] = array_merge(
-            $this->app['db.options.from_info']($dbInfo),
-            $this->app['db.options.from_info']($abInfo),
-            $this->app['dbs.options']
-        );
-        $this->app['orm.ems.options'] = array_merge(
-            $this->app['orm.em.options.from_info']($dbInfo),
-            $this->app['orm.em.options.from_info']($abInfo),
-            $this->app['orm.ems.options']
-        );
+//        $this->app['dbs.options'] = array_merge(
+//            $this->app['db.options.from_info']($dbInfo),
+//            $this->app['db.options.from_info']($abInfo),
+//            $this->app['dbs.options']
+//        );
+//        $this->app['orm.ems.options'] = array_merge(
+//            $this->app['orm.em.options.from_info']($dbInfo),
+//            $this->app['orm.em.options.from_info']($abInfo),
+//            $this->app['orm.ems.options']
+//        );
 
         $email = $request->request->get('email');
         $password = $request->request->get('password');
@@ -178,7 +184,7 @@ class SetupController extends Controller
         $dataPath = $request->request->get('datapath_noweb');
 
         try {
-            $installer = $this->app['phraseanet.installer'];
+            $installer = $this->get('phraseanet.installer');
 
             $binaryData = [];
             foreach ([
@@ -204,13 +210,13 @@ class SetupController extends Controller
 
             $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 
-            return $this->app->redirectPath('admin', [
+            return $this->redirectToRoute('admin', [
                 'section' => 'taskmanager',
                 'notice'  => 'install_success',
             ]);
         } catch (\Exception $e) {
-            return $this->app->redirectPath('install_step2', [
-                'error' => $this->app->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
+            return $this->redirectToRoute('install_step2', [
+                'error' => $translator->trans('an error occured : %message%', ['%message%' => $e->getMessage()]),
             ]);
         }
     }

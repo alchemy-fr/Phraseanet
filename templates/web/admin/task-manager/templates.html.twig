@@ -1,0 +1,77 @@
+<script type="text/template" id="task_template">
+    <td class="menu">
+        <div class="btn-group dropdown">
+            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="<%- task['urls']['show'] %>">
+                        {{ 'Edit' | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a method="POST" href="<%- task['urls']['start'] %>">
+                        {{ 'Start' | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a method="POST" href="<%- task['urls']['stop'] %>">
+                        {{ 'Stop' | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a method="POST" href="<%- task['urls']['delete'] %>">
+                        {{ 'Delete' | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="<%- task['urls']['log'] %>">
+                        {{ 'Logs' | trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </td>
+    <td class="idTask"><%- task.id %></td>
+    <td class="pidTask"><%- task['process-id'] %></td>
+    <td></td>
+    <td class="actualTask"><%- task.actual %></td>
+    <td class="confTask"><%- task.configuration %></td>
+    <td class="nameTask"><%- task.name %></td>
+</script>
+
+<script type="text/template" id="scheduler_template">
+    <td class="menu">
+        <div class="btn-group dropdown">
+            <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                {% if app['phraseanet.configuration']['main']['task-manager']['enabled'] %}
+                    <li>
+                        <a method="POST" href="<%- scheduler['urls']['start'] %>">
+                            {{ 'Start' | trans }}
+                        </a>
+                    </li>
+                    <li>
+                        <a method="POST" href="<%- scheduler['urls']['stop'] %>">
+                            {{ 'Stop' | trans }}
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="<%- scheduler['urls']['log'] %>">
+                        {{ 'Logs' | trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </td>
+    <td></td>
+    <td class="pidScheduler"><%- scheduler['process-id'] %></td>
+    <td></td>
+    <td class="actualScheduler"><%- scheduler.actual %></td>
+    <td class="confScheduler"><%- scheduler.configuration %></td>
+    <td class="nameScheduler"><%- scheduler.name %></td>
+</script>

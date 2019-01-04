@@ -1,0 +1,9 @@
+{% for geoname in geonames %}
+  <div class="box {% if loop.index is odd %}boxI{% else %}boxP{% endif %}" id="geo_{{geoname.geoname_id}}">
+    <div>{{geoname.title_highlighted|raw}}, {{geoname.country_highlighted|raw}}</div>
+    {% if geoname.region %}<div>{{geoname.region}}</div>{% endif %}
+  </div>
+{% endfor %}
+{% if geonames|length == 0 %}
+  <div class='box boxI unselectable'>  <div>{{ 'No matches found' | trans }}</div></div>
+{% endif %}

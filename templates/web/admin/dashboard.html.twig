@@ -1,0 +1,157 @@
+{% macro board_sub_section(requirements) %}
+    <h2>{{ requirements.getName() }}</h2>
+    <ul class="setup unstyled">
+        {% if requirements.getRequirements() is not empty %}
+            <li><strong>{{ 'Requirements' | trans }}</strong></li>
+            {% for requirement in requirements.getRequirements() %}
+                <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
+                    {{ requirement.getTestMessage }}
+
+                    {% if not requirement.isFulfilled() %}
+                    <p>
+                        {{ requirement.getHelpHtml() | raw }}
+                    </p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% endif %}
+        {% if requirements.getRecommendations() is not empty %}
+            <li><strong>{{ 'Recommendations' | trans }}</strong></li>
+            {% for requirement in requirements.getRecommendations() %}
+                <li class="{% if not requirement.isFulfilled() %}{% if not requirement.isOptional() %}blocker{% else %}non-blocker{% endif %}{% else %}good-enough{% endif %}">
+                    {{ requirement.getTestMessage }}
+
+                    <p>
+                    {% if not requirement.isFulfilled() %}
+                        {{ requirement.getHelpHtml() | raw }}
+                    {% endif %}
+                    </p>
+                </li>
+            {% endfor %}
+        {% endif %}
+        {% if requirements.getInformations() is not empty %}
+            <li><strong>{{ 'Informations' | trans }}</strong></li>
+            {% for information in requirements.getInformations() %}
+                <li>
+                    {{ information.getName() }} : {{ information.getValue() }}
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+{% endmacro %}
+
+<style type="text/css">
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+        /* add padding to account for vertical scrollbar */
+        padding-right: 20px;
+    }
+    /* IE 6 doesn't support max-height
+        * we use height instead, but this forces the menu to always be this tall
+    */
+    * html .ui-autocomplete {
+        height: 200px;
+    }
+    .ui-autocomplete-loading { background: white url('/assets/common/images/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
+</style>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var container = $('#right-ajax');
+        $( ".admin_adder", container ).autocomplete({
+            source: "/admin/users/typeahead/search/",
+            minLength: 2,
+            select: function( event, ui ) {
+                var form = $('#admin_adder');
+                $('input.new[name="admins[]"]', form).val(ui.item.id);
+                form.submit();
+            }
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+            var email = item.email ? '<br/>'+item.email : '';
+            var login = item.login !== item.name ? " ("+ item.login +")" : '';
+
+            return $( "<li></li>" )
+            .data( "ui-autocomplete-item", item )
+            .append( "<a>" + item.name + login + email + "</a>" )
+            .appendTo( ul );
+        };
+
+    });
+</script>
+
+<div class="page-header">
+    <h1>{% trans %}General settings{% endtrans %}<small style="font-size:18px; margin-left: 15px;">{% trans %}your configuration{% endtrans %}</small></h1>
+</div>
+
+{% if cache_flushed %}
+    <div class="well well-small">
+        {{ 'all caches services have been flushed' | trans }}
+    </div>
+{% endif %}
+
+<div class="board_section">
+    <form id="admin_adder" action="{{ path('admin_dashboard_add_admins') }}" method="post" class="form-inline">
+        <fieldset>
+            <legend>{{ 'setup:: administrateurs de l\'application' | trans }}</legend>
+            <ul class="unstyled">
+                {% for user in admins %}
+                    <li>
+                        <label class="checkbox" for="adm_{{ user.getId() }}">
+                            <input type="checkbox" id="adm_{{ user.getId() }}" name="admins[]" value="{{ user.getId() }}" checked />
+                            {{ user.getLogin() }}
+                        </label>
+                    </li>
+                {% endfor %}
+                <input class="admin_adder input-large" placeholder="{{ 'Add an admin' | trans }}"/>
+            </ul>
+            <input type="submit" class="btn btn-primary" value="{{ 'boutton::valider' | trans }}" />
+            <input type="hidden" class="new" name="admins[]" />
+        </fieldset>
+    </form>
+    <form id="admin_reset" action="{{ path('admin_dashboard_reset_admin_rights') }}" method="post" class="form-inline" style="display:inline">
+        <fieldset>
+            <legend>{{ 'setup:: Reinitialisation des droits admins' | trans }}</legend>
+            <input type="submit" class="btn btn-primary" value="{{ 'boutton::reinitialiser' | trans }}" />
+        </fieldset>
+    </form>
+</div>
+
+<div class="board_section">
+    <div class="section">
+        <form id="mail_checker" method="post" action="{{ path('admin_dashboard_test_mail') }}" target="_self" class="form-inline">
+            <fieldset>
+                <legend>{{ 'setup::Tests d\'envois d\'emails' | trans }}</legend>
+                <div class="input-append">
+                    <input class="span3" id="appendedInputButton" name="email" value="" type="text" placeholder="{% trans %}Email{% endtrans %}" required>
+                    <input type="submit" class="btn btn-primary" value="{{ 'Send' | trans }}"/>
+                </div>
+            </fieldset>
+        </form>
+        {% if email_status %}
+            <div class="alert-info">
+                <p>{% trans with { '%email_status%' : email_status } %}Email test result : %email_status%{% endtrans %}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if app['cache'].isServer() %}
+        <div class="section">
+            <form id="cache_flusher" method="post" action="{{ path('admin_dashboard_flush_cache') }}" class="form-inline">
+                <fieldset>
+                <legend>{% trans %}Reset cache{% endtrans %}</legend>
+                    <input type="submit" id="flush_button" class="btn btn-primary span4" value="Flush All Caches" />
+                </fieldset>
+            </form>
+        </div>
+    {% endif %}
+
+    <div class="section">
+        {% for requirements in app['phraseanet.configuration-tester'].getRequirements() %}
+            {{ _self.board_sub_section(requirements) }}
+        {% endfor %}
+    </div>
+</div>

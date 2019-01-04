@@ -34,3 +34,7 @@ services:
     phraseanet.installer:
         class: App\Setup\Installer
         public: true
+
+    manipulator.user:
+        class: App\Model\Manipulator\UserManipulator
+        public: true

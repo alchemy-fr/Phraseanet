@@ -1,0 +1,101 @@
+
+{% import "common/thumbnail.html.twig" as thumb %}
+
+<div class="PNB" id='dialog_publicator' data-url="{{ path("prod_bridge_manager") }}">
+    <div id='publicator_selection' class="PNB10 ui-corner-all">
+        <div class="PNB10">
+            {% for id, record in route.get_elements %}
+                <div id='pub_record_{{record.get_serialize_key()}}' class="diapo">
+                    <div class="title">{{ record.get_title() }}</div>
+                    {{thumb.format(record.get_thumbnail, 80, 80, "", true, false)}}
+                </div>
+            {% endfor %}
+        </div>
+        <form name="upload_form" method="GET" action="{{ path('prod_bridge_upload') }}">
+            <div class="PNB10 record_actions" style="top:auto; height:30px; text-align:right;">
+                <button class="single_menu act_upload btn btn-inverse">{{ 'Upload' | trans }}</button>
+            </div>
+            <input name="lst" type="hidden" value=""/>
+            <input name="account_id" type="hidden" value=""/>
+        </form>
+        <form name="current_datas">
+            {% for id, record in route.get_elements %}
+                <input type="hidden" name="element[]" value="{{record.get_serialize_key()}}" />
+            {% endfor %}
+            <input name="lst" type="hidden" value="{{route.get_serialize_list()}}"/>
+            <input name="account_id" type="hidden" value="{{current_account_id}}"/>
+        </form>
+    </div>
+    <div class="PNB" style="top:200px">
+        <div class="PNB10" id="pub_tabs" >
+            <ul id="ul_main_pub_tabs" class="PNB">
+                {% for account in user_accounts %}
+                    <li class="li_{{ account.get_id() }} {% if not account.get_api().get_connector().is_configured() %}not_configured{% endif %} bridge_{{ account.get_api().get_connector().get_name() }} {% if account.get_id() == current_account_id %} ui-tabs-selected {% endif %}">
+                        <a href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : account.get_api().get_connector().get_default_element_type() }) }}" class='account'>
+                            <span style='display:block;float:left;'>{{ account.get_name() }}</span>
+                            <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
+                        </a>
+                    </li>
+                {% endfor %}
+                <li>
+                    <a href="#tabs-new-account"> + {{ 'nouveau' | trans }}</a>
+                </li>
+            </ul>
+            <div id='tabs-new-account' class="PNB" >
+                <div class="PNB">
+                    <div class="PNB10 container">
+                        <div class="PNB10">
+                            <div>{{ 'Vers quel API voulez vous vous connecter ?' | trans }}</div>
+                            {% if available_apis|length > 0 %}
+                                {% for api in available_apis %}
+                                    {% if api.get_connector().is_configured() %}
+                                        <form style="float:left; margin:5px;">
+                                            <button class="login_button new_bridge_button btn btn-inverse">
+                                                <table style="border:none; width:250px;">
+                                                    <tr style="vertical-align:middle;">
+                                                        <td style="width:130px;">
+                                                            {% if api.get_connector().get_image_url() %}
+                                                                <img src="{{ api.get_connector().get_image_url() }}" class="bridge_icon" />
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {{ api.get_connector().get_name() }}
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </button>
+                                            <input type="hidden" name="url" value="{{api.generate_login_url(app['url_generator'], api.get_connector().get_name()) }}" />
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {{ 'Aucun bridge disponible. Veuillez contacter un administrateur.' | trans }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="PNB upload_window" style="display:none;"></div>
+
+{# SCRIPT - HORIZONTAL TABS #}
+<script type ="text/javascript">
+$(function() {
+  {% if route.get_count_element_received() == 0 %}
+    alert('{{ "Vous n\'avez selectionne aucun element"|trans|e('js') }}');
+    if (container.data("ui-dialog")) {
+        container.dialog("close");
+    }
+  {% elseif route.get_count_actionable() == 0 %}
+    alert('{{ "Vous n\'avez pas assez de droits sur les elements selectionnes"|trans|e('js') }}');
+    if (container.data("ui-dialog")) {
+        container.dialog("close");
+    }
+  {% elseif route.get_count_actionable() != route.get_count_element_received() %}
+    alert('{{ "Vous n\'avez pas assez de droits sur certains elements selectionnes"|trans|e('js') }}');
+  {% endif %}
+});
+</script>

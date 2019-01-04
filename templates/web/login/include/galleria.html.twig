@@ -1,0 +1,11 @@
+<div id="galleria" class="hidden">
+    {%  for item in last_publication_items %}
+        <img src="{{ item['permalink'].get_url() }}" />
+    {% endfor %}
+</div>
+<script type="text/javascript" src="/assets/vendors/jquery-galleria/galleria.min.js"></script>
+<script type="text/javascript">
+    Galleria.loadTheme('/assets/vendors/jquery-galleria/galleria.classic.min.js');
+    Galleria.run("#galleria");
+    $("#galleria").removeClass("hidden");
+</script>

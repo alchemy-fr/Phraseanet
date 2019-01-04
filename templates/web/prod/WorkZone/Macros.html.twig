@@ -1,0 +1,386 @@
+{% macro make_bloc(app, WorkZone, selected_type, selected_id, srt) %}
+  <div class="alert_datas_changed ui-corner-all">
+    <a title="{{ 'rafraichir' | trans }}" class="basket_refresher" href="#">
+      {{ 'Vous avez recu un nouveau panier' | trans }}
+    </a>
+  </div>
+  <div class="bloc">
+  <div class="insidebloc">
+    {% set content = WorkZone.getContent(srt) %}
+    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+             id="SSTT_{{basket.getId()}}"
+             class="basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
+            <span>
+              {% if not basket.isRead() %}
+                <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+              {% endif %}
+              <img src='/assets/common/images/icons/basket.png' title=''/>
+              {{basket.getName()}}
+            </span>
+          </a>
+          <div class="menu">
+              <table>
+                  <tr>
+                      <td>
+                          <img
+                              title="{{ 'Vous avez recu une demande de validation de document sur ce panier' | trans }}"
+                              class="basketTips"
+                              src="/assets/common/images/icons/valid.png"
+                            />
+                      </td>
+                      <td>
+                          <a class="contextMenuTrigger"></a>
+                      </td>
+                  </tr>
+              </table>
+
+            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="context-menu context-menu-theme-vista">
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
+                        </div>
+                      </div>
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                          <div title="" class="context-menu-item menu3-custom-item">
+                            <div  data-kind="basket" data-id="{{basket.getId()}}"
+                                 class="context-menu-item-inner edit-record-action">{{ 'edit' | trans }}
+                            </div>
+                          </div>
+                        {% endif %}
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner">
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                        </div>
+                      </div>
+
+                      {% if basket.getValidation() %}
+                        <div title="" class="context-menu-item">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                            <div class="context-menu-item-inner">
+                              {{ 'action::Valider' | trans }}
+                            </div>
+                          </a>
+                        </div>
+                      {% endif %}
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"></div>
+    {% endfor %}
+
+    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+             id="SSTT_{{basket.getId()}}"
+             class="basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
+            <span>
+              {% if basket.getValidation() %}
+                <img src='/assets/common/images/icons/basket_validation.png' title=''/>
+              {% elseif basket.getPusher() %}
+                {% if not basket.isRead() %}
+                  <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                {% else %}
+                  <img src='/assets/common/images/icons/basket_push.png' title=''/>
+                {% endif %}
+              {% else %}
+                <img src='/assets/common/images/icons/basket.png' title=''/>
+              {% endif %}
+              {{basket.getName()}}
+            </span>
+          </a>
+          <div class="menu">
+            <table>
+                  <tr>
+                    <!--
+                       {% if basket.getValidation() %}
+                            <td>
+                                <img
+                                    style="display:inline;padding:0;margin:0;"
+                                    title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"
+                                    class="basketTips"
+                                    src="/assets/common/images/icons/myvalid.png"
+                                />
+                            </td>
+                        {% endif %}
+                        {% if basket.getPusher() %}
+                            <td>
+                                {% set pusher = basket.getPusher().getDisplayName() %}
+                                <img
+                                    class="basketTips"
+                                    title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
+                                    src="/assets/common/images/icons/push16.png"/>
+                            </td>
+                        {% endif %}
+                      -->
+                        <td>
+                            <a class="contextMenuTrigger"></a>
+                        </td>
+                  </tr>
+            </table>
+
+            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="context-menu context-menu-theme-vista">
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
+                        </div>
+                      </div>
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner">
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                        </div>
+                      </div>
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner">
+                          <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
+                            {{ 'action::renommer' | trans }}
+                          </a>
+                        </div>
+                      </div>
+
+                      {% if basket.getValidation() %}
+                        <div title="" class="context-menu-item">
+                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                            <div class="context-menu-item-inner">
+                              {{ 'action::Valider' | trans }}
+                            </div>
+                          </a>
+                        </div>
+                      {% endif %}
+
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
+                          {{ 'Archive' | trans }}
+                        </div>
+                      </div>
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
+                          {{ 'action : supprimer' | trans }}
+                        </div>
+                      </div>
+
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner">
+                          <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
+                            {{ 'Re-ordonner' | trans }}
+                          </a>
+                        </div>
+                      </div>
+
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"> </div>
+    {% endfor %}
+
+
+
+    {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
+        <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
+             id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
+             class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header SSTT grouping
+                    {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
+          <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+            <span>
+            {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
+            <img src='/assets/common/images/icons/story.png' title=''/>
+            {{ story.getRecord(app).get_title() }}
+            </span>
+          </a>
+          <div class="menu">
+              <table>
+                  <tr>
+                      <td>
+                          <a class="contextMenuTrigger"></a>
+                      </td>
+                  </tr>
+              </table>
+
+            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="context-menu context-menu-theme-vista">
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner export-record-action"
+                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">{{ 'action::exporter' | trans }}
+                        </div>
+                      </div>
+                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner edit-record-action"
+                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"
+                             >{{ 'action::editer' | trans }}
+                        </div>
+                      </div>
+                        {% endif %}
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner">
+                          <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
+                            {{ 'action::detacher' | trans }}
+                          </a>
+                        </div>
+                      </div>
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner">
+                          <a class="story-reorder-content-action" title="{{ 'Re-ordonner' | trans }}"
+                             data-db-id="{{ story.getRecord(app).get_sbas_id }}"
+                             data-record-id="{{ story.getRecord(app).get_record_id() }}"
+                             href="#">
+                            {{ 'Re-ordonner' | trans }}
+                          </a>
+                        </div>
+                      </div>
+
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;"></div>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
+
+
+{% macro element(wz_scope, container, contained, record, ord) %}
+  {% set box_height = 110 %}
+  {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
+      {% set box_height = (box_height + 20) %}
+  {% endif %}
+  {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
+      {% set box_height = (box_height + 20) %}
+  {% endif %}
+
+  {% import 'common/thumbnail.html.twig' as thumbnail %}
+
+  <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
+       data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
+       data-position="{{ ord }}"
+       data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
+       style="height:{{box_height}}px;"
+       id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
+       <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
+      {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
+          <div class="title">
+              {{record.get_title()}}
+          </div>
+      {% endif %}
+      {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
+          <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+              {% for flag in record_flags(record) %}
+                  <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+              {% endfor %}
+          </div>
+      {% endif %}
+          <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
+              {{record.getNumber()}}
+          </div>
+    {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
+      <div class="bottom">
+          <a
+            {% if wz_scope == 'groupings' %}
+              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+              href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
+            {% elseif wz_scope == 'basket' %}
+              id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+              href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+            {% elseif wz_scope == 'basket' %}
+              href="#"
+            {% endif %}
+            class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
+              <i class="fa fa-times" aria-hidden="true"></i>
+          </a>
+          {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
+              <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}"></div>
+          {% endif %}
+      </div>
+  </div>
+{% endmacro %}
+
+{% macro display_basket(app, basket) %}
+  {% for basket_element in basket.getElements() %}
+      <div class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }}">
+      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
+      </div>
+  {% endfor %}
+{% endmacro %}
+
+{% macro display_validation(app, basket, ordre) %}
+  <div style="margin:5px 0;text-align:center;">
+      <form>
+          <select name="valid_ord">
+              <option {% if ordre=='nat' %}selected{% endif %} value="nat">{{ 'panier:: ordre du panier' | trans }}</option>
+              <option {% if ordre=='desc' %}selected{% endif %} value="desc">{{ 'panier:: ordre Validation ascendante' | trans }}</option>
+              <option {% if ordre=='asc' %}selected{% endif %} value="asc">{{ 'panier:: ordre Validation descendante' | trans }}</option>
+          </select>
+      </form>
+  </div>
+
+  {% for basket_element in basket.getElementsByOrder(ordre) %}
+      <span class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
+          <table style="width: 100%; min-width: 330px; display: inline-block;">
+              <tr>
+                  <td style="width:80px;">
+                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
+                  </td>
+                  <td style="width:100%;">
+                      <table style=width:100%>
+                          {% for choice in basket_element.getValidationDatas() %}
+                              {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                              <tr>
+                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
+                                  <td>
+                                  {% if choice.getParticipant().getCanAgree() %}
+                                        {% if choice.getAgreement() == true %}
+                                            <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                                        {% elseif choice.getAgreement() is null %}
+                                            <img style="cursor:help;" src='/assets/common/images/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                                        {% else %}
+                                            <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                                        {% endif %}
+                                  {% else %}
+                                        <img style="cursor:help;" src='/assets/common/images/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
+                                  {% endif %}
+                                  </td>
+                                  <td style="width:25px;">
+                                  {% if choice.getNote() != '' %}
+                                       <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
+                                  {% endif %}
+                                  </td>
+                              </tr>
+                              {% endif %}
+                          {% endfor %}
+                      </table>
+                  </td>
+              </tr>
+          </table>
+      </span>
+  {% endfor %}
+
+{% endmacro %}

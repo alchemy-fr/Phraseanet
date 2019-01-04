@@ -1,0 +1,59 @@
+{% macro format(thumbnail, box_w, box_h, extra_class, wrap, lazyload, autoplay) %}
+    {% set record_type = thumbnail.get_type() %}
+    {% set box_w = box_w|round %}
+    {% set box_h = box_h|default(box_w)|round %}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
+    {% set original_h = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+    {% set original_w = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+    {% if wrap %}
+        <div style="width:100%; height:100%;" class="thumb_wrapper {{extra_class|default('')}}" >
+    {% endif %}
+
+    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+        <div id="phraseanet-embed-frame" class="videoTips"
+             data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             data-kind="video"
+             data-src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}">
+            <iframe width="100%" height="100%"
+                    src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                    frameborder="0" allowfullscreen></iframe>
+        </div>
+    {% elseif record_type == 'FLEXPAPER' %}
+        <div id="phraseanet-embed-frame" class="documentTips"
+             data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             data-kind="document"
+             data-src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}">
+            <iframe width="100%" height="100%"
+                    src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                    frameborder="0" allowfullscreen></iframe>
+        </div>
+    {% elseif record_type == 'AUDIO_MP3' %}
+        <div id="phraseanet-embed-frame" class="audioTips"
+             data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             data-kind="audio"
+             data-src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}">
+            <iframe width="100%" height="100%"
+                    src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                    frameborder="0" allowfullscreen></iframe>
+        </div>
+    {% else %}
+        {% set fit_size = fitIn(
+        {"width":original_w, "height":original_h},
+        {"width":box_w, "height":box_h}
+        )%}
+
+        <img data-original-width="{{original_w}}"
+             data-original-height="{{original_h}}"
+             class="{% if lazyload %}lazyload{% endif %} record record_image imgTips zoomable thumb" data-kind="image" oncontextMenu="return(false);"
+             style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
+             src="{% if lazyload %}/assets/common/images/grey.gif{% else %}{{ url|trim }}{% endif %}" data-original="{{ url|trim }}" ondragstart="return false;">
+        <input type="hidden" name="width" value="{{ original_w }}"/>
+        <input type="hidden" name="height" value="{{ original_h }}"/>
+    {% endif %}
+    {% if wrap %}
+        </div>
+    {% endif %}
+{% endmacro %}

@@ -1,0 +1,38 @@
+{% extends '/setup/wrapper.html.twig' %}
+
+{% block content %}
+    <div class="steps" style="min-height:450px;">
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div style="height:400px;overflow:auto;">
+                        <h2>
+                            Upgrade Instructions
+                        </h2>
+                        <p>
+                            This Phraseanet install requires an upgrade.
+                        </p>
+                        <table style="width:100%;margin-top:60px;">
+                            <tr>
+                                <td colspan="2">
+                                    Please run the following command at your application install root.
+                                    <code>
+                                        bin/setup system:upgrade
+                                    </code>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="text-align:right;">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

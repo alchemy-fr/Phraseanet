@@ -1,0 +1,42 @@
+<div class="well-small text-center">
+    <form onsubmit="return false" action="{{ path('prod_move_collection_apply') }}" method="post">
+        {% if records | length != records.received() | length %}
+            <div class="well-small">
+                {% set countable = records.received().count() - records.count() %}
+                {% if countable == 1 %}
+                    {% trans %}One document can not be modified.{% endtrans %}
+                {% else %}
+                    {% trans with {'%countable%' : countable} %}%countable% documents can not be modified.{% endtrans %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="well-small">
+            {% set countable = records | length %}
+            {% if countable == 1 %}
+                {% trans %}Move one record to the chosen collection in the list.{% endtrans %}
+            {% else %}
+                {% trans with {'%countable%' : countable} %}Move %countable% records to the chosen collection in the list.{% endtrans %}
+            {% endif %}
+        </div>
+
+        <div class="well-small">
+            <select name="base_id">
+                {% for collection in collections %}
+                    <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if records.stories() | length > 0 %}
+            <div class="well-small">
+                <label class="checkbox text-info">
+                    <input type="checkbox" value="1" name="chg_coll_son"> {{ 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' | trans }}
+                </label>
+            </div>
+        {% endif %}
+
+        <input type="hidden" name="act" value="WORK">
+        <input type="hidden" name="lst" value="{{ records.serializedList() }}">
+    </form>
+</div>

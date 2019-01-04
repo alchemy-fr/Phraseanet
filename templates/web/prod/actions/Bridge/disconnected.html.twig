@@ -1,0 +1,32 @@
+<div class="PNB10 container-bridge">
+    <div class="PNB">
+        <p style="text-align:center;margin:40px 20px 20px;">
+            {{ 'Vous etes actuellement deconnecte de votre compte, vous devez vous connecter pour continuer' | trans }}
+        </p>
+        <table style="width:300px;margin:10px auto;">
+            <tbody>
+                <tr style="text-align:center;">
+                    <td>
+                        <form>
+                            <button class="login_button new_bridge_button btn btn-inverse">
+                                {{ 'login:: connexion' | trans }}
+                            </button>
+                            <input type="hidden" name="url" value="{{account.get_api().generate_login_url(app['url_generator'], account.get_api().get_connector().get_name()) }}" />
+                        </form>
+                    </td>
+                    <td>
+                        <form method="{{r_method}}" action="{{r_action}}">
+                            {% for key, value in r_parameters %}
+                                <input type="hidden" name="{{key}}" value="{{value}}" />
+                            {% endfor %}
+                            <button class="form_submitter single_menu btn btn-inverse" >{{ 'boutton::refresh' | trans }}</button>
+                        </form>
+                    </td>
+                    <td>
+                        <button type="button" class="delete-account btn btn-danger" value="{{ account.get_id() }}">{{ 'boutton::supprimer' | trans }}</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

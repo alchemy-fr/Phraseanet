@@ -1,0 +1,114 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block icon %}
+<link rel="shortcut icon" type="image/x-icon" href="/assets/admin/images/favicon.ico">
+{% endblock %}
+
+{% block rss %}
+{% endblock %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="/assets/vendors/jquery-simplecolorpicker/jquery.simplecolorpicker.css">
+    <link type="text/css" rel="stylesheet" href="/assets/admin/css/admin{% if not app.debug %}.min{% endif %}.css" />
+{% endblock %}
+
+
+{% block javascript %}
+    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
+    {% include "common/templates.html.twig" %}
+    <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
+    {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+        var p4 = p4 || {};
+        p4.users = {sel:[]};
+
+        var bodySize = {x:0,y:0};
+
+        var resize = function() {
+            bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
+            bodySize.x = $(window).width();
+        }
+
+        var language = {
+            serverName: '{{ app['conf'].get('servername') | e('js') }}',
+            serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
+            serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
+            serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',
+            check_all : '{{ 'Cocher toute la colonne' | trans | e('js') }}',
+            uncheck_all :  '{{ 'Decocher toute la colonne' | trans | e('js') }}',
+            create_template :  '{{ 'Creer un model' | trans | e('js') }}',
+            create_user :  '{{ 'Creer un utilisateur' | trans | e('js') }}',
+            annuler :  '{{ 'boutton::annuler' | trans | e('js') }}',
+            errorFileApiTooBig :  '{{ 'This file is too big' | trans | e('js') }}',
+            requiredValue: '{{ 'This field is required' | trans | e('js') }}',
+            attention: '{{ 'Attention' | trans | e('js') }}',
+            reset_template_do_reset_apply_button: '{{ 'Reset and apply' | trans | e('js') }}',
+            reset_template_confirm_dialog_title: '{{ 'Confirm reset users rights before applying template' | trans | e('js') }}',
+            reset_template_do_confirm_choice: '{{ 'Rights will be erased before applying template, do you confirm?' | trans | e('js') }}',
+            reset_template_do_reset_button: '{{ 'Reset and apply template' | trans | e('js') }}',
+            reset_template_do_not_reset_button: '{{ 'Apply template' | trans | e('js') }}',
+            reset_template_dialog_title: '{{ 'Reset rights before applying template?' | trans | e('js') }}',
+            reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}',
+            reset_template_ask_choice: '{{ 'Would you like to reset rights before applying the template?' | trans | e('js') }}'
+        };
+
+        $(window).bind('resize',function(){resize();});
+
+    </script>
+    {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
+{% endblock %}
+{% block content %}
+    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">
+    <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
+        <div class="PNB10" style="right:0; top:0px;">
+            <div id="FNDR">
+                {% include 'admin/tree.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+    {% if notice %}
+    <div class="right PNB10 notice" style="left:260px;">
+        {% if notice == "install_success" %}
+            {% trans %}Successful install{% endtrans %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="right PNB" style="left:250px;overflow:auto;top:25px;">
+        <div id="right-ajax" class="PNB10 right-view"></div>
+    </div>
+    <div id="quotas_dialog"></div>
+    <div id="masks_dialog"></div>
+    <div id="time_dialog"></div>
+    <div id="user_add_dialog" title="{{ 'Ajouter un nouvel utilisateur' | trans }}" style="display:none">
+        <form>
+            <label for="new_user_mail">{{ 'Adresse email du nouvel utilisateur' | trans }}</label>
+            <input id="new_user_mail"  type="text" name="value" />
+            <label class="checkbox" for="send_credentials">
+                <input type="checkbox" checked="checked" name="send_credentials" id="send_credentials" value="1" />
+                {{ "Send an email to the user to setup his password" | trans }}
+            </label>
+            <label class="checkbox" for="validate_mail">
+                <input type="checkbox" checked="checked" name="validate_mail" id="validate_mail" value="1" />
+                {{ "Require email validation to activate the account" | trans }}
+            </label>
+            <img src="/assets/common/images/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
+        </form>
+    </div>
+    <div id="template_add_dialog" title="{{ 'Creer un modele' | trans }}">
+        <form>
+            <label>{{ 'Nom du nouveau modele' | trans }}</label>
+            <input id="template-add-input" type="text" name="value"/>
+            <img src="/assets/common/images/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
+        </form>
+    </div>
+    <div id="DIALOG" style="color:white;"></div>
+    </div>
+{% endblock %}

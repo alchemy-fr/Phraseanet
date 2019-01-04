@@ -1,0 +1,36 @@
+{% if updateOk %}
+    <div class="alert alert-info">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading">{{ 'Updated structure' | trans }}</h4>
+        {{ 'Structure has been successfully updated' | trans }}
+    </div>
+{% endif %}
+
+
+{% if errorsStructure %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading">{{ 'Structure errors' | trans }}</h4>
+        {{ 'admin::base: xml invalide, les changements ne seront pas appliques' | trans }}
+    </div>
+
+    <div class="well">
+        {% for error in errors %}
+            <div>
+                <span class="badge badge-important">{{ loop.index }}</span>
+                {{ error }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="page-header">
+    <h1>{{ 'admin::base: structure' | trans }}</h1>
+</div>
+
+<form method="POST" action="{{ path('database_submit_stucture', { 'databox_id' : databox.get_sbas_id() }) }}">
+    <TEXTAREA nowrap style="width:99%; height:450px; white-space:pre" name="structure">{{ structure  }}</TEXTAREA>
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">{{ 'boutton::valider' | trans }}</button>
+    </div>
+</form>

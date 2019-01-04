@@ -1,0 +1,24 @@
+{% import 'common/macros.html.twig' as macro %}
+
+  {% set can_edit = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
+  {% set can_see_business = can_edit %}
+
+  {% if can_edit %}
+    <div class="edit_button" style="text-align:right">
+        <a href="#" class="edit-record-action" data-kind="record" data-id="{{ record.get_serialize_key }}">
+        <img style="vertical-align:middle" src="/assets/common/images/icons/ppen_history.png" />
+        <span style="vertical-align: middle">{{ 'action : editer' | trans }}</span>
+      </a>
+    </div>
+  {% endif %}
+<div style="text-align:center;">
+    {% for flag in record_flags(record) %}
+      <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+    {% endfor %}
+</div>
+
+{% if record.is_from_reg()  %}
+    {{macro.caption(record, can_see_business)}}
+{% else %}
+    {{macro.caption(record, can_see_business)}}
+{% endif %}

@@ -1,0 +1,29 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %} {{ field.get_label(app['locale']) }} ({{ field.get_tag().getTagname() }}) {% endset %}
+{% set width = 600 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    <div>
+        {% if field.get_tag().getMinLength() > 0 %}
+        {% set minLength = field.get_tag().getMinLength() %}
+        {% trans with {'%minLength%' : minLength} %}Le champ doit contenir %minLength% caracteres minimum.{% endtrans %}<br/>
+        {% endif %}
+        {% if field.get_tag().getMaxLength() > 0 %}
+        {% set maxLength = field.get_tag().getMaxLength() %}
+        {% trans with {'%maxLength%' : maxLength} %}Le champ ne peut contenir plus de %maxLength% caracteres.{% endtrans %}<br/>
+        {% endif %}
+    </div>
+    <hr/>
+    <div>
+        <blockquote>
+            <small>
+                {{ 'Les indications donnees ci dessous sont a titre informatif.' | trans }}<br/>
+                {{ 'Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d\'etre erronnees' | trans }}<br/>
+                {% set norm_name = '<span style="font-style:normal;font-weight:bold;">' ~ field.get_tag().getGroupName() ~ '</span>' %}
+                {% trans with {'%norm_name%' : norm_name} %}Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%{% endtrans %}
+            </small>
+        </blockquote>
+    </div>
+{% endblock %}

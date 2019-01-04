@@ -1,0 +1,24 @@
+<script type="text/template" id="field_errors">
+    <div class="hidden-phone popover bottom field-error">
+        <div class="arrow"></div>
+        <div class="popover-content">
+            <table>
+                <tr>
+                    <td style="width:35px;"><i class="fa fa-exclamation-triangle icon-white" aria-hidden="true"></i>
+                    </td>
+                    <td>
+                        <% _.each(errors, function(error) { %>
+                            <div><%= error.message %></div>
+                        <% }); %>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <span class="visible-phone text-error help-block help-block-error">
+        <% _.each(errors, function(error) { %>
+            <td> <%= error.message %></td>
+        <% }); %>
+    </span>
+</script>

@@ -1,0 +1,11 @@
+
+<div class="PNB10 container-bridge">
+  <div class="PNB" >
+    <p style="width:100%;text-align:center;margin-top:30px;padding:10px;font-size:14px;font-weight:900">
+        {% set name = api.get_connector().get_name() %}
+        {% trans with {'%name%' : name} %}%name% est momentanement indisponible a cause d'un trop grand nombre de requetes{% endtrans %}
+
+        {% trans %}le service sera de nouveau disponible dans quelques minutes{% endtrans %}
+    </p>
+  </div>
+</div>

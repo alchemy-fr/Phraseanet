@@ -1,0 +1,99 @@
+{% extends "login/layout/sidebar-layout.html.twig" %}
+
+{% import "login/common/macros.html.twig" as auth_macro %}
+
+{% block title %}
+    {{ "Register" | trans }}
+{% endblock %}
+
+{% block sidebar %}
+    <div class="well-large sidebar-block">
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="text-title">
+                    {{ "Completion of your registration" | trans }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                {{ auth_macro.providerBadge("facebook-badge","http://profile.ak.fbcdn.net/hprofile-ak-ash4/188043_268328669948930_728750033_q.jpg","Monsieur Grincheux","mr.grincheux@email.com") }}
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12 sidebar-hint">
+                {{ "Please complete the information to complete your registration" | trans }}
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <form name="registerForm" class="authentication-sidebar-form">
+                    {% if form.vars.errors|length > 0 %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {{ form_errors(form) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {{ auth_macro.fieldInput(form.email, "registerForm", 'fa fa-envelope') }}
+                        </div>
+                    </div>
+
+                    {% for field in registration_fields %}
+                        {% set name = field['name'] %}
+                        {% if name in registration_optional_fields|keys %}
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    {{ auth_macro.fieldInput(attribute(form, name|camelize), "registerForm") }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <div class="sidebar-hint">
+                        * {{ "Mandatory fields" | trans }}
+                    </div>
+
+                    {%  if has_terms_of_use %}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                {% set label %}
+                                    <a href="{{ path("login_cgus") }}">
+                                        {{ "I have read the terms of use" | trans }}
+                                    </a>
+                                {% endset %}
+
+                                {{ auth_macro.checkboxInput(form['remember-me']) }}
+                            </div>
+                        </div>
+                    {%  endif %}
+
+                    {{ form_rest(form) }}
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <button type="submit" class="btn btn-success btn-trigger">
+                                {{ "Resquest access" | trans }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        authenticateApp.bootstrap({
+            state: 'registerProvider'
+        });
+    </script>
+{% endblock %}

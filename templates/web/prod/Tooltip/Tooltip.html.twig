@@ -1,0 +1,14 @@
+<div class="popover" style="display:block;{% if maxwidth is not none %}max-width:{{ maxwidth }}px;{% endif %}{% if width is not none %}width:{{ width }}px;{% endif %}position:relative;">
+    <div class="arrow"></div>
+    <div class="popover-inner" style="width:auto;">
+        <h3 class="popover-title">
+            {% if title is not none %}
+                {{ title }}
+            {% endif %}
+            <button data-dismiss="modal" class="close tooltip_closer" style="display:none;">×</button>
+        </h3>
+        <div class="popover-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>

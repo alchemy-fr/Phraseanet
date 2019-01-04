@@ -1,0 +1,11 @@
+{% macro display_errors(name_input, errors) %}
+  {% if errors is not none %}
+    {% for field_key, field_error in errors  %}
+      {% if name_input == field_key %}
+        <span class='form_error' style='color:red'>
+                {{field_error}}
+          </span>
+      {% endif %}
+    {% endfor %}
+  {% endif%}
+{% endmacro %}

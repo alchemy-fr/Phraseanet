@@ -1,0 +1,42 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+
+{% block menu %}
+  {% trans %}Creer une playlist{% endtrans %}
+{% endblock %}
+
+{% block response %}
+<form class="bridge_form" method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
+  <input type="hidden" name='f_container_type' value="playlist">
+  <table>
+    <tr>
+      <td class='column_left'>
+        <label for='f_container_title'> *{{ 'Titre' | trans }}
+          <br/>
+          <span class='form_error'>&nbsp;</span>
+        </label>
+      </td>
+      <td class='column_right'>
+        <input name='f_container_title' type='text' value='' class='required_field' />
+      </td>
+    </tr>
+    <tr>
+      <td class='column_left'>
+        <label for='f_container_description'> {{ 'Description' | trans }}
+          <br/>
+          <span class='form_error'>&nbsp;</span>
+        </label>
+      </td>
+      <td class='column_right'>
+        <textarea name='f_container_description' rows='5' value='' />
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class='column_right'>
+        <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+        <button class="back_link btn btn-inverse">{{ 'boutton::retour' | trans }}</button>
+      </td>
+    </tr>
+  </table>
+</form>
+{% endblock %}

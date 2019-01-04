@@ -1,0 +1,18 @@
+<div id="authentication-sidebar-language" class="text-right well-small clearfix">
+    <div class="pull-left">
+        <a href="{{ path("homepage") }}" title="{{ "Home" | trans }}"><i class="fa fa-home icon-white"
+                                                                         aria-hidden="true"></i></a>
+    </div>
+    <div class="pull-right btn-group">
+        <button id="language-button" class="btn btn-mini btn-flat dropdown-toggle" data-toggle="dropdown" type="button">
+            {{ attribute(available_language, locale) }}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu  pull-right">
+            {% for code, language in available_language if code != locale %}
+                 <li><a href="{{ path('set_locale', {'locale' : code, 'redirect' : current_url }) }}" data-country-code="{{ code }}">{{ language }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="language pull-right">{{ "language" | trans }}</div>
+</div>

@@ -1,0 +1,24 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %}
+    app.getAuthenticatedUser().getDisplayName()
+{% endset %}
+{% set width = 300 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    <div class="UserTooltip" style="position:relative;width:{{ width }}px;height:100px;">
+        <div class="PNB" style="width:100px;right:auto;">
+            <img style="margin:14px 8px;" src="/assets/common/images/icons/user.png"/>
+        </div>
+        <div class="PNB" style="left:100px;">
+            <h1> {{ app.getAuthenticatedUser().getDisplayName() }}</h1>
+            <ul>
+                <li>{{ app.getAuthenticatedUser().getEmail() }}</li>
+                <li>{{ app.getAuthenticatedUser().getCompany() }}</li>
+                <li>{{ app.getAuthenticatedUser().getJob() }}</li>
+                <li>{{ app.getAuthenticatedUser().getActivity() }}</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

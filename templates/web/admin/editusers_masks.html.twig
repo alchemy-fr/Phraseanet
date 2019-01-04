@@ -1,0 +1,61 @@
+<h1>{{ "Masks" | trans }}</h1>
+<div>
+Base {{ collection.get_databox().get_label(app['locale']) }}
+</div>
+<div>
+Collection {{base_id|bas_labels(app)}}
+</div>
+<form>
+    <table style="table-layout:fixed; width:280px;position:relative;left:10px;" width="280px">
+    <tbody>
+    {% for bit, data in datas.tbits_left %}
+            <tr>
+            <td width="15px">
+        {% set class = "unchecked" %}
+        {% if data['nset'] == 1 %}
+          {% set class = "checked" %}
+        {% elseif data['nset'] == 2 %}
+          {% set class = "mixed" %}
+        {% endif %}
+        <div class="switch_masks {{class}} bitnum_{{bit}} bit_left">
+          <input type="hidden" name="bit" value="{{bit}}"/>
+        </div>
+            </td>
+      <td width="20px">
+          {% if data["icon"] %}
+          <img src="{{data["icon"]}}"/>
+          {% endif %}
+            </td>
+      <td width="100px">
+        {{data["name"]}}
+            </td>
+            <td width="15px">
+        {% set class = "unchecked" %}
+        {% if datas.tbits_right[bit]['nset'] == 1 %}
+          {% set class = "checked" %}
+        {% elseif datas.tbits_right[bit]['nset'] == 2 %}
+          {% set class = "mixed" %}
+        {% endif %}
+        <div class="switch_masks {{class}} bitnum_{{bit}} bit_right">
+          <input type="hidden" name="bit" value="{{bit}}"/>
+        </div>
+            </td>
+      <td width="20px">
+          {% if datas.tbits_right[bit]["icon"] %}
+          <img src="{{datas.tbits_right[bit]["icon"]}}"/>
+          {% endif %}
+            </td>
+      <td width="100px">
+        {{datas.tbits_right[bit]["name"]}}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <input type="hidden" name="vand_and" value="{{datas.vand_and}}" /><br>
+  <input type="hidden" name="vand_or" value="{{datas.vand_or}}" /><br>
+  <input type="hidden" name="vxor_and" value="{{datas.vxor_and}}" /><br>
+  <input type="hidden" name="vxor_or" value="{{datas.vxor_or}}" /><br>
+  <input type="hidden" name="base_id" value="{{base_id}}" />
+  <input type="hidden" name="users" value="{{users_serial}}" />
+</form>

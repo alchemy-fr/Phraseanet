@@ -1,0 +1,75 @@
+{% if list is empty %}
+  {{ 'You are not authorized to do this' | trans }}
+{% else %}
+  <div id="ListShare">
+    <div class="info-box-share-holder">
+      <img id="info-box-trigger" src="/assets/common/images/icons/info-grey.png" width="18" height="18">
+      <div id="info-box" style="display: none">
+          <p><b>{{ 'About Roles :' | trans }}</b></p>
+          <p>
+            - {{ 'Admin can edit shares, modify content' | trans }}
+          </p>
+          <p>
+            - {{ 'Editor can modify content' | trans }}
+          </p>
+          <p>
+            - {{ 'Access user have readonly access' | trans }}
+          </p>
+      </div>
+    </div>
+    <div>
+      <form name="list_share_user" class="list_share_user">
+        <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+        <input type="text" class="search ui-autocomplete-input" name="user" value="" placeholder="{{ 'Search for existing user' | trans }}"/>
+      </form>
+    </div>
+    <div>
+      <form name="owners">
+      {% for owner in list.getOwners() %}
+        <table class="owner">
+          <tr>
+            <td class="listmanager_badge_img">
+              <img src="/assets/common/images/icons/user-white.png" />
+            </td>
+            <td style="padding: 0 10px; font-size: 12px;">
+              <strong style="font-size:14px;">
+                {{ owner.getUser().getDisplayName() }}
+              </strong>
+              <input type="hidden" name="usr_id" value="{{ owner.getUser().getId() }}" />
+              <br>
+
+              {% if app.getAuthenticatedUser().getId() == owner.getUser().getId() %}
+                {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                  {{ 'You are Admin' | trans }}
+                {% endif %}
+              {% else %}
+              <label>{{ 'Role' | trans }}</label>
+              <select name="role" data-list-id="{{ list.getId() }}" data-user-id="{{ owner.getUser().getId() }}">
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_USER') }}">
+                  {{ 'Access' | trans }}
+                </option>
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') }}">
+                  {{ 'Editor' | trans }}
+                </option>
+                <option {% if owner.getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}selected {% endif %} value="{{ constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') }}">
+                  {{ 'Admin' | trans }}
+                </option>
+              </select>
+              {% endif %}
+            </td>
+            <td style="width:15px">
+               {% if app.getAuthenticatedUser().getId() != owner.getUser().getId() %}
+                  <a href="#" class="deleter listmanager-share-delete-user-action" style="color: #676767; font-size: 20px;" data-list-id="{{ list.getId() }}" data-user-id="{{ owner.getUser().getId() }}">
+                    &times;
+                  </a>
+                {% endif %}
+            </td>
+          </tr>
+        </table>
+      {% endfor %}
+      </form>
+    </div>
+  </div>
+
+  {% include "prod/templates/push.html.twig" %}
+{% endif %}

@@ -1,0 +1,76 @@
+{% block tab_thesaurus %}
+    <div id="thesaurus_tab" class="PNB" style="top:66px;">
+        <div id="THPD_tabs">
+            <ul>
+                <li class="th_tab"><a href="#THPD_T"><span>{{ 'prod::thesaurusTab:thesaurus' | trans }}</span></a></li>
+                {% if has_access_to_module %}
+                    <li class="th_tab"><a href="#THPD_C"><span>{{ 'prod::thesaurusTab:candidats' | trans }}</span></a></li>
+                {% endif %}
+            </ul>
+            <div class="ui-tabs-panels-container">
+                <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%;">
+                    <div class="wizard wiz_0">
+                        <!-- empty wizard -->
+                    </div>
+                    <div class="wizard wiz_1" style="display:none">
+                        <div class="txt">{{ 'prod::thesaurusTab:wizard:accepter le terme candidat' | trans }}</div>
+                    </div>
+                    <div class="wizard wiz_2" style="display:none">
+                        <div class="txt">{{ 'prod::thesaurusTab:wizard:remplacer par le terme' | trans }}</div>
+                    </div>
+                    <form class="gform form-inline thesaurus-filter-submit-action">
+                        <div class="input-append">
+                            <input type="text" name="search_value" class="input-medium thesaurus-filter-suggest-action"/>
+                            <button type="submit" class="th_ok btn btn-inverse">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </button>
+
+                            <button type="button" class="th_cancel btn btn-inverse thesaurus-cancel-wizard-action">
+                                <i class="fa fa-undo" aria-hidden="true"></i>
+                            </button>
+                            <input type="button" class="th_clear"/>
+                        </div>
+                    </form>
+                </div>
+                <div id="THPD_T">
+                    <div id='THPD_T_treeBox' class="searchZone">
+                        <div class="thesaurus-branch-action" data-context="thesaurus">
+                            <ul class="treeview" id="THPD_T_tree">
+                                {% for base in search_datas['bases'] %}
+                                    {% if base['thesaurus'] %}
+                                        <li id="TX_P.{{ base['sbas_id'] }}.T"
+                                            class="expandable{% if loop.last %} last{% endif %}">
+                                            <div class="hitarea expandable-hitarea"></div>
+                                            <span>{{ base['sbas_id']|sbas_labels(app) }}</span>
+                                            <ul style="display:none">{{ 'chargement' | trans }}</ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% if has_access_to_module %}
+                    <div id="THPD_C">
+                        <div id='THPD_C_treeBox' class="searchZone">
+                            <div class="thesaurus-branch-action" data-context="candidate">
+                                <ul class="treeview" id="THPD_C_tree">
+                                    {% for base in search_datas['bases'] %}
+                                        {% if base['cterms'] %}
+                                            <li id="CX_P.{{ base['sbas_id'] }}.C"
+                                                class="expandable{% if loop.last %} last{% endif %}">
+                                                <div class="hitarea expandable-hitarea"></div>
+                                                <span>{{ base['sbas_id']|sbas_labels(app) }}</span>
+                                                <ul style="display:none">{{ 'chargement' | trans }}</ul>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

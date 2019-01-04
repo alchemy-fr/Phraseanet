@@ -1,0 +1,68 @@
+{% extends "login/layout/middle-bar-layout.html.twig" %}
+
+{% block title %}
+    {{ "Authorization code" | trans }}
+{% endblock %}
+
+{% block content %}
+    <div class="well-large sidebar-block text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block footer_logo %}
+                    {{ parent() }}
+                {% endblock footer_logo %}
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="text-title">
+                    {{ "Access code" | trans }}
+                </div>
+                <div>
+                    {{ "Copy the code below, return to your application and paste the code to the right place." | trans }}
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <form novalidate name="desktop_code">
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <table class="input-table">
+                                <tr>
+                                    <td class="input">
+                                        <input value="" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block tou_link %}
+                    {{ parent() }}
+                {% endblock tou_link %}
+            </div>
+        </div>
+    </div>
+    <div class="well-large sidebar-block text-center">
+        <div class="row-fluid">
+            <div class="span12">
+                {% block copyright %}
+                    {{ parent() }}
+                {% endblock copyright %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer_scaffholding %}
+    {# empty footer #}
+{% endblock footer_scaffholding %}

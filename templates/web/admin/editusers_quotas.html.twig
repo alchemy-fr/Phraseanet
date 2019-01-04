@@ -1,0 +1,67 @@
+{% set readonly = 0 %}
+{% set droits = -1 %}
+{% set restes = -1 %}
+{% set restrict = -1 %}
+
+{% for usr_id, data in datas %}
+  {% if restrict == -1 %}
+    {% set restrict = data[constant('\\ACL::RESTRICT_DWNLD')] %}
+  {% elseif restrict != data[constant('\\ACL::RESTRICT_DWNLD')] %}
+    {% set restrict = 2 %}
+  {% endif %}
+
+  {% if restes == -1 %}
+    {% set restes = data['remain_dwnld'] %}
+  {% elseif restes > data['remain_dwnld'] %}
+    {% set restes = data['remain_dwnld'] %}
+  {% endif %}
+
+  {% if droits == -1 %}
+    {% set droits = data['month_dwnld_max'] %}
+  {% elseif droits < data['month_dwnld_max'] %}
+    {% set droits = data['month_dwnld_max'] %}
+  {% endif %}
+
+{% endfor %}
+
+{% if restrict == 0 %}
+  {% set readonly = 1 %}
+{% endif %}
+
+{% set class = 'unchecked' %}
+{% if restrict == 1 %}
+  {% set class = 'checked' %}
+{% elseif restrict == 2 %}
+  {% set class = 'mixed' %}
+{% endif %}
+
+
+<h1>{{ 'Quotas' | trans }}</h1>
+<div>
+{% set base = collection.get_databox().get_label(app['locale']) %}
+{% trans with {'%base%' : base} %}Base %base%{% endtrans %}
+</div>
+<div>
+{% set collection = base_id|bas_labels(app) %}
+{% trans with {'%collection%' : collection} %}Collection %collection%{% endtrans %}
+</div>
+<form>
+  <div>{{ 'Restrictions de telechargement' | trans }}</div>
+
+  <table>
+    <tr>
+      <td>
+        <div class="switch_quota {{class}}"></div>
+      </td>
+      <td>
+        {{ 'Restriction' | trans }}
+      </td>
+    </tr>
+  </table>
+
+  <div>{{ 'Droits' | trans }} <input name="droits" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{droits}}" /> {{ 'par mois' | trans }}</div>
+  <div>{{ 'Reste' | trans }} <input name="restes" {% if readonly %}readonly="readonly"{% endif %} type="text" value="{{restes}}" /></div>
+  <input type="hidden" name="base_id" value="{{base_id}}"/>
+  <input type="hidden" name="users" value="{{users_serial}}"/>
+</form>
+

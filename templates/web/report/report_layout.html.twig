@@ -1,0 +1,29 @@
+{% extends "report/all_content.html.twig" %}
+
+{% block report_layout %}
+    <div class="report_wrapper">
+        <div id="form-container">
+            <h2 class="report_heading">{{"report:: Phraseanet report" | trans}}</h2>
+            <div id="mainTabs">
+                <ul id="navigation">
+                    <li class="navigation_tab"><a href="#report-connections">{{ "report:: Connexion" | trans }}</a></li>
+                    <li class="navigation_tab"><a href="#report-downloads">{{ "report:: telechargements" | trans }}</a></li>
+                    <li class="navigation_tab"><a href="#report-records">{{ "report:: Databox content" | trans }}</a></li>
+                </ul>
+
+                {% block report_connections_layout %}
+                {% endblock report_connections_layout %}
+
+                {% block report_downloads_layout %}
+                {% endblock report_downloads_layout %}
+
+                {% block report_records_layout %}
+                {% endblock report_records_layout %}
+
+                {# END MAINTABS #}
+            </div>
+            {# END FORM CONTAINER #}
+        </div>
+    </div>
+    <iframe name="iframe" style="display:none;"></iframe>
+{% endblock report_layout %}

@@ -11,12 +11,12 @@
 
 namespace App\Setup;
 
-//use Alchemy\Phrasea\Application;
 use App\Core\Configuration\StructureTemplate;
 use App\Core\PhraseaEvents;
 use App\Core\Event\InstallFinishEvent;
 use App\Entity\User;
 use Alchemy\Phrasea\TaskManager\Job\JobInterface;
+use App\Model\Manipulator\UserManipulator;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -26,15 +26,16 @@ use RandomLib\Factory;
 use RandomLib\Generator;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Installer
 {
-
 
     private $entityManager;
     private $structureTemplate;
     private $objectManager;
     private $container;
+    private $dispatcher;
 
 
     public function __construct
@@ -42,13 +43,15 @@ class Installer
         EntityManagerInterface $entityManager,
         \App\Core\Configuration\StructureTemplate $structureTemplate,
         \Doctrine\Common\Persistence\ObjectManager $objectManager,
-        ContainerInterface $container
+        ContainerInterface $container,
+        EventDispatcherInterface $dispatcher
     )
     {
         $this->entityManager = $entityManager;
         $this->structureTemplate = $structureTemplate;
         $this->objectManager = $objectManager;
         $this->container = $container;
+        $this->dispatcher = $dispatcher;
 
     }
 
@@ -61,32 +64,31 @@ class Installer
         try {
             $this->createAB($abConn);
             $user = $this->createUser($email, $password);
-            //$this->createDefaultUsers();
+            $this->createDefaultUsers();
             if (null !== $dbConn) {
-                $this->createDB($dbConn, $templateName, $user);
+                //$this->createDB($dbConn, $templateName, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
             throw $e;
         }
 
-        //$this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
+        $this->dispatcher->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
 
-        //return $user;
-        return;
+        return $user;
     }
 
     private function createDB(Connection $dbConn = null, $templateName, User $admin)
     {
         /** @var StructureTemplate $st */
         $st = $this->structureTemplate;
-        //$st = $this->app['phraseanet.structure-template'];
         $template = $st->getByName($templateName);
         if(is_null($template)) {
             throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
-        $databox = \App\Utils\databox::create($this->app, $dbConn, $template);
+        //$databox = \App\Utils\databox::create($this->app, $dbConn, $template);
+        $databox = \App\Utils\databox::create($dbConn, $template);
 
         $this->app->getAclForUser($admin)
             ->give_access_to_sbas([$databox->get_sbas_id()])
@@ -142,23 +144,8 @@ class Installer
 
     private function createUser($email, $password)
     {
-        //$user = $this->container->get('manipulator.user')->createUser($email, $password, $email, true);
 
-        $factory = new Factory();
-        $nonce = $factory->getLowStrengthGenerator()->generateString(64);
-        $datetime = new \DateTime();
-
-        $user = new User();
-        $user->setLogin($email);
-        $user->setEmail($email);
-        $user->setNonce($nonce);
-        //$user->setPassword($encoder->encodePassword($password, $user->getNonce()));
-        $user->setSaltedPassword(true);
-        $user->setAdmin(false);
-        $user->setCreated($datetime);
-        $user->setUpdated($datetime);
-        $this->objectManager->persist($user);
-        $this->objectManager->flush();
+        $user = $this->container->get('manipulator.user')->createUser($email, $password, $email, true);
 
         return $user;
     }
@@ -166,8 +153,8 @@ class Installer
 
     private function createDefaultUsers()
     {
-        $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
-        $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+        $this->container->get('manipulator.user')->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
+        $this->container->get('manipulator.user')->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
     private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
@@ -212,7 +199,6 @@ class Installer
     private function createAB(Connection $abConn)
     {
         // set default orm to the application box
-        //$this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
 
         $em = $this->entityManager;
         $metadata = $em->getMetadataFactory()->getAllMetadata();

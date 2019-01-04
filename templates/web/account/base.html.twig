@@ -1,0 +1,86 @@
+{% set jquery_theme = 'dark-hive' %}
+{% set module = '' %}
+
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block icon %}
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/account/images/favicon.ico">
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/account/css/account{% if not app.debug %}.min{% endif %}.css">
+    <style type="text/css">
+        .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
+            padding: 4px 20px;
+            margin-left: 0;
+            color: #75ABFF;
+        }
+
+        .context-menu-theme-vista .context-menu-item-hover {
+            background-image: none;
+            background-color: #75ABFF;
+            border: none;
+        }
+
+        .context-menu-theme-vista .context-menu-item-hover .context-menu-item-inner {
+            color: #212121;
+        }
+
+        .context-menu-theme-vista {
+            background-image: none;
+            background-color: #212121;
+            -webkit-border-bottom-left-radius: 3px;
+            -webkit-border-bottom-right-radius: 3px;
+            -moz-border-radius-bottomleft: 3px;
+            -moz-border-radius-bottomright: 3px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/account{% if not app.debug %}.min{% endif %}.js"></script>
+{% endblock %}
+
+{% block content %}
+     <div class="container">
+            <div class="row-fluid">
+                <div class="span12">
+                    {% block menu %}
+                        <div id="main-bar" class="navbar">
+                            <div class="navbar-inner">
+                                <span class="brand">{{ app['conf'].get(['registry', 'general', 'title']) }}<span class="section-title"> {{ block("title") }}</span></span>
+                                <ul class="nav">
+                                    <li {% if selected == "informations" %}class="active"{% endif %}><a href="{{ path("account") }}">{{ "Informations" | trans }}</a></li>
+                                    <li {% if selected == "access" %}class="active"{% endif %}><a href="{{ path("account_access") }}">{{ "Acces" | trans }}</a></li>
+                                    <li {% if selected == "sessions" %}class="active"{% endif %}><a href="{{ path("account_sessions") }}">{{ "Sessions" | trans }}</a></li>
+                                    <li {% if selected == "applications" %}class="active"{% endif %}><a href="{{ path("account_auth_apps") }}">{{ "Applications" | trans }}</a></li>
+                                    <li {% if selected == "developer" %}class="active"{% endif %}><a href="{{ path("developers_applications") }}">{{ "Developpeur" | trans }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="content">
+                        {% block content_account %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12 text-right">
+                    <div class="footer">
+                        <span>&copy; Copyright <a href="http://www.alchemy.fr" target="_blank">Alchemy</a> 2005-{{ "now"|date("Y") }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="DIALOG"></div>
+        {% block scripts %}
+            <script type="text/javascript"></script>
+        {% endblock %}
+{% endblock %}

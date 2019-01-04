@@ -1,0 +1,518 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% macro print_ftp_form(datas) %}
+    <div class="ftp_form ftp_form_{{datas.usr_id}}">
+        <form id="ftp_user_{{datas.usr_id}}" action="{{ path('export_ftp') }}" method="post" target="_blank" class="form-horizontal" style="text-align: left;">
+            <div class="control-group">
+                <label class="control-label" for="ftp-address-{{datas.usr_id}}">{{ 'phraseanet:: adresse' | trans }}  ftp://</label>
+                <div class="controls">
+                    <input type="text" name="address" id="ftp-address-{{datas.usr_id}}" value="{{datas.address}}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-ssl-{{datas.usr_id}}">{{ 'phraseanet:: utiliser SSL' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" name="ssl" id="ftp-ssl-{{datas.usr_id}}" {% if datas.ssl %}checked{% endif %} />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-login-{{datas.usr_id}}">{{ 'admin::compte-utilisateur identifiant' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="login" id="ftp-login-{{datas.usr_id}}" value="{{datas.login}}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-password-{{datas.usr_id}}">{{ 'admin::compte-utilisateur mot de passe' | trans }}</label>
+                <div class="controls">
+                    <input type="password" name="password" id="ftp-password-{{datas.usr_id}}" value="{{datas.password}}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-passive-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Utiliser le mode passif' | trans }}</label>
+                <div class="controls">
+                    <input value="1" type="checkbox" name="passive" id="ftp-passive-{{datas.usr_id}}" {% if datas.passive %}checked{% endif %} />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-max-retry-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: Nombre d\'essais max' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="max_retry" id="ftp-max-retry-{{datas.usr_id}}" value="{{datas.max_retry}}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-dest-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp:  repertoire de destination ftp' | trans }}</label>
+                <div class="controls">
+                    <input type="text" name="dest_folder" id="ftp-dest-folder-{{datas.usr_id}}" value="{{datas.dest_folder}}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ftp-prefix-folder-{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: creer un dossier' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" class="ftp_folder_check" {% if datas.prefix_folder != '' %}checked{% endif %} name="prefix_folder_check" id="ftp-prefix-folder-check-{{datas.usr_id}}" />
+                    <input type="text" name="prefix_folder" id="ftp-prefix-folder-{{datas.usr_id}}" value="{{datas.prefix_folder}}" {% if datas.prefix_folder == '' %}disabled{% endif %} />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="logfile_{{datas.usr_id}}">{{ 'admin::compte-utilisateur:ftp: ecrire un fichier de log' | trans }}</label>
+                <div class="controls">
+                    <input type="checkbox" class=ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1" />
+                </div>
+            </div>
+        </form>
+    </div>
+{% endmacro %}
+
+{% macro choose_title(id, choose_export_title, default_export_title)%}
+    <div class="buttons_line" style="display:{% if choose_export_title %}{% else %}none{% endif %}; text-align: left;">
+        <p>{{ 'Nom des fichiers a l\'export' | trans }}</p>
+        <div class="well-small">
+            <label for="type_{{id}}_original" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_original" {% if default_export_title == "title" %}checked{% endif %} value="title" />
+                {{ 'export::titre: titre du documument' | trans }}
+            </label>
+            <label for="type_{{id}}_title" class="radio">
+                <input type="radio" name="type" id="type_{{id}}_title" {% if default_export_title == "original" %}checked{% endif %} value="originalname" />
+                {{ 'export::titre: nom original du document' | trans }}
+            </label>
+        </div>
+    </div>
+{% endmacro %}
+
+{% if app['conf'].get(['registry', 'actions', 'auth-required-for-export']) and app.getAuthenticatedUser().isGuest() %}
+    <script type="text/javascript">
+        {% set max_download = app['conf'].get(['registry', 'actions', 'download-max-size'], 120) %}
+        var exportConfig = {
+            isGuest: true,
+            msg: {
+                modalTile: '{{ "Unauthorized action"|trans }}',
+                modalContent: '{{ "Guest, you must be authenticated to have the right to download."|trans }}'
+            }
+        };
+    </script>
+{% else %}
+    {% if download.get_total_download() <= 0 and download.get_total_order() <= 0 and download.get_total_ftp() <= 0%}
+        <div class="buttons_line" style="text-align: left;">
+            <p>{{ 'Les documents ne peuvent pas etre exportes' | trans }}</p>
+            <button type="button" class="close_button">{{ 'boutton::fermer' | trans }}</button>
+        </div>
+    {% endif %}
+
+    <div class="tabs">
+        <ul>
+            {% if download.get_total_download() > 0 %}
+                <li><a href="#download">{{ 'export:: telechargement' | trans }}</a></li>
+                <li><a href="#sendmail">{{ 'export:: envoi par mail' | trans }}</a></li>
+            {% endif %}
+            {% if download.get_total_order() > 0 %}
+                <li><a href="#order">{{ 'export:: commande' | trans }}</a></li>
+            {% endif %}
+            {% if download.get_total_ftp() > 0 %}
+                <li><a href="#ftp">{{ 'export:: FTP' | trans }}</a></li>
+            {% endif %}
+        </ul>
+        {% if download.get_total_download() > 0 %}
+            <div id="download">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{{ 'export:: telechargement' | trans }}</h4>
+                    <form method="post" target="_blank" action="{{ path('check_download') }}" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        {% for name, values in download.get_display_download() %}
+                            {% if values.available > 0 %}
+                                <div class="well-small">
+                                    <label for="download_{{name}}" class="checkbox">
+                                        <input class="{{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                                        <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
+                                        <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
+                                        {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                        {% if values.refused|length > 0 %}
+                                            {% set title%}
+                                                {{ 'Documents indisponibles' | trans }}
+                                            {% endset %}
+                                            <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                        {% endif %}
+                                    </label>
+                                    {% if values.refused|length > 0 %}
+                                        <div style="display:none;" class="well-small undisposable">
+                                            <div>{{ 'Les documents ne peuvent pas etre exportes' | trans }}</div>
+                                            {% for datas in values.refused%}
+                                                {{ thumbnail.format(datas, 80, 80,'', true, false) }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
+                                <label for="business_download" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_download" value="1"  />
+                                    {{ 'Include Business-fields in caption' | trans }}
+                                </label>
+                            </div>
+                        {% endif %}
+                        {{ _self.choose_title('download', choose_export_title, default_export_title) }}
+
+                        {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
+                            <div class="well-small">
+                                <label for="TOU_acceptDL" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        <div class="buttons_line">
+                            <button type="button" class="download_button btn btn-inverse">{{ 'boutton::telecharger' | trans }}</button>
+                            <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="sendmail">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{{ 'export:: envoi par mail' | trans }}</h4>
+                        <form action="{{ path('export_mail') }}" method="post" target="sendmail_target" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        <div>
+                            {{ 'export::mail: destinataire' | trans }}
+                            <input type="text" value="" name="destmail" class="required span4">
+                            {% set my_email = app.getAuthenticatedUser().getEmail() %}
+                            {% if my_email != '' %}
+                                <label class="checkbox">
+                                    <input type="checkbox" name="reading_confirm" value="1" />
+                                    {% trans with {'%my_email%' : my_email} %}Recevoir un accuse de reception a %my_email%{% endtrans %}
+                                </label>
+                            {% else %}
+                                <label class="checkbox">
+                                    {{ 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' | trans }}
+                                    <input type="checkbox" name="reading_confirm" value="1" readonly />
+                                </label>
+                            {% endif %}
+                            <span style="font-style: italic; color: #999999;">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                        </div>
+                        <div>
+                            <p>{{ 'export::mail: contenu du mail' | trans }}</p>
+                            <textarea rows="6" style="width:90%; white-space:pre;resize:none;" name="textmail" id="sendmail_message"></textarea>
+                        </div>
+                        <div>
+                            <p>{{ 'export::mail: fichiers joint' | trans }}</p>
+                            {% for name, values in download.get_display_download() %}
+                                {% if values.available > 0 %}
+                                    <div class="well-small">
+                                        <label for="sendmail_{{name}}" class="checkbox">
+                                            <input class="{{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}})
+                                            {% if values.refused|length > 0 %}
+                                                {% set title%}
+                                                    {{ 'Documents indisponibles' | trans }}
+                                                {% endset %}
+                                                <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                            {% endif %}
+                                        </label>
+                                        {% if values.refused|length > 0 %}
+                                            <div style="display:none;" class="well-small undisposable">
+                                                <div><i>{{ 'La sous resolution n\'est pas disponible pour les documents suivants' | trans }}</i></div>
+                                                {% for datas in values.refused%}
+                                                    {{ thumbnail.format(datas, 80, 80,'', true, false) }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields well-small" style="margin-left:20px;display:none;">
+                                <label for="business_sendmail" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_sendmail" value="1"  />
+                                    {{ 'Include Business-fields in caption' | trans }}
+                                </label>
+                            </div>
+                        {% endif %}
+                        {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+
+                        {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
+                            <div class="well-small">
+                                <label for="TOU_acceptMail" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
+                        <div class="buttons_line">
+                            <button type="button" class="sendmail_button btn btn-inverse">{{ 'boutton::envoyer' | trans }}</button>
+                            <img class="sendmail_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                            <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+        {% if download.get_total_order() > 0 %}
+            <div id="order">
+                {% for name, values in download.get_display_orderable() %}
+                    {% if values.available > 0 %}
+                        <div class='well-small'>
+                            {% set docs_orderable = values.available %}
+                                {% if docs_orderable <= 1 %}
+                                    {% trans %}Un document commande{% endtrans %}
+                                {% else %}
+                                    {% trans with {'%docs_orderable%' : docs_orderable} %}%docs_orderable% documents commandes{% endtrans %}
+                                {% endif %}
+                            {% set docs_not_orderable = values.total - values.available %}
+                            {% if docs_not_orderable > 0%}
+                                {% if docs_not_orderable == 1 %}
+                                    {% trans %}Un document ne peut etre commande{% endtrans %}
+                                {% else %}
+                                    {% trans with {'%docs_not_orderable%' : docs_not_orderable} %}%docs_not_orderable% documents ne peuvent pas etre commandes{% endtrans %}
+                                {% endif %}
+                            {% endif %}
+                            {% if values.refused|length > 0 %}
+                                {% set title%}
+                                    {{ 'Documents indisponibles' | trans }}
+                                {% endset %}
+                                <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                <div style="display:none;" class="well-small undisposable">
+                                    <div><i>{{ 'La sous resolution n\'est pas disponible pour les documents suivants' | trans }}</i></div>
+                                    {% for datas in values.refused%}
+                                        {{ thumbnail.format(datas, 80, 80,'', true, false) }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <hr />
+                <form class="form-horizontal">
+                    <input type="hidden" name="lst" value="{{lst}}"/>
+                    <input type="hidden" name="ssel" value="{{ssttid}}"/>
+
+                    <div class="control-group">
+                        <label class="control-label" for="order_usage">{{ 'commande::utilisation prevue' | trans }}</label>
+                        <div class="controls">
+                          <textarea rows="5" name="use" id="order_usage"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="deadline">{{ 'commande::deadline' | trans }}</label>
+                        <div class="controls">
+                          <input class="datepicker" type="text" name="deadline" id="deadline" value="" />
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="sexe">{{ 'Civility' | trans }}</label>
+                        <div class="controls">
+                            <select name="sexe" id="sexe">
+                                <option {% if app.getAuthenticatedUser().getGender == 0 %}selected="selected"{% endif %} value="0">{{ 'admin::compte-utilisateur:sexe: mademoiselle' | trans }}</option>
+                                <option {% if app.getAuthenticatedUser().getGender == 1 %}selected="selected"{% endif %} value="1">{{ 'admin::compte-utilisateur:sexe: madame' | trans }}</option>
+                                <option {% if app.getAuthenticatedUser().getGender == 2 %}selected="selected"{% endif %} value="2">{{ 'admin::compte-utilisateur:sexe: monsieur' | trans }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_lastname">{{ 'admin::compte-utilisateur nom' | trans }}</label>
+                        <div class="controls">
+                            <input id='usr_lastname' type="text" name="usr_nom" class="required" value="{{ app.getAuthenticatedUser().getLastName() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_firstname">{{ 'admin::compte-utilisateur prenom' | trans }}</label>
+                        <div class="controls">
+                            <input type="text" name="usr_prenom" class="required" id="usr_firstname" value="{{ app.getAuthenticatedUser().getFirstName() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_mail"> {{ 'admin::compte-utilisateur email' | trans }}</label>
+                        <div class="controls">
+                            <input class="required" type="text" name="usr_mail" id="usr_mail" value="{{ app.getAuthenticatedUser().getEmail() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_tel">{{ 'admin::compte-utilisateur telephone' | trans }}</label>
+                        <div class="controls">
+                            <input type="text" name="tel" id="usr_tel" value="{{ app.getAuthenticatedUser().getPhone() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_societe">{{ 'admin::compte-utilisateur societe' | trans }}</label>
+                        <div class="controls">
+                            <input type="text" name="societe" id="usr_societe" value="{{ app.getAuthenticatedUser().getCompany() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_function">{{ 'admin::compte-utilisateur poste' | trans }}</label>
+                        <div class="controls">
+                            <input type="text" name="fonction" id="usr_fonction" value="{{ app.getAuthenticatedUser().getJob() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_address">{{ 'admin::compte-utilisateur adresse' | trans }}</label>
+                        <div class="controls">
+                            <input class="required" type="text" name="adresse" id="usr_adresse" value="{{ app.getAuthenticatedUser().getAddress() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_zip_code">{{ 'admin::compte-utilisateur code postal' | trans }}</label>
+                        <div class="controls">
+                            <input id="usr_zip_code" type="text" name="cpostal" name="cpostal" class="required" value="{{ app.getAuthenticatedUser().getZipCode() }}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="command_geoname_field">{{ 'admin::compte-utilisateur ville' | trans }}</label>
+                        <div class="controls">
+                            <input class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" value="{{ app.getAuthenticatedUser().getGeonameId() }}" />
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="usr_fax">{{ 'admin::compte-utilisateur fax' | trans }}</label>
+                        <div class="controls">
+                            <input type="text" id="usr_fax" name="fax" value="{{ app.getAuthenticatedUser().getFax() }}"/>
+                        </div>
+                    </div>
+
+                    {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
+                        <div class="well-small">
+                            <label for="TOU_acceptOrder" class="checkbox">
+                                <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
+                                {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
+                                {% set end_link = '</a>' %}
+                                {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                            </label>
+                        </div>
+                    {% endif %}
+
+                    <div class="form_actions buttons_line">
+                        <button type="button" class="order_button btn btn-primary">{{ 'boutton::commander' | trans }}</button>
+                        <img class="order_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                        <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+        {% if download.get_total_ftp() > 0 %}
+            <div id="ftp">
+                <div style="padding:10px; text-align: center;">
+                    <h4>{{ 'export:: FTP' | trans }}</h4>
+                    <div class="control-group">
+                        <label class="control-label" for="ftp_form_selector">
+                            {{ 'phraseanet:: prereglages' | trans }}
+                        </label>
+                        <div class="controls">
+                            <select id="ftp_form_selector" class="span3">
+                                {% for datas in download.get_ftp_datas() %}
+                                    <option value="{{datas.usr_id}}">{{datas.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div id="ftp_form">
+                        <div id="ftp_form_stock">
+                            {% for datas in download.get_ftp_datas() %}
+                                {{ _self.print_ftp_form(datas) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <form id="ftp_joined" class="form-horizontal" style="text-align: left;">
+                        <input type="hidden" name="lst" value="{{lst}}"/>
+                        <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                        <div>
+                            <p>{{  'export::mail: fichiers joint' | trans }}</p>
+                            {% for name, values in download.get_display_ftp() %}
+                                {% if values.available > 0 %}
+                                    <div class="well-small">
+                                        <label for="ftp_{{name}}" class="checkbox">
+                                            <input class="{{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
+                                            {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size | formatOctets}}))
+                                            {% if values.refused|length > 0 %}
+                                                {% set title%}
+                                                    {{ 'Documents indisponibles' | trans }}
+                                                {% endset %}
+                                                <a href="#" class="undisposable_link" title="{{title|trim}}"> + </a>
+                                            {% endif %}
+                                        </label>
+                                        {% if values.refused|length > 0 %}
+                                            <div style="display:none;" class="well-small undisposable">
+                                                <div><i>{{ 'La sous resolution n\'est pas disponible pour les documents suivants' | trans }}</i></div>
+                                                {% for datas in values.refused%}
+                                                    {{ thumbnail.format(datas, 80, 80,'', true, false) }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if download.has_business_fields_access() %}
+                            <div class="businessfields" style="margin-left:20px;display:none;">
+                                <label for="business_ftp" class="checkbox">
+                                    <input type="checkbox" name="businessfields" id="business_ftp" value="1"  />
+                                    {{ 'Include Business-fields in caption' | trans }}
+                                </label>
+                            </div>
+                        {% endif %}
+
+                        {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
+                            <div class="well-small">
+                                <label for="TOU_acceptFTP" class="checkbox">
+                                    <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
+                                    {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
+                                    {% set end_link = '</a>' %}
+                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                </label>
+                            </div>
+                        {% endif %}
+                    </form>
+                    <div class="buttons_line">
+                        <button type="button" class="tryftp_button btn btn-inverse">{{ 'boutton::essayer' | trans }}</button>
+                        <img class="tryftp_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                        <button type="button" class="ftp_button btn btn-inverse">{{ 'boutton::envoyer' | trans }}</button>
+                        <img class="ftp_button_loader" src="/assets/common/images/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
+                        <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+                    </div>
+                </div>
+             </div>
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        {% set max_download = app['conf'].get(['registry', 'actions', 'download-max-size'], 120) %}
+        var exportConfig = {
+            isGuest: false,
+            maxDownload: {{max_download}},
+            haveFtp: {% if download.get_total_ftp() > 0 %}true{% else %}false{% endif %},
+            msg: {
+                termOfUseTitle: '{{ "Terms of Use" | trans | e('js') }}',
+                termOfUseAgree: '{{ 'You must agree to the Terms of Use to continue.' | trans | e('js') }}',
+                requiredFields: '{{ 'Certains champs sont obligatoires, veuillez les remplir' | trans | e('js') }}',
+                missingSubdef: '{{ 'Vous devez selectionner un type de sous definitions' | trans | e('js') }}',
+                fileTooLarge: '{{ 'You can not directly download more than %max_download% Mo ; time to package all documents is too long'|trans({'%max_download%' : max_download})|e('js') }}',
+                fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans | e('js') }}',
+                fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans | e('js') }}',
+                success: '{{ "Success" | trans | e('js') }}',
+                warning: '{{ "Warning !" | trans | e('js') }}',
+                invalidEmail: '{{ 'export::export-email: email-invalid' | trans }}'
+            },
+            user: {
+                email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
+            }
+        };
+    </script>
+{% endif %}
+

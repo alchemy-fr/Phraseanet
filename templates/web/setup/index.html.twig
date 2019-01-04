@@ -1,0 +1,98 @@
+
+
+{# This file MUST NOT CONTAINS trans tag #}
+
+{% extends '/setup/wrapper.html.twig' %}
+
+{% macro constraint_format(constraint) %}
+    {% if not constraint.is_ok() %}
+    <li class="{% if not constraint.is_ok() %}{% if not constraint.is_blocker %}non-{% endif %}blocker{% else %}good-enough{% endif %}">
+      {{ constraint.get_message() }}
+    </li>
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+    <div class="steps" style="min-height:450px;">
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <div style="height:400px;overflow:auto;">
+                        <h2>
+                            INSTALL
+                        </h2>
+                        <p>
+                          Please have a look a this recommendations
+                        </p>
+                        <table>
+                            {% for requirements in requirementsCollection %}
+                            <tr>
+                                <td colspan="2">
+                                    <h3> {{ requirements.getName() }} requirements </h3>
+                                </td>
+                            </tr>
+                                {% for requirement in requirements.getRequirements() %}
+                                <tr>
+                                    <td>
+                                        {% if requirement.isFulfilled() %}
+                                        <span style="color:green">OK</span>
+                                        {% elseif requirement.isOptional() %}
+                                        <span style="color:orange">WARNING</span>
+                                        {% else %}
+                                        <span style="color:red">ERROR</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ requirement.getTestMessage }}
+
+                                        {% if not requirement.isFulfilled() %}
+                                            {{ requirement.getHelpText() }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            <tr>
+                                <td colspan="2">
+                                    <h3> {{ requirements.getName() }} recommendations </h3>
+                                </td>
+                            </tr>
+                                {% for requirement in requirements.getRecommendations() %}
+                                <tr>
+
+                                    <td>
+                                        {% if requirement.isFulfilled() %}
+                                        <span style="color:green">OK</span>
+                                        {% elseif requirement.isOptional() %}
+                                        <span style="color:orange">WARNING</span>
+                                        {% else %}
+                                        <span style="color:red">ERROR</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ requirement.getTestMessage }}
+
+                                        {% if not requirement.isFulfilled() %}
+                                            {{ requirement.getHelpText() }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </table>
+                        </div>
+                        <div>
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="text-align:right;">
+                                        <a href="{{ path('install_step2') }}">Continue Install</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

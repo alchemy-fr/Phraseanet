@@ -1,0 +1,159 @@
+{% extends "account/base.html.twig" %}
+
+{% block title %}
+    {{ "Client application" | trans }}
+{% endblock %}
+
+{% set selected = "" %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script type="text/javascript">
+        accountApp.bootstrap({
+            state: 'editApplication',
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}'
+        });
+    </script>
+{% endblock %}
+
+{% block content_account %}
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>{{ "Application" | trans }} - <strong><a class="link" href="{{ path("developers_application", {"application" : application.getId()}) }}">{{ application.getName() }}</a></strong></h1>
+            <input type="hidden" value="{{ application.getId() }}" name="app_id"/>
+
+            <div>
+              <div>{{ application.getDescription() }}</div>
+            </div>
+
+            <br />
+
+            <h1>{{ "settings OAuth" | trans }}</h1>
+
+            <table id="app-oauth-setting" class="table table-condensed  table-bordered">
+                <tbody>
+                    <tr>
+                        <td>Client ID</td>
+                        <td>{{ application.getClientId() }}</td>
+                    </tr>
+                    <tr>
+                        <td>Client Secret</td>
+                        <td>{{ application.getClientSecret() }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ "URL de callback" | trans }}</td>
+                            {% if application.getType() == constant("DESKTOP_TYPE", application) %}
+                            <td>
+                                <span>{{ application.getRedirectUri() }}</span>
+                            </td>
+                        {% else %}
+                            <td class="url_callback">
+                                <span class="url_callback_input">{{ application.getRedirectUri() }}</span>
+                                <a href="{{ path("submit_application_callback", {"application" : application.getId()}) }}" class="save_callback btn btn-small btn-info" style="display:none;">
+                                    {{ "Save" | trans }}
+                                </a>
+                                <button type="button" class="modifier_callback btn btn-small">
+                                      {{ "Modify" | trans }}
+                                </button>
+                            </td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <td>Authorize endpoint</td>
+                        <td>{{ app["conf"].get("servername") }}api/oauthv2/authorize</td>
+                    </tr>
+                    <tr>
+                        <td>Access endpoint</td>
+                        <td>{{ app["conf"].get("servername") }}api/oauthv2/token</td>
+                    </tr>
+                    <tr>
+                        <td>{{ "Activer le grant_type de type password pour votre application" | trans }}</td>
+                        <td>
+                            <input class="grant-type"
+                                type="checkbox"
+                                {{ application.isPasswordGranted() ? "checked='checked'" : "" }}
+                                name="grant"
+                                value="{{ path("submit_developers_application_authorize_grant_password", {"application" : application.getId()}) }}"
+                            >
+                        </td>
+                    </tr>
+                    {% if application.getType() == constant("WEB_TYPE", application) %}
+                        <tr>
+                            <td>
+                                {{ "Define a webhook URL" | trans }}
+                                <p style="font-size: 10px;max-width: 450px">
+                                    {{ "Gives the option to your application to communicate with Phraseanet. This webhook can be used to trigger some actions on your application side." | trans }}
+                                </p>
+                            </td>
+                            <td class="url_callback">
+                                <span class="url_webhook_input">{{ application.getWebhookUrl() }}</span>
+                                <a href="{{ path("submit_application_webhook", {"application" : application.getId()}) }}" class="save_webhook btn btn-small btn-info" style="display:none;">
+                                    {{ "Save" | trans }}
+                                </a>
+                                <button type="button" class="webhook-modify-btn btn btn-small">
+                                    {{ "Modify" | trans }}
+                                </button>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <h1>{{ "Votre token d\'access" | trans }}</h1>
+            <p> {{ "Les paramétres oauth de votre application." | trans }}</p>
+
+            <table id="app-access-token-setting table" class="table table-condensed  table-bordered">
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ "Token" | trans }}
+                        </td>
+                        <td>
+                            <span id="my_access_token">
+                                {% if not token is none %}
+                                  {{ token.getOauthToken()|default("") }}
+                                {% else %}
+                                  {{ "Le token n\'a pas encore ete genere" | trans }}
+                                {% endif %}
+                            </span>
+                            <a id="generate_access" href="{{ path("submit_developers_application_token",{ "application" : application.getId()}) }}" class="btn btn-small btn-info">{{ "boutton::generer" | trans }}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {% if deliveries | length > 0 %}
+            <h1>{{ "Derniers envois" | trans }}</h1>
+            <p> {{ "Résultats des derniers envois effectués pour cette application" | trans }}</p>
+
+            <table id="app-access-delivery-log" class="table table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for delivery in deliveries %}
+                    <tr>
+                        <td>{{ delivery.isDelivered ? 'OK' : 'KO' }}</td>
+                        <td style="font-family: monospace">{{ delivery.payload ? delivery.payload.id : '-' }}</td>
+                        <td>{{ delivery.webhookEvent.type }}</td>
+                        <td>{{ delivery.created | date }}</td>
+                        <td>{{ delivery.payload ? delivery.payload.statusCode : '-' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+            <div class="form-actions">
+                <a class="btn btn-primary" href="{{ path("developers_applications") }}">{{ "boutton::retour" | trans }}</a>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% set nbReceived = records.received().count() %}
+{% set nbEligibleDocuments = records.count() %}
+
+{% set nbTrash = filteredRecord.trash|length %}
+{% set nbDelete = filteredRecord.delete|length %}
+
+{% if nbEligibleDocuments > 0 %}
+    {% if nbReceived != records.count() %}
+        <div class="well-small" style="text-align:center;">
+            <span class="label label-info">{{ "You do not have rights to remove all selected documents. Are you sure ?" | trans }}</span>
+        </div>
+    {% endif %}
+
+    <form id="delete-record-form" style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
+        <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
+        {% if nbTrash > 0 %}
+            <div class="well-small label-important"
+                 style="background-color: #ffef22;">
+                <div class="dialog-left-section">
+                    <img src="/assets/common/images/icons/icon_collection_bin.png"/>
+                </div>
+                <div class="dialog-right-section" style="margin-top: 8px;">
+                    <span>{{ nbTrash }} {{ "prod:app trash: record-move-to-trash" | trans }}</span>
+                </div>
+                {% if records.stories().count() %}
+                    <label class="checkbox story">
+                        <input type="checkbox" id="del_children" name="del_children"
+                               value="1"> {{ "prod:app trash: also-move-record" | trans }}
+                    </label>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if nbDelete > 0 %}
+            <div class="well-small label-important"
+                 style="background-color: #ed1c24;">
+                <div class="dialog-left-section">
+                    <img src="/assets/common/images/icons/icon_empty_bin.png"/>
+                </div>
+                <div class="dialog-right-section">
+                    <span>{{ nbDelete }} {{ "prod:app trash: record-delete" | trans }}</span>
+                </div>
+                {% if records.stories().count() %}
+                    <label class="checkbox story">
+                        <input type="checkbox" id="del_children" name="del_children"
+                               value="1"> {{ "Also delete records that rely on groupings." | trans }}
+                    </label>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="form-actions" style="background-color:transparent;">
+            <button type="button" class="btn btn-danger submiter">{{ "Ok" | trans }}</button>
+            <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+            <span class="form-action-loader" style="display:none;">
+                        <img src="/assets/common/images/icons/loader000.gif"/>
+                    </span>
+        </div>
+    </form>
+
+{% elseif nbReceived == 0 %}
+    <div class="well-small" style="text-align:center;">
+        <span class="label label-important">{{ "No document selected" | trans }}</span>
+    </div>
+{% else %}
+    <div class="well-small" style="text-align:center;">
+        <span class="label label-info">{{ "You do not have rights to remove selected documents" | trans }}</span>
+    </div>
+{% endif %}

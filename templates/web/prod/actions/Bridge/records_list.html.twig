@@ -1,0 +1,70 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+{% import "common/thumbnail.html.twig" as thumb %}
+
+
+
+{% block menu %}
+{% endblock %}
+
+{% block response %}
+  <table style="width:100%;">
+    <td style="width:60px;">
+
+    </td>
+    <td>
+
+    </td>
+    <td style="width:100px;">
+      Statut
+    </td>
+    <td style="width:120px;">
+      Date de demande
+    </td>
+    <td style="width:120px;">
+      Date dupload
+    </td>
+    {%for element in elements %}
+    <tr>
+      <td>
+        <input type="hidden" value="{{ element.get_id() }}"/>
+        <div class="diapo pending_records">
+          {{thumb.format(element.get_record().get_thumbnail, 40, 40, "", true, false)}}
+        </div>
+      </td>
+      <td>
+        {% if element.get_title() %}
+          {% set title = element.get_title() %}
+        {% else %}
+          {% set title = element.get_record().get_title() %}
+        {% endif %}
+        {% if element.build_connector_element() is not empty %}
+          <a target="_blank" href="{{ element.build_connector_element().get_url() }}">
+            {{ title }}
+          </a>
+        {% else %}
+          {{ title }}
+        {% endif %}
+      </td>
+      <td>
+        {% if element.get_status is constant('Bridge_Element::STATUS_DONE') %}
+          OK
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PENDING') %}
+          {{ 'En attente' | trans }}
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING') %}
+          {{ 'En cours d\'envoi' | trans }}
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING_SERVER') %}
+          {{ 'En cours d\'encodage' | trans }}
+        {% else %}
+          {{ account.get_api().get_error_message_from_status(element.get_connector_status()) }}
+        {% endif %}
+      </td>
+      <td>
+        {{ app['date-formatter'].getPrettyString(element.get_created_on()) }}
+      </td>
+      <td>
+        {{ app['date-formatter'].getPrettyString(element.get_uploaded_on()) }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

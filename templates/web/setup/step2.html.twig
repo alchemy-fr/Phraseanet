@@ -1,0 +1,882 @@
+{% extends '/setup/wrapper.html.twig' %}
+
+{% block extrahead %}
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+        $('button').button();
+        $('.databox_create').bind('change', function(){
+            var $this = $(this);
+            var $current = $this.closest('.steps');
+            $('.databox_creation_input', $current).prop('disabled', $this.prop('checked'));
+            $('.db_tester', $current).prop('disabled', $this.prop('checked')).toggleClass( "ui-state-disabled", $this.prop('checked') );
+        });
+        $('.ab_opt_toggler').bind('click', function(){
+            $('.optional_ab_datas').fadeToggle();
+
+            return false;
+        });
+
+        $('button.ab_tester').bind('click', function (){
+            if(window.console)
+                console.log('application box connection test');
+            test_connection_appbox();
+
+            return false;
+        });
+        $('button.db_tester').bind('click', function (){
+            if(window.console)
+                console.log('data box connection test');
+            test_connection_databox();
+
+            return false;
+        });
+        var language = {
+            ajaxError        : "{{ 'Erreur lors du contact avec le serveur WEB' | trans }}",
+            ajaxTimeout        : "{{ 'Delai depasse lors du contact avec le serveur WEB' | trans }}",
+            requiredField      : "{{ 'Required' | trans }}",
+            validateEmail      : "{{ 'forms::merci d\'entrer une adresse e-mail valide' | trans }}",
+            validatePassword    : "{{ 'forms::ce champ est requis' | trans }}",
+            validatePasswordConfirm  : "{{ 'forms::ce champ est requis' | trans }}",
+            validatePasswordEqual  : "{{ 'forms::les mots de passe ne correspondent pas' | trans }}",
+            wrongCredentials    : "{{ 'Vous devez specifier une adresse email et un mot de passe valides' | trans }}",
+            wrongDatabasename    : "{{ 'Le nom de base de donnee est incorrect' | trans }}",
+            someErrors        : "{{ 'Il y a des erreurs, merci de les corriger avant de continuer' | trans }}"
+        }
+
+        $.validator.passwordRating.messages = {
+            "similar-to-username": "{{ 'forms::le mot de passe est trop similaire a l\'identifiant' | trans }}",
+            "too-short": "{{ 'forms::la valeur donnee est trop courte' | trans }}",
+            "very-weak": "{{ 'forms::le mot de passe est trop simple' | trans }}",
+            "weak": "{{ 'forms::le mot de passe est trop simple' | trans }}",
+            "good": "{{ 'forms::le mot de passe est bon' | trans }}",
+            "strong": "{{ 'forms::le mot de passe est tres bon' | trans }}"
+        };
+
+        $("#create_admin").validate({
+                    rules: {
+                        email:{  email:true},
+
+                        password : {password:"#create_admin input[name=email]"},
+                        password_confirm : {equalTo:"#create_admin input[name=password]"},
+                        ab_hostname : {required:true},
+                        ab_user : {required:true},
+                        ab_name : {required:true}
+                    },
+                    messages: {
+                        email:{
+                            email : language.validateEmail
+                        },
+                        ab_hostname : {
+                            required :  language.requiredField
+                        },
+                        password : {
+                            required :  language.validatePassword
+                        },
+                        password_confirm : {
+                            required :  language.validatePasswordConfirm,
+                            equalTo :  language.validatePasswordEqual
+                        }
+                    },
+                    errorPlacement: function(error, element) {
+                        error.appendTo( element.parent() );
+                    }
+                }
+        );
+        $("#create_admin").valid();
+
+        $('.path_to_test').path_file_test({'url':'/setup/test/path/'});
+        $('.url_to_test').url_test({'url':'/setup/test/url/'});
+
+        $('.steps:not(:first)').hide();
+        $('.steps .next').bind('click', function(){
+            var $current = $(this).closest('.steps');
+            if($('input.field_error, input.error', $current).length > 0)
+            {
+                alert('{{ "Veuillez corriger les erreurs avant de poursuivre" | trans }}');
+
+                return false;
+            }
+
+            if(!$(this).hasClass('install'))
+            {
+                var callback = function(){
+                    $current.hide();
+                    $current.next().show();
+                };
+            }
+            else
+            {
+                var callback = function(){
+                    if(window.console)
+                        console.log('Processing install....');
+                    $(this).prop('disabled', true);
+                    var dialog = $('#install_wait');
+                    dialog.dialog({
+                        modal:true,
+                        resizable:false,
+                        draggable:false,
+                        closeOnEscape:false
+                    });
+                    $('.ui-dialog-titlebar-close', dialog.closest('.ui-dialog')).remove();
+                    setTimeout("$('form#create_admin').submit();",500);
+                };
+            }
+
+            if($current.hasClass('appbox_settings'))
+            {
+                test_connection_appbox(callback);
+            }
+            else if($current.hasClass('databox_settings') && $('.databox_create', $current).is(':not(:checked)'))
+            {
+                test_connection_databox(callback);
+            }
+            else{
+                callback();
+            }
+
+            return false;
+        });
+        $('.steps .previous').bind('click', function(){
+            var $current = $(this).closest('.steps');
+            $current.hide();
+            $current.prev().show();
+
+            return false;
+        });
+
+
+        function test_connection_appbox(callback)
+        {
+            var scope = $('.appbox_settings');
+            var hostname_input = $('input[name="hostname"]:visible', scope);
+            var port_input = $('input[name="port"]:visible', scope);
+            var user_input = $('input[name="user"]', scope);
+            var password_input = $('input[name="db_password"]', scope);
+            var db_name_input = $('input[name="ab_name"]', scope);
+
+            var user = user_input.val();
+            var password = password_input.val();
+            var db_name = db_name_input.val();
+
+            var datas =  {
+                user:user,
+                password:password,
+                db_name:db_name
+            };
+
+            if(hostname_input.length > 0)
+            {
+                datas.hostname = hostname_input.val();
+            }
+            if(port_input.length > 0)
+            {
+                datas.port = port_input.val();
+            }
+
+            var el_loader = $('.tester_loader', scope);
+            var el_status = $('.tester_status', scope);
+            var el_message = $('.tester_message', scope);
+
+            test_connection(el_loader, el_status, el_message, datas, callback);
+        }
+
+
+        function test_connection_databox(callback)
+        {
+            var appbox_scope = $('.appbox_settings');
+            var databox_scope = $('.databox_settings');
+
+            var hostname_input = $('input[name="hostname"]', appbox_scope);
+            var port_input = $('input[name="port"]', appbox_scope);
+            var user_input = $('input[name="user"]', appbox_scope);
+            var password_input = $('input[name="db_password"]', appbox_scope);
+
+            var db_name_input = $('input[name="db_name"]', databox_scope);
+
+            var user = user_input.val();
+            var password = password_input.val();
+            var db_name = db_name_input.val();
+
+            var datas =  {
+                user:user,
+                password:password,
+                db_name:db_name
+            };
+
+            if(hostname_input.length > 0)
+            {
+                datas.hostname = hostname_input.val();
+            }
+            if(port_input.length > 0)
+            {
+                datas.port = port_input.val();
+            }
+
+            var el_loader = $('.tester_loader', databox_scope);
+            var el_status = $('.tester_status', databox_scope);
+            var el_message = $('.tester_message', databox_scope);
+            test_connection(el_loader, el_status, el_message, datas, callback);
+
+        }
+
+        function test_connection(el_loader, el_status, el_message, datas, callback)
+        {
+            $.ajax({
+                type: "GET",
+                url: '/setup/connection_test/mysql/',
+                dataType:'json',
+                data: datas,
+                beforeSend:function(){
+                    el_loader.css('visibility', 'visible');
+                },
+                success: function(data){
+                    el_loader.css('visibility', 'hidden');
+                    if (data.connection === true && data.database === true && data.innodb === true) {
+                        el_status.attr('src', '/assets/common/images/icons/ok.png').show();
+                        el_message.empty().append("{{ 'Successfull connection' | trans }}");
+                        if (!data.is_empty) {
+                            el_message.append("<br>{{ 'Warning, this database is not empty' | trans }}");
+                            el_status.attr('src', '/assets/common/images/icons/alert.png').show();
+                        }
+                        if(typeof callback == 'function')
+                            callback();
+
+                        return;
+                    }
+                    if (false === data.innodb) {
+                        el_message.empty().append("{{ 'Database server does not support InnoDB storage engine' | trans }}");
+
+                        return;
+                    }
+                    if(data.connection === true)
+                    {
+                        el_message.empty().append("{{ 'Connection is OK but database does not exists or can not be accessed' | trans }}");
+                    }
+                    else
+                    {
+                        el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
+                    }
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
+
+                    return;
+                },
+                timeout:function(){
+                    el_loader.css('visibility', 'hidden');
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
+                    el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
+                },
+                error:function(data){
+                    el_loader.css('visibility', 'hidden');
+                    el_status.attr('src', '/assets/common/images/icons/delete.png').show();
+                    el_message.empty().append("{{ 'Unable to connect to MySQL server' | trans }}");
+                }
+            });
+        }
+
+    });
+
+    </script>
+{% endblock %}
+
+{% block content %}
+    <form id="create_admin" method="post" action="{{ path('install_do_install') }}">
+
+
+
+    <div class="steps">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>
+
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                {% if error is not none %}
+                                            <p class='error'>
+                                                {{error}}
+                                            </p>
+                                            {% endif %}
+                                            {% trans %}Bonjour, vous etes sur le point d'installer Phraseanet.{% endtrans %}
+                                            </p>
+                                            <p>
+                                                {% trans %}Consultez en ligne les pré-requis et la configuration du serveur web{% endtrans %}
+                                            </p>
+                                            <p>
+                                                {% trans %}Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage.{% endtrans %}
+                                            </p>
+                                            {% if warnings|length > 0 %}
+                                                <p>
+                                                    {% trans %}Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes.{% endtrans %}
+                                                </p>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% for warning in warnings %}
+                                        <tr style='border-top:1px dotted grey;{{ loop.last ? " border-bottom:1px dotted grey;" : " " }}'>
+                                            <td class="warning">
+                                                {{ warning }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% if warnings is not empty %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('install_root') }}">{{ 'Review system configuration' | trans }}</a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    <a href="https://docs.phraseanet.com/4.0/Admin/" target="_blank">
+                                        {{ 'Prerequisite and Configuration' | trans }}
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="steps">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>
+                        1/6 {{ 'Executables externes' | trans }}
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    {% for key,binary in discovered_binaries %}
+                                        {% set required = '0' %}
+                                        {% if key == 'php' or key == 'convert' or key == 'composite' or key == 'exiftool' %}
+                                            {% set required = '1' %}
+                                        {% endif %}
+                                        <tr>
+                                            <td><label>{{ binary['name'] }}</label> </td>
+                                            <td><input autocomplete="off" name="binary_{{key}}" class="path_to_test test_executable {% if required == "1" %}required{% endif %}" type="text" value="{{ binary['binary'] }}" /> {% if required == "1" %}{{ 'Required field' | trans }}{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    {{ 'Phraseanet may require many binaries.' | trans }}
+                                </p>
+                                <p>
+                                    {{ 'Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files.' | trans }}
+                                </p>
+                                <p>
+                                    {{ 'Don\'t worry, You can modify your configuration later' | trans }}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+
+    <div class="steps">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>2/6
+                        {{ 'Creation de votre compte' | trans }}
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Votre adresse email' | trans }}</label></td>
+                                        <td><input class="error" type="text" name="email" value="" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Votre mot de passe' | trans }}</label></td>
+                                        <td><input autocomplete="off" type="password" name="password" value="" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <div class="password-meter">
+                                                <div class="password-meter-message">&nbsp;</div>
+                                                <div class="password-meter-bg">
+                                                    <div class="password-meter-bar"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Confirmation de votre mot de passe' | trans }}</label></td>
+                                        <td><input autocomplete="off" type="password" name="password_confirm" value="" /></td>
+                                    </tr>
+                                    <tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div style="border:1px solid #404040;padding:0 10px;margin:20px 0">
+                                                <h3>{{ 'admin::compte-utilisateur A propos de la securite des mots de passe :' | trans }}</h3>
+                                                <p>{{ 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' | trans }}</p>
+                                                <dl style="border:none;float:none;">
+                                                    <dt>{{ 'admin::compte-utilisateur::securite caracteres speciaux' | trans }}</dt>
+                                                    <dt>{{ 'admin::compte-utilisateur::securite caracteres majuscules' | trans }}</dt>
+                                                    <dt>{{ 'admin::compte-utilisateur::securite caracteres minuscules' | trans }}</dt>
+                                                    <dt>{{ 'admin::compte-utilisateur::securite caracteres numeriques' | trans }}</dt>
+                                                </dl>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    {{ 'Your email will be used to log in the application.' | trans }} <br/><br/>
+                                    {{ 'Please be sure it is still valid and you can access it' | trans }}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="steps appbox_settings">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>
+                        3/6
+                        {% trans %}setup::Configuration de la base de compte ApplicationBox{% endtrans %}
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    <tr>
+                                        <td colspan="2">
+                                            <h3>{{ 'MySQL database connection parameters' | trans }}</h3>
+                                        </td>
+                                    </tr>
+                                    <tr class="optional_ab_datas">
+                                        <td style="width:200px;"><label>{{ 'phraseanet:: adresse' | trans }}</label></td>
+                                        <td><input autocomplete="off" type="text" name="hostname" value="localhost" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Database user' | trans }}</label></td>
+                                        <td><input type="text" name="user" value=""  /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'admin::compte-utilisateur mot de passe' | trans }}</label></td>
+                                        <td><input type="password" name="db_password" value="" autocomplete="off" /></td>
+                                    </tr>
+                                    <tr class="optional_ab_datas">
+                                        <td style="width:200px;"><label>{{ 'phraseanet:: port' | trans }}</label></td>
+                                        <td><input autocomplete="off" type="text" name="port" value="3306" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Database' | trans }}</label></td>
+                                        <td><input type="text" name="ab_name" value="" /></td>
+                                    </tr>
+                                    <tr style="height:40px;">
+                                        <td style="text-align:center;">
+                                            <button class="ab_tester error">{{ 'boutton::tester' | trans }}</button>
+                                            <img class="tester_loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>
+                                            <img class="tester_status" style="display:none;" src="/assets/common/images/icons/delete.png"/>
+                                        </td>
+                                        <td>
+                                            <span class="tester_message"> </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p style="margin:10px 0;">
+                                                {% set debut_lien = '<a href="#" class="ab_opt_toggler">' %}
+                                                {% set fin_lien = '</a>' %}
+                                                {% trans with {'%debut_lien%' : debut_lien, '%fin_lien%' : fin_lien} %}Si vous aviez besoin de plus de parametres, %debut_lien%Afficher d'avantage d'options%fin_lien%{% endtrans %}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    {{ 'ApplicationBox is a Mysql database.' | trans }}
+                                </p>
+                                <p>
+                                    {{ 'It stores users datas, rights, and references to DataBoxes where records are stored.' | trans }}
+                                </p>
+                                <p>
+                                    {% set link_start = '<a href="https://mariadb.org/" target="_blank">' %}
+                                    {% set link_end = '</a>' %}
+                                    {% trans with {'%link_start%' : link_start, '%link_end%' : link_end} %}Phraseanet strongly recommends the use of %link_start%MariaDB%link_end% as a replacement for MySQL.{% endtrans %}
+                                    <br/>
+                                    <br/>
+                                    <a href="https://mariadb.org/" target="_blank">
+                                        <img src="/assets/common/images/icons/Mariadb-big.png" style="width:100%;" />
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="steps">
+            <div class="wrapper">
+                <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                        <h2>4/6
+                            {{ 'SearchEngine settings' | trans }}
+                        </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                        <table class="main_content_wrapper">
+                            <tr>
+                                <td>
+                                    <table class="main_content_table">
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch server host' | trans }}</label></td>
+                                            <td><input class="" type="text" name="elasticsearch_settings[host]" value="{{ elasticOptions.host }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch service port' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[port]" value="{{ elasticOptions.port }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Use an existing index' | trans }}</label></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[use_existing_index]" value="" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'ElasticSearch index name' | trans }}</label></td>
+                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[index_name]" value="{{ elasticOptions.indexName }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Number of shards' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[shards]" value="{{ elasticOptions.shards }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Number of replicas' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[replicas]" value="{{ elasticOptions.replicas }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Thesaurus Min score' | trans }}</label></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[min_score]" value="{{ elasticOptions.minScore }}" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>{{ 'Activate highlight' | trans }}</label></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[highlight]" value="{{ elasticOptions.highlight }}" {% if elasticOptions.highlight %} checked="checked" {% endif %}/></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <table>
+                    <tr>
+                        <td>
+                            <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                        </td>
+                        <td style="text-align:right;">
+                            <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+    <div class="steps">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>5/6
+                        {{ 'setup::Configuration des repertoires de stockage' | trans }}
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    <tr>
+                                        <td><label>{{ 'Repertoire de stockage des fichiers' | trans }}</label></td>
+                                        <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="{{ rootpath ~ '/datas' }}" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    {{ 'Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.' | trans }}
+                                </p>
+                                <p>
+                                    {{ 'Thumbnails directory is mounted to be accessible via HTTP, while other files are not.' | trans }}
+                                </p>
+                                <p>
+                                    {{ 'If you plan to store large files, be sure it will fit in these directories.' | trans }}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next">{{ 'boutton::suivant' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="steps databox_settings">
+        <div class="wrapper">
+            <div class="PNB10 wrapper_left">
+                <div class="PNB10 section_title">
+                    <h2>6/6
+                        {% trans %}setup::Configuration de la base de stockage DataBox{% endtrans %}
+                    </h2>
+                </div>
+                <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                    <table class="main_content_wrapper">
+                        <tr>
+                            <td>
+                                <table class="main_content_table">
+                                    <tr>
+                                        <td colspan="2"><h3>{{ 'MySQL database connection parameters' | trans }}</h3></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Ne pas creer de DataBox maintenant' | trans }}</label></td>
+                                        <td><input type="checkbox" class="databox_create" /></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="width:200px;"><label>{{ 'Database' | trans }}</label></td>
+                                        <td><input class="databox_creation_input" type="text" name="db_name" value="" /></td>
+                                    </tr>
+                                    <tr style="height:40px;">
+                                        <td style="text-align:center;">
+                                            <button class="db_tester error">{{ 'boutton::tester' | trans }}</button>
+                                            <img class="tester_loader" style="visibility:hidden;" src="/assets/common/images/icons/loader-black.gif"/>
+                                            <img class="tester_status" style="display:none;" src="/assets/common/images/icons/delete.png"/>
+                                        </td>
+                                        <td>
+                                            <span class="tester_message"> </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>{{ 'Modele de donnees' | trans }}</label></td>
+                                        <td>
+                                            <select name="db_template" class="databox_creation_input">
+                                                {% for name in available_templates %}
+                                                    <option value="{{ name|escape }}">{{ name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <h3>
+                                                {% trans %}Creation des taches{% endtrans %}
+                                            </h3>
+                                            {{ 'Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations' | trans }}
+                                            <br/><br/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:100px;text-align:right;">
+                                            <input  type="checkbox" name="create_task[]" value="writemeta" checked />
+                                        </td>
+                                        <td><label>{{ 'Creer la tache d\'ecriture des metadonnees' | trans }}</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:100px;text-align:right;">
+                                            <input  type="checkbox" name="create_task[]" value="subdef" checked />
+                                        </td>
+                                        <td><label>{{ 'Creer la tache de creation des sous-definitions' | trans }}</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:100px;text-align:right;">
+                                            <input  type="checkbox" name="create_task[]" value="cindexer" checked />
+                                        </td>
+                                        <td><label>{{ 'Creer la tache d\'indexation' | trans }}</label></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="PNB10 side_infos">
+                <div class="table_wrapper">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>
+                                    {{ 'Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet ApplicationBox.' | trans }}<br/><br/>
+                                    {{ 'Databoxes store records, metadatas and their classifications' | trans }}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="buttons">
+            <table>
+                <tr>
+                    <td>
+                        <button class="previous">{{ 'boutton::precedent' | trans }}</button>
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="next install" type="submit">{{ 'button::Install' | trans }}</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </form>
+    <div id="install_wait" style="display:none;" title="{{ 'Install in progess' | trans }}">
+        <p>
+            <img src="/assets/common/images/icons/loader111111.gif"/>
+            {% trans %}Installation is currenlty processing, please wait...{% endtrans %}
+        </p>
+    </div>
+{% endblock %}

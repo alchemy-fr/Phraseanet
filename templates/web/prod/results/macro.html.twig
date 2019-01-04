@@ -1,0 +1,69 @@
+{% macro thumbnail(record, box_w, box_h, extra_class) %}
+    {% set record_type = record.type %}
+
+    {% set thumb_w = 256 %}
+    {% set thumb_h = 256 %}
+
+    {% set thumbnailSize = record_subdef_size(record, "thumbnail") %}
+    {%  if thumbnailSize is not null %}
+        {% set thumb_w = thumbnailSize.width %}
+        {% set thumb_h = thumbnailSize.height %}
+    {% endif %}
+
+    {% set url = record_subdef_url(record, "thumbnail") %}
+
+    {% set box_w = box_w|round %}
+    {% set box_h = box_h|default(box_w)|round %}
+
+    {% set original_h = thumb_h > 0 ? thumb_h : 120 %}
+    {% set original_w = thumb_w > 0 ? thumb_w : 120 %}
+
+    {% set fit_size = fitIn(
+            {"width":original_w, "height":original_h},
+            {"width":box_w, "height":box_h}
+        )
+    %}
+
+    <div style="width:{{box_w}}px;height:{{box_h}}px;" class="thumb_wrapper {{ extra_class|default('') }}">
+        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+             style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
+             src="{{ url }}" ondragstart="return false;">
+        <input type="hidden" name="width" value="{{original_w}}"/>
+        <input type="hidden" name="height" value="{{original_h}}"/>
+    </div>
+{% endmacro %}
+
+{% macro thumbnailgif(record, box_w, box_h, extra_class) %}
+    {% set record_type = record.type %}
+
+    {% set thumb_w = 256 %}
+    {% set thumb_h = 256 %}
+
+    {% set thumbnail = record.subdefs.thumbnailgif|default(null) %}
+    {% if thumbnail is not none %}
+        {% set thumb_w = thumbnail.width %}
+        {% set thumb_h = thumbnail.height %}
+    {% endif %}
+
+    {% set url = record_thumbnailgif_url(record) %}
+
+    {% set box_w = box_w|round %}
+    {% set box_h = box_h|default(box_w)|round %}
+
+    {% set original_h = thumb_h > 0 ? thumb_h : 120 %}
+    {% set original_w = thumb_w > 0 ? thumb_w : 120 %}
+
+    {% set fit_size = fitIn(
+            {"width":original_w, "height":original_h},
+            {"width":box_w, "height":box_h}
+        )
+    %}
+
+    <div style="width:{{box_w}}px;height:{{box_h}}px;" class="thumb_wrapper {{ extra_class|default('') }}">
+        <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+             style="width:{{fit_size.width}}px;height:{{fit_size.height}}px;top:{{fit_size.top}}px;"
+             src="{{ url }}" ondragstart="return false;">
+        <input type="hidden" name="width" value="{{original_w}}"/>
+        <input type="hidden" name="height" value="{{original_h}}"/>
+    </div>
+{% endmacro %}

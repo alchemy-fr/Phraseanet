@@ -1,0 +1,61 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %}
+    {{ field.get_label(app['locale']) }}
+
+    {% if field.get_type() == 'text' %}
+        ({{ 'Type texte' | trans }})
+    {% elseif field.get_type() == 'number' %}
+        ({{ 'Type nombre' | trans }})
+    {% elseif field.get_type() == 'date' %}
+        ({{ 'Type date' | trans }})
+    {% endif %}
+{% endset %}
+{% set width = 300 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    <div>
+        {{ 'Source' | trans }} : {{ field.get_tag().getGroupName() }} / {{ field.get_tag().getName() }}
+    </div>
+
+    {% if field.is_indexable() is empty %}
+        <div>
+            {{ 'Ce champ n\'est pas indexe' | trans }}
+        </div>
+        {% endif %}
+    {% if field.is_multi() %}
+        <div>
+            {{ 'Ce champ est multivalue' | trans }}
+        </div>
+    {% endif %}
+    {% if field.is_readonly() %}
+        <div>
+            {{ 'Ce champ est en lecture seule' | trans }}
+        </div>
+    {% endif %}
+    {% if field.get_tbranch() %}
+        <div>
+            {{ 'Ce champ est relie a une branche de thesaurus' | trans }}
+        </div>
+        {% endif %}
+    {% if field.get_thumbtitle() %}
+        <div>
+            {{ 'Ce champ est utilise en titre a l\'affichage' | trans }}
+        </div>
+    {% endif %}
+    {% if field.is_required() %}
+        <div>
+            {{ 'Ce champ est requis' | trans }}
+        </div>
+    {% endif %}
+
+    {% if field.get_dces_element() %}
+        <hr/>
+        <div>
+            {% set DublinCoreElementSet = '<a href="http://dublincore.org/documents/dces/" target="_blank">DublinCore Element Set</a>' %}
+            {% trans with {'%DublinCoreElementSet%' : DublinCoreElementSet} %}Ce champ est decrit comme element du %DublinCoreElementSet%{% endtrans %}
+        </div>
+    {% endif %}
+
+{% endblock %}

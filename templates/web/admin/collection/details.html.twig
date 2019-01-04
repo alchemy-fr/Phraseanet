@@ -1,0 +1,45 @@
+<div class="header">
+    <h1>{{ collection.get_label(app['locale']) }} <small style="font-size:16px">{{ "Details" | trans }}</small></h1>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{{ 'admin::base: objet' | trans }}</th>
+            <th>{{ 'admin::base: nombre' | trans }}</th>
+            <th>{{ 'admin::base: poids' | trans }} (Mo)</th>
+            <th>{{ 'admin::base: poids' | trans }} (Go)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table['result'] %}
+            <tr style="background-color:{{ loop.index is even ? '#ccc' : '#fff' }}">
+                <td>{{ row['name'] }}</td>
+                <td>{{ row['amount'] }}</td>
+                <td>{{ row['mega'] }}</td>
+                <td>{{ row['giga'] }}</td>
+            </tr>
+        {% endfor %}
+        {% set totals = table['total'] %}
+        <tfoot>
+            <tr>
+                <th>
+                    {{ 'Total' | trans }}
+                </th>
+                <th>
+                    {{ totals['totobj'] }}
+                </th>
+                <th>
+                    {{ totals['mega'] }}
+                </th>
+                <th>
+                    {{ totals['giga'] }}
+                </th>
+            </tr>
+        </tfoot>
+    </tbody>
+</table>
+
+<div>
+    <a style="text-decoration:none" class="btn" href="{{ path('admin_display_collection', { 'bas_id' : collection.get_base_id() }) }}">{{ 'boutton::retour' | trans }}</a>
+</div>

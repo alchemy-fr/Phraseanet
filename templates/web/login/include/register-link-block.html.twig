@@ -1,0 +1,14 @@
+{% if register_enable %}
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12 text-center">
+                {{ "No account yet?" | trans }}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 text-center">
+                <a id="link-register" class="btn btn-success btn-trigger" href="{{ path("login_register") }}">{{ "Register" | trans }}</a>
+            </div>
+        </div>
+    </div><!-- /sidebar block -->
+{% endif %}

@@ -1,0 +1,42 @@
+<td>
+    <div class="multi_menu">
+        <div class="btn-group">
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {{ 'Ajouter a' | trans }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="{{ path('bridge_account_action', { 'account_id' : account.get_id(), 'action' : 'moveinto', 'element_type' : action_type }) }}">
+                        <input type="hidden" name="elements_list" value="" />
+                        <input type="hidden" name="destination" value="{{ constant('Bridge_Api_Flickr::CONTAINER_TYPE_PHOTOSET') }}" />
+                        <a class="form_multiple_submitter">
+                            {{ 'Photosets' | trans }}
+                        </a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</td>
+<td>
+    <div class="multi_menu">
+        <div class="btn-group">
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                {{ 'Actions' | trans }}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <form class="action_works_single_element action_works_many_element" method="GET" action="{{ path('bridge_account_action', { 'account_id' : account.get_id(), 'action' : 'deleteelement', 'element_type' : action_type }) }}">
+                        <input type="hidden" name="elements_list" value="" />
+                        <input type="hidden" name="destination" value="" />
+                        <a class="form_multiple_submitter">
+                            {{ 'boutton::supprimer' | trans }}
+                        </a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</td>

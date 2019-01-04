@@ -1,0 +1,111 @@
+<div>
+    <button class="tools-accordion"><span>Actions<i class="fa fa-chevron-right rotate"></i></span></button>
+    <div class="tools-panel">
+        <button class="ui-corner-all TOOL_disktt_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/disktt_history.png"/>
+            <span>{{ 'action : exporter' | trans }}</span>
+        </button>
+        <button class="ui-corner-all TOOL_print_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/print_history.png"/>
+            <span>{{ 'action : print' | trans }}</span>
+        </button>
+        <div class="divider"></div>
+        <button class="ui-corner-all TOOL_delete_selection_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/delete-selection.png"/>
+            <span>{{ 'basket:action:delete record form basket' | trans }}</span>
+        </button>
+        <div class="divider"></div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+            <button class="ui-corner-all TOOL_ppen_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/ppen_history.png"/>
+                <span>{{ 'action : editer' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CHGSTATUS')) %}
+            <button class="ui-corner-all TOOL_chgstatus_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/chgstatus_history.png"/>
+                <span>{{ 'action : status' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
+            <button class="ui-corner-all TOOL_chgcoll_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/chgcoll_history.png"/>
+                <span>{{ 'action : collection' | trans }}</span>
+            </button>
+        {% endif %}
+
+        <div class="divider"></div>
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_pushdoc_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/push16.png"/>
+                <span>{{ 'action : push' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
+            <button class="ui-corner-all TOOL_feedback_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/feedback16.png"/>
+                <span>{{ 'Feedback' | trans }}</span>
+            </button>
+        {% endif %}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
+            {#<button class="ui-corner-all TOOL_bridge_btn basket_window" title="{{ 'action : bridge' | trans }}" data-href="{{ path("prod_bridge_manager") }}">#}
+            {#<img src="/assets/common/images/icons/door.png"/>#}
+            {#</button>#}
+            <button class="ui-corner-all TOOL_publish_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/rss16.png"/>
+                <span>{{ 'action : publier' | trans }}</span>
+            </button>
+        {% endif %}
+
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS')) %}
+            <button class="ui-corner-all TOOL_imgtools_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/imgtools_history.png"/>
+                <span>{{ 'action : outils' | trans }}</span>
+            </button>
+        {% endif %}
+
+        <div class="divider"></div>
+
+        <button class="ui-corner-all TOOL_trash_btn basket_window" data-selection-source="basket">
+            <img src="/assets/common/images/icons/delete.png"/>
+            <span>{{ 'basket:action:delete record form database' | trans }}</span>
+        </button>
+
+        {% if plugins['actionbar'] is not empty %}
+            {% for plugin in plugins['actionbar'] %}
+                {% for key, action in plugin.getBasketActionBar() %}
+                    {% set label = action.label %}
+                    <button class="ui-corner-all basket_window  {{ action.classes|default('') }}"
+                            data-selection-source="basket">
+                        <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"/>
+                        <span>{{ label|trans([], plugin.PluginLocale) }}</span>
+                    </button>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div style="margin:0 7px;overflow:hidden;position:relative">
+    {% set basket_length = basket.getElements()|length %}
+    <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
+{% if basket_length == 0 %}
+    <div style="height:120px;"></div>
+{% endif %}
+
+    {% set basket_scope = 'objects' %}
+
+    {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
+
+    {% if basket.getValidation() %}
+        {{ Macros.display_validation(app, basket, ordre) }}
+{% else %}
+    {{ Macros.display_basket(app, basket) }}
+{% endif %}
+</div>
+
+
+

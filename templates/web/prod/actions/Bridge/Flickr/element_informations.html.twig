@@ -1,0 +1,10 @@
+<ul>
+  <li>
+    {% set nb_view = element.get_view_count|default(0) %}
+    {% if nb_view <= 1 %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vue{% endtrans %}
+    {% else %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vues{% endtrans %}
+    {% endif %}
+    </li>
+  </ul>

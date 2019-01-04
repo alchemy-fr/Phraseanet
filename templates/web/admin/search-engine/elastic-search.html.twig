@@ -1,0 +1,25 @@
+{{ form(form) }}
+<button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
+        class="btn btn-primary">{{ 'Save' | trans }}</button>
+
+<form id="ElasticSearchDropIndexForm" action="{{ path('admin_searchengine_drop_index') }}" method="POST">
+</form>
+<form id="ElasticSearchCreateIndexForm" action="{{ path('admin_searchengine_create_index') }}" method="POST">
+</form>
+
+<div id="dropIndexConfirmDialog">Really drop index ?</div>
+
+{% block javascript %}
+    <script type="text/javascript">
+        var pathGetIndexSettings = "{{ path('admin_searchengine_setting_from_index') }}";
+    </script>
+    <script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/search-engine/views/es_config.js' }) }}"></script>
+    <script type="text/javascript">
+        {% if indexer.indexExists() %}
+        var elasticSearchIndexExists = true;
+        {% else %}
+        var elasticSearchIndexExists = false;
+        {% endif %}
+        searchEngineConfigurationFormInit(elasticSearchIndexExists);
+    </script>
+{% endblock %}

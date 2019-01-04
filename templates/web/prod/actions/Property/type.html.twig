@@ -1,0 +1,55 @@
+{% import "common/thumbnail.html.twig" as thumbnail %}
+
+{% set typesEnum = [
+        constant("\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_AUDIO"),
+        constant("\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_VIDEO"),
+        constant("\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_DOCUMENT"),
+        constant("\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_FLASH"),
+        constant("\\Alchemy\\Phrasea\\Media\\Type\\Type::TYPE_IMAGE")
+    ]
+%}
+
+<form style="padding:15px;" name="change-records-type" action="{{ path('change_type') }}" method="POST">
+    <div class="well-small" style="text-align:center;">
+        <select name="force_types" class="input-xxlarge">
+            <option value="">{{ "Apply to all selected documents" | trans }}</option>
+            {% for option in typesEnum %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input name="lst" type="hidden" value="{{ records.serializedList() }}"/>
+    {% for sbasId,databoxTypes in recordsType %}
+        <h2 style="text-align:center;" clas="header">{{ sbasId|sbas_labels(app) }}</h2>
+        {% for currentType, recordsByType in databoxTypes %}
+            <ul class="thumbnails" style="margin:20px auto;">
+                {% for record in recordsByType %}
+                    <li class="span2">
+                        <div class="thumbnail" style="min-height:205px">
+                            {{ thumbnail.format(record.get_thumbnail(), 160, 120, "", false, false) }}
+                            <div class="caption">
+                                <h5 style="word-break:break-all;">{{ record.get_title() }}</h5>
+                                <p>
+                                    <select name="types[{{record.get_serialize_key()}}]" class="input-block-level">
+                                        {% for option in typesEnum %}
+                                            <option value="{{ option }}" {{ record.isStory() ? "disabled='disabled'": "" }} {{ option == record.get_type() ? "selected='selected'" : '' }}>{{ option }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input class="input-block-level" type="text" name="mimes[{{record.get_serialize_key()}}]" value="{{ record.get_mime }}" style="width:100%">
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="form-actions" style="background-color:transparent;">
+        <button type="button" class="btn btn-primary submiter">{{ "Apply changes" | trans }}</button>
+        <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+        <span class="form-action-loader" style="display:none;">
+            <img src="/assets/common/images/icons/loader414141.gif" />
+        </span>
+    </div>
+ </form>

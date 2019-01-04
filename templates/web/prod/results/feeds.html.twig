@@ -1,0 +1,97 @@
+{% block result %}
+    <div class="feed">
+        {# header for first page #}
+        {% if page == 1 %}
+            <div class="headblock">
+                <table>
+                    <tr>
+                        <td style="width:600px;">
+                            <h1>
+                                <img src="{% if feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ feed.iconUrl }}.jpg{% endif %}" style="height:32px;"/>
+                                {% if feed.isAggregated %}
+                                    {{ 'Toutes les publications' | trans }}
+                                    <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_aggregated') }}">
+                                        {{ 'publications:: s\'abonner aux publications' | trans }}
+                                    </a>
+                                    <a class="feed_reload ajax_answers no_scroll" href="{{ path('prod_feeds') }}" >
+                                        <img src="/assets/common/images/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
+                                    </a>
+                                {% else %}
+                                    {{ feed.title }}
+                                    <a class="feed_reload ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : feed.id }) }}" >
+                                        <img src="/assets/common/images/icons/reload.png" title="{{ 'rafraichir' | trans }}" />
+                                    </a>
+                                    <a class="subscribe_rss" href="{{ path('prod_feeds_subscribe_feed', { 'id' : feed.id }) }}">
+                                        {{ 'publications:: s\'abonner aux publications' | trans }}
+                                    </a>
+                                {% endif %}
+                            </h1>
+                        </td>
+                        <td>
+                            <div class="menu_feeds">
+                                <div class="btn-group">
+                                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown">
+                                        {{ 'Aller a' | trans }}
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="submenu dropdown-menu">
+                                        {% for aval_feed in feeds %}
+                                            <li>
+                                                <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : aval_feed.id }) }}">
+                                                    <img src="{% if aval_feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ aval_feed.id }}.jpg{% endif %}" style="height:16px;"/> {{ aval_feed.title }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+
+        {% block content %}
+            {% set images_size = user_setting('images_size') %}
+            {% set technical_display = user_setting('technical_display') %}
+            {% set rollover_thumbnail = user_setting('rollover_thumbnail') %}
+            {% set doctype_display = user_setting('doctype_display') %}
+
+            {% set offset_start = ((page - 1) * 5 )%}
+            {% set entries = feed.entries.slice(offset_start,5) %}
+
+            {% for entry in entries %}
+                {% block content_item %}
+                    {% include 'prod/results/feeds_entry.html.twig' with {
+                        'feed': feed,
+                        'entry': entry,
+                        'settings': {
+                            'images_size': images_size,
+                            'technical_display': technical_display,
+                            'rollover_thumbnail': rollover_thumbnail,
+                            'doctype_display': doctype_display
+                        }
+                    } %}
+                {% endblock %}
+            {% else %}
+                <p>{{ 'Aucune entree pour le moment' | trans }}</p>
+            {% endfor %}
+
+            {# pagination #}
+            {% if feed.countTotalEntries > (page * 5) %}
+                {% set next_page = page + 1 %}
+                <div class="see_more">
+                    {% if feed.aggregated %}
+                        <a href="{{ path('prod_feeds', { page : next_page }) }}" class="ajax_answers append">
+                            {{ 'charger d\'avantage de publications' | trans }}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('prod_feeds_feed', { 'id' : feed.id, 'page' : next_page }) }}" class="ajax_answers append">
+                            {{ 'charger d\'avantage de publications' | trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

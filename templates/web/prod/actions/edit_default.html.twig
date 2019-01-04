@@ -1,0 +1,478 @@
+{% macro format_diapo(record, resizable) %}
+
+    {% if resizable == false %}
+        {% set cont_width = 130 %}
+        {% set cont_height = 140 %}
+    {% else %}
+        {% set cont_width = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') %}
+        {% set cont_height = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') %}
+    {% endif %}
+
+    {% set i = record.getNumber() %}
+    {% set thumbnail = record.get_thumbnail().get_url() %}
+    {% set ratio = 80 %}
+    {% set width = record.get_thumbnail().get_width() %}
+    {% set height = record.get_thumbnail().get_height() %}
+
+    {% if width > height %}
+        {% set top = 50 - ( (ratio / 2) * height / width ) %}
+        {% set left = 50 - ( (ratio * height / (2 * width)) * width / height ) %}
+        {% set width = ratio ~ "%" %}
+        {% set height = "auto" %}
+    {% else %}
+        {% set top = (100 - ratio) / 2 %}
+        {% set left = ((100 - (ratio * width / height)) / 2) %}
+        {% set width = "auto" %}
+        {% set height = ratio ~ "%" %}
+    {% endif %}
+
+    {% set class_status = 'nostatus' %}
+    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
+        {% set class_status = '' %}
+    {% endif %}
+
+    <div pos="{{ i }}" id="idEditDiapo_{{ i }}" class="diapo {{ class_status }}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
+        <div class='titre'>
+            {{ record.get_original_name() }}
+        </div>
+        <img class="edit_IMGT select-record-action" id="idEditDiapoImg_{{ i }}"
+             style="position:absolute; top:{{ top|round }}%; width:{{ width }}; height:{{ height }}; left:{{ left|round }}%;"
+             data-index="{{ i }}" src="{{ thumbnail }}" />
+        <div style='position:absolute; top:0px; left:0px; height:20px'>
+            <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
+        </div>
+        <div style='position:absolute; bottom:0px; left:0px; height:20px' class="bottom actions">
+
+            <span class="fa-stack previewTips"
+                  tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
+                <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                <i class="fa fa-search fa-stack-1x fa-reverse" aria-hidden="true"></i>
+            </span>
+
+            <span class="fa-stack infoTips"
+                  tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
+                <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                <i class="fa fa-info fa-stack-1x fa-reverse" aria-hidden="true"></i>
+            </span>
+        </div>
+        <div class="reg_opts" style="display:none;position:absolute;bottom:0;right:0;">
+            <a style="float:right;padding:0;margin:0;cursor:pointer;" class="contextMenuTrigger" id="editContextTrigger_{{ record.get_serialize_key() }}">&#9660;</a>
+            <table cellspacing="0" cellpadding="0" style="display:none;" id="editContext_{{ record.get_serialize_key() }}" class="contextMenu editcontextmenu">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="context-menu context-menu-theme-vista">
+                                <div title="" class="context-menu-item">
+                                    <div class="context-menu-item-inner set-grouping-image-action"
+                                         data-index="{{i}}"
+                                         data-record-id="{{record.get_record_id()}}">{{ 'edit: chosiir limage du regroupement' | trans }}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
+            <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/plus11.png"/>
+            <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/minus11.png"/>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro HTML_fieldlist(recordsRequest, fields) %}
+    <div class="edit_field edit-status-action" id="EditFieldBox_status">
+        {% trans %}prod::editing::fields: status{% endtrans %}
+    </div>
+    {% set cssfile = '000000' %}
+    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'css') %}
+        {% set cssfile = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'css') %}
+    {% endif %}
+    {% for field in fields %}
+        {% set i = field.get_id() %}
+        {% if field.is_readonly() is empty %}
+            <div class="edit_field edit-field-action" id="EditFieldBox_{{i}}"
+                 data-id="{{i}}"
+                 data-name="{{field.get_name()}}">
+                {#<i id="editSGtri_{{ i }}" style="visibility:hidden;" class="fa fa-caret-right" aria-hidden="true"></i>#}
+                <span class="fa-stack fieldTips"
+                      tooltipsrc="{{ path('prod_tooltip_metadata', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}">
+                  <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
+                  <i class="fa fa-info fa-stack-1x fa-inverse" aria-hidden="true"></i>
+                </span>
+                {% if field.get_dces_element %}
+                    <img src="/assets/common/images/icons/dublincore.png" tooltipsrc="{{ path('prod_tooltip_dces', { 'sbas_id' : field.get_databox().get_sbas_id(), 'field_id' : field.get_id() }) }}" alt="{{ 'Ce champ est decrit comme un element DublinCore' | trans }}" class="DCESTips" />
+                {% endif %}
+                {% if field.get_thumbtitle %}
+                    <img src="/assets/common/images/icons/titre16.png" title="{{ 'This field represents the title of the document' | trans }}" />
+                {% endif %}
+                <span id="spanidEditFieldBox_{{i}}">
+                    {{field.get_label(app['locale'])}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+                </span>
+                <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% macro HTML_Train(recordsRequest, is_reg) %}
+    {% for record in recordsRequest %}
+        {% if loop.index != 1 or is_reg != '1' %}
+            {{_self.format_diapo(record, true)}}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+
+{% set actionable = recordsRequest|length %}
+{% set not_actionable = recordsRequest.received|length - actionable %}
+
+<div id="EDIT_ALL">
+
+        <div class="content-wrapper">
+    <div style="display:none;">
+        <form onsubmit="return(false)" >
+            <input style="font-size:2px; width:5px;" type="text" id="editFakefocus" />
+        </form>
+    </div>
+    <div id="EDIT_TOP" style="height:{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_top_box')
+    }}%;">
+        <div id="EDIT_MENU">
+            <div id="EDIT_ZOOMSLIDER" >
+            </div>
+        </div>
+        {% if recordsRequest.isSingleStory() %}
+            <div class="GRP_IMAGE_REP">
+                <div id="EDIT_GRPDIAPO">
+                    {{_self.format_diapo(recordsRequest.singleStory(), false)}}
+                </div>
+            </div>
+            <div id="EDIT_FILM2" style="left:170px;">
+                {{_self.HTML_Train(recordsRequest, '1')}}
+            </div>
+        {% else %}
+            <div id="EDIT_FILM2" class='ui-corner-all'>
+                {{_self.HTML_Train(recordsRequest)}}
+            </div>
+        {% endif %}
+    </div>
+
+    <div id='EDIT_MID'>
+        <div id='EDIT_MID_L' class='ui-corner-all'>
+            <div id="divS_wrapper" style="width:{{app['settings'].getUserSetting(app.getAuthenticatedUser(),
+            'editing_right_box')}}%">
+                <div id="divS">
+                    {{_self.HTML_fieldlist(recordsRequest, fields)}}
+                </div>
+            </div>
+            <div id="idEditZone">
+                <div class="edit-zone-title PNB">
+                    <table style='position:relative; top:5px; table-layout:fixed; width:100%'>
+                        <tr>
+                            <td style='width:30px; text-align:right'>
+                                <input type='button' value='&#9668;' class='btn btn-inverse field-navigate-action'
+                                       data-direction="backward"/>
+                            </td>
+                        <td id="idFieldNameEdit"></td>
+                        <td style='width:30px; text-align:left'>
+                            <input type='button' value='&#9658;' class='btn btn-inverse field-navigate-action'
+                                   data-direction="forward"/>
+                        </td>
+                        </tr>
+                        <tr>
+                            <td id="idFieldSuggestedValues" colspan="3" style="visibility:hidden;"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="EDIT_EDIT" class="PNB">
+                    <div id="ZTextMonoValued">
+                        <textarea id="idEditZTextArea" ></textarea>
+                        <div id="idEditDateZone"></div>
+                    </div>
+                    <div id="ZTextMultiValued">
+                        <form class="add-multivalued-field-action"
+                              data-input-id="EditTextMultiValued"
+                              style="position:absolute; height:30px; left:2px; right:2px;">
+                            <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
+                                <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
+                            </div>
+                            <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
+                                <img id="EditButAddMultiValued add-multivalued-field-action" style="cursor:pointer" src="/assets/common/images/icons/plus16.png" />
+                            </div>
+                        </form>
+                        <div id="ZTextMultiValued_values"></div>
+                    </div>
+                    <div id="ZTextStatus">
+                        <div class="nostatus">
+                            {{ 'Aucun statut editable' | trans }}
+                        </div>
+                        <div class="somestatus">
+                            {{ 'Les status de certains documents ne sont pas accessibles par manque de droits' | trans }}
+                        </div>
+                        <div class="displaystatus">
+                            <table>
+                                {% for n, stat in status %}
+                                    <tr>
+                                        <td style="padding-left:10px">
+                                            <span class="toggle-status-field-action" data-state="false" data-bit="{{n}}"
+                                                    style="cursor:pointer" >
+                                                <div id="idCheckboxStatbit0_{{n}}" class="gui_ckbox_0"></div>
+                                                {% if stat['img_off'] %}
+                                                    <img src="{{stat['img_off']}}" title="{{stat['label0']}}" style="width:16px;height:16px;vertical-align:bottom" />
+                                                {% endif %}
+                                                {{ stat['label0'] }}
+                                            </span>
+                                        </td>
+                                        <td style="padding-left:20px">
+                                            <span class="toggle-status-field-action" data-state="true" data-bit="{{n}}"
+                                                    style="cursor:pointer" >
+                                                <div id="idCheckboxStatbit1_{{n}}"  class="gui_ckbox_0"></div>
+                                                {% if stat['img_on'] %}
+                                                    <img src="{{stat['img_on']}}" title="{{stat['label1']}}" style="width:16px;height:16px;vertical-align:bottom" />
+                                                {% endif %}
+                                                {{ stat['label1'] }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="idDivButtons" class="PNB">
+                    <input id="ok"     type="button" value="{{ 'boutton::remplacer' | trans }}" class="btn btn-inverse commit-field-action" data-mode="ok">
+                    <input id="fusion" type="button" value="{{ 'boutton::ajouter' | trans }}" class="btn btn-inverse commit-field-action" data-mode="fusion">
+                    <input id="cancel" type="button" value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse commit-field-action" data-mode="cancel">
+                </div>
+                <div id="idExplain" class="PNB"></div>
+            </div>
+        </div>
+        <div id="EDIT_MID_R" style="width:{{app['settings'].getUserSetting(app.getAuthenticatedUser(),
+        'editing_left_box')}}%">
+            <div style='position:absolute; top:0; left:0; right:0; bottom:0;' class='tabs'>
+                <ul>
+                    {% if thesaurus %}
+                        <li><a href="#TH_Ofull">{{ 'phraseanet:: thesaurus' | trans }}</a></li>
+                    {% endif %}
+                    <li><a href="#TH_Opreview">{{ 'phraseanet:: preview' | trans }}</a></li>
+                    <li><a href="#TH_Oreplace">{{ 'prod::editing: rechercher-remplacer' | trans }}</a></li>
+                    <li><a href="#TH_Opresets">{{ 'prod::editing: modeles de fiches' | trans }}</a></li>
+                    <li><a href="#TH_Oclipboard">{{ 'phraseanet:: presse-papier' | trans }}</a></li>
+                </ul>
+                {% if thesaurus %}
+                    <div id='TH_Ofull'>
+                        <div class='thesaurus edit-thesaurus-action'>
+                            <p id='TH_T.{{ databox.get_sbas_id() }}.T' class="thesaurus-db-root">
+                                <u id='TH_P.{{ databox.get_sbas_id() }}.T'>+</u><a id='GL_W.{{ databox.get_sbas_id() }}.T' style='FONT-WEIGHT: bold;'>{{ databox.get_label(app['locale']) }}</a>
+                            </p>
+                            <div id='TH_K.{{ databox.get_sbas_id() }}.T' class='c'>{{ 'phraseanet::chargement' | trans }}</div>
+                        </div>
+                        <img style="position:absolute; margin:auto" id="TH_searching" src="/assets/common/images/icons/ftp-loader-blank.gif" />
+                    </div>
+                {% endif %}
+                <div id='TH_Opreview'>
+                    <div class="PNB10"></div>
+                </div>
+                <div id='TH_Oreplace'>
+                    <table style="position:relative; left:0; width:100%;">
+                        <tr>
+                            <td width="100">{{ 'prod::editing::replace: remplacer dans le champ' | trans }}</td>
+                            <td>
+                                <select id="EditSRField" class="input-xlarge">
+                                    <option value="">{{ 'prod::editing::replace: remplacer dans tous les champs' | trans }}</option>
+                                    {% for field in fields %}
+                                        <option value="{{ field.get_id() }}">{{ field.get_label(app['locale']) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">{{ 'prod::editing:replace: chaine a rechercher' | trans }}</td>
+                            <td>
+                                <textarea id="EditSearch"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">{{ 'prod::editing:remplace: chaine remplacante' | trans }}</td>
+                            <td>
+                                <textarea id="EditReplace"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">{{ 'prod::editing:remplace: options de remplacement' | trans }}</td>
+                            <td>
+                                <input type="checkbox" id="EditSROptionRX" value="regexp" class="checkbox record-editor-toggle-replace-mode-action">
+                                {{ 'prod::editing:remplace::option : utiliser une expression reguliere' | trans }}
+                                {% set help_link = 'https://secure.wikimedia.org/wikipedia/en/wiki/Regular_expression' %}
+                                {% if app['locale'] == 'de' %}
+                                    {% set help_link = 'https://secure.wikimedia.org/wikipedia/de/wiki/Regul%C3%A4rer_Ausdruck' %}
+                                {% elseif app['locale'] == 'fr' %}
+                                    {% set help_link = 'https://secure.wikimedia.org/wikipedia/fr/wiki/Expression_rationnelle' %}
+                                {% elseif app['locale'] == 'ar' %}
+                                    {% set help_link = 'https://secure.wikimedia.org/wikipedia/ar/wiki/%D8%AA%D8%B9%D8%A7%D8%A8%D9%8A%D8%B1_%D9%86%D9%85%D8%B7%D9%8A%D8%A9' %}
+                                {% endif %}
+                                <a href="{{help_link}}" target="_blank">
+                                    <img src="/assets/common/images/icons/help.png" title="{{ 'Aide sur les expressions regulieres' | trans }}"/>
+                                </a>
+                                <br/>
+                                <br/>
+                                <div id="EditSR_RX" style="display:none">
+                                    <input type="checkbox" class="checkbox" id="EditSR_RXG">
+                                    {{ 'prod::editing:remplace::option: remplacer toutes les occurences' | trans }}
+                                    <br/>
+                                    <input type="checkbox" class="checkbox" id="EditSR_RXI">
+                                    {{ 'prod::editing:remplace::option: rester insensible a la casse' | trans }}
+                                </div>
+                                <div id="EditSR_TX" style="display:block">
+                                    <input type="radio" class="checkbox" name="EditSR_Where" value="exact">
+                                    {{ 'prod::editing:remplace::option la valeur du cahmp doit etre exacte' | trans }}
+                                    <br />
+                                    <input type="radio" class="checkbox" name="EditSR_Where" value="inside" checked>
+                                    {{ 'prod::editing:remplace::option la valeur est comprise dans le champ' | trans }}
+                                    <br />
+                                    <input type="checkbox" class="checkbox" id="EditSR_case">
+                                    {{ 'prod::editing:remplace::option respecter la casse' | trans }}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                            <br />
+                            <input type="button" class="btn btn-inverse record-editor-searchReplace-action" value="{{ 'boutton::valider' | trans }}"/>
+                            <br />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id='TH_Opresets'>
+                    <div class="PNB10">
+                        <button class="adder btn btn-inverse">{{ 'boutton::ajouter' | trans }}</button>
+                    </div>
+                    <ul style="top:50px;" class="PNB10 EDIT_presets_list"></ul>
+                </div>
+                <div id='TH_Oclipboard'>
+                    <div class="PNB10">
+                        <textarea id='CLIP_CC' style="width:98%; height:98% !important; height:300px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="buttonEditing">
+        <input type='button' value="{{ 'boutton::valider' | trans }}" class="btn btn-inverse btn-small apply-multi-desc-action" />
+        <input type='button' value="{{ 'boutton::annuler' | trans }}" class="btn btn-inverse btn-small cancel-multi-desc-action" />
+    </div>
+
+    </div>
+</div>
+
+<div id="EDIT_WORKING">
+    <center>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <b><h4>{{ 'prod::editing:indexation en cours' | trans }}</h4></b>
+        <span id='saveeditPbarI'></span> / <span id='saveeditPbarN'></span>
+        <br/>
+        <br/>
+        <br/>
+        <input type="hidden" name="edit-lst" id="edit_lst" value="{{ recordsRequest.serializedList() }}" />
+        <input type='button' class='btn btn-inverse'
+            value="{{ 'boutton::fermer' | trans }}"
+            onClick="$('#EDITWINDOW').fadeOut();return(false);" />
+    </center>
+</div>
+
+<div id="EDIT_CLOSEDIALOG" style="display:none;" title="{{ 'boutton::fermer' | trans }}">
+  {{ 'prod::editing: valider ou annuler les modifications' | trans }}
+</div>
+
+<div style="display:none" id="Edit_copyPreset_dlg">
+    <form onsubmit="return false;">
+        <span>{{ 'edit::preset:: titre' | trans }} :</span>
+        <input class="EDIT_presetTitle" type="text" name="name" style="width:300px;">
+        <div class="Edit_preset_item"></div>
+    </form>
+</div>
+
+<div id="dialog-edit-many-sbas" title="{{ 'Edition impossible' | trans }}" style="display:none;">
+    <p>
+        <span class="ui-icon ui-icon-alert " style="float:left; margin:0 7px 50px 0;"></span>
+        {% if multipleDataboxes %}
+            {{ 'prod::edit: Impossible d\'editer simultanement des documents provenant de bases differentes' | trans }}
+        {% elseif actionable == 0 %}
+            {% trans %}prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants{% endtrans %}
+        {% endif %}
+    </p>
+</div>
+
+<script type="text/javascript">
+    {%  set notActionableMsg = '' %}
+    {% if not_actionable > 1 %}
+    {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
+    {% elseif not_actionable == 1 %}
+    {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
+    {% endif %}
+    var recordEditorConfig = {
+        hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
+        databoxId: {{ databox.get_sbas_id }},
+        mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
+        notActionable: {{ not_actionable }},
+        notActionableMsg: '{{notActionableMsg}}',
+        diapoSize: {{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') }},
+        state: {
+            T_statbits: {{ JSonStatus|raw }},
+            T_fields: {{ JSonFields|raw }},
+            T_records: {{ JSonRecords|raw }},
+            T_sgval: {{ JSonSuggValues|raw }},
+            T_id: {{ JSonIds|raw }},
+            T_pos: {{ JSonIds|raw }},
+            T_mval: []
+        },
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
+        records: [
+
+            {% for record in recordsRequest %}
+            {
+                id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
+                {% set position = record.getPositionFromTechnicalInfos %}
+                technicalInfo: {
+                    isCoordComplete: {{ position.isCoordComplete }},
+                    latitude: {{ position.latitude }},
+                    longitude: {{ position.longitude }}
+                },
+                {% if record.get_type() == 'video' %}
+                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                {% set technical_info = record.get_technical_infos %}
+                {% set width = technical_info[dataW].value %}
+                {% set height = technical_info[dataH].value %}
+
+                {% if width and height %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
+                {% else %}
+                {% set ratio = '' %}
+                {% endif %}
+
+                sources: [
+                    {% for subdef in previewHtml5 %}
+                    {
+                        ratio: '{{ ratio }}',
+                        framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
+                        type: "{{ subdef.get_mime() }}",
+                        src: "{{ subdef.get_url() }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+                {% endif %}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+    };
+</script>
