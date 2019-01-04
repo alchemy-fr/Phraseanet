@@ -1,0 +1,128 @@
+{% extends 'admin/publications/wrapper.html.twig' %}
+
+{% block content %}
+
+<form style="max-width:500px" class="no-ajax form_publication form-horizontal" method="post" action="{{ path('admin_feeds_create') }}">
+    <fieldset>
+        <legend>{{ 'Ajouter une publication' | trans }}</legend>
+        <div class="control-group">
+            <label class="control-label" for="add_pub_titre">{{ 'Titre' | trans }}</label>
+            <div class="controls">
+                <input type="text" id="add_pub_titre" class="required_text input-large" placeholder="{{ 'Feed name' | trans }}" maxlength="128" name="title" />
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="add_pub_subtitre">{{ 'Sous-titre' | trans }}</label>
+            <div class="controls">
+                <input type="text" id="add_pub_subtitre" class="input-large" placeholder="{{ 'Short description' | trans }}" maxlength="512" name="subtitle" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="add_pub_base_id">{{ 'Etendue de la publication' | trans }}</label>
+            <div class="controls">
+                <select id="add_pub_base_id" class="input-large" name="base_id">
+                    <option value="">{{ 'Non-Restreinte (publique)' | trans }}</option>
+                    {% for databox in app.getAclForUser(app.getAuthenticatedUser()).get_granted_sbas([constant('\\ACL::BAS_CHUPUB')]) %}
+                        <optgroup label="{{ databox.get_label(app['locale']) }}">
+                            {% for collection in databox.get_collections() %}
+                                <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <label class="checkbox" for="add_pub_public">
+                    <input type="checkbox" id="add_pub_public" name="public" value="1" />
+                    {{ 'Publique' | trans }}
+                </label>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{{ 'boutton::valider' | trans }}</button>
+        </div>
+    </fieldset>
+</form>
+
+<table class="admintable" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+            <th style="width:40px;"></th>
+            <th>{{ 'Titre' | trans }}</th>
+            <th style="width:150px; text-align: center;">{{ 'Date Creation' | trans }}</th>
+            <th style="width:220px; text-align: center;">{{ 'Restriction' | trans }}</th>
+            <th style="width:80px; text-align: center;">{{ 'Public' | trans }}</th>
+            <th style="width:80px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feed in feeds %}
+            <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                <td>
+                    <div style="border:1px solid #ccc; width:22px; height:22px; margin:2px;">
+                        <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}">
+                            <img src="{% if feed.getIconUrl() == false %}
+                                 /assets/common/images/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ feed.getId() }}.jpg
+                                 {% endif %}" id="pub_icon" style="margin:3px; width:16px; height:16px;"/>
+                        </a>
+                    </div>
+                </td>
+                <td valign="center" align="left">
+                    <a href="{{ path('admin_feeds_feed', { 'id' : feed.getId() }) }}" style="display:block;">{{ feed.getTitle() }}</a>
+                </td>
+                <td style="text-align: center;">
+                    {{ app['date-formatter'].getDate(feed.getCreatedOn()) }}
+                </td>
+                <td valign="center" align="center">
+                    {% if feed.getCollection(app) != null %}
+                        {{ feed.getCollection(app).get_databox().get_label(app['locale']) }} /
+                        {{ feed.getCollection(app).get_name() }}
+                    {% endif %}
+                </td>
+                <td valign="center" align="center">
+                    {% if feed.isPublic() %}
+                        <img src="/assets/common/images/icons/ligth-on.png" title="{{ 'This feed is public' | trans }}"/>
+                    {% endif %}
+                </td>
+                <td valign="center" align="center">
+                    {% if feed.isOwner(app.getAuthenticatedUser()) %}
+                        <form class="no-ajax form_publication" action="{{ path('admin_feeds_feed_delete', { 'id' : feed.getId() }) }}" method="post" style="margin:0;">
+                            <button class="feed_remover btn btn-mini">{{ 'boutton::supprimer' | trans }}</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('button.feed_remover').bind('click', function(event){
+      if(!confirm('{{ 'Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?' | trans }}'))
+      {
+        event.stopPropagation();
+        return false;
+      }
+    });
+    $('#add_pub_public').bind('change', function(){
+      if($(this).prop('checked'))
+      {
+        $('#add_pub_base_id').val('');
+      }
+    });
+    $('#add_pub_base_id').bind('change', function(){
+      if($(this).val() != '')
+      {
+        $('#add_pub_public').prop('checked', false);
+      }
+    });
+  });
+</script>
+
+{% endblock %}

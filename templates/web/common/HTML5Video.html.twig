@@ -1,0 +1,63 @@
+{% macro format(arraySubdefs, displayWidth, displayHeight, extraclass, wrap)%}
+
+    {% set displayWidth = displayWidth %}
+    {% set displayHeight = displayHeight|default(displayWidth) %}
+
+    {% if wrap %}
+        <div style="width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;" class="thumb_wrapper {{ extraclass | default('') }}">
+    {% endif %}
+
+    {% set unique_id = '' | JSUniqueID %}
+
+    <div class="record record_video imgTips" style="position:relative;width:{{ displayWidth | round }}px;height:{{ displayHeight | round }}px;">
+        <video id="{{ unique_id }}" class="videoTips video-js vjs-default-skin" controls autoplay
+        preload="auto" width="{{ displayWidth|round }}" height="{{ displayHeight | round }}"
+        data-setup="{}">
+        {% set s_width = null %}
+        {% set s_height = null %}
+        {% for name, subdef in arraySubdefs %}
+            {% if loop.first %}
+                {% set s_width = subdef.get_width() %}
+                {% set s_height = subdef.get_height() %}
+            {% endif %}
+            {% if app.getAuthenticator().isAuthenticated() == true %}
+                {% set url = subdef.get_url() %}
+            {% else %}
+                {% set url = subdef.get_permalink().get_url() %}
+            {% endif %}
+            <source src="{{ url }}" type='{{ subdef.get_mime() }}'>
+        {% endfor %}
+        </video>
+        <input type="hidden" name="width" value="{{ s_width }}"/>
+        <input type="hidden" name="height" value="{{ s_height }}"/>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            try {
+                _V_("{{ unique_id }}", {}, function(){
+                    var player = this;
+
+                    $('#{{ unique_id }}').bind('resize-video-js', function(){
+                        var parent = $(this).parent();
+                        player.width(parent.width());
+                        player.height(parent.height());
+                    }).trigger('resize-video-js');
+
+                    $('#{{ unique_id }}').bind('unload-video-js', function(){
+                        player.destroy();
+                    });
+                });
+            } catch(err) {
+                console.error('An error has been catched during the execution of VideoJS', err);
+            }
+        });
+    </script>
+
+    {% if wrap %}
+        </div>
+    {% endif %}
+
+{% endmacro %}
+
+

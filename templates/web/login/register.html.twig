@@ -1,0 +1,46 @@
+{% extends "login/layout/sidebar-layout.html.twig" %}
+
+{% import "login/common/macros.html.twig" as auth_macro %}
+
+{% block title %}
+    {{ "Register" | trans }}
+{% endblock %}
+
+{% block sidebar %}
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12 authentication-sidebar-title">
+                <div class="text-title">
+                    {{ "Inscription" | trans }}
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <a id="register-classic" href="{{ path("login_register_classic") }}" class="btn btn-success btn-trigger input-block-level">
+                    <span class="pull-left">
+                        {{ "Create an account manually" | trans }}
+                    </span>
+                    <span class="pull-right">
+                        <i class="fa fa-arrow-right icon-white" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if authentication_providers | count > 0 %}
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12 text-center">
+                {{ "Or login with" | trans }}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 text-center">
+                {{ auth_macro.providerList() }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

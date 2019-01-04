@@ -1,0 +1,110 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+    <div class="control-group">
+        <label class="control-label"> {{ 'Databox' | trans }}</label>
+        <div class="controls">
+            {% for databox in app.getApplicationBox().get_databoxes() %}
+            <label class="checkbox inline">
+                <input type="checkbox" name="sbas[]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
+                ({{ databox.get_sbas_id() }})
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"> {{ 'recordtype' | trans }}</label>
+        <div class="controls">
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_image" value="image"> {{ 'image' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_video" value="video"> {{ 'video' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_audio" value="audio"> {{ 'audio' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_document" value="document"> {{ 'document' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_flash" value="flash"> {{ 'flash' | trans }}
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" name="type_unknown" value="unknown"> {{ 'unknown' | trans }}
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"> {{ 'Number of records to process per batch' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="flush" value="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'Restart the task every X records' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="maxrecs" value="">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'Restart the task if memory reaches' | trans }}</label>
+        <div class="controls">
+            <input class="formElem input-mini" type="text" name="maxmegs" value="">
+            <span class="help-inline">Mo</span>
+        </div>
+    </div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="embedded" value="1">
+            {{ 'Try to extract embedded thumbnails' | trans }}
+        </label>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+
+    function minmax(v, _min, _max)
+    {
+        if(isNaN(v) || v < _min)
+        {
+            v = _min;
+        }
+        else if(v > _max)
+        {
+            v = _max;
+        }
+        return v;
+    }
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            var gform = document.forms['graphicForm'];
+
+            gform.embedded.checked = !!parseInt(xml.find("embedded").text());
+            gform.type_image.checked = !!parseInt(xml.find("type_image").text());
+            gform.type_video.checked = !!parseInt(xml.find("type_video").text());
+            gform.type_audio.checked = !!parseInt(xml.find("type_audio").text());
+            gform.type_document.checked = !!parseInt(xml.find("type_document").text());
+            gform.type_flash.checked = !!parseInt(xml.find("type_flash").text());
+            gform.type_unknown.checked = !!parseInt(xml.find("type_unknown").text());
+            gform.flush.value = minmax(parseInt(xml.find("flush").text()), 1, 100);
+            gform.maxrecs.value = minmax(parseInt(xml.find("maxrecs").text()), 10, 100);
+            gform.maxmegs.value = minmax(parseInt(xml.find("maxmegs").text()), 64, 512);
+            var $databoxes = $(gform).find("input[name='sbas[]']");
+            for(i=0; i < $databoxes.length; i++) {
+                var sbid = $($databoxes[i]).attr('value');
+
+                $($databoxes[i]).prop('checked', (xml.find("sbas").filter(function(){return $(this).text()==sbid}).length > 0));
+            }
+        }
+    }
+ </script>
+{% endblock %}

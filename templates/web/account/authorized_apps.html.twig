@@ -1,0 +1,67 @@
+{% extends "account/base.html.twig" %}
+
+{% block title %}
+    {{ "Granted third party applications" | trans }}
+{% endblock %}
+
+{% set selected = "applications" %}
+
+{% block content_account %}
+    <div class="row-fluid">
+        <div class="span6">
+            <div id="content-apps">
+                <h3>{{ "Vous avez autorise ces applications a acceder a votre compte" | trans }}</h3>
+                {% if applications|length > 0 %}
+                    <ul class="unstyled app-list">
+                        {% for data in applications if data["user-account"] is not none %}
+                            {% set application = data["application"] %}
+                            {% set account = data["user-account"] %}
+                            <li id="app_{{ application.getId() }}">
+                                <div>
+
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}" class="revoke app-btn btn btn-small pull-right {% if account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Revoquer l\'access" | trans }}</a>
+                                    <a href="{{ path("grant_app_access", {"application" : application.getId()}) }}"  class="authorize app-btn btn btn-small pull-right {% if not account.isRevoked() %}hidden{% endif %}" value="{{application.getId()}}">{{ "Authoriser l\'access" | trans }}</a>
+                                    <p class="app-row">
+                                        <a href="{{ application.getWebsite() }}" target="_blank">
+                                            <strong>{{ application.getName() }}</strong>
+                                        </a>
+                                        {% if application.getCreator() is not none %}
+                                            <small>
+                                                {% set user_name = application.getCreator().getDisplayName() %}
+                                                {% trans with {'%user_name%' : user_name} %}par %user_name%{% endtrans %}
+                                            </small>
+                                        {% endif%}
+                                    </p>
+                                    <p class="app-row">
+                                        <span class="status text-error {% if account.isRevoked() == false %}hidden{% endif %}">{{ "Not Allowed" | trans }}</span>
+                                        <span class="status text-success {% if account.isRevoked() == true %}hidden{% endif %}">{{ "Allowed" | trans }}</span>
+                                    </p>
+                                    <p class="app-row">{{ application.getDescription()|truncate(120, true, "...") }}</p>
+                                </div>
+                            </li>
+                        {%endfor%}
+                    </ul>
+                 {% else %}
+                    <div>
+                        {{ "Aucune application n\'a accés à vos données." | trans }}
+                    </div>
+                 {% endif %}
+            </div>
+        </div>
+        <div class="span6">
+            <div class="well well-small">
+                <h3>{{ "Third-party applications" | trans }}</h3>
+                <p>
+                  {{ "A third-party application is a product developed apart from Phraseanet and that would access Phraseanet data." | trans }}
+                </p>
+            </div>
+
+            <div class="well well-small">
+                <h3>{{ "Developpeurs" | trans }}</h3>
+                <p>
+                    {{ "Les developpeurs peuvent editer l\'enregistrement de leurs application grace a l\'onglet 'developpeurs' ci-dessus" | trans }}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<div class="general-aggregation-layout">
+    <ul class="unstyled aggregation-collection">
+        {% for formdata in form %}
+            {% set attr = formdata.vars['attr']|join(',') %}
+            {% if attr == 'aggregate' %}
+                <li>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ form_label(formdata, null, {
+                                    'label_attr': {'class': 'label-aggregation'}
+                                }) }}
+                            </td>
+                            <td>
+                                {{ form_widget(formdata) }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
+            class="btn btn-primary">{{ 'Save' | trans }}</button>
+</div>

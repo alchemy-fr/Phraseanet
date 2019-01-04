@@ -1,0 +1,227 @@
+{% extends 'admin/publications/wrapper.html.twig' %}
+
+{% block content %}
+
+<div>
+    {% if error %}
+        <div class="error alert alert-error">{{ error }}</div>
+    {% endif %}
+    {% if feed.isOwner(app.getAuthenticatedUser()) %}
+        <h2>{{ 'Edition' | trans }}</h2>
+        <div class="control-group">
+            <div id="pub_icon">
+                <div class="thumb_wrapper">
+                    <img id="img_before" src="{% if feed.getIconUrl() == false %}
+                                 /assets/common/images/icons/rss32.gif
+                                 {% else %}
+                                 /custom/feed_{{ feed.getId() }}.jpg
+                                 {% endif %}" />
+                </div>
+            </div>
+            <div id="pub_fileupload">
+                <input id="fileupload-feed" type="file" name="files[]" accept="image/*" data-url="/admin/publications/feed/{{ feed.getId() }}/iconupload/">
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div id='upload-error' style="color: #B94A48;"></div>
+
+        <script>
+        $(function () {
+            $('#fileupload-feed').fileupload({
+                dataType: 'json',
+                singleFileUploads : true,
+                sequentialUploads: true,
+                add: function (e, data) {
+                    $('#upload-error').empty();
+                    require([
+                        "blueimp.loadimage"
+                    ], function (loadImage) {
+
+                        $.each(data.files, function (index, file) {
+                            var fileType = /^image\/(gif|jpeg|png)$/;
+                            if(typeof loadImage == 'function' && fileType.test(file.type)){
+                                if(file.size < 204800){ //200 ko
+                                    var options = {
+                                        maxWidth: 32,
+                                        maxHeight: 32,
+                                        minWidth: 32,
+                                        minHeight: 32
+                                    };
+
+                                    data.oldImage = $("#img_before").get(0);
+
+                                    loadImage(file, function(img){
+                                        $("#img_before").remove();
+                                        $("#pub_icon .thumb_wrapper").append(img);
+                                        $("#pub_icon .thumb_wrapper img").attr("img_before");
+                                        return false;
+                                    }, options);
+
+                                    data.submit();
+                                } else {
+                                    $('#upload-error').empty().append(language.errorFileApiTooBig);
+                                }
+                            }
+                        });
+                    });
+                },
+                done: function (e, data) {
+                    return false;
+                }
+            });
+
+            $('#fileupload-feed').bind('fileuploadsubmit', function (e, data) {
+                var jqXHR = $(this).fileupload('send', data)
+                    .success(function(response){
+                        if( ! response.success){
+                          $("#pub_icon .thumb_wrapper").empty();
+                          $('#upload-error').empty().append(response.message);
+                          $("#pub_icon .thumb_wrapper").append(data.oldImage);
+                        }
+                    })
+                    .error(function(jqXHR, textStatus, errorThrown) {
+                        alert('error');
+                    });
+
+                    return false;
+            });
+        });
+        </script>
+
+        <form class="no-ajax form_publication form-vertical" name="form_publication" enctype="multipart/form-data" method="post" action="{{ path('admin_feeds_feed_update', { 'id' : feed.getId() }) }}">
+            <div class="control-group">
+                <label class="control-label" for="edit_pub_titre">{{ 'Titre' | trans }} :</label>
+                <div class="controls">
+                    <input id="edit_pub_titre" class="required_text input-large" maxlength="128" name="title" type="text" value="{{ feed.getTitle() }}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="edit_pub_subtitre">{{ 'Sous-titre' | trans }} :</label>
+                <div class="controls">
+                    <input placeholder="{{ 'Short description' | trans }}" id="edit_pub_subtitre" class="input-large" maxlength="512" name="subtitle" type="text" value="{{ feed.getSubtitle() }}" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="edit_pub_base_id">{{ 'Etendue de la publication' | trans }} :</label>
+                <div class="controls">
+                    <select id="edit_pub_base_id" class="input-large" name="base_id" {% if feed.isPublic() %}disabled="disabled"{% endif %}>
+                        <option value="">{{ 'Non-Restreinte (publique)' | trans }}</option>
+                        {% for databox in app.getAclForUser(app.getAuthenticatedUser()).get_granted_sbas([constant('\\ACL::BAS_CHUPUB')]) %}
+                            <optgroup label="{{ databox.get_label(app['locale']) }}">
+                                {% for collection in databox.get_collections() %}
+                                    <option {% if feed.getBaseId() and feed.getCollection(app).get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                <label class="checkbox" for="edit_pub_public">
+                    <input type="checkbox" id="edit_pub_public" class="input-large" name="public" value="1" {% if feed.isPublic() %}checked="checked"{% endif %} />
+                    {{ 'Publique' | trans }}
+                </label>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" type="submit">{{ 'boutton::valider' | trans }}</button>
+                <a href="{{ path('admin_feeds_list') }}" class="btn" style="text-decoration:none;">{{ 'boutton::annuler' | trans }}</a>
+            </div>
+        </form>
+        <br />
+        <div style="width: 500px;">
+            <h2>{{ 'Liste des personnes habilitees a publier sur ce fil' | trans }}</h2>
+            <table class="admintable">
+                <thead>
+                    <tr>
+                        <th valign="center" align="left">{{ 'Id' | trans }}</th>
+                        <th valign="center" align="left"></th>
+                        <th valign="center" align="left">{{ 'Email' | trans }}</th>
+                        <th valign="center" align="center">{{ 'Owner' | trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for publisher in feed.getPublishers() %}
+                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                        <td valign="center" align="left">
+                            {{ publisher.getUser().getId() }}
+                        </td>
+                        <td valign="center" align="left">
+                            {{ publisher.getUser().getDisplayName() }}
+                        </td>
+                        <td valign="center" align="left">
+                            {{ publisher.getUser().getEmail() }}
+                        </td>
+                        <td valign="center" align="center">
+                            {% if publisher.isOwner() == true %}
+                                X
+                            {% else %}
+                                <form class="no-ajax form_publication" method="post" action="{{ path('admin_feeds_feed_remove_publisher', { 'id' : feed.getId() }) }}" style="margin:0;">
+                                    <input type="hidden" value="{{ publisher.getId() }}" name="publisher_id"/>
+                                    <button class="btn btn-mini">{{ 'boutton::supprimer' | trans }}</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <form class="no-ajax form_publication" id="publisher_adder" method="post" action="{{ path('admin_feeds_feed_add_publisher', { 'id' : feed.getId() }) }}">
+                    <div class="control-group">
+                        <label class="control-label">{{ 'Ajouter un publisher' | trans }} :</label>
+                        <div class="controls">
+                            <input placeholder="{{ 'Name or email' | trans }}" class="publish_adder"/>
+                            <input type="hidden" name="usr_id"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+            /* IE 6 doesn't support max-height
+            * we use height instead, but this forces the menu to always be this tall
+            */
+        * html .ui-autocomplete {
+            height: 200px;
+        }
+        .ui-autocomplete-loading { background: white url('/assets/common/images/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $( ".publish_adder" ).autocomplete({
+                        source: "/admin/users/typeahead/search/?filter_rights[]=bas_chupub",
+                        minLength: 2,
+                        select: function( event, ui ) {
+                            var form = $('#publisher_adder');
+                            $('input[name="usr_id"]', form).val(ui.item.id);
+                            form.submit();
+                        }
+                }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                    var email = item.email ? '<br/>'+item.email : '';
+                    var login = item.login != item.name ? " ("+ item.login +")" : '';
+                    return $( "<li></li>" )
+                    .data( "ui-autocomplete-item", item )
+                    .append( "<a>" + item.name + login + email + "</a>" )
+                    .appendTo( ul );
+                };
+            });
+        </script>
+
+    {% else %}
+        {{ 'You are not the feed owner' | trans }}
+        <a href="{{ path('admin_feeds_list') }}">{{ 'boutton::retour' | trans }}</a>
+    {% endif %}
+</div>
+
+{% endblock %}

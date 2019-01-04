@@ -1,0 +1,208 @@
+<div class="page-header">
+    <h1>{{ 'Setup' | trans }}</h1>
+</div>
+
+<form class="form-horizontal" id="GV_form_head">
+    <div class="control-group">
+        <label class="control-label">Adress : </label>
+        <div class="controls">
+            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['conf'].get('servername') }}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Installation : </label>
+        <div class="controls">
+            <input type="text" class="input-xxlarge" readonly="readonly" value="{{ app['root.path'] }}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Maintenance : </label>
+        <div class="controls">
+            <input type="checkbox" readonly="readonly" disabled="disabled"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Debug : </label>
+        <div class="controls">
+            <input type="checkbox" readonly="readonly" disabled="disabled" {{ app['debug'] ? "checked='checked'" : '' }} />
+        </div>
+    </div>
+</form>
+
+
+{{ form_start(form, {'method': 'POST', 'action' : path('setup_display_globals'), 'attr': {'class' : 'form-horizontal', 'id': 'setupForm'}}) }}
+{{ form_errors(form) }}
+{% for daform in form %}
+    {% if daform.vars['label'] != null %}
+        <fieldset>
+            <legend>{{ daform.vars['label'] }}</legend>
+            {% for formdata in daform %}
+                {% if formdata.vars['attr'] is defined and formdata.vars['attr']['id'] is defined
+                and formdata.vars['attr']['id'] == 'personalize-logo-container' %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {% include 'admin/personalisation_logo.html.twig' with {'form': formdata} %}
+                        </div>
+
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% else %}
+                    <div class="control-group">
+                        {{ form_errors(formdata) }}
+                        {{ form_label(formdata, null, { 'label_attr': {'class' : 'control-label'} } ) }}
+                        <div class="controls">
+                            {{ form_widget(formdata, {'attr': {'class': 'input-xxlarge'}}) }}
+                        </div>
+
+                        <div>{{ formdata.vars['help_message'] }}</div>
+                        {{ form_rest(formdata) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {{ form_rest(daform) }}
+        </fieldset>
+    {% endif %}
+{%  endfor %}
+<legend>{{ "setup::custom-link:title-custom-link" | trans }}</legend>
+<table class="links" id="custom-link-table"
+       data-prototype="{% filter escape %}{% include 'admin/custom_links.html.twig' with {'form': form['custom-links'].vars.prototype} %}{% endfilter %}">
+    <tbody>
+    {% for links in form['custom-links'] %}
+        {% include 'admin/custom_links.html.twig' with {'form': links} %}
+    {% endfor %}
+    </tbody>
+</table>
+<button id="add-row" class="btn btn-success">{{ "setup::custom-link:add-link" | trans }}</button>
+<div style="clear: both;"></div>
+<div class="well well-large">
+    <div style="max-width: 400px;margin: 0 auto 10px;">
+        <input type="submit" id="submitSetupForm" class="btn btn-primary btn-block btn-large"
+               value="{{ 'boutton::valider' | trans }}"/>
+    </div>
+</div>
+{{ form_end(form) }}
+
+<script type="text/javascript" src="/assets/vendors/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
+<script type='text/javascript'>
+    {% autoescape false %}
+    $(document).ready(function() {
+        // use html5 fallback validation if browser do not support required attribute
+        var form = $("#GV_form");
+        var inputs = form.find("input, select, textarea");
+
+        var header = "<thead>" +
+            "<th>{{ "setup::custom-link:name-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:language-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:link-url" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:location-link" | trans }}</th>" +
+            "<th>{{ "setup::custom-link:order-link" | trans }}</th>" +
+            "<th></th>" +
+            "<th></th>" +
+            "<th></th>" +
+            "</thead>";
+
+
+        // if required not supported, emulate it
+        if (!Modernizr.input.required) {
+            form.bind("submit", function (event) {
+                var required = [];
+                // loop through input elements looking for required
+                $.each(inputs, function(k, input){
+                    var input = $(input);
+                    if (typeof input.attr('required') !== "undefined") {
+                        // if the value is empty, add to required array
+                        if (input.val().replace(/^\s+|\s+$/g, '') === '') {
+                            required.push(input.attr('name'));
+                        }
+                    }
+                });
+
+                // show popover if required array contains any elements
+                if (required.length > 0) {
+                    $.each(required, function(k, name) {
+                        var $this = $("input[name="+name+"], select[name="+name+"], textarea[name="+name+"]");
+                        $this.popover({ title: language.attention, content: language.requiredValue, placement:"bottom" })
+                                .blur(function () {
+                                    $this.popover('hide');
+                                });
+                        $this.popover("show");
+                    });
+                    // prevent the form from being submitted
+                    event.stopImmediatePropagation();
+                    return false;
+                }
+            });
+        }
+
+        // Get the ul that holds the collection of links
+        $collectionHolder = $('table.links');
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+        if ($collectionHolder.find('tbody tr').length > 0) {
+            $("#custom-link-table").append(header);
+        }
+        $('select.link-color').simplecolorpicker({picker: true});
+        _.each($('select.link-color'), function (element) {
+            updateSelectColor($(element).siblings(), $(element).val());
+            updateInputNameColor($(element).parent().siblings(':first').find("input"), $(element).val());
+        });
+        $("#add-row").click(function (e) {
+            e.preventDefault();
+            if ($collectionHolder.find('tbody tr').length == 0) {
+                $("#custom-link-table").append(header);
+            }
+            addTagForm($collectionHolder);
+        });
+        function addTagForm($collectionHolder) {
+            // Get the data-prototype
+            var prototype = $collectionHolder.data('prototype');
+            // get the new index
+            var index = $collectionHolder.data('index');
+            var newForm = prototype;
+            newForm = newForm.replace(/__name__/g, index);
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+            $collectionHolder.append(newForm);
+            $('select.link-color').simplecolorpicker({picker: true});
+            _.each($('select.link-color'), function (element) {
+                updateSelectColor($(element).siblings(), $(element).val());
+                updateInputNameColor($(element).parent().siblings(':first').find("input"), $(element).val());
+            });
+        }
+
+        $("#custom-link-table").on('click', '.close-row', function () {
+            $(this).closest('tr').remove();
+            var rowCount = $('#custom-link-table tr').length;
+            //remove header if no more rows
+            if (rowCount <= 1) {
+                $("#custom-link-table").empty();
+            }
+            return false;
+        });
+        $("#custom-link-table").on('change', 'select.link-color', function () {
+            var element = $(this).parent().siblings(':first').find("input");
+            updateSelectColor($(this).siblings(), $(this).val());
+            updateInputNameColor(element, $(this).val());
+        });
+        function updateSelectColor(element, color) {
+            element.css("border", "none");
+            if (color === "") {
+                element.css("background", "url(/assets/common/images/icons/Bouton-couleur.png)");
+            } else {
+                element.css("background", color);
+            }
+        }
+
+        function updateInputNameColor(element, color) {
+            element.css("background-color", color);
+            if (color === "") {
+                element.css("color", "#555");
+            } else {
+                element.css("color", "#FFFFFF");
+            }
+        }
+    });
+    {% endautoescape %}
+</script>

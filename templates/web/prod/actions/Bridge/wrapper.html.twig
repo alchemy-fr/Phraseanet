@@ -1,0 +1,84 @@
+<div class="PNB10 container-bridge">
+    <div class="api_banner">
+        <table style="width:100%; height:20px;">
+            <tbody>
+                <tr>
+                    <td>
+                    {% if account is not none %}
+                        {% for type, display_name in account.get_api().get_connector().get_element_types() %}
+                            <a class="{% if adapter_action == 'load-elements' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('bridge_load_elements', { 'account_id' : account.get_id(), 'type' : type }) }}">
+                                {{ display_name }}
+                            </a>
+                            {% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                        |
+                    {% if account is not none %}
+                        {% for type, display_name in account.get_api().get_connector().get_container_types() %}
+                            <a class="{% if adapter_action == 'load-containers' and action_type == type %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadcontainers', { 'account_id' : account.get_id(), 'type' : type }) }}">
+                                {{ display_name }}
+                            </a>
+                            {% if not loop.last %} - {% endif %}
+                        {% endfor %}
+                        <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="{{ path('prod_bridge_account_loadrecords', { 'account_id' : account.get_id() }) }}">
+                            {{ 'Fichiers envoyes' | trans }}
+                        </a>
+                    {% endif %}
+                    </td>
+                    <td style="text-align:right;">
+                    {% if account is not none %}
+                        <a class="bridge_action bridge_logout" href="{{ path('prod_bridge_account_logout', { 'account_id' : account.get_id() }) }}">
+                            {{ 'phraseanet:: deconnection' | trans }}
+                        </a>
+                    {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="api_content PNB" style="top:30px;bottom:30px;overflow:auto;background-color:#000;">
+        <div class="blockmenu">
+            <div>
+                {% block menu %}{% endblock %}
+            </div>
+        </div>
+        <div class="blockresponse" style="width:98%">
+            {% if error_message %}
+                <div class="ui-corner-all error_box">{{ error_message }}</div>
+            {% endif %}
+            {% if notice_message %}
+                <div class="ui-corner-all notice_box">{{ notice_message }}</div>
+            {% endif %}
+            {% block response %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="PNB api_infos" style='bottom:0; height:25px;top:auto'>
+        <div >
+            <table style="width:100%; height:25px;">
+                <tbody>
+                    <tr>
+                        <td>
+                            {% if account is not none %}
+                                {% if account.get_api().get_connector().get_terms_url() %}
+                                    <a href="{{ account.get_api().get_connector().get_terms_url() }}" target="_blank">
+                                        {{ 'Terms of service' | trans }}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td style="text-align:right;">
+                            {% if account is not none %}
+                                <a href="{{ account.get_api().get_connector().get_url() }}" target="_blank">
+                                    {{ account.get_api().get_connector().get_infos() }}
+                                    <img style="height:16px;vertical-align:middle;" src="{{ account.get_api().get_connector().get_icon_url() }}" />
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

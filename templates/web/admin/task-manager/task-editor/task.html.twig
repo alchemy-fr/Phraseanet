@@ -1,0 +1,206 @@
+<div id="taskBody">
+    {% block css %}{% endblock %}
+    <form
+            name="task-edit"
+            method="POST"
+            action="{{ path('admin_tasks_task_save', {'task' : task.getId()}) }}"
+            class="form-horizontal no-ajax">
+        {% if form.vars.errors|length > 0 %}
+            {{ form_errors(form) }}
+        {% endif %}
+        <fieldset>
+            <legend>{{ 'Task Edition' | trans }}</legend>
+            <div class="control-group">
+
+                <label class="control-label">{{ form_label(form.name) }} {{ form_errors(form.name) }}</label>
+                <div class="controls">
+                    {{ form_widget(form.name) }}
+                </div>
+            </div>
+            <div class="control-group">
+
+                <label class="control-label">{{ form_label(form.period) }} {{ form_errors(form.period) }}</label>
+                <div class="controls">
+                    {{ form_widget(form.period) }}
+                </div>
+            </div>
+            <div class="control-group">
+
+                <label class="control-label">{{ form_label(form.status) }} {{ form_errors(form.status) }}</label>
+                <div class="controls">
+                    {{ form_widget(form.status) }}
+                </div>
+            </div>
+
+            {{ form_rest(form) }}
+        </fieldset>
+
+    </form>
+    <div class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label">{{ 'admin::tasks: Nombre de crashes :' | trans }}</label>
+            <div class="controls">
+                <input class="formElem input-mini" type="text" name="crash-counter" value="{{ task.getCrashed() }}" readonly>
+                <button class="btn btn-success btn-mini" id="taskResetCrashCounterButton">
+                    {{ 'admin::tasks: reinitialiser el compteur de crashes' | trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="taskTabs">
+        <ul>
+            <li><a href="#taskXmlTab">{{ 'boutton::vue xml' | trans }}</a></li>
+            <li><a href="#taskGuiTab">{{ 'boutton::vue graphique' | trans }}</a></li>
+        </ul>
+
+        <div id="taskGuiTab">
+            <form id="graphicForm" name="graphicForm" class="form-horizontal" onsubmit="return(false);" method="post">
+                {% block form %}{% endblock %}
+            </form>
+        </div>
+
+        <div id="taskXmlTab">
+            {% block xml_settings %}
+                <form onsubmit="return(false);" name="fxml" method="post">
+                    <textarea nowrap id="txtareaxml" style="white-space:pre; width:100%; height:250px" name="txtareaxml">{{ task.getSettings() }}</textarea>
+                </form>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-trigger " id="taskSaveButton" form="task-edit">
+            {{ "Save" | trans }}
+        </button>
+        <a href="{{ path('admin_tasks_list') }}">{{ 'Cancel' | trans }}</a>
+    </div>
+
+
+    {% block javascript %}
+        <script type="text/javascript">
+            function taskFillGraphic(xml) {};
+        </script>
+    {% endblock %}
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#taskTabs").tabs({
+            create: function (event, ui) {
+                $("#taskTabs").tabs({active: 1});
+            }
+            ,
+            beforeActivate: function (event, ui) {
+                switch ($(ui.newPanel).attr("id")) {
+                    case "taskGuiTab":
+
+                        var validated = false;
+                        // click on gui tab : fill the gui from xml, then switch to the gui view
+                        $.ajax({
+                            "url": "{{ path('admin_tasks_validate_xml') }}",
+                            "data": $("#txtareaxml").val(),
+                            "processData": false,
+                            "dataType": "text",
+                            "type": "POST",
+                            "async": false,
+                            success: function (data) {
+                                var x = $("#txtareaxml").val();
+                                try {
+                                    taskFillGraphic(x);
+                                    validated = true;
+                                } catch (e) {
+                                    // todo add notification
+                                    console.log(e);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                // todo add notification
+                            }
+                        });
+
+                        return validated;
+                        break;
+                    case "taskXmlTab":
+                        xmlFromForm();
+                        break;
+                }
+            }
+        });
+
+        $("#taskResetCrashCounterButton").click(function () {
+            $.ajax({
+                "url": "{{ path('admin_tasks_task_reset', {'task' : task.getId()}) }}",
+                "dataType": "json",
+                "type": "POST",
+                success: function (data) {
+                    if (!data.success) {
+                        //todo add notification and loader
+                    } else {
+                        $("input[name='crash-counter']").val("0");
+                    }
+                }
+            });
+        });
+
+        function xmlFromForm(callback) {
+            var formData = $("#graphicForm").serializeArray();
+            formData.push({"name": "xml", "value": $("#txtareaxml").val()});
+            $.ajax({
+                url: "{{ path('admin_tasks_xml_from_form', {'task' : task.getId()}) }}"
+                , data: formData
+                , dataType: 'text'
+                , type: "POST"
+                , success: function (data) {
+                    $("#txtareaxml").val(data);
+                    if (typeof callback === 'function') {
+                        callback(data);
+                    }
+                }
+                , error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText);
+                    // todo add a notification message
+                }
+            });
+        }
+
+        $('#taskSaveButton').on('click', function () {
+            $("form[name='task-edit']").submit();
+        });
+
+        $("form[name='task-edit']").on('submit', function () {
+            xmlFromForm(function (data) {
+                $("form[name='task-edit'] input[name='settings']").val(data);
+                formData = $("form[name='task-edit']").serializeArray();
+                $.ajax({
+                    url: "{{ path('admin_tasks_task_save', { 'task' : task.getID() }) }}"
+                    , data: formData
+                    , dataType: 'json'
+                    , type: "POST"
+                    , async: false
+                    , success: function (data) {
+                        if (data.success) {
+                            console.log('should go back to list');
+                            $('#right-ajax').empty().addClass('loading').parent().show();
+                            $('#right').hide();
+                            $.get("{{ path('admin_tasks_list') }}", function (data) {
+                                $('#right-ajax').removeClass('loading').html(data);
+                            });
+                        } else {
+                            if (window.console) {
+                                console.log(data.message);
+                            }
+                            alert("{{ 'An error occured' | trans | e('js') }}" + data.message);
+                        }
+                    }
+                    , error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Erreur XML:\n\n" + jqXHR.responseText);
+                    }
+                });
+            });
+
+            return false;
+        });
+    });
+</script>

@@ -1,0 +1,75 @@
+<div class="page-header">
+    <h1>{{ 'Upload a csv file for users creation' | trans }}</h1>
+</div>
+
+{% if app['request'].query.get('error') is not none %}
+    {% set error = app['request'].query.get('error') %}
+    <div class="alert alert-error">
+        <button class="close" data-dismiss="alert" type="button">×</button>
+        {% if error == 'file-invalid' %}
+            {{ 'An error occured while upload the file. Please retry' | trans }}
+        {% elseif error == 'row-login' %}
+            {{ 'Row login is missing, script has stopped' | trans }}
+        {% elseif error == 'row-pwd' %}
+            {{ 'Row password is missing, script has stopped' | trans }}
+        {% elseif error == 'row-mail' %}
+            {{ 'Row mail is missing, script has stopped' | trans }}
+        {% elseif error == 'no-user' %}
+            {{ 'The file does not contains any user to add' | trans }}
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if errors is defined and errors is not none and errors|length > 0 %}
+    <div class="alert alert-error">
+        <button class="close" data-dismiss="alert" type="button">×</button>
+        <ul class="unstyled">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor%}
+        </ul>
+    </div>
+{% endif %}
+
+<div>
+    <div class="well well-small">
+        <a target="_blank" href="{{ path('users_import_csv') }}" class="no-ajax"> <i class="fa fa-share-square-o"
+                                                                                     aria-hidden="true"></i> {{ 'You can  download an example by clicking here' | trans }}
+        </a>
+    </div>
+    <div class="well well-small">
+        <a target="_blank" href="{{ path('users_import_rtf') }}" class="no-ajax"> <i class="fa fa-share-square-o"
+                                                                                     aria-hidden="true"></i> {{ 'You can download the documentation here' | trans }}
+        </a>
+    </div>
+    <span class="btn btn-success fileinput-button">
+        <i class="fa fa-plus icon-white" aria-hidden="true"></i>
+        <span>{% trans %}Select files...{% endtrans %}</span>
+        <input id="fileupload" type="file" name="files" data-url="/admin/users/import/file/" accept="text/csv, text/rtf">
+    </span>
+    <a href="{{ path('admin_users_search') }}" class="btn ajax">{{ 'boutton::retour' | trans }}</a>
+</div>
+
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'html',
+        add: function(e, data) {
+            if( ! /(\.|\/)(csv|rtf)$/i.test(data.files[0].name)) {
+                {% set supported_file_types = ['csv', 'rtf']|join(' | ') %}
+                alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
+
+                return false;
+            }
+
+            data.submit();
+        },
+        submit: function(e, data) {
+          $('#right-ajax').empty().addClass('loading');
+        },
+        done: function (e, data) {
+            enableFormsCallback(data.result);
+        }
+    });
+});
+</script>

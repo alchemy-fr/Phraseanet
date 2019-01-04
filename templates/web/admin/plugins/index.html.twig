@@ -1,0 +1,18 @@
+
+{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ 'admin::plugins: plugins' | trans }}</h1>
+    </div>
+
+    <div id="plugin_list">
+        {% for pluginName in plugins.keys() %}
+            <li>
+                <a target="right" href="{{ path('admin_plugins_show', {pluginName: pluginName}) }}" class="ajax">
+                    <span>{{ 'plugin_name'|trans([], plugins[pluginName].localeTextDomain) }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </div>
+{% endblock %}

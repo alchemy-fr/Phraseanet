@@ -1,0 +1,27 @@
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %}
+    {% if field.get_dces_element() %}
+        DC {{ field.get_dces_element().get_label() }}
+    {% endif %}
+{% endset %}
+{% set width = 600 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    {% if field.get_dces_element() %}
+        {% set element_name = field.get_dces_element().get_label() %}
+        <div>
+            <p>
+            {% trans with {'%element_name%' : element_name} %}Ce champ est decrit comme l'element DublinCore %element_name%{% endtrans %}
+            </p>
+            <p>
+                {{ 'Description' | trans }} : {{ field.get_dces_element().get_definition() }}
+            </p>
+            <p>
+                {% set lien = '<a href="' ~ field.get_dces_element().get_documentation_link() ~ '" target="_blank">' ~ field.get_dces_element().get_documentation_link() ~ '</a>' %}
+                {% trans with {'%lien%' : lien} %}Pour davantage d'informations, consulter le lien suivant %lien%{% endtrans %}
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

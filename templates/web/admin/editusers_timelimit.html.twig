@@ -1,0 +1,81 @@
+<h1>{{ 'Limite temporelle' | trans }}</h1>
+<div>
+{% set base = collection.get_databox().get_label(app['locale']) %}
+{% trans with {'%base%' : base} %}Base %base%{% endtrans %}
+</div>
+<div>
+{% set collection = base_id|bas_labels(app) %}
+{% trans with {'%collection%' : collection} %}Collection %collection%{% endtrans %}
+</div>
+<form>
+  <table>
+    <tr>
+      <td>
+        <div class="switch_time {% if datas.time_limited == 0 %}unchecked{% elseif datas.time_limited == 1 %}checked{% else %}mixed{% endif %}">
+
+        </div>
+      </td>
+      <td>
+        {{ 'Activer' | trans }}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        {{ 'De' | trans }}
+        <input type="text" class="dmin datepicker" name="dmin" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_from}}" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        {{ 'A' | trans }}
+        <input type="text" class="dmax datepicker" name="dmax" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_to}}" />
+      </td>
+    </tr>
+  </table>
+  <input type="hidden" name="base_id" value="{{base_id}}"/>
+  <input type="hidden" name="users" value="{{users_serial}}"/>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.datepicker.setDefaults(datepickerLang);
+        datePicker();
+    });
+
+    function datePicker()
+    {
+      var dates = $('.dmin, .dmax');
+      $('.dmin').datepicker({
+        defaultDate: -10,
+        changeMonth: true,
+        changeYear: true,
+        dateFormat:'yy-mm-dd',
+        numberOfMonths: 3,
+        onSelect: function(selectedDate, instance) {
+          var option = $(this).hasClass("dmin") ? "minDate" : "maxDate";
+          var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+          $(dates).not(':hidden').not(this).datepicker("option", option, date);
+        }
+      });
+      $('.dmax').datepicker({
+        defaultDate: -10,
+        changeMonth: true,
+        changeYear: true,
+        dateFormat:'yy-mm-dd',
+        numberOfMonths: 3,
+        onSelect: function(selectedDate, instance) {
+          var option = $(this).hasClass("dmin") ? "minDate" : "maxDate";
+          var date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+          $(dates).not(':hidden').not(this).datepicker("option", option, date);
+        }
+      });
+      {% if datas.limited_to %}
+        var instance = $('.dmin').data("datepicker");
+        $('.dmin').datepicker("option", 'maxDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_to}}", instance.settings));
+      {% endif %}
+      {% if datas.limited_from %}
+        var instance = $('.dmax').data("datepicker");
+        $('.dmax').datepicker("option", 'minDate', $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, "{{datas.limited_from}}", instance.settings));
+      {% endif %}
+    }
+</script>

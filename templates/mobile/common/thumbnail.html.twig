@@ -1,0 +1,76 @@
+{% macro format(thumbnail, b_w, b_h, extraclass)%}
+    {% set b_width = b_w %}
+    {% set b_height = b_h|default(b_w) %}
+
+    {% set b_ratio = b_width / b_height %}
+
+    {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
+    {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
+
+    {% set i_ratio = thumbnail_width / thumbnail_height %}
+
+    {% if i_ratio > b_ratio%}
+        {% if b_width > thumbnail_width %}
+            {% set d_width = thumbnail_width %}
+        {% else %}
+            {% set d_width = b_width %}
+        {% endif %}
+        {% set d_height = d_width / thumbnail_width * thumbnail_height %}
+        {% set top = (b_height - d_height) / 2 %}
+    {% else %}
+        {% if b_height > thumbnail_height %}
+            {% set d_height = thumbnail_height %}
+        {% else %}
+            {% set d_height = b_height %}
+        {% endif %}
+        {% set d_width = d_height * thumbnail_width / thumbnail_height %}
+        {% set top = ((b_height - d_height) / 2) %}
+    {% endif %}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
+
+    {% set record_type = thumbnail.get_type() %}
+    <div style="width:{{b_width|round}}px;height:{{b_height|round}}px;" class="thumb_wrapper {{extraclass|default('')}}">
+
+    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+    <iframe width="100%" height="100%"
+            src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'FLEXPAPER' %}
+    <iframe width="100%" height="100%"
+            src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'AUDIO_MP3' %}
+    <iframe width="100%" height="100%"
+            src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% else %}
+      <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
+           style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;"
+           src="{{thumbnail.get_url()|trim}}" ondragstart="return false;">
+      <input type="hidden" name="width" value="{{thumbnail_width}}"/>
+      <input type="hidden" name="height" value="{{thumbnail_height}}"/>
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro format100percent(thumbnail, extraclass)%}
+    {% set url = app.getAuthenticator().isAuthenticated() ? thumbnail.get_url() : thumbnail.get_permalink().get_url() %}
+    {% set record_type = thumbnail.get_type() %}
+    {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
+        <iframe width="100%" height="100%"
+                src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'FLEXPAPER' %}
+        <iframe width="100%" height="100%"
+                src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'AUDIO_MP3' %}
+        <iframe width="100%" height="100%"
+                src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
+                frameborder="0" allowfullscreen></iframe>
+    {% else %}
+        <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb"
+             oncontextMenu="return(false);"
+             src="{{ thumbnail.get_url()|trim }}" ondragstart="return false;"/>
+    {% endif %}
+{% endmacro %}

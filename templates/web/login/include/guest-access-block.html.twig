@@ -1,0 +1,11 @@
+{% if guest_allowed %}
+    <div class="well-large sidebar-block">
+        <div class="row-fluid">
+            <div class="span12 text-center">
+                <a id="guest-link" class="btn btn-info btn-trigger" href="{{ path("login_authenticate_as_guest") }}">
+                    {{ "Guest access" | trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}

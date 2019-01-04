@@ -1,0 +1,60 @@
+
+{% extends app['request'].isXmlHttpRequest ? "admin/common/ajax_wrap.html.twig" : "admin/common/iframe_wrap.html.twig" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ 'plugin_name'|trans([], plugin.localeTextDomain) }}</h1>
+    </div>
+
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="configurationTabs">
+            {% for divId, configurationTab in configurationTabs %}
+                {% set tabTitle = configurationTab.title %}
+            <li role="presentation"><a href="#{{ divId }}" aria-controls="{{ divId }}" role="tab" data-toggle="tab" data-url="{{ configurationTab.url }}">{{ tabTitle|trans([], plugin.localeTextDomain) }}</a></li>
+            {% endfor %}
+            <li role="presentation" class="active"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">{{ 'admin::plugins: about'|trans }}</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {% for divId, configurationTab in configurationTabs %}
+            <div role="tabpanel" class="tab-pane fade" id="{{ divId }}"></div>
+            {% endfor %}
+            <div role="tabpanel" class="tab-pane fade in active" id="about">
+                <ul>
+                    <li>{{ 'admin::plugins: name'|trans }}{{ plugin.name }}</li>
+                    <li>{{ 'admin::plugins: version'|trans }}{{ plugin.version }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var contentsDownloaded = {};
+        var remoteContent = function(url) {
+            return $.get(url);
+        };
+
+        var tabs = $('#configurationTabs a[data-toggle="tab"]');
+
+        tabs.on('show', function (e) {
+            if (e.target.hash != '#about' && contentsDownloaded[e.target.hash] === undefined) {
+                $(e.target.hash).empty().html('<img src="/skins/icons/main-loader.gif" alt="loading"/>');
+            }
+        });
+        tabs.on('shown', function (e) {
+            if (e.target.hash != '#about' && contentsDownloaded[e.target.hash] === undefined) {
+                var targetDiv = $(e.target.hash);
+
+                remoteContent($(e.target).attr('data-url')).then(function(response) {
+                    targetDiv.empty().html(response);
+                    contentsDownloaded[e.target.hash] = true;
+                }, function(error) {
+                    console.log(error);
+                    targetDiv.empty().html('<i class="fa fa-fire" aria-hidden="true">{{ 'admin::plugins: retrieveConfigurationError'|trans }}</i>');
+                });
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,351 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        AdminApp.LeftView.reloadTree('base:{{ collection.get_sbas_id() }}');
+    </script>
+{% endif %}
+
+{% set bas_id = collection.get_base_id() %}
+
+<div class="page-header">
+    <h1>
+        {{ 'phraseanet:: collection' | trans }} {{ collection.get_label(app['locale']) }}
+    </h1>
+</div>
+
+{% if app['request'].query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {{ 'Successful update' | trans }}
+    </div>
+{% elseif app['request'].query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{{ 'An error occured' | trans }}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
+{% endif %}
+
+<ul class="unstyled">
+    <li>{{ 'phraseanet:: adresse' | trans }} : {{ collection.get_databox().get_serialized_server_info() }}</li>
+    <li>{{ 'admin::base:collection: identifiant' | trans }} : {{ collection.get_base_id() }}</li>
+    <li>{{ 'admin::base:collection: numero de collection distante' | trans }} : {{ collection.get_coll_id() }}</li>
+    <li>{{ 'admin::base:collection: etat de la collection' | trans }} : {{ collection.is_active() ? "admin::base:collection: activer la collection"| trans : "admin::base:collection: descativer la collection"|trans }}</li>
+    <li>{{ collection.get_record_amount() }} records <a class="ajax" target="rights" href="{{ path('admin_collection_display_document_details', { 'bas_id' : collection.get_base_id() }) }}">{{ 'phraseanet:: details' | trans }}</a></li>
+</ul>
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+<div class="well well-small">
+    <h5>{{ 'admin::collection:: Gestionnaires des commandes' | trans }}</h5>
+    <form id="admin_adder" action="{{ path('admin_collection_submit_order_admins', { 'bas_id' : bas_id }) }}" method="post" style="margin:0;">
+        {% if admins | length > 0 %}
+            <ul class="unstyled">
+                {% for user in admins %}
+                    <li>
+                        <label for="adm_{{ user.getId() }}" class="checkbox">
+                            <input name="admins[]" type="checkbox" value="{{ user.getId() }}" id="adm_{{ user.getId() }}" checked />
+                            {{ user.getDisplayName() }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="input-append">
+            <input class="admin_adder" placeholder="{{ 'setup:: ajouter un administrateur des commandes' | trans }}"/>
+            <input type="hidden" name="admins[]"/>
+            <input type="submit" class="btn btn-primary" value="{{ 'boutton::valider' | trans }}" />
+        </div>
+    </form>
+</div>
+
+<div class="well well-small action-block">
+    <h5>{{ 'admin::collection:: presentation des elements lors de la diffusion aux utilisateurs externes (publications)' | trans }}</h5>
+    <form method="post" action="{{ path('admin_collection_submit_publication', { 'bas_id' : bas_id }) }}" style="margin:0;">
+        <label class="radio" for="pub_wm_none">
+            <input id="pub_wm_none" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'none' ? 'checked' : ''}} value="none"  />
+            {{ 'admin::colelction::presentation des elements : rien' | trans }}
+        </label>
+        <label class="radio"  for="pub_wm_wm">
+            <input id="pub_wm_wm" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'wm' ? 'checked' : ''}} value="wm"    />
+            {{ 'admin::colelction::presentation des elements : watermark' | trans }}
+        </label>
+        <label class="radio"  for="pub_wm_stamp">
+            <input id="pub_wm_stamp" type="radio" name="pub_wm" {{ collection.get_pub_wm() == 'stamp' ? 'checked' : ''}} value="stamp" />
+            {{ 'admin::colelction::presentation des elements : stamp' | trans }}
+        </label>
+    </form>
+</div>
+
+<div class="well well-small action-block">
+    <form class="form-inline" method="post" action="{{ path('admin_collection_labels', { 'bas_id' : bas_id }) }}" style="margin:0;">
+        <div class="input-append">
+            <div class="row">
+                {% for code, language in app['locales.available'] %}
+                <div class="span2">
+                    <h6>{{ language }}</h6>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                {% for code, language in app['locales.available'] %}
+                <div class="span2">
+                    <input name="labels[{{ code }}]" value="{{ collection.get_label(code, false) }}" class="span2" type="text">
+                </div>
+                {% endfor %}
+                <div class="span2">
+                    <button class="btn" type="submit">
+                        <img src="/assets/common/images/icons/edit_0.gif" />
+                        {{ 'Set labels' | trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="well well-small">
+    <form style="display:inline; margin:0 2px 0 0;" method="post" action="{{ path('admin_collection_rename', { 'bas_id' : bas_id }) }}" style="margin:0;">
+        <div class="input-append" style="display:inline; margin:0;">
+            <input name="name" class="span3" type="text" size="16">
+            <button class="btn reload-tree submiter" type="submit">
+                <img src="/assets/common/images/icons/edit_0.gif" />
+                {{ 'admin::base:collection: renommer la collection' | trans }}
+            </button>
+        </div>
+    </form>
+
+    <form style="display:inline; margin:0;" method="post" action="{% if collection.is_active() %}{{ path('admin_collection_disable', { 'bas_id' : bas_id }) }}{% else %}{{ path('admin_collection_enable', { 'bas_id' : bas_id }) }}{% endif %}">
+        <button type="button" class="btn confirm reload submiter" data-confirm-msg="{{ collection.is_active() ? 'admin::base:collection: etes vous sur darreter la publication de cette collection'|trans  : 'admin::base:collection: etes vous sur de publier cette collection ?'|trans }}">
+            <img src="/assets/common/images/icons/db-remove.png"/>
+            {{ collection.is_active() ? 'admin::base:collection: descativer la collection' | trans  : 'admin::base:collection: activer la collection'| trans }}
+        </button>
+    </form>
+
+    <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_empty', { 'bas_id' : bas_id }) }}">
+        <button type="button" class="btn confirm submiter reload" data-confirm-msg="{{ 'admin::base:collection: etes vous sur de vider la collection ?' | trans }}">
+            <img src="/assets/common/images/icons/trash.png" />
+            {{ 'admin::base:collection: vider la collection' | trans }}
+        </button>
+    </form>
+
+    <form style="display:inline; margin:0;" method="post" action="{{ path('admin_collection_delete', { 'bas_id' : bas_id }) }}">
+        <button type="button" class="btn confirm submiter reload-tree" data-confirm-msg="{{ 'admin::collection: Confirmez vous la suppression de cette collection ?' | trans }}">
+            <img src="/assets/common/images/icons/delete.gif" />
+            {{ 'boutton::supprimer' | trans }}
+        </button>
+    </form>
+</div>
+{% endif %}
+
+{# mini logo #}
+<div class="well well-small action-block">
+    <h5>{{ 'admin::base:collection: minilogo actuel' | trans }}</h5>
+    {% if collection.getLogo(bas_id, app) is not empty %}
+        <div class="thumbnail" style="width:120px;height:24px;margin-top:5px;margin-bottom:5px">{{ collection.getLogo(bas_id, app) | raw }}</div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+            <form method="post" action="{{ path('admin_collection_delete_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
+                <button class="btn btn-danger btn-mini" >
+                    <i class="fa fa-trash-o icon-white" aria-hidden="true"></i>
+                    {{ 'boutton::supprimer' | trans }}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+        <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_logo', { 'bas_id' : bas_id }) }}" style="margin:0;">
+            <span class="btn btn-success fileinput-button">
+                <i class="fa fa-plus icon-white" aria-hidden="true"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newLogo" type="file" accept="image/*" />
+            </span>
+        </form>
+    {% endif %}
+</div>
+
+{# watermark #}
+<div class="well well-small action-block">
+    <h5>{{ "Watermark" | trans }}</h5>
+    {% if collection.getWatermark(bas_id) is not empty %}
+        <div class="thumbnail">{{ collection.getWatermark(bas_id)| raw }}</div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+            <form method="post" action="{{ path('admin_collection_delete_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
+                <button class="btn btn-danger btn-mini">
+                    <i class="fa fa-trash-o icon-white" aria-hidden="true"></i>
+                    {{ 'boutton::supprimer' | trans }}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+        <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_watermark', { 'bas_id' : bas_id }) }}" style="margin:0;">
+            <span class="btn btn-success fileinput-button">
+                <i class="fa fa-plus icon-white" aria-hidden="true"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newWm" type="file" accept="image/*" />
+            </span>
+        </form>
+    {% endif %}
+</div>
+
+{# stamp logo #}
+<div class="well well-small action-block">
+    <h5>{{ "Stamp logo" | trans }}</h5>
+    {% if collection.getStamp(bas_id) is not empty %}
+        <div class="thumbnail" style="max-height:120px;max-width:260px">{{ collection.getStamp(bas_id)| raw }}</div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+            <form method="post" action="{{ path('admin_collection_delete_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
+                <button class="btn btn-danger btn-mini">
+                    <i class="fa fa-trash-o icon-white" aria-hidden="true"></i>
+                    {{ 'boutton::supprimer' | trans }}
+                </button>
+            </form>
+        {% endif%}
+    {% elseif app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(bas_id, constant('\\ACL::COLL_MANAGE')) %}
+        <span>{{ 'admin::base:collection: aucun fichier (minilogo, watermark ...)' | trans }}</span>
+        <form class="fileupload no-ajax" enctype="multipart/form-data" method="post" action="{{ path('admin_collection_submit_stamp', { 'bas_id' : bas_id }) }}" style="margin:0;">
+            <span class="btn btn-success fileinput-button">
+                <i class="fa fa-plus icon-white" aria-hidden="true"></i>
+                <span>{% trans %}Select files...{% endtrans %}</span>
+                <input name="newStamp" type="file" accept="image/*" />
+            </span>
+        </form>
+    {% endif %}
+</div>
+
+{# Invalid file type modal shown when uploaded logo file is invalid #}
+<div id="invalid-modal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{% trans %}Invalid file type{% endtrans %}</h3>
+    </div>
+    <div class="modal-body">
+        <p>
+            {% set supported_file_types = ['jpg', 'jpeg', 'pjpg', 'gif', 'png']|join(' | ') %}
+            {% trans with {'%supported_file_types%' : supported_file_types} %}Invalid file type, only (%supported_file_types%) file formats are supported'{% endtrans %}
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        // jQuery.noConflict();
+        $('#invalid-modal').modal({
+            "show": false
+        });
+
+        //add admins
+        $( ".admin_adder" ).autocomplete({
+            source: "/admin/users/typeahead/search/?have_not_right[]=order_master&on_base[]={{ bas_id }}",
+            minLength: 2,
+            select: function( event, ui ) {
+                var form = $('#admin_adder');
+                $('input[name="admins[]"]:last', form).val(ui.item.id);
+                form.submit();
+            }
+        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+            var email = item.email ? '<br/>'+item.email : '';
+            var login = item.login !== item.name ? " ("+ item.login +")" : '';
+
+            return $( "<li></li>" )
+            .data( "ui-autocomplete-item", item )
+            .append( "<a>" + item.name + login + email + "</a>" )
+            .appendTo( ul );
+        };
+
+        //change display
+        $('#pub_wm_none, #pub_wm_wm, #pub_wm_stamp').bind('click', function(){
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: {
+                    pub_wm: $this.val()
+                },
+                success: function(datas) {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $this.closest('.action-block').prepend(html({
+                        content:datas.msg
+                    }));
+                }
+            });
+        });
+
+        $("div.right .submiter").bind("click", function() {
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            if($this.hasClass('confirm')) {
+                if(confirm($this.data('confirm-msg'))) {
+                    submitForm($this, form);
+                }
+            } else {
+                submitForm($this, form);
+            }
+        });
+
+        function submitForm(submitLink, form) {
+
+            form.bind('submit', function() {
+                return false;
+            });
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                beforeSend : function() {
+                    submitLink.prop('disabled', true).addClass('disabled');
+                },
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            AdminApp.LeftView.reloadTree('collection:{{ collection.get_base_id() }}', true);
+                        } else if(submitLink.hasClass('reload-tree')) {
+                            AdminApp.LeftView.reloadTree('bases:bases', true);
+                        }
+
+                        if ("undefined" !== typeof datas.msg) {
+                            alert(datas.msg);
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
+                },
+                complete: function() {
+                    submitLink.prop('disabled', false).removeClass('disabled');
+                }
+            });
+        }
+        $('.fileupload').each(function () {
+            $(this).fileupload({
+                dataType: 'html',
+                add: function(e, data) {
+                    if (typeof data.files[0].type !== "undefined") {
+                        if( ! /(\.|\/)(png|jpeg|jpg|pjpg|gif)$/i.test(data.files[0].type)) {
+                            $('#invalid-modal').modal('toggle');
+                            return false;
+                        }
+                    }
+
+                    data.submit();
+                },
+                submit: function(e, data) {
+                  $('#right-ajax').empty().addClass('loading');
+                },
+                done: function (e, data) {
+                    enableFormsCallback(data.result);
+                }
+            });
+        });
+
+    });
+</script>

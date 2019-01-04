@@ -1,5 +1,5 @@
-index:
-    path: /
+showDatabases:
+    path: /databases
     controller: App\Controller\DefaultController::index
 
 test:
@@ -9,3 +9,19 @@ test:
 showUsers:
     path: /users
     controller: App\Controller\DefaultController::showUsers
+
+setup:
+    path: /
+    controller: App\Controller\SetupController::rootInstaller
+
+install_step2:
+    path: /installer/step2/
+    controller: App\Controller\SetupController::getInstallForm
+
+install_do_install:
+    path: /installer/install/
+    controller: App\Controller\SetupController::doInstall
+
+install_root:
+    path: /installer/
+    controller: App\Controller\SetupController::rootInstaller

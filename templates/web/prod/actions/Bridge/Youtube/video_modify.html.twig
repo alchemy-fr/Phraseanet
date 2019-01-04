@@ -1,0 +1,74 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+{% import "prod/actions/Bridge/macro_error_form.html.twig" as error_form %}
+
+{% block menu %}
+<table style="width:100%;height:30px;">
+    <tr>
+        <td style="width:10px;">
+        </td>
+        <td>
+            {% trans %}Edition de 1 element{% endtrans %} :
+        </td>
+        <td style="text-align:right;">
+            <a class="back_link" style="cursor: pointer;">{{ 'boutton::annuler' | trans }}</a>
+        </td>
+        <td style="width:10px;">
+        </td>
+    </tr>
+</table>
+{% endblock %}
+
+{% block response %}
+<form class="form_add_container bridge_form form-horizontal" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}" method="post">
+    <div class="control-group">
+        <label class="control-label" for="modif_title">{{ 'Titre' | trans }}</label>
+        <div class="controls">
+            <input name="modif_title" type="text" value="{{ element.get_title }}" />
+            <p>{{ error_form.display_errors('title', constraint_errors) }}</p>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="modif_description">{{ 'Description' | trans }}</label>
+        <div class="controls">
+            <textarea name="modif_description" rows="3" >{{ element.get_description|default("") }}</textarea>
+            <p>{{ error_form.display_errors('description', constraint_errors) }}</p>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="modif_tags">{{ 'Tags' | trans }}</label>
+        <div class="controls">
+            <textarea name="modif_tags" rows="3" >{{ element.get_tags()|default("") }}</textarea>
+            <p>{{ error_form.display_errors('tags', constraint_errors) }}</p>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="modif_category">{{ 'Categorie' | trans }}</label>
+        <div class="controls">
+            {% set categorie = account.get_api().get_connector.get_category_list() %}
+            <select name="modif_category">
+                {% for key, value in categorie  %}
+                    <option {{ element.get_category == key ? "selected='selected'" : "" }} value="{{key}}" >{{value}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'Confidentialite' | trans }}</label>
+        <div class="controls">
+            <label class="radio inline bridge_fleft">
+                <input  type="radio" name="modif_privacy" value="private" {{ element.is_private ? "checked='checked'" : "" }} />
+                {{ 'privé' | trans }}
+            </label>
+            <label class="radio inline bridge_fleft">
+                <input type="radio" name="modif_privacy"  value="public" {{ element.is_private ? "" : "checked='checked'" }} />
+                {{ 'public' | trans }}
+            </label>
+        </div>
+    </div>
+    <div class="form-actions">
+        <input type="hidden" name="elements_list[]" value="{{ element.get_id }}" />
+        <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+        <button class="back_link btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
+    </div>
+</form>
+{% endblock %}

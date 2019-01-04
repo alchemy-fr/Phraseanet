@@ -1,0 +1,58 @@
+<div id="task-manager-app">
+    <div class="page-header">
+        <h1>{{ 'Task Scheduler' | trans }}
+            <small style="font-size:16px;">
+                {% set updateTime %}
+                <span id="pingTime" class="ping-view">{{ "now"|date(constant("DateTime::ISO8601")) }}</span>
+                {% endset %}
+                {% trans with {'%updateTime%' : updateTime} %}Last update on %updateTime%{% endtrans %}
+            </small>
+        </h1>
+    </div>
+
+    <table class="admintable">
+        <thead>
+            <tr>
+                <th class="refresh-view" style="width:80px;"  data-refresh-url="{{ path('admin_tasks_live_info') }}">
+                    <button class="btn btn-refresh">
+                        <i class="icon fa fa-refresh" aria-hidden="true"/>
+                    </button>
+                    <i id="spinner" style="font-size:16px" class="fa fa-spinner icon-spin" aria-hidden="true">
+                </th>
+                <th>ID</th>
+                <th>PID</th>
+                <th>!</th>
+                <th>{{ "actual status" | trans | upper }}</th>
+                <th>{{ "scheduled status" | trans | upper }}</th>
+                <th>{{ "name" | trans | upper }}</th>
+            </tr>
+        </thead>
+        <tbody class="scheduler-view">
+        </tbody>
+        <tbody class="tasks-list-view">
+        </tbody>
+    </table>
+    <form id="form-create-task" method="post" name="form-create-task" action="{{ path('admin_tasks_task_create') }}">
+        <select name="job-name">
+            <option value="">
+                {{ 'New task' | trans }}
+            </option>
+            {% for job in available_jobs %}
+                <option value="{{ job.getJobId() }}">{{ job.getName() }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("form[name='form-create-task'] select").bind("change", function() {
+            $(this).closest('form').submit();
+        });
+    });
+</script>
+
+{# include js templates #}
+{% include 'admin/task-manager/templates.html.twig' %}
+
+<script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/tasks-manager/main.js' }) }}"></script>

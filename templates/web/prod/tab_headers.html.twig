@@ -1,0 +1,33 @@
+{% block tab_headers_wrapper %}
+    <ul class="prod-icon-menu ui-tabs-nav ui-helper-reset">
+        {% block tab_headers %}
+            {% if GV_thesaurus %}
+                <li class="proposals_WZ">
+                    <a href="#proposals" class="WZtabs">
+                        <img class="proposals_off" src="/assets/common/images/icons/proposition_off32.png"
+                             title="{{ 'phraseanet:: propositions' | trans }}"/>
+                        <img class="proposals_on" src="/assets/common/images/icons/proposition_on32.png"
+                             title="{{ 'phraseanet:: propositions' | trans }}"/>
+                    </a>
+                </li>
+                <li class="thesaurus">
+                    <a href="#thesaurus_tab" class="WZtabs">
+                        <img src="/assets/common/images/icons/thesaurus_32.png" title="{{ 'phraseanet:: thesaurus' | trans }}"/>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="ui-corner-top baskets">
+                <a href="#baskets" class="WZbasketTab">
+                    <div id="basket_menu_trigger">&#9660;</div>
+                </a>
+            </li>
+            {% if plugins.workzone is not empty %}
+                <li class="plugins">
+                    <a href="#plugins" class="WZplugins">
+                        <img src="/assets/common/images/icons/plugins.png" title="{{ 'phraseanet:: plugin.workzone' | trans }}"/>
+                    </a>
+                </li>
+            {% endif %}
+        {% endblock %}
+    </ul>
+{% endblock %}

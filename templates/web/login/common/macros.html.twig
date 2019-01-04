@@ -1,0 +1,171 @@
+{% macro fieldInput(field, form_name, icon_name, custom_attributes) %}
+    {% set input_name = field.vars.name %}
+
+    {% set attributes = custom_attributes|default({})|merge({
+            'class': app['browser'].getBrowser() == constant('Browser::BROWSER_IE') and app['browser'].getVersion() <= 8  ? '' : 'input-block-level',
+        })
+    %}
+
+    {{ form_label(field) }}
+
+    <table class="input-table">
+        <tr>
+            <td class="icon">
+                <i class="{{ icon_name|default('fa fa-angle-right') }} icon-white"></i>
+            </td>
+            <td class="input">
+                {{  form_widget(field, { 'attr': attributes })}}
+            </td>
+        </tr>
+    </table>
+    <div class="error-view"></div>
+
+    {{ form_errors(field) }}
+{% endmacro %}
+
+{% macro repeatedInput(fields, form_name, icon_name, custom_attributes) %}
+    {% for passField in fields %}
+        <div class="row-fluid">
+            <div class="span12">
+                {{ _self.fieldInput(passField, form_name, icon_name, custom_attributes) }}
+                {% if loop.first %}
+                    {% include 'common/password_strength_widget.html.twig' %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro checkboxInput(field, label = '') %}
+    <label for="{{ field.vars.id }}" class="checkbox">
+        {{ form_widget(field) }}
+        {{ label | default(field.vars.label) | trans }}
+    </label>
+    <div class="error-view"></div>
+    {{  form_errors(field) }}
+{% endmacro %}
+
+{% macro selectInput(field, label = '') %}
+    {{ form_label(field) }}
+    {{ form_widget(field) }}
+    <div class="error-view"></div>
+    {{  form_errors(field) }}
+{% endmacro %}
+
+{% macro providerList() %}
+    <ul class="unstyled inline provider-list">
+        {% for provider in app['authentication.providers'] %}
+        <li>
+            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
+                <img src="{{ provider.getIconURI() }}" />
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro fieldError(errors) %}
+    <div class="hidden-phone popover bottom field-error">
+        <div class="arrow"></div>
+        <div class="popover-content">
+            <table>
+                <tr>
+                    <td style="width:35px;"><i class="fa fa-exclamation-triangle icon-white" aria-hidden="true"></i>
+                    </td>
+                        {% if errors|keys|length >= 1 %}
+                            {% for error in errors %}
+                                <td>
+                                    {{ error.message }}
+                                </td>
+                            {% endfor %}
+                        {% else %}
+                            <td>{{ errors}}</td>
+                        {% endif %}
+                    </tr>
+            </table>
+        </div>
+    </div>
+
+    <span class="visible-phone text-error help-block help-block-error">
+        {% if errors|keys|length >=  1 %}
+            {% for error in errors %}
+                {{ error.message }}
+            {% endfor %}
+        {% else %}
+            {{ errors }}
+        {% endif %}
+    </span>
+{% endmacro %}
+
+{% macro providerBadge(token) %}
+    <div class="{{ token.getProvider().getId() }}-badge no-overflow provider-badge rounded">
+        <table>
+            <tr>
+                <td style="width:55px;">
+                    <img src="{{  token.getIdentity().getImageURI() }}"/>
+                </td>
+                <td>
+                    <ul class="unstyled">
+                        <li class="pseudo one-line">
+                            <b>{{ token.getIdentity().getDisplayName() | default(token.getIdentity().getUserName()) }}</b>
+                        </li>
+                        <li class="email one-line">
+                            {{ token.getIdentity().getEmail() }}
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro phraseanetBadge(user) %}
+    <div class="authentication-user-pres-phraseanet well">
+        <ul class="unstyled">
+            <li class="one-line">
+                <i class="fa fa-user" aria-hidden="true"></i>{{ user.getDisplayName() }}
+            </li>
+            {% if user.getEmail() %}
+            <li class="one-line">
+                <i class="fa fa-envelope" aria-hidden="true"></i>{{ user.getEmail() }}
+            </li>
+            {% endif %}
+            {% if user.getCompany() %}
+            <li class="one-line">
+                <i class="fa fa-briefcase" aria-hidden="true"></i>{{ user.getCompany() }}
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro alert(type, message) %}
+    <div class="alert alert-{{ type }}">
+        {% set sign = "fa fa-exclamation-circle" %}
+
+        {% if type == "error" %}
+            {% set sign = "fa fa-exclamation-triangle" %}
+        {% elseif type == "success" %}
+            {% set sign = "fa fa-check-circle" %}
+        {% elseif type == "info" %}
+            {% set sign = "fa fa-info-circle" %}
+        {% endif %}
+
+        <table>
+            <tr>
+                <td class="alert-block-logo"><i class="fa-2x icon-white {{ sign }}"></i></td>
+                <td class="alert-block-content">{{ message }}</td>
+                <td class="alert-block-close"><a href="#"><b>&times;</b></a></td>
+            </tr>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro flashes() %}
+    {% import _self as login %}
+    {% for type in app.getAvailableFlashTypes %}
+        {% for message in app.getFlash(type) %}
+            {{ login.alert(type, message) }}
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}

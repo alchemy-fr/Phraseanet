@@ -1,0 +1,49 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:proxy' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="proxy" />
+    </div>
+</div>
+    <div class="control-group">
+        <label class="control-label">{{ 'task::ftp:proxy port' | trans }}</label>
+        <div class="controls">
+            <input class="formElem" type="text" name="proxyport" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'task::ftp:proxy user' | trans }}</label>
+        <div class="controls">
+            <input class="formElem" type="text" name="proxyuser" autocomplete="off" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{ 'task::ftp:proxy password' | trans }}</label>
+        <div class="controls">
+            <!-- input type=password is double because of chrome and autofill issue  see  http://stackoverflow.com/questions/10938891/disable-autofill-in-chrome-without-disabling-autocomplete -->
+            <input class="formElem" type="text" name="proxypwd_fake" autocomplete="off" style="display:none" />
+            <input class="formElem" type="text" name="proxypwd" autocomplete="off" />
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            var gform = document.forms['graphicForm'];
+            gform.proxy.value     = xml.find("proxy").text();
+            gform.proxyport.value = xml.find("proxyport").text();
+            gform.proxyuser.value = xml.find("proxyuser").text();
+            gform.proxypwd.value  = xml.find("proxypwd").text();
+        }
+    }
+</script>
+{% endblock %}

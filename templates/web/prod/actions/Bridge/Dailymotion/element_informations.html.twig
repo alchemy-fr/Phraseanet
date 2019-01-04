@@ -1,0 +1,22 @@
+<ul>
+  <li>
+    {% set nb_view = element.get_view_count|default(0) %}
+    {% if nb_view <= 1 %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vue{% endtrans %}
+    {% else %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vues{% endtrans %}
+    {% endif %}
+  </li>
+  {% if element.get_ratings is defined %}
+    {% set nb_rating = element.get_ratings|default(0) %}
+      {% if element.get_rating > 0 %}
+         <li>
+            {% if nb_rating <= 1 %}
+                {% trans with {'%nb_rating%' : nb_rating} %}%nb_rating% like{% endtrans %}
+            {% else %}
+                {% trans with {'%nb_rating%' : nb_rating} %}%nb_rating% likes{% endtrans %}
+            {% endif %}
+          </li>
+      {% endif %}
+   {% endif %}
+</ul>

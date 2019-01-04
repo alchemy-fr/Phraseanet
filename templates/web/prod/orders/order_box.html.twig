@@ -1,0 +1,227 @@
+{% set success = app['request'].query.get('success') %}
+{% set action = app['request'].query.get('action') %}
+
+<div id="order_manager">
+    {% if  success == '1' %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {% if action == 'order' %}
+                {{ 'The records have been properly ordered' | trans }}
+            {% elseif action == 'send' %}
+                {{ 'Order has been sent' | trans }}
+            {% elseif action == 'deny' %}
+                {{ 'Order has been denied' | trans }}
+            {% endif %}
+        </div>
+    {% elseif   success == '0' %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ 'An error occured, please retry or contact an admin if problem persists' | trans }}
+        </div>
+    {% endif %}
+
+    <div id="ORDERPREVIEW">
+        <div id="filter-date">
+            <a href="#"><span id="filter-text">{{ 'order-manager::order-list: no-filter' | trans }}</span> <span class="order-indicator">&#x25bc;</span></a>
+            <i class="fa fa-times-circle reset-btn" aria-hidden="true" style="display: none"></i>
+        </div>
+        <div>
+            <form id="date-form">
+                <table cellspacing="0" cellpadding="0" style="display:none" id="filter_box">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <button class="toggle-button-text full-width text-align-right"
+                                    type="button" name="CURRENT_WEEK">{{ 'order-manager::order-list: this-week' | trans }}</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="toggle-button-text full-width text-align-right"
+                                    type="button" name="PAST_WEEK">{{ 'order-manager::order-list: last-week' | trans }}</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="toggle-button-text full-width text-align-right"
+                                    type="button" name="PAST_MONTH">{{ 'order-manager::order-list: last-month' | trans }}</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="toggle-button-text" type="button" name="BEFORE">{{ 'order-manager::order-list: before' | trans }}</button>
+                            <button class="toggle-button-text" type="button" name="AFTER">{{ 'order-manager::order-list: after' | trans }}</button>
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon fa fa-calendar" aria-hidden="true"></i></span>
+                                <input type="text" id="datepicker" class="datepicker" name="datepicker" size="10" value="{{ "today"|date("Y/m/d") }}" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button id="filter-button">{{ 'order-manager::order-list: apply' | trans }}</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <ul style="height:30px;bottom:auto;">
+            <li><a href="#TODO-ORDER">{{ 'order-manager::order-list: pending' | trans }}
+                    <span class="fa-stack infoTips">
+                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#7CD11E"></i>
+                    <i class="fa fa-exclamation fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
+                    </span></a></li>
+            <li><a href="#PROCESSED-ORDER">{{ 'order-manager::order-list: processed' | trans }}
+                    <span class="fa-stack infoTips">
+                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#999"></i>
+                    <i class="fa fa-check-square-o fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
+                    </span></a></li></a></li>
+        </ul>
+        <div id="TODO-ORDER" class="order_preview_box">
+            <div id="TODOVIEW">
+                <table class="table">
+                    <tbody>
+                    {% if orders_todo|length > 0 %}
+                        {% for order in orders_todo %}
+                            {% set deadline = order.getDeadline()|date('d/m/Y') %}
+                            <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                                <td> <span class="fa-stack infoTips">
+                                <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#7CD11E"></i>
+                                <i class="fa fa-exclamation fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
+                                </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getId() }}</span>
+                                </td>
+                                <td style="width: 40%">
+                                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                                    <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                                    <span class="text_block_bold">
+                                {% if deadline != '' %}
+                                    {{deadline}}
+                                {% else %}
+                                    {{ 'Aucune' | trans }}
+                                {% endif %}
+                                </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>{{ 'order-manager::order-list: no-result' | trans }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="PROCESSED-ORDER" class="order_preview_box">
+            <div id="PROCESSEDVIEW">
+                <table class="table">
+                    <tbody>
+                    {% if orders_processed|length > 0 %}
+                        {% for order in orders_processed %}
+                            {% set deadline = order.getDeadline()|date('d/m/Y') %}
+                            <tr id="order_{{ order.getId() }}" class="order_row" {{ current_date > order.getDeadline() ? "style=color:#777": "" }}>
+                                <td> <span class="fa-stack infoTips">
+                                    <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#999"></i>
+                                    <i class="fa fa-check-square-o fa-stack-1x" aria-hidden="true"
+                                       style="color:#FFF"></i>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: order-id' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getId() }}</span>
+                                </td>
+                                <td style="width: 40%">
+                                    <h4>{{ order.getOrderUsage() | nl2br }}</h4>
+                                    <span class="text_block">{{ order.getUser().getEmail() }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Date de demande' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getCreatedOn()|date('d/m/Y') }}</span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'Deadline' | trans }}</span>
+                                    <span class="text_block_bold">
+                                {% if deadline != '' %}
+                                    {{deadline}}
+                                {% else %}
+                                    {{ 'Aucune' | trans }}
+                                {% endif %}
+                                </span>
+                                </td>
+                                <td>
+                                    <span class="text_block">{{ 'order-manager::order-list: treated-documents' | trans }}</span>
+                                    <span class="text_block_bold">{{ order.getTotalTreatedItems() }}/{{ order.getTotal() }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>{{ 'order-manager::order-list: no-result' | trans }}</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class='well-small pager-todo'>
+        <ul class="pager">
+            {% set previousPage = page < 2 ? false : (page - 1) %}
+            {% set nextPage = page >= (totalTodo / perPage)|ceil ? false : (page + 1) %}
+            {% if previousPage %}
+                <li class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}"
+                                        href="#">{{ 'Previous' | trans }}&nbsp;<i class="fa fa-arrow-left"
+                                                                                  aria-hidden="true"></i></a></li>
+            {% endif %}
+            {% if nextPage %}
+                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i
+                                class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class='well-small pager-processed'>
+        <ul class="pager">
+            {% set previousPage = page < 2 ? false : (page - 1) %}
+            {% set nextPage = page >= (totalProcessed / perPage)|ceil ? false : (page + 1) %}
+            {% if previousPage %}
+                <li class="previous"><a class="btn btn-inverse" data-page="{{ previousPage }}"
+                                        href="#">{{ 'Previous' | trans }}&nbsp;<i class="fa fa-arrow-left"
+                                                                                  aria-hidden="true"></i></a></li>
+            {% endif %}
+            {% if nextPage %}
+                <li class="next"><a class="btn btn-inverse" data-page="{{ nextPage }}" href="#"><i
+                                class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp;{{ 'Next' | trans }}</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var orderData =  {
+        info: {},
+        perPage: {{ perPage }},
+        dateSelection: '{{ start }}',
+        dateSelectionText: '',
+        date: '{{ date }}',
+        tabSelection: '{{ todo }}',
+        noFilterText: '{{ 'order-manager::order-list: no-filter' | trans }}'
+}
+</script>

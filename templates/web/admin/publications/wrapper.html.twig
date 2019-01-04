@@ -1,0 +1,71 @@
+<div class="page-header">
+     <h1>{{ 'Publications' | trans }}</h1>
+</div>
+
+<div>
+    {% block content %}{% endblock %}
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var $forms = $('form.form_publication');
+
+    $forms.each(function(i, form){
+      var $form = $(form);
+
+      $form.bind('submit', function(){
+        var error = false;
+        $('.required_text', form).each(function(i, el){
+          if($.trim($(el).val()) === '')
+          {
+            $(el).addClass('error');
+            error = true;
+          }
+        });
+
+        if(error === true)
+        {
+          alert('{{ 'Vous devez remplir les champs requis' | trans }}');
+          return false;
+        }
+
+        var action = $form.attr('action');
+        var datas = $form.serializeArray();
+
+        $('#right-ajax').empty().addClass('loading');
+        $.ajax({
+          type: 'POST',
+          url: action,
+          data: datas,
+          success: function(data){
+            $('#right-ajax').removeClass('loading').empty().html(data);
+          }
+        });
+
+        return false;
+      });
+    });
+
+    $('#right-ajax a').bind('click', function(){
+        var $this = $(this);
+        $('#right-ajax').empty().addClass('loading');
+        $.ajax({
+          type: 'GET',
+          url: $this.attr('href'),
+          success: function(data){
+            $('#right-ajax').removeClass('loading').empty().html(data);
+          }
+        });
+        return false;
+    });
+
+    $('#edit_pub_public').bind('change', function(){
+      if($(this).prop('checked') === true)
+        $('#edit_pub_base_id').prop('disabled', true);
+      else
+        $('#edit_pub_base_id').prop('disabled', false);
+    });
+  });
+</script>
+

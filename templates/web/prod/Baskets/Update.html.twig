@@ -1,0 +1,9 @@
+<div>
+    <form action="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}" method="POST" id="basket-rename-box"  name="basket-rename-box">
+        <label style="margin:5px 0 0 0;">{{ 'panier:: nom' | trans }}</label>
+        <input type="text" name="name" value="{{ basket.getName() }}" style="width:98%;" />
+        <label style="margin:5px 0 0 0;">{{ 'panier:: description' | trans }}</label>
+        <textarea style="width:98%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
+        <button type='button' class="btn btn-inverse" style="margin: 5px 40%;">{{ 'boutton::valider' | trans }}</button>
+    </form>
+</div>

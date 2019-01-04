@@ -1,0 +1,14 @@
+{% for key, preset in presets %}
+    <li id="EDIT_PRESET_{{ preset['id'] }}">
+        <h1 style="position:relative; top:0px; left:0px; width:100%; height:auto;">
+            <a class="triangle" href="#"><span class='triRight'>&#x25BA;</span><span class='triDown'>&#x25BC;</span></a>
+            <a class="title" href="#">{{ preset['title'] }}</a>
+            <a class="delete" style="position:absolute;right:0px;" href="#">{{ 'boutton::supprimer'| trans }}</a>
+        </h1>
+        <div>
+            {% for name, fields in preset['fields'] %}
+                <p><b>{{ name }} : </b> {{ fields|join(' ; ') }}</p>
+            {% endfor %}
+        </div>
+    </li>
+{% endfor %}

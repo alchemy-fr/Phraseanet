@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ locale }}">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/dark-hive{% if not app.debug %}.min{% endif %}.css">
+      <link type="text/css" rel="stylesheet" href="/assets/setup/css/setup{% if not app.debug %}.min{% endif %}.css">
+
+      <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+      <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+      <script type="text/javascript" src="/assets/setup/js/setup{% if not app.debug %}.min{% endif %}.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var date = new Date();
+            date.setMonth(date.getMonth() + 2);
+            $.cookie('screen', screen.width+"x"+screen.height, { path: '/', expires: date });
+
+            var test_cookie = date.getTime();
+            $.cookie('test_cookie'+test_cookie, 'accepted', { path: '/', expires: date });
+            if(!$.cookie('test_cookie'+test_cookie))
+            {
+              $('.notice.notice_cookie').show();
+            }
+            else
+            {
+              date.setMonth(date.getMonth() - 5);
+              $.cookie('test_cookie'+test_cookie, '', { path: '/', expires: date });
+            }
+
+            return false;
+        });
+
+        function setLanguage()
+        {
+            var date = new Date();
+            date.setMonth(date.getMonth() + 2);
+            $.cookie('locale', $('#lng-select')[0].value, { path: '/', expires: date });
+            window.location.replace(window.location.protocol+"//"+window.location.host+window.location.pathname);
+        }
+
+        function setTab(tab,el)
+        {
+            $('.tab').removeClass('click');
+            $(el).addClass('click');
+            $('.tab-content').hide();
+            $('#id-'+tab).show();
+        }
+    </script>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div style="float:left;width:100%;margin:20px 0;">
+      <div class="header">
+        <table style="width:100%;">
+          <tr style="vertical-align:bottom;">
+            <td>
+              <h1>
+                Phraseanet
+                <span class="version_name">{{ version.getName() }}</span>
+                <span class="version_number">- v{{ version.getNumber() }}</span>
+              </h1>
+            </td>
+            <td style="text-align:right;">
+              <select name="lng" id="lng-select" onchange="setLanguage();">
+              {% for loc, language in available_locales %}
+                  <option value="{{ loc }}" {% if locale == loc %}selected="selected"{% endif %}>{{ language }}</option>
+              {% endfor %}
+              </select>
+            </td>
+          </tr>
+        </table>
+      </div>
+    {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

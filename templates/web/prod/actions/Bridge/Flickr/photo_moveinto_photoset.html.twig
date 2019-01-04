@@ -1,0 +1,30 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+
+{% set n_element = elements|length %}
+
+{% block menu %}
+  {% trans with {'%n_element%' : n_element} %}Deplacement %n_element% elements{% endtrans %}
+{% endblock %}
+
+{% block response %}
+    <form method="POST" action="{{ path('bridge_account_do_action', { 'account_id' : account.get_id(), 'action' : action, 'element_type' : element_type }) }}">
+      <p>
+        {% set number = elements|length %}
+        {% trans with {'%number%' : number} %}Which photosets you want to put you %number% photos into ?{% endtrans %}
+      </p>
+      {% for id in elements %}
+        <input type="hidden" name="elements_list[]" value="{{id}}"/>
+      {% endfor %}
+      <ul>
+      {% for photoset in containers.get_elements%}
+        <li>
+          <input type="radio"  value="{{photoset.get_id}}" name="container_id" id="photoset_selector_{{photoset.get_id}}"/>
+          <label for="photoset_selector_{{photoset.get_id}}">{{photoset.get_title}}</label>
+        </li>
+      {% endfor %}
+      </ul>
+      <input type="hidden" name="destination" value="{{ destination }}" />
+      <button class="form_submitter btn btn-inverse">{{ 'boutton::valider' | trans }}</button>
+      <button class="back_link btn btn-inverse">{{ 'boutton::retour' | trans }}</button>
+    </form>
+{% endblock %}

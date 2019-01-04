@@ -1,0 +1,21 @@
+<ul>
+  <li>
+    {% set nb_view = element.get_view_count|default(0) %}
+    {% if nb_view <= 1 %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vue{% endtrans %}
+    {% else %}
+      {% trans with {'%nb_view%' : nb_view} %}%nb_view% vues{% endtrans %}
+    {% endif %}
+  </li>
+    {% set value = element.get_rating|default(0) %}
+    {% if value > 0 %}
+        <li>
+            {% if value <= 1 %}
+                {% trans with {'%value%' : value} %}%value% like{% endtrans %}
+            {% else %}
+                {% trans with {'%value%' : value} %}%value% likes{% endtrans %}
+            {% endif %}
+        </li>
+    {% endif %}
+
+</ul>

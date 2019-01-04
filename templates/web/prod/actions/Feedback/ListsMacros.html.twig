@@ -1,0 +1,124 @@
+{% macro ResultTable(query, results, list, sort, ord) %}
+<div id="list-editor-search-results" class="list-editor-results PNB">
+  <div class="PNB" style="overflow-x:hidden;bottom:20px;padding-bottom:20px;">
+    <table style="width:100%;table-layout:fixed;">
+        <thead>
+          <tr>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_login' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'Login' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_login" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_nom' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'First/Last Name' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_nom" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'societe' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'Company' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="societe" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_mail' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'E-Mail' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_mail" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'pays' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'Country' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="pays" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'lastModel' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'Last Template' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="lastModel" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_creationdate' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {{ 'Creation date' | trans }}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_creationdate" />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in results %}
+          <tr class="{% if list.has(user) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
+            <td>
+              {{ user.getLogin() }}
+              <input name="usr_id" value="{{ user.getId() }}" type="hidden" />
+            </td>
+            <td>
+              {{ user.getFirstName() }} / {{ user.getLastName() }}
+            </td>
+            <td>
+              {{ user.getCompany() }}
+            </td>
+            <td>
+              {{ user.getEmail() }}
+            </td>
+            <td>
+              {{ user.getCountry() }}
+            </td>
+            <td>
+              {{ user.getLogin() }}
+            </td>
+            <td>
+              {{ app['date-formatter'].getDate(user.getCreated()) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <div class="PNB list_editor_results_footer" style="top:auto;height:20px;text-align:right;line-height:20px;">
+    <span class="textinfo">
+      {{ query.get_page() }} / {{ query.get_total_page() }} {{ 'Pages' | trans }}
+    </span>
+    {% if query.get_page() > 1 %}
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#"><span></span> {{ 'Previous' | trans }}</a>
+    {% endif %}
+    {% if query.get_page() < query.get_total_page() %}
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} <span></span></a>
+    {% endif %}
+  </div>
+</div>
+
+{% endmacro %}
+
+
+{% macro badgeReadonly(entry, role) %}
+  <div class="badge listmanager_badge">
+    <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
+    {#{% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+      <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">
+        <img src="/assets/prod/images/Push/close_badge.png">
+      </a>
+    {% endif %}#}
+    <table>
+      <tr>
+        <td class="listmanager_badge_img">
+          <img src="/assets/common/images/icons/user-white.png"/>
+        </td>
+        <td class="infos" >
+          <span class="name">{{ entry.getUser().getDisplayName() }}</span>
+          <span class="subtite">{{ entry.getUser().getCompany() }}</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+{% endmacro %}

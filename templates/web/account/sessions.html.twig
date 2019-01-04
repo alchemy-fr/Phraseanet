@@ -1,0 +1,87 @@
+{% extends 'account/base.html.twig' %}
+
+{% block title %}
+    {{ 'Access history' | trans }}
+{% endblock %}
+
+{% set selected = "sessions" %}
+
+{% block content_account %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="well well-small" style="background: steelblue; border: 1px solid #333;">
+                {% set end_activity = "End Activity"|trans %}
+                {% set button = '&nbsp;<a href="#" class="btn btn-inverse btn-small" style="box-shadow:none">'~end_activity~'</a>&nbsp;'|raw %}
+                <i class="icon icon-warning-sign"></i>&nbsp;<b style="font-size: 12px;">{% trans with {'%button%': button}%}If you notice any unfamiliar devices or locations, click on button %button% to end the session.{% endtrans %}</b>
+            </div>
+            <table class="table table-striped table-bordered" style="border-color: #333333">
+                <thead>
+                     <tr>
+                        <th style="border-color: #333333"></th>
+                        <th style="border-color: #333333">
+                            {{ 'Date de connexion' | trans }}
+                        </th>
+                        <th style="border-color: #333333">
+                            {{ 'Dernier access' | trans }}
+                        </th>
+                        <th style="border-color: #333333">
+                            {{ 'IP' | trans }}
+                        </th>
+                        <th style="border-color: #333333">
+                            {{ 'Browser' | trans }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in sessions %}
+                        {% set row = session['session'] %}
+                        <tr id="row-{{ row.Id() }}" >
+                            <td style="border-color: #333333;text-align: center">
+                                {% if app['session'].get('session_id') != row.Id() %}
+                                    <a href="{{ path('delete_session', {"id": row.Id()}) }}" title="{% trans %}End Activity{% endtrans %}" class="btn btn-inverse btn-small input-block-level delete-session">{% trans %}End Activity{% endtrans %}</a>
+                                {% else %}
+                                    <span style="color:darkseagreen;font-weight: bold">{{ 'Current session' | trans }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="border-color: #333333">
+                                {{ app['date-formatter'].getDate(row.getCreated()) }}
+                            </td>
+                            <td style="border-color: #333333">
+                                {{ app['date-formatter'].getDate(row.getUpdated()) }}
+                            </td>
+                            <td style="border-color: #333333">
+                                {{ row.getIpAddress() }}
+                                {{ session['info'] }}
+                            </td>
+                            <td style="border-color: #333333">
+                                {{ row.getBrowserName() }} {{ row.getBrowserVersion() }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modal-delete-confirm" class="modal hide">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>{% trans %}End session activity{% endtrans %}</h3>
+        </div>
+        <div class="modal-body">
+            <p>{% trans %}Do you really want to end the activity of this session?{% endtrans %}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">{% trans %}no{% endtrans %}</button>
+            <a href="#" class="btn btn-info confirm-delete">{% trans %}yes{% endtrans %}</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        {{parent()}}
+        accountApp.bootstrap({
+            state: 'editSession',
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}'
+        });
+    </script>
+{% endblock %}

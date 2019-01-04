@@ -1,0 +1,12 @@
+<form method="POST" action="{{ path('prod_baskets') }}">
+    <label>{{ 'Nom du nouveau panier' | trans }}</label>
+    <input name="name" class="input-block-level" value="" type="text"/>
+
+    <label>{{ 'paniers::description du nouveau panier' | trans }}</label>
+    <textarea name="description" class="input-block-level" ></textarea>
+
+    <label for="new_basket_add_sel" class="checkbox">
+        <input type="checkbox" name="lst" value="" id="new_basket_add_sel"/>
+        {{ 'Ajouter ma selection courrante' | trans }}
+    </label>
+</form>

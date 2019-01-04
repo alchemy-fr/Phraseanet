@@ -1,0 +1,30 @@
+{% extends "prod/actions/Bridge/wrapper.html.twig" %}
+
+{% set n_element = elements|length %}
+
+{% block menu %}
+{% endblock %}
+
+{% block response %}
+  <div style="text-align:center;margin:10px 0;">
+    {{ 'Oups ! something went wrong !' | trans }}
+  </div>
+  <div style="text-align:center;margin:10px 0;">
+    <form method="{{r_method}}" action="{{r_action}}">
+      {% for key, value in r_parameters %}
+        <input type="hidden" name="{{key}}" value="{{value}}" />
+      {% endfor %}
+      <button class="form_submitter" >{{ 'boutton::retry' | trans }}</button>
+    </form>
+  </div>
+
+  <div style="text-align:center;margin:10px 0;">
+    Details : {{message}}
+  </div>
+  {% if app['debug'] %}
+  <div>
+    {{file}}:{{line}}
+  </div>
+  {% endif %}
+
+{% endblock %}

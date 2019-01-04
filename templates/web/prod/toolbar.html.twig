@@ -1,0 +1,313 @@
+{% block toolbar %}
+    <span class="dropdownButton">
+        <div class="btn-group">
+            <button id="selectCase" class="default_action btn btn-inverse answer_selector" data-action-name="select-toggle" data-state="default">&nbsp;</button>
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="answer_selector all_selector" data-action-name="select-all" data-state="default">
+                        {{ 'reponses:: selectionner tout' | trans }}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="answer_selector none_selector" data-action-name="unselect-all" data-state="true">
+                        {{ 'reponses:: selectionner rien' | trans }}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="answer_selector image_selector" data-action-name="select-type" data-state="default" data-type=".type-image">
+                        {{ 'phraseanet::type:: images' | trans }}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="answer_selector document_selector" data-action-name="select-type" data-state="default" data-type=".type-document">
+                        {{ 'phraseanet::type:: documents' | trans }}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="answer_selector video_selector" data-action-name="select-type" data-state="default" data-type=".type-video">
+                        {{ 'phraseanet::type:: videos' | trans }}
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a class="answer_selector audio_selector" data-action-name="select-type" data-state="default" data-type=".type-audio">
+                        {{ 'phraseanet::type:: audios' | trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </span>
+
+    <span class="dropdownButton">
+        <div class="btn-group">
+            <button id="TOOL_disktt" class="default_action TOOL_disktt_btn results_window btn btn-inverse" data-selection-source="search-result">
+                <img src="/assets/common/images/icons/disktt_history.png" height="16" width="16" class="btn-image"/> {{ 'action : exporter' | trans }}
+            </button>
+            <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="TOOL_print_btn results_window"  data-selection-source="search-result">
+                        <img src="/assets/common/images/icons/print_history.png" height="16" width="16" class="btn-image"/>
+                        {{ 'action : print' | trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </span>
+
+    {% set actions = {} %}
+    {% if acl.has_right(constant('\\ACL::CANMODIFRECORD')) %}
+        {% set label %}
+        {{ 'action : editer' | trans }}
+        {% endset %}
+        {% set actions = actions|merge( { 'edit' : {'icon': "/assets/common/images/icons/ppen_history.png", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+        {% set label %}
+            {{ 'prod::toolbar : video editor' | trans }}
+        {% endset %}
+        {% set actions = actions|merge( { 'video' : {'icon': "/assets/common/images/icons/icon-video-editor.png", 'class':'TOOL_videoeditor_btn', 'label' : label} }) %}
+    {% endif %}
+    {% if acl.has_right(constant('\\ACL::CHGSTATUS')) %}
+        {% set label %}
+        {{ 'action : status' | trans }}
+        {% endset %}
+        {% set actions = actions|merge( { 'status' : {'icon': "/assets/common/images/icons/chgstatus_history.png", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
+    {% endif %}
+    {% if acl.has_right(constant('\\ACL::CANDELETERECORD')) and acl.has_right(constant('\\ACL::CANADDRECORD')) %}
+        {% set label %}
+        {{ 'action : collection' | trans }}
+        {% endset %}
+        {% set actions = actions|merge( { 'move' : {'icon': "/assets/common/images/icons/chgcoll_history.png", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
+    {% endif %}
+
+    {% set n_actions = actions|length %}
+    {% if n_actions > 1 %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                {% for action in actions %}
+                    {% if loop.first %}
+                        <button class="default_action {{ action.class }} results_window btn btn-inverse"  data-selection-source="search-result">
+                            <img src="{{ action.icon }}" height="16" width="16" class="btn-image"/> {{ action.label }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                            class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    {% for action in actions %}
+                        {% if not loop.first %}
+                            <li>
+                                <a class="{{ action.class }} results_window"  data-selection-source="search-result">
+                                    <img src="{{ action.icon }}" height="16" width="16" class="btn-image"/>
+                                    {{ action.label }}
+                                </a>
+                            </li>
+                            {% if not loop.last %}
+                                <li class="divider"></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </span>
+    {% elseif n_actions == 1 %}
+        <span class="classicButton">
+            <div class="btn-group">
+                {% for action in actions %}
+                    <button class="{{ action.class }} results_window btn btn-inverse"  data-selection-source="search-result">
+                        <img src="{{ action.icon }}"  height="16" width="16" class="btn-image"/> {{ action.label }}
+                    </button>
+                {% endfor %}
+            </div>
+        </span>
+    {% endif %}
+
+    {% if acl.has_right(constant('\\ACL::CANPUSH')) and acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse"  data-selection-source="search-result">
+                    <img src="/assets/common/images/icons/push16.png" height="16" width="16" class="btn-image"/> {{ 'action : push' | trans }}
+                </button>
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                            class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="TOOL_feedback_btn results_window"  data-selection-source="search-result">
+                            <img src="/assets/common/images/icons/feedback16.png" height="16" width="16" class="btn-image"/>
+                            {{ 'Feedback' | trans }}
+                        </a>
+                    </li>
+                    {#<li class="divider"></li>#}
+                    {#<li>#}
+                    {#<a class="TOOL_bridge_btn results_window" href="{{ path("prod_bridge_manager") }}"  data-selection-source="search-result">#}
+                    {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/>#}
+                    {#{{ 'action : bridge' | trans }}#}
+                    {#</a>#}
+                    {#</li>#}
+                    <li class="divider"></li>
+                    <li>
+                        <a class="TOOL_publish_btn results_window"  data-selection-source="search-result">
+                            <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
+                            {{ 'action : publier' | trans }}
+                        </a>
+                    </li>
+                    {% if plugins.actionbar is not empty %}
+                        {% for plugin in plugins.actionbar %}
+                            <li class="divider"></li>
+                            {% for key, action in plugin.getActionBar().push|default([]) %}
+                                <li>
+                                    <a class="results_window {{ action.classes|default('') }}"  data-selection-source="search-result">
+                                        {% if action.icon %}
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                        {% endif %}
+
+                                        {% set label = action.label %}
+                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </span>
+    {% elseif acl.has_right(constant('\\ACL::CANPUSH')) %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                <button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse"  data-selection-source="search-result">
+                    <img src="/assets/common/images/icons/push16.png" height="16" width="16" class="btn-image"/> {{ 'action : push' | trans }}
+                </button>
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                            class="caret"></span></button>
+                <ul class="submenu dropdown-menu">
+                    <li>
+                        <a class="TOOL_feedback_btn results_window"  data-selection-source="search-result">
+                            <img src="/assets/common/images/icons/feedback16.png" height="16" width="16" class="btn-image"/>
+                            {{ 'Feedback' | trans }}
+                        </a>
+                    </li>
+                    {% if plugins.actionbar is not empty %}
+                        {% for plugin in plugins.actionbar %}
+                            <li class="divider"></li>
+                            {% for key, action in plugin.getActionBar().push|default([]) %}
+                                <li>
+                                    <a class="results_window {{ action.classes|default('') }}"  data-selection-source="search-result">
+                                        {% if action.icon %}
+                                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                        {% endif %}
+
+                                        {% set label = action.label %}
+                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </span>
+    {% elseif acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                {#<button class="TOOL_pushdoc_btn default_action results_window btn btn-inverse"  data-selection-source="search-result">#}
+                {#<img src="/assets/common/images/icons/door.png" height="16" width="16" class="btn-image"/> {{ 'action : bridge' | trans }}#}
+                {#</button>#}
+                <button class="TOOL_publish_btn results_window btn btn-inverse">
+                    <img src="/assets/common/images/icons/rss16.png" height="16" width="16" class="btn-image"/>
+                    {{ 'action : publier' | trans }}
+                </button>
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                            class="caret"></span></button>
+                {% if plugins.actionbar is not empty %}
+                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                                class="caret"></span></button>
+                    <ul class="submenu dropdown-menu">
+                            {% for plugin in plugins.actionbar %}
+                                <li class="divider"></li>
+                                {% for key, action in plugin.getActionBar().push|default([]) %}
+                                <li>
+                                        <a class="results_window {{ action.classes|default('') }}">
+                                            {% if action.icon %}
+                                                <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}"
+                                                     height="16" width="16" class="btn-image"/>
+                                            {% endif %}
+
+                                            {% set label = action.label %}
+                                            {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                        </a>
+                                    </li>
+                            {% endfor %}
+                            {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </span>
+    {% elseif plugins.actionbar is not empty %}
+        <span class="dropdownButton">
+            <div class="btn-group">
+                {% set firstButton = true %}
+                {% for plugin in plugins.actionbar %}
+                {% for key, action in plugin.getActionBar().push|default([]) %}
+                {% if firstButton %}
+                <button class="default_action results_window btn btn-inverse"  data-selection-source="search-result">
+                    <a class="results_window {{ action.classes|default('') }}"  data-selection-source="search-result">
+                        {% if action.icon %}
+                            <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16"/>
+                        {% endif %}
+                        {% set label = action.label %}
+                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                    </a>
+                </button>
+                {% if not (loop.last and loop.parent.loop.last) %}
+                <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="submenu dropdown-menu">
+                    {% endif %}
+                    {% if not loop.first %}<li class="divider"></li>{% endif %}
+                    {% if not firstButton %}
+                        <li>
+                            <a class="results_window {{ action.classes|default('') }}"  data-selection-source="search-result">
+                                {% if action.icon %}
+                                    <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" height="16" width="16" class="btn-image"/>
+                                {% endif %}
+                                {% set label = action.label %}
+                                {% trans from plugin.PluginLocale %}label{% endtrans %}
+                            </a>
+                        </li>
+                    {% else %}
+                        {% set firstButton = false %}
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% if not firstButton %}
+                </ul>
+                {% endif %}
+            </div>
+        </span>
+    {% endif %}
+
+    {% if acl.has_right(constant('\\ACL::IMGTOOLS')) %}
+        <span class="classicButton">
+            <div class="btn-group">
+                <button class="TOOL_imgtools_btn results_window btn btn-inverse"  data-selection-source="search-result">
+                    <img src="/assets/common/images/icons/imgtools_history.png" height="16" width="16" class="btn-image"/> {{ 'action : outils' | trans }}
+                </button>
+            </div>
+        </span>
+    {% endif %}
+    {% if acl.has_right(constant('\\ACL::CANDELETERECORD')) %}
+        <span class="classicButton">
+            <div class="btn-group">
+                <button class="TOOL_trash_btn results_window btn btn-inverse" data-selection-source="search-result">
+                    <img src="/assets/common/images/icons/delete.png" height="16" width="16" class="btn-image"/> {{ 'action : supprimer' | trans }}
+                </button>
+            </div>
+        </span>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "report/report_layout.html.twig" %}
+
+{% block report_connections_layout %}
+    <div id="report-connections" class="inside-container">
+        <form class="form row-fluid" id="report-connections-form" >
+
+            {% include "report/form_date_and_base.html.twig" with {'tab': "connections", 'route': "report2_connections", 'displayCollections':false } %}
+
+            {% block form_connexion %}
+            <div class="form3 form_content">
+                <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
+                <select class="select_one" name="group">
+                    {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
+                        {% set l="report:: (connexions) #{x}" %}
+                        <option value="{{ x }}" id="connections_{{ x }}">{{ l | trans }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endblock form_connexion %}
+        </form>
+
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-connections-form">Download</button>
+        </div>
+        
+    </div>
+{% endblock report_connections_layout %}
+
+{% block report_downloads_layout %}
+    <div id="report-downloads" class="inside-container">
+        <form class="form row-fluid" id="report-downloads-form" >
+
+            {% include "report/form_date_and_base.html.twig" with {'tab': "downloads", 'route': "report2_downloads", 'displayCollections': true }  %}
+
+            <div  class="form3 form_content">
+                <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
+
+                <select class="select_one" name="group">
+                    {% for x in ['','user','record'] %}
+                        {% set l="report:: (downloads) #{x}" %}
+                        <option value="{{ x }}" id="downloads_{{ x }}">{{ l | trans }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-downloads-form">Download</button>
+        </div>
+
+    </div>
+{% endblock report_downloads_layout %}
+
+{% block report_records_layout %}
+    <div id="report-records" class="inside-container">
+        <form class="form row-fluid" id="report-records-form" >
+
+            {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
+
+            {% block form_records %}
+            <div class="form3 form_content form_content_checkboxes">
+                <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
+
+                {% for sbas_id,databox in granted_bases %}
+                <div class="collist collist-{{ sbas_id }}">
+                    <div class="collist_buttons">
+                        <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                            {% trans %}Select all{% endtrans %}
+                        </button>
+                        <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                            {% trans %}Deselect all{% endtrans %}
+                        </button>
+                    </div>
+
+                    <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
+                    {% for meta in databox.metas %}
+                        <li>
+                            <label class="checkbox custom_checkbox_label">
+                                <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                <span class="custom_checkbox"></span>
+                                {{ meta }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            {% endblock form_records %}
+        </form>
+
+        <div class="form_submit">
+            <button class="formsubmiter" data-form_selector="#report-records-form">Download</button>
+        </div>
+
+    </div>
+{% endblock report_records_layout %}

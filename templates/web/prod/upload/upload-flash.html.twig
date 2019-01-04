@@ -1,0 +1,435 @@
+<div id="uploadBox">
+    {# jQuery tab wrapper #}
+    <div class="upload-tabs">
+        {# tab nav bar #}
+        <ul>
+            <li>
+                <a href="#tab-upload">
+                    {{ 'Upload' | trans }}
+                </a>
+            </li>
+            <li>
+                {# template prod/upload/lazaret.html.twig loaded via ajax #}
+                <a href="{{ path('lazaret_elements') }}">
+                    {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+                    {{ 'Quarantine' | trans }}<span>&nbsp;</span>
+                </a>
+            </li>
+        </ul>
+        {# upload tab content #}
+        <div id="tab-upload">
+            <form id="fileupload" enctype="multipart/form-data" method="POST" action="{{ path('upload_form') }}">
+
+                <div id="uploadBoxLeft" class="well">
+
+                    {# <h5 style="margin-top: 10px;">{{ 'Choose files to add' | trans }} :</h5> #}
+                    {# action bar #}
+                    <table id="addFileList">
+                        <tr>
+                            <td class='uploader-button'>
+                                <span id="spanSWFUploadButton" class="span2"></span>
+                                <br />
+                                <span class="comment">
+                                    ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
+                                </span>
+                            </td>
+                            {#<td class='uploader-icon'>#}
+                            {#<img src='/assets/common/images/icons/logo-flash.png' width="32px" heigh="32px" title="{{ 'You are using the Flash uploader.' | trans }}"/>#}
+                            {#</td>#}
+                            {#<td class='uploader-info'>#}
+                            {#<p>#}
+                            {#{{ 'You are using the Flash uploader.' | trans }}#}
+                            {#{% if not app['browser'].supportFileAPI() %}#}
+                            {#{{ 'This version does not allow you to access all the features offered by the HTML5 uploader' | trans }}#}
+                            {#{% endif %}#}
+                            {#</p>#}
+                            {#{% if app['browser'].supportFileAPI() %}#}
+                            <a style="display: none" id="UPLOAD_HTML5_LINK" href="{{ path('upload_html5_form') }}"
+                               class="dialog full-dialog">{{ 'Use the HTML5 uploader' | trans }}</a>
+                            {#{% endif %}#}
+                            {#</td>#}
+                        </tr>
+                     </table>
+                    {# settings box #}
+                    <div class='settings-box'>
+                        <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
+                        {# collections list #}
+                        {% if collections|length > 0 %}
+                            {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
+                            <select name="base_id" class="span3 upload-options-collection" style="margin-left: 10px;">
+                            {% for  sbasId, availableCollections in collections %}
+                                <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %}
+                                            value="{{ collection.get_base_id() }}"
+                                            class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                            </select>
+                            {# collections status #}
+                            {% for availableCollections in collections %}
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
+                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                        <table class="status-tab">
+                                            <tbody>
+                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {{ 'You can not upload files' | trans }}
+                        {% endif %}
+                    </div>
+
+                    {# upload box #}
+                    <div class='upload-box' style="display: none;">
+                        <h5>{{ 'Selected files' | trans }} :</h5>
+                        <button type="button" class="clear-queue btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Clear list' | trans }}</button>
+                        <button type="button" class="upload-submitter btn btn-inverse input-medium" style="margin-bottom: 10px;">{{ 'Send' | trans }}</button>
+                        <div class="clear"></div>
+                        <div class='upload-box-addedfiles flash-box'></div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+                <div id="uploadBoxRight" class="well">
+                    <h5 style="margin-top: 10px;">{{ 'Transmited files' | trans }} : </h5>
+                    <div class='well-small'>
+                        <button id="cancel-all" class="btn disabled" type="button" disabled="disabled">
+                            {{ "Cancel all" | trans }}
+                        </button>
+                    </div>
+                    {# download box #}
+                    <div class="download-box flash-box"></div>
+                </div>
+
+            </form>
+            <div>
+                <select name="upload_type" id="upload_type" class="input-large" style="width: 200px; float:right">
+                    <option value="html">{{ 'Use the HTML5 uploader' | trans }}</option>
+                    <option value="flash" selected>{{ 'Use the Flash uploader' | trans }}</option>
+                </select>
+            </div>
+         </div>
+    </div>
+</div>
+
+{% include "prod/templates/upload.html.twig" %}
+<script type="text/javascript" src="/assets/upload/js/uploadFlash{% if not app.debug %}.min{% endif %}.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        //Upload management
+        var UploaderManager = new p4.UploaderManager({
+            container: $('#uploadBox'),
+            uploadBox: $('#uploadBox .upload-box-addedfiles'),
+            settingsBox: $('#uploadBox .settings-box'),
+            downloadBox: $('#uploadBox .download-box')
+        });
+
+        {# Create tabs #}
+        $(".upload-tabs").tabs({
+            beforeLoad: function( event, ui ) {
+                ui.jqXHR.success(function( xhr, status, index, anchor ) {
+                    var lazaretBox = $("#lazaretBox");
+
+                    $('.userTips', lazaretBox).tooltip();
+                });
+                ui.jqXHR.error(function( xhr, status, index, anchor ) {
+                    //display error message if ajax failed
+                    $( anchor.hash ).html(language.error);
+                });
+
+                ui.tab.find('span').html(language.loading + '<img src="/assets/common/images/icons/loader404040.gif"/>');
+            },
+            load: function(event, ui)
+            {
+              ui.tab.find('span').empty();
+            },
+            create : function () {
+                $('#tab-upload').css('overflow', 'hidden');
+            },
+            heightStyle: "fill"
+        });
+
+        //Show the good collection status box
+        $('select[name="base_id"]', UploaderManager.getSettingsBox()).bind('change', function(){
+            var selectedCollId = $(this).find('option:selected').val();
+
+            $('#uploadBox .settings-box .collection-status').hide();
+
+            $('#uploadBox #status-' + selectedCollId).show();
+        });
+        //global file order, start uploads from swf.queue, following
+        //order of "file_order"
+        var file_order = [];
+
+        var swfu = new SWFUpload({
+            upload_url : "/prod/upload/",
+            post_params: {"php_session_id" : "{{ sessionId }}"},
+            flash_url : "/include/jslibs/SWFUpload/swfupload.swf",
+            file_upload_limit : 0,
+            file_size_limit: "{{ maxFileSize ~ " B"}}",
+            requeue_on_error : true,
+            file_post_name : "files[]",
+            file_queue_limit : 0,
+            button_placeholder_id : "spanSWFUploadButton",
+            button_image_url : "/assets/common/images/icons/theme_button_background.png",
+            button_width : 170,
+            button_height : 40,
+            button_text : "<span class='btn'>{{ 'Select files...' | trans }}</span>",
+            button_text_style :
+                ".btn {"
+                + "font-family: verdana, Helvetica Neue, Helvetica, Arial, sans-serif; "
+                + "color: #777777;"
+                + "font-size: 12px; "
+                + "font-weight: bold;"
+                + "}",
+            button_text_left_padding : 5,
+            button_text_top_padding : 10,
+            button_window_mode:SWFUpload.WINDOW_MODE.TRANSPARENT,
+            button_cursor : SWFUpload.CURSOR.HAND,
+            button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,
+            file_queued_handler : function(file) {
+                var $this = this;
+                if ( ! UploaderManager.getUploadBox().is(':visible')) {
+                    UploaderManager.getUploadBox().closest('.upload-box').show();
+                }
+
+                var formatedFile = {
+                    id: file.id,
+                    size: typeof file.size !== "undefined" ? UploaderManager.Formater.size(file.size) : '',
+                    name: file.name,
+                    type: typeof file.type !== "undefined" ? file.type : '',
+                    uploadIndex: file.index,
+                    language: language
+                };
+
+                var html = _.template($("#upload_items_tpl").html(), formatedFile);
+                UploaderManager.getUploadBox().append(html);
+                $("#"+file.id).find('.canva-wrapper').remove();
+                $("#"+file.id).find(".remove-element").bind('click', function(){
+                    $this.cancelUpload(file.id);
+                    $(this).closest("li").remove();
+                });
+            },
+            file_queue_error_handler : function(file, errorCode, message) {
+                if ( ! UploaderManager.getUploadBox().is(':visible')) {
+                    UploaderManager.getUploadBox().closest('.upload-box').show();
+                }
+
+                if (errorCode === SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED) {
+                    alert(" {{ "You have attempted to queue too many files" | trans }}");
+                    return false;
+                }
+
+                var error = "{{ "Unknow Error" | trans }}";
+
+                switch (errorCode) {
+                  case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
+                    error = language.errorFileApiTooBig;
+                    break;
+                  case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
+                      error = "{{ "Cannot upload Zero Byte files" | trans }}";
+                    break;
+                  case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
+                      error = "{{ "Invalid file type" | trans }}";
+                    break;
+                  default:
+                    if (file !== null) {
+                      error = "{{ "Unhandled Error" | trans }}";
+                    }
+                    break;
+                }
+
+                var params = $.extend({}, file, {error: error, language: language});
+                var html = _.template($("#upload_items_error_tpl").html(), params);
+                UploaderManager.getUploadBox().append(html);
+                $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
+            },
+            file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
+                if (numFilesQueued > 0) {
+                    $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", false).removeClass("disabled");
+                    $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", false).removeClass("disabled");
+                }
+            },
+            upload_start_handler : function(file) {
+                var $this = this;
+                $("#cancel-all", UploaderManager.getContainer()).removeClass("disabled").attr("disabled", false);
+
+                $.each(UploaderManager.getSettingsBox().find('.collection-status:visible input, select').serializeArray(), function(index, param){
+                    $this.addFileParam(file.id, param.name, param.value);
+                });
+            },
+            upload_progress_handler : function(file, bytesLoaded, bytesTotal) {
+                var progressbar = $("#"+file.id, UploaderManager.getDownloadBox()).find('.progress-bar');
+                progressbar.width(Math.round(UploaderManager.Formater.pourcent(bytesLoaded, bytesTotal)) + '%');
+            },
+            upload_error_handler : function(file, errorCode, message) {
+
+                var reasons = "{{ "Unknow reason" | trans }}";
+
+                switch (errorCode) {
+                    case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
+                        reasons = "{{ "Bad request, please contact an admin" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.MISSING_UPLOAD_URL:
+                        reasons = "{{ "Upload URL is not set, please contact an admin" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.IO_ERROR:
+                        reasons = "{{ "Connection terminates unexpetecdly, please retry" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
+                        reasons = "{{ "The upload violates a security restriction, please retry" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+                        reasons = "{% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}File upload limit (%maxFileSizeReadable%) has been reached{% endtrans %}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
+                        reasons = "{{ "Could not initiate upload, please retry" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.SPECIFIED_FILE_ID_NOT_FOUND:
+                        reasons = "{{ "Could not retrieve the file ID, please retry or contact an admin if problem persist" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
+                        reasons = "{{ "File validation failed" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
+                        reasons = "{{ "File upload has been cancelled" | trans }}";
+                    break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
+                        reasons = "{{ "File upload has been stopped" | trans }}";
+                    break;
+                }
+
+                var html = _.template($("#download_finish_tpl").html(), {heading:"{{ "Error while uploading" | trans }}", reasons: [reasons]});
+                $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+
+            },
+            upload_success_handler : function(file, response) {
+                var response = $.parseJSON(response);
+
+                if(response.success){
+                    //case record
+                    if(response.element === 'record'){
+                        var html = _.template($("#download_finish_tpl").html(), {heading:response.message, reasons: response.reasons});
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('p.success').append(html).show();
+                    } else { //case quarantine
+                        var html = _.template($("#download_finish_tpl").html(), {heading:response.message, reasons: response.reasons});
+                        $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+                    }
+                } else {
+                    //fail
+                    var html = _.template($("#download_finish_tpl").html(), {heading:response.message, reasons: response.reasons});
+                    $("#"+file.id, UploaderManager.getDownloadBox()).find('p.error').append(html).show();
+                }
+            },
+            upload_complete_handler: function(file) {
+                //this event is always fired in the end
+
+                $("#"+file.id, UploaderManager.getDownloadBox())
+                    .find('.progress-bar')
+                    .width('100%')
+                    .parent()
+                    .removeClass('progress-striped');
+
+                if (this.getStats().files_queued === 0) {
+                    $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
+                    var dialog = dialogModule.dialog.get(1);
+                    //unbind check before close event & disabled button for cancel all download
+                    dialog.getDomElement().unbind("dialogbeforeclose");
+
+                    return false;
+                }
+
+                var next_file = file_order.shift();
+
+                if ( typeof next_file !== "undefined") {
+                    this.startUpload(next_file.id);
+                }
+
+                return false;
+           }
+        });
+
+        $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(e){
+
+            //prevent dialog box from being closed while files are being downloaded
+            dialogModule.dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
+                if ( swfu.getStats().files_queued > 0) {
+                    p4.Alerts(language.warning, language.fileBeingDownloaded);
+                    return false;
+                }
+            });
+
+            var nbElements = $(".upload-box-addedfiles ul:first li.upload-valid > div").length;
+            var elementChecked = 0;
+
+            $(".upload-box-addedfiles ul:first li.upload-valid > div").each(function(index, element) {
+                var file = swfu.getFile($(this).attr("id"));
+
+                if (file !== null) {
+                    var html = _.template($("#download_items_tpl").html(), $.extend({}, file, {language: language}));
+                    UploaderManager.getDownloadBox().append(html);
+
+                    $("#"+file.id, UploaderManager.getDownloadBox()).find('.canva-wrapper').remove();
+                    $("#"+file.id, UploaderManager.getDownloadBox()).find('.remove-element').bind('click', function(e){
+                        swfu.cancelUpload(file.id);
+                    });
+
+                    //Add file
+                    file_order.push(file);
+                    elementChecked++;
+
+                    if( elementChecked === nbElements) {
+                        //Start upload
+                        swfu.startUpload(file_order.shift().id);
+                    }
+                }
+            });
+
+            $('ul', UploaderManager.getContainer().find('.upload-box')).empty();
+            $("button.clear-queue", UploaderManager.getContainer()).attr("disabled", true).addClass("disabled");
+            $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
+
+            if (nbElements === 0) {
+                alert("{{ 'Please select at least one valid file' | trans }}");
+            }
+        });
+
+        $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(e){
+            swfu.cancelQueue();
+            $('ul', $(this).closest('.upload-box')).empty();
+            $(this).attr("disabled", true).addClass("disabled");
+            $("button.upload-submitter", UploaderManager.getContainer()).attr("disabled", true).addClass('disabled');
+        });
+
+        $("#cancel-all", UploaderManager.getContainer()).bind("click", function(){
+            swfu.cancelQueue();
+            $(this).addClass("disabled").attr("disabled", true);
+        });
+    });
+
+</script>

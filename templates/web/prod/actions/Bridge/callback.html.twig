@@ -1,0 +1,30 @@
+<html>
+  <head>
+    {% if error_message is empty %}
+
+     <script type="text/javascript">
+        window.opener.prodApp.appEvents.emit('push.reload',{{ path("prod_bridge_manager") }});
+        // pushModule.reloadBridge("{{ path("prod_bridge_manager") }}");
+        window.close();
+      </script>
+
+    {% endif %}
+  </head>
+  <body>
+    {% if error_message %}
+      <div>
+        {{ 'Erreur lors de votre authentification' | trans }}
+      </div>
+      <div  class = 'error_auth'>
+      {{ error_message }}
+      </div>
+    {% else %}
+      <div>
+      {{ 'Vous etes authentifie avec succes' | trans }}
+      </div>
+      <div>
+      {{ 'Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte' | trans }}
+      </div>
+    {% endif %}
+  </body>
+</html>

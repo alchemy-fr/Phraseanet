@@ -1,0 +1,20 @@
+{% extends "lightbox/index_layout.html.twig" %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <div id="main_index">
+        <h2 style="font-weight:bold;font-size:20px;margin:40px 0;">{{ 'Erreur !' | trans }}</h2>
+        <p>{{ message }}</p>
+        <p>{{error}}</p>
+        <p><a style="color:black;" target="_self" href="{{ path('lightbox') }}">{{ 'Retour a laccueil' | trans }}</a></p>
+    </div>
+{% endblock %}
+
+{% block icon %}
+<link rel="shortcut icon" type="image/x-icon" href="/assets/lightbox/images/favicon.ico">
+{% endblock %}
+
+

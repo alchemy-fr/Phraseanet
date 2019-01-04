@@ -1,0 +1,47 @@
+{% macro paginator(npages, page, url) %}
+  {{ 'Page' | trans }}
+  {% if npages > 1 %}
+    {% set d2top = (npages - page) %}
+    {% set d2bottom = (page -1 ) %}
+    {% if d2top < 3 or d2bottom < 3 %}
+      {% if d2bottom < 3 %}
+
+        {% set iteration = 4 %}
+        {% if 3 > npages %}
+          {% set iteration = npages %}
+        {% endif %}
+
+        {% for i in 1..iteration %}
+          <a class="bridge_action {% if i == page %}selected{% endif %}" href="{{url}}?page={{i}}">{{i}}</a>
+        {% endfor %}
+
+        {% if npages > 3 %}
+          <a class="bridge_action {% if npages == page %}selected{% endif %}" href="{{url}}?page={{npages}}">{{npages}}</a>
+        {% endif %}
+      {% else %}
+        {% set start = npages - 3 %}
+
+        {% if start > 0 %}
+          <a class="bridge_action {% if 1 == page %}selected{% endif %}" href="{{url}}?page=1">1</a>
+        {% else %}
+          {% set start = 1 %}
+        {% endif %}
+
+        {% for i in start..npages %}
+          <a class="bridge_action {% if i == page %}selected{% endif %}" href="{{url}}?page={{i}}">{{i}}</a>
+        {% endfor %}
+
+      {% endif %}
+    {% else %}
+          <a class="bridge_action {% if 1 == page %}selected{% endif %}" href="{{url}}?page=1">1</a>
+          {% set l_bound = (page - 2) %}
+          {% set t_bound = (page + 2) %}
+          {% for i in l_bound..t_bound %}
+            <a class="bridge_action {% if i == page %}selected{% endif %}" href="{{url}}?page={{i}}">{{i}}</a>
+          {% endfor %}
+          <a class="bridge_action {% if npages == page %}selected{% endif %}" href="{{url}}?page={{npages}}">{{npages}}</a>
+    {% endif %}
+  {% else %}
+    <a class="bridge_action selected" href="{{url}}?page=1">1</a>
+  {% endif %}
+{% endmacro %}

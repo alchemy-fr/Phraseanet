@@ -1,0 +1,152 @@
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+   {# <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>#}
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+{% endblock %}
+
+{% block icon %}
+<link rel="shortcut icon" type="image/x-icon" href="/assets/lightbox/images/favicon.ico">
+{% endblock %}
+
+{% macro valid_baskets_length(baskets) %}
+    {% set number = 0 %}
+    {% for item in baskets %}
+        {% if item.getValidation() %}
+            {% set number = number + 1 %}
+        {% endif %}
+    {% endfor %}
+  {{number}}
+{% endmacro %}
+
+{% macro baskets_length(baskets) %}
+    {% set number = 0 %}
+    {% for item in baskets %}
+        {% if item.getValidation() == false %}
+            {% set number = number + 1 %}
+        {% endif %}
+    {% endfor %}
+  {{number}}
+{% endmacro %}
+
+{% block content %}
+<div id="home" data-role="page">
+    <div data-role="header">
+    <h1>{{module_name}}</h1>
+    <a href="#about" class="ui-btn-right">{{ 'a propos' | trans }}</a>
+  </div>
+    <div data-role="content">
+    <ul data-role="listview" style="width:100%;margin: 0;">
+      <li>
+        <a href="#validation">{{ 'Validations' | trans }}</a>
+        <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
+      </li>
+      <li>
+        <a href="#baskets">{{ 'Paniers' | trans }}</a>
+        <span class="ui-li-count">{{_self.baskets_length(baskets_collection)}}</span>
+      </li>
+    </ul>
+    <div style="margin:2em 0 0 0">
+      <a href="{{ path ('logout') }}" data-role="button" rel="external">{{ 'Deconnexion' | trans }}</a>
+    </div>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+
+<div id="about" data-role="page">
+    <div data-role="header">
+        <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+    <h1>{{ 'a propos' | trans }}</h1>
+  </div>
+    <div data-role="content">
+    <p>Phraseanet Version {{ app['phraseanet.version'].getName() }} - {{ app['phraseanet.version'].getNumber() }}</p>
+    <p>
+      <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>
+        <img src='https://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/>
+      </a>
+    </p>
+    <p>License <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GNU GPL v3</a></p>
+    <p><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></p>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+
+<div id="validation" data-role="page">
+    <div data-role="header">
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+     <h1>{{ 'Validations' | trans }}</h1>
+  </div>
+    <div data-role="content">
+    <p>
+      {{ 'Voici vos validations en cours' | trans }}
+    </p>
+    <ul data-role="listview"  style="width:100%;margin: 0;">
+            {% for basket in baskets_collection %}
+              {% if basket.getValidation() %}
+                {% set basket_length = basket.getElements().count() %}
+                <li>
+                  {% if basket.getElements().first() %}
+                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
+                  {% endif %}
+                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
+                  <p>{{ basket.getDescription() }}</p>
+                  <span class="ui-li-count">{{ basket_length }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+    </ul>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+
+<div id="baskets" data-role="page">
+    <div data-role="header">
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+     <h1>{{ 'Paniers' | trans }}</h1>
+  </div>
+    <div data-role="content">
+    <p>
+      {{ 'Voici vos paniers' | trans }}
+    </p>
+    <ul data-role="listview"  style="width:100%;margin: 0;">
+            {% for basket in baskets_collection %}
+              {% if basket.getValidation() is empty %}
+                {% set basket_length = basket.getElements().count() %}
+                <li>
+                  {% if basket.getElements().first() %}
+                  <img src="{{ basket.getElements().first().getRecord(app).get_thumbnail.get_url()}}" />
+                  {% endif %}
+                  <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
+                  <p>{{ basket.getDescription() }}</p>
+                  <span class="ui-li-count">{{basket_length}}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+    </ul>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+
+
+    <script>
+        var lightboxApp = lightboxMobileApplication.bootstrap({
+            lang: '{{ app.locale }}',
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}'
+        });
+    </script>
+
+{% endblock %}

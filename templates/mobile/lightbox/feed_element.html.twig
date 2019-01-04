@@ -1,0 +1,44 @@
+{% import "common/thumbnail.html.twig" as thumbnail %}
+
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+
+    <style type="text/css">
+        div[data-role="page"] {
+            position: relative;
+        }
+
+        #content {
+            position: fixed;
+            top:50px;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            text-align: center;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+  {% set record = feed_element.getRecord(app) %}
+<div data-role="page">
+  <div data-role="header">
+    <a href="{{ path('lightbox_feed_entry', { 'entry_id' : feed_element.getEntry().getId() }) }}" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>{{feed_element.getOrd()}} - {{record.get_title()}}</h1>
+    <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+  </div>
+    <div id="content" data-role="content">
+    {{ thumbnail.format100percent(record.get_preview()) }}
+  </div>
+  <div data-role="footer">
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:proxy' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="proxy" />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:proxy port' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="proxyport" />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:host' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="host" />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:port' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="port"  />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:user' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="user"  />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:password' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="password" name="password"  />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:chemin distant' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="ftppath"  />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:localpath' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="localpath"  />
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::ftp:mode passif' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="checkbox" name="passive" />
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="ssl" />
+            {{ 'task::ftp:utiliser SSL' | trans }}
+        </label>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            var gform = document.forms['graphicForm'];
+            gform.proxy.value     = xml.find("proxy").text();
+            gform.proxyport.value = xml.find("proxyport").text();
+            gform.localpath.value = xml.find("localpath").text();
+            gform.ftppath.value   = xml.find("ftppath").text();
+            gform.host.value      = xml.find("host").text();
+            gform.port.value      = xml.find("port").text();
+            gform.user.value      = xml.find("user").text();
+            gform.password.value  = xml.find("password").text();
+            gform.ssl.checked     = Number(xml.find("ssl").text()) > 0;
+            gform.passive.checked = Number(xml.find("passive").text()) > 0;
+        }
+    }
+</script>
+{% endblock %}

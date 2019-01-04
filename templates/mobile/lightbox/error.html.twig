@@ -1,0 +1,37 @@
+{% extends "common/index.html.twig" %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block content %}
+<div data-role="page">
+    <div data-role="header">
+    <h1>{{module_name}}</h1>
+  </div>
+    <div data-role="content">
+        <h2 style="font-weight:bold;font-size:20px;margin:40px 0;">{{ 'Erreur !' | trans }}</h2>
+        <p>{{ 'Le panier demande nexiste plus' | trans }}</p>
+        <p>{{error}}</p>
+        <p><a style="color:black;" target="_self" href="{{ path('lightbox') }}">{{ 'Retour a l\'accueil' | trans }}</a></p>
+  </div>
+    <div data-role="footer">
+
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+

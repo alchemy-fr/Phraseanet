@@ -1,0 +1,143 @@
+<div class="page-header">
+    <h1>{{ 'Reorder collections' | trans }}</h1>
+</div>
+
+<div id="notification"></div>
+
+<table id="table-order">
+    <tr>
+        <td valign="center" align="center">
+             <select size=16 name="coll-order" id="coll-order" style="width:140px;">
+                 {% for collection in collections|sort_collections %}
+                     <option value="{{ collection.get_base_id() }}"> {{ collection.get_name() }}</option>
+                 {% endfor %}
+             </select>
+        </td>
+         <td valign="center" align="left">
+             <ul style="list-style:none;">
+                 <li>
+                     <button class="btn" id="upbutton" disabled><i class="fa fa-chevron-up"
+                                                                   aria-hidden="true"></i>{{ 'admin::base:collorder: monter' | trans }}
+                     </button>
+                 </li>
+                 <li>
+                     <button class="btn" id="downbutton" disabled><i class="fa fa-chevron-down"
+                                                                     aria-hidden="true"></i>{{ 'admin::base:collorder: descendre' | trans }}
+                     </button>
+                 </li>
+                <li><a href="#" id="natcase-reorder">{{ 'admin::base:collorder: reinitialiser en ordre alphabetique' | trans }}</a></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height:20px;" />
+    </tr>
+    <tr>
+        <td colspan="2" valign="center" align="left">
+            <div class="form-actions">
+                <button class="btn btn-primary" id="apply">
+                    {{ 'boutton::valider' | trans }}
+                </button>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var offsets = [
+            {% for collection in collections|sort_collections %}
+                {% if not loop.first %},{% endif %} {{ loop.index }}
+            {% endfor %}
+        ];
+        var select =  $("#coll-order");
+        var upButton = $('#upbutton');
+        var downButton = $('#downbutton');
+        var applyButton = $('#apply');
+
+        activeButtons(select, upButton, downButton);
+
+        select.bind('click', function(){
+            activeButtons(select, upButton, downButton);
+        });
+
+        $("#natcase-reorder").bind('click', function(){
+            select.find('option').sort(natCaseSort).appendTo(select);
+        });
+
+        upButton.bind('click', function(){
+            moveUpItem(select);
+            activeButtons(select, upButton, downButton);
+        });
+
+        downButton.bind('click', function(){
+            moveDownItem(select);
+            activeButtons(select, upButton, downButton);
+        });
+
+        applyButton.bind('click', function() {
+            var $this = $(this);
+            var order = [];
+            // clone the array
+            var appliedoffsets = offsets.slice(0);
+
+            select.find('option').each(function(i, option){
+                order.push({id: $(this).val(), offset: appliedoffsets.shift()});
+            });
+
+            $.ajax({
+                dataType:'json',
+                type:'POST',
+                data: {order: order},
+                url: '{{ path('admin_database_submit_collections_order', {'databox_id': app['request'].attributes.get('databox_id')}) }}',
+                beforeSend : function() {
+                    $this.prop('disabled',true);
+                },
+                success : function(datas) {
+                    var html = _.template($("#alert_" + (datas.success ? "success" : "error") + "_tpl").html());
+                    $('#notification').html(html({
+                        content:datas.msg
+                    }));
+                    AdminApp.LeftView.reloadTree('bases:bases', true);
+                },
+                complete : function() {
+                    $this.prop('disabled',false)
+                }
+            });
+        });
+    });
+
+    function moveUpItem(select){
+        select.find('option:selected').each(function(){
+            $(this).insertBefore($(this).prev());
+        });
+    }
+
+    function moveDownItem(select){
+        select.find('option:selected').each(function(){
+            $(this).insertAfter($(this).next());
+        });
+    }
+
+    function natCaseSort(a, b) {
+        return (a.innerHTML > b.innerHTML) ? 1 : -1;
+    }
+
+    function activeButtons(select, upButton, downButton) {
+        var selectedIndex = select.prop("selectedIndex");
+        if(selectedIndex !== -1 ) {
+            if (selectedIndex === 0) {
+                upButton.prop('disabled', true)
+            } else {
+                upButton.prop('disabled', false)
+            }
+
+            if (selectedIndex + 1 === select.find('option').length) {
+                downButton.prop('disabled', true)
+            } else {
+                downButton.prop('disabled', false)
+            }
+        }
+    }
+
+</script>

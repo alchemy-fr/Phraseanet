@@ -1,0 +1,408 @@
+<div id="lazaretBox" class="container-fluid">
+
+    {% if lazaretFiles is not none %}
+        {% if lazaretFiles|length > 0 %}
+            <div id="QUARANTINE_TOOLBAR_EMPTYING_MSG"></div>
+            <div class="btn-toolbar">
+                <div class="btn-group emptying" style="text-align:center; padding:5px 0;">
+                    <button class="btn stopempty-lazaret" title="{{ "Stop"|trans }}">
+                        <img src="/assets/common/images/icons/delete.png">
+                        &nbsp;<span id="QUARANTINE_TOOLBAR_EMPTYING_TODO"> </span>&nbsp;{{ "Stop"|trans }}
+                    </button>
+                </div>
+                <div class="btn-group empty" style="text-align:center; padding:5px 0;">
+                    <button class="btn empty-lazaret" title="{{ "Empty quarantine" | trans }}">
+                        <img src="/assets/common/images/icons/delete.png"  width="16" height="16" class="btn-image">{{ "Empty quarantine" | trans }}
+                    </button>
+                </div>
+                <div class="btn-group empty" style="text-align:center; padding:5px 0;">
+                    <button class="btn" title="{{ "Page" | trans }}">
+                        {{ "Page" | trans }}
+                    </button>
+                    {% set items = lazaretFiles | length %}
+                    {% set pages = (items / perPage) | ceil | min(10) %}
+
+                    {% for i in 1..pages %}
+                        <button class="btn page-lazaret{% if currentPage == i %} active{% endif %}" title="{{ i }}">
+                            <a href="{{ path('lazaret_elements', { 'page' : i }) }}">
+                                {{ i }}
+                            </a>
+                        </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <ul class="unstyled">
+                {% for file in lazaretFiles %}
+                    <li class="row-fluid wrapper-item well">
+                       {{ _self.lazaretElement(app, file) }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {{ "No document in quarantine" | trans }}
+        {% endif %}
+    {% else %}
+        {{ "You do not have enough rights to access quarantine" | trans }}
+    {% endif %}
+</div>
+
+<script>
+    $('document').ready(function(){
+        $(".btn-group.emptying").hide();
+
+        var scope = $('#lazaretBox');
+
+        $("#tab-lazaret").scrollTop(0);
+
+        function getLazaretId(el){
+            return el.closest('div.lazaret-file').find('input[name=lazaret_file]').val();
+        }
+
+        function getDestinationId(el){
+            return el.closest('div.lazaret-file').find('input[name=lazaret_file_destination]').val();
+        }
+
+        function startAjax(button){
+            button.closest(".btn-group").find('button').prop('disabled', true);
+            button.closest(".btn-group").addClass('loading');
+        }
+
+        function stopAjax(button){
+            button.closest(".btn-group").find('button').prop('disabled', false);
+            button.closest(".btn-group").removeClass('loading');
+        }
+
+        function reloadContent(force){
+            var nbItems = scope.find(".wrapper-item").length;
+
+            if( nbItems === 0 || force === true) {
+                $.ajax({
+                    url:'/prod/lazaret/',
+                    beforeSend: function(){
+                        $("#lazaretBox").empty().append(language.loading );
+                    },
+                    success: function(data) {
+                        scope.empty().append(data);
+                    },
+                    error : function() {
+                        $("#lazaretBox").empty().append(language.errorAjaxRequest);
+                    }
+                });
+            }
+        }
+
+        $(".records-subititution .diapo", scope)
+                .bind('click', function(e){
+                    $(this).closest('.lazaret-proposals').find('.diapo').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+        );
+
+        $(".records-subititution .captionTips", scope).tooltip();
+        $(".records-subititution .infoTips", scope).tooltip();
+        $(".records-subititution .previewTips", scope).tooltip();
+
+        var emptying = false;   // true=emptying, set to false to stop
+
+        // stop emptying lazaret
+        $('button.stopempty-lazaret', scope).bind('click', function() {
+            emptying = false;
+        });
+
+        // empty lazaret
+        $('button.empty-lazaret', scope).bind('click', function(){
+
+            var that = $(this);
+            
+            if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
+                return false;
+            }
+
+            $(".btn-group.empty").hide();
+            $(".btn-group.emptying").show();
+
+            var f = function() {
+                var todo = 0;
+                var msg_html = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '/prod/lazaret/empty/',
+                    dataType: 'json',
+                    data: {
+                        "max": 10
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            todo = data.result.todo;
+                            $("#QUARANTINE_TOOLBAR_EMPTYING_TODO").text(""+todo);
+                        } else {
+                            emptying = false;   // force stop
+                            msg_html = _.template($("#alert_error_tpl").html(), {
+                                content: data.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        emptying = false;   // force stop
+                        msg_html = _.template($("#alert_error_tpl").html(), {
+                            content: language.errorAjaxRequest
+                        });
+                    }
+                })
+                .done(function(data) {
+                    if(emptying && todo > 0) {
+                        window.setTimeout(f, 500);  // wait between loops
+                    }
+                })
+                .fail(function() {
+                    emptying = false;   // force stop
+                })
+                .always(function(){
+                    if(!emptying || todo <= 0) {
+                        $(".btn-group.emptying").hide();
+                        $(".btn-group.empty").show();
+                        if(msg_html != "") {
+                            $("#QUARANTINE_TOOLBAR_EMPTYING_MSG").html(msg_html);
+                        }
+                        else {
+                            reloadContent(true);
+                        }
+                    }
+                });
+            };
+
+            // start emptying
+            emptying = true;
+            f();
+        });
+
+        //add lazaret file click action
+        $("button.add-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+            var destinationCollectionId = getDestinationId(that);
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/force-add/',
+                dataType: 'json',
+                data : {
+                    bas_id:destinationCollectionId,
+                    keep_attributes: 1
+                },
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                        var html = _.template($("#alert_error_tpl").html(), {
+                             content:data.message
+                        });
+                        that.closest(".diapo").append(html);
+                    }
+                },
+                error: function(){
+                   var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
+                   });
+                   that.closest(".diapo").append(html);
+                },
+                complete: function(){
+                    stopAjax(that);
+                    reloadContent();
+                }
+            });
+        });
+
+        //delete lazaret file click action
+        $("button.delete-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/deny/',
+                dataType: 'json',
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                       var html = _.template($("#alert_error_tpl").html(), {
+                            content:data.message
+                       });
+                       that.closest(".diapo").append(html);
+                    }
+                },
+                error: function(){
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
+                    });
+                    that.closest(".diapo").append(html);
+                },
+                complete: function(){
+                    stopAjax(that);
+                    reloadContent();
+                }
+            });
+        });
+
+        //substitute lazaret file click action
+        $("button.subtitute-lazaret", scope).bind('click', function(){
+            var that = $(this);
+            var lazaretId = getLazaretId(that);
+            var container = $(this).closest('.wrapper-item');
+
+            var nbProposals = $('.records-subititution', container).length;
+            var elements = [];
+            var nbElement = 0;
+
+            if(nbProposals >= 1){
+                elements = $(".selected", container);
+                nbElement = elements.length;
+            }else{
+                return false;
+            }
+
+            if(nbElement === 0){
+                alert(language.selectOneRecord);
+                return false;
+            }else if(nbElement > 1){
+                alert(language.onlyOneRecord);
+                return false;
+            }
+
+            var recordId = elements.first().attr("data-record_id");
+
+            $.ajax({
+                type : 'POST',
+                url: '/prod/lazaret/'+lazaretId+'/accept/',
+                dataType: 'json',
+                data:{
+                    record_id: recordId
+                },
+                beforeSend: function(){
+                   startAjax(that);
+                },
+                success: function(data){
+                    if(data.success){
+                        that.closest(".wrapper-item").remove();
+                    }else{
+                        var html = _.template($("#alert_error_tpl").html(), {
+                            content:data.message
+                        });
+                        that.closest(".diapo").append(html);
+                    }
+                },
+                error: function(){
+                    var html = _.template($("#alert_error_tpl").html(), {
+                        content:language.errorAjaxRequest
+                    });
+                    that.closest(".diapo").append(html);
+                },
+                complete: function(){
+                    stopAjax(that);
+                    reloadContent();
+                }
+            });
+        });
+    });
+</script>
+<style>
+    .lazaret-proposals .diapo {
+        float:none;
+    }
+</style>
+
+{% macro lazaretElement(app, file) %}
+    {% import "common/thumbnail.html.twig" as thumb %}
+    {% set records = file.getRecordsToSubstitute(app, true) %}
+    <div class="lazaret-file span4">
+        <h5>{{ "Last uploaded version" | trans }}</h5>
+        <ul class="thumbnails">
+            <li class="span12" >
+                <div class="thumbnail">
+                    <img src="/prod/lazaret/{{ file.getId() }}/thumbnail/"/>
+                    <div class="caption">
+                        <p>{{ "Filename" | trans }} : <span class="info">{{ file.getOriginalName() }}</span></p>
+                        <p>{{ "Date" | trans }} : <span class="info">{{ app['date-formatter'].getPrettyString(file.getCreated()) }}</span></p>
+                        {% if file.getSession().getUser() is not none %}
+                            <p>
+                                {% set username = '<a href="#" class="username userTips" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : file.getSession().getUser().getId() }) ~ '/">' ~ file.getSession().getUser().getDisplayName() ~ '</a>' %}
+                                {% trans with {'%username%' : username} %}Uploaded by : %username%{% endtrans %}
+                            </p>
+                        {% endif %}
+                        <p>{{ "Collection" | trans }} : <span class="info">{{ file.getCollection(app).get_label(app['locale']) }}</span></p>
+                    </div>
+                    <div class="caption">
+                        {% for check in file.getChecks() %}
+                            <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="btn-group" style="text-align:center; padding:5px;">
+                        <button class="btn add-lazaret" title="{{ "Add" | trans }}">
+                            <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                        </button>
+                        <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                            <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
+                        </button>
+                        {% if records|length > 0 %}
+                            <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        </ul>
+        {# Store lazaret file id in hidden input #}
+        <input type="hidden" name="lazaret_file" value="{{ file.getId() }}"/>
+        {# Store lazaret file destination #}
+        <input type="hidden" name="lazaret_file_destination" value="{{ file.getBaseId() }}"/>
+    </div>
+    {% set record_count = records|length %}
+    {% if record_count  > 0 %}
+        <div class="lazaret-proposals span8">
+            <h5>
+            {% if record_count <= 1 %}
+                {% trans %}A record matches the unique identifier :{% endtrans %}
+            {% else %}
+                {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
+            {% endif %}
+            </h5>
+            <ul class="thumbnails">
+                {% for record in records %}
+                    {% set reasons = record['reasons'] %}
+                    {% set record = record['record'] %}
+                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANADDRECORD'))
+                        and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDELETERECORD')) %}
+                        <li class="records-subititution span3" style="width:210px">
+                            {% include 'prod/results/record.html.twig' with {
+                            'record': record,
+                            'settings': {
+                            'images_size': 169,
+                            'technical_display': '1',
+                            'rollover_thumbnail': 'caption',
+                            'doctype_display': '1',
+                            'handle_dblclick' : false,
+                            'show_context_menu': false
+                            }
+                            } %}
+                            <div class="caption">
+                                {% for reason in reasons %}
+                                    <p>{{ reason }}</p>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endmacro %}
+

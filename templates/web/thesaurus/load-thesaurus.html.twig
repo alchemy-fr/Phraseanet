@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<script language="javascript">
+
+    {% if updated %}
+        alert('{{ 'thesaurus has been updated' | trans | e('js') }}');
+    {% endif %}
+
+    {% if valid_thesaurus %}
+        parent.currentBaseId   = {{ bid }};
+        parent.currentBaseName = "{{ name | e('js') }}";
+        parent.document.title = "{{ 'phraseanet:: thesaurus' | trans | e('js') }}";
+        parent.document.getElementById("baseName").innerHTML = "{{ 'phraseanet:: thesaurus' | trans | e('js') }}";
+        parent.thesaurusChanged = false;
+
+        parent.document.getElementById("T0").innerHTML='<DIV class="glossaire" id="CTERMS">' +
+                '' +
+                '<div id="TCE_C" class="s_" style="font-weight:900"><u id="THP_C">-</u>{{ name }}</div>' +
+                '<div id="THB_C" class="OB">' +
+        {% for cterm in cterms %}
+                '<div id="TCE_{{ cterm['id'] }}" class="s_"><u id="THP_{{ cterm['id'] }}">+</u>{{ cterm['field'] }}</div>' +
+                '<div id="THB_{{ cterm['id'] }}" class="ob">' +
+                '</div>'+
+        {% endfor %}
+                '</div></DIV>';
+
+        parent.document.getElementById("T1").innerHTML = '<DIV class="glossaire">' +
+                '<div id="THE_T" class="s_" style="font-weight:900"><u id="THP_T">+</u>{{ name }}</div>' +
+                '<div id="THB_T" class="ob">' +
+                '</div>' +
+                '</DIV>';
+    {% else %}
+
+        if(confirm("{{ "Thesaurus ou CTerms invalide" | trans | e('js') }}\n{{ "effacer (OK) ou quitter (Annuler) ?" | trans | e('js') }}"))
+        {
+            parent.document.forms['fBase'].repair.value = "on";
+            parent.document.forms['fBase'].submit();
+        }
+        else
+        {
+            parent.window.close();
+        }
+    {% endif %}
+</script>

@@ -1,0 +1,56 @@
+<div class="page-header">
+    <h1>{{ 'Terms Of Use' | trans }}</h1>
+</div>
+
+<form target="_self" method="post" action="{{ path('admin_database_submit_cgus', {'databox_id': app['request'].attributes.get('databox_id')}) }}" class="form-inline">
+    <div class='well'>
+        <label for="valid" class='checkbox'>
+            <input type="checkbox" value="1" id="valid" name="valid"/>
+            {{ 'admin::CGU Les utilisateurs doivent imperativement revalider ces conditions' | trans }}
+        </label>
+        <input class='btn btn-primary' type="submit" value="{{ 'Mettre a jour' | trans }}"/>
+    </div>
+    <div id="tabs">
+        <ul>
+            {% for code, lang in languages %}
+                {% if code in cgus| keys %}
+                    <li {{ code == current_locale ? 'class="current"' : ''}}>
+                        <a class="no-ajax" href="#terms-{{ code }}">{{ lang }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% for code, lang in languages %}
+            {% if code in cgus| keys %}
+                <div id="terms-{{ code }}">
+                    {% spaceless %}
+                        <textarea name="TOU[{{ code }}]" style="width:100%;height:600px;margin:0 auto;">{% set cgu = attribute(cgus, code) %}{{ cgu['value']|trim }}</textarea>
+                    {% endspaceless %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('#tabs').tabs({
+            active:$("#tabs ul li").index($('#tabs ul li.current'))
+        });
+
+        if (typeof(tinymce) !== "undefined") {
+            if (tinymce.activeEditor !== null) {
+                tinymce.editors=[]; // remove any existing references
+            }
+        }
+        tinymce.init({
+            selector: "textarea",
+            plugins: [
+                    "searchreplace",
+                    "contextmenu paste"
+            ],
+            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent"
+        });
+    });
+</script>

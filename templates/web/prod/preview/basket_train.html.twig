@@ -1,0 +1,68 @@
+ <div id="PREVIEWCURRENTCONT" class="PNB10">
+  <ul>
+    {% set basket = record.get_container %}
+    {% for element in basket.elements %}
+
+        {% set record_item = element.record(app) %}
+
+        {% set thumb_w = 70 %}
+        {% set thumb_h = 70 %}
+
+        {% set thumbnail = record_item.get_thumbnail %}
+
+        {% if thumbnail is not none %}
+            {% set thumb_w = thumbnail.get_width %}
+            {% set thumb_h = thumbnail.get_height %}
+        {% endif %}
+
+        {% set url = record_thumbnail_url(record_item) %}
+
+        {% set box_w = 70 %}
+        {% set box_h = 80 %}
+
+        {% set original_h = thumb_h > 0 ? thumb_h : 70 %}
+        {% set original_w = thumb_w > 0 ? thumb_w : 70 %}
+
+        {% set fit_size = fitIn(
+                {"width":original_w, "height":original_h},
+                {"width":box_w, "height":box_h}
+            )
+        %}
+
+    <li class="{% if record.getNumber == element.ord %}selected{% endif %} prevTrainCurrent">
+        <img {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}
+            tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record_item.databoxId, 'record_id' : record_item.recordId, 'context' : 'basket' }) }}"
+        {% endif %}
+            jsargs="BASK|{{element.ord}}|{{basket.id}}"
+            class="openPreview prevRegToolTip" src="{{url}}"
+            style="
+                width:{{fit_size.width}}px;
+                height:{{fit_size.height}}px;
+                top:{{fit_size.top}}px;
+                position:relative;
+            "
+        />
+    </li>
+    {% endfor %}
+
+   </ul>
+  </div>
+ <div class="wrapper_diaspo">
+   <div class="cont_infos">
+     <div>
+         <button class="preview-navigate-action" data-direction="backward">
+             <i class="fa fa-caret-left" aria-hidden="true"></i>
+         </button>
+         <button class="preview-navigate-action" data-direction="forward">
+             <i class="fa fa-caret-right" aria-hidden="true"></i>
+         </button><br/>
+         <span class="preview-start-slideshow-action"
+               id="start_slide">{{ 'preview:: demarrer le diaporama' | trans }} </span>
+         <span class="preview-stop-slideshow-action"
+               id="stop_slide"> {{ 'preview:: arreter le diaporama' | trans }} </span>
+     </div>
+   </div>
+   <div id="PREVIEWTOOL">
+       {% include 'prod/preview/tools.html.twig' %}
+   </div>
+ </div>

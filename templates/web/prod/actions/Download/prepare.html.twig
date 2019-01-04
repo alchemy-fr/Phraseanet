@@ -1,0 +1,125 @@
+{% extends "common/index_bootstrap.html.twig" %}
+
+{% block stylesheet %}
+    <style type="text/css">
+
+        #mainMenu, .publi_group {
+            background-color: #404040;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">{{ "Download of documents" | trans }}</h1>
+
+    <div class="well-small">
+       {% if (list['complete'] is not defined or not list['complete']) and list['count'] > 1%}
+            <div class="alert alert-info">
+                {{ "Please wait while your files are being gathered for the download, this operation may take a few minutes." | trans }}
+            </div>
+       {% elseif list['complete'] is defined and list['complete'] %}
+            <div class="alert alert-success">
+                {% set url = path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) %}
+                {% set before_link = '<a href="' ~ url ~ '" target="_self">' %}
+                {% set after_link = '</a>' %}
+                {% trans with {'%before_link%' : before_link, '%after_link%' : after_link} %}Your documents are ready. If the download does not start, %before_link%click here%after_link%{% endtrans %}
+            </div>
+       {% endif %}
+    </div>
+
+    <div class="well-small">
+        <table class="table table-bordered table-condensed">
+            <caption>
+                <h3>{{ "The file contains the following elements" | trans }}</h3>
+            </caption>
+            <thead>
+                <tr>
+                    <th>{{ "Base" | trans }}</th>
+                    <th>{{ "Name" | trans }}</th>
+                    <th>{{ "Sub definition" | trans }}</th>
+                    <th>{{ "Size" | trans }}</th>
+                    <th>{{ "Thumbnail" | trans }}</th>
+                </tr>
+            </thead>
+
+            {% set total_size = 0 %}
+            {% for file in list["files"] %}
+                {% set size = 0 %}
+                <tr valign="middle">
+                    <td>{{ app|sbas_from_bas(file['base_id'])|sbas_labels(app) }} {{ file['base_id']|bas_labels(app) }}</td>
+                    <td>{{ file['original_name'] }}</td>
+                    <td>
+                        {% if file['subdefs'] is iterable and file['subdefs']|length > 0 %}
+                            <ul class='unstyled'>
+                            {% for subdef in file['subdefs'] %}
+                                <li>{{ subdef['label'] }}</li>
+                                {% set size = size + subdef['size'] %}
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </td>
+                    <td>{{ size|formatOctets }}</td>
+                    <td style="text-align:center;">
+                        {% set record_key = app|sbas_from_bas(file['base_id']) ~'_'~ file['record_id']%}
+
+                        {% if record_key in records|keys %}
+                            {% set record  = attribute(records, record_key) %}
+                            {% set thumbnail = record.get_thumbnail() %}
+                            {% if thumbnail.isLandscape() %}
+                                {% set w = 140 %}
+                                {% if thumbnail.get_height() > 0 and thumbnail.get_width() > 0 %}
+                                    {% set h = (w / (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                                {% else %}
+                                    {% set h = 140 %}
+                                {% endif %}
+                            {% else %}
+                                {% set h = 105 %}
+                                {% if thumbnail.get_height() > 0 %}
+                                    {% set w = (h * (thumbnail.get_width() / thumbnail.get_height()))|round %}
+                                {% else %}
+                                    {% set w = 105 %}
+                                {% endif %}
+                            {% endif %}
+
+                            <img width="{{ w ~ 'px' }}" height="{{ h ~ 'px' }}" src="{{ thumbnail.get_url() }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+                {% set total_size = total_size + size %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="display:none">
+        <form name="download" action="{{ path('document_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}" method="post" target="file_frame">
+            {% if anonymous %}
+                <input type="hidden" name="anonymous" value="1" />
+            {% endif%}
+        </form>
+        <iframe name="file_frame"></iframe>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            {% set time = (total_size / (1024 * 1024 * 3))|round %}
+            {% set time = time < 1 ? 2 : (time > 10 ? 10 : time) %}
+
+            {% if list['complete'] is not defined %} {# Zip not done #}
+                $.post("{{ path('execute_download', {'token': token.getValue(), 'type': type, 'anonymous': anonymous}) }}", function(data){
+                    if(data.success) {
+                        $('form[name=download]').submit();
+                    } else {
+                        setTimeout("location.reload()", "{{ time ~ "000" }}");
+                    }
+                    return false;
+                });
+
+            {% elseif (list['complete'] is defined and list['complete'])%} {# Zip done #}
+                // Get files
+                $('form[name=download]').submit();
+            {% else %}
+                setTimeout("location.reload()", "{{ time ~ "000" }}");
+            {% endif %}
+        });
+    </script>
+{% endblock %}

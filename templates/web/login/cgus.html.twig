@@ -1,0 +1,19 @@
+{# variable "cgus" a string containing the cgus #}
+
+{% extends "login/layout/content-only-layout.html.twig" %}
+
+{% block title %}
+    {{ "Terms of use" | trans }}
+{% endblock %}
+
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="cgu-content">
+                {% block cgu_content %}
+                    {{ cgus|raw }}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

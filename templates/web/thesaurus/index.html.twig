@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ app['locale'] }}">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/thesaurus/images/favicon.ico">
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+    </head>
+    <body>
+        <br/>
+        <br/>
+        <br/>
+    <center>
+    {% set count_bases = bases | length %}
+    {% if count_bases > 0 %}
+
+        <form name="fBase" action="{{ path('thesaurus_thesaurus') }}" method="post">
+            {{ 'thesaurus:: Editer le thesaurus' | trans }}
+            <select name="bid" onchange="ckok();return(true);">
+                <option value="">{{ 'phraseanet:: choisir' | trans }}</option>
+                {% for sbas_id, name in bases %}
+                <option value="{{ sbas_id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            <br/>
+            <br/>
+            <script type="text/javascript">
+                function ckok()
+                {
+                    ck = false;
+                    fl = document.getElementsByName("piv");
+                    for(i=0; !ck && i<fl.length; i++)
+                        ck = fl[i].checked;
+                    ck &= document.forms[0].bid.selectedIndex > 0;
+                    document.getElementById("button_ok").disabled = !ck;
+                }
+            </script>
+            <table>
+                <tr>
+                    <td>{{ 'thesaurus:: langue pivot' | trans }}</td>
+            {% for code, language in languages %}
+                    <td style="text-align:left">
+                        <input type='radio' onclick="ckok();return(true);" value='{{ code }}' name='piv'>
+                        <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />( {{ language }} )
+                    </td>
+            {% endfor %}
+                </tr>
+            </table>
+            <br/>
+            <br/>
+            <input disabled="disabled" id="button_ok" type="submit" style="width:80px;" value="{{ 'boutton::valider' | trans }}" /><br/>
+        </form>
+    {% else %}
+        {{ 'thesaurus:: Vous n\'avez acces a aucune base' | trans }}
+    {% endif %}
+    </center>
+</body>
+</html>

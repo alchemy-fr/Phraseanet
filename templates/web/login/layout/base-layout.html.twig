@@ -1,0 +1,106 @@
+{% if form is defined %}
+{% form_theme form 'login/common/fields.html.twig' %}
+{% endif %}
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="{{ app['locale'] }}"> <![endif]-->
+<!--[if gt IE 8]><!--><html lang="{{ app['locale'] }}" class="no-js "> <!--<![endif]-->
+<html>
+    <head>
+        {% block header %}
+            <title>{% block title %}Phraseanet{% endblock title %}</title>
+
+            {% block header_meta %}
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta content="{{ meta_description }}" name="description"/>
+                <meta content="{{ meta_keywords }}" name="keywords"/>
+                <meta content="phraseanet" name="generator"/>
+            {% endblock header_meta %}
+
+            {% block header_rss %}{% endblock %}
+
+            {% block favicon %}
+                <link rel="shortcut icon" type="image/x-icon" href="/assets/authentication/images/favicon.ico" />
+            {% endblock favicon %}
+
+            {% block header_stylesheet %}
+                <link type="text/css" rel="stylesheet" href="/assets/authentication/css/authentication{% if not app.debug %}.min{% endif %}.css">
+                <!--[if lte IE 8]>
+                <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
+                <![endif]-->
+            {% endblock header_stylesheet %}
+
+            {% block header_javascript %}
+                <!--[if lte IE 8]>
+                <link type="text/css" rel="stylesheet" href="/assets/common/css/font-awesome-ie7.min.css">
+                <script type="text/javascript" src="/assets/vendors/json2/json2{% if not app.debug %}.min{% endif %}.js"></script>
+                <![endif]-->
+                <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
+
+                {# include backbone templates #}
+                {% include "login/common/templates.html.twig" %}
+            <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+            <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+            <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js"></script>
+            {% endblock header_javascript %}
+        {% endblock header %}
+    </head>
+    <body>
+        {% block container %}
+            <div class="container">
+                {% block content_scaffholding %}{% endblock %}
+                {% block footer_scaffholding %}
+                    <div class="row-fluid">
+                       <div class="span12">
+                           <div class="footer well-small">
+                               {% block footer %}
+                                   <div class="row-fluid">
+                                       <div class="span9" >
+                                           {% block footer_content %}
+                                               <div class="footer-block">
+                                                   <ul class="inline footer-list unstyled">
+                                                       <li class="item-first" >
+                                                          <a href="{{ path("homepage") }}">{{ "Home" | trans }}</a>
+                                                       </li>
+                                                       <li>
+                                                          <a href="https://www.phraseanet.com/documentation/" target="_blank">{{ "Help" | trans }}</a>
+                                                       </li>
+                                                       {% if has_terms_of_use %}
+                                                           <li>
+                                                               {% block tou_link %}
+                                                                   <a href="{{ path("login_cgus") }}" target="_blank">{{ "Terms of use" | trans }}</a>
+                                                               {% endblock tou_link %}
+                                                           </li>
+                                                       {% endif %}
+                                                       <li>
+                                                           {% block copyright %}
+                                                              &copy; Copyright <a href="http://www.alchemy.fr" target="_blank">Alchemy</a> 2005-{{ "now"|date("Y") }}
+                                                           {% endblock copyright %}
+                                                       </li>
+                                                   </ul>
+                                               </div>
+                                           {% endblock footer_content %}
+                                       </div>
+                                       <div class="span3">
+                                           <div class="footer-block text-right">
+                                               {% block footer_logo %}<a href="https://www.phraseanet.com" target="_blank">Phraseanet</a>{% endblock footer_logo %}
+                                           </div>
+                                       </div>
+                                   </div>
+                               {% endblock footer %}
+                           </div>
+                       </div>
+                   </div>
+                {% endblock footer_scaffholding %}
+            </div><!--/.fluid-container-->
+        {% endblock %}
+        {% block analytics %}
+            {% include 'common/analytics.html.twig' %}
+        {% endblock analytics %}
+
+        {% block scripts %}{% endblock scripts %}
+    </body>
+</html>

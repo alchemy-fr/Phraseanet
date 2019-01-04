@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Phraseanet Authentication</title>
+        <meta name="author" content="Alchemy" />
+
+        <!-- Mobile viewport optimized -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- styles -->
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css">
+        <link type="text/css" rel="stylesheet" href="/assets/oauth/css/oauth{% if not app.debug %}.min{% endif %}.css">
+
+        <!-- All JavaScript at the bottom, except this Modernizr build.
+        Modernizr enables HTML5 elements & feature detects for optimal performance. -->
+        <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    {% set home_title = app['conf'].get(['registry', 'general', 'title']) %}
+
+    <body>
+        <div id="page" class="container">
+            <div id="main" class="row">
+
+                <div id="title-box" class="span6 offset3">
+                    <h1 id="namePhr">{{home_title}}</h1>
+                </div>
+
+                {% if not app.getAuthenticator().isAuthenticated() %}
+                    <div id="content-box" class="span6 offset3">
+                        <form id="login-form" class="form-vertical" method="post">
+                            {% for key,value in auth.getParams %}
+                                <input type="hidden" name="{{key}}" value="{{value}}">
+                            {% endfor %}
+                            {% if errorMessage %}
+                                <p class="login_error">{{ 'Erreur de login / mot de passe' | trans }}</p>
+                            {% endif %}
+                            <p class="login_hello">
+                                {% trans with {'%home_title%' : home_title} %}Bonjour, veuillez vous identifier sur %home_title% :{% endtrans %}
+                            </p>
+                            <input id="myLogin" name="login" class="span6" type="text" placeholder="{{ 'admin::compte-utilisateur identifiant' | trans }}" />
+                            <input id="myPass" name="password" class="span6" type="password" placeholder="{{ 'admin::compte-utilisateur mot de passe' | trans }}" />
+                            <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{{ 'Se connecter' | trans }}" />
+                        </form>
+                        <p>
+                            <a href="#">{{ 'Problemes de connexion ?' | trans }}</a>
+                        </p>
+                    </div>
+                {% else %}
+                    {% if app.getAuthenticatedUser() is not none %}
+                        {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() ~ '</b>' %}
+                        <div id="hello-box" class="span6 offset3">
+                            <p class="login_hello">
+                                {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
+                            </p>
+                        </div>
+                    {% endif %}
+                    {% if auth.getClient() is not none %}
+                    <div id="text-box" class="span6 offset3">
+                        <div id="top-text-box">
+                            <h4>{% trans %}Autorisation d'acces{% endtrans %}</h4>
+                        </div>
+                        <div id="main-text-box">
+                            {% set application_name = '<span>' ~ auth.getClient.get_name() ~ '</span>' %}
+                            <p>
+                                {% trans with {'%application_name%' : application_name, '%home_title%' : home_title} %}Autorisez-vous l'application %application_name% a acceder a votre contenu sur %home_title% ?{% endtrans %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div id="btn-box" class="span6 offset3">
+                        <form method="post" class="access-deny">
+                            {% for key,value in auth.getParams %}
+                                <input type="hidden" name="{{key}}" value="{{value}}">
+                            {% endfor %}
+                            <input type="hidden" name="action_accept" value="1">
+                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Autoriser' | trans }}" />
+                        </form>
+                        <form method="post" class="access-deny">
+                            {% for key,value in auth.getParams %}
+                                <input type="hidden" name="{{key}}" value="{{value}}">
+                            {% endfor %}
+                            <input type="hidden" name="action_accept" value="0">
+                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{{ 'Ne pas autoriser' | trans }}" />
+                        </form>
+                    </div>
+                 {% endif %}
+
+            </div>
+        </div>
+    </body>
+</html>

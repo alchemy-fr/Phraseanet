@@ -1,0 +1,161 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block css %}
+<style type="text/css">
+    OPTION.jsFilled
+    {
+        padding-left:10px;
+        padding-right:20px;
+    }
+    #OUTOFDATETAB TD
+    {
+        text-align:center;
+    }
+    DIV.terminal
+    {
+        margin:5px;
+        border:1px #000000 solid;
+        font-family:monospace;
+        font-size:13px;
+        text-align:left;
+        color:#00FF00;
+        background-color:#182018
+    }
+    DIV.terminal DIV.title
+    {
+        color:#303830;
+        background-color:#00C000;
+        padding:2px;
+    }
+    DIV.terminal DIV.sql
+    {
+        padding:5px;
+    }
+    DIV.terminal DIV.sqltest
+    {
+        padding-left:45px;
+        padding-right:25px;
+    }
+    SPAN.active
+    {
+        font-weight: bold;
+        background-color: #000000;
+        color:#00FF00;
+    }
+    SPAN.notactive
+    {
+        font-weight: bold;
+        background-color: #000000;
+        color:#FF0000;
+    }
+
+</style>
+{% endblock %}
+
+{% block form %}
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="logsql" />{{ 'Log changes' | trans }}
+        </label>
+    </div>
+</div>
+<center>
+    <div class="terminal" id="sqla"></div>
+</center>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+
+    function taskFillGraphic(xml)
+    {
+        $("#sqlu").text("");
+        $("#sqls").text("");
+        if (xml) {
+            xml2 = $.parseXML(xml);
+            xml2 = $(xml2);
+
+            with(document.forms['graphicForm'])
+            {
+                logsql.checked   = Number(xml2.find("logsql").text()) > 0;
+            }
+
+            var data = {};
+            data["ACT"] = "CALCTEST";
+            data["taskid"]={{ task.getId() }};
+            data["cls"]="RecordMover";
+            data["xml"] = xml;
+            $.ajax({ url: "{{ path('admin_tasks_task_facility', { 'task' : task.getID() }) }}"
+                , data: data
+                , dataType:'json'
+                , type:"POST"
+                , async:true
+                , success:function(data) {
+                    t = "";
+                    for (i in data.tasks) {
+                        t += "<div class=\"title\">&nbsp;";
+                        if(data.tasks[i].active)
+                            t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
+                        else
+                            t += "<span class=\"notactive\">&nbsp;X&nbsp;</span>&nbsp;";
+                        if(data.tasks[i].name_htmlencoded)
+                            t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
+                        else
+                            t += "<b><i>sans nom</i></b>";
+
+                        if(data.tasks[i].basename_htmlencoded)
+                            t += " (action=" + data.tasks[i].action + ' on ' +  data.tasks[i].basename_htmlencoded + ')';
+                        else
+                            t += " (action=" + data.tasks[i].action + ' on <i>Unknown</i>)';
+                        t += "</div>";
+
+                        if(data.tasks[i].err_htmlencoded) ;
+                        t += "<div class=\"err\">" + data.tasks[i].err_htmlencoded + "</div>";
+
+                        t += "<div class=\"sql\">";
+
+                        if(data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded)
+                            t += "<div class=\"sqltest\">" + data.tasks[i].sql.test.sql_htmlencoded + "</div>";
+                        t += "--&gt; <span id=\"SQLRET"+i+"\"><i>wait...</i></span><br/>";
+
+                        t += "</div>";
+                    }
+                    $("#sqla").html(t);
+
+                    var data = {};
+                    data["ACT"] = "PLAYTEST";
+                    data["taskid"]={{ task.getId() }};
+                    data["cls"]="RecordMover";
+                    data["xml"] = xml;
+                    $.ajax({ url: "{{ path('admin_tasks_task_facility', { 'task' : task.getID() }) }}"
+                        , data: data
+                        , dataType:'json'
+                        , type:"POST"
+                        , async:true
+                        , success:function(data) {
+                            for (i in data.tasks) {
+                                if (data.tasks[i].sql) {
+                                    if (data.tasks[i].sql.test.err) {
+                                        $("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
+                                    } else {
+                                        t = '';
+                                        for(j in data.tasks[i].sql.test.result.rids)
+                                            t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
+                                        if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
+                                            t += ', ...';
+                                        $("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
+                                    }
+                                } else {
+                                    $("#SQLRET"+i).html("");
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

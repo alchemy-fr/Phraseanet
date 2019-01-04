@@ -1,0 +1,64 @@
+<div id="explainResults" class="myexplain">
+    <img src="/assets/common/images/icons/answers.gif" />
+    <span class="title-explain">
+        <b>
+            {% set total = results.getTotal()|number_format(null, null, ' ') %}
+            {% trans %}reponses:: %total% Resultats{% endtrans %}
+        </b>
+    </span>
+    <br>
+    <div class="sub-explain">
+        {{ results.getDuration() / 1000 }} s
+    </div>
+    dans index {{ results.getIndexes() }}
+    {% if not(esquery is null) %}
+        <div class="esqueryDataDiv">
+            <textarea id="esqueryDataPaths" placeholder="{{ 'No thesaurus concept query' | trans }}"></textarea>
+            <div style="overflow: hidden;">
+                <a href="#" id="esqueryCopy">{{ 'copyClipboardLabel' | trans }}</a>
+            </div>
+            <textarea id="esqueryData">{{ esquery }}</textarea>
+        </div>
+    {% endif %}
+</div>
+
+<script language="javascript">
+    $(document).ready(function () {
+        var esQuery = JSON.parse($('#esqueryData').text());
+        var pathField = $('#esqueryDataPaths');
+
+        // Loop the top level
+        $.each(esQuery, testQuery);
+
+        function testQuery(key, value) {
+            if (value !== null && typeof value === "object") {
+                if(key === 'multi_match') {
+                    var testValue = value.fields[0];
+                    if(testValue.startsWith('concept_path')) {
+                        pathField.append(value.query + '\n');
+                    }
+                }
+                else {
+                    // Recurse into children
+                    $.each(value, testQuery);
+                }
+            }
+        }
+
+        var copyElContentClipboard = function (elId) {
+            var copyEl = document.getElementById(elId);
+            copyEl.select();
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copying text command was ' + msg);
+            } catch (err) {
+                console.log('unable to copy');
+            }
+        }
+        $('#esqueryCopy').on('click', function (event) {
+            event.preventDefault();
+            return copyElContentClipboard('esqueryData');
+        });
+    });
+</script>

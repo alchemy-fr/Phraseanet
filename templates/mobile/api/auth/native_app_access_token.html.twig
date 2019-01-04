@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>
+        {% if error is defined %}
+            {{ 'Fail' | trans }}
+        {% else %}
+            {{ 'Success' | trans }}
+        {% endif %}
+            </title>
+        <meta name="author" content="Alchemy" />
+
+        <!-- Mobile viewport optimized -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- styles -->
+        <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css">
+        <link type="text/css" rel="stylesheet" href="/assets/oauth/css/oauth{% if not app.debug %}.min{% endif %}.css">
+
+        <!-- All JavaScript at the bottom, except this Modernizr build.
+        Modernizr enables HTML5 elements & feature detects for optimal performance. -->
+        <script type="text/javascript" src="/assets/vendors/modernizr/modernizr{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/vendors/bootstrap/js/bootstrap{% if not app.debug %}.min{% endif %}.js"></script>
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div id="page" class="container">
+            <div id="main" class="row">
+
+                <div id="title-box" class="span6 offset3">
+                    <h1 id="namePhr">{{ app['conf'].get(['registry', 'general', 'title']) }}</h1>
+                </div>
+
+                {% if app.getAuthenticatedUser() is not none %}
+                    {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() ~ '</b>' %}
+                    <div id="hello-box" class="span6 offset3">
+                        <p class="login_hello">
+                            {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div id="text-box" class="span6 offset3">
+                    {% if error is defined %}
+                        <div id="top-text-box">
+                            <h4>{% trans %}Erreur{% endtrans %}</h4>
+                        </div>
+                        <div id="main-text-box">
+                            <p>
+                                {{error}}
+                            </p>
+                            <input type="text" class="input-large" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                        </div>
+                    {% else %}
+                        <div id="top-text-box">
+                            <h4>{% trans %}Code d'acces{% endtrans %}</h4>
+                        </div>
+                        <div id="main-text-box">
+                            <p>
+                                {% trans %}Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :{% endtrans %}
+                            </p>
+                            <input type="text" class="input-large" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                        </div>
+                    {% endif %}
+                </div>
+                <p> </p>
+
+            </div>
+        </div>
+    </body>
+</html>

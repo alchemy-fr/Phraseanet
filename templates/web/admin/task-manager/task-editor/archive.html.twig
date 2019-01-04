@@ -1,0 +1,94 @@
+{% extends 'admin/task-manager/task-editor/task.html.twig' %}
+
+{% block form %}
+<div class="control-group">
+    <label class="control-label">{{ 'task::archive:archivage sur base/collection/' | trans }}</label>
+    <div class="controls">
+        <select class="formElem" name="base_id">
+            <option value="">...</option>
+            {% for databox in app.getApplicationBox().get_databoxes() %}
+                {% for collection in databox.get_collections() %}
+                    <option value="{{ collection.get_base_id() }}">{{ databox.get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
+                {% endfor %}
+            {% endfor %}
+        </select>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::_common_:hotfolder' | trans }}</label>
+    <div class="controls">
+        <input class="formElem" type="text" name="hotfolder" value="">
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label">{{ 'task::archive:delai de \'repos\' avant traitement' | trans }}</label>
+    <div class="controls">
+        <input class="formElem input-small" type="text" name="cold" value="">
+        <span class="help-inline">{{ 'task::_common_:secondes (unite temporelle)' | trans }}</span>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="move_archived">
+            {{ 'task::archive:deplacer les fichiers archives dans _archived' | trans }}
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="move_error">
+            {{ 'task::archive:deplacer les fichiers non-archives dans _error' | trans }}
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="copy_spe">
+            {{ 'task::archive:copier les fichiers \'.phrasea.xml\' et \'.grouping.xml\' dans _archived' | trans }}
+        </label>
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <label class="checkbox">
+            <input class="formElem" type="checkbox" name="delfolder">
+            {{ 'task::archive:supprimer les repertoires apres archivage' | trans }}
+        </label>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+
+    function taskFillGraphic(xml)
+    {
+        if (xml) {
+            xml = $.parseXML(xml);
+            xml = $(xml);
+
+            var gform = document.forms['graphicForm'];
+            var i;
+            var opts;
+            var found;
+            opts = gform.base_id.options;
+            for (found=0, i=1; found==0 && i<opts.length; i++) {
+                if(opts[i].value == xml.find("base_id").text()) {
+                    found = i;
+                }
+            }
+            opts[found].selected = true;
+            gform.hotfolder.value       = xml.find("hotfolder").text();
+            gform.cold.value            = xml.find("cold").text();
+            gform.move_archived.checked = Number(xml.find("move_archived").text()) > 0;
+            gform.move_error.checked    = Number(xml.find("move_error").text()) > 0;
+            gform.delfolder.checked     = Number(xml.find("delfolder").text()) > 0;
+            gform.copy_spe.checked      = Number(xml.find("copy_spe").text()) > 0;
+        }
+    }
+</script>
+{% endblock %}

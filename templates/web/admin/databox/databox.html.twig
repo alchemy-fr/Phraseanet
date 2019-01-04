@@ -1,0 +1,415 @@
+{% if reloadTree %}
+    <script type="text/javascript">
+        AdminApp.LeftView.reloadTree('bases:bases');
+    </script>
+{% endif %}
+
+<div class="page-header">
+    <h1>{{ databox.get_serialized_server_info() }}</h1>
+</div>
+
+{% if app['request'].query.get('success') == '1' %}
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        {{ 'forms::operation effectuee OK' | trans }}
+    </div>
+{% elseif app['request'].query.get('success') == '0' %}
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <strong>{{ 'An error occured' | trans }}</strong>
+        {% if errorMsg is not none %}
+            {{ errorMsg }}
+        {% endif %}
+    </div>
+{% endif %}
+
+<ul class="unstyled">
+    <li>
+        ID : {{ databox.get_sbas_id() }}
+    </li>
+
+    <li>
+        {{ 'admin::base: Alias' | trans }} : <span id="viewname">{{ databox.get_label(app['locale']) }}</span>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
+            <img src="/assets/common/images/icons/edit_0.gif" id="show-view-name" />
+            <div class="well well-small" id="change-view-name" style="display:none;">
+                <form method="post" action="{{ path('admin_database_rename', {'databox_id': databox.get_sbas_id()}) }}">
+                    <div class="input-append">
+                        <input id="db-view-name" name="viewname" class="span2" type="text" size="16">
+                        <button class="btn" type="submit">{{ 'Rename' | trans }}</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </li>
+
+    <li>
+        {{ 'admin::base: nombre d\'enregistrements sur la base :' | trans }}
+        <span id="records"></span>
+
+        (<a href="{{ path('admin_database_display_document_details', {'databox_id': databox.get_sbas_id()}) }}" class="ajax" target="rights">{{ 'phraseanet:: details' | trans }}</a>)
+    </li>
+
+    <li>
+        {{ 'admin::base: subdefs to be created :' | trans }}
+        <span id="subdefs_todo"></span>
+    </li>
+</ul>
+
+<div id="INDEX_P_BAR" style="margin-bottom:20px; width:50%">
+    <div class="progress">
+        <div class="bar bar-success records_indexed" style="transition: none; width:0%;">...</div>
+        <div class="bar bar-warning records_indexing" style="transition:none; width:0%;"></div>
+        <div class="bar bar-danger records_not_indexed" style="transition:none; width:0%;"></div>
+    </div>
+</div>
+
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
+    <div>
+         <form method="post" action="{{ path('admin_database_set_indexable', {'databox_id': databox.get_sbas_id()}) }}" style="margin:0;">
+             <label class="checkbox" for="is_indexable">
+                <input type="checkbox" id="is_indexable" name="indexable" value="1" {{ app.getApplicationBox().is_databox_indexable(databox) ? 'checked' : ''}} />
+                {{ "admin::base: Cette base est indexable" | trans }}
+            </label>
+        </form>
+    </div>
+
+    <div class="well well-small action-block">
+        <form class="form-inline" method="post" action="{{ path('admin_databox_labels', { 'databox_id' : databox.get_sbas_id() }) }}" style="margin:0;">
+            <div class="input-append">
+                <div class="row">
+                    {% for code, language in app['locales.available'] %}
+                    <div class="span2">
+                        <h6>{{ language }}</h6>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    {% for code, language in app['locales.available'] %}
+                    <div class="span2">
+                        <input name="labels[{{ code }}]" value="{{ databox.get_label(code, false) }}" class="span2" type="text">
+                    </div>
+                    {% endfor %}
+                    <div class="span2">
+                        <button class="btn" type="submit">
+                            <img src="/assets/common/images/icons/edit_0.gif" />
+                            {{ 'Set labels' | trans }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="well well-small">
+        <a style="display:inline-block; margin-right:3px; text-decoration: none;" target="right" class="ajax btn" href="{{ path('admin_database_display_new_collection_form', {'databox_id': databox.get_sbas_id()}) }}">
+            <img src="/assets/common/images/icons/create_coll.png" />
+            {{ "admin::base:collection: Creer une collection" | trans }}
+        </a>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_clear_logs', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm"
+                    data-confirm-msg="{{ 'admin::base: Confirmer la suppression de tous les logs' | trans }}">
+                <img src="/assets/common/images/icons/clearLogs.png" />
+                {{ "admin::base: supprimer tous les logs" | trans }}
+            </button>
+        </form>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_unmount', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer vous l\'arret de la publication de la base' | trans }}">
+                <img src="/assets/common/images/icons/db-remove.png" />
+                {{ "admin::base: arreter la publication de la base" | trans }}
+            </button>
+        </form>
+
+        <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer le vidage complet de la base' | trans }}">
+                <img src="/assets/common/images/icons/trash.png" />
+                {{ "admin::base: vider la base" | trans }}
+            </button>
+        </form>
+
+         <form style="display:inline;" method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
+            <button type="button" class="btn submiter confirm reload-tree" data-confirm-msg="{{ 'admin::base: Confirmer la suppression de la base' | trans }}">
+                <img src="/assets/common/images/icons/delete.gif" />
+                {{ "admin::base: supprimer la base" | trans }}
+            </button>
+         </form>
+    </div>
+
+    <form method="post" action="{{ path('admin_database_reindex', {'databox_id': databox.get_sbas_id()}) }}">
+        <button type="button" class="btn submiter confirm" data-confirm-msg="{{ 'Confirmez-vous la re-indexation de la base ?' | trans }}">
+            {{ "base:: re-indexer" | trans }}
+        </button>
+    </form>
+
+    {% if databox.get_mountable_colls()| length > 0 %}
+        <div class="well well-small">
+            <a href="#" class="btn" id="show-mount-coll">
+                <img src="/assets/common/images/icons/create_coll.png" />
+                {{ "admin::base:collection: Monter une collection" | trans }}
+            </a>
+            <div class="well well-small" id="mount-coll" style="display:none;">
+                <ul>
+                {% for collId, name in databox.get_mountable_colls() %}
+                    <li>
+                        <form class="form-inline" method="post" action="{{ path('admin_database_mount_collection', {'databox_id': databox.get_sbas_id(), 'collection_id' : collId }) }}">
+                            {% trans with {'%name%' : name} %}Monter la collection %name%{% endtrans %}<br/>
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')]) | length > 0 %}
+                                <label for="othcollsel">{{ "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces" | trans }}</label>
+                                <select id="othcollsel" name="othcollsel" >
+                                    <option value="">{{ "choisir" | trans }}</option>
+                                    {% for collection in databox.get_collections() %}
+                                        <option value="{{ collection.get_base_id() }}">{{ collection. get_name() }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                            <a href="#" class="btn btn-mini submiter">
+                                <img src="/assets/common/images/icons/create_coll.png" />
+                                {{ "admin::base:collection: Monter une collection" | trans }}
+                            </a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if databox.get_activable_colls()| length > 0 %}
+        <div class="well well-small">
+            <a href="#" class="btn" id="show-activate-coll">
+                <img src="/assets/common/images/icons/create_coll.png"/>
+                {{ "Activer une collection" | trans }}
+            </a>
+            <div class="well well-small" id="activate-coll" style="display:none;">
+                <ul>
+                {% for baseId in databox.get_activable_colls() %}
+                    <li>
+                        <form class='form-inline' method="post" action="{{ path('admin_collection_enable', {'bas_id': baseId}) }}">
+                            {{ baseId|bas_labels(app) }}
+                            <a href="#" class="btn btn-mini reload submiter">{{ "Activer" | trans }}></a>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div class="logo_box">
+    <hr>
+    <h4>{{ "admin::base: logo impression PDF" | trans }}</h4>
+    <div id="printLogoDIV_OK">
+        <img class="thumbnail" id="printLogo" src="/custom/minilogos/logopdf_{{ databox.get_sbas_id() }}.jpg" />
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
+            <form method="post" target="right" action="{{ path('admin_database_delete_logo', {'databox_id': databox.get_sbas_id()}) }}" >
+                <button class="btn btn-mini btn-danger">{{ "admin::base:collection: supprimer le logo" | trans }}</button>
+            </form>
+        {% endif %}
+    </div>
+    <div id="printLogoDIV_NONE">
+        {{ "admin::base:collection: aucun fichier (minilogo, watermark ...)" | trans }}
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_sbas(databox.get_sbas_id(), constant('\\ACL::BAS_MANAGE')) %}
+            <input id="fileupload" class="no-ajax" type="file" name="newLogoPdf" data-url="{{ path('admin_database_submit_logo', {'databox_id': databox.get_sbas_id()}) }}" accept="image/jpg, image/jpeg">
+            <i>{{ "admin::base: envoyer un logo (jpeg 35px de hauteur max)" | trans }}</i>
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function displayDatabaseInformations(delay)
+    {
+        try {
+            clearTimeout(document.refreshDatabaseInformations_timer);
+        }
+        catch(err) {
+
+        }
+        document.refreshDatabaseInformations_timer = setTimeout("_displayDatabaseInformations();", delay);
+    }
+
+    function _displayDatabaseInformations()
+    {
+        var container = $("#INDEX_P_BAR");
+        if(!container || container.length == 0) {
+            return;     // wrong page ?
+        }
+        $.ajax({
+            type: "GET",
+            url: "/admin/databox/{{ databox.get_sbas_id() }}/informations/documents/",
+            dataType: 'json',
+            data: {},
+            success: function (data) {
+                try {
+                    if (data.viewname === '') {
+                        $("#viewname").html("{{ 'admin::base: aucun alias' | trans }}");
+                    } else {
+                        $("#viewname").html(data.viewname);
+                    }
+
+                    $("#is_indexable").prop('checked', data.indexable);
+                    $("#records").text(data.counts.records);
+
+                    if (data.counts.records > 0) {
+                        var records_indexed     = data.counts.records_indexed;
+                        var records_not_indexed = data.counts.records_not_indexed;  // flag indexing but NOT to_index ???
+                        var records_indexing    = data.counts.records_indexing;
+                        var p;
+
+                        p = 100 * records_indexed / data.counts.records;
+                        $(".records_indexed", container).width(p + "%").text(records_indexed);
+
+                        if (records_not_indexed > 0) {
+                            p = 100 * records_not_indexed / data.counts.records;
+                            $(".records_not_indexed", container).width(p + "%").text(records_not_indexed);
+                        }
+                        else {
+                            $(".records_not_indexed", container).width(0).text("");
+                        }
+
+                        if (records_indexing > 0) {
+                            p = 100 * records_indexing / data.counts.records;
+                            $(".records_indexing", container).width(p + "%").text(records_indexing);
+                        }
+                        else {
+                            $(".records_indexing", container).width(0).text("");
+                        }
+
+                        var t = "";
+                        for (var i in data.counts.subdefs_todo) {
+                            t += (t == "" ? "" : " ; ") + i + ": " + data.counts.subdefs_todo[i];
+                        }
+                        if (t == "") {
+                            t = "0";
+                        }
+                        $("#subdefs_todo").text(t);
+                    }
+
+                    if (data.printLogoURL) {
+                        $("#printLogo").attr("src", data.printLogoURL);
+                        $("#printLogoDIV_NONE").hide();
+                        $("#printLogoDIV_OK").show();
+                    }
+                    else {
+                        $("#printLogoDIV_OK").hide();
+                        $("#printLogoDIV_NONE").show();
+                    }
+
+                    // refresh every 10 sec.
+                    displayDatabaseInformations(10000);
+                }
+                catch(err) {
+                    // wrong page ? don't refresh again
+                }
+            }
+        });
+    }
+
+    $(document).ready(function(){
+
+        $('#is_indexable').bind('change', function(){
+            var form = $(this).closest('form');
+            var checked = !!$(this).prop('checked');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: {"indexable" : checked ? 1 : 0},
+                success: function(datas) {
+                    if(datas.success) {
+                    } else {
+                        alert(datas.msg);
+                    }
+                }
+             });
+        });
+
+        $("#show-view-name").bind('click', function(){
+            $("#change-view-name").toggle();
+        });
+
+        $("#show-activate-coll").bind('click', function(){
+            $("#activate-coll").toggle();
+        });
+
+        $("#show-mount-coll").bind('click', function(){
+            $("#mount-coll").toggle();
+        });
+
+        $("div.right .submiter").bind("click", function() {
+            var $this = $(this);
+            var form = $this.closest('form');
+
+            if($this.hasClass('confirm')) {
+                if(confirm($this.data('confirm-msg'))) {
+                    submitForm($this, form);
+                }
+            } else {
+                submitForm($this, form);
+            }
+        });
+
+        function submitForm(submitLink, form) {
+
+            form.bind('submit', function(){
+                return false;
+            });
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                before : function() {
+                    submitLink.prop('disabled', true).addClass('disabled');
+                },
+                success: function(datas) {
+                    if(datas.success) {
+                        if(submitLink.hasClass('reload')) {
+                            AdminApp.LeftView.reloadTree('base:{{ databox.get_sbas_id() }}', true);
+                        } else if(submitLink.hasClass('reload-tree')) {
+                            AdminApp.LeftView.reloadTree('bases:bases', true);
+                        }
+                        //display message
+                        if (typeof datas.msg !== "undefined") {
+                            alert(datas.msg);
+                        }
+                    } else {
+                        alert(datas.msg);
+                    }
+                },
+                complete: function() {
+                    submitLink.prop('disabled', false).removeClass('disabled');
+                }
+            });
+        }
+
+        $('#fileupload').fileupload({
+            dataType: 'html',
+            add: function(e, data) {
+                if( ! /(\.|\/)(jpe?g)$/i.test(data.files[0].type)) {
+                    {% set supported_file_types = ['jpg']|join(' | ') %}
+                    alert("{{ 'Invalid file type, only (%supported_file_types%) file formats are supported' | trans({'%supported_file_types%' : supported_file_types}) | e('js') }}");
+
+                    return false;
+                }
+
+                data.submit();
+            },
+            submit: function(e, data) {
+              $('#right-ajax').empty().addClass('loading');
+            },
+            done: function (e, data) {
+                enableFormsCallback(data.result);
+            }
+        });
+
+        displayDatabaseInformations(200);   // wait 200ms
+    });
+
+</script>

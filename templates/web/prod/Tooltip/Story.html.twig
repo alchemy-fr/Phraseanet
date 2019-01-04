@@ -1,0 +1,28 @@
+{% import 'common/thumbnail.html.twig' as thumbnail %}
+
+{% extends 'prod/Tooltip/Tooltip.html.twig' %}
+
+{% set title %} {{ Story.get_title() }} {% endset %}
+{% set width = 300 %}
+{% set maxwidth = null %}
+
+{% block content %}
+    <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:300px;position:relative;">
+    <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
+        {% set nb_records = Story.get_children().get_elements()|length %}
+        {% set date = app['date-formatter'].getPrettyString(Story.get_modification_date()) %}
+        {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
+        - {{ date }}
+        <hr/>
+        <div style="position:relative;float:left;width:270px;">
+        {% for element in Story.get_children().get_elements() %}
+            {% if loop.index <= 9 %}
+            <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
+                {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', false, false) }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    </div>
+{% endblock %}
