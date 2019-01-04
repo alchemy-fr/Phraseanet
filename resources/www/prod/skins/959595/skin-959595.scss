@@ -30,8 +30,8 @@ $mediumBackgroundColor: #a6a6a6; // B2B2B2 <- to try
 $mediumBorderColor: darken($mediumBackgroundColor, 10);
 $mediumBorderHighlightColor: #666666;
 $mediumTextColor: $textPrimaryColor;
-$mediumTextHoverColor: #EAEAEA;
-$mediumTextActiveColor: #EAEAEA;
+$mediumTextHoverColor: #000000;
+$mediumTextActiveColor: #000000;
 
 $lightBackgroundColor: #B1B1B1;
 $lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
@@ -40,6 +40,8 @@ $lightBorderColor: #B1B1B1;
 $lightBorderSelectedColor: darken($lightBorderColor, 10);
 $lightBorderActiveColor: darken($lightBorderColor, 10);
 $lightTextColor: #3b3b3b;
+
+$textShadow: -0.25px -0.25px 0 #000000, 0.25px 0.25px #000000;
 
 // inverse
 $textInverseColor: #000;
