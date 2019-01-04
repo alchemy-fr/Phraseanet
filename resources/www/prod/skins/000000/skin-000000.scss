@@ -41,6 +41,8 @@ $lightBorderSelectedColor: lighten($lightBorderColor, 10);
 $lightBorderActiveColor: lighten($lightBorderColor, 10);
 $lightTextColor: #FFFFFF;
 
+$textShadow: none;
+
 // inverse
 $textInverseColor: #FFFFFF;
 $textInverseHoverColor: #000;
