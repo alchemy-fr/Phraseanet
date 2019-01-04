@@ -110,7 +110,8 @@
       img.basket_title {
         margin: -5px 9px 0 -9px;
       }
-      &:hover .contextMenuTrigger{
+      &:hover .contextMenuTrigger,
+      &:focus .contextMenuTrigger {
         display: inline-block;
       }
     }
