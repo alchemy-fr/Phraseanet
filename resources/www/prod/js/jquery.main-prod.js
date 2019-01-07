@@ -1010,6 +1010,10 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
+        
+        if (el.outerWidth() < 180) {
+            $('#answers .diapo .icon-stack').css('width', '20px');
+        }
     }
 
 }
