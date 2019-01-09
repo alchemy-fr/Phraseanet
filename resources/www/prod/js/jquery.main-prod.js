@@ -315,7 +315,7 @@ function checkFilters(save) {
         search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
         search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
         search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-        console.log(search.dates.minbound, search.dates.maxbound, search.dates.field)
+
         if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
             danger = true;
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
@@ -402,24 +402,22 @@ function reset_adv_search() {
     checkBases(true);
 }
 
-function search_doubles() {
-    selectedFacetValues = [];
-    $('#EDIT_query').val('sha256=sha256');
-    newSearch('sha256=sha256');
-}
 
 function newSearch(query) {
     p4.Results.Selection.empty();
 
     clearAnswers();
-    $('#SENT_query').val(query);
-    var histo = $('#history-queries ul');
+    if(query !== null) {
+        // $('#SENT_query').val(query);
 
-    histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+        var histo = $('#history-queries ul');
 
-    var lis = $('li', histo);
-    if (lis.length > 25) {
-        $('li:last', histo).remove();
+        histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+
+        var lis = $('li', histo);
+        if (lis.length > 25) {
+            $('li:last', histo).remove();
+        }
     }
 
     $('#idFrameC li.proposals_WZ').removeClass('active');
@@ -520,7 +518,20 @@ function initAnswerForm() {
         var $this = $(this),
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
+        loadFacets(lastFilterResults);
+
         var data = $this.serializeArray();
+        var jsonData = serializeJSON(data, selectedFacetValues, facets);
+        var qry = buildQ(jsonData.query);
+
+        data.push({
+                name: 'jsQuery',
+                value: JSON.stringify(jsonData)
+            },
+            {
+                name: 'qry',
+                value: qry
+            });
 
         answAjax = $.ajax({
             type: method,
@@ -558,9 +569,7 @@ function initAnswerForm() {
                 });
 
                 //load last result collected or [] if length == 0
-                if (datas.facets.length == 0) {
-                    loadFacets(lastFilterResults);
-                } else {
+                if (datas.facets.length > 0) {
                     lastFilterResults = datas.facets;
                     loadFacets(datas.facets);
                 }
@@ -810,7 +819,7 @@ function getFacetsTree() {
                         selectedFacetValues[facet.title] = [];
                     }
                     selectedFacetValues[facet.title].push(facetData);
-                    facetCombinedSearch();
+                    $('#searchForm').submit();
                 }
             },
             
@@ -883,7 +892,7 @@ function getFacetsTree() {
                                     return (obj.value.label == facetFilter && obj.mode == mode);
                                 });
                                 //delete selectedFacetValues[facetTitle];
-                                facetCombinedSearch();
+                                $('#searchForm').submit();
                                 return false;
                             }
                         );
@@ -913,7 +922,7 @@ function getFacetsTree() {
                                         found.mode = newMode;
                                         //replace class attr
                                         $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
-                                        facetCombinedSearch();
+                                        $('#searchForm').submit();
                                     }
                                 }
                                 return false;
@@ -928,38 +937,254 @@ function getFacetsTree() {
     return $facetsTree.fancytree('getTree');
 }
 
-function facetCombinedSearch() {
-    var q = $("#EDIT_query").val();
-    var q_facet_and = "";
-    var q_facet_except = "";
-    _.each(_.values(selectedFacetValues), function (facet) {
-        _.each(facet, function (facetValue) {
-            switch (facetValue.mode) {
-                case "AND":
-                    q_facet_and += (q_facet_and ? " AND " : "") + '(' + facetValue.value.query + ')';
-                    break;
-                case "EXCEPT":
-                    q_facet_except += (q_facet_except ? " OR " : "") + '(' + facetValue.value.query + ')';
-                    break;
+
+function serializeJSON(data, selectedFacetValues, facets) {
+    var json = {},
+        obj = {},
+        bases = [],
+        statuses = [],
+        fields = [],
+        aggregates = []
+        ;
+
+    $.each(data, function(i, el) {
+        obj[el.name] = el.value;
+
+        var col = parseInt(el.value);
+
+        if(el.name === 'bases[]') {
+            bases.push(col);
+        }
+
+        if(el.name.startsWith('status')) {
+            var databoxId = el.name.match(/\d+/g)[0],
+                databoxRow = el.name.match(/\d+/g)[1],
+                statusMatch = false;
+
+            $.each(statuses, function(i, status) {
+
+                if (status.databox === databoxId) {
+                    for (var j = 0; j < status.status.length; j++) {
+                        var st = status.status[j].name;
+                        var st_id = st.substr(0, st.indexOf(':'));
+
+                        if (st_id === databoxRow) {
+                            statusMatch = true;
+                        }
+                    }
+                    statuses.splice((databoxId -1), 1);
+                }
+            });
+            if (!statusMatch) {
+                statuses.push({
+                    'databox': databoxId,
+                    'status': [
+                        {
+                            'index': databoxRow,
+                            'value': !!(parseInt(el.value))
+                        }
+                    ]
+                });
+            }
+        }
+    });
+
+
+    $('.term_select_field').each(function(i, el) {
+        if ($(el).val()) {
+            fields.push({
+                'type': 'TEXT-FIELD',
+                'field': 'field.' + $(el).val(),
+                'operator': $(el).next().val() === 'contains' ? ":" : "=",
+                'value': $(el).next().next().val(),
+                "enabled": true
+            });
+        }
+    });
+
+    $(facets).each(function(i, el) {
+
+        var facetFilterTitle = el.label,
+            facetType = el.type,
+            facetField = el.field,
+            facetRawVal,
+            facetQuery,
+            negated = false,
+            enabled = true
+            ;
+
+        $('.fancytree-node.fancytree-folder').each(function (i, node) {
+            var nodeTitile = $(node).find('.fancytree-title').text();
+            if (nodeTitile === facetFilterTitle) {
+                if ($(node).find('[class^="facetFilter_"]').is('[class$="_EXCEPT"]')) {
+                    negated = true;
+                }
+            }
+        });
+
+
+        _.each(selectedFacetValues[facetFilterTitle], function(facet) {
+            var query = facet.value.query;
+            for (var i = 0; i < el.values.length; i++) {
+                if (el.values[i].query === query) {
+                    facetRawVal = el.values[i].raw_value;
+                    facetQuery = el.values[i].query;
+                }
+            }
+            if(facetQuery === query) {
+                aggregates.push({
+                    'type': facetType,
+                    'field': facetField,
+                    'value': facetRawVal,
+                    'negated': negated,
+                    'enabled': enabled
+                });
             }
         });
     });
-    if(!q && !q_facet_and && q_facet_except) {
-        // too bad : an except with no query.
-        q = "created_on>1900/01/01";    // fake "all"
-    }
-    if(q_facet_and != "") {
-        if (q) {
-            q = '(' + q + ') AND '
-        }
-        q += q_facet_and;
-    }
-    if(q_facet_except != "") {
-        q = '(' + q + ') EXCEPT (' + q_facet_except + ')';
-    }
 
-    checkFilters();
-    newSearch(q);
+    var date_field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', 'form.phrasea_query .adv_options').val();
+    var date_from  = $('#ADVSRCH_DATE_ZONE input[name=date_min]', 'form.phrasea_query .adv_options').val();
+    var date_to    = $('#ADVSRCH_DATE_ZONE input[name=date_max]', 'form.phrasea_query .adv_options').val();
+
+    json['sort'] = {
+        'field': obj.sort,
+        'order': obj.ord
+    };
+    json['perpage'] = parseInt($('#nperpage_value').val());
+    json['page'] = obj.pag === "" ? 1 : parseInt(obj.pag);
+    json['use_truncation'] = (obj.truncation === "on");
+    json['phrasea_recordtype'] = obj.search_type == 0 ? 'RECORD' : 'STORY';
+    json['phrasea_mediatype'] = obj.record_type.toUpperCase();
+    json['bases'] = bases;
+    json['statuses'] = statuses;
+    json['query'] = {
+        '_ux_zone': $('.menu-bar .selected').text().trim().toUpperCase(),
+        'type': 'CLAUSES',
+        'must_match': 'ALL',
+        'enabled': true,
+        'clauses': [
+            {
+                '_ux_zone': 'FULLTEXT',
+                'type': 'FULLTEXT',
+                'value': obj.fake_qry,
+                'enabled': obj.fake_qry != ""
+            },
+            {
+                '_ux_zone': 'FIELDS',
+                'type': 'CLAUSES',
+                'must_match': obj.must_match,
+                'enabled': fields.length > 0,
+                'clauses': fields
+            },
+            {
+                "type": "DATE-FIELD",
+                "field": date_field,
+                "from": date_from,
+                "to": date_to,
+                "enabled": (date_field != "") && (date_from != "" || date_to != "")
+            },
+            {
+                "_ux_zone": "AGGREGATES",
+                "type": "CLAUSES",
+                "must_match": "ALL",
+                "enabled": aggregates.length > 0,
+                "clauses": aggregates
+            }
+        ]
+    };
+
+    return json;
+}
+
+var _ALL_Clause_ = "(created_on>1900/01/01)";
+function buildQ(clause) {
+    if(clause.enabled == false) {
+        return "";
+    }
+    switch(clause.type) {
+        case "CLAUSES":
+            var t_pos = [];
+            var t_neg = [];
+            for(var i=0; i<clause.clauses.length; i++) {
+                var _clause = clause.clauses[i];
+                var _sub_q = buildQ(_clause);
+                if(_sub_q !== "()" && _sub_q !== "") {
+                    if(_clause.negated == true) {
+                        t_neg.push(_sub_q);
+                    }
+                    else {
+                        t_pos.push(_sub_q);
+                    }
+                }
+            }
+            if(t_pos.length > 0) {
+                // some "yes" clauses
+                if(t_neg.length > 0) {
+                    // some "yes" and and some "neg" clauses
+                    if(clause.must_match=="ONE") {
+                        // some "yes" and and some "neg" clauses, one is enough to match
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        t_pos.push(neg);
+                        return "(" + t_pos.join(" OR ") + ")";
+                    }
+                    else {
+                        // some "yes" and and some "neg" clauses, all must match
+                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                    }
+                }
+                else {
+                    // only "yes" clauses
+                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                }
+            }
+            else {
+                // no "yes" clauses
+                if(t_neg.length > 0) {
+                    // only "neg" clauses
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ONE" ? " OR " : " AND ") + "))";
+                }
+                else {
+                    // no clauses at all
+                    return "";
+                }
+            }
+
+        case "FULLTEXT":
+            return clause.value ? ("(" + clause.value + ")") : "";
+
+        case "DATE-FIELD":
+            var t="";
+            if(clause.from ) {
+                t = clause.field + ">=" + clause.from;
+            }
+            if(clause.to) {
+                t += (t?" AND ":"") + clause.field + "<=" + clause.to;
+            }
+            return t ? ("(" + t + ")") : "";
+
+        case "TEXT-FIELD":
+            return clause.field + clause.operator + "\"" + clause.value + "\"";
+
+        case "GEO-DISTANCE":
+            return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
+
+        case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "COLOR-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "NUMBER-AGGREGATE":
+            return clause.field + "=" + clause.value;
+
+        case "BOOL-AGGREGATE":
+            return clause.field + "=" + (clause.value ? '1' : '0');
+
+        default :
+            console.error("Unknown clause type \"" + clause.type + "\"");
+            return null;
+    }
 }
 
 
@@ -1222,11 +1447,9 @@ $(document).ready(function () {
     var multi_term_select_html = $('.term_select_wrapper').html();
 
     $('input[name=search_type]').bind('click', function () {
-        console.log('search bind')
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
 
-        console.log($this.hasClass('mode_type_reg'), $record_types)
         if ($this.hasClass('mode_type_reg')) {
             $record_types.css("visibility", "hidden");  // better than hide because does not change layout
             $record_types.prop("selectedIndex", 0);
@@ -1279,7 +1502,6 @@ $(document).ready(function () {
         $('.term_select_multiple option').each(function (index, el) {
             var $el = $(el);
             if(rowOption.val() == $el.val()) {
-                console.log('delete: ' + $el.val());
                 $el.prop('selected', false);
             }
         });
@@ -2723,78 +2945,6 @@ function clktri(id) {
         $('#TOPIC_TRI' + id + ' ,#TOPIC_UL' + id).removeClass('opened').addClass('closed');
 }
 
-
-// ---------------------- fcts du thesaurus
-function chgProp(path, v, k) {
-    var q2;
-    if (!k)
-        k = "*";
-    //if(k!=null)
-    v = v + " [" + k + "]";
-    $("#thprop_a_" + path).html('"' + v + '"');
-    //	q = document.getElementById("thprop_q").innerText;
-    //	if(!q )
-    //		if(document.getElementById("thprop_q") && document.getElementById("thprop_q").textContent)
-    //			q = document.getElementById("thprop_q").textContent;
-    q = $("#thprop_q").text();
-
-    q2 = "";
-    for (i = 0; i < q.length; i++)
-        q2 += q.charCodeAt(i) == 160 ? " " : q.charAt(i);
-
-    selectedFacetValues = [];
-    $('#EDIT_query').val(q);
-    newSearch(q);
-
-    return(false);
-}
-
-function doDelete(lst) {
-    var children = '0';
-    if (document.getElementById('del_children') && document.getElementById('del_children').checked)
-        children = '1';
-    $.ajax({
-        type: "POST",
-        url: "../prod/delete/",
-        dataType: 'json',
-        data: {
-            lst: lst.join(';'),
-            del_children: children
-        },
-        success: function (data) {
-
-            $.each(data, function (i, n) {
-                var imgt = $('#IMGT_' + n),
-                    chim = $('.CHIM_' + n),
-                    stories = $('.STORY_' + n);
-                $('.doc_infos', imgt).remove();
-                imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").removeClass("IMGT").find("img").unbind();
-
-                if (imgt.data("ui-draggable")) {
-                    imgt.draggable("destroy");
-                }
-
-                imgt.find(".thumb img").attr("src", "/assets/common/images/icons/deleted.png").css({
-                    width: '100%',
-                    height: 'auto',
-                    margin: '0 10px',
-                    top: '0'
-                });
-                chim.parent().slideUp().remove();
-                imgt.find(".status,.title,.bottom").empty();
-
-                p4.Results.Selection.remove(n);
-                if (stories.length > 0) {
-                    p4.WorkZone.refresh();
-                }
-                else {
-                    p4.WorkZone.Selection.remove(n);
-                }
-            });
-            viewNbSelect();
-        }
-    });
-}
 
 function archiveBasket(basket_id) {
     $.ajax({

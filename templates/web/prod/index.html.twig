@@ -201,7 +201,6 @@
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
-                        <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
 
@@ -352,12 +351,12 @@
                                                     </label>
                                                     
                                                     <label for="multiple-terms" class="radio inline custom_checkbox_label">
-                                                        <input type="radio" class="multiple_terms" name="terms_type" checked="checked" id="multiple-terms"/>
+                                                        <input type="radio" class="multiple_terms" name="must_match" value="ALL" checked="checked" id="multiple-terms"/>
                                                         <span class="custom_radio"></span>
                                                         {{ 'All these conditions' | trans }}
                                                     </label>
                                                     <label for="single-terms" class="radio inline custom_checkbox_label">
-                                                        <input type="radio" class="single_terms" name="terms_type" id="single-terms"/>
+                                                        <input type="radio" class="single_terms" name="must_match" value="ONE" id="single-terms"/>
                                                         <span class="custom_radio"></span>
                                                         {{ 'One of these conditions' | trans }}
                                                     </label>
