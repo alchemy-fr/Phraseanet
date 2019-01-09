@@ -59,7 +59,7 @@ class DefaultController extends Controller
     public function showUsers()
     {
 
-        $query = $this->get('doctrine.dbal.appbox_connection')->fetchAll('SELECT * FROM Users');
+        $query = $this->get('doctrine.dbal.appbox_connection')->fetchAll('SELECT * FROM `Users`');
         var_dump($query);
 
         return new Response(
@@ -69,5 +69,14 @@ class DefaultController extends Controller
                 </body>
             </html>'
         );
+    }
+
+    public function deleteUser($id)
+    {
+
+        $sql = 'DELETE FROM `Users` WHERE `id`='.$id;
+        $this->get('doctrine.dbal.appbox_connection')->executeQuery($sql);
+
+        return $this->redirectToRoute('showUsers');
     }
 }

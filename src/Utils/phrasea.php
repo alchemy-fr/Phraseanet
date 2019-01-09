@@ -12,8 +12,8 @@ namespace App\Utils;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
-use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
+use App\Collection\CollectionRepositoryRegistry;
+use App\Collection\Reference\CollectionReferenceRepository;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class phrasea
