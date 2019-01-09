@@ -22,11 +22,11 @@ class thesaurus_xpath extends \DOMXPath
     /**
      *
      * @param  string      $xquery
-     * @param  DOMNode     $context_node
+     * @param  \DOMNode     $context_node
      * @param  string      $context_path
-     * @return DOMNodeList
+     * @return \DOMNodeList
      */
-    public function cache_query($xquery, DOMNode $context_node = NULL, $context_path = '')
+    public function cache_query($xquery, \DOMNode $context_node = NULL, $context_path = '')
     {
         $context_path .= $xquery;
 

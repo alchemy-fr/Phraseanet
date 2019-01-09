@@ -13,11 +13,12 @@ namespace App\Utils;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
-use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
+use App\Core\Connection\ConnectionSettings;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
-use Alchemy\Phrasea\Core\Version\DataboxVersionRepository;
-use Alchemy\Phrasea\Databox\DataboxRepository;
+use App\Core\Version\AppboxVersionRepository;
+use App\Core\Version\DataboxVersionRepository;
+use App\Databox\DataboxRepository;
 use Alchemy\Phrasea\Databox\Record\RecordRepository;
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
@@ -26,6 +27,7 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -39,6 +41,9 @@ use Alchemy\Phrasea\Core\Event\Databox\StructureChangedEvent;
 use Alchemy\Phrasea\Core\Event\Databox\ThesaurusChangedEvent;
 use Alchemy\Phrasea\Core\Event\Databox\TouChangedEvent;
 use Alchemy\Phrasea\Core\Event\Databox\UnmountedEvent;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use App\Databox\DbalDataboxRepository;
 
 
 class databox extends base implements ThumbnailedElement
@@ -59,17 +64,85 @@ class databox extends base implements ThumbnailedElement
     /** @var array */
     protected static $_thesaurus = [];
 
-    /** @var SimpleXMLElement */
+    /** @var \SimpleXMLElement */
     protected static $_sxml_thesaurus = [];
 
+
     /**
-     * @param Application $app
+    //     * @param Application $app
+     * @param int $sbas_id
+     //* @param DbalDataboxRepository $databoxRepository
+     * @param array $row
+     */
+    //public function __construct(Application $app, $sbas_id, DataboxRepository $databoxRepository, array $row)
+    public function __construct($sbas_id,  array $row, ContainerInterface $container)
+    {
+        assert(is_int($sbas_id));
+        assert($sbas_id > 0);
+
+        //$this->databoxRepository = $databoxRepository;
+        $this->id = $sbas_id;
+
+//        $connectionConfigs = phrasea::sbas_params($app);
+//
+//        if (! isset($connectionConfigs[$sbas_id])) {
+//            throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
+//        }
+//
+//        $connectionConfig = $connectionConfigs[$sbas_id];
+//        $connection = $app['db.provider']($connectionConfig);
+//
+//        $connectionSettings = new ConnectionSettings(
+//            $connectionConfig['host'],
+//            $connectionConfig['port'],
+//            $connectionConfig['dbname'],
+//            $connectionConfig['user'],
+//            $connectionConfig['password']
+//        );
+//
+//        $versionRepository = new DataboxVersionRepository($connection);
+//
+//        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
+
+        $connectionConfig = [
+            'host'     => 'localhost',
+            'port'     => '3306',
+            'user'     => 'root',
+            'password' => 'toor',
+            'dbname'   => 'db_master',
+            'driver' => 'pdo_mysql',
+        ];
+
+        $connectionSettings = new ConnectionSettings(
+            $connectionConfig['host'],
+            $connectionConfig['port'],
+            $connectionConfig['dbname'],
+            $connectionConfig['user'],
+            $connectionConfig['password']
+        );
+
+        $config = new \Doctrine\DBAL\Configuration();
+        $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionConfig, $config);
+
+        $versionRepository = new DataboxVersionRepository($connection);
+
+        parent::__construct($connection, $connectionSettings, $versionRepository, $container);
+
+        $this->loadFromRow($row);
+    }
+
+
+
+    /**
+//     * @param Application $app
      * @param Connection  $databoxConnection
-     * @param SplFileInfo $template
+     * @param \SplFileInfo $template
+     * @param ContainerInterface
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
+    //public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
+    public static function create(Connection $databoxConnection, \SplFileInfo $template, ContainerInterface $container)
     {
         $rp = $template->getRealPath();
         if (!$rp || !file_exists($rp)) {
@@ -82,7 +155,7 @@ class databox extends base implements ThumbnailedElement
         $user = $databoxConnection->getUsername();
         $password = $databoxConnection->getPassword();
 
-        $appbox = $app->getApplicationBox();
+        //$appbox = $app->getApplicationBox();
 
         try {
             $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
@@ -98,28 +171,32 @@ class databox extends base implements ThumbnailedElement
         $stmt->execute();
         $stmt->closeCursor();
 
-        $app['orm.add']([
-            'host'     => $host,
-            'port'     => $port,
-            'dbname'   => $dbname,
-            'user'     => $user,
-            'password' => $password
-        ]);
+//        $app['orm.add']([
+//            'host'     => $host,
+//            'port'     => $port,
+//            'dbname'   => $dbname,
+//            'user'     => $user,
+//            'password' => $password
+//        ]);
 
-        phrasea::reset_sbasDatas($app['phraseanet.appbox']);
+        //phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
         /** @var DataboxRepository $databoxRepository */
-        $databoxRepository = $app['repo.databoxes'];
+       // $databoxRepository = $app['repo.databoxes'];
+
+        $databoxRepository = $container->get('databox.repository');
+
         $databox = $databoxRepository->create($host, $port, $user, $password, $dbname);
 
-        $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
+        //$appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $databox->insert_datas();
-        $databox->setNewStructure(
-            $template, $app['conf']->get(['main', 'storage', 'subdefs'])
-        );
+//        $databox->setNewStructure(
+//            $template, $app['conf']->get(['main', 'storage', 'subdefs'])
+//        );
 
-        $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
+        //$app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
+
 
         return $databox;
     }
@@ -272,43 +349,7 @@ class databox extends base implements ThumbnailedElement
     /** @var string */
     private $viewname;
 
-    /**
-     * @param Application $app
-     * @param int $sbas_id
-     * @param DataboxRepository $databoxRepository
-     * @param array $row
-     */
-    public function __construct(Application $app, $sbas_id, DataboxRepository $databoxRepository, array $row)
-    {
-        assert(is_int($sbas_id));
-        assert($sbas_id > 0);
 
-        $this->databoxRepository = $databoxRepository;
-        $this->id = $sbas_id;
-
-        $connectionConfigs = phrasea::sbas_params($app);
-
-        if (! isset($connectionConfigs[$sbas_id])) {
-            throw new NotFoundHttpException(sprintf('databox %d not found', $sbas_id));
-        }
-
-        $connectionConfig = $connectionConfigs[$sbas_id];
-        $connection = $app['db.provider']($connectionConfig);
-
-        $connectionSettings = new ConnectionSettings(
-            $connectionConfig['host'],
-            $connectionConfig['port'],
-            $connectionConfig['dbname'],
-            $connectionConfig['user'],
-            $connectionConfig['password']
-        );
-
-        $versionRepository = new DataboxVersionRepository($connection);
-
-        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
-
-        $this->loadFromRow($row);
-    }
 
     public function setNewStructure(\SplFileInfo $data_template, $path_doc)
     {
@@ -1258,7 +1299,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return DOMXpath
+     * @return \DOMXpath
      */
     public function get_xpath_thesaurus()
     {
@@ -1269,7 +1310,7 @@ class databox extends base implements ThumbnailedElement
 
         $DOM_thesaurus = $this->get_dom_thesaurus();
 
-        if ($DOM_thesaurus && ($tmp = new thesaurus_xpath($DOM_thesaurus)) !== false)
+        if ($DOM_thesaurus && ($tmp = new \App\Utils\thesaurus\thesaurus_xpath($DOM_thesaurus)) !== false)
             self::$_xpath_thesaurus[$sbas_id] = $tmp;
         else
             self::$_xpath_thesaurus[$sbas_id] = false;
@@ -1278,7 +1319,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return SimpleXMLElement
+     * @return \SimpleXMLElement
      */
     public function get_sxml_thesaurus()
     {
@@ -1298,7 +1339,7 @@ class databox extends base implements ThumbnailedElement
     }
 
     /**
-     * @return DOMDocument
+     * @return \DOMDocument
      */
     public function get_dom_cterms()
     {

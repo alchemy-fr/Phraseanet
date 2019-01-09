@@ -35,7 +35,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
 
 
-class ACL implements cache_cacheableInterface
+class ACL implements \App\Utils\cache\cache_cacheableInterface
 {
     // those constants MUST match the related sql columns (so sql can be built from anonymous constants... ugly)
     const BAS_MODIF_TH       = 'bas_modif_th';

@@ -12,11 +12,12 @@ namespace App\Utils;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
-use Alchemy\Phrasea\Core\Database\DatabaseMaintenanceService;
-use Alchemy\Phrasea\Core\Version as PhraseaVersion;
+use App\Core\Connection\ConnectionSettings;
+use App\Core\Database\DatabaseMaintenanceService;
+use App\Core\Version as PhraseaVersion;
 use App\Utils\cache\cache_cacheableInterface;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class base implements cache_cacheableInterface
 {
@@ -36,7 +37,7 @@ abstract class base implements cache_cacheableInterface
     protected $id;
 
     /**
-     * @var SimpleXMLElement
+     * @var \SimpleXMLElement
      */
     protected $schema;
 
@@ -60,21 +61,23 @@ abstract class base implements cache_cacheableInterface
      */
     protected $versionRepository;
 
+    private $container;
+
     /**
-     * @param Application $application
+     //* @param Application $application
      * @param Connection $connection
      * @param ConnectionSettings $connectionSettings
      * @param PhraseaVersion\VersionRepository $versionRepository
+     * @param ContainerInterface $container
      */
-    public function __construct(Application $application,
-        Connection $connection,
-        ConnectionSettings $connectionSettings,
-        PhraseaVersion\VersionRepository $versionRepository)
+    //public function __construct(Application $application, Connection $connection, ConnectionSettings $connectionSettings, PhraseaVersion\VersionRepository $versionRepository, ContainerInterface $container)
+    public function __construct(Connection $connection, ConnectionSettings $connectionSettings, PhraseaVersion\VersionRepository $versionRepository, ContainerInterface $container)
     {
-        $this->app = $application;
+        //$this->app = $application;
         $this->connection = $connection;
         $this->connectionSettings = $connectionSettings;
         $this->versionRepository = $versionRepository;
+        $this->container = $container;
     }
 
     /**
@@ -83,8 +86,8 @@ abstract class base implements cache_cacheableInterface
     abstract public function get_base_type();
 
     /**
-     * @return SimpleXMLElement
-     * @throws Exception
+     * @return \SimpleXMLElement
+     * @throws \Exception
      */
     public function get_schema()
     {
@@ -143,10 +146,8 @@ abstract class base implements cache_cacheableInterface
     public function get_connection()
     {
         if($this->connection->ping() === false){
-            if(isset($this->app['task-manager.logger'])){
-                $this->app['task-manager.logger']->info("MySQL server is not available : close and connect .....");
-            }
 
+            $this->container->get('logger')->info("MySQL server is not available : close and connect .....");
             $this->connection->close();
             $this->connection->connect();
         }
@@ -221,7 +222,7 @@ abstract class base implements cache_cacheableInterface
         try {   
             return $this->versionRepository->saveVersion($version);
         } catch (\Exception $e) {
-            throw new Exception('Unable to set the database version : ' . $e->getMessage());
+            throw new \Exception('Unable to set the database version : ' . $e->getMessage());
         }
     }
 
@@ -234,7 +235,7 @@ abstract class base implements cache_cacheableInterface
 
     /**
      * @return base
-     * @throws Exception
+     * @throws \Exception
      */
     protected function load_schema()
     {
@@ -242,8 +243,8 @@ abstract class base implements cache_cacheableInterface
             return $this;
         }
 
-        if (false === $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml")) {
-            throw new Exception('Unable to load schema');
+        if (false === $structure = simplexml_load_file(__DIR__ . "/../../config/conf.d/bases_structure.xml")) {
+            throw new \Exception('Unable to load schema');
         }
 
         if ($this->get_base_type() === self::APPLICATION_BOX) {
@@ -251,7 +252,7 @@ abstract class base implements cache_cacheableInterface
         } elseif ($this->get_base_type() === self::DATA_BOX) {
             $this->schema = $structure->databox;
         } else {
-            throw new Exception('Unknown schema type');
+            throw new \Exception('Unknown schema type');
         }
 
         return $this;
@@ -264,13 +265,18 @@ abstract class base implements cache_cacheableInterface
     {
         $this->load_schema();
 
-        $service = new DatabaseMaintenanceService($this->app, $this->connection);
+        //$service = new DatabaseMaintenanceService($this->app, $this->connection);
+
+        $service = $this->container->get('database.maintenance.service');
+
 
         foreach ($this->get_schema()->tables->table as $table) {
             $service->createTable($table);
         }
 
-        $this->setVersion($this->app['phraseanet.version']);
+        //$this->setVersion($this->app['phraseanet.version']);
+
+        $this->setVersion($this->container->get('phraseanet.version'));
 
         return $this;
     }

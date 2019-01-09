@@ -55,6 +55,15 @@ class Installer
 
     }
 
+    public function installUser(){
+
+        $email = 'test.tester@gmail.com';
+        $password = '654321';
+
+        $user = $this->createUser($email, $password);
+
+    }
+
     public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
 
@@ -66,7 +75,7 @@ class Installer
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
             if (null !== $dbConn) {
-                //$this->createDB($dbConn, $templateName, $user);
+                $this->createDB($dbConn, $templateName, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
@@ -84,11 +93,11 @@ class Installer
         $st = $this->structureTemplate;
         $template = $st->getByName($templateName);
         if(is_null($template)) {
-            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
+            throw new \App\Utils\Exception\Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
         //$databox = \App\Utils\databox::create($this->app, $dbConn, $template);
-        $databox = \App\Utils\databox::create($dbConn, $template);
+        $databox = \App\Utils\databox::create($dbConn, $template, $this->container);
 
         $this->app->getAclForUser($admin)
             ->give_access_to_sbas([$databox->get_sbas_id()])
@@ -212,6 +221,7 @@ class Installer
         }
 
         //$this->app->getApplicationBox()->insert_datas($this->app);
+        $this->container->get('appbox')->insert_datas();
     }
 
     private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)

@@ -12,30 +12,30 @@ namespace App\Utils;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Collection\Collection as CollectionVO;
-use Alchemy\Phrasea\Collection\CollectionRepository;
-use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
-use Alchemy\Phrasea\Collection\CollectionService;
-use Alchemy\Phrasea\Collection\Reference\CollectionReference;
-use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
-use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
-use Alchemy\Phrasea\Core\Thumbnail\ThumbnailManager;
-use Alchemy\Phrasea\Model\Entities\User;
+use App\Collection\Collection as CollectionVO;
+use App\Collection\CollectionRepository;
+use App\Collection\CollectionRepositoryRegistry;
+use App\Collection\CollectionService;
+use App\Collection\Reference\CollectionReference;
+use App\Collection\Reference\CollectionReferenceRepository;
+use App\Core\Thumbnail\ThumbnailedElement;
+use App\Core\Thumbnail\ThumbnailManager;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\File\File;
 
-use Alchemy\Phrasea\Core\Event\Collection\CollectionEvent;
-use Alchemy\Phrasea\Core\Event\Collection\CollectionEvents;
-use Alchemy\Phrasea\Core\Event\Collection\CreatedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\NameChangedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\EmptiedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\EnabledEvent;
-use Alchemy\Phrasea\Core\Event\Collection\DisabledEvent;
-use Alchemy\Phrasea\Core\Event\Collection\MountedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\UnmountedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\SettingsChangedEvent;
-use Alchemy\Phrasea\Core\Event\Collection\LabelChangedEvent;
+use App\Core\Event\Collection\CollectionEvent;
+use App\Core\Event\Collection\CollectionEvents;
+use App\Core\Event\Collection\CreatedEvent;
+use App\Core\Event\Collection\NameChangedEvent;
+use App\Core\Event\Collection\EmptiedEvent;
+use App\Core\Event\Collection\EnabledEvent;
+use App\Core\Event\Collection\DisabledEvent;
+use App\Core\Event\Collection\MountedEvent;
+use App\Core\Event\Collection\UnmountedEvent;
+use App\Core\Event\Collection\SettingsChangedEvent;
+use App\Core\Event\Collection\LabelChangedEvent;
 
-class collection implements ThumbnailedElement, cache_cacheableInterface
+class collection implements ThumbnailedElement, \App\Utils\cache\cache_cacheableInterface
 {
 
     const PIC_LOGO = 'minilogos';
@@ -209,7 +209,7 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
     /**
      * @param Application $app
-     * @return \Alchemy\Phrasea\Core\Configuration\AccessRestriction
+     * @return \App\Core\Configuration\AccessRestriction
      */
     private static function getAccessRestriction(Application $app)
     {

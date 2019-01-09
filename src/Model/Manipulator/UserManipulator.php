@@ -39,6 +39,9 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use App\Repository\UserRepository;
 
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+
 
 
 
@@ -53,7 +56,6 @@ class UserManipulator implements ManipulatorInterface
     private $objectManager;
     private $container;
     private $repository;
-    private $passwordEncoder;
     private $dispatcher;
 
 
@@ -64,7 +66,6 @@ class UserManipulator implements ManipulatorInterface
         \Doctrine\Common\Persistence\ObjectManager $objectManager,
         ContainerInterface $container,
         UserRepository $repository,
-        SimplePasswordEncoder $passwordEncoder,
         EventDispatcherInterface $dispatcher
     )
     {
@@ -73,7 +74,6 @@ class UserManipulator implements ManipulatorInterface
         $this->objectManager = $objectManager;
         $this->container = $container;
         $this->repository = $repository;
-        $this->passwordEncoder = $passwordEncoder;
         $this->dispatcher = $dispatcher;
     }
 
@@ -309,12 +309,9 @@ class UserManipulator implements ManipulatorInterface
      */
     private function doSetPassword(User $user, $password)
     {
-
-        $factory = new Factory();
-        $nonce = $factory->getLowStrengthGenerator()->generateString(64);
+        $nonce = $this->container->get('random.lib')->getLowStrengthGenerator()->generateString(64);
         $user->setNonce($nonce);
-
-        $user->setPassword($this->passwordEncoder->encodePassword($password, $user->getNonce()));
+        $user->setPassword($this->container->get('auth.password-encoder')->encodePassword($password, $user->getNonce()));
         $user->setSaltedPassword(true);
     }
 
@@ -350,6 +347,11 @@ class UserManipulator implements ManipulatorInterface
 //        if (null !== $email && false === (Boolean) \Swift_Validate::email($email)) {
 //            throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
 //        }
+
+        $validator = new EmailValidator();
+        if (null !== $email && false === (Boolean) $validator->isValid($email, new RFCValidation())) {
+            throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
+        }
 
         if (null !== $this->repository->findByEmail($email)) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));

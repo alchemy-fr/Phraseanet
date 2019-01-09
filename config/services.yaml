@@ -38,3 +38,27 @@ services:
     manipulator.user:
         class: App\Model\Manipulator\UserManipulator
         public: true
+
+    random.lib:
+        class: RandomLib\Factory
+        public: true
+
+    auth.password-encoder:
+        class: App\Authentication\Phrasea\SimplePasswordEncoder
+        public: true
+
+    database.maintenance.service:
+        class: App\Core\Database\DatabaseMaintenanceService
+        public: true
+
+    phraseanet.version:
+        class: App\Core\Version
+        public: true
+
+    appbox:
+        class: App\Utils\appbox
+        public: true
+
+    databox.repository:
+        class: App\Databox\DbalDataboxRepository
+        public: true

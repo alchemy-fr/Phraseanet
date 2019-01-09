@@ -12,13 +12,13 @@ namespace App\Utils;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Collection\CollectionService;
-use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
-use Alchemy\Phrasea\Core\Connection\ConnectionSettings;
-use Alchemy\Phrasea\Core\LazyLocator;
-use Alchemy\Phrasea\Core\Version\AppboxVersionRepository;
-use Alchemy\Phrasea\Databox\DataboxConnectionProvider;
-use Alchemy\Phrasea\Databox\DataboxRepository;
+use App\Collection\CollectionService;
+use App\Core\Configuration\AccessRestriction;
+use App\Core\Connection\ConnectionSettings;
+use App\Core\LazyLocator;
+use App\Core\Version\AppboxVersionRepository;
+use App\Databox\DataboxConnectionProvider;
+use App\Databox\DataboxRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use MediaAlchemyst\Alchemyst;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,6 +26,9 @@ use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use vierbergenlars\SemVer\version;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 class appbox extends base
 {
@@ -43,7 +46,7 @@ class appbox extends base
      */
     protected $id;
     /**
-     * @var \databox[]
+     * @var \App\Utils\databox[]
      */
     protected $databoxes;
     /**
@@ -51,10 +54,30 @@ class appbox extends base
      */
     protected $collectionService;
 
-    public function __construct(Application $app)
+    //private $container;
+
+    //public function __construct(Application $app, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
-        $connectionConfig = $app['conf']->get(['main', 'database']);
-        $connection = $app['db.provider']($connectionConfig);
+        //$connectionConfig = $app['conf']->get(['main', 'database']);
+        //$connection = $app['db.provider']($connectionConfig);
+
+//        $connectionSettings = new ConnectionSettings(
+//            $connectionConfig['host'],
+//            $connectionConfig['port'],
+//            $connectionConfig['dbname'],
+//            $connectionConfig['user'],
+//            $connectionConfig['password']
+//        );
+
+        $connectionConfig = [
+            'host'     => 'localhost',
+            'port'     => '3306',
+            'user'     => 'root',
+            'password' => 'toor',
+            'dbname'   => 'ab_master',
+            'driver' => 'pdo_mysql',
+        ];
 
         $connectionSettings = new ConnectionSettings(
             $connectionConfig['host'],
@@ -64,14 +87,18 @@ class appbox extends base
             $connectionConfig['password']
         );
 
+        $config = new \Doctrine\DBAL\Configuration();
+        $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionConfig, $config);
+
         $versionRepository = new AppboxVersionRepository($connection);
 
-        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
+        //parent::__construct($app, $connection, $connectionSettings, $versionRepository, $container);
+        parent::__construct($connection, $connectionSettings, $versionRepository, $container);
     }
 
     public function write_collection_pic(Alchemyst $alchemyst, Filesystem $filesystem, collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        $manager = new \Alchemy\Phrasea\Core\Thumbnail\CollectionThumbnailManager(
+        $manager = new \App\Core\Thumbnail\CollectionThumbnailManager(
             $this->app,
             $alchemyst,
             $filesystem,
@@ -85,7 +112,7 @@ class appbox extends base
 
     public function write_databox_pic(Alchemyst $alchemyst, Filesystem $filesystem, databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
-        $manager = new \Alchemy\Phrasea\Core\Thumbnail\DataboxThumbnailManager(
+        $manager = new \App\Core\Thumbnail\DataboxThumbnailManager(
             $this->app,
             $alchemyst,
             $filesystem,
