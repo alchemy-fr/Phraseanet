@@ -10,11 +10,14 @@ jobs:
     docker:
     #- image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
     - image: circleci/php:7.2-fpm-node-browsers-legacy
+    - image: circleci/redis:latest
+    - image: circleci/mysql:latest
     #  command: /sbin/init
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
-    - run: phpenv global 7.2.13
+    #- run: phpenv global 7.2.13
+    - run: apt-get install memcached
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
         command: nvm install v10.12.0 && nvm alias default v10.12.0
