@@ -91,6 +91,9 @@ Menu contextuel
     font-weight: bold;
     &:hover {
       background-color: $answersToolsBgHover;
+      a {
+        color: $answersToolsBgColor;
+      }
     }
   }
   a {
