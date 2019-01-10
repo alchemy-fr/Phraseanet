@@ -51,13 +51,16 @@
       border: 0;
       box-shadow: none;
       text-shadow: none;
+      padding-left: 14px;
     }
     .classicButton button.btn-inverse.dropdown-toggle,
     .dropdownButton button.btn-inverse.dropdown-toggle {
       padding-right: 16px;
+      padding-left: 8px;
     }
     .classicButton button.btn-inverse {
       border-right: 0;
+      padding-right: 16px;
     }
     .dropdownButton button.btn-inverse {
       padding-right: 2px;
@@ -67,11 +70,16 @@
         border-top-color: $mediumTextColor;
         border-bottom-color: $mediumTextColor;
       }
+      &:hover .caret {
+        border-top-color: $mediumTextHoverColor;
+        border-bottom-color: $mediumTextHoverColor;
+      }
     }
     .classicButton button.btn-inverse:hover,
     .dropdownButton button.btn-inverse:hover {
       background-color: $mediumBackgroundColor;
       color: $textPrimaryHoverColor;
+      text-shadow: $textShadow;
     }
 
     .classicButton button.btn-inverse img,
