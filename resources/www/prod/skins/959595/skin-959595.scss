@@ -4,7 +4,7 @@ $defaultBorderColor: #999999;
 $defaultBorderRadius: 2px;
 
 $textPrimaryColor: #333333;
-$textPrimaryHoverColor: #1a1a1a;
+$textPrimaryHoverColor: #000000;
 $textPrimaryActiveColor: #1a1a1a;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
@@ -14,7 +14,7 @@ $highlightDarkerColor: #0c4554;
 $highlightBackgroundColor: #076882;
 $highlightBackgroundAltColor: #0c4554;
 $highlightBorderColor: #0c4554;
-$highlightTextColor: #FFFFFF;
+$highlightTextColor: #000000;
 
 
 $darkerBackgroundColor: #D9D9D9; // #F1F1F1 <- to try
@@ -30,8 +30,8 @@ $mediumBackgroundColor: #a6a6a6; // B2B2B2 <- to try
 $mediumBorderColor: darken($mediumBackgroundColor, 10);
 $mediumBorderHighlightColor: #666666;
 $mediumTextColor: $textPrimaryColor;
-$mediumTextHoverColor: #EAEAEA;
-$mediumTextActiveColor: #EAEAEA;
+$mediumTextHoverColor: #000000;
+$mediumTextActiveColor: #000000;
 
 $lightBackgroundColor: #B1B1B1;
 $lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
@@ -40,6 +40,8 @@ $lightBorderColor: #B1B1B1;
 $lightBorderSelectedColor: darken($lightBorderColor, 10);
 $lightBorderActiveColor: darken($lightBorderColor, 10);
 $lightTextColor: #3b3b3b;
+
+$textShadow: -0.25px -0.25px 0 #000000, 0.25px 0.25px #000000;
 
 // inverse
 $textInverseColor: #000;
@@ -79,11 +81,13 @@ $guiSplitterImg: 'vsplitter2-959595.png';
 
 
 
-
+$answersToolsBg: #7e7e7e;
+$answersToolsBgHover: #969696;
+$answersToolsBgColor: #ffffff;
 $answersToolsBtnSeparatorBorder: #999;
-$answersToolsBtnBg: #A4A4A4;
+$answersToolsBtnBg: #c1c1c1;
 $answersToolsBtnBorder: #666666;
-$answersToolsBtnColor: #EAEAEA;
+$answersToolsBtnColor: #3f3f3f;
 $answersToolsBtnHoverBg: #666666;
 $answersToolsBtnHoverColor: #FFFFFF;
 
@@ -169,7 +173,7 @@ $workzoneTabTopBorder: 1px solid #999;
 $workzoneTabBorderBottom: transparent;
 $workzoneBasketAlertDataBg: #fff190;
 $workzoneBasketAlertDataColor: #1a1a1a;
-$workzoneToolsLabelColor: #FFFFFF;
+$workzoneToolsLabelColor: #afafaf;
 
 /******** PROPOSALS CONFIG ********/
 $proposalsTitleColor: #FFFFFF;
