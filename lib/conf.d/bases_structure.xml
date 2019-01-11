@@ -1901,7 +1901,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('string','text','date','number')</type>
+            <type>enum('string','date','number')</type>
             <null></null>
             <extra></extra>
             <default></default>
