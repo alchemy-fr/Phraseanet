@@ -23,6 +23,9 @@ jobs:
     - run: sudo apt-get install mysql-server
     - run: sudo apt-get install mysql-client
     - run: sudo apt-get install rabbitmq-server
+    - run: sudo apt-get install autoconf libtool debhelper
+    - run: sudo apt-get install imagemagick
+    - run: sudo apt-get install libmagickwand-6.q16-dev
     #- run:
     #    working_directory: ~/alchemy-fr/Phraseanet
     #    command: nvm install v10.12.0 && nvm alias default v10.12.0
@@ -35,27 +38,33 @@ jobs:
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
-    - restore_cache:
-        keys:
-        # This branch if available
-        - v1-dep-{{ .Branch }}-
-        # Default branch if not
-        - v1-dep-master-
-        # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - v1-dep-
+    #- restore_cache:
+    #    keys:
+    #    # This branch if available
+    #    - v1-dep-{{ .Branch }}-
+    #    # Default branch if not
+    #    - v1-dep-master-
+    #    # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
+    #    - v1-dep-
     # This is based on your 1.0 configuration file or project settings
+    - run: pecl channel-update pear.php.net
+
+    - run: sudo apt-get install librabbitmq-dev
     - run: git clone https://github.com/alanxz/rabbitmq-c
     - run: cd rabbitmq-c && git checkout 2ca1774489328cde71195f5fa95e17cf3a80cb8a
     - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
-    - run: pecl channel-update pear.php.net
     - run: yes '' | pecl install amqp-1.9.3
-    - run: yes '' | pecl install imagick
-    - run: sudo apt-get install libzmq-dev
-    - run: yes '' | pecl install zmq-beta
     - run: echo "extension = amqp.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/amqp.ini
+
+    - run: yes '' | pecl install imagick
+
+    - run: sudo apt-get install libzmq3-dev
+    - run: yes '' | pecl install zmq-beta
     - run: echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
+
     - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
     - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
+
     - run: npm rebuild node-sass
     - run: node -v
     - run: npm -v
