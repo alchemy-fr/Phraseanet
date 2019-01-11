@@ -67,7 +67,7 @@ jobs:
 
     - run: echo "date.timezone = UTC" > /tmp/timezone.ini && sudo cp /tmp/timezone.ini /usr/local/etc/php/conf.d/timezone.ini
     - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /usr/local/etc/php/php.ini
-    # - run: sudo sed -i 's/^\(memory_limit = \).*/\1-1/' /usr/local/etc/php/php.ini
+    - run: sudo sed -i 's/^\(memory_limit = \).*/\1-1/' /usr/local/etc/php/php.ini
 
     - run: npm rebuild node-sass
     - run: node -v
