@@ -13,7 +13,7 @@
 
       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
       <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{{ 'action : editer' | trans }}">
-        <img src="/assets/common/images/icons/ppen_history.png"/>
+        <img src="/assets/common/images/icons/edit-pen.png"/>
       </button>
       {% endif %}
 
@@ -31,13 +31,13 @@
 
       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{{ 'action : push' | trans }}">
-        <img src="/assets/common/images/icons/push16.png"/>
+        <img src="/assets/common/images/icons/push-icon.png"/>
       </button>
       {% endif %}
 
       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
       <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{{ 'Feedback' | trans }}">
-        <img src="/assets/common/images/icons/feedback16.png"/>
+        <img src="/assets/common/images/icons/feedback-icon.png"/>
       </button>
       {% endif %}
       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB')) %}
@@ -45,7 +45,7 @@
         {#<img src="/assets/common/images/icons/door.png"/>#}
       {#</button>#}
       <button class="ui-corner-all TOOL_publish_btn basket_window" title="{{ 'action : publier' | trans }}">
-        <img src="/assets/common/images/icons/rss16.png"/>
+        <img src="/assets/common/images/icons/rss-publish.png"/>
       </button>
       {% endif %}
 
