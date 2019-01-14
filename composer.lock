@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "0.3.6",
+            "version": "0.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351"
+                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/dab45fb2e01b927fe7fc085f19eecc0f96674351",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
+                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.6",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.8",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2017-05-17T19:25:26+00:00"
+            "time": "2019-01-11T10:35:41+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -1748,12 +1748,12 @@
             "version": "v2.5.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "shasum": ""
             },
