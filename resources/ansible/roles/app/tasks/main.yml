@@ -60,7 +60,7 @@
     chdir: /vagrant/
 
 - name: Create ElasticSearch indexes
-  shell: php bin/console s:i:c
+  shell: php bin/console searchengine:index -c
   args:
     chdir: /vagrant/
 
