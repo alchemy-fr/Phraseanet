@@ -41,11 +41,11 @@ jobs:
     - restore_cache:
         keys:
         # This branch if available
-        - v1-dep-{{ .Branch }}-
+        - v4.5-dep-{{ .Branch }}-
         # Default branch if not
-        - v1-dep-master-
+        #- v1-dep-master-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - v1-dep-
+        #- v1-dep-
     # This is based on your 1.0 configuration file or project settings
 
     - run: sudo cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
@@ -83,22 +83,22 @@ jobs:
         background: true
     # Save dependency cache
     - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: v4.5-dep-{{ .Branch }}-{{ epoch }}
         paths:
         # This is a broad list of cache paths to include many possible development environments
         # You can probably delete some of these entries
-        - vendor/bundle
-        - ~/virtualenvs
-        - ~/.m2
-        - ~/.ivy2
-        - ~/.bundle
-        - ~/.go_workspace
-        - ~/.gradle
-        - ~/.cache/bower
+        #- vendor/bundle
+        #- ~/virtualenvs
+        #- ~/.m2
+        #- ~/.ivy2
+        #- ~/.bundle
+        #- ~/.go_workspace
+        #- ~/.gradle
+        #- ~/.cache/bower
         # These cache paths were specified in the 1.0 config
         - elasticsearch-2.3.3
         - node_modules
-        - ~/.composer
+        - ~/.cache/composer
     # This is based on your 1.0 configuration file or project settings
     # - run: mysql -u ubuntu -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
     # This is based on your 1.0 configuration file or project settings
@@ -111,7 +111,7 @@ jobs:
     # Test
     #   This would typically be a build job when using workflows, possibly combined with build
     # This is based on your 1.0 configuration file or project settings
-    - run: case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d "memory_limit = -1" bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d memory_limit=-1 bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac
+    - run: case $CIRCLE_NODE_INDEX in 0) EXIT=0; php -d "memory_limit = -1" bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-unit.xml --exclude-group legacy || EXIT=$?; php -d "memory_limit = -1" bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-no-web.xml --group legacy --exclude-group web || EXIT=$?; exit $EXIT;; 1) php -d "memory_limit = -1" bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit-legacy-web.xml --group web ;; esac
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
