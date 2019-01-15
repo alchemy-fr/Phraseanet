@@ -7,6 +7,7 @@ main:
     languages: []
     key: ''
     api_require_ssl: true
+    api_token_header: false
     database:
         host: 127.0.0.1
         port: 3306
