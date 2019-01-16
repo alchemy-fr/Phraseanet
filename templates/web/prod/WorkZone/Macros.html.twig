@@ -136,55 +136,72 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="context-menu context-menu-theme-vista">
+                    <div class="context-menu context-menu-theme-flat">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
+                             data-kind="basket" data-id="{{basket.getId()}}">
+                            <a href="#">
+                              <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                            <span>{{ 'action::exporter' | trans }}</span>
+                          </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
+                            <img src="/assets/lightbox/images/lightbox-icon.png" style="width: 20px; box-shadow: 0 2px 2px rgba(0,0,0,.2);" alt="{{ 'Lightbox' | trans }}">
+                            <span>{{ 'Lightbox' | trans }}</span>
+                          </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
-                            {{ 'action::renommer' | trans }}
+                            <img src="/assets/common/images/icons/rename.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'action::renommer' | trans }}">
+                            <span>{{ 'action::renommer' | trans }}</span>
                           </a>
                         </div>
                       </div>
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
-                            <div class="context-menu-item-inner">
-                              {{ 'action::Valider' | trans }}
-                            </div>
-                          </a>
+                          <div class="context-menu-item-inner">
+                            <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                              <img src="/assets/common/images/icons/basket_validation.png" style="width: 22px;" alt="{{ 'action::Valider' | trans }}">
+                              <span>{{ 'action::Valider' | trans }}</span>
+                            </a>
+                          </div>
                         </div>
                       {% endif %}
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
-                          {{ 'Archive' | trans }}
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
-                          {{ 'action : supprimer' | trans }}
+                          <a href="#">
+                            <img src="/assets/common/images/icons/archive.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Archive' | trans }}">
+                            <span>{{ 'Archive' | trans }}</span>
+                          </a>
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
-                            {{ 'Re-ordonner' | trans }}
+                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                            <span>{{ 'Re-ordonner' | trans }}</span>
                           </a>
                         </div>
                       </div>
 
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
+                          <a href="#">
+                            <img src="/assets/common/images/icons/delete.png" style="width: 22px;" alt="{{ 'action : supprimer' | trans }}">
+                            <span>{{ 'action : supprimer' | trans }}</span>
+                          </a>
+                        </div>
                       </div>
+
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -222,24 +239,33 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="context-menu context-menu-theme-vista">
+                    <div class="context-menu context-menu-theme-flat">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner export-record-action"
-                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">{{ 'action::exporter' | trans }}
+                          data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">
+                          <a href="#">
+                            <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                            <span>{{ 'action::exporter' | trans }}</span>
+                          </a>
                         </div>
                       </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner edit-record-action"
                              data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"
-                             >{{ 'action::editer' | trans }}
+                             >
+                            <a href="#">
+                              <img src="/assets/common/images/icons/edit-pen.png" style="width: 22px;" alt="{{ 'action::editer' | trans }}">
+                              <span>{{ 'action::editer' | trans }}</span>
+                            </a>
                         </div>
                       </div>
-                        {% endif %}
+                      {% endif %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
                           <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
-                            {{ 'action::detacher' | trans }}
+                            <img src="/assets/common/images/icons/detach.png" style="width: 26px; margin-left: -2px; margin-right: 2px;" alt="{{ 'action::detacher' | trans }}">
+                            <span style="margin-left: 4px;">{{ 'action::detacher' | trans }}</span>
                           </a>
                         </div>
                       </div>
@@ -249,7 +275,8 @@
                              data-db-id="{{ story.getRecord(app).get_sbas_id }}"
                              data-record-id="{{ story.getRecord(app).get_record_id() }}"
                              href="#">
-                            {{ 'Re-ordonner' | trans }}
+                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                            <span>{{ 'Re-ordonner' | trans }}</span>
                           </a>
                         </div>
                       </div>
