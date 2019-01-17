@@ -937,6 +937,131 @@ function getFacetsTree() {
     return $facetsTree.fancytree('getTree');
 }
 
+function findClauseBy_ux_zone(clause, ux_zone)
+{
+    if(typeof clause._ux_zone != 'undefined' && clause._ux_zone == ux_zone) {
+        return clause;
+    }
+    if(clause.type == "CLAUSES") {
+        for(var i=0; i<clause.clauses.length; i++) {
+            var r = findClauseBy_ux_zone(clause.clauses[i], ux_zone);
+            if(r != null) {
+                return r;
+            }
+        }
+    }
+    return null;
+}
+
+function restoreJsonQuery() {
+    var jsq = {
+        "sort": {
+            "field": "LastEditDate",
+            "order": "asc"
+        },
+        "perpage": 100,
+        "page": 1,
+        "use_truncation": false,
+        "phrasea_recordtype": "RECORD",
+        "phrasea_mediatype": "",
+        "bases": [
+            393
+        ],
+        "statuses": [
+            {
+                "databox": "2",
+                "status": [
+                    {
+                        "index": "4",
+                        "value": false
+                    }
+                ]
+            }
+        ],
+        "query": {
+            "_ux_zone": "PROD",
+            "type": "CLAUSES",
+            "must_match": "ALL",
+            "enabled": true,
+            "clauses": [
+                {
+                    "_ux_zone": "FULLTEXT",
+                    "type": "FULLTEXT",
+                    "value": "nikon",
+                    "enabled": true
+                },
+                {
+                    "_ux_zone": "FIELDS",
+                    "type": "CLAUSES",
+                    "must_match": "ONE",
+                    "enabled": true,
+                    "clauses": [
+                        {
+                            "type": "TEXT-FIELD",
+                            "field": "field.CameraDevice",
+                            "operator": ":",
+                            "value": "d300",
+                            "enabled": true
+                        },
+                        {
+                            "type": "TEXT-FIELD",
+                            "field": "field.Format",
+                            "operator": "=",
+                            "value": "image/jpeg",
+                            "enabled": true
+                        }
+                    ]
+                },
+                {
+                    "type": "DATE-FIELD",
+                    "field": "",
+                    "from": "",
+                    "to": "",
+                    "enabled": false
+                },
+                {
+                    "_ux_zone": "AGGREGATES",
+                    "type": "CLAUSES",
+                    "must_match": "ALL",
+                    "enabled": true,
+                    "clauses": [
+                        {
+                            "type": "NUMBER-AGGREGATE",
+                            "field": "meta.ShutterSpeed",
+                            "value": 0.0080000003799796,
+                            "negated": false,
+                            "enabled": true
+                        },
+                        {
+                            "type": "NUMBER-AGGREGATE",
+                            "field": "meta.Aperture",
+                            "value": 14,
+                            "negated": false,
+                            "enabled": true
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+
+    // console.log(jsq);
+
+    // check one radio will uncheck siblings
+    $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'RECORD') ? '0' : '1') + '"]').prop('checked', true);
+
+    $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('checked', true);
+
+    $('#ADVSRCH_USE_TRUNCATION').prop('checked', jsq.use_truncation);
+
+    $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
+    $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
+
+    var clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
+    $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
+
+
+}
 
 function serializeJSON(data, selectedFacetValues, facets) {
     var json = {},
