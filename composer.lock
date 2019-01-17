@@ -341,12 +341,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/oauth2-php.git",
-                "reference": "fe5c19b417965110bad0981a6dfd2097b5ce4306"
+                "reference": "801510972240555fa182813851efd96659d37a68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/fe5c19b417965110bad0981a6dfd2097b5ce4306",
-                "reference": "fe5c19b417965110bad0981a6dfd2097b5ce4306",
+                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/801510972240555fa182813851efd96659d37a68",
+                "reference": "801510972240555fa182813851efd96659d37a68",
                 "shasum": ""
             },
             "type": "library",
@@ -356,7 +356,7 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2019-01-16T16:10:46+00:00"
+            "time": "2019-01-17T14:34:10+00:00"
         },
         {
             "name": "alchemy/phlickr",
