@@ -1634,37 +1634,8 @@ $(document).ready(function () {
         }
     });
 
-    var previousVal;
-    $(document).on('focus', 'select.term_select_field', function () {
-        previousVal = $(this).val();
-    })
-    .on('change', 'select.term_select_field', function () {
+    $(document).on('change', 'select.term_select_field', function () {
         var $this = $(this);
-
-        // if option is selected
-        if($this.val()) {
-            $this.siblings().prop('disabled', false);
-
-            $('.term_select_multiple option').each(function (index, el) {
-                var $el = $(el);
-                if($this.val() === $el.val()) {
-                    $el.prop('selected', true);
-                }
-                else if (previousVal === $el.val()) {
-                    $el.prop('selected', false);
-                }
-            });
-        }
-        else {
-            $this.siblings().prop('disabled', 'disabled');
-
-            $('.term_select_multiple option').each(function (index, el) {
-                var $el = $(el);
-                if(previousVal === $el.val()) {
-                    $el.prop('selected', false);
-                }
-            });
-        }
         $this.blur();
         checkFilters(true);
     });
