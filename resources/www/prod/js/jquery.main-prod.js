@@ -1644,26 +1644,12 @@ $(document).ready(function () {
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
-        var rowOption = $this.siblings('.term_select_field');
-        
-        $('.term_select_multiple option').each(function (index, el) {
-            var $el = $(el);
-            if(rowOption.val() == $el.val()) {
-                $el.prop('selected', false);
-            }
-        });
-        checkFilters(true);
         $this.closest('.term_select_wrapper').remove();
+        checkFilters(true);
     });
 
     $('.add_new_term').on('click', function (event) {
-        event.preventDefault();
-        if ($('select.term_select_field').length === 0) {
-            $('.term_select').prepend('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
-        }
-        else if ($('select.term_select_field').last().val() !== '') {
-            $('.term_select_wrapper').last().after('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
-        }
+        AdvSearchAddNewTerm(1);
     });
 
     $('.adv_search_button').on('click', function () {
