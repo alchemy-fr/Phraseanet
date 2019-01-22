@@ -835,6 +835,8 @@ class UserController extends Controller
                         array_keys($this->getAclForConnectedUser()->get_granted_base([\ACL::COLL_MANAGE]))
                     );
 
+                    $this->app['orm.em']->flush();
+
                     $nbCreation++;
                 }
             }

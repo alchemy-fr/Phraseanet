@@ -67,17 +67,6 @@ var p4 = p4 || {};
         });
     }
 
-    $("#baskets div.content select[name=valid_ord]").on('change', function () {
-        var active = $('#baskets .SSTT.ui-state-active');
-        if (active.length === 0) {
-            return;
-        }
-
-        var order = $(this).val();
-
-        getContent(active, order);
-    });
-
     function WorkZoneElementRemover(el, confirm) {
         var context = el.data('context');
 
@@ -138,24 +127,15 @@ var p4 = p4 || {};
                         var carouselItemLength = $('li', carousel).length;
                         var selectedItem = $("li.prevTrainCurrent.selected", carousel);
                         var selectedItemIndex = $('li', carousel).index(selectedItem);
-
-                        // item is first and list has at least 2 items
-                        if (selectedItemIndex === 0 && carouselItemLength > 1) {
-                            // click next item
-                            selectedItem.next().find("img").trigger("click");
-                            // item is last item and list has at least 2 items
-                        } else if (carouselItemLength > 1 && selectedItemIndex === (carouselItemLength - 1)) {
-                            // click previous item
-                            selectedItem.prev().find("img").trigger("click");
-                            // Basket is empty
-                        } else if (carouselItemLength > 1) {
-                            // click next item
-                            selectedItem.next().find("img").trigger("click");
-                        } else {
+                        var basketId = $('#baskets .content:visible').attr('id').split('_').pop();
+                        if(carouselItemLength === 1){
                             closePreview();
+                            p4.WorkZone.reloadCurrent();
+                            return;
                         }
+                        openPreview(this, 'BASK',selectedItemIndex+1,basketId,true);
+                        p4.WorkZone.reloadCurrent();
 
-                        selectedItem.remove();
                     } else {
                         return p4.WorkZone.reloadCurrent();
                     }
@@ -313,6 +293,17 @@ var p4 = p4 || {};
                 }).bind('click', function (event) {
                     return WorkZoneElementRemover($(this), false);
                 });
+                
+                $("#baskets div.content select[name=valid_ord]").on('change', function () {
+                    var active = $('#baskets .SSTT.ui-state-active');
+                    if (active.length === 0) {
+                        return;
+                    }
+            
+                    var order = $(this).val();
+            
+                    getContent(active, order);
+                });
 
                 dest.droppable({
                     accept: function (elem) {
@@ -333,7 +324,9 @@ var p4 = p4 || {};
                     tolerance: 'pointer'
                 });
 
-                $('.noteTips, .captionRolloverTips', dest).tooltip();
+                $('.noteTips, .captionRolloverTips', dest).tooltip({
+                    extraClass: 'tooltip_flat'
+                });
 
                 dest.find('.CHIM').draggable({
                     helper: function () {

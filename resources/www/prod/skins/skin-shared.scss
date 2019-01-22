@@ -1,4 +1,6 @@
 $proposalColor: #4c5d84;
+$proposalColor_AND: #4c5d84;
+$proposalColor_EXCEPT: #8a3747;
 $thesaurusColor: #884c92;
 $basketsColor: #076882;
 $pluginsColor: #FFF;
@@ -314,6 +316,34 @@ span.ww_winTitle {
 .chim-wrapper {
   position: relative;
   float: left;
+  margin-bottom: 20px;
+  .note_tips_holder {
+    .image-hover {
+      display: none;
+    }
+    &:hover {
+      .image-hover {
+        display: block;
+      }
+      .image-normal {
+        display: none;
+      }
+    }
+  }
+  span.feedback_user_name {
+    position: relative;
+    background: #292929;
+    padding-right: 9px;
+    z-index: 1;
+  }
+  span.line_separator {
+    position: absolute;
+    height: 45%;
+    width: calc(100% - 5px);
+    left: 0;
+    top: 0;
+    border-bottom: 1px solid #343434;
+  }
 }
 
 #tooltip {
@@ -339,7 +369,7 @@ span.ww_winTitle {
 
 .invisible-btn {
   position: absolute;
-  top: 50%;
+  top: 21%;
   z-index: 1;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -347,9 +377,8 @@ span.ww_winTitle {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  height: 320px;
-  width: 150px;
-  margin-top: -160px;
+  height: 50%;
+  width: 25%;
   i {
     display: none;
     font-size: 120px;
@@ -369,6 +398,11 @@ span.ww_winTitle {
 
 #left-btn {
   left: 10px;
+}
+
+.chart {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 /******* DIALOGS **************************************************************/
@@ -510,6 +544,7 @@ button.order_launcher.btn {
 #order_manager .table {
   height: 20%;
   color: #737373;
+  margin-bottom: 15px;
 }
 
 #order_manager .table td h4{
@@ -519,7 +554,6 @@ button.order_launcher.btn {
 }
 
 #order_manager .well {
-  height: 90%;
   position: relative;
 }
 
@@ -589,6 +623,11 @@ button.order_launcher.btn {
   margin: 0 10px 0 4px;
 }
 
+.scrollable-table {
+  max-height:410px;
+  overflow-y: auto;
+}
+
 .order-list-container .table-order {
   border-collapse:collapse;
   border: 1px inset;
@@ -601,8 +640,8 @@ button.order_launcher.btn {
 }
 
 .order-list-container {
-  overflow: auto;
-  height: 75%;
+  max-height: 450px;
+  overflow: hidden;
 }
 
 .order-list-container .table-order tr {
@@ -613,23 +652,41 @@ button.order_launcher.btn {
   border: 1px solid #4990E2;
 }
 
+.disabled {
+  pointer-events:none;
+  opacity:0.4;
+}
 
 .order_list {
   width: 40%;
   float: left;
-  overflow: auto;
-  height: 100%;
+  overflow: hidden;
+  max-height:450px;
 }
 
 #wrapper-padding {
   display: none;
   margin-left: 30px;
-  overflow-y: auto;
+  //overflow-y: auto;
 }
 
 #wrapper-multiple {
   display: none;
   text-align: center;
+}
+
+#wrapper-no-item {
+  height: 450px;
+  position: relative;
+  img {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -75px;
+  }
 }
 
 #preview-layout-multiple {
@@ -645,14 +702,19 @@ button.order_launcher.btn {
   margin-bottom: 20px;
 }
 
-#preview-layout-multiple p {
+#preview-layout-multiple #text-content {
   margin-top: 40px;
+}
+
+#preview-layout-multiple p {
+  margin-top: 20px;
 }
 
 #order_detail {
   width: 60%;
   float: left;
   overflow: auto;
+  max-height:450px;
 }
 
 #order_detail .thumb_wrapper {
@@ -735,7 +797,7 @@ button.order_launcher.btn {
   vertical-align: middle;
 }
 
-button.btn.deny.outline {
+button.btn.deny.outline, button.btn.reset.outline {
   margin-right: 10px;
   box-shadow: none;
   font-weight: 200;
@@ -752,6 +814,10 @@ button.btn.deny.outline {
 .send.outline i {
   margin-right: 0.6em;
   color: #7CD21C;
+}
+
+.reset.outline i {
+  margin-right: 0.6em;
 }
 
 button.btn.btn-primary.send.outline {
@@ -791,6 +857,7 @@ span.action-text {
   max-width: 600px;
   display: block;
   margin: auto;
+  text-align: center;
 }
 
 #preview-layout .thumb_wrapper img {
@@ -866,7 +933,7 @@ span.action-text {
 button.btn.validate {
   margin-bottom: 10px;
   font-size: 14px;
-  border: 2px solid #F00;
+  //border: 2px solid #F00;
   i {
     margin-right: 0.6em;
     font-size: 14px;
@@ -956,6 +1023,30 @@ h4 {
   }
 }
 
+#tooltip.tooltip_flat {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 15px;
+  min-width: 280px !important;
+
+  .popover {
+    background-color: #535353;
+    width: 100% !important;
+    border: 0 none;
+    border-radius: 0;
+
+    .popover-inner {
+      border: 0 none;
+      border-radius: 6px;
+
+      .popover-content {
+        background-color: #535353;
+        padding: 10px;
+      }
+    }
+  }
+}
+
 .dragover {
   BACKGROUND-COLOR: #fff100
 }
@@ -1039,6 +1130,32 @@ h4 {
   color: #a1a1a1;
 }
 
+/********* record **************/
+#advance-share {
+  font-style: italic;
+  line-height: 30px;
+}
+
+#shared-def {
+  display: none;
+  margin-left: 10px;
+  #resource_type_sel {
+    width: 170px;
+    margin-left: 10px;
+  }
+}
+
+.color-dot {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #FFFFFF;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  margin-top: 3px;
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';
@@ -1068,3 +1185,4 @@ h4 {
 @import 'ui-components/modal-push';
 @import 'ui-components/diapo';
 @import 'ui-components/modal-preferences';
+@import 'ui-components/modal-advanced-search';

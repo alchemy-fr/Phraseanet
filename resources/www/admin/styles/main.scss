@@ -87,12 +87,12 @@ select {
 }
 li.selected,
 div.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 li.selected a,
 div.selected a {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 .treeview ul {
@@ -120,7 +120,7 @@ div.finder div.content div.title {
 /******* MAIN MENU ************************************************************/
 
 
-$mainMenuBackgroundColor: #fceb3f;
+$mainMenuBackgroundColor: #ffe000;
 $mainMenuLinkColor: #333333;
 $mainMenuLinkHoverColor: #000000;
 $mainMenuLinkActiveColor: #000000;
@@ -134,14 +134,14 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 
 /******* LEFT SIDE ************************************************************/
 #left {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
   overflow: auto;
 }
 #FNDR {
   overflow: auto;
 }
 #FNDR li.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   color: #ffffff;
 }
 #FNDR a {
@@ -259,7 +259,7 @@ div.switch_right.unchecked {
   background-size: 16px;
 }
 .board_section div[class="section"] ul.setup li:hover {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
 }
 /******* PUBLICATIONS *********************************************************/
 #pub_icon {
@@ -420,6 +420,207 @@ input[id="elasticsearch_settings_highlight"] {
   background: none;
   margin-bottom: 7rem;
   overflow: visible;
+}
+
+#masks_dialog {
+  margin-bottom: 0;
+  form {
+    margin: 0;
+  }
+}
+
+/******* SETUP *******************************************************************/
+#custom-link-table {
+  width: 100%;
+  thead {
+    th {
+      text-align: left;
+      font-weight: bold;
+    }
+  }
+  td {
+    height: 30px;
+    width: 19%;
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      height: 30px;
+    }
+    .simplecolorpicker {
+      width: 21px;
+      height: 21px;
+      background-repeat: no-repeat;
+      background-size: contain !important;
+      background-position: center center;
+      border: none;
+      margin-right: 3px;
+    }
+    button {
+      height: 30px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+    }
+  }
+  td:nth-of-type(5) {
+    width: 14%;
+  }
+  td:nth-of-type(6) {
+    width: 3%;
+  }
+  td:nth-of-type(7) {
+    width: 3%;
+  }
+  td:last-child {
+    width: 8%;
+  }
+}
+
+span.simplecolorpicker.picker {
+  min-width: 0px;
+  width: 22px;
+  margin-top: -360px;
+  border-radius: 0px;
+  margin-left: 4px;
+  padding: 0;
+  span {
+    width: 20px;
+    margin: 0px;
+  }
+}
+
+#add-row {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  float: right;
+}
+
+.link_check_box:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-Bold.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+.link_check_box:checked:before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(/assets/common/images/icons/Bouton-bold-active.png) #fff;
+  background-repeat: no-repeat;
+  background-size: 75%;
+  background-position: center center;
+}
+
+/******* SEARCH ENGINE SETTINGS ***************************************************/
+.search-engine-tabs {
+  background: 0;
+  border: 0;
+  .top-bar-shadow {
+    margin-top: 1px;
+    background: #aaa8a5; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* Standard syntax */
+    height: 4px;
+  }
+  .ui-tabs-active {
+    background: #9EA09D !important;
+    a {
+      color: #FFFFFF !important;
+    }
+  }
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+    background: #EFF0F0;
+    a {
+      color: #9EA09D;
+    }
+  }
+}
+
+#elasticsearch_settings_esSettingsDropIndexButton, #elasticsearch_settings_esSettingsCreateIndexButton {
+  margin-bottom: 20px;
+}
+
+#elasticsearch_settings_save {
+  padding: 15px;
+  margin-top: 20px;
+  &::before {
+    content: "\F0A0";
+    font-family: "FontAwesome";
+    margin-right: 5px;
+  }
+}
+
+#elasticsearch_settings_esSettingFromIndex {
+  margin-top: 20px;
+}
+
+#elastic-search, #general-aggregation {
+  background: #ffffff;
+}
+
+.general-aggregation-layout {
+  margin-top: 20px;
+  width: 450px;
+  button.btn-primary {
+    margin-left: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    width: 180px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+.aggregation-collection {
+  li {
+    border: 1px solid #ccc;
+    background: #FFF;
+    color: #000;
+    height: 30px;
+    margin: 4px;
+    padding: 20px;
+    table {
+      width: 100%;
+      display: inline-table;
+      vertical-align: middle;
+      height: 100%;
+      table-layout: fixed;
+    }
+  }
+  .label-aggregation {
+    font-weight: bold;
+    font-size: 16px;
+    color: #666;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+  }
+  select {
+    float: right;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1150px) {

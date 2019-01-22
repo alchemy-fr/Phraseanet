@@ -54,13 +54,6 @@ abstract class TaskManagerCommand extends Command
         return $this->container['task-manager.log-file.factory'];
     }
 
-    protected function assertTaskManagerIsEnabled()
-    {
-        if (false === $this->container['phraseanet.configuration']['main']['task-manager']['enabled']) {
-            throw new RuntimeException('The use of the task manager is disabled on this instance.');
-        }
-    }
-
     /**
      * @param callable $fileLocator Callable returning LogFileInterface when called
      */

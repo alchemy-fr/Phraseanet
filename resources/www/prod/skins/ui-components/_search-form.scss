@@ -1,9 +1,12 @@
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 form.phrasea_query input.query {
-  padding-left: 30px;
+  padding-left: 6px;
+  padding-right: 30px;
   font-size: 16px;
   margin: 0;
   width: 59%;
+  background-position: right 7px center;
+  background-image: url('#{$iconsPath}research-dark.png');
 }
 
 .searchFormWrapper {
@@ -35,11 +38,13 @@ form.phrasea_query input.query {
   }
   .danger .danger_indicator,
   .danger.danger_indicator {
-    border-color: #c9c900;
-    background-color: #FCEC98;
-    color: #000000;
+    border-color: #2475b5;
+    background-color: #2196f3;
+    color: #ffffff;
   }
-
+  .advance_search_action .danger.danger_indicator {
+    background-image: url('#{$iconsPath}research-white.png');
+  }
 }
 #adv_search {
   table {
@@ -69,10 +74,9 @@ form.phrasea_query input.query {
 #adv_search .sbasglob hr,
 .adv_options .sbasglob hr,
 .adv_options #sbasfiltercont hr {
-  margin: 10px 0;
+  margin: 15px 0;
   border: 0;
-  border-top: 1px solid #666666;
-  border-bottom: 1px solid #AAAAAA;
+  border-top: 1px solid #7b7b7b;
 }
 
 #adv_search .sbasglob .sbas_list,
@@ -89,7 +93,7 @@ form.phrasea_query input.query {
 
 .sbasglob .btn-toolbar,
 #sbasfiltercont .btn-toolbar {
-  margin: 10px;
+  margin: 10px 10px 20px;
   text-align: center;
 }
 
@@ -97,18 +101,54 @@ form.phrasea_query input.query {
   color: $lightTextColor;
 }
 
+.clksbas {
+  margin-bottom: 15px;
+  .checkbox {
+    padding: 0;
+  }
+  input[type="checkbox"] {
+    margin: 0;
+    position: absolute;
+  }
+  label {
+    font-weight: bold;
+  }
+}
+.deployer_toggle {
+  margin-right: 15px;
+}
+
+.basChild_list {
+  position: relative;
+  padding: 0;
+  margin: 0 0 0 63px;
+  list-style: none;
+  width: calc(100% - 70px);
+  overflow: hidden;
+}
+
 .clkbas {
   white-space: normal;
-  margin:0 5px;
-  -webkit-column-break-inside:avoid;
-  -moz-column-break-inside:avoid;
-  -o-column-break-inside:avoid;
-  -ms-column-break-inside:avoid;
-  column-break-inside:avoid;
+  margin: 0 0 10px;
+  float: left;
+  width: 33%;
+  // -webkit-column-break-inside:avoid;
+  // -moz-column-break-inside:avoid;
+  // -o-column-break-inside:avoid;
+  // -ms-column-break-inside:avoid;
+  // break-inside:avoid;
+  .checkbox {
+    padding-top: 0;
+    padding-left: 0;
+  }
+  input[type="checkbox"] {
+    margin: 0;
+    float: none;
+    margin-right: 10px;
+  }
   span {
     cursor: pointer;
     font-weight: bold;
-    margin: 0 5px;
   }
 }
 

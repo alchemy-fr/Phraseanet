@@ -646,7 +646,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $parm = $this->unserializedRequestData($this->request, $infos, 'user_infos');
 
         $parm['email'] = ($parm['email'] !== '') ? $parm['email'] : NULL;
-        
+
         if ($parm['email'] && !\Swift_Validate::email($parm['email'])) {
             throw new \Exception_InvalidArgument('Email addess is not valid');
         }
@@ -714,6 +714,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $user = $this->app['repo.users']->find($usr_id);
             
             $this->app->getAclForUser($user)->apply_model($template, $base_ids);
+
+            $this->app['manipulator.user']->updateUser($user);
         }
 
         return $this;

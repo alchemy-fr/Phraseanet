@@ -2202,7 +2202,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('string','text','date','number')</type>
+            <type>enum('string','date','number')</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -2848,66 +2848,6 @@
         <engine>InnoDB</engine>
       </table>
 
-      <table name="log_colls">
-        <fields>
-          <field>
-            <name>id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra>auto_increment</extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>log_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>coll_id</name>
-            <type>int(11) unsigned</type>
-            <null></null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-        </fields>
-        <indexes>
-          <index>
-            <name>PRIMARY</name>
-            <type>PRIMARY</type>
-            <fields>
-              <field>id</field>
-            </fields>
-          </index>
-          <index>
-            <name>couple</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>log_id</field>
-              <field>coll_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>log_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>log_id</field>
-            </fields>
-          </index>
-          <index>
-            <name>coll_id</name>
-            <type>INDEX</type>
-            <fields>
-              <field>coll_id</field>
-            </fields>
-          </index>
-        </indexes>
-        <engine>InnoDB</engine>
-      </table>
 
       <table name="log_search">
         <fields>
@@ -3035,7 +2975,7 @@
           </field>
           <field>
             <name>action</name>
-            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete')</type>
+            <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','')</type>
             <null></null>
             <extra></extra>
             <default></default>
@@ -3054,6 +2994,22 @@
             <name>comment</name>
             <type>text</type>
             <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id_from</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>
@@ -3079,6 +3035,20 @@
             <type>INDEX</type>
             <fields>
               <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id_from</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
             </fields>
           </index>
           <index>
@@ -3159,6 +3129,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>coll_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -3201,6 +3179,13 @@
             <type>INDEX</type>
             <fields>
               <field>site_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>coll_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>coll_id</field>
             </fields>
           </index>
         </indexes>
@@ -3717,7 +3702,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(40)</type>
+            <type>char(255)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -3980,7 +3965,7 @@
           </field>
           <field>
             <name>mime</name>
-            <type>char(64)</type>
+            <type>char(255)</type>
 
             <null></null>
             <extra></extra>

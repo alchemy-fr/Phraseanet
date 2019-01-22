@@ -36,10 +36,38 @@ class SearchEngineController extends Controller
             return $this->app->redirectPath('admin_searchengine_form');
         }
 
-        return $this->render('admin/search-engine/elastic-search.html.twig', [
+        return $this->render('admin/search-engine/search-engine-settings.html.twig', [
             'form' => $form->createView(),
             'indexer' => $this->app['elasticsearch.indexer']
         ]);
+    }
+
+    /**
+     * @return ElasticsearchOptions
+     */
+    private function getElasticsearchOptions()
+    {
+        return $this->app['elasticsearch.options'];
+    }
+
+    /**
+     * @param ElasticsearchOptions $options
+     * @return FormInterface
+     */
+    private function getConfigurationForm(ElasticsearchOptions $options)
+    {
+        return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
+            'action' => $this->app->url('admin_searchengine_form'),
+        ]);
+    }
+
+    /**
+     * @param ElasticsearchOptions $configuration
+     * @return void
+     */
+    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
+    {
+        $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
     }
 
     public function dropIndexAction(Request $request)
@@ -62,34 +90,6 @@ class SearchEngineController extends Controller
         }
 
         return $this->app->redirectPath('admin_searchengine_form');
-    }
-
-    /**
-     * @return ElasticsearchOptions
-     */
-    private function getElasticsearchOptions()
-    {
-        return $this->app['elasticsearch.options'];
-    }
-
-    /**
-     * @param ElasticsearchOptions $configuration
-     * @return void
-     */
-    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
-    {
-        $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
-    }
-
-    /**
-     * @param ElasticsearchOptions $options
-     * @return FormInterface
-     */
-    private function getConfigurationForm(ElasticsearchOptions $options)
-    {
-        return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
-            'action' => $this->app->url('admin_searchengine_form'),
-        ]);
     }
 
     /**

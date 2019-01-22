@@ -1,0 +1,402 @@
+/******* ADVANCED SEARCH MODAL DIALOG ********************************/
+
+.advanced_search_dialog_container.ui-dialog {
+    background: #3d3d3d;
+    border: 0 none;
+    padding: 0;
+
+    form.phrasea_query input.search.query {
+        padding-right: 30px;
+        height: 26px;
+        width: 420px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        border: 0 none;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        z-index: 0;
+    }
+    .ui-dialog-titlebar {
+        background-color: #000;
+        font-size: 20px;
+        padding-left: 30px;
+    }
+    .ui-dialog-content {
+        padding: 20px 20px 20px 30px;
+        label.radio.inline {
+            line-height: 23px;
+            font-size: 11px;
+        }
+        .adv_options label.radio.inline {
+            font-size: 14px;
+            margin-right: 15px;
+            margin-bottom: 7px;
+            input {
+                margin-right: 15px;
+            }
+        }
+    }
+    .ui-state-default .ui-icon {
+        background: url("/assets/common/images/icons/closer.gif") no-repeat 2px center;
+    }
+    #searchForm {
+        .advance_search_action.input-append {
+            width: auto;
+            margin-bottom: 25px;
+
+            button.btn {
+                position: relative;
+                height: 34px;
+                color: #ffffff;
+                font-weight: normal;
+                text-shadow: none;
+                background: #252525;
+                border-radius: 0 5px 5px 0;
+                box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.5);
+                z-index: 1;
+                &:hover {
+                    color: #000000;
+                    background: #dadada;
+                }
+            }
+        }
+        .control-group {
+            float: left;
+            margin-left: 15px;
+        }
+    }
+    .custom_select_dark {
+        width: 82px;
+        height: 24px;
+        margin-left: 10px;
+        display: inline-block;
+        border-radius: 5px;
+        background: #151515 url("/assets/common/images/icons/light_bas2.gif") no-repeat right 3px top 7px;
+        background-size: 13px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+
+        select {
+            width: 120%;
+            padding: 0px 10px;
+            margin: 0;
+            color: #fff;
+            font-size: 10px;
+            line-height: 24px;
+            border: 0 none;
+            height: 24px;
+            background: transparent;
+            background-image: none;
+            -webkit-appearance: none;
+               -moz-appearance: none;
+                    appearance: none;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+    .reset_button {
+        display: inline-block !important;
+        font-weight: 500 !important;
+        color: #4b4b4b !important;
+        font-size: 14px !important;
+        background: #e2e2e2 url("/assets/common/images/icons/refresh-darkgrey.png") no-repeat left 13px center;
+        min-width: 117px !important;
+        height: 30px;
+        padding-left: 40px;
+        background-size: 18px;
+        border: 0 none;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.62);
+
+        &:hover {
+            color: #ffffff !important;
+            background-color: #252525;
+            background-image: url("/assets/common/images/icons/refresh-white.png");
+        }
+    }
+    .sbasglob {
+        margin-top: 40px;
+        margin-left: 0;
+    }
+    #sbasfiltercont {
+        margin-top: 60px;
+        padding-left: 20px;
+        padding-bottom: 20px;
+        border-left: 1px solid #7b7b7b;
+        height: calc(100% - 60px);
+        
+        .status-section-title {
+            position: relative;
+            font-size: 15px;
+            margin-bottom: 10px;
+            .danger_indicator {
+                padding: 4px 8px;
+                border-radius: 6px;
+                margin-left: -7px;
+            }
+        }
+    }
+    .btn_dark {
+        background: #252525;
+        color: #fff !important;
+        font-weight: normal !important;
+        width: 70px !important;
+        height: 25px;
+        line-height: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.5);
+        &:hover {
+            background: #dadada;
+            color: #000000 !important;
+        }
+    }
+    .base-section-title {
+        font-size: 15px;
+        margin-bottom: 20px;
+        .danger_indicator {
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+    }
+    .clksbas {
+        .base_indicator {
+            padding: 6px 8px 2px;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background-color: #fff;
+            color: #000;
+        }
+        .custom_checkbox_label {
+            .custom_checkbox {
+                position: relative;
+                top: 0;
+                padding: 6px 8px 2px;
+                color: #000;
+                background-color: #ffffff;
+                border-top-right-radius: 6px;
+                border-bottom-right-radius: 6px;
+            }
+            input:checked ~ .custom_checkbox {
+                background-color: #d7edff;
+                color: #000;
+            }
+        }
+    }
+    .clksbas.danger .custom_checkbox_label .custom_checkbox {
+        background-color: #ffffff !important;
+        border-left: 1px solid #b3b3b3;
+    }
+    .btn-toolbar .btn_dark {
+        margin: 0 19px;
+    }
+    .term_select {
+        height: 135px;
+        overflow-y: auto;
+        select, input {
+            height: 24px;
+            color: #000;
+            font-size: 12px;
+            margin: 0 7px 10px 0;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            border: 0 none;
+        }
+    }
+    .term_select input {
+        height: 20px;
+        padding-left: 10px;
+    }
+    #ADVSRCH_DATE_ZONE select.input-medium {
+        height: 24px;
+        color: #000;
+        font-size: 12px;
+        margin: 5px 13px 0 0;
+        background-color: #f8f8f8;
+        border-radius: 5px;
+        border: 0 none;
+    }
+    .input-append, .input-prepend {
+        margin-bottom: 0;
+        margin-right: 10px;
+
+        .add-on {
+            border-radius: 5px 0 0 5px;
+            border: 0 none;
+            height: 16px;
+            line-height: 16px;
+            background-color: #d8d8d8;
+            text-shadow: none;
+            .icon-calendar {
+                color: #4a4a4a;
+            }
+        }
+        input.datepicker {
+            border: 0 none;
+            height: 16px;
+            border-radius: 0 5px 5px 0;
+        }
+    }
+    .adv_options select:disabled,
+    .adv_options input:disabled {
+        background-color: #cccccc;
+        color: #6e6e6e;
+    }
+    .add_new_term {
+        width: 54px;
+        height: 20px;
+        font-size: 12px;
+        color: #979797;
+        font-size: 12px;
+        line-height: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        background-color: #333333;
+        border: solid 1px #979797;
+        &:hover {
+            color: #b1b1b1;
+            background-color: #000000;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+        }
+        span {
+            font-size: 20px;
+        }
+    }
+    #ADVSRCH_SB_ZONE {
+        tbody:before {
+        /* spacing between thead and tbody */
+            line-height: 1em;
+            content: ".";
+            color: #3D3D3D;
+            display: block;
+        }
+        tbody .checkbox.inline {
+            padding-top: 0;
+        }
+        tbody tr td:first-child {
+            padding-left: 32px;
+        }
+    }
+    .term_deleter {
+        width: 12px !important;
+        height: 12px !important;
+        display: inline-block !important;
+        background: transparent url("/assets/common/images/icons/close-white.png") no-repeat !important;
+        background-size: 12px !important;
+        cursor: pointer;
+    }
+    .term_deleter:hover {
+        background-image: url("/assets/common/images/icons/close-blue.png") !important;
+    }
+    .term_deleter:disabled {
+        background: transparent url("/assets/common/images/icons/close-grey.png") no-repeat !important;
+        background-size: 12px !important;
+    }
+    .term_deleter:disabled:hover {
+        background-image: url("/assets/common/images/icons/close-grey.png") !important;
+    }
+}
+
+#info-box-trigger {
+    float: right;
+    cursor: pointer;
+    z-index: 2;
+    position: relative;
+    
+    &:hover + #info-box {
+        display: block !important;;
+    }
+}
+
+#info-box {
+    display: none;
+    width: 310px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 8px;
+    background-color: #ededed;
+    padding: 6px;
+    color: #000000;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.4;
+    letter-spacing: 0px;
+    z-index: 1;
+    p {
+        margin: 0;
+    }
+}
+
+/* custom checkbox / radio buttons */
+.custom_checkbox_label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    /* Hide default checkbox */
+    input {
+        opacity: 0;
+        cursor: pointer;
+        &:checked ~ .custom_checkbox,
+        &:checked ~ .custom_radio {
+          background-color: #2196F3;
+        }
+    }
+    /* checkbox */
+    .custom_checkbox {
+        position: absolute;
+        top: 3px;
+        left: 0;
+        height: 11px;
+        width: 11px;
+        background-color: #ffffff;
+        border-radius: 1px;
+    }
+    /* radio */
+    .custom_radio {
+        position: absolute;
+        top: calc(50% - 4px);
+        left: 0;
+        height: 13px;
+        width: 13px;
+        background-color: #ffffff;
+        border-radius: 50%;
+    }
+    &:hover input ~ .custom_checkbox,
+    &:hover input ~ .custom_radio {
+      background-color: #ccc;
+    }
+    &:hover input:checked ~ .custom_checkbox,
+    &:hover input:checked ~ .custom_radio {
+      background-color: #2196F3;
+    }
+    .danger_indicator {
+        padding: 2px 5px;
+        border-radius: 6px;
+    }
+}
+
+
+  
+/********** RESPONISVE ************/
+
+@media screen and (max-width: 1100px) {
+    .advanced_search_dialog_container.ui-dialog {
+        #searchForm .advance_search_action {
+            width: 60%;
+        }
+        form.phrasea_query input.search.query {
+            width: calc(100% - 146px);
+        }
+    }
+}
+@media screen and (max-width: 1024px) {
+    .clkbas {
+        width: 50%;
+    }
+}

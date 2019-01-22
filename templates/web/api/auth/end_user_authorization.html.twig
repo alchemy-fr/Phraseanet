@@ -49,6 +49,26 @@
                             <input id="myPass" name="password" class="span6" type="password" placeholder="{{ 'admin::compte-utilisateur mot de passe' | trans }}" />
                             <input id="button_login" name="action_login" class="btn btn-inverse btn-large span6" type="submit" value="{{ 'Se connecter' | trans }}" />
                         </form>
+                        <div class="well-large">
+                            <div class="row-fluid">
+                                <div class="text-center">
+                                    {{ "Or login with" | trans }}
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="text-center">
+                                    <ul class="unstyled inline provider-list">
+                                        {% for provider in app['authentication.providers'] %}
+                                            <li>
+                                                <a href="{{ path('oauth2_provider_authorize', { 'providerId' : provider.getId() }|merge(app.request.query.all)) }}">
+                                                    <img src="{{ provider.getIconURI() }}" />
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <p>
                             <a href="#">{{ 'Problemes de connexion ?' | trans }}</a>
                         </p>

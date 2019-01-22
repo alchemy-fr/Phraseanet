@@ -17,12 +17,12 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class RemovePlugin extends AbstractPluginCommand
 {
-    public function __construct()
+    public function __construct($invoker = 'console')
     {
         parent::__construct('plugins:remove');
 
         $this
-            ->setDescription('Removes a plugin given its name')
+            ->setDescription("Removes a plugin given its name {$this->showDeprecatedMessage($invoker,'plugins:remove')}")
             ->addArgument('name', InputArgument::REQUIRED, 'The name of the plugin');
     }
 

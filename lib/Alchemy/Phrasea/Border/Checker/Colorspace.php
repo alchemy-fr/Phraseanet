@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
+use MediaVorus\Media\Document;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Colorspace extends AbstractChecker
@@ -23,6 +24,7 @@ class Colorspace extends AbstractChecker
     const COLORSPACE_RGB = 'rgb';
     const COLORSPACE_CMYK = 'cmyk';
     const COLORSPACE_GRAYSCALE = 'grayscale';
+    const COLORSPACE_RGBA = 'rgba';
 
     public function __construct(Application $app, array $options)
     {
@@ -40,6 +42,8 @@ class Colorspace extends AbstractChecker
 
         if (0 === count($this->colorspaces)) {
             $boolean = true; //bypass color if empty array
+        } elseif ($file->getMedia()->getType() === Document::TYPE_DOCUMENT) {
+            $boolean = true; //bypass color checker if file is of type document
         } elseif (method_exists($file->getMedia(), 'getColorSpace')) {
             $colorspace = null;
             switch ($file->getMedia()->getColorSpace())
@@ -53,6 +57,9 @@ class Colorspace extends AbstractChecker
                     break;
                 case \MediaVorus\Media\Image::COLORSPACE_GRAYSCALE:
                     $colorspace = self::COLORSPACE_GRAYSCALE;
+                    break;
+                case \MediaVorus\Media\Image::COLORSPACE_RGBA:
+                    $colorspace = self::COLORSPACE_RGBA;
                     break;
             }
 

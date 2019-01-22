@@ -528,10 +528,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $coll_id_from = $this->getCollectionId();
+        $coll_id_to = $collection->get_coll_id();
+
         $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = [
-            ':coll_id'   => $collection->get_coll_id(),
+            ':coll_id'   => $coll_id_to,
             ':record_id' => $this->getRecordId(),
         ];
 
@@ -540,11 +543,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->base_id = $collection->get_base_id();
-
-        $this->app['phraseanet.logger']($this->getDatabox())
-            ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
+        $this->collection_id = $coll_id_to;
 
         $this->delete_data_from_cache();
+
+        $this->app['phraseanet.logger']($this->getDatabox())
+            ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
         $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
 
@@ -904,7 +908,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->set_data_to_cache(self::CACHE_TITLE, $title);
         }
 
-        return $title;
+        return htmlspecialchars($title);
     }
 
     /**
@@ -1068,6 +1072,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_xml($xml);
         unset($xml);
 
+        $this->write_metas();
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
@@ -1174,13 +1179,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         try {
             $log_id = $app['phraseanet.logger']($collection->get_databox())->get_id();
 
-            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)'
-                . ' VALUES (null, :log_id, now(), :record_id, "add", :coll_id,"")';
+            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, coll_id, action, final, comment)'
+                . ' VALUES (null, :log_id, now(), :record_id, :coll_id, "add", :final,"")';
             $stmt = $connection->prepare($sql);
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $story_id,
                 ':coll_id'   => $collection->get_coll_id(),
+                ':final'     => $collection->get_coll_id(),
             ]);
             $stmt->closeCursor();
         } catch (\Exception $e) {
@@ -1206,7 +1212,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             . " (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)"
             . " VALUES (:coll_id, null, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid, :originalname, :mime)";
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sql);
 
         $stmt->execute([
             ':coll_id'          => $file->getCollection()->get_coll_id(),
@@ -1219,21 +1226,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         ]);
         $stmt->closeCursor();
 
-        $record_id = $databox->get_connection()->lastInsertId();
+        $record_id = $connection->lastInsertId();
 
         $record = new self($app, $databox->get_sbas_id(), $record_id);
 
         try {
             $log_id = $app['phraseanet.logger']($databox)->get_id();
 
-            $sql = "INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)"
-                . " VALUES (null, :log_id, now(), :record_id, 'add', :coll_id, '')";
+            $sql = "INSERT INTO log_docs (id, log_id, date, record_id, coll_id, action, final, comment)"
+                . " VALUES (null, :log_id, now(), :record_id, :coll_id, 'add', :final, '')";
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $record_id,
                 ':coll_id'   => $file->getCollection()->get_coll_id(),
+                ':final'     => $file->getCollection()->get_coll_id(),
             ]);
             $stmt->closeCursor();
         } catch (\Exception $e) {
@@ -1464,6 +1472,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->app['orm.em']->remove($basket_element);
         }
 
+        $feedItemsRepository = $this->app['repo.feed-items'];
+        $feedItems = $feedItemsRepository->findByRecordId($this->getRecordId());
+        if($feedItems)
+        {
+            foreach ($feedItems as $feedItem){
+                if($feedItem->getEntry()->getItems()->count() == 1)
+                {
+                    $this->app['orm.em']->remove($feedItem->getEntry());
+                }
+                else
+                {
+                    $this->app['orm.em']->remove($feedItem);
+                }
+            }
+        }
+
         $this->app['orm.em']->flush();
 
         $this->app['filesystem']->remove($ftodel);
@@ -1533,14 +1557,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     public function log_view($log_id, $referrer, $gv_sit)
     {
-        $sql = "INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)"
-            . " VALUES (null, :log_id, now(), :rec, :referrer, :site)";
+        $sql = "INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id, coll_id)"
+            . " VALUES (null, :log_id, now(), :rec, :referrer, :site, :collid)";
 
         $params = [
             ':log_id'   => $log_id
             , ':rec'      => $this->getRecordId()
             , ':referrer' => $referrer
-            , ':site'     => $gv_sit,
+            , ':site'     => $gv_sit
+            , ':collid'   => $this->getCollectionId()
         ];
         $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute($params);

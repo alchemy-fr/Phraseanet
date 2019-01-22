@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Setup;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Event\InstallFinishEvent;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -29,7 +30,7 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $template = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
@@ -39,7 +40,7 @@ class Installer
             $user = $this->createUser($email, $password);
             $this->createDefaultUsers();
             if (null !== $dbConn) {
-                $this->createDB($dbConn, $template, $user);
+                $this->createDB($dbConn, $templateName, $user);
             }
         } catch (\Exception $e) {
             $this->rollbackInstall($abConn, $dbConn);
@@ -49,76 +50,6 @@ class Installer
         $this->app['dispatcher']->dispatch(PhraseaEvents::INSTALL_FINISH, new InstallFinishEvent($user));
 
         return $user;
-    }
-
-    private function createDB(Connection $dbConn = null, $template, User $admin)
-    {
-        $template = new \SplFileInfo(__DIR__ . '/../../../conf.d/data_templates/' . $template . '-simple.xml');
-        $databox = \databox::create($this->app, $dbConn, $template);
-
-        $this->app->getAclForUser($admin)
-            ->give_access_to_sbas([$databox->get_sbas_id()])
-            ->update_rights_to_sbas(
-                $databox->get_sbas_id(),
-                [
-                    \ACL::BAS_MANAGE        => true,
-                    \ACL::BAS_MODIFY_STRUCT => true,
-                    \ACL::BAS_MODIF_TH      => true,
-                    \ACL::BAS_CHUPUB        => true
-                ]
-        );
-
-        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
-
-        $this->app->getAclForUser($admin)
-            ->give_access_to_base([$collection->get_base_id()]);
-
-        $this->app->getAclForUser($admin)
-            ->update_rights_to_base(
-                $collection->get_base_id(),
-                [
-                    \ACL::CANPUSH            => true,
-                    \ACL::CANCMD             => true,
-                    \ACL::CANPUTINALBUM      => true,
-                    \ACL::CANDWNLDHD         => true,
-                    \ACL::CANDWNLDPREVIEW    => true,
-                    \ACL::CANADMIN           => true,
-                    \ACL::ACTIF              => true,
-                    \ACL::CANREPORT          => true,
-                    \ACL::CANADDRECORD       => true,
-                    \ACL::CANMODIFRECORD     => true,
-                    \ACL::CANDELETERECORD    => true,
-                    \ACL::CHGSTATUS          => true,
-                    \ACL::IMGTOOLS           => true,
-                    \ACL::COLL_MANAGE        => true,
-                    \ACL::COLL_MODIFY_STRUCT => true,
-                    \ACL::NOWATERMARK        => true
-                ]
-            );
-
-        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
-            /** @var JobInterface $job */
-            $job = $this->app['task-manager.job-factory']->create($jobName);
-            $this->app['manipulator.task']->create(
-                $job->getName(),
-                $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($this->app['conf']),
-                $job->getEditor()->getDefaultPeriod()
-            );
-        }
-    }
-
-    private function createUser($email, $password)
-    {
-        $user = $this->app['manipulator.user']->createUser($email, $password, $email, true);
-
-        return $user;
-    }
-
-    private function createDefaultUsers()
-    {
-        $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
-        $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
     }
 
     private function rollbackInstall(Connection $abConn, Connection $dbConn = null)
@@ -160,24 +91,6 @@ class Installer
         return;
     }
 
-    private function createAB(Connection $abConn)
-    {
-        // set default orm to the application box
-        $this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
-
-        $metadata = $this->app['orm.em']->getMetadataFactory()->getAllMetadata();
-
-        if (!empty($metadata)) {
-            // Create SchemaTool
-            $tool = new SchemaTool($this->app['orm.em']);
-            // Create schema
-            $tool->dropSchema($metadata);
-            $tool->createSchema($metadata);
-        }
-
-        $this->app->getApplicationBox()->insert_datas($this->app);
-    }
-
     private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)
     {
         $config = $this->app['configuration.store']->initialize()->getConfig();
@@ -211,5 +124,100 @@ class Installer
         $config['registry'] = $this->app['registry.manipulator']->getRegistryData();
 
         $this->app['configuration.store']->setConfig($config);
+    }
+
+    private function createAB(Connection $abConn)
+    {
+        // set default orm to the application box
+        $this->app['orm.ems.default'] = $this->app['hash.dsn']($this->app['db.dsn']($abConn->getParams()));
+
+        $metadata = $this->app['orm.em']->getMetadataFactory()->getAllMetadata();
+
+        if (!empty($metadata)) {
+            // Create SchemaTool
+            $tool = new SchemaTool($this->app['orm.em']);
+            // Create schema
+            $tool->dropSchema($metadata);
+            $tool->createSchema($metadata);
+        }
+
+        $this->app->getApplicationBox()->insert_datas($this->app);
+    }
+
+    private function createUser($email, $password)
+    {
+        $user = $this->app['manipulator.user']->createUser($email, $password, $email, true);
+
+        return $user;
+    }
+
+    private function createDefaultUsers()
+    {
+        $this->app['manipulator.user']->createUser(User::USER_AUTOREGISTER, User::USER_AUTOREGISTER);
+        $this->app['manipulator.user']->createUser(User::USER_GUEST, User::USER_GUEST);
+    }
+
+    private function createDB(Connection $dbConn = null, $templateName, User $admin)
+    {
+        /** @var StructureTemplate $st */
+        $st = $this->app['phraseanet.structure-template'];
+
+        $template = $st->getByName($templateName);
+        if(is_null($template)) {
+            throw new \Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
+        }
+
+        $databox = \databox::create($this->app, $dbConn, $template);
+
+        $this->app->getAclForUser($admin)
+            ->give_access_to_sbas([$databox->get_sbas_id()])
+            ->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                [
+                    \ACL::BAS_MANAGE        => true,
+                    \ACL::BAS_MODIFY_STRUCT => true,
+                    \ACL::BAS_MODIF_TH      => true,
+                    \ACL::BAS_CHUPUB        => true
+                ]
+            );
+
+        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
+
+        $this->app->getAclForUser($admin)
+            ->give_access_to_base([$collection->get_base_id()]);
+
+        $this->app->getAclForUser($admin)
+            ->update_rights_to_base(
+                $collection->get_base_id(),
+                [
+                    \ACL::CANPUSH            => true,
+                    \ACL::CANCMD             => true,
+                    \ACL::CANPUTINALBUM      => true,
+                    \ACL::CANDWNLDHD         => true,
+                    \ACL::CANDWNLDPREVIEW    => true,
+                    \ACL::CANADMIN           => true,
+                    \ACL::ACTIF              => true,
+                    \ACL::CANREPORT          => true,
+                    \ACL::CANADDRECORD       => true,
+                    \ACL::CANMODIFRECORD     => true,
+                    \ACL::CANDELETERECORD    => true,
+                    \ACL::CHGSTATUS          => true,
+                    \ACL::IMGTOOLS           => true,
+                    \ACL::COLL_MANAGE        => true,
+                    \ACL::COLL_MODIFY_STRUCT => true,
+                    \ACL::NOWATERMARK        => true
+                ]
+            );
+
+        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
+            /** @var JobInterface $job */
+            $job = $this->app['task-manager.job-factory']->create($jobName);
+            $this->app['manipulator.task']->create(
+                $job->getName(),
+                $job->getJobId(),
+                $job->getEditor()->getDefaultSettings($this->app['conf']),
+                $job->getEditor()->getDefaultPeriod()
+            );
+        }
     }
 }

@@ -18,12 +18,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListPlugin extends AbstractPluginCommand
 {
-    public function __construct()
+    public function __construct($invoker = 'console')
     {
         parent::__construct('plugins:list');
 
         $this
-            ->setDescription('Lists installed plugins')
+            ->setDescription("Lists installed plugins {$this->showDeprecatedMessage($invoker,'plugins:list')}")
             ->addOption('json', 'j', InputOption::VALUE_NONE, 'Output result in JSON');
     }
 

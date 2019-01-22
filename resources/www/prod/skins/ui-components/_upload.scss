@@ -41,7 +41,15 @@
     color: $textPrimaryInverseColor;
   }
   #fileupload {
-    height: 97%;
+    height: 92%;
+  }
+  .fileinput-button {
+    color: #fff;
+    background-image: none;
+    border-color: #4cae4c;
+    background-color: #5cb85c;
+    width: 60%;
+    padding: 20px;
   }
   span.comment {
     font-style: italic;

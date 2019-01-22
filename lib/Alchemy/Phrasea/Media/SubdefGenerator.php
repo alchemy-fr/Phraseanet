@@ -19,10 +19,19 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Specification\Image;
+use MediaAlchemyst\Exception\FileNotFoundException;
+use MediaAlchemyst\Specification\Video;
 use MediaVorus\MediaVorus;
+use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
+use Unoconv\Unoconv;
+use Unoconv\Exception\ExceptionInterface as UnoconvException;
+use Unoconv\Exception\RuntimeException;
 
 class SubdefGenerator
 {
@@ -36,6 +45,8 @@ class SubdefGenerator
      */
     private $logger;
     private $mediavorus;
+    private $tmpFilePath;
+    private $tmpFilesystem;
 
     public function __construct(Application $app, Alchemyst $alchemyst, FilesystemService $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
     {
@@ -48,7 +59,26 @@ class SubdefGenerator
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
+        if($record->get_hd_file() !== null){
+            $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
+            $metadatas = $mediaSource->getMetadatas();
+
+            if($metadatas->containsKey('XMP-xmp:PageImage')){
+                if(!isset($this->tmpFilesystem)){
+                    $this->tmpFilesystem = Manager::create();
+                }
+                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory();
+
+                try {
+                    $this->app['filesystem']->dumpFile($tmpDir.'/file.jpg', $metadatas->get('XMP-xmp:PageImage')->getValue()->asString());
+                    $this->tmpFilePath = $tmpDir.'/file.jpg';
+                } catch (\Exception $e) {
+                    $this->logger->error(sprintf('Unable to write temporary file : %s', $e->getMessage()));
+                }
+            }
+        }
+
+        if(null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())){
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
             $subdefs = [];
         }
@@ -118,6 +148,13 @@ class SubdefGenerator
             $record->clearSubdefCache($subdefname);
         }
 
+        if(isset($this->tmpFilesystem)){
+            $this->tmpFilesystem->clean();
+        }
+        if(isset($this->tmpFilePath)){
+            unset($this->tmpFilePath);
+        }
+
         $this->dispatch(
             RecordEvents::SUB_DEFINITIONS_CREATED,
             new SubDefinitionsCreatedEvent(
@@ -129,6 +166,9 @@ class SubdefGenerator
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
+        $start = microtime(true);
+        $destFile = null;
+
         try {
             if (null === $record->get_hd_file()) {
                 $this->logger->info('No HD file found, aborting');
@@ -136,9 +176,90 @@ class SubdefGenerator
                 return;
             }
 
-            $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
+            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
+
+            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
+                $destFile = $pathdest;
+                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
+            }
+
+            if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
+
+                $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
+
+            } elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                $this->generatePdfSubdef($record->get_hd_file()->getPathname(), $pathdest);
+
+            } else {
+
+                $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
+
+            }
+
+            if($destFile){
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
+            }
+
         } catch (MediaAlchemystException $e) {
+            $start = 0;
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
+
+        $stop = microtime(true);
+        if($start){
+            $duration = $stop - $start;
+
+            $originFileSize = $this->hummanReadable($record->get_hd_file()->getSize());
+
+            if($destFile){
+                $generatedFileSize = $this->hummanReadable(filesize($destFile));
+            }else{
+                $generatedFileSize = $this->hummanReadable(filesize($pathdest));
+            }
+
+            $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
+                    $subdef_class->get_name(),
+                    date('H:i:s', mktime(0,0, $duration)),
+                    $originFileSize,
+                    $subdef_class->get_name(),
+                    $generatedFileSize,
+                    $record->getDatabox()->get_sbas_id(),
+                    $record->getDatabox()->get_dbname(),
+                    $record->getRecordId()
+                )
+            );
+        }
+    }
+
+    private function generatePdfSubdef($source, $pathdest)
+    {
+        try {
+            $mediafile = $this->app['mediavorus']->guess($source);
+        } catch (MediaVorusFileNotFoundException $e) {
+            throw new FileNotFoundException(sprintf('File %s not found', $source));
+        }
+
+        try {
+            if ($mediafile->getFile()->getMimeType() != 'application/pdf') {
+                $this->app['unoconv']->transcode(
+                    $mediafile->getFile()->getPathname(), Unoconv::FORMAT_PDF, $pathdest
+                );
+
+            } else {
+                copy($mediafile->getFile()->getPathname(), $pathdest);
+            }
+        } catch (UnoconvException $e) {
+            throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+    }
+
+    private function hummanReadable($bytes) {
+        $i = floor(log($bytes, 1024));
+        return round($bytes / pow(1024, $i), [0,0,2,2,3][$i]).['B','kB','MB','GB'][$i];
     }
 }

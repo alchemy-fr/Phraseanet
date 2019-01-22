@@ -351,7 +351,8 @@
                         <tr>
                             <td>
                                 <p>
-                                    <a href="https://docs.phraseanet.com/4.0/Admin/" target="_blank">
+
+                                    <a href="https://docs.phraseanet.com/4.0/{{ locale }}/Admin/index.html" target="_blank">
                                         {{ 'Prerequisite and Configuration' | trans }}
                                     </a>
                                 </p>
@@ -798,8 +799,8 @@
                                         <td><label>{{ 'Modele de donnees' | trans }}</label></td>
                                         <td>
                                             <select name="db_template" class="databox_creation_input">
-                                                {% for template in available_templates %}
-                                                    <option value="{{ template }}">{{ template }}</option>
+                                                {% for name in available_templates %}
+                                                    <option value="{{ name|escape('js') }}">{{ name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </td>

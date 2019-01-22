@@ -202,7 +202,7 @@
         <Longitude src="GPS:GPSLongitude" readonly="1"/>
         <Latitude src="GPS:GPSLatitude" readonly="1"/>
         <CameraModel src="IFD0:Model" readonly="1"/>
-        <FileName src="Phraseanet:tf-basename" readonly="1" type="text" />
+        <FileName src="Phraseanet:tf-basename" readonly="1" type="string" />
     </description>
 
     <statbits>

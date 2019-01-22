@@ -59,14 +59,15 @@ class API_Webhook
         $sql = 'INSERT INTO api_webhooks (id, `type`, `data`, created)
             VALUES (null, :type, :data, NOW())';
 
-        $stmt = $appbox->get_connection()->prepare($sql);
+        $connection = $appbox->get_connection();
+        $stmt = $connection->prepare($sql);
         $stmt->execute([
             'type' => $type,
             'data' => json_encode($data),
         ]);
         $stmt->closeCursor();
 
-        return new API_Webhook($appbox, $appbox->get_connection()->lastInsertId());
+        return new API_Webhook($appbox, $connection->lastInsertId());
     }
 
     /**

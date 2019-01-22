@@ -41,6 +41,8 @@ $lightBorderSelectedColor: lighten($lightBorderColor, 10);
 $lightBorderActiveColor: lighten($lightBorderColor, 10);
 $lightTextColor: #FFFFFF;
 
+$textShadow: none;
+
 // inverse
 $textInverseColor: #FFFFFF;
 $textInverseHoverColor: #000;
@@ -77,9 +79,11 @@ $basketsTextColor: #AAAAAA;
 $guiSplitterImg: 'vsplitter2.png';
 
 
-
+$answersToolsBg: #535353;
+$answersToolsBgHover: #7f7f7f;
+$answersToolsBgColor: #ffffff;
 $answersToolsBtnSeparatorBorder: #474747;
-$answersToolsBtnBg: #393939;
+$answersToolsBtnBg: #535353;
 $answersToolsBtnBorder: #515151;
 $answersToolsBtnColor: #aaaaaa;
 $answersToolsBtnHoverBg: #313131;

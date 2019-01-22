@@ -55,7 +55,7 @@ class Xmlhttp implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->match('openbranches_prod.j.php', 'controller.thesaurus.xmlhttp:openBranchesJson');
         $controllers->match('replacecandidate.j.php', 'controller.thesaurus.xmlhttp:replaceCandidateJson')
             ->before($requireAccessToThesaurus);
-        $controllers->match('search_th_term_prod.j.php', 'controller.thesaurus.xmlhttp:searchTermJson');
+        $controllers->match('search_term_prod.j.php', 'controller.thesaurus.xmlhttp:searchTermJson');
 
         return $controllers;
     }

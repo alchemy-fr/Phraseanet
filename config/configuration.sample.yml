@@ -136,6 +136,7 @@ authentication:
             options:
                 app-id: ''
                 secret: ''
+                default-graph-version: 'v2.10'
         twitter:
             enabled: false
             options:
@@ -237,3 +238,10 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+
+registry:
+    actions:
+        export-stamp-choice: false
+        download-link-validity: 24
+    web-applications:
+        email-optional-for-login: false

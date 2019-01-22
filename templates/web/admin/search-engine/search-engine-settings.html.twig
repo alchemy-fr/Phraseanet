@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+<div class="search-engine-tabs" style="display: none;">
+    <ul>
+        <li><a href="#elastic-search">{{ 'ElasticSearch configuration' | trans }}</a></li>
+        <li><a href="#general-aggregation">{{ 'admin::search-engine: general-aggregation' | trans }}</a></li>
+    </ul>
+    <div class="top-bar-shadow"></div>
+
+    <div id="general-aggregation">
+        {% include 'admin/search-engine/general-aggregation.html.twig'%}
+    </div>
+    <div id="elastic-search">
+        {% include 'admin/search-engine/elastic-search.html.twig' %}
+    </div>
+</div>
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.search-engine-tabs').tabs({
+                activate: function (event, ui) {
+                    $('#elasticsearch_settings_activeTab').val(ui.newPanel.selector);
+                }
+            });
+            var activeTab = $('#elasticsearch_settings_activeTab').val();
+            if (activeTab) {
+                $('.search-engine-tabs a[href="' + activeTab + '"]').trigger('click');
+            }
+        });
+        $(".search-engine-tabs").show();
+    </script>
+{% endblock %}
+{{ form_end(form) }}

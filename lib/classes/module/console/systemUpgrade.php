@@ -81,8 +81,13 @@ class module_console_systemUpgrade extends Command
                 return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
             }
 
-            $queries = $this->getService('phraseanet.appbox')->forceUpgrade($upgrader, $this->container);
-
+            /** @var appbox $appBox */
+            $appBox = $this->getService('phraseanet.appbox');
+            $queries = $appBox->forceUpgrade($upgrader, $this->container);
+            /**
+             * todo (?) combine schema changes on a table as a simngle sql
+             * because on big tables like logs, adding 2 columns is 2 very long sql
+             */
             if ($input->getOption('dump') || $input->getOption('stderr')) {
                 if (0 < count($queries)) {
                     $output->writeln("Some SQL queries can be executed to optimize\n");
@@ -128,8 +133,23 @@ class module_console_systemUpgrade extends Command
         } else {
             $output->write('<info>Canceled</info>', true);
         }
-        $output->write('Finished !', true);
+        $output->write('System upgrade Finished !', true);
 
-        return 0;
+        // need to fix autoincrements after system:upgrade
+        $output->write('Start fixing autoincrements !', true);
+
+        $fixAutoincrementCommand = $this->getApplication()->find('system:fix-autoincrements');
+
+        $arguments = array(
+            'command' => 'system:fix-autoincrements',
+        );
+
+        $fixAutoincrementInput = new ArrayInput($arguments);
+
+        $returnCode = $fixAutoincrementCommand->run($fixAutoincrementInput, $output);
+
+        $output->write('Fixing autoincrements finished after system:upgrade', true);
+
+        return $returnCode;
     }
 }

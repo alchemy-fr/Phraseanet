@@ -8,8 +8,22 @@
 @import '../../_shared/styles/main';
 
 #ADVSRCH_SORT_ZONE {
-  margin-bottom: 10px;
-  margin-top: 15px;
+  position: absolute;
+  left: 255px;
+  margin-top: -57px;
+
+  > span {
+    margin-right: 5px;
+  }
+  select.input-medium {
+    height: 22px;
+    width: 120px;
+    color: #000;
+    font-size: 12px;
+    margin-right: 10px;
+    background-color: #f8f8f8;
+    border: 0 none;
+  }
 }
 
 #idFrameC {
@@ -143,6 +157,19 @@
   min-height: 16px;
 }
 
+/* help section */
+.client_help {
+  margin: 0 1em 0 1em;
+}
+
+.help-section {
+  margin-top: 1.5em;
+}
+
+.help-section h4 {
+  margin-bottom: .5em;
+}
+
 
 #PROCESSED-ORDER, #TODO-ORDER {
   width: 100%;
@@ -229,7 +256,73 @@ td span.text_block_bold {
   color: #4990E2 !important;
 }
 
+.dialog-left-section {
+  float: left;
+  width: 25%;
+  height: 100%;
+  text-align: center;
+  line-height: 58px;
+  img {
+    display: inline-block;
+    vertical-align: middle;
+    height: 55px;
+    width: auto;
+  }
+}
 
+.dialog-right-section {
+  float: left;
+  width: 75%;
+  height: 100%;
+  span {
+    padding-top: 8px;
+    padding-left: 10px;
+    padding-right: 20px;
+    display: block;
+    line-height: 14px;
+  }
+}
+
+.story {
+  clear: both;
+  margin: 0px 15px;
+  padding-top: 10px;
+  color: #000;
+  font-size: 13px;
+}
+
+#delete-record-form {
+  padding-bottom: 20px;
+  .well-small {
+    border: 0;
+    color: #000;
+    padding: 5px;
+    display: block;
+    word-wrap: break-word;
+    font-weight: bold;
+    min-height: 58px;
+    margin-bottom: 7px;
+  }
+  .form-actions {
+    position: absolute;
+    bottom: 4px;
+    right: 15px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    .btn {
+      font-size: 12px;
+      color: #fff;
+      font-family: Helvetica;
+      background: #808080;
+      margin: 2px;
+      padding: 0px 10px;
+    }
+    .btn:hover {
+      background: #3b3b3b;
+    }
+  }
+}
 
 @media	only screen and (-webkit-min-device-pixel-ratio: 1.3),
 only screen and (-o-min-device-pixel-ratio: 13/10),

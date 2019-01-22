@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "90a0142ec5f08902b9127d9f554574d8",
+    "content-hash": "68e6e3881b2663691e8edeb48e9ce352",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -313,16 +313,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.5",
+            "version": "0.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630"
+                "reference": "571d23cfa5ab5195803d217d22b702862c87811b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/ee7d1279a024130fc82fde9eabad86a667ed3630",
-                "reference": "ee7d1279a024130fc82fde9eabad86a667ed3630",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/571d23cfa5ab5195803d217d22b702862c87811b",
+                "reference": "571d23cfa5ab5195803d217d22b702862c87811b",
                 "shasum": ""
             },
             "require": {
@@ -331,7 +331,6 @@
                 "monolog/monolog": "~1.0",
                 "php": ">=5.3.0",
                 "php-ffmpeg/php-ffmpeg": "~0.3",
-                "symfony/console": "~2.0",
                 "symfony/http-foundation": "~2.0"
             },
             "replace": {
@@ -372,7 +371,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2016-05-02T15:08:36+00:00"
+            "time": "2018-04-27T11:15:18+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -422,16 +421,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.0",
+            "version": "0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95"
+                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/7372ca4e43473328bf06bca810558fbad7bb2f95",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
+                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
                 "shasum": ""
             },
             "require": {
@@ -491,7 +490,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2017-05-18T19:04:04+00:00"
+            "time": "2018-10-19T13:28:17+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -653,7 +652,7 @@
                 "parallel",
                 "process"
             ],
-            "time": "2016-11-30 13:34:30"
+            "time": "2016-11-30T13:34:30+00:00"
         },
         {
             "name": "alchemy/zippy",
@@ -874,6 +873,74 @@
                 "transliterator"
             ],
             "time": "2015-09-28T16:26:35+00:00"
+        },
+        {
+            "name": "box/spout",
+            "version": "v2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/box/spout.git",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/box/spout/zipball/3681a3421a868ab9a65da156c554f756541f452b",
+                "reference": "3681a3421a868ab9a65da156c554f756541f452b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xmlreader": "*",
+                "ext-zip": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.0"
+            },
+            "suggest": {
+                "ext-iconv": "To handle non UTF-8 CSV files (if \"php-intl\" is not already installed or is too limited)",
+                "ext-intl": "To handle non UTF-8 CSV files (if \"iconv\" is not already installed)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Box\\Spout\\": "src/Spout"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Adrien Loison",
+                    "email": "adrien@box.com"
+                }
+            ],
+            "description": "PHP Library to read and write spreadsheet files (CSV, XLSX and ODS), in a fast and scalable way",
+            "homepage": "https://www.github.com/box/spout",
+            "keywords": [
+                "OOXML",
+                "csv",
+                "excel",
+                "memory",
+                "odf",
+                "ods",
+                "office",
+                "open",
+                "php",
+                "read",
+                "scale",
+                "spreadsheet",
+                "stream",
+                "write",
+                "xlsx"
+            ],
+            "time": "2017-09-25T19:44:35+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -1215,7 +1282,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-29 11:16:17"
+            "time": "2016-10-29T11:16:17+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -1847,51 +1914,62 @@
             "time": "2012-05-30T15:01:08+00:00"
         },
         {
-            "name": "facebook/php-sdk",
-            "version": "v3.2.3",
+            "name": "facebook/graph-sdk",
+            "version": "5.6.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-                "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb"
+                "url": "https://github.com/facebook/php-graph-sdk.git",
+                "reference": "2f9639c15ae043911f40ffe44080b32bac2c5280"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebookarchive/facebook-php-sdk/zipball/6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
-                "reference": "6714042fa2f5979d4c64c7d11fb4bcab16bdf6cb",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/2f9639c15ae043911f40ffe44080b32bac2c5280",
+                "reference": "2f9639c15ae043911f40ffe44080b32bac2c5280",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=5.2.0"
+                "php": "^5.4|^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "3.7.*"
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client",
+                "paragonie/random_compat": "Provides a better CSPRNG option in PHP 5"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    "src"
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                },
+                "files": [
+                    "src/Facebook/polyfills.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache2"
+                "Facebook Platform"
             ],
             "authors": [
                 {
                     "name": "Facebook",
-                    "homepage": "https://github.com/facebook/facebook-php-sdk/contributors"
+                    "homepage": "https://github.com/facebook/php-graph-sdk/contributors"
                 }
             ],
-            "description": "Facebook PHP SDK",
-            "homepage": "https://github.com/facebook/facebook-php-sdk",
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/php-graph-sdk",
             "keywords": [
                 "facebook",
                 "sdk"
             ],
-            "abandoned": "facebook/graph-sdk",
-            "time": "2013-11-19T23:11:14+00:00"
+            "time": "2017-08-16T17:28:07+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -2485,6 +2563,7 @@
                 "parameter",
                 "protocol"
             ],
+            "abandoned": "hoa/consistency",
             "time": "2015-11-09T06:51:06+00:00"
         },
         {
@@ -3102,7 +3181,7 @@
             "support": {
                 "source": "https://github.com/alchemy-fr/Imagine/tree/alchemy-0.6.2"
             },
-            "time": "2015-01-13 18:12:26"
+            "time": "2015-01-13T18:12:26+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -3477,7 +3556,7 @@
             "support": {
                 "source": "https://github.com/alchemy-fr/JMSTranslationBundle/tree/rebase-2015-10-20"
             },
-            "time": "2015-11-04 15:09:44"
+            "time": "2015-11-04T15:09:44+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3734,7 +3813,7 @@
                 "league",
                 "rest"
             ],
-            "time": "2016-12-02 14:55:48"
+            "time": "2016-12-02T14:55:48+00:00"
         },
         {
             "name": "media-alchemyst/media-alchemyst",
@@ -3965,7 +4044,7 @@
                     "homepage": "http://www.lickmychip.com/"
                 }
             ],
-            "time": "2014-02-13 20:27:33"
+            "time": "2014-02-13T20:27:33+00:00"
         },
         {
             "name": "neutron/recaptcha",
@@ -5235,6 +5314,7 @@
             "keywords": [
                 "microframework"
             ],
+            "abandoned": "symfony/flex",
             "time": "2016-01-06T14:59:35+00:00"
         },
         {
@@ -5280,6 +5360,7 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
+            "abandoned": true,
             "time": "2016-01-10T11:39:13+00:00"
         },
         {
@@ -5575,16 +5656,16 @@
         },
         {
             "name": "swftools/swftools",
-            "version": "0.3.1",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPSwftools.git",
-                "reference": "5a0fefbd5a518c9b1ec2ba247640aadbab4cc396"
+                "reference": "ad135893d55bffaa71de2f3f7febd0b3e455368a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/5a0fefbd5a518c9b1ec2ba247640aadbab4cc396",
-                "reference": "5a0fefbd5a518c9b1ec2ba247640aadbab4cc396",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPSwftools/zipball/ad135893d55bffaa71de2f3f7febd0b3e455368a",
+                "reference": "ad135893d55bffaa71de2f3f7febd0b3e455368a",
                 "shasum": ""
             },
             "require": {
@@ -5615,7 +5696,7 @@
                 },
                 {
                     "name": "Phraseanet Team",
-                    "email": "info@alchemy.fr",
+                    "email": "support@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
                 }
             ],
@@ -5625,7 +5706,7 @@
                 "flash",
                 "swf"
             ],
-            "time": "2013-07-03T13:11:36+00:00"
+            "time": "2017-11-07T14:36:48+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

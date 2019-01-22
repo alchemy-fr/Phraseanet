@@ -41,6 +41,7 @@ class LanguageController
             'cancel'                  => $translator->trans('boutton::annuler'),
             'deleteTitle'             => $translator->trans('boutton::supprimer'),
             'deleteRecords'           => $translator->trans('Delete records'),
+            'moveToTrash'             => $translator->trans('prod:app trash: title-trash'),
             'edit_hetero'             => $translator->trans('prod::editing valeurs heterogenes, choisir \'remplacer\', \'ajouter\' ou \'annuler\''),
             'confirm_abandon'         => $translator->trans('prod::editing::annulation: abandonner les modification ?'),
             'loading'                 => $translator->trans('phraseanet::chargement'),

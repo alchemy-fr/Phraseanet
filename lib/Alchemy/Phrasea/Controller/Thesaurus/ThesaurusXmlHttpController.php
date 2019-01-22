@@ -252,7 +252,7 @@ class ThesaurusXmlHttpController extends Controller
                         /** @var DOMElement $n2 */
                         for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                             if ($n2->nodeName == "sy") {
-                                $sy = $n2->getAttribute("v");
+                                $sy = htmlspecialchars($n2->getAttribute("v"));
                                 if (!$firstsy) {
                                     $firstsy = $sy;
                                     if ($request->get("debug")) {
@@ -441,7 +441,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = $n2->getAttribute("v");
+                            $t = htmlspecialchars($n2->getAttribute("v"));
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -586,7 +586,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = $n2->getAttribute("v");
+                            $t = htmlspecialchars($n2->getAttribute("v"));
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -843,7 +843,7 @@ class ThesaurusXmlHttpController extends Controller
             for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                 if ($n2->nodeName == 'sy') {
                     $lng = $n2->getAttribute('lng');
-                    $t = $n2->getAttribute('v');
+                    $t = htmlspecialchars($n2->getAttribute('v'));
                     $key = $n2->getAttribute('w');  // key of the current sy
                     if ($k = $n2->getAttribute('k')) {
                         $key .= ' (' . $k . ')';
@@ -920,7 +920,7 @@ class ThesaurusXmlHttpController extends Controller
                 $bid = $request->get('bid');
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $html .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -950,6 +950,14 @@ class ThesaurusXmlHttpController extends Controller
         return [$term, $context];
     }
 
+    /**
+     * @return \unicode
+     */
+    private function getUnicode()
+    {
+        return $this->app['unicode'];
+    }
+
     private function getBranchesHTML($bid, DOMElement $srcnode, &$html, $depth)
     {
         $tid = $srcnode->getAttribute('id');
@@ -959,7 +967,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'TH_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1070,12 +1078,12 @@ class ThesaurusXmlHttpController extends Controller
                 $ret['result'] = array();
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $ret['result'][] = array(
                         'id' => $n->getAttribute('id'),
-                        't'  => $n->getAttribute('v'),
+                        't'  => htmlspecialchars($n->getAttribute('v')),
                     );
                 }
             }
@@ -1088,6 +1096,42 @@ class ThesaurusXmlHttpController extends Controller
         return json_encode($ret, JSON_PRETTY_PRINT);
     }
 
+    private function getBrancheJson($bid, DOMElement $srcnode, &$ret, $depth)
+    {
+        $tid = $srcnode->getAttribute('id');
+        $nts = 0;
+        $allsy = array();
+        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == 'sy') {
+                $t = htmlspecialchars($n->getAttribute('v'));
+                $allsy[] = array(
+                    'id' => $n->getAttribute('id'),
+                    't'  => $t,
+                    'lng' => $n->getAttribute('lng'),
+                    'bold' => (bool)$n->getAttribute('bold'),
+                );
+            } elseif ($n->nodeName == 'te') {
+                $nts++;
+            }
+        }
+
+        $nret = array(
+            'id' => $tid,
+            'nts' => $nts,
+            'synonyms' => $allsy,
+            'children' => array(),
+        );
+
+        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == 'te') {
+                if ($n->getAttribute('open')) {
+                    $nret['children'][] = $this->getBrancheJson($bid, $n, $ret['children'], $depth + 1);
+                }
+            }
+        }
+
+        return $nret;
+    }
 
     public function openBranchesXml(Request $request)
     {
@@ -1146,7 +1190,7 @@ class ThesaurusXmlHttpController extends Controller
             } else {
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $zhtml .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -1160,43 +1204,6 @@ class ThesaurusXmlHttpController extends Controller
         return new Response($zhtml, 200, array('Content-Type' => 'text/xml'));
     }
 
-    private function getBrancheJson($bid, DOMElement $srcnode, &$ret, $depth)
-    {
-        $tid = $srcnode->getAttribute('id');
-        $nts = 0;
-        $allsy = array();
-        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
-            if ($n->nodeName == 'sy') {
-                $t = $n->getAttribute('v');
-                $allsy[] = array(
-                    'id' => $n->getAttribute('id'),
-                    't'  => $t,
-                    'lng' => $n->getAttribute('lng'),
-                    'bold' => (bool)$n->getAttribute('bold'),
-                );
-            } elseif ($n->nodeName == 'te') {
-                $nts++;
-            }
-        }
-
-        $nret = array(
-            'id' => $tid,
-            'nts' => $nts,
-            'synonyms' => $allsy,
-            'children' => array(),
-        );
-
-        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
-            if ($n->nodeName == 'te') {
-                if ($n->getAttribute('open')) {
-                    $nret['children'][] = $this->getBrancheJson($bid, $n, $ret['children'], $depth + 1);
-                }
-            }
-        }
-
-        return $nret;
-    }
-
     private function getBrancheXML($bid, DOMElement $srcnode, &$html, $depth)
     {
         $tid = $srcnode->getAttribute('id');
@@ -1206,7 +1213,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'GL_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1307,30 +1314,29 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
-        if (null === $lng = $request->get('lng')) {
-            $data = explode('_', $this->app['locale']);
-            if (count($data) > 0) {
-                $lng = $data[0];
-            }
-        }
+        $lng = $request->get('lng');
 
         $html = '';
         $sbid = (int) $request->get('sbid');
+        $type = $request->get('typ');
 
         try {
             $databox = $this->findDataboxById($sbid);
+            if ($type === "CT") {
+                $dom = $databox->get_dom_cterms();
+                $html = "" . '<LI id="CX_P.' . $sbid . '.C" class="expandable">' . "\n";
+            } else {
+                $dom = $databox->get_dom_thesaurus();
+                $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
+            }
 
-            $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
             $html .= "\t" . '<div class="hitarea expandable-hitarea"></div>' . "\n";
             $html .= "\t" . '<span>' . \phrasea::sbas_labels($sbid, $this->app) . '</span>' . "\n";
 
             if ($request->get('t')) {
                 $dom_struct = null;
                 if ($request->get('field') != '') {
-                    $domth = $databox->get_dom_thesaurus();
                     $dom_struct = $databox->get_dom_structure();
-                } else {
-                    $domth = $databox->get_dom_thesaurus();
                 }
 
                 $q = null;
@@ -1343,12 +1349,16 @@ class ThesaurusXmlHttpController extends Controller
                         }
                     }
                 } else {
-                    // search in the whole thesaurus
-                    $q = '/thesaurus';
+                    // search in the whole thesaurus or candidate
+                    if ($request->get('id') === "T") {
+                        $q = "/thesaurus";
+                    } else {
+                        $q = "/cterms";
+                    }
                 }
 
-                if (($q !== null) && $domth) {
-                    $xpath = new \DOMXPath($domth);
+                if (($q !== null) && $dom) {
+                    $xpath = new \DOMXPath($dom);
 
                     $t = $this->splitTermAndContext($request->get('t'));
                     $unicode = $this->getUnicode();
@@ -1356,7 +1366,12 @@ class ThesaurusXmlHttpController extends Controller
                     if ($t[1])
                         $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape(
                                 $unicode->remove_indexer_chars($t[1])) . '\')';
-                    $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+
+                    if($lng == null){
+                        $q2 = '//sy[' . $q2 . ']';
+                    }else{
+                        $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+                    }
 
                     $q .= $q2;
 
@@ -1369,7 +1384,7 @@ class ThesaurusXmlHttpController extends Controller
                         }
                     }
 
-                    $this->getHTMLTerm($sbid, $lng, $domth->documentElement, $html);
+                    $this->getHTMLTerm($type, $sbid, $lng, $dom->documentElement, $html);
                 }
             } else {
                 $html .= "\t" . '<ul style="display: none;">loading</ul>' . "\n";
@@ -1383,10 +1398,95 @@ class ThesaurusXmlHttpController extends Controller
         return $this->app->json(['parm' => [
             'sbid'  => $request->get('sbid'),
             't'     => $request->get('t'),
+            'typ'     => $request->get('typ'),
+            'id'     => $request->get('id'),
             'field' => $request->get('field'),
             'lng'   => $request->get('lng'),
             'debug' => $request->get('debug'),
         ], 'html' => $html]);
+    }
+
+    private function getHTMLTerm($type, $sbid, $lng, DOMElement $srcnode, &$html, $depth = 0)
+    {
+        $tid = $srcnode->getAttribute('id');
+
+        // let's work on each 'te' (=ts) subnode
+        $nts = 0;
+        $ntsopened = 0;
+        $tts = [];
+        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
+            if ($n->nodeName == 'te') {
+                if ($n->getAttribute('open')) {
+                    $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
+                    $nts0 = 0;  // count of ts under this term
+
+                    $dbname = \phrasea::sbas_labels($sbid, $this->app);
+                    $label = $this->buildBranchLabel($dbname, $lng, $n, $key0, $nts0);
+
+                    for ($uniq = 0; $uniq < 9999; $uniq++) {
+                        if (!isset($tts[$key0 . '_' . $uniq]))
+                            break;
+                    }
+                    $tts[$key0 . '_' . $uniq] = [
+                        /** @Ignore */
+                        'label' => $label,
+                        'nts'   => $nts0,
+                        'n'     => $n
+                    ];
+                    $ntsopened++;
+                }
+                $nts++;
+            }
+        }
+
+        if ($nts > 0) {
+            $tab = str_repeat("\t", 1 + $depth * 2);
+
+
+            if ($ntsopened == 0) {
+                $html .= $tab . '<UL style="display:none">' . "\n";
+                $html .= $tab . '</UL>' . "\n";
+            } else {
+                $field0 = $srcnode->getAttribute('field');
+                if ($field0) {
+                    $field0 = 'field="' . $field0 . '"';
+                }
+
+                $html .= $tab . '<UL ' . $field0 . '>' . "\n";
+                // dump every ts
+                /** @var DOMElement[] $ts */
+                foreach ($tts as $ts) {
+                    $class = '';
+                    if ($ts['nts'] > 0) {
+                        $class .= ( $class == '' ? '' : ' ') . 'expandable';
+                    }
+                    if (--$ntsopened == 0) {
+                        $class .= ( $class == '' ? '' : ' ') . 'last';
+                    }
+
+                    $tid = $ts['n']->getAttribute('id');
+
+                    if($type === 'TH') {
+                        $html .= $tab . "\t" . '<LI id="TX_P.' . $sbid . '.' . $tid . '" class="' . $class . '">' . "\n";
+                    }else {
+                        $html .= $tab . "\t" . '<LI id="CX_P.' . $sbid . '.' . $tid . '" class="' . $class . '">' . "\n";
+                    }
+
+                    if ($ts['nts'] > 0) {
+                        $html .= $tab . "\t\t" . '<div class="hitarea expandable-hitarea" />' . "\n";
+                    } else {
+                        $html .= $tab . "\t\t" . '<div />' . "\n";
+                    }
+                    $html .= $tab . "\t\t" . '<span>' . $ts['label'] . '</span>' . "\n";
+
+
+                    $this->getHTMLTerm($type, $sbid, $lng, $ts['n'], $html, $depth + 1);
+
+                    $html .= $tab . "\t" . '</LI>' . "\n";
+                }
+                $html .= $tab . '</UL>' . "\n";
+            }
+        }
     }
 
     private function buildTermLabel($language, DOMElement $n, &$key0, &$nts0)
@@ -1401,7 +1501,7 @@ class ThesaurusXmlHttpController extends Controller
             if ($n2->nodeName == 'sy') {
 
                 $lng = $n2->getAttribute('lng');
-                $t = $n2->getAttribute('v');
+                $t = htmlspecialchars($n2->getAttribute('v'));
                 $key = $n2->getAttribute('w');  // key of the current sy
 
                 if ($k = $n2->getAttribute('k')) {
@@ -1429,84 +1529,5 @@ class ThesaurusXmlHttpController extends Controller
         }
 
         return $label;
-    }
-
-    private function getHTMLTerm($sbid, $lng, DOMElement $srcnode, &$html, $depth = 0)
-    {
-        $tid = $srcnode->getAttribute('id');
-
-        // let's work on each 'te' (=ts) subnode
-        $nts = 0;
-        $ntsopened = 0;
-        $tts = [];
-        for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
-            if ($n->nodeName == 'te') {
-                if ($n->getAttribute('open')) {
-                    $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
-                    $nts0 = 0;  // count of ts under this term
-
-                    $label = $this->buildTermLabel($lng, $n, $key0, $nts0);
-
-                    for ($uniq = 0; $uniq < 9999; $uniq++) {
-                        if (!isset($tts[$key0 . '_' . $uniq]))
-                            break;
-                    }
-                    $tts[$key0 . '_' . $uniq] = [
-                        /** @Ignore */
-                        'label' => $label,
-                        'nts'   => $nts0,
-                        'n'     => $n
-                    ];
-                    $ntsopened++;
-                }
-                $nts++;
-            }
-        }
-
-        if ($nts > 0) {
-            $tab = str_repeat("\t", 1 + $depth * 2);
-
-
-            if ($ntsopened == 0) {
-                $html .= $tab . '<UL style="display:none">' . "\n";
-                $html .= $tab . '</UL>' . "\n";
-            } else {
-                $html .= $tab . '<UL>' . "\n";
-                // dump every ts
-                /** @var DOMElement[] $ts */
-                foreach ($tts as $ts) {
-                    $class = '';
-                    if ($ts['nts'] > 0) {
-                        $class .= ( $class == '' ? '' : ' ') . 'expandable';
-                    }
-                    if (--$ntsopened == 0) {
-                        $class .= ( $class == '' ? '' : ' ') . 'last';
-                    }
-
-                    $tid = $ts['n']->getAttribute('id');
-
-                    $html .= $tab . "\t" . '<LI id="TX_P.' . $sbid . '.' . $tid . '" class="' . $class . '">' . "\n";
-                    if ($ts['nts'] > 0) {
-                        $html .= $tab . "\t\t" . '<div class="hitarea expandable-hitarea" />' . "\n";
-                    } else {
-                        $html .= $tab . "\t\t" . '<div />' . "\n";
-                    }
-                    $html .= $tab . "\t\t" . '<span>' . $ts['label'] . '</span>' . "\n";
-
-                    $this->getHTMLTerm($sbid, $lng, $ts['n'], $html, $depth + 1);
-
-                    $html .= $tab . "\t" . '</LI>' . "\n";
-                }
-                $html .= $tab . '</UL>' . "\n";
-            }
-        }
-    }
-
-    /**
-     * @return \unicode
-     */
-    private function getUnicode()
-    {
-        return $this->app['unicode'];
     }
 }

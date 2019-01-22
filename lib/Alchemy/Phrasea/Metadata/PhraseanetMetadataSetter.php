@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use PHPExiftool\Driver\Metadata\Metadata;
@@ -120,7 +121,11 @@ class PhraseanetMetadataSetter
                     $metadataPerField[$fieldName] = [];
                 }
 
-                $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                if(in_array($tagName, File::$xmpTag)){
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array)File::sanitizeXmpUuid($metadata->getValue()->asString()));
+                }else{
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                }
             }
         }
 

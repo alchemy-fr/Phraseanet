@@ -124,7 +124,9 @@ EOT;
      */
     public function setName($name)
     {
-        $name = trim(strip_tags($name));
+        while(preg_match("'<[^><]*>'", $name)){
+            $name = trim(preg_replace("'<[^><]*>'", "", $name));
+        }
 
         if ($name === '') {
             throw new \InvalidArgumentException();

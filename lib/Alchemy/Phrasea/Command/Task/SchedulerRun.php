@@ -37,7 +37,6 @@ class SchedulerRun extends TaskManagerCommand
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $this->assertTaskManagerIsEnabled();
         $this->configureLogger(function () {
             return $this->getTaskManagerLogFileFactory()->forManager();
         });

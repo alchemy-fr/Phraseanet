@@ -75,7 +75,7 @@
               {{ user.getCountry() }}
             </td>
             <td>
-              {{ user.getLogin() }}
+                {% if user.getLastAppliedTemplate() is null %} - {% else %} {{ user.getLastAppliedTemplate().getLogin() }} {% endif %}
             </td>
             <td>
               {{ app['date-formatter'].getDate(user.getCreated()) }}

@@ -34,6 +34,8 @@ class NodeTypes
     const TOKEN_RAW_STRING    = 'raw_quoted';
     const TOKEN_DATABASE      = 'database';
     const TOKEN_COLLECTION    = 'collection';
+    const TOKEN_SHA256        = 'sha256';
+    const TOKEN_UUID          = 'uuid';
     const TOKEN_MEDIA_TYPE    = 'type';
     const TOKEN_RECORD_ID     = 'id';
     const TOKEN_CREATED_ON    = 'created_on';

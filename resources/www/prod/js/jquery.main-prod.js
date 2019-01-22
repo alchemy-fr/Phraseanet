@@ -15,9 +15,15 @@ var bodySize = {
     y: 0
 };
 
-var filterFacet = false;
-
 var facets = null;
+
+var lastFilterResults = [];
+
+var ORDER_BY_BCT = "ORDER_BY_BCT";
+var ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
+var ORDER_BY_HITS = "ORDER_BY_HITS";
+
+
 
 function resizePreview() {
     p4.preview.height = $('#PREVIEWIMGCONT').height();
@@ -145,8 +151,9 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select', container);
-    var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title', container);
+    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
+    var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
+    var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
     var scroll = fieldsSelect.scrollTop();
 
@@ -155,15 +162,16 @@ function checkFilters(save) {
 
     // hide all the fields in the "fields" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
+    $("option.dbx", fieldsSelectFake).hide().prop("disabled", true);
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
 
-    statusFilters.removeClass('danger_indicator danger');
+    statusFilters.removeClass('danger');
     $.each($('#ADVSRCH_SB_ZONE .field_switch'), function(index,el){
         if( $(el).prop('checked') === true ) {
             danger = true;
-            statusFilters.addClass('danger_indicator danger');
+            statusFilters.addClass('danger');
         }
     });
 
@@ -186,15 +194,23 @@ function checkFilters(save) {
         });
 
         // display the number of selected colls for the databox
-        $('.infos_sbas_' + sbas_id).empty().append(nbSelectedColls + '/' + nbCols);
+        if (nbSelectedColls == nbCols) {
+            $('.infos_sbas_' + sbas_id).empty().append(nbCols);
+            $(this).siblings(".clksbas").removeClass("danger");
+            $(this).siblings(".clksbas").find(".custom_checkbox_label input").prop("checked", "checked");
+        }
+        else {
+            $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
+            $(this).siblings(".clksbas").addClass("danger");
+        }
 
         // if one coll is not checked, show danger
         if(nbSelectedColls != nbCols) {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).addClass("danger");
+            $("#ADVSRCH_SBAS_ZONE").addClass("danger");
             danger = true;
         }
-        else {
-            $("#ADVSRCH_SBAS_LABEL_" + sbas_id).removeClass("danger");
+        else if (nbSelectedColls == nbCols && danger == false) {
+            $("#ADVSRCH_SBAS_ZONE").removeClass("danger");
         }
 
         if(nbSelectedColls == 0) {
@@ -210,6 +226,7 @@ function checkFilters(save) {
             $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
             $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
+            $(".db_"+sbas_id, fieldsSelectFake).show().prop("disabled", false);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
             // show again the relevant fields in "date field" select
@@ -249,7 +266,7 @@ function checkFilters(save) {
                 // nb: unselect the "all" field, so it acts as a button
                 optAllSelected = $(opt).is(":selected");
             }
-            if(idx == 0 || optAllSelected || $(opt).is(":disabled") || !$(opt).is(":visible") ) {
+            if (idx == 0 || optAllSelected || $(opt).is(":disabled") || $(opt).css('display') === 'none') {
                 $(opt).prop("selected", false);
             }
         }
@@ -298,7 +315,7 @@ function checkFilters(save) {
         search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
         search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
         search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-        console.log(search.dates.minbound, search.dates.maxbound, search.dates.field)
+
         if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
             danger = true;
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
@@ -385,24 +402,22 @@ function reset_adv_search() {
     checkBases(true);
 }
 
-function search_doubles() {
-    selectedFacetValues = [];
-    $('#EDIT_query').val('sha256=sha256');
-    newSearch('sha256=sha256');
-}
 
 function newSearch(query) {
     p4.Results.Selection.empty();
 
     clearAnswers();
-    $('#SENT_query').val(query);
-    var histo = $('#history-queries ul');
+    if(query !== null) {
+        // $('#SENT_query').val(query);
 
-    histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+        var histo = $('#history-queries ul');
 
-    var lis = $('li', histo);
-    if (lis.length > 25) {
-        $('li:last', histo).remove();
+        histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+
+        var lis = $('li', histo);
+        if (lis.length > 25) {
+            $('li:last', histo).remove();
+        }
     }
 
     $('#idFrameC li.proposals_WZ').removeClass('active');
@@ -503,7 +518,20 @@ function initAnswerForm() {
         var $this = $(this),
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
+        loadFacets(lastFilterResults);
+
         var data = $this.serializeArray();
+        var jsonData = serializeJSON(data, selectedFacetValues, facets);
+        var qry = buildQ(jsonData.query);
+
+        data.push({
+                name: 'jsQuery',
+                value: JSON.stringify(jsonData)
+            },
+            {
+                name: 'qry',
+                value: qry
+            });
 
         answAjax = $.ajax({
             type: method,
@@ -531,7 +559,6 @@ function initAnswerForm() {
                 catch(e) {}
 
                 if(datas.total_answers > 0) {
-                    console.log('saving');
                     sessionStorage.setItem('search', JSON.stringify(datas.query));
                 }
 
@@ -541,7 +568,12 @@ function initAnswerForm() {
                     container: $('#answers')
                 });
 
-                loadFacets(datas.facets);
+                //load last result collected or [] if length == 0
+                if (datas.facets.length > 0) {
+                    lastFilterResults = datas.facets;
+                    loadFacets(datas.facets);
+                }
+
                 facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
@@ -586,13 +618,40 @@ function initAnswerForm() {
     }
 }
 
+/*
+ selectedFacetValues[]
+ key : facet.name
+ value : {
+ 'value' : facet.value,
+ 'mode' : "AND"|"EXCEPT"
+ }
+ */
 var selectedFacetValues = [];
+var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
+var tokens = [['[',']']];
 
 function loadFacets(facets) {
+
+    //get properties of facets
+    var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
+    var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
+    var facetValueOrder = $('#look_box_settings select[name=facetValuesOrder]').val();
+
+    function sortIteration(i) {
+        switch(facetValueOrder) {
+            case ORDER_ALPHA_ASC:
+                return i.value.toString().toLowerCase();
+                break;
+            case ORDER_BY_HITS:
+                return i.count*-1;
+                break;
+        }
+    }
+
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
-        var values = _.map(facet.values, function(value) {
+        var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
             return {
                 title: value.value + ' (' + value.count + ')',
                 query: value.query,
@@ -606,17 +665,80 @@ function loadFacets(facets) {
             title: facet.label,
             folder: true,
             children: values,
-            expanded: _.isUndefined(selectedFacetValues[facet.name])
+            expanded: !_.some(facetStatus, function(o) { return _.has(o, facet.name)})
         };
     });
 
     treeSource.sort(sortFacets('title', true, function(a){return a.toUpperCase()}));
 
-    treeSource = sortByPredefinedFacets(treeSource, 'name', ['Base_Name', 'Collection_Name', 'Type_Name']);
+    if(facetOrder == ORDER_BY_BCT) {
+        treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
+    }
 
-    treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    if(filterFacet == true) {
+        treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    }
 
-    return getFacetsTree().reload(treeSource);
+    treeSource = parseColors(treeSource);
+
+    return getFacetsTree().reload(treeSource)
+        .done(function () {
+            _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+
+                var li_s = $(element).next().children('li');
+                var ul = $(element).next();
+                if(li_s.length > 5) {
+                    _.each(li_s, function(el, i) {
+                        if(i > 4) {
+                            $(el).hide();
+                        }
+                    });
+
+                    ul.append('<button class="see_more_btn">See more</button>');
+                }
+            });
+            $('.see_more_btn').on('click', function() {
+                $(this).closest('ul').children().show();
+                $(this).hide();
+                return false;
+            });
+        });
+}
+
+function parseColors(source) {
+    _.forEach(source, function(facet) {
+        if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
+            _.forEach(facet.children, function(child) {
+                var title = child.title;
+                child.title = formatColorText(title.toString());
+            });
+        }
+    });
+    return source;
+}
+
+function formatColorText(string) {
+    var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    //get color code from text if exist
+    var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
+
+
+    var match = string.match(regexp);
+    if(match && match[2] != null) {
+        var colorCode = '#' + match[2];
+        // //add color circle and re move color code from text;
+         var textWithoutColorCode = string.replace('[' + colorCode + ']','');
+         if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
+            textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
+         }
+         return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
+    } else {
+        if (textLimit > 0 && string.length > textLimit) {
+            string = string.substring(0, textLimit) + '…';
+        }
+        return string;
+    }
 }
 
 function shouldFilterSingleContent(source, shouldFilter) {
@@ -624,9 +746,9 @@ function shouldFilterSingleContent(source, shouldFilter) {
     if(shouldFilter == true) {
         _.forEach(source, function(facet) {
             //close expansion for facet containing selected values
-            if(!_.isUndefined(selectedFacetValues[facet.title])) {
-                facet.expanded = false;
-            }
+            // if(!_.isUndefined(selectedFacetValues[facet.title])) {
+            //     facet.expanded = false;
+            // }
             if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
                 filteredSource.push(facet);
             }
@@ -681,56 +803,132 @@ function getFacetsTree() {
             source: [],
             activate: function(event, data){
                 var query = data.node.data.query;
+                var eventType = event.originalEvent;
+                //if user did not click, then no need to perform any query
+                if(eventType == null) {
+                    return;
+                }
                 if (query) {
                     var facet = data.node.parent;
-                    selectedFacetValues[facet.title] = data.node.data;
-                    facetCombinedSearch();
+                    var facetData = {
+                        value: data.node.data,
+                        mode: event.altKey ? "EXCEPT" : "AND"
+                    };
+
+                    if (selectedFacetValues[facet.title] == null) {
+                        selectedFacetValues[facet.title] = [];
+                    }
+                    selectedFacetValues[facet.title].push(facetData);
+                    $('#searchForm').submit();
                 }
+            },
+            
+            collapse: function (event, data) {    
+                var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if(_.findWhere(facetStatus, dict) !== undefined ) {
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict)) 
+                }    
+                facetStatus.push(dict);    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
+            },
+            expand: function (event, data) {
+            var dict = {};    
+                dict[data.node.data.name] = "collapse";    
+                if (_.findWhere(facetStatus, dict) !== undefined) {         
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))     
+                }    
+                sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
             renderNode: function(event, data){
                 var facetFilter = "";
                 if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    facetFilter = selectedFacetValues[data.node.title].label;
-
-                    var s_label = document.createElement("SPAN");
-                    s_label.setAttribute("class", "facetFilter-label");
-                    s_label.setAttribute("title", facetFilter);
-
-                    var length = 15;
-                    var facetFilterString = facetFilter;
-                    if( facetFilterString.length > length) {
-                        facetFilterString = facetFilterString.substring(0,length) + '…';
+                    if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
+                        var dataNode = document.createElement('div');
+                        dataNode.setAttribute("class", "dataNode");
+                        $(".fancytree-folder", data.node.li).append(
+                            dataNode
+                        );
+                    } else {
+                        //remove existing facets
+                        $(".dataNode", data.node.li).empty();
                     }
-                    s_label.appendChild(document.createTextNode(facetFilterString));
+                    _.each(selectedFacetValues[data.node.title], function (facetValue) {
 
-                    var s_closer = document.createElement("A");
-                    s_closer.setAttribute("class", "facetFilter-closer");
+                        facetFilter = facetValue.value.label;
 
-                    var s_gradient = document.createElement("SPAN");
-                    s_gradient.setAttribute("class", "facetFilter-gradient");
-                    s_gradient.appendChild(document.createTextNode("\u00A0"));
+                        var s_label = document.createElement("SPAN");
+                        s_label.setAttribute("class", "facetFilter-label");
+                        s_label.setAttribute("title", facetFilter);
 
-                    s_label.appendChild(s_gradient);
+                        var length = 15;
+                        var facetFilterString = formatColorText(facetFilter.toString(), length);
 
-                    var s_facet = document.createElement("SPAN");
-                    s_facet.setAttribute("class", "facetFilter");
-                    s_facet.appendChild(s_label);
-                    s_closer = $(s_facet.appendChild(s_closer));
-                    s_closer.data("facetTitle", data.node.title);
+                        _.each($.parseHTML(facetFilterString), function (elem) {
+                            s_label.appendChild(elem);
+                        });
 
-                    s_closer.click(
-                        function(event) {
-                            event.stopPropagation();
-                            var facetTitle = $(this).data("facetTitle");
-                            delete selectedFacetValues[facetTitle];
-                            facetCombinedSearch();
-                            return false;
-                        }
-                    );
+                        var s_closer = document.createElement("A");
+                        s_closer.setAttribute("class", "facetFilter-closer");
 
-                    $(".fancytree-folder", data.node.li).append(
-                        $(s_facet)
-                    );
+                        var s_gradient = document.createElement("SPAN");
+                        s_gradient.setAttribute("class", "facetFilter-gradient");
+                        s_gradient.appendChild(document.createTextNode("\u00A0"));
+
+                        s_label.appendChild(s_gradient);
+
+                        var s_facet = document.createElement("SPAN");
+                        s_facet.setAttribute("class", "facetFilter" + '_' + facetValue.mode);
+                        s_facet.appendChild(s_label);
+                        s_closer = $(s_facet.appendChild(s_closer));
+
+                        s_closer.click(
+                            function (event) {
+                                event.stopPropagation();
+                                var facetTitle = $(this).parent().data("facetTitle");
+                                var facetFilter = $(this).parent().data("facetFilter");
+                                var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
+                                selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
+                                    return (obj.value.label == facetFilter && obj.mode == mode);
+                                });
+                                //delete selectedFacetValues[facetTitle];
+                                $('#searchForm').submit();
+                                return false;
+                            }
+                        );
+
+                        var newNode = document.createElement('div');
+                        newNode.setAttribute("class", "newNode");
+                        s_facet = $(newNode.appendChild(s_facet));
+                        s_facet.data("facetTitle", data.node.title);
+                        s_facet.data("facetFilter", facetFilter);
+
+                        $(".fancytree-folder .dataNode", data.node.li).append(
+                            newNode
+                        );
+
+                        s_facet.click(
+                            function (event) {
+                                if (event.altKey) {
+                                    event.stopPropagation();
+                                    var facetTitle = $(this).data("facetTitle");
+                                    var facetFilter = $(this).data("facetFilter");
+                                    var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
+                                    var found = _.find(selectedFacetValues[facetTitle], function (obj) {
+                                        return (obj.value.label == facetFilter && obj.mode == mode);
+                                    });
+                                    if (found) {
+                                        var newMode = mode == "EXCEPT" ? "AND" : "EXCEPT";
+                                        found.mode = newMode;
+                                        //replace class attr
+                                        $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
+                                        $('#searchForm').submit();
+                                    }
+                                }
+                                return false;
+                            }
+                        );
+                    });
                 }
             }
         });
@@ -739,21 +937,254 @@ function getFacetsTree() {
     return $facetsTree.fancytree('getTree');
 }
 
-function facetCombinedSearch() {
-    var q = $("#EDIT_query").val();
-    var q_facet = "";
-    _.each(_.values(selectedFacetValues), function(facetValue) {
-        q_facet += (q_facet ? " AND " : "") + '(' + facetValue.query + ')';
-    });
-    if(q_facet) {
-        if(q) {
-            q = '(' + q + ') AND '
-        }
-        q += q_facet;
-    }
 
-    checkFilters();
-    newSearch(q);
+function serializeJSON(data, selectedFacetValues, facets) {
+    var json = {},
+        obj = {},
+        bases = [],
+        statuses = [],
+        fields = [],
+        aggregates = []
+        ;
+
+    $.each(data, function(i, el) {
+        obj[el.name] = el.value;
+
+        var col = parseInt(el.value);
+
+        if(el.name === 'bases[]') {
+            bases.push(col);
+        }
+
+        if(el.name.startsWith('status')) {
+            var databoxId = el.name.match(/\d+/g)[0],
+                databoxRow = el.name.match(/\d+/g)[1],
+                statusMatch = false;
+
+            $.each(statuses, function(i, status) {
+
+                if (status.databox === databoxId) {
+                    for (var j = 0; j < status.status.length; j++) {
+                        var st = status.status[j].name;
+                        var st_id = st.substr(0, st.indexOf(':'));
+
+                        if (st_id === databoxRow) {
+                            statusMatch = true;
+                        }
+                    }
+                    statuses.splice((databoxId -1), 1);
+                }
+            });
+            if (!statusMatch) {
+                statuses.push({
+                    'databox': databoxId,
+                    'status': [
+                        {
+                            'index': databoxRow,
+                            'value': !!(parseInt(el.value))
+                        }
+                    ]
+                });
+            }
+        }
+    });
+
+
+    $('.term_select_field').each(function(i, el) {
+        if ($(el).val()) {
+            fields.push({
+                'type': 'TEXT-FIELD',
+                'field': 'field.' + $(el).val(),
+                'operator': $(el).next().val() === 'contains' ? ":" : "=",
+                'value': $(el).next().next().val(),
+                "enabled": true
+            });
+        }
+    });
+
+    $(facets).each(function(i, el) {
+
+        var facetFilterTitle = el.label,
+            facetType = el.type,
+            facetField = el.field,
+            facetRawVal,
+            facetQuery,
+            negated = false,
+            enabled = true
+            ;
+
+        $('.fancytree-node.fancytree-folder').each(function (i, node) {
+            var nodeTitile = $(node).find('.fancytree-title').text();
+            if (nodeTitile === facetFilterTitle) {
+                if ($(node).find('[class^="facetFilter_"]').is('[class$="_EXCEPT"]')) {
+                    negated = true;
+                }
+            }
+        });
+
+
+        _.each(selectedFacetValues[facetFilterTitle], function(facet) {
+            var query = facet.value.query;
+            for (var i = 0; i < el.values.length; i++) {
+                if (el.values[i].query === query) {
+                    facetRawVal = el.values[i].raw_value;
+                    facetQuery = el.values[i].query;
+                }
+            }
+            if(facetQuery === query) {
+                aggregates.push({
+                    'type': facetType,
+                    'field': facetField,
+                    'value': facetRawVal,
+                    'negated': negated,
+                    'enabled': enabled
+                });
+            }
+        });
+    });
+
+    var date_field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', 'form.phrasea_query .adv_options').val();
+    var date_from  = $('#ADVSRCH_DATE_ZONE input[name=date_min]', 'form.phrasea_query .adv_options').val();
+    var date_to    = $('#ADVSRCH_DATE_ZONE input[name=date_max]', 'form.phrasea_query .adv_options').val();
+
+    json['sort'] = {
+        'field': obj.sort,
+        'order': obj.ord
+    };
+    json['perpage'] = parseInt($('#nperpage_value').val());
+    json['page'] = obj.pag === "" ? 1 : parseInt(obj.pag);
+    json['use_truncation'] = (obj.truncation === "on");
+    json['phrasea_recordtype'] = obj.search_type == 0 ? 'RECORD' : 'STORY';
+    json['phrasea_mediatype'] = obj.record_type.toUpperCase();
+    json['bases'] = bases;
+    json['statuses'] = statuses;
+    json['query'] = {
+        '_ux_zone': $('.menu-bar .selected').text().trim().toUpperCase(),
+        'type': 'CLAUSES',
+        'must_match': 'ALL',
+        'enabled': true,
+        'clauses': [
+            {
+                '_ux_zone': 'FULLTEXT',
+                'type': 'FULLTEXT',
+                'value': obj.fake_qry,
+                'enabled': obj.fake_qry != ""
+            },
+            {
+                '_ux_zone': 'FIELDS',
+                'type': 'CLAUSES',
+                'must_match': obj.must_match,
+                'enabled': fields.length > 0,
+                'clauses': fields
+            },
+            {
+                "type": "DATE-FIELD",
+                "field": date_field,
+                "from": date_from,
+                "to": date_to,
+                "enabled": (date_field != "") && (date_from != "" || date_to != "")
+            },
+            {
+                "_ux_zone": "AGGREGATES",
+                "type": "CLAUSES",
+                "must_match": "ALL",
+                "enabled": aggregates.length > 0,
+                "clauses": aggregates
+            }
+        ]
+    };
+
+    return json;
+}
+
+var _ALL_Clause_ = "(created_on>1900/01/01)";
+function buildQ(clause) {
+    if(clause.enabled == false) {
+        return "";
+    }
+    switch(clause.type) {
+        case "CLAUSES":
+            var t_pos = [];
+            var t_neg = [];
+            for(var i=0; i<clause.clauses.length; i++) {
+                var _clause = clause.clauses[i];
+                var _sub_q = buildQ(_clause);
+                if(_sub_q !== "()" && _sub_q !== "") {
+                    if(_clause.negated == true) {
+                        t_neg.push(_sub_q);
+                    }
+                    else {
+                        t_pos.push(_sub_q);
+                    }
+                }
+            }
+            if(t_pos.length > 0) {
+                // some "yes" clauses
+                if(t_neg.length > 0) {
+                    // some "yes" and and some "neg" clauses
+                    if(clause.must_match=="ONE") {
+                        // some "yes" and and some "neg" clauses, one is enough to match
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        t_pos.push(neg);
+                        return "(" + t_pos.join(" OR ") + ")";
+                    }
+                    else {
+                        // some "yes" and and some "neg" clauses, all must match
+                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                    }
+                }
+                else {
+                    // only "yes" clauses
+                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                }
+            }
+            else {
+                // no "yes" clauses
+                if(t_neg.length > 0) {
+                    // only "neg" clauses
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ONE" ? " OR " : " AND ") + "))";
+                }
+                else {
+                    // no clauses at all
+                    return "";
+                }
+            }
+
+        case "FULLTEXT":
+            return clause.value ? ("(" + clause.value + ")") : "";
+
+        case "DATE-FIELD":
+            var t="";
+            if(clause.from ) {
+                t = clause.field + ">=" + clause.from;
+            }
+            if(clause.to) {
+                t += (t?" AND ":"") + clause.field + "<=" + clause.to;
+            }
+            return t ? ("(" + t + ")") : "";
+
+        case "TEXT-FIELD":
+            return clause.field + clause.operator + "\"" + clause.value + "\"";
+
+        case "GEO-DISTANCE":
+            return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
+
+        case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "COLOR-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "NUMBER-AGGREGATE":
+            return clause.field + "=" + clause.value;
+
+        case "BOOL-AGGREGATE":
+            return clause.field + "=" + (clause.value ? '1' : '0');
+
+        default :
+            console.error("Unknown clause type \"" + clause.type + "\"");
+            return null;
+    }
 }
 
 
@@ -804,6 +1235,10 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
+        
+        if (el.outerWidth() < 180) {
+            $('#answers .diapo .icon-stack').css('width', '20px');
+        }
     }
 
 }
@@ -1009,12 +1444,12 @@ function HueToRgb(m1, m2, hue) {
 
 $(document).ready(function () {
 
+    var multi_term_select_html = $('.term_select_wrapper').html();
+
     $('input[name=search_type]').bind('click', function () {
-        console.log('search bind')
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
 
-        console.log($this.hasClass('mode_type_reg'), $record_types)
         if ($this.hasClass('mode_type_reg')) {
             $record_types.css("visibility", "hidden");  // better than hide because does not change layout
             $record_types.prop("selectedIndex", 0);
@@ -1023,11 +1458,73 @@ $(document).ready(function () {
         }
     });
 
+    var previousVal;
+    $(document).on('focus', 'select.term_select_field', function () {
+        previousVal = $(this).val();
+    })
+    .on('change', 'select.term_select_field', function () {
+        var $this = $(this);
+
+        // if option is selected
+        if($this.val()) {
+            $this.siblings().prop('disabled', false);
+
+            $('.term_select_multiple option').each(function (index, el) {
+                var $el = $(el);
+                if($this.val() === $el.val()) {
+                    $el.prop('selected', true);
+                }
+                else if (previousVal === $el.val()) {
+                    $el.prop('selected', false);
+                }
+            });
+        }
+        else {
+            $this.siblings().prop('disabled', 'disabled');
+
+            $('.term_select_multiple option').each(function (index, el) {
+                var $el = $(el);
+                if(previousVal === $el.val()) {
+                    $el.prop('selected', false);
+                }
+            });
+        }
+        $this.blur();
+        checkFilters(true);
+    });
+
+    
+    $(document).on('click', '.term_deleter', function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var rowOption = $this.siblings('.term_select_field');
+        
+        $('.term_select_multiple option').each(function (index, el) {
+            var $el = $(el);
+            if(rowOption.val() == $el.val()) {
+                $el.prop('selected', false);
+            }
+        });
+        checkFilters(true);
+        $this.closest('.term_select_wrapper').remove();
+    });
+
+    $('.add_new_term').on('click', function (event) {
+        event.preventDefault();
+        if ($('select.term_select_field').length === 0) {
+            $('.term_select').prepend('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
+        }
+        else if ($('select.term_select_field').last().val() !== '') {
+            $('.term_select_wrapper').last().after('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
+        }
+    });
+
     $('.adv_search_button').on('click', function () {
         var searchForm = $('#searchForm');
         var parent = searchForm.parent();
 
         var options = {
+            title: 'Advanced search',
             size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
             loading: false,
             closeCallback: function (dialog) {
@@ -1041,6 +1538,7 @@ $(document).ready(function () {
 
         $dialog = p4.Dialog.Create(options);
 
+        $dialog.getDomElement().closest('.ui-dialog').addClass('advanced_search_dialog_container');
         searchForm.appendTo($dialog.getDomElement());
 
         $dialog.getDomElement().find('.adv_options').show();
@@ -1219,7 +1717,7 @@ $(document).ready(function () {
         }
 
         $('#idFrameC').attr('data-status', 'open');
-        $('.WZbasketTab').css('background-position', '9px 25px');
+        $('.WZbasketTab').css('background-position', '9px 21px');
         $('#idFrameC').removeClass('closed');
     });
 
@@ -1235,7 +1733,7 @@ $(document).ready(function () {
             $('#idFrameC').attr('data-status', 'closed');
             $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
             $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
-            $('.WZbasketTab').css('background-position', '15px 25px');
+            $('.WZbasketTab').css('background-position', '15px 21px');
             $('#idFrameC').addClass('closed');
             previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
         }else{
@@ -1245,7 +1743,7 @@ $(document).ready(function () {
             $('#rightFrame').width($(window).width()-360);
             $('#idFrameC').attr('data-status', 'open');
             $('.ui-resizable-handle, #basket_menu_trigger').show();
-            $('.WZbasketTab').css('background-position', '9px 25px');
+            $('.WZbasketTab').css('background-position', '9px 21px');
             $('#idFrameC').removeClass('closed');
             $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
@@ -1479,12 +1977,12 @@ $(document).ready(function () {
                                     $('#baskets div.bloc').scrollTop($('#baskets div.bloc').scrollTop() - 30);
                                     cancelKey = shortCut = true;
                                     break;
-                                //								case 37://previous page
-                                //									$('#PREV_PAGE').trigger('click');
-                                //									break;
-                                //								case 39://previous page
-                                //									$('#NEXT_PAGE').trigger('click');
-                                //									break;
+                                case 37://previous page
+                                    $('#PREV_PAGE').trigger('click');
+                                    break;
+                                case 39://previous page
+                                    $('#NEXT_PAGE').trigger('click');
+                                    break;
                                 case 9://tab
                                     if (!is_ctrl_key(event) && !$('.ui-widget-overlay').is(':visible') && !$('.overlay_box').is(':visible')) {
                                         document.getElementById('EDIT_query').focus();
@@ -1534,6 +2032,10 @@ $(document).ready(function () {
 
     $('.basketTips').tooltip({
         delay: 200
+    });
+
+    $('.basket_title').tooltip({
+        extraClass: 'tooltip_flat'
     });
 
     $('#idFrameC .tabs').tabs({
@@ -1702,8 +2204,8 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: 'Small',
-        title: language.deleteRecords
+        size: '287x153',
+        title: language.warning
     });
 
     $.ajax({
@@ -1712,7 +2214,13 @@ function deleteThis(lst) {
         dataType: 'html',
         data: {lst: lst},
         success: function (data) {
-            $dialog.setContent(data);
+            var response = JSON.parse(data);
+            $dialog.setOption('height', 'auto');
+
+            $dialog.setContent(response.renderView);
+
+            //reset top position of dialog
+            $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
         }
     });
 
@@ -2438,78 +2946,6 @@ function clktri(id) {
 }
 
 
-// ---------------------- fcts du thesaurus
-function chgProp(path, v, k) {
-    var q2;
-    if (!k)
-        k = "*";
-    //if(k!=null)
-    v = v + " [" + k + "]";
-    $("#thprop_a_" + path).html('"' + v + '"');
-    //	q = document.getElementById("thprop_q").innerText;
-    //	if(!q )
-    //		if(document.getElementById("thprop_q") && document.getElementById("thprop_q").textContent)
-    //			q = document.getElementById("thprop_q").textContent;
-    q = $("#thprop_q").text();
-
-    q2 = "";
-    for (i = 0; i < q.length; i++)
-        q2 += q.charCodeAt(i) == 160 ? " " : q.charAt(i);
-
-    selectedFacetValues = [];
-    $('#EDIT_query').val(q);
-    newSearch(q);
-
-    return(false);
-}
-
-function doDelete(lst) {
-    var children = '0';
-    if (document.getElementById('del_children') && document.getElementById('del_children').checked)
-        children = '1';
-    $.ajax({
-        type: "POST",
-        url: "../prod/delete/",
-        dataType: 'json',
-        data: {
-            lst: lst.join(';'),
-            del_children: children
-        },
-        success: function (data) {
-
-            $.each(data, function (i, n) {
-                var imgt = $('#IMGT_' + n),
-                    chim = $('.CHIM_' + n),
-                    stories = $('.STORY_' + n);
-                $('.doc_infos', imgt).remove();
-                imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").removeClass("IMGT").find("img").unbind();
-
-                if (imgt.data("ui-draggable")) {
-                    imgt.draggable("destroy");
-                }
-
-                imgt.find(".thumb img").attr("src", "/assets/common/images/icons/deleted.png").css({
-                    width: '100%',
-                    height: 'auto',
-                    margin: '0 10px',
-                    top: '0'
-                });
-                chim.parent().slideUp().remove();
-                imgt.find(".status,.title,.bottom").empty();
-
-                p4.Results.Selection.remove(n);
-                if (stories.length > 0) {
-                    p4.WorkZone.refresh();
-                }
-                else {
-                    p4.WorkZone.Selection.remove(n);
-                }
-            });
-            viewNbSelect();
-        }
-    });
-}
-
 function archiveBasket(basket_id) {
     $.ajax({
         type: "POST",
@@ -2845,7 +3281,16 @@ function autoorder() {
 
 function setFacet(boolean) {
     setPref("facet", boolean);
-    filterFacet = boolean;
+    loadFacets(facets);
+}
+
+function setFacetOrder(order) {
+    setPref("order_facet", order);
+    loadFacets(facets);
+}
+
+function setFacetValueOrder(valueOrder) {
+    setPref("facet_values_order", valueOrder);
     loadFacets(facets);
 }
 

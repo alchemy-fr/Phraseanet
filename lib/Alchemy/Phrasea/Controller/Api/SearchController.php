@@ -58,7 +58,7 @@ class SearchController extends Controller
 
         $result = $this->getSearchEngine()->query($query, $options);
 
-        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getUserQuery());
+        $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getQueryText());
 
         foreach ($options->getDataboxes() as $databox) {
             $colls = array_map(function (\collection $collection) {
@@ -68,7 +68,7 @@ class SearchController extends Controller
             }));
 
             $this->getSearchEngineLogger()
-                ->log($databox, $result->getUserQuery(), $result->getTotal(), $colls);
+                ->log($databox, $result->getQueryText(), $result->getTotal(), $colls);
         }
 
         $this->getSearchEngine()->clearCache();

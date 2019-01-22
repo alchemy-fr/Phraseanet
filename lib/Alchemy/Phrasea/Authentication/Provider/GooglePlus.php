@@ -43,14 +43,6 @@ class GooglePlus extends AbstractProvider
             'https://www.googleapis.com/auth/userinfo.email',
         ]);
 
-        $this->client->setRedirectUri(
-            $this->generator->generate(
-                'login_authentication_provider_callback', [
-                    'providerId' => $this->getId(),
-                ], UrlGenerator::ABSOLUTE_URL
-            )
-        );
-
         $this->client->setApprovalPrompt("auto");
 
         if ($this->session->has('google-plus.provider.token')) {
@@ -137,8 +129,18 @@ class GooglePlus extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public function authenticate()
+    public function authenticate(array $params = array())
     {
+        $params = array_merge(['providerId' => $this->getId()], $params);
+
+        $this->client->setRedirectUri(
+            $this->generator->generate(
+                'login_authentication_provider_callback',
+                $params,
+                UrlGenerator::ABSOLUTE_URL
+            )
+        );
+
         $state = $this->createState();
 
         $this->session->set('google-plus.provider.state', $state);

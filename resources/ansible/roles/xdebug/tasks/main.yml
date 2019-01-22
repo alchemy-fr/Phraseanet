@@ -1,4 +1,4 @@
 ---
 - name: Install xDebug
   sudo: yes
-  apt: pkg=php5-xdebug state=latest
+  apt: pkg=php{{ phpversion }}-xdebug state=latest

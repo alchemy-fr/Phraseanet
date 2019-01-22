@@ -346,6 +346,10 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::database();
             case NodeTypes::TOKEN_COLLECTION:
                 return AST\KeyValue\NativeKey::collection();
+            case NodeTypes::TOKEN_SHA256:
+                return AST\KeyValue\NativeKey::sha256();
+            case NodeTypes::TOKEN_UUID:
+                return AST\KeyValue\NativeKey::uuid();
             case NodeTypes::TOKEN_MEDIA_TYPE:
                 return AST\KeyValue\NativeKey::mediaType();
             case NodeTypes::TOKEN_RECORD_ID:

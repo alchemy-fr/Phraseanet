@@ -9,7 +9,7 @@
         parent.currentBaseId   = {{ bid }};
         parent.currentBaseName = "{{ name | e('js') }}";
         parent.document.title = "{{ 'phraseanet:: thesaurus' | trans | e('js') }}";
-        parent.document.getElementById("baseName").innerHTML = "{{ 'phraseanet:: thesaurus' | e('js') }}";
+        parent.document.getElementById("baseName").innerHTML = "{{ 'phraseanet:: thesaurus' | trans | e('js') }}";
         parent.thesaurusChanged = false;
 
         parent.document.getElementById("T0").innerHTML='<DIV class="glossaire" id="CTERMS">' +

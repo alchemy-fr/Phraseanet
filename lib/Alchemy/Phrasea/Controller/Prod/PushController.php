@@ -597,7 +597,7 @@ class PushController extends Controller
 
     private function formatUser(User $user)
     {
-        $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
+        $subtitle = array_filter([htmlspecialchars($user->getJob()), htmlspecialchars($user->getCompany())]);
 
         return [
             'type'         => 'USER',

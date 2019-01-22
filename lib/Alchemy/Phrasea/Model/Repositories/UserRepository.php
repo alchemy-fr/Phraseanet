@@ -23,6 +23,18 @@ use Alchemy\Phrasea\Model\Entities\User;
 class UserRepository extends EntityRepository
 {
     /**
+     * Finds an User by its primary key / identifier.
+     *
+     * @inheritdoc
+     *
+     * @return User|null
+     */
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    /**
      * Finds admins.
      *
      * @return User[]
@@ -84,17 +96,21 @@ class UserRepository extends EntityRepository
      * nb : login match is CASE INSENSITIVE, "doe"=="Doe"=="DOE"
      *
      * @param $login
+     * @param $emailOptionalForLogin
      *
      * @return null|User
      */
-    public function findRealUserByLogin($login)
+    public function findRealUserByLogin($login, $emailOptionalForLogin = true)
     {
         $qb = $this->createQueryBuilder('u');
         $qb->where($qb->expr()->eq($qb->expr()->lower('u.login'), $qb->expr()->lower($qb->expr()->literal($login))))
-            ->andWhere($qb->expr()->isNotNull('u.email'))
             ->andWhere($qb->expr()->isNull('u.templateOwner'))
             ->andWhere($qb->expr()->eq('u.guest', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('u.deleted', $qb->expr()->literal(false)));
+
+        if (!$emailOptionalForLogin) {
+            $qb->andWhere($qb->expr()->isNotNull('u.email'));
+        }
 
         return $qb->getQuery()->getOneOrNullResult();
     }

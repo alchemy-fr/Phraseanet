@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Setup\Install;
 use Symfony\Component\Yaml\Yaml;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 
 /**
  * @group functional
@@ -20,7 +21,7 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
-        $template = 'fr';
+        $template = 'fr-simple';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
 
@@ -36,7 +37,6 @@ class InstallTest extends \PhraseanetTestCase
             ->method('get')
             ->with('dialog')
             ->will($this->returnValue($dialog));
-
         $input->expects($this->any())
             ->method('getOption')
             ->will($this->returnCallback(function ($option) use ($infoDb, $template, $email, $password, $serverName, $dataPath) {
@@ -65,8 +65,6 @@ class InstallTest extends \PhraseanetTestCase
                         return $infoDb['database']['user'];
                     case 'db-password':
                         return $infoDb['database']['password'];
-                    case 'yes':
-                        return true;
                     case 'es-host':
                         return 'localhost';
                     case 'es-port':
@@ -74,7 +72,7 @@ class InstallTest extends \PhraseanetTestCase
                     case 'es-index':
                         return 'phrasea_test';
                     default:
-                        return;
+                        return '';
                 }
             }));
 
@@ -86,7 +84,9 @@ class InstallTest extends \PhraseanetTestCase
             ->method('install')
             ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
 
-        $command = new Install('system:install');
+        $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
+
+        $command = new Install('system:install', $structureTemplate);
         $command->setHelperSet($helperSet);
         $command->setContainer(self::$DI['cli']);
         $this->assertEquals(0, $command->execute($input, $output));

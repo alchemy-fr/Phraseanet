@@ -19,7 +19,7 @@ table.whoisTable tr {
   border: #cccccc 1px solid;
 }
 table.whoisTable tr:hover {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
 }
 table.whoisTable td {
   padding: 3px;
@@ -47,10 +47,10 @@ table.admintable tr {
   vertical-align: middle;
 }
 table.admintable tr.selected:hover {
-  background-color: #faa732;
+  background-color: #aaa8a5;
 }
 table.admintable thead {
-  background-color: #e5d4a0;
+  background-color: #dbd8cc;
 }
 table.admintable thead th {
   padding: 3px;
@@ -58,13 +58,13 @@ table.admintable thead th {
   font-weight: bold;
 }
 table.admintable tbody tr.even {
-  background-color: #fffbcd;
+  background-color: #f2f0e9;
 }
 table.admintable tbody tr.selected {
-  background-color: #faa732;
+  background-color: #aaa8a5;
 }
 table.admintable tbody tr:hover {
-  background-color: #faa732;
+  background-color: #aaa8a5;
   cursor: pointer;
 }
 table.admintable tbody td {
@@ -87,10 +87,10 @@ table.admintable .centered {
   display: none;
 }
 #users th.sortable.hover {
-  background-color: #faa732;
+  background-color: #aaa8a5;
 }
 #users th.sortable.sorted {
-  background-color: #faa732;
+  background-color: #aaa8a5;
 }
 #users th.sortable.sorted span.ord_notifier {
   display: inline;
@@ -125,8 +125,8 @@ td.users_col.options {
   font-weight: bold;
 }
 #tooltip-usr #tabledescexp td.tooltip-title {
-  background-color: #faa732;
-  border: 1px solid #f39106;
+  background-color: #aaa8a5;
+  border: 1px solid #aaa8a5;
   margin: 10px auto;
   font-weight: bold;
   font-size: 14px;
