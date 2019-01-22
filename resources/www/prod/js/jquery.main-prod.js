@@ -151,18 +151,22 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
+    // var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
-    var scroll = fieldsSelect.scrollTop();
+    // var scroll = fieldsSelect.scrollTop();
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
 
     // hide all the fields in the "fields" select, so only the relevant ones will be shown again
-    $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
-    $("option.dbx", fieldsSelectFake).hide().prop("disabled", true);
+    // $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
+    $("option.dbx", fieldsSelectFake).prop("disabled", true);
+    // JY : disable the whole select
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_field', container).enable(false);
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_op', container).enable(false);
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper input.term_select_value', container).enable(false);
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
@@ -225,12 +229,26 @@ function checkFilters(save) {
             // show again the relevant fields in "sort by" select
             $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
-            $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
-            $(".db_"+sbas_id, fieldsSelectFake).show().prop("disabled", false);
+            //$(".db_"+sbas_id, fieldsSelect).prop("disabled", false);
+            $(".db_"+sbas_id, fieldsSelectFake).prop("disabled", false);
+            // JY : enable again the whole select, only if the selected option (field name) is relevant for this db
+            $("option.db_"+sbas_id+":selected", fieldsSelectFake).closest("select").enable(true);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
             // show again the relevant fields in "date field" select
             $(".db_"+sbas_id, dateFilterSelect).show().prop("disabled", false);
+        }
+    });
+
+    // JY: enable also the select if the first option ("choose:") was selected
+    //$("option:first:selected", fieldsSelectFake).enable(true);
+    fieldsSelectFake.each(function(e) {
+        var $this = $(this);
+        var term_ok = $('option:selected:enabled', $this).closest(".term_select_wrapper");
+        $("select.term_select_field", term_ok).enable(true);
+        if($this.val() !== "") {
+            $("select.term_select_op", term_ok).enable(true);
+            $("input.term_select_value", term_ok).enable(true);
         }
     });
 
@@ -259,6 +277,7 @@ function checkFilters(save) {
     //--------- from fields filter ---------
 
     // unselect the unavailable fields (or all fields if "all" is selected)
+    /*
     var optAllSelected = false;
     $("option", fieldsSelect).each(
         function(idx, opt) {
@@ -282,6 +301,7 @@ function checkFilters(save) {
         $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
         danger = true;
     }
+    */
 
     //--------- status bits filter ---------
 
@@ -322,7 +342,7 @@ function checkFilters(save) {
         }
     }
 
-    fieldsSelect.scrollTop(scroll);
+    // fieldsSelect.scrollTop(scroll);
 
     // if one filter shows danger, show it on the query
     if (danger) {
@@ -373,8 +393,6 @@ function resize() {
 
     answerSizer();
     linearize();
-
-
 }
 
 
@@ -569,12 +587,13 @@ function initAnswerForm() {
                 });
 
                 //load last result collected or [] if length == 0
-                if (datas.facets.length > 0) {
-                    lastFilterResults = datas.facets;
-                    loadFacets(datas.facets);
+                if (datas.facets) {
+                    if (datas.facets.length > 0) {
+                        lastFilterResults = datas.facets;
+                        loadFacets(datas.facets);
+                    }
+                    facets = datas.facets;
                 }
-
-                facets = datas.facets;
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -939,10 +958,10 @@ function getFacetsTree() {
 
 function findClauseBy_ux_zone(clause, ux_zone)
 {
-    if(typeof clause._ux_zone != 'undefined' && clause._ux_zone == ux_zone) {
+    if(typeof clause._ux_zone != 'undefined' && clause._ux_zone === ux_zone) {
         return clause;
     }
-    if(clause.type == "CLAUSES") {
+    if(clause.type === "CLAUSES") {
         for(var i=0; i<clause.clauses.length; i++) {
             var r = findClauseBy_ux_zone(clause.clauses[i], ux_zone);
             if(r != null) {
@@ -1047,6 +1066,11 @@ function restoreJsonQuery() {
 
     // console.log(jsq);
 
+    var clause;
+
+    clause = findClauseBy_ux_zone(jsq.query, "FULLTEXT");
+    $('#EDIT_query').val(clause.value);
+
     // check one radio will uncheck siblings
     $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'RECORD') ? '0' : '1') + '"]').prop('checked', true);
 
@@ -1057,10 +1081,16 @@ function restoreJsonQuery() {
     $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
     $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
 
-    var clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
+    $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', false);
+    for(var i=0; i<jsq.bases.length; i++) {
+        $('#ADVSRCH_SBAS_ZONE INPUT.checkbas[value="' + jsq.bases[i] + '"]').attr('checked', true);
+    }
+
+    clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
     $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
+    $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper').remove();
 
-
+    AdvSearchAddNewTerm(clause.clauses.length);
 }
 
 function serializeJSON(data, selectedFacetValues, facets) {
@@ -1115,17 +1145,20 @@ function serializeJSON(data, selectedFacetValues, facets) {
     });
 
 
-    $('.term_select_field').each(function(i, el) {
-        if ($(el).val()) {
-            fields.push({
-                'type': 'TEXT-FIELD',
-                'field': 'field.' + $(el).val(),
-                'operator': $(el).next().val() === 'contains' ? ":" : "=",
-                'value': $(el).next().next().val(),
-                "enabled": true
-            });
-        }
+    $("#ADVSRCH_FIELDS_ZONE .term_select_wrapper").each(function(i, wrapper) {
+        var f = $(".term_select_field option:selected", wrapper);
+        var o = $(".term_select_op", wrapper);
+        var v = $(".term_select_value", wrapper);
+
+        fields.push({
+            'type'    : f.data('fieldtype').toUpperCase(),
+            'field'   : f.val(),
+            'operator': o.val(),
+            'value'   : v.val(),
+            "enabled" : !f.prop('disabled') && f.val() !== '' && v.val() !== ''
+        });
     });
+
 
     $(facets).each(function(i, el) {
 
@@ -1289,6 +1322,7 @@ function buildQ(clause) {
             return t ? ("(" + t + ")") : "";
 
         case "TEXT-FIELD":
+        case "STRING-FIELD":
             return clause.field + clause.operator + "\"" + clause.value + "\"";
 
         case "GEO-DISTANCE":
@@ -1566,6 +1600,23 @@ function HueToRgb(m1, m2, hue) {
 
     return 255 * v;
 }
+
+function AdvSearchAddNewTerm(n) {
+    if(n === undefined) {
+        n = 1;
+    }
+    var block_template = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper_template');
+    var last_block = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper:last');
+    if(last_block.length === 0) {
+        last_block = block_template;
+    }
+    for(var i=0; i<n; i++) {
+        last_block = block_template.clone(true).insertAfter(last_block);    // true: clone event handlers
+        last_block.removeClass('term_select_wrapper_template').addClass('term_select_wrapper').show();
+        last_block.css("background-color", "");
+    }
+}
+
 
 $(document).ready(function () {
 
