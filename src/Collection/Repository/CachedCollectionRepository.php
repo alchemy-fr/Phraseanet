@@ -38,14 +38,15 @@ final class CachedCollectionRepository implements CollectionRepository
     private $cacheKey;
 
     /**
-     * @param Application $application
+     //* @param Application $application
      * @param CollectionRepository $repository
      * @param Cache $cache
      * @param $cacheKey
      */
-    public function __construct(Application $application, CollectionRepository $repository, Cache $cache, $cacheKey)
+    //public function __construct(Application $application, CollectionRepository $repository, Cache $cache, $cacheKey)
+    public function __construct(CollectionRepository $repository, Cache $cache, $cacheKey)
     {
-        $this->app = $application;
+        //$this->app = $application;
         $this->repository = $repository;
         $this->cache = $cache;
         $this->cacheKey = $cacheKey;

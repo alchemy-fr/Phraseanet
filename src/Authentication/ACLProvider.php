@@ -11,8 +11,9 @@
 
 namespace App\Authentication;
 
-use Alchemy\Phrasea\Model\Entities\User;
+use App\Entity\User;
 use Silex\Application;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ACLProvider
 {
@@ -23,12 +24,12 @@ class ACLProvider
      */
     private static $cache = [];
 
-    private $app;
+    //private $app;
 
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
+//    public function __construct(Application $app)
+//    {
+//        $this->app = $app;
+//    }
 
     /**
      * Gets ACL for user.

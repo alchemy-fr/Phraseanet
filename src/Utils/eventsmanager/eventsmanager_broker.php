@@ -12,7 +12,7 @@ namespace App\Utils\eventsmanager;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Entities\User;
+use App\Entity\User;
 use Doctrine\DBAL\Connection;
 
 class eventsmanager_broker
@@ -24,14 +24,14 @@ class eventsmanager_broker
      *
      * @var Application
      */
-    protected $app;
-
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-
-        return $this;
-    }
+//    protected $app;
+//
+//    public function __construct(Application $app)
+//    {
+//        $this->app = $app;
+//
+//        return $this;
+//    }
 
     public function start()
     {

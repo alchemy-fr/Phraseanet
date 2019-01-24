@@ -166,7 +166,8 @@
           </li>
         {% endif %}
 
-        {% for collection in databox.get_collections()|sort_collections %}
+          {#{% for collection in databox.get_collections()|sort_collections %}#}
+          {% for collection in databox.get_collections() %}
           {% if (collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADMIN')])|keys
               or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::COLL_MANAGE')])|keys
               or collection.get_base_id() in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::COLL_MODIFY_STRUCT')])|keys) %}

@@ -27,6 +27,7 @@ use RandomLib\Generator;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Application\Helper\AclAware;
 
 class Installer
 {
@@ -52,16 +53,6 @@ class Installer
         $this->objectManager = $objectManager;
         $this->container = $container;
         $this->dispatcher = $dispatcher;
-
-    }
-
-    public function installUser(){
-
-        $email = 'test.tester@gmail.com';
-        $password = '654321';
-
-        $user = $this->createUser($email, $password);
-
     }
 
     public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
@@ -96,59 +87,58 @@ class Installer
             throw new \App\Utils\Exception\Exception_InvalidArgument(sprintf('Databox template "%s" not found.', $templateName));
         }
 
-        //$databox = \App\Utils\databox::create($this->app, $dbConn, $template);
         $databox = \App\Utils\databox::create($dbConn, $template, $this->container);
 
-        $this->app->getAclForUser($admin)
-            ->give_access_to_sbas([$databox->get_sbas_id()])
-            ->update_rights_to_sbas(
-                $databox->get_sbas_id(),
-                [
-                    \ACL::BAS_MANAGE        => true,
-                    \ACL::BAS_MODIFY_STRUCT => true,
-                    \ACL::BAS_MODIF_TH      => true,
-                    \ACL::BAS_CHUPUB        => true
-                ]
-            );
-
-        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
-
-        $this->app->getAclForUser($admin)
-            ->give_access_to_base([$collection->get_base_id()]);
-
-        $this->app->getAclForUser($admin)
-            ->update_rights_to_base(
-                $collection->get_base_id(),
-                [
-                    \ACL::CANPUSH            => true,
-                    \ACL::CANCMD             => true,
-                    \ACL::CANPUTINALBUM      => true,
-                    \ACL::CANDWNLDHD         => true,
-                    \ACL::CANDWNLDPREVIEW    => true,
-                    \ACL::CANADMIN           => true,
-                    \ACL::ACTIF              => true,
-                    \ACL::CANREPORT          => true,
-                    \ACL::CANADDRECORD       => true,
-                    \ACL::CANMODIFRECORD     => true,
-                    \ACL::CANDELETERECORD    => true,
-                    \ACL::CHGSTATUS          => true,
-                    \ACL::IMGTOOLS           => true,
-                    \ACL::COLL_MANAGE        => true,
-                    \ACL::COLL_MODIFY_STRUCT => true,
-                    \ACL::NOWATERMARK        => true
-                ]
-            );
-
-        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
-            /** @var JobInterface $job */
-            $job = $this->app['task-manager.job-factory']->create($jobName);
-            $this->app['manipulator.task']->create(
-                $job->getName(),
-                $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($this->app['conf']),
-                $job->getEditor()->getDefaultPeriod()
-            );
-        }
+//        $this->acl->getAclForUser($admin)
+//            ->give_access_to_sbas([$databox->get_sbas_id()])
+//            ->update_rights_to_sbas(
+//                $databox->get_sbas_id(),
+//                [
+//                    \App\Utils\ACL::BAS_MANAGE        => true,
+//                    \App\Utils\ACL::BAS_MODIFY_STRUCT => true,
+//                    \App\Utils\ACL::BAS_MODIF_TH      => true,
+//                    \App\Utils\ACL::BAS_CHUPUB        => true
+//                ]
+//            );
+//
+//        $collection = \collection::create($this->app, $databox, $this->app['phraseanet.appbox'], 'test', $admin);
+//
+//        $this->app->getAclForUser($admin)
+//            ->give_access_to_base([$collection->get_base_id()]);
+//
+//        $this->app->getAclForUser($admin)
+//            ->update_rights_to_base(
+//                $collection->get_base_id(),
+//                [
+//                    \ACL::CANPUSH            => true,
+//                    \ACL::CANCMD             => true,
+//                    \ACL::CANPUTINALBUM      => true,
+//                    \ACL::CANDWNLDHD         => true,
+//                    \ACL::CANDWNLDPREVIEW    => true,
+//                    \ACL::CANADMIN           => true,
+//                    \ACL::ACTIF              => true,
+//                    \ACL::CANREPORT          => true,
+//                    \ACL::CANADDRECORD       => true,
+//                    \ACL::CANMODIFRECORD     => true,
+//                    \ACL::CANDELETERECORD    => true,
+//                    \ACL::CHGSTATUS          => true,
+//                    \ACL::IMGTOOLS           => true,
+//                    \ACL::COLL_MANAGE        => true,
+//                    \ACL::COLL_MODIFY_STRUCT => true,
+//                    \ACL::NOWATERMARK        => true
+//                ]
+//            );
+//
+//        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
+//            /** @var JobInterface $job */
+//            $job = $this->app['task-manager.job-factory']->create($jobName);
+//            $this->app['manipulator.task']->create(
+//                $job->getName(),
+//                $job->getJobId(),
+//                $job->getEditor()->getDefaultSettings($this->app['conf']),
+//                $job->getEditor()->getDefaultPeriod()
+//            );
+//        }
     }
 
     private function createUser($email, $password)
@@ -158,7 +148,6 @@ class Installer
 
         return $user;
     }
-
 
     private function createDefaultUsers()
     {
@@ -187,6 +176,7 @@ class Installer
 
             }
         }
+
         if (null !== $dbConn) {
             foreach ($databox->tables->table as $table) {
                 try {

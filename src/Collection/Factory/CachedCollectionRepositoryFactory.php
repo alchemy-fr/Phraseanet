@@ -39,18 +39,18 @@ class CachedCollectionRepositoryFactory implements CollectionRepositoryFactory
     private $baseCacheKey;
 
     /**
-     * @param Application $application
+     //* @param Application $application
      * @param CollectionRepositoryFactory $collectionRepositoryFactory
      * @param Cache $cache
      * @param string $baseCacheKey
      */
     public function __construct(
-        Application $application,
+        //Application $application,
         CollectionRepositoryFactory $collectionRepositoryFactory,
         Cache $cache,
         $baseCacheKey
     ) {
-        $this->application = $application;
+        //$this->application = $application;
         $this->collectionRepositoryFactory = $collectionRepositoryFactory;
         $this->cache = $cache;
         $this->baseCacheKey = (string)$baseCacheKey;
@@ -65,7 +65,7 @@ class CachedCollectionRepositoryFactory implements CollectionRepositoryFactory
         $repository = $this->collectionRepositoryFactory->createRepositoryForDatabox($databoxId);
 
         return new CachedCollectionRepository(
-            $this->application,
+            //$this->application,
             $repository,
             $this->cache,
             $this->baseCacheKey . '.' . $databoxId

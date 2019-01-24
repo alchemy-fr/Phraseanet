@@ -46,10 +46,13 @@ class DefaultController extends Controller
 
     public function test()
     {
+
+        $x = $this->get('conf')->get(['languages','default']);
+
         return new Response(
             '<html>
                 <body>
-                   Test page
+                   Test page '.$x.'
                 </body>
             </html>'
         );
@@ -66,6 +69,21 @@ class DefaultController extends Controller
             '<html>
                 <body>
                     Created users<br><br>
+                </body>
+            </html>'
+        );
+    }
+
+    public function showSbas()
+    {
+
+        $query = $this->get('doctrine.dbal.appbox_connection')->fetchAll('SELECT * FROM `sbas`');
+        var_dump($query);
+
+        return new Response(
+            '<html>
+                <body>
+                    Sbas<br><br>
                 </body>
             </html>'
         );

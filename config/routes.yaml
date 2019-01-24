@@ -10,6 +10,14 @@ showUsers:
     path: /users
     controller: App\Controller\DefaultController::showUsers
 
+showSbas:
+    path: /sbas
+    controller: App\Controller\DefaultController::showSbas
+
+deleteUser:
+    path: /user/delete/{id}
+    controller: App\Controller\DefaultController::deleteUser
+
 setup:
     path: /
     controller: App\Controller\SetupController::rootInstaller
@@ -25,3 +33,7 @@ install_do_install:
 install_root:
     path: /installer/
     controller: App\Controller\SetupController::rootInstaller
+
+admin:
+    path: /admin/
+    controller: App\Controller\Admin\RootController::indexAction

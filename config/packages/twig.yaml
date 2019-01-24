@@ -3,4 +3,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
+        locale: '%locale%'
         version: '@App\Core\Version'
+        conf: '@App\Utils\Conf'
+        events.manager: '@App\Utils\eventsmanager\eventsmanager_broker'

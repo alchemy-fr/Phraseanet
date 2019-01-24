@@ -69,7 +69,7 @@ class DataboxFactory
         $databoxes = [];
 
         foreach ($rows as $id => $raw) {
-            $databoxes[$id] = new \databox($this->app, $id, $this->databoxRepository, $raw);
+            $databoxes[$id] = new \App\Utils\databox($this->app, $id, $this->databoxRepository, $raw);
         }
 
         return $databoxes;

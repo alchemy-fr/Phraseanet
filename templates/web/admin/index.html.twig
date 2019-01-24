@@ -36,7 +36,7 @@
         }
 
         var language = {
-            serverName: '{{ app['conf'].get('servername') | e('js') }}',
+            serverName: '{{ conf.get(['servername']) | e('js') }}',
             serverError: '{{ 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' | trans | e('js') }}',
             serverTimeout:  '{{ 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' | trans | e('js') }}',
             serverDisconnected: '{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans | e('js') }}',
@@ -64,8 +64,9 @@
     {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
 {% endblock %}
 {% block content %}
-    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">
-    <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
+    {#<div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">#}
+    {#<div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ conf.get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">#}
+    <div id="left" class="PNB left-view" style="width:250px;right:auto;" >
         <div class="PNB10" style="right:0; top:0px;">
             <div id="FNDR">
                 {% include 'admin/tree.html.twig' %}
