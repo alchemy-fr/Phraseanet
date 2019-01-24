@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "253990d4c81f9ae5f78c6c1221d6cf29",
+    "content-hash": "adf4074eb26ea80d414430d4f7b61311",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -337,16 +337,16 @@
         },
         {
             "name": "alchemy/oauth2php",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/oauth2-php.git",
-                "reference": "cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15"
+                "reference": "801510972240555fa182813851efd96659d37a68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15",
-                "reference": "cb4fcb73e30ab54e0fb85a65b4d57147f7a0df15",
+                "url": "https://api.github.com/repos/alchemy-fr/oauth2-php/zipball/801510972240555fa182813851efd96659d37a68",
+                "reference": "801510972240555fa182813851efd96659d37a68",
                 "shasum": ""
             },
             "type": "library",
@@ -356,7 +356,7 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2013-07-01T09:46:59+00:00"
+            "time": "2019-01-17T14:34:10+00:00"
         },
         {
             "name": "alchemy/phlickr",
