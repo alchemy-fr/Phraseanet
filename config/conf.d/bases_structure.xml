@@ -167,7 +167,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="bridge_elements">
         <fields>
           <field>
@@ -314,7 +313,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="bridge_apis">
         <fields>
           <field>
@@ -404,7 +402,6 @@
         </defaults>
         <engine>InnoDB</engine>
       </table>
-
       <table name="bridge_account_settings">
         <fields>
           <field>
@@ -831,7 +828,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="records_rights">
         <fields>
           <field>
@@ -980,7 +976,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="demand">
         <fields>
           <field>
@@ -1118,7 +1113,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="edit_presets">
         <fields>
           <field>
@@ -1195,7 +1189,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="notifications">
         <fields>
           <field>
@@ -1281,7 +1274,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="sbas">
         <fields>
           <field>
@@ -1526,7 +1518,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="sitepreff">
         <fields>
           <field>
@@ -1644,7 +1635,6 @@
         </defaults>
         <engine>InnoDB</engine>
       </table>
-
     </tables>
   </appbox>
   <databox>
@@ -1671,8 +1661,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
       <table name="coll">
         <fields>
           <field>
@@ -1832,7 +1820,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="metadatas_structure">
         <fields>
           <field>
@@ -2384,7 +2371,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="log_colls">
         <fields>
           <field>
@@ -2445,7 +2431,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="log_search">
         <fields>
           <field>
@@ -2642,10 +2627,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
       <table name="log_view">
         <fields>
           <field>
@@ -2743,10 +2724,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
       <table name="memcached">
         <fields>
           <field>
@@ -2808,7 +2785,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
       <table name="permalinks">
         <fields>
           <field>
@@ -2900,11 +2876,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
-
       <table name="pref">
         <fields>
           <field>
@@ -3507,12 +3478,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
-
-
       <table name="suggest">
         <fields>
           <field>
@@ -3559,11 +3524,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
-
       <table name="technical_datas">
 
         <fields>
@@ -3635,7 +3595,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
     </tables>
   </databox>
 </databases>

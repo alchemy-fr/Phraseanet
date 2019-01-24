@@ -13,12 +13,12 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
-use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
-use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\FilesystemRequirements;
-use Alchemy\Phrasea\Setup\Requirements\LocalesRequirements;
-use Alchemy\Phrasea\Setup\Requirements\PhpRequirements;
-use Alchemy\Phrasea\Setup\Requirements\SystemRequirements;
+use App\Setup\RequirementCollectionInterface;
+use App\Setup\Requirements\BinariesRequirements;
+use App\Setup\Requirements\FilesystemRequirements;
+use App\Setup\Requirements\LocalesRequirements;
+use App\Setup\Requirements\PhpRequirements;
+use App\Setup\Requirements\SystemRequirements;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,9 +26,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class SetupController extends Controller
 {
-
-
-
 
     public function rootInstaller(Request $request)
     {

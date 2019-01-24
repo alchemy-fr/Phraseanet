@@ -62,3 +62,11 @@ services:
     databox.repository:
         class: App\Databox\DbalDataboxRepository
         public: true
+
+    events.manager:
+        class: App\Utils\eventsmanager\eventsmanager_broker
+        public: true
+
+    conf:
+        class: App\Utils\Conf
+        public: true

@@ -11,7 +11,6 @@ namespace App\Utils;
  * file that was distributed with this source code.
  */
 
-use Alchemy\Phrasea\Application;
 use App\Core\Connection\ConnectionSettings;
 use App\Core\Database\DatabaseMaintenanceService;
 use App\Core\Version as PhraseaVersion;
@@ -52,11 +51,6 @@ abstract class base implements cache_cacheableInterface
     protected $connection;
 
     /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
      * @var PhraseaVersion\VersionRepository
      */
     protected $versionRepository;
@@ -64,16 +58,13 @@ abstract class base implements cache_cacheableInterface
     private $container;
 
     /**
-     //* @param Application $application
      * @param Connection $connection
      * @param ConnectionSettings $connectionSettings
      * @param PhraseaVersion\VersionRepository $versionRepository
      * @param ContainerInterface $container
      */
-    //public function __construct(Application $application, Connection $connection, ConnectionSettings $connectionSettings, PhraseaVersion\VersionRepository $versionRepository, ContainerInterface $container)
     public function __construct(Connection $connection, ConnectionSettings $connectionSettings, PhraseaVersion\VersionRepository $versionRepository, ContainerInterface $container)
     {
-        //$this->app = $application;
         $this->connection = $connection;
         $this->connectionSettings = $connectionSettings;
         $this->versionRepository = $versionRepository;
@@ -166,7 +157,7 @@ abstract class base implements cache_cacheableInterface
     public function get_data_from_cache($option = null)
     {
         if ($this->get_base_type() == self::DATA_BOX) {
-            \cache_databox::refresh($this->app, $this->id);
+            \App\Utils\cache_databox::refresh($this->app, $this->id);
         }
 
         $data = $this->get_cache()->get($this->get_cache_key($option));
@@ -255,26 +246,22 @@ abstract class base implements cache_cacheableInterface
             throw new \Exception('Unknown schema type');
         }
 
+
         return $this;
     }
 
     /**
-     * @return base
+     * @return \App\Utils\base
      */
     public function insert_datas()
     {
         $this->load_schema();
 
-        //$service = new DatabaseMaintenanceService($this->app, $this->connection);
-
-        $service = $this->container->get('database.maintenance.service');
-
+        $service = new DatabaseMaintenanceService($this->connection, $this->container);
 
         foreach ($this->get_schema()->tables->table as $table) {
             $service->createTable($table);
         }
-
-        //$this->setVersion($this->app['phraseanet.version']);
 
         $this->setVersion($this->container->get('phraseanet.version'));
 
@@ -283,7 +270,7 @@ abstract class base implements cache_cacheableInterface
 
     public function apply_patches($from, $to, $post_process)
     {
-        $service = new DatabaseMaintenanceService($this->app, $this->connection);
+        $service = new DatabaseMaintenanceService($this->connection, $this->container);
 
         return $service->applyPatches($this, $from, $to, $post_process);
     }

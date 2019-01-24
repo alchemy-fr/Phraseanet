@@ -12,37 +12,39 @@ namespace App\Utils;
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Collection\CollectionRepositoryRegistry;
+use App\Collection\CollectionRepositoryRegistry;
 use App\Core\Connection\ConnectionSettings;
-use Alchemy\Phrasea\Core\PhraseaTokens;
-use Alchemy\Phrasea\Core\Thumbnail\ThumbnailedElement;
+use App\Core\PhraseaTokens;
+use App\Core\Thumbnail\ThumbnailedElement;
 use App\Core\Version\AppboxVersionRepository;
 use App\Core\Version\DataboxVersionRepository;
 use App\Databox\DataboxRepository;
-use Alchemy\Phrasea\Databox\Record\RecordRepository;
-use Alchemy\Phrasea\Databox\SubdefGroup;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Status\StatusStructure;
-use Alchemy\Phrasea\Status\StatusStructureFactory;
+use App\Databox\Record\RecordRepository;
+use App\Databox\SubdefGroup;
+use App\Exception\InvalidArgumentException;
+use App\Entity\User;
+use App\Status\StatusStructure;
+use App\Status\StatusStructureFactory;
 use Doctrine\DBAL\Connection;
+
 use Doctrine\DBAL\Driver\Statement;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
-use Alchemy\Phrasea\Core\Event\Databox\DataboxEvents;
-use Alchemy\Phrasea\Core\Event\Databox\CreatedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\DeletedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\MountedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\ReindexAskedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\StructureChangedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\ThesaurusChangedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\TouChangedEvent;
-use Alchemy\Phrasea\Core\Event\Databox\UnmountedEvent;
+use App\Core\Event\Databox\DataboxEvents;
+use App\Core\Event\Databox\CreatedEvent;
+use App\Core\Event\Databox\DeletedEvent;
+use App\Core\Event\Databox\MountedEvent;
+use App\Core\Event\Databox\ReindexAskedEvent;
+use App\Core\Event\Databox\StructureChangedEvent;
+use App\Core\Event\Databox\ThesaurusChangedEvent;
+use App\Core\Event\Databox\TouChangedEvent;
+use App\Core\Event\Databox\UnmountedEvent;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Databox\DbalDataboxRepository;
 
 
@@ -67,6 +69,8 @@ class databox extends base implements ThumbnailedElement
     /** @var \SimpleXMLElement */
     protected static $_sxml_thesaurus = [];
 
+    private $container;
+
 
     /**
     //     * @param Application $app
@@ -77,6 +81,9 @@ class databox extends base implements ThumbnailedElement
     //public function __construct(Application $app, $sbas_id, DataboxRepository $databoxRepository, array $row)
     public function __construct($sbas_id,  array $row, ContainerInterface $container)
     {
+
+        $this->container = $container;
+
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
 
@@ -100,7 +107,6 @@ class databox extends base implements ThumbnailedElement
 //            $connectionConfig['password']
 //        );
 //
-//        $versionRepository = new DataboxVersionRepository($connection);
 //
 //        parent::__construct($app, $connection, $connectionSettings, $versionRepository);
 
@@ -134,14 +140,13 @@ class databox extends base implements ThumbnailedElement
 
 
     /**
-//     * @param Application $app
+     //* @param Application $app
      * @param Connection  $databoxConnection
      * @param \SplFileInfo $template
      * @param ContainerInterface
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    //public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
     public static function create(Connection $databoxConnection, \SplFileInfo $template, ContainerInterface $container)
     {
         $rp = $template->getRealPath();
@@ -156,6 +161,7 @@ class databox extends base implements ThumbnailedElement
         $password = $databoxConnection->getPassword();
 
         //$appbox = $app->getApplicationBox();
+        $appbox = new \App\Utils\appbox($container);
 
         try {
             $sql = 'CREATE DATABASE `' . $dbname . '` CHARACTER SET utf8 COLLATE utf8_unicode_ci';
@@ -182,8 +188,6 @@ class databox extends base implements ThumbnailedElement
         //phrasea::reset_sbasDatas($app['phraseanet.appbox']);
 
         /** @var DataboxRepository $databoxRepository */
-       // $databoxRepository = $app['repo.databoxes'];
-
         $databoxRepository = $container->get('databox.repository');
 
         $databox = $databoxRepository->create($host, $port, $user, $password, $dbname);
@@ -196,7 +200,6 @@ class databox extends base implements ThumbnailedElement
 //        );
 
         //$app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
-
 
         return $databox;
     }
