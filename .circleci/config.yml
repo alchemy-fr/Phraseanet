@@ -50,7 +50,8 @@ jobs:
 
     - run: sudo cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
-    - run: sudo pecl channel-update pear.php.net
+    # 20192401 disabled because pear.php.net is down cause of security failure 
+    #- run: sudo pecl channel-update pear.php.net
 
     - run: sudo apt-get install librabbitmq-dev
     - run: git clone https://github.com/alanxz/rabbitmq-c
