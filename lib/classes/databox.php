@@ -446,7 +446,6 @@ class databox extends base implements ThumbnailedElement
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
-                    , databox_field::TYPE_TEXT
                 ]
             ) ? $type : databox_field::TYPE_STRING;
 
