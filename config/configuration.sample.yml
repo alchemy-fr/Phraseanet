@@ -102,7 +102,8 @@ main:
         caption: null
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        mxf: application/mxf
     checkers:
         -
             type: Checker\Sha256
