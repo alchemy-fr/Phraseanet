@@ -15,6 +15,7 @@ var bodySize = {
     y: 0
 };
 
+var selectedFacets = {};
 var facets = null;
 
 var lastFilterResults = [];
@@ -38,7 +39,7 @@ function getHome(cas, page) {
 
     switch (cas) {
         case 'QUERY':
-            selectedFacetValues = [];
+            selectedFacets = {};
             newSearch($("#EDIT_query").val());
             break;
         case 'PUBLI':
@@ -527,7 +528,7 @@ function initAnswerForm() {
 
     var searchForm = $('#searchForm');
     $('button[type="submit"]', searchForm).bind('click', function () {
-        selectedFacetValues = [];
+        selectedFacets = {};
         newSearch($("#EDIT_query").val());
         return false;
     });
@@ -539,7 +540,7 @@ function initAnswerForm() {
         loadFacets(lastFilterResults);
 
         var data = $this.serializeArray();
-        var jsonData = serializeJSON(data, selectedFacetValues, facets);
+        var jsonData = serializeJSON(data, selectedFacets, facets);
         var qry = buildQ(jsonData.query);
 
         data.push({
@@ -637,15 +638,6 @@ function initAnswerForm() {
     }
 }
 
-/*
- selectedFacetValues[]
- key : facet.name
- value : {
- 'value' : facet.value,
- 'mode' : "AND"|"EXCEPT"
- }
- */
-var selectedFacetValues = [];
 var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 var tokens = [['[',']']];
 
@@ -671,18 +663,61 @@ function loadFacets(facets) {
     var treeSource = _.map(facets, function(facet) {
         // Values
         var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
-            return {
-                title: value.value + ' (' + value.count + ')',
-                query: value.query,
-                label: value.value,
-                tooltip: value.value + ' (' + value.count + ')'
+            var type = facet.type;     // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
+            // patch "color" type values
+            var textLimit = 15;     // cut long values (set to 0 to not cut)
+            var text = (value.value).toString();
+            var label = text;
+            var title = text;
+            var tooltip = text;
+            var match = text.match(/^(.*)\[#([0-9a-fA-F]{6})].*$/);
+            if(match && match[2] != null) {
+                // text looks like a color !
+                var colorCode = '#' + match[2];
+                // add color circle and remove color code from text;
+                var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
+                if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
+                    textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
+                }
+                // patch
+                type = "COLOR-AGGREGATE";
+                label = textWithoutColorCode;
+                tooltip = _.escape(textWithoutColorCode);
+                title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
             }
+            else {
+                // keep text as it is, just cut if too long
+                if (textLimit > 0 && text.length > textLimit) {
+                    text = text.substring(0, textLimit) + '…';
+                }
+                label = text;
+                title = tooltip = _.escape(text);
+            }
+
+            return {
+                // custom data
+                query:     value.query,
+                field:     facet.field,
+                raw_value: value.raw_value,
+                value:     value.value,
+                label:     label + ' (' + value.count + ')',    // displayed when selected (blue/red), escape is done later (render)
+                type:      type,              // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value
+                count:     value.count,
+                // jquerytree data
+                title:     title + ' (' + value.count + ')',
+                tooltip:   tooltip + ' (' + value.count + ')'
+            };
         });
         // Facet
         return {
-            name: facet.name,
-            title: facet.label,
-            folder: true,
+            // custom data
+            field:    facet.field,
+            label:    facet.label,
+            name:     facet.name,
+            type:     facet.type,
+            // jquerytree data
+            title:    facet.label,
+            folder:   true,
             children: values,
             expanded: !_.some(facetStatus, function(o) { return _.has(o, facet.name)})
         };
@@ -698,7 +733,7 @@ function loadFacets(facets) {
         treeSource = shouldFilterSingleContent(treeSource, filterFacet);
     }
 
-    treeSource = parseColors(treeSource);
+    // treeSource = parseColors(treeSource);
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
@@ -724,7 +759,7 @@ function loadFacets(facets) {
             });
         });
 }
-
+/*
 function parseColors(source) {
     _.forEach(source, function(facet) {
         if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
@@ -759,16 +794,17 @@ function formatColorText(string) {
         return string;
     }
 }
+*/
 
 function shouldFilterSingleContent(source, shouldFilter) {
     var filteredSource = [];
     if(shouldFilter == true) {
         _.forEach(source, function(facet) {
             //close expansion for facet containing selected values
-            // if(!_.isUndefined(selectedFacetValues[facet.title])) {
+            // if(!_.isUndefined(selectedFacets[facet.title])) {
             //     facet.expanded = false;
             // }
-            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
+            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.title]))) {
                 filteredSource.push(facet);
             }
         });
@@ -820,28 +856,30 @@ function getFacetsTree() {
             clickFolderMode: 3, // activate and expand
             icons:false,
             source: [],
+
             activate: function(event, data){
-                var query = data.node.data.query;
                 var eventType = event.originalEvent;
                 //if user did not click, then no need to perform any query
                 if(eventType == null) {
                     return;
                 }
-                if (query) {
-                    var facet = data.node.parent;
-                    var facetData = {
-                        value: data.node.data,
-                        mode: event.altKey ? "EXCEPT" : "AND"
-                    };
+                var facet = data.node.parent;
+                var facetData = {
+                    value:   data.node.data,
+                    enabled: true,
+                    negated: event.altKey // ,
+                    // mode:    event.altKey ? "EXCEPT" : "AND"
+                };
 
-                    if (selectedFacetValues[facet.title] == null) {
-                        selectedFacetValues[facet.title] = [];
-                    }
-                    selectedFacetValues[facet.title].push(facetData);
-                    $('#searchForm').submit();
+                if (selectedFacets[facet.title] == null) {
+                    selectedFacets[facet.title] = facet.data;
+                    selectedFacets[facet.title].values = [];
                 }
+                selectedFacets[facet.title].values.push(facetData);
+
+                $('#searchForm').submit();
             },
-            
+
             collapse: function (event, data) {    
                 var dict = {};    
                 dict[data.node.data.name] = "collapse";    
@@ -851,6 +889,7 @@ function getFacetsTree() {
                 facetStatus.push(dict);    
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
+
             expand: function (event, data) {
             var dict = {};    
                 dict[data.node.data.name] = "collapse";    
@@ -859,95 +898,105 @@ function getFacetsTree() {
                 }    
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
+
             renderNode: function(event, data){
-                var facetFilter = "";
-                if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
-                        var dataNode = document.createElement('div');
-                        dataNode.setAttribute("class", "dataNode");
-                        $(".fancytree-folder", data.node.li).append(
-                            dataNode
-                        );
-                    } else {
-                        //remove existing facets
-                        $(".dataNode", data.node.li).empty();
-                    }
-                    _.each(selectedFacetValues[data.node.title], function (facetValue) {
+                var label = "";
+                if(data.node.folder) {
+                    // here we render a "fieldname" level
+                    if (!_.isUndefined(selectedFacets[data.node.title])) {
+                        // here the field already contains selected facetvalues (to be rendered blue or red)
+                        if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
+                            var dataNode = document.createElement('div');
+                            dataNode.setAttribute("class", "dataNode");
+                            $(".fancytree-folder", data.node.li).append(
+                                dataNode
+                            );
+                        } else {
+                            //remove existing facets
+                            $(".dataNode", data.node.li).empty();
+                        }
+                        _.each(selectedFacets[data.node.title].values, function (facetValue) {
 
-                        facetFilter = facetValue.value.label;
+                            label = facetValue.value.label;
 
-                        var s_label = document.createElement("SPAN");
-                        s_label.setAttribute("class", "facetFilter-label");
-                        s_label.setAttribute("title", facetFilter);
+                            var s_label = document.createElement("SPAN");
+                            s_label.setAttribute("class", "facetFilter-label");
+                            s_label.setAttribute("title", label);
 
-                        var length = 15;
-                        var facetFilterString = formatColorText(facetFilter.toString(), length);
+                            /*
+                            var labelString = label.toString();
+                            _.each($.parseHTML(labelString), function (elem) {
+                                s_label.appendChild(elem);
+                            });
+                            */
+                            // label is a string ; todo : count may be obsolete when ux is restored ? for now don't print
+                            s_label.appendChild(document.createTextNode(label)); // + ' (' + facetValue.value.count + ')');
 
-                        _.each($.parseHTML(facetFilterString), function (elem) {
-                            s_label.appendChild(elem);
-                        });
+                            var s_gradient = document.createElement("SPAN");
+                            s_gradient.setAttribute("class", "facetFilter-gradient");
+                            s_gradient.appendChild(document.createTextNode("\u00A0"));
 
-                        var s_closer = document.createElement("A");
-                        s_closer.setAttribute("class", "facetFilter-closer");
+                            s_label.appendChild(s_gradient);
 
-                        var s_gradient = document.createElement("SPAN");
-                        s_gradient.setAttribute("class", "facetFilter-gradient");
-                        s_gradient.appendChild(document.createTextNode("\u00A0"));
+                            var s_facet = document.createElement("SPAN");
+                            s_facet.setAttribute("class", "facetFilter_" + (facetValue.negated ? "EXCEPT" : "AND"));
+                            s_facet.appendChild(s_label);
 
-                        s_label.appendChild(s_gradient);
+                            var s_closer = document.createElement("A");
+                            s_closer.setAttribute("class", "facetFilter-closer");
+                            s_closer = $(s_facet.appendChild(s_closer));
 
-                        var s_facet = document.createElement("SPAN");
-                        s_facet.setAttribute("class", "facetFilter" + '_' + facetValue.mode);
-                        s_facet.appendChild(s_label);
-                        s_closer = $(s_facet.appendChild(s_closer));
-
-                        s_closer.click(
-                            function (event) {
-                                event.stopPropagation();
-                                var facetTitle = $(this).parent().data("facetTitle");
-                                var facetFilter = $(this).parent().data("facetFilter");
-                                var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
-                                selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
-                                    return (obj.value.label == facetFilter && obj.mode == mode);
-                                });
-                                //delete selectedFacetValues[facetTitle];
-                                $('#searchForm').submit();
-                                return false;
-                            }
-                        );
-
-                        var newNode = document.createElement('div');
-                        newNode.setAttribute("class", "newNode");
-                        s_facet = $(newNode.appendChild(s_facet));
-                        s_facet.data("facetTitle", data.node.title);
-                        s_facet.data("facetFilter", facetFilter);
-
-                        $(".fancytree-folder .dataNode", data.node.li).append(
-                            newNode
-                        );
-
-                        s_facet.click(
-                            function (event) {
-                                if (event.altKey) {
+                            s_closer.click(
+                                function (event) {
                                     event.stopPropagation();
-                                    var facetTitle = $(this).data("facetTitle");
-                                    var facetFilter = $(this).data("facetFilter");
-                                    var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
-                                    var found = _.find(selectedFacetValues[facetTitle], function (obj) {
-                                        return (obj.value.label == facetFilter && obj.mode == mode);
+                                    var facetTitle   = $(this).parent().data("facetTitle");
+                                    var facetLabel   = $(this).parent().data("facetLabel");
+                                    var facetNegated = $(this).parent().data("facetNegated");
+                                    selectedFacets[facetTitle].values = _.reject(selectedFacets[facetTitle].values, function (facetValue) {
+                                        return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
                                     });
-                                    if (found) {
-                                        var newMode = mode == "EXCEPT" ? "AND" : "EXCEPT";
-                                        found.mode = newMode;
-                                        //replace class attr
-                                        $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
-                                        $('#searchForm').submit();
-                                    }
+
+                                    $('#searchForm').submit();
+                                    return false;
                                 }
-                                return false;
-                            }
-                        );
-                    });
+                            );
+
+                            var newNode = document.createElement('div');
+                            newNode.setAttribute("class", "newNode");
+                            s_facet = $(newNode.appendChild(s_facet));
+                            s_facet.data("facetTitle",   data.node.title);
+                            s_facet.data("facetLabel",   label);
+                            s_facet.data("facetNegated", facetValue.negated);
+
+                            $(".fancytree-folder .dataNode", data.node.li).append(
+                                newNode
+                            );
+
+                            s_facet.click(
+                                function (event) {
+                                    if (event.altKey) {
+                                        event.stopPropagation();
+                                        var facetTitle   = $(this).data("facetTitle");
+                                        var facetLabel   = $(this).data("facetLabel");
+                                        var facetNegated = $(this).data("facetNegated");
+                                        var found = _.find(selectedFacets[facetTitle].values, function (facetValue) {
+                                            return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
+                                        });
+                                        if (found) {
+                                            found.negated = !found.negated;
+                                            //replace class attr
+                                            $(this).replaceClass($(this).attr('class'), "facetFilter_" + (found.negated ? "EXCEPT" : "AND"));
+                                            $('#searchForm').submit();
+                                        }
+                                    }
+                                    return false;
+                                }
+                            );
+                        });
+                    }
+                    else {
+                        // here we render a facet value
+                    }
                 }
             }
         });
@@ -1093,7 +1142,7 @@ function restoreJsonQuery() {
     AdvSearchAddNewTerm(clause.clauses.length);
 }
 
-function serializeJSON(data, selectedFacetValues, facets) {
+function serializeJSON(data, selectedFacets, facets) {
     var json = {},
         obj = {},
         bases = [],
@@ -1159,45 +1208,15 @@ function serializeJSON(data, selectedFacetValues, facets) {
         });
     });
 
-
-    $(facets).each(function(i, el) {
-
-        var facetFilterTitle = el.label,
-            facetType = el.type,
-            facetField = el.field,
-            facetRawVal,
-            facetQuery,
-            negated = false,
-            enabled = true
-            ;
-
-        $('.fancytree-node.fancytree-folder').each(function (i, node) {
-            var nodeTitile = $(node).find('.fancytree-title').text();
-            if (nodeTitile === facetFilterTitle) {
-                if ($(node).find('[class^="facetFilter_"]').is('[class$="_EXCEPT"]')) {
-                    negated = true;
-                }
-            }
-        });
-
-
-        _.each(selectedFacetValues[facetFilterTitle], function(facet) {
-            var query = facet.value.query;
-            for (var i = 0; i < el.values.length; i++) {
-                if (el.values[i].query === query) {
-                    facetRawVal = el.values[i].raw_value;
-                    facetQuery = el.values[i].query;
-                }
-            }
-            if(facetQuery === query) {
-                aggregates.push({
-                    'type': facetType,
-                    'field': facetField,
-                    'value': facetRawVal,
-                    'negated': negated,
-                    'enabled': enabled
-                });
-            }
+    _.each(selectedFacets, function(facets, field) {
+        _.each(facets.values, function(facetValue) {
+            aggregates.push({
+                'type':    facetValue.value.type,
+                'field':   facetValue.value.field,
+                'value':   facetValue.value.raw_value,
+                'negated': facetValue.negated,
+                'enabled': facetValue.enabled
+            });
         });
     });
 
@@ -1300,7 +1319,7 @@ function buildQ(clause) {
                 // no "yes" clauses
                 if(t_neg.length > 0) {
                     // only "neg" clauses
-                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ONE" ? " OR " : " AND ") + "))";
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ALL" ? " OR " : " AND ") + "))";
                 }
                 else {
                     // no clauses at all
@@ -3065,7 +3084,7 @@ function doSpecialSearch(qry, allbase) {
     if (allbase) {
         checkBases(true);
     }
-    selectedFacetValues = [];
+    selectedFacets = {};
     $('#EDIT_query').val(decodeURIComponent(qry).replace(/\+/g, " "));
     newSearch(qry);
 }
