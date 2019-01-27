@@ -18,8 +18,6 @@ var bodySize = {
 var selectedFacets = {};
 var facets = null;
 
-var lastFilterResults = [];
-
 var ORDER_BY_BCT = "ORDER_BY_BCT";
 var ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
 var ORDER_BY_HITS = "ORDER_BY_HITS";
@@ -152,19 +150,16 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    // var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
-    // var scroll = fieldsSelect.scrollTop();
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
 
     // hide all the fields in the "fields" select, so only the relevant ones will be shown again
-    // $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
     $("option.dbx", fieldsSelectFake).prop("disabled", true);
-    // JY : disable the whole select
+    // disable the whole select
     $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_field', container).enable(false);
     $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_op', container).enable(false);
     $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper input.term_select_value', container).enable(false);
@@ -230,9 +225,8 @@ function checkFilters(save) {
             // show again the relevant fields in "sort by" select
             $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
-            //$(".db_"+sbas_id, fieldsSelect).prop("disabled", false);
             $(".db_"+sbas_id, fieldsSelectFake).prop("disabled", false);
-            // JY : enable again the whole select, only if the selected option (field name) is relevant for this db
+            // enable again the whole select, only if the selected option (field name) is relevant for this db
             $("option.db_"+sbas_id+":selected", fieldsSelectFake).closest("select").enable(true);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
@@ -241,8 +235,7 @@ function checkFilters(save) {
         }
     });
 
-    // JY: enable also the select if the first option ("choose:") was selected
-    //$("option:first:selected", fieldsSelectFake).enable(true);
+    // enable also the select if the first option ("choose:") was selected
     fieldsSelectFake.each(function(e) {
         var $this = $(this);
         var term_ok = $('option:selected:enabled', $this).closest(".term_select_wrapper");
@@ -274,35 +267,6 @@ function checkFilters(save) {
 
     search.elasticSort.by = $("option:selected:enabled", fieldsSort).val();
     search.elasticSort.order = $("option:selected:enabled", fieldsSortOrd).val();
-
-    //--------- from fields filter ---------
-
-    // unselect the unavailable fields (or all fields if "all" is selected)
-    /*
-    var optAllSelected = false;
-    $("option", fieldsSelect).each(
-        function(idx, opt) {
-            if(idx == 0) {
-                // nb: unselect the "all" field, so it acts as a button
-                optAllSelected = $(opt).is(":selected");
-            }
-            if (idx == 0 || optAllSelected || $(opt).is(":disabled") || $(opt).css('display') === 'none') {
-                $(opt).prop("selected", false);
-            }
-        }
-    );
-
-    // here only the relevant fields are selected
-    search.fields = fieldsSelect.val();
-    if(search.fields == null || search.fields.length == 0) {
-        $('#ADVSRCH_FIELDS_ZONE', container).removeClass('danger');
-        search.fields = [];
-    }
-    else {
-        $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
-        danger = true;
-    }
-    */
 
     //--------- status bits filter ---------
 
@@ -342,8 +306,6 @@ function checkFilters(save) {
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
         }
     }
-
-    // fieldsSelect.scrollTop(scroll);
 
     // if one filter shows danger, show it on the query
     if (danger) {
@@ -537,8 +499,6 @@ function initAnswerForm() {
         var $this = $(this),
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
-        loadFacets(lastFilterResults);
-
         var data = $this.serializeArray();
         var jsonData = serializeJSON(data, selectedFacets, facets);
         var qry = buildQ(jsonData.query);
@@ -588,13 +548,11 @@ function initAnswerForm() {
                 });
 
                 //load last result collected or [] if length == 0
-                if (datas.facets) {
-                    if (datas.facets.length > 0) {
-                        lastFilterResults = datas.facets;
-                        loadFacets(datas.facets);
-                    }
-                    facets = datas.facets;
+                if(!datas.facets) {
+                    datas.facets = [];
                 }
+                facets = datas.facets;
+                loadFacets(facets);
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -641,10 +599,30 @@ function initAnswerForm() {
 var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 var tokens = [['[',']']];
 
+/**
+ *  add missing selected facets fields into "facets", from "selectedFacets"
+ *  why : because if we negates all values for a facet field (all red), the facet will disapear from next query->answers
+ *        (not in "facets" anymore, not in ux). So we lose the posibility to delete or invert a facet value.
+ *  nb : negating all facets values does not mean there will be 0 results, because the field can be empty for some records.
+ */
+function facetsAddMissingSelected(_selectedFacets, _facets) {
+    _.each(_selectedFacets, function (v, k) {
+        // todo : "facets" is an array (no key), change to a k->v (same structure as "selectedFacets")
+        //        too bad for now, we must lookup...
+        var found = _.find(_facets, function (facet) {
+            return (facet.field == k);
+        });
+        if(!found) {
+            var i = _facets.push(_.clone(v)); // add a "fake" facet to facets
+            _facets[i-1].values = [];      // with no values
+        }
+    });
+}
+
 function loadFacets(facets) {
 
-    //get properties of facets
-    var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
+    //get facets settings
+    var hideSingleValueFacet_setting = $('#look_box_settings input[name=filter_facet]').prop('checked');
     var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
     var facetValueOrder = $('#look_box_settings select[name=facetValuesOrder]').val();
 
@@ -659,6 +637,8 @@ function loadFacets(facets) {
         }
     }
 
+    facetsAddMissingSelected(selectedFacets, facets); // add missing facets fields into "facets" from "selectedFacets"
+
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
@@ -667,9 +647,7 @@ function loadFacets(facets) {
             // patch "color" type values
             var textLimit = 15;     // cut long values (set to 0 to not cut)
             var text = (value.value).toString();
-            var label = text;
-            var title = text;
-            var tooltip = text;
+            var label = title = tooltip = text;
             var match = text.match(/^(.*)\[#([0-9a-fA-F]{6})].*$/);
             if(match && match[2] != null) {
                 // text looks like a color !
@@ -700,7 +678,7 @@ function loadFacets(facets) {
                 field:     facet.field,
                 raw_value: value.raw_value,
                 value:     value.value,
-                label:     label + ' (' + value.count + ')',    // displayed when selected (blue/red), escape is done later (render)
+                label:     label,             // displayed when selected (blue/red), escape is done later (render)
                 type:      type,              // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value
                 count:     value.count,
                 // jquerytree data
@@ -711,9 +689,9 @@ function loadFacets(facets) {
         // Facet
         return {
             // custom data
+            name:     facet.name,
             field:    facet.field,
             label:    facet.label,
-            name:     facet.name,
             type:     facet.type,
             // jquerytree data
             title:    facet.label,
@@ -729,11 +707,9 @@ function loadFacets(facets) {
         treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
     }
 
-    if(filterFacet == true) {
-        treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    if(hideSingleValueFacet_setting == true) {
+        treeSource = hideSingleValueFacet(treeSource);
     }
-
-    // treeSource = parseColors(treeSource);
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
@@ -759,57 +735,21 @@ function loadFacets(facets) {
             });
         });
 }
-/*
-function parseColors(source) {
+
+/**
+ * hide facets with only one value (experimental)
+ *
+ * @param source    treesource
+ * @returns {*}
+ */
+function hideSingleValueFacet(source) {
+    var filteredSource = [];
     _.forEach(source, function(facet) {
-        if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
-            _.forEach(facet.children, function(child) {
-                var title = child.title;
-                child.title = formatColorText(title.toString());
-            });
+        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.data.field]))) {
+            filteredSource.push(facet);
         }
     });
-    return source;
-}
-
-function formatColorText(string) {
-    var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    //get color code from text if exist
-    var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
-
-
-    var match = string.match(regexp);
-    if(match && match[2] != null) {
-        var colorCode = '#' + match[2];
-        // //add color circle and re move color code from text;
-         var textWithoutColorCode = string.replace('[' + colorCode + ']','');
-         if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
-            textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
-         }
-         return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
-    } else {
-        if (textLimit > 0 && string.length > textLimit) {
-            string = string.substring(0, textLimit) + '…';
-        }
-        return string;
-    }
-}
-*/
-
-function shouldFilterSingleContent(source, shouldFilter) {
-    var filteredSource = [];
-    if(shouldFilter == true) {
-        _.forEach(source, function(facet) {
-            //close expansion for facet containing selected values
-            // if(!_.isUndefined(selectedFacets[facet.title])) {
-            //     facet.expanded = false;
-            // }
-            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.title]))) {
-                filteredSource.push(facet);
-            }
-        });
-        source = filteredSource;
-    }
+    source = filteredSource;
 
     return source;
 }
@@ -858,6 +798,7 @@ function getFacetsTree() {
             source: [],
 
             activate: function(event, data){
+                //var query = data.node.data.query;
                 var eventType = event.originalEvent;
                 //if user did not click, then no need to perform any query
                 if(eventType == null) {
@@ -871,31 +812,31 @@ function getFacetsTree() {
                     // mode:    event.altKey ? "EXCEPT" : "AND"
                 };
 
-                if (selectedFacets[facet.title] == null) {
-                    selectedFacets[facet.title] = facet.data;
-                    selectedFacets[facet.title].values = [];
+                if (selectedFacets[facet.data.field] == null) {
+                    selectedFacets[facet.data.field] = facet.data;
+                    selectedFacets[facet.data.field].values = [];
                 }
-                selectedFacets[facet.title].values.push(facetData);
+                selectedFacets[facet.data.field].values.push(facetData);
 
                 $('#searchForm').submit();
             },
 
-            collapse: function (event, data) {    
-                var dict = {};    
-                dict[data.node.data.name] = "collapse";    
+            collapse: function (event, data) {
+                var dict = {};
+                dict[data.node.data.name] = "collapse";
                 if(_.findWhere(facetStatus, dict) !== undefined ) {
-                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict)) 
-                }    
-                facetStatus.push(dict);    
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))
+                }
+                facetStatus.push(dict);
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
 
             expand: function (event, data) {
-            var dict = {};    
-                dict[data.node.data.name] = "collapse";    
-                if (_.findWhere(facetStatus, dict) !== undefined) {         
-                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))     
-                }    
+                var dict = {};
+                dict[data.node.data.name] = "collapse";
+                if (_.findWhere(facetStatus, dict) !== undefined) {
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))
+                }
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
 
@@ -903,7 +844,7 @@ function getFacetsTree() {
                 var label = "";
                 if(data.node.folder) {
                     // here we render a "fieldname" level
-                    if (!_.isUndefined(selectedFacets[data.node.title])) {
+                    if (!_.isUndefined(selectedFacets[data.node.data.field])) {
                         // here the field already contains selected facetvalues (to be rendered blue or red)
                         if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
                             var dataNode = document.createElement('div');
@@ -915,7 +856,7 @@ function getFacetsTree() {
                             //remove existing facets
                             $(".dataNode", data.node.li).empty();
                         }
-                        _.each(selectedFacets[data.node.title].values, function (facetValue) {
+                        _.each(selectedFacets[data.node.data.field].values, function (facetValue) {
 
                             label = facetValue.value.label;
 
@@ -949,10 +890,10 @@ function getFacetsTree() {
                             s_closer.click(
                                 function (event) {
                                     event.stopPropagation();
-                                    var facetTitle   = $(this).parent().data("facetTitle");
+                                    var facetField   = $(this).parent().data("facetField");
                                     var facetLabel   = $(this).parent().data("facetLabel");
                                     var facetNegated = $(this).parent().data("facetNegated");
-                                    selectedFacets[facetTitle].values = _.reject(selectedFacets[facetTitle].values, function (facetValue) {
+                                    selectedFacets[facetField].values = _.reject(selectedFacets[facetField].values, function (facetValue) {
                                         return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
                                     });
 
@@ -964,7 +905,7 @@ function getFacetsTree() {
                             var newNode = document.createElement('div');
                             newNode.setAttribute("class", "newNode");
                             s_facet = $(newNode.appendChild(s_facet));
-                            s_facet.data("facetTitle",   data.node.title);
+                            s_facet.data("facetField",   data.node.data.field);
                             s_facet.data("facetLabel",   label);
                             s_facet.data("facetNegated", facetValue.negated);
 
@@ -976,10 +917,10 @@ function getFacetsTree() {
                                 function (event) {
                                     if (event.altKey) {
                                         event.stopPropagation();
-                                        var facetTitle   = $(this).data("facetTitle");
+                                        var facetField   = $(this).data("facetField");
                                         var facetLabel   = $(this).data("facetLabel");
                                         var facetNegated = $(this).data("facetNegated");
-                                        var found = _.find(selectedFacets[facetTitle].values, function (facetValue) {
+                                        var found = _.find(selectedFacets[facetField].values, function (facetValue) {
                                             return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
                                         });
                                         if (found) {
@@ -1005,8 +946,7 @@ function getFacetsTree() {
     return $facetsTree.fancytree('getTree');
 }
 
-function findClauseBy_ux_zone(clause, ux_zone)
-{
+function findClauseBy_ux_zone(clause, ux_zone) {
     if(typeof clause._ux_zone != 'undefined' && clause._ux_zone === ux_zone) {
         return clause;
     }
@@ -1023,123 +963,218 @@ function findClauseBy_ux_zone(clause, ux_zone)
 
 function restoreJsonQuery() {
     var jsq = {
-        "sort": {
-            "field": "LastEditDate",
-            "order": "asc"
+        "sort":{
+            "field":"created_on",
+            "order":"desc"
         },
-        "perpage": 100,
-        "page": 1,
-        "use_truncation": false,
-        "phrasea_recordtype": "RECORD",
-        "phrasea_mediatype": "",
-        "bases": [
+        "perpage":100,
+        "page":1,
+        "use_truncation":false,
+        "phrasea_recordtype":"RECORD",
+        "phrasea_mediatype":"",
+        "bases":[
+            394,
+            395,
+            396,
+            397,
+            398,
+            399,
+            1,
+            341,
+            369,
+            371,
+            372,
+            373,
+            375,
+            376,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            387,
+            388,
+            389,
+            390,
+            391,
+            392,
             393
         ],
-        "statuses": [
-            {
-                "databox": "2",
-                "status": [
-                    {
-                        "index": "4",
-                        "value": false
-                    }
-                ]
-            }
+        "statuses":[
+
         ],
-        "query": {
-            "_ux_zone": "PROD",
-            "type": "CLAUSES",
-            "must_match": "ALL",
-            "enabled": true,
-            "clauses": [
+        "query":{
+            "_ux_zone":"PROD",
+            "type":"CLAUSES",
+            "must_match":"ALL",
+            "enabled":true,
+            "clauses":[
                 {
-                    "_ux_zone": "FULLTEXT",
-                    "type": "FULLTEXT",
-                    "value": "nikon",
-                    "enabled": true
+                    "_ux_zone":"FULLTEXT",
+                    "type":"FULLTEXT",
+                    "value":"",
+                    "enabled":false
                 },
                 {
-                    "_ux_zone": "FIELDS",
-                    "type": "CLAUSES",
-                    "must_match": "ONE",
-                    "enabled": true,
-                    "clauses": [
-                        {
-                            "type": "TEXT-FIELD",
-                            "field": "field.CameraDevice",
-                            "operator": ":",
-                            "value": "d300",
-                            "enabled": true
-                        },
-                        {
-                            "type": "TEXT-FIELD",
-                            "field": "field.Format",
-                            "operator": "=",
-                            "value": "image/jpeg",
-                            "enabled": true
-                        }
+                    "_ux_zone":"FIELDS",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":false,
+                    "clauses":[
+
                     ]
                 },
                 {
-                    "type": "DATE-FIELD",
-                    "field": "",
-                    "from": "",
-                    "to": "",
-                    "enabled": false
+                    "type":"DATE-FIELD",
+                    "field":"",
+                    "from":"",
+                    "to":"",
+                    "enabled":false
                 },
                 {
-                    "_ux_zone": "AGGREGATES",
-                    "type": "CLAUSES",
-                    "must_match": "ALL",
-                    "enabled": true,
-                    "clauses": [
+                    "_ux_zone":"AGGREGATES",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":true,
+                    "clauses":[
                         {
-                            "type": "NUMBER-AGGREGATE",
-                            "field": "meta.ShutterSpeed",
-                            "value": 0.0080000003799796,
-                            "negated": false,
-                            "enabled": true
+                            "type":"STRING-AGGREGATE",
+                            "field":"field.MotsCles",
+                            "value":"ciel",
+                            "negated":false,
+                            "enabled":true
                         },
                         {
-                            "type": "NUMBER-AGGREGATE",
-                            "field": "meta.Aperture",
-                            "value": 14,
-                            "negated": false,
-                            "enabled": true
+                            "type":"STRING-AGGREGATE",
+                            "field":"field.MotsCles",
+                            "value":"Immeubles",
+                            "negated":true,
+                            "enabled":true
+                        },
+                        {
+                            "type":"NUMBER-AGGREGATE",
+                            "field":"meta.Aperture",
+                            "value":8,
+                            "negated":false,
+                            "enabled":true
                         }
                     ]
                 }
             ]
+        },
+        "_selectedFacets":{
+            "field.MotsCles":{
+                "name":"MotsCles",
+                "field":"field.MotsCles",
+                "label":"Mots Clés",
+                "type":"STRING-AGGREGATE",
+                "values":[
+                    {
+                        "value":{
+                            "query":"field.MotsCles:ciel",
+                            "field":"field.MotsCles",
+                            "raw_value":"ciel",
+                            "value":"ciel",
+                            "label":"ciel",
+                            "type":"STRING-AGGREGATE",
+                            "count":108
+                        },
+                        "enabled":true,
+                        "negated":false
+                    },
+                    {
+                        "value":{
+                            "query":"field.MotsCles:Immeubles",
+                            "field":"field.MotsCles",
+                            "raw_value":"Immeubles",
+                            "value":"Immeubles",
+                            "label":"Immeubles",
+                            "type":"STRING-AGGREGATE",
+                            "count":78
+                        },
+                        "enabled":true,
+                        "negated":true
+                    }
+                ]
+            },
+            "meta.Aperture":{
+                "name":"aperture_aggregate",
+                "field":"meta.Aperture",
+                "label":"Ouverture",
+                "type":"NUMBER-AGGREGATE",
+                "values":[
+                    {
+                        "value":{
+                            "query":"meta.Aperture=8",
+                            "field":"meta.Aperture",
+                            "raw_value":8,
+                            "value":8,
+                            "label":"8",
+                            "type":"NUMBER-AGGREGATE",
+                            "count":8
+                        },
+                        "enabled":true,
+                        "negated":false
+                    }
+                ]
+            }
         }
     };
 
-    // console.log(jsq);
-
     var clause;
 
+    // restore the "fulltext" input-text
     clause = findClauseBy_ux_zone(jsq.query, "FULLTEXT");
     $('#EDIT_query').val(clause.value);
 
-    // check one radio will uncheck siblings
-    $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'RECORD') ? '0' : '1') + '"]').prop('checked', true);
+    // restore the "records/stories" radios
+    $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'RECORD') ? '0' : '1') + '"]').prop('checked', true);  // check one radio will uncheck siblings
 
-    $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('checked', true);
+    // restore the "record type" menu (image, video, audio, ...)
+    $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('selected', true);
 
+    // restore the "use truncation" checkbox
     $('#ADVSRCH_USE_TRUNCATION').prop('checked', jsq.use_truncation);
 
+    // restore the "sort results" menus
     $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
     $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
 
+    // restore the "bases" checkboxes
     $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', false);
     for(var i=0; i<jsq.bases.length; i++) {
         $('#ADVSRCH_SBAS_ZONE INPUT.checkbas[value="' + jsq.bases[i] + '"]').attr('checked', true);
     }
 
+    // restore the multiples "fields" (field-menu + op-menu + value-input)
     clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
     $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
     $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper').remove();
+    for(var i=0; i<clause.clauses.length; i++) {
+        var wrapper = AdvSearchAddNewTerm(1);    // div.term_select_wrapper
+        // todo : restore content
+        var f = $(".term_select_field", wrapper);
+        var o = $(".term_select_op", wrapper);
+        var v = $(".term_select_value", wrapper);
 
-    AdvSearchAddNewTerm(clause.clauses.length);
+        f.data('fieldtype', clause.clauses[i].type);
+        $('option[value="' + clause.clauses[i].field + '"]', f).prop('selected', true);
+        $('option[value="' + clause.clauses[i].operator + '"]', o).prop('selected', true);
+        v.val(clause.clauses[i].value);
+    }
+
+    // restore the selected facets (whole saved as custom property)
+    selectedFacets = jsq._selectedFacets;
+
+    // the ux is restored, finish the job (display "danger")
+    checkFilters(false);
+
+    $('#searchForm').submit();
 }
 
 function serializeJSON(data, selectedFacets, facets) {
@@ -1149,7 +1184,7 @@ function serializeJSON(data, selectedFacets, facets) {
         statuses = [],
         fields = [],
         aggregates = []
-        ;
+    ;
 
     $.each(data, function(i, el) {
         obj[el.name] = el.value;
@@ -1208,7 +1243,7 @@ function serializeJSON(data, selectedFacets, facets) {
         });
     });
 
-    _.each(selectedFacets, function(facets, field) {
+    _.each(selectedFacets, function(facets) {
         _.each(facets.values, function(facetValue) {
             aggregates.push({
                 'type':    facetValue.value.type,
@@ -1270,6 +1305,7 @@ function serializeJSON(data, selectedFacets, facets) {
             }
         ]
     };
+    json['_selectedFacets'] = selectedFacets;
 
     return json;
 }
@@ -1356,7 +1392,7 @@ function buildQ(clause) {
         case "NUMBER-AGGREGATE":
             return clause.field + "=" + clause.value;
 
-        case "BOOL-AGGREGATE":
+        case "BOOLEAN-AGGREGATE":
             return clause.field + "=" + (clause.value ? '1' : '0');
 
         default :
