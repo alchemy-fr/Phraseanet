@@ -1080,6 +1080,14 @@ function restoreJsonQuery(jsq, submit) {
         }
     }
 
+    // restore the "date field" (field-menu + from + to)
+    clause = findClauseBy_ux_zone(jsq.query, "DATE-FIELD");
+    if(clause) {
+        $("#ADVSRCH_DATE_ZONE SELECT[name=date_field] option[value='" + clause.field + "']").prop('selected', true);
+        $("#ADVSRCH_DATE_ZONE INPUT[name=date_min]").val(clause.from);
+        $("#ADVSRCH_DATE_ZONE INPUT[name=date_max]").val(clause.to);
+    }
+
     // restore the selected facets (whole saved as custom property)
     if(!_.isUndefined(jsq._selectedFacets)) {
         selectedFacets = jsq._selectedFacets;
@@ -1207,6 +1215,7 @@ function serializeJSON(data, selectedFacets, facets) {
                 'clauses': fields
             },
             {
+                '_ux_zone': "DATE-FIELD",
                 "type": "DATE-FIELD",
                 "field": date_field,
                 "from": date_from,
