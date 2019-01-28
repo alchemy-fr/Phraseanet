@@ -366,21 +366,49 @@ function clearAnswers() {
 }
 
 function reset_adv_search() {
-    var container = $("#ADVSRCH_OPTIONS_ZONE");
-    var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
-    var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+    var jsq = {
+        "sort":{
+            "field":"created_on",
+            "order":"desc"
+        },
+        "use_truncation":false,
+        "phrasea_recordtype":"RECORD",
+        "phrasea_mediatype":"",
+        "bases":[ ],
+        "statuses":[ ],
+        "query":{
+            "_ux_zone":"PROD",
+            "type":"CLAUSES",
+            "must_match":"ALL",
+            "enabled":true,
+            "clauses":[
+                {
+                    "_ux_zone":"FIELDS",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":false,
+                    "clauses":[ ]
+                },
+                {
+                    "type":"DATE-FIELD",
+                    "field":"",
+                    "from":"",
+                    "to":"",
+                    "enabled":false
+                },
+                {
+                    "_ux_zone":"AGGREGATES",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":false,
+                    "clauses":[ ]
+                }
+            ]
+        },
+        "_selectedFacets":{ }
+    };
 
-    $("option.default-selection", fieldsSort).prop("selected", true);
-    $("option.default-selection", fieldsSortOrd).prop("selected", true);
-
-    $('#ADVSRCH_FIELDS_ZONE option').prop("selected", false);
-    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').prop("checked", false);
-
-    $("option:eq(0)", dateFilterSelect).prop("selected", true);
-    $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
-    $('form.adv_search_bind input:text').val('');
-    checkBases(true);
+    restoreJsonQuery(jsq, false);
 }
 
 
@@ -591,8 +619,27 @@ function initAnswerForm() {
         });
         return false;
     });
-    if (searchForm.hasClass('triggerAfterInit')) {
-        searchForm.removeClass('triggerAfterInit').trigger('submit');
+
+    // if defined, play the first query
+    //
+    try {
+        var jsq = $("#FIRST_QUERY_CONTAINER");
+        if(jsq.length > 0) {
+            // there is a query to play
+            if(jsq.data('format') === "json") {
+                // json
+                jsq = JSON.parse(jsq.text());
+                restoreJsonQuery(jsq, true);
+            }
+            else {
+                // text : do it the old way : restore only fulltext and submit
+                searchForm.trigger('submit');
+            }
+        }
+    }
+    catch (e) {
+        // malformed jsonquery ?
+        // no-op
     }
 }
 
@@ -864,12 +911,6 @@ function getFacetsTree() {
                             s_label.setAttribute("class", "facetFilter-label");
                             s_label.setAttribute("title", label);
 
-                            /*
-                            var labelString = label.toString();
-                            _.each($.parseHTML(labelString), function (elem) {
-                                s_label.appendChild(elem);
-                            });
-                            */
                             // label is a string ; todo : count may be obsolete when ux is restored ? for now don't print
                             s_label.appendChild(document.createTextNode(label)); // + ' (' + facetValue.value.count + ')');
 
@@ -961,220 +1002,96 @@ function findClauseBy_ux_zone(clause, ux_zone) {
     return null;
 }
 
-function restoreJsonQuery() {
-    var jsq = {
-        "sort":{
-            "field":"created_on",
-            "order":"desc"
-        },
-        "perpage":100,
-        "page":1,
-        "use_truncation":false,
-        "phrasea_recordtype":"RECORD",
-        "phrasea_mediatype":"",
-        "bases":[
-            394,
-            395,
-            396,
-            397,
-            398,
-            399,
-            1,
-            341,
-            369,
-            371,
-            372,
-            373,
-            375,
-            376,
-            377,
-            378,
-            379,
-            380,
-            381,
-            382,
-            383,
-            384,
-            385,
-            386,
-            387,
-            388,
-            389,
-            390,
-            391,
-            392,
-            393
-        ],
-        "statuses":[
-
-        ],
-        "query":{
-            "_ux_zone":"PROD",
-            "type":"CLAUSES",
-            "must_match":"ALL",
-            "enabled":true,
-            "clauses":[
-                {
-                    "_ux_zone":"FULLTEXT",
-                    "type":"FULLTEXT",
-                    "value":"",
-                    "enabled":false
-                },
-                {
-                    "_ux_zone":"FIELDS",
-                    "type":"CLAUSES",
-                    "must_match":"ALL",
-                    "enabled":false,
-                    "clauses":[
-
-                    ]
-                },
-                {
-                    "type":"DATE-FIELD",
-                    "field":"",
-                    "from":"",
-                    "to":"",
-                    "enabled":false
-                },
-                {
-                    "_ux_zone":"AGGREGATES",
-                    "type":"CLAUSES",
-                    "must_match":"ALL",
-                    "enabled":true,
-                    "clauses":[
-                        {
-                            "type":"STRING-AGGREGATE",
-                            "field":"field.MotsCles",
-                            "value":"ciel",
-                            "negated":false,
-                            "enabled":true
-                        },
-                        {
-                            "type":"STRING-AGGREGATE",
-                            "field":"field.MotsCles",
-                            "value":"Immeubles",
-                            "negated":true,
-                            "enabled":true
-                        },
-                        {
-                            "type":"NUMBER-AGGREGATE",
-                            "field":"meta.Aperture",
-                            "value":8,
-                            "negated":false,
-                            "enabled":true
-                        }
-                    ]
-                }
-            ]
-        },
-        "_selectedFacets":{
-            "field.MotsCles":{
-                "name":"MotsCles",
-                "field":"field.MotsCles",
-                "label":"Mots Clés",
-                "type":"STRING-AGGREGATE",
-                "values":[
-                    {
-                        "value":{
-                            "query":"field.MotsCles:ciel",
-                            "field":"field.MotsCles",
-                            "raw_value":"ciel",
-                            "value":"ciel",
-                            "label":"ciel",
-                            "type":"STRING-AGGREGATE",
-                            "count":108
-                        },
-                        "enabled":true,
-                        "negated":false
-                    },
-                    {
-                        "value":{
-                            "query":"field.MotsCles:Immeubles",
-                            "field":"field.MotsCles",
-                            "raw_value":"Immeubles",
-                            "value":"Immeubles",
-                            "label":"Immeubles",
-                            "type":"STRING-AGGREGATE",
-                            "count":78
-                        },
-                        "enabled":true,
-                        "negated":true
-                    }
-                ]
-            },
-            "meta.Aperture":{
-                "name":"aperture_aggregate",
-                "field":"meta.Aperture",
-                "label":"Ouverture",
-                "type":"NUMBER-AGGREGATE",
-                "values":[
-                    {
-                        "value":{
-                            "query":"meta.Aperture=8",
-                            "field":"meta.Aperture",
-                            "raw_value":8,
-                            "value":8,
-                            "label":"8",
-                            "type":"NUMBER-AGGREGATE",
-                            "count":8
-                        },
-                        "enabled":true,
-                        "negated":false
-                    }
-                ]
-            }
-        }
-    };
-
+/**
+ * restore the advansearch ux from a json-query
+ * elements are restored thank's to custom properties ("_xxx") included in json.
+ * nb : for now, _ux_ facets can't be restored _before_sending_the_query_,
+ *      but since "selectedFacets" (js) IS restored, sending the query WILL restore facets.
+ *
+ * @param jsq
+ * @param submit
+ */
+function restoreJsonQuery(jsq, submit) {
     var clause;
 
     // restore the "fulltext" input-text
     clause = findClauseBy_ux_zone(jsq.query, "FULLTEXT");
-    $('#EDIT_query').val(clause.value);
+    if(clause) {
+        $('#EDIT_query').val(clause.value);
+    }
 
     // restore the "records/stories" radios
-    $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'RECORD') ? '0' : '1') + '"]').prop('checked', true);  // check one radio will uncheck siblings
+    if(!_.isUndefined(jsq.phrasea_recordtype)) {
+        $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'STORY') ? '1' : '0') + '"]').prop('checked', true);  // check one radio will uncheck siblings
+    }
 
     // restore the "record type" menu (image, video, audio, ...)
-    $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('selected', true);
+    if(!_.isUndefined(jsq.phrasea_mediatype)) {
+        $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('selected', true);
+    }
 
     // restore the "use truncation" checkbox
-    $('#ADVSRCH_USE_TRUNCATION').prop('checked', jsq.use_truncation);
+    if(!_.isUndefined(jsq.phrasea_mediatype)) {
+        $('#ADVSRCH_USE_TRUNCATION').prop('checked', jsq.phrasea_mediatype);
+    }
 
     // restore the "sort results" menus
-    $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
-    $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
+    if(!_.isUndefined(jsq.sort)) {
+        if(!_.isUndefined(jsq.sort.field)) {
+            $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
+        }
+        if(!_.isUndefined(jsq.sort.order)) {
+            $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
+        }
+    }
 
     // restore the "bases" checkboxes
-    $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', false);
-    for(var i=0; i<jsq.bases.length; i++) {
-        $('#ADVSRCH_SBAS_ZONE INPUT.checkbas[value="' + jsq.bases[i] + '"]').attr('checked', true);
+    if(!_.isUndefined(jsq.bases)) {
+        $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', false);
+        if (jsq.bases.length > 0) {
+            for (var i = 0; i < jsq.bases.length; i++) {
+                $('#ADVSRCH_SBAS_ZONE INPUT.checkbas[value="' + jsq.bases[i] + '"]').attr('checked', true);
+            }
+        } else {
+            // special case : EMPTY array ==> since it's a nonsense, check ALL bases
+            $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', true);
+        }
     }
 
     // restore the multiples "fields" (field-menu + op-menu + value-input)
     clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
-    $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
-    $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper').remove();
-    for(var i=0; i<clause.clauses.length; i++) {
-        var wrapper = AdvSearchAddNewTerm(1);    // div.term_select_wrapper
-        // todo : restore content
-        var f = $(".term_select_field", wrapper);
-        var o = $(".term_select_op", wrapper);
-        var v = $(".term_select_value", wrapper);
+    if(clause) {
+        $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
+        $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper').remove();
+        for (var i = 0; i < clause.clauses.length; i++) {
+            var wrapper = AdvSearchAddNewTerm();    // div.term_select_wrapper
+            var f = $(".term_select_field", wrapper);
+            var o = $(".term_select_op", wrapper);
+            var v = $(".term_select_value", wrapper);
 
-        f.data('fieldtype', clause.clauses[i].type);
-        $('option[value="' + clause.clauses[i].field + '"]', f).prop('selected', true);
-        $('option[value="' + clause.clauses[i].operator + '"]', o).prop('selected', true);
-        v.val(clause.clauses[i].value);
+            f.data('fieldtype', clause.clauses[i].type);
+            $('option[value="' + clause.clauses[i].field + '"]', f).prop('selected', true);
+            $('option[value="' + clause.clauses[i].operator + '"]', o).prop('selected', true);
+            v.val(clause.clauses[i].value);
+        }
+        if(i === 0) {
+            // if no field, add an empty one to ux
+            AdvSearchAddNewTerm();
+        }
     }
 
     // restore the selected facets (whole saved as custom property)
-    selectedFacets = jsq._selectedFacets;
+    if(!_.isUndefined(jsq._selectedFacets)) {
+        selectedFacets = jsq._selectedFacets;
+    }
 
-    // the ux is restored, finish the job (display "danger")
+    // the ux is restored, finish the job (hide unavailable fields/status etc, display "danger" where needed)
     checkFilters(false);
+    // loadFacets([]);  // useless, facets will be restored after the query is sent
 
-    $('#searchForm').submit();
+    if(submit) {
+        $('#searchForm').submit();
+    }
 }
 
 function serializeJSON(data, selectedFacets, facets) {
@@ -1233,9 +1150,9 @@ function serializeJSON(data, selectedFacets, facets) {
         var f = $(".term_select_field option:selected", wrapper);
         var o = $(".term_select_op", wrapper);
         var v = $(".term_select_value", wrapper);
-
+        var type = f.data('fieldtype');
         fields.push({
-            'type'    : f.data('fieldtype').toUpperCase(),
+            'type'    : _.isString(type) ? type.toUpperCase() : "",
             'field'   : f.val(),
             'operator': o.val(),
             'value'   : v.val(),
@@ -1246,9 +1163,9 @@ function serializeJSON(data, selectedFacets, facets) {
     _.each(selectedFacets, function(facets) {
         _.each(facets.values, function(facetValue) {
             aggregates.push({
-                'type':    facetValue.value.type,
-                'field':   facetValue.value.field,
-                'value':   facetValue.value.raw_value,
+                'type'   : facetValue.value.type,
+                'field'  : facetValue.value.field,
+                'value'  : facetValue.value.raw_value,
                 'negated': facetValue.negated,
                 'enabled': facetValue.enabled
             });
@@ -1355,7 +1272,7 @@ function buildQ(clause) {
                 // no "yes" clauses
                 if(t_neg.length > 0) {
                     // only "neg" clauses
-                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match=="ALL" ? " OR " : " AND ") + "))";
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match == "ALL" ? " OR " : " AND ") + "))";
                 }
                 else {
                     // no clauses at all
@@ -1656,20 +1573,23 @@ function HueToRgb(m1, m2, hue) {
     return 255 * v;
 }
 
-function AdvSearchAddNewTerm(n) {
-    if(n === undefined) {
-        n = 1;
-    }
+/**
+ * add "field" zone on advsearch
+ *
+ * @returns {jQuery|HTMLElement}
+ * @constructor
+ */
+function AdvSearchAddNewTerm() {
     var block_template = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper_template');
     var last_block = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper:last');
     if(last_block.length === 0) {
         last_block = block_template;
     }
-    for(var i=0; i<n; i++) {
-        last_block = block_template.clone(true).insertAfter(last_block);    // true: clone event handlers
-        last_block.removeClass('term_select_wrapper_template').addClass('term_select_wrapper').show();
-        last_block.css("background-color", "");
-    }
+    last_block = block_template.clone(true).insertAfter(last_block);    // true: clone event handlers
+    last_block.removeClass('term_select_wrapper_template').addClass('term_select_wrapper').show();
+    last_block.css("background-color", "");
+
+    return last_block;
 }
 
 
