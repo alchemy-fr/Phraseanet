@@ -201,6 +201,8 @@ class FilesystemService
                 return 'ogg';
             case 'libmp3lame':
                 return 'mp3';
+            case 'pcm_s16le':
+                return 'wav';
         }
 
         return null;
