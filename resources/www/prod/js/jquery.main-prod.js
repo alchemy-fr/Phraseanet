@@ -272,13 +272,19 @@ function checkFilters(save) {
 
     // here only the relevant sb are checked
     for(sbas_id in search.bases) {
-        var nchecked = 0;
-        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox[checked]", container).each(function () {
-            var n = $(this).attr('n');
-            search.status[n] = $(this).val().split('_');
-            nchecked++;
+        var n_checked = 0;
+        var n_unchecked = 0;
+        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox", container).each(function (k, o) {
+            var n = $(this).data('sb');
+            if($(o).attr('checked')) {
+                search.status[n] = $(this).val().split('_');
+                n_checked++;
+            }
+            else {
+                n_unchecked++;
+            }
         });
-        if(nchecked == 0) {
+        if(n_checked != 0) {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
         }
         else {
@@ -528,6 +534,25 @@ function initAnswerForm() {
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
         var data = $this.serializeArray();
+
+        // fix bug : if a sb is dual checked, both values are sent with the SAME name
+        //     we can remove those since it means we don't care about this sb
+        var sb = [];
+        _.each(data, function(v) {
+            var name = v.name;
+            if(name.substr(0, 7) === "status[") {
+                if (_.isUndefined(sb[name])) {
+                    sb[name] = 0;
+                }
+                sb[name]++;
+            }
+        });
+        data = _.filter(data, function(e) {
+            return _.isUndefined(sb[e.name]) || sb[e.name] == 1;
+        });
+        // end of sb fix
+
+
         var jsonData = serializeJSON(data, selectedFacets, facets);
         var qry = buildQ(jsonData.query);
 
@@ -1088,6 +1113,19 @@ function restoreJsonQuery(jsq, submit) {
         $("#ADVSRCH_DATE_ZONE INPUT[name=date_max]").val(clause.to);
     }
 
+    // restore the status-bits (for now dual checked status are restored unchecked)
+    if(!_.isUndefined(jsq.statuses)) {
+        $("#ADVSRCH_SB_ZONE INPUT:checkbox").prop('checked', false);
+        _.each(jsq.statuses, function(db_statuses) {
+            var db = db_statuses.databox;
+            _.each(db_statuses.status, function(sb) {
+                var i = sb.index;
+                var v = sb.value ? "1" : "0";
+                $("#ADVSRCH_SB_ZONE INPUT[name='status[" + db_statuses.databox + "][" + sb.index + "]'][value=" + v + "]").prop('checked', true);
+            });
+        });
+    }
+
     // restore the selected facets (whole saved as custom property)
     if(!_.isUndefined(jsq._selectedFacets)) {
         selectedFacets = jsq._selectedFacets;
@@ -1100,6 +1138,44 @@ function restoreJsonQuery(jsq, submit) {
     if(submit) {
         $('#searchForm').submit();
     }
+}
+
+/**
+ * advsearch : a status-bit is changed
+ * --- NOW BUGGY ---
+ * goal : do not allow to uncheck both sb values (1 and 0) since it's nonsense
+ * since the "name" is the same for both values, it's buggy to send 2 values in request if both are checked.
+ *    so the checkbox are "faked", and the real value is sent by 2 radios
+ * @param o
+ */
+function advSearchChangeStatusBit(o) {
+    /*
+    * BUGGY : one sb should stay checked, but other js sometimes unselect all.
+    * som other js don't know "fakestatus"..
+    * todo : to be finished later
+    var o_a = $(o);                 // the changed sb (value="0" or value="1")
+    var b = o_a.data("sbas_id");
+    var i = o_a.data("sb");
+    var v = o_a.val();
+    var chk = $("#ADVSRCH_SB_"+b+" INPUT[name='fakestatus[" + b + "][" + i + "]']");
+    var o_b = chk.filter("[value=" + (v==='1'?'0':'1') + "]");     // the oposite sb (value="1" or value="0")
+
+    // can't uncheck both
+    if(!o_a.prop('checked')) {
+        o_b.prop('checked', true);  // check the other one
+    }
+
+    // transform fakecheckboxes to radio
+    var rad = $("#ADVSRCH_SB_"+b+" INPUT[name='status[" + b + "][" + i + "]']");
+    rad.prop('checked', false);
+    if(!chk.filter("[value=0]").prop('checked') && chk.filter("[value=1]").prop('checked')) {
+        rad.filter("[value=1]").prop('checked', true);
+    }
+    else if (!chk.filter("[value=1]").prop('checked') && chk.filter("[value=0]").prop('checked')) {
+        rad.filter("[value=0]").prop('checked', true);
+    }
+    */
+    checkFilters(true);
 }
 
 function serializeJSON(data, selectedFacets, facets) {
@@ -1120,7 +1196,7 @@ function serializeJSON(data, selectedFacets, facets) {
             bases.push(col);
         }
 
-        if(el.name.startsWith('status')) {
+        if(0 && el.name.startsWith('status')) {
             var databoxId = el.name.match(/\d+/g)[0],
                 databoxRow = el.name.match(/\d+/g)[1],
                 statusMatch = false;
@@ -1151,6 +1227,40 @@ function serializeJSON(data, selectedFacets, facets) {
                 });
             }
         }
+    });
+
+    var _tmpStat = [];
+    $("#ADVSRCH_SB_ZONE INPUT[type=checkbox]:checked").each(function(k, o) {
+        o = $(o);
+        var b = o.data("sbas_id");
+        var i = o.data("sb");
+        var v = o.val();
+        if(_.isUndefined(_tmpStat[b])) {
+            _tmpStat[b] = [];
+        }
+        if(_.isUndefined(_tmpStat[b][i])) {
+            // first check
+            _tmpStat[b][i] = v;
+        }
+        else {
+            // both checked
+            _tmpStat[b][i] = -1;
+        }
+    });
+    _.each(_tmpStat, function(v, sbas_id){
+        var status = []
+        _.each(v, function(v, sb_index) {
+            if( v !== -1) {     // ignore both checked
+                status.push({
+                    'index': sb_index,
+                    'value': (v == "1")
+                });
+            }
+        });
+        statuses.push({
+            'databox': sbas_id,
+            'status': status
+        });
     });
 
 
@@ -1326,6 +1436,7 @@ function buildQ(clause) {
             return null;
     }
 }
+
 
 
 

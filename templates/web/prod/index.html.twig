@@ -447,13 +447,19 @@
                                                             {% for status_bit, status in databox.status %}
                                                             <tr>
                                                                 <td>
+                                                                    <!-- see advSearchChangeStatusBit(..)
+                                                                    <input type="radio" value="0" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
+                                                                    <input type="radio" value="1" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
+                                                                    -->
                                                                     <label class="checkbox inline custom_checkbox_label">
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
-                                                                        type="checkbox" value="0"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
+                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                               value="0"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_off_i18n'][app['locale']]}}
                                                                     </label>
@@ -463,9 +469,11 @@
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
-                                                                        type="checkbox" value="1"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
+                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                               value="1"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
                                                                     </label>

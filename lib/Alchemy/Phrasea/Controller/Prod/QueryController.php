@@ -68,7 +68,6 @@ class QueryController extends Controller
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
                 // try to save the "fulltext" query which will be restored on next session
-                // todo : save the jsonQuery, to restore the whole ux
                 try {
                     // local code to find "FULLTEXT" value from jsonQuery
                     $findFulltext = function($clause) use(&$findFulltext) {
