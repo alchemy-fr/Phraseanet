@@ -85,22 +85,26 @@ class ApiReportControllerProvider extends Api implements ControllerProviderInter
 
         $controllers->before(new OAuthListener());
         $controllers
-            ->get('/', 'controller.api.v2.report:rootAction')
+            ->match('/', 'controller.api.v2.report:rootAction')
+            ->method('GET|POST')
         ;
 
         $controllers
-            ->get('/connections/{sbasId}/', 'controller.api.v2.report:connectionsAction')
+            ->match('/connections/{sbasId}/', 'controller.api.v2.report:connectionsAction')
             ->assert('sbasId', '\d+')
+            ->method('GET|POST')
         ;
 
         $controllers
-            ->get('/downloads/{sbasId}/', 'controller.api.v2.report:downloadsAction')
+            ->match('/downloads/{sbasId}/', 'controller.api.v2.report:downloadsAction')
             ->assert('sbasId', '\d+')
+            ->method('GET|POST')
         ;
 
         $controllers
-            ->get('/records/{sbasId}/', 'controller.api.v2.report:recordsAction')
+            ->match('/records/{sbasId}/', 'controller.api.v2.report:recordsAction')
             ->assert('sbasId', '\d+')
+            ->method('GET|POST')
         ;
 
         return $controllers;
