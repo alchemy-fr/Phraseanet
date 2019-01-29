@@ -522,27 +522,34 @@ class SubdefsController extends Controller
             ),
             Subdef::TYPE_AUDIO => array(
                 "definitions" => array(
-                    "Low AAC 96 kbit/s" => array(
+                    "Low MP3 96 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "100",
                         Audio::OPTION_AUDIOSAMPLERATE   => "8000",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
-                    "Normal AAC 128 kbit/s" => array(
+                    "Normal MP3 128 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "180",
                         Audio::OPTION_AUDIOSAMPLERATE   => "44100",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
-                    "High AAC 320 kbit/s" => array(
+                    "High MP3 320 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "230",
                         Audio::OPTION_AUDIOSAMPLERATE   => "50000",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
-                    "Wave Mono 256 kbit/s"   => [
+                    "Wave Mono 16 kHz"   => [
                         Audio::OPTION_AUDIOBITRATE    => "256",
                         Audio::OPTION_AUDIOSAMPLERATE => "16000",
+                        Audio::OPTION_ACODEC          => "pcm_s16le",
+                        Audio::OPTION_AUDIOCHANNEL    => "mono",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "Wave Mono 8 kHz"   => [
+                        Audio::OPTION_AUDIOBITRATE    => "128",
+                        Audio::OPTION_AUDIOSAMPLERATE => "8000",
                         Audio::OPTION_ACODEC          => "pcm_s16le",
                         Audio::OPTION_AUDIOCHANNEL    => "mono",
                         Subdef::OPTION_DEVICE         => ["all"]
