@@ -68,7 +68,6 @@ class QueryController extends Controller
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
                 // try to save the "fulltext" query which will be restored on next session
-                // todo : save the jsonQuery, to restore the whole ux
                 try {
                     // local code to find "FULLTEXT" value from jsonQuery
                     $findFulltext = function($clause) use(&$findFulltext) {
@@ -84,6 +83,8 @@ class QueryController extends Controller
                         }
                         return null;
                     };
+
+                    $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
 
                     $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
                     if(($ft = $findFulltext($jsQuery['query'])) !== null) {
