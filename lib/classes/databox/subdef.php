@@ -48,7 +48,7 @@ class databox_subdef
         SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER, SubdefSpecs::TYPE_PDF],
         SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
         SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_PDF],
-        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION, SubdefSpecs::TYPE_AUDIO],
         SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE],
     ];
 
@@ -360,6 +360,9 @@ class databox_subdef
         }
         if ($sd->audiosamplerate) {
             $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
+        }
+        if ($sd->audiochannel) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOCHANNEL, (string) $sd->audiochannel);
         }
 
         return $audio;
