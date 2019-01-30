@@ -1236,8 +1236,18 @@ function linearize() {
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
         
+        var answerIcons = $('#answers .bottom_actions_holder .icon-stack');
+        var answerIconsHolder = $('.bottom_actions_holder');
         if (el.outerWidth() < 180) {
-            $('#answers .diapo .icon-stack').css('width', '20px');
+            answerIcons.css('width', '20px');
+        }
+        if (el.outerWidth() > 240) {
+            answerIcons.css({
+                'width': '30px',
+                'height': '27px'
+            });
+            answerIcons.closest('td').css('width', '110px');
+            answerIconsHolder.css('height', '36px');
         }
     }
 
