@@ -297,11 +297,10 @@ function checkFilters(save) {
 
     // if no date field is selected for filter, select the first option
     $('#ADVSRCH_DATE_ZONE', adv_box).removeClass('danger');
-    if($("option.dbx:selected:enabled", dateFilterSelect).length == 0) {
+    if($("option:selected:enabled", dateFilterSelect).length == 0) {
         $("option:eq(0)", dateFilterSelect).prop("selected", true);
-        $("#ADVSRCH_DATE_SELECTORS", container).hide();
     }
-    else {
+    if($("option:selected", dateFilterSelect).val() !== "") {
         $("#ADVSRCH_DATE_SELECTORS", container).show();
         search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
         search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
@@ -311,6 +310,9 @@ function checkFilters(save) {
             danger = true;
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
         }
+    }
+    else {
+        $("#ADVSRCH_DATE_SELECTORS", container).hide();
     }
 
     // if one filter shows danger, show it on the query
