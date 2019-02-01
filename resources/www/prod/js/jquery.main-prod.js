@@ -398,6 +398,7 @@ function reset_adv_search() {
                     "clauses":[ ]
                 },
                 {
+                    "_ux_zone":"DATE-FIELD",
                     "type":"DATE-FIELD",
                     "field":"",
                     "from":"",
@@ -1756,6 +1757,7 @@ $(document).ready(function () {
     });
 
     $('.add_new_term').on('click', function (event) {
+        event.preventDefault();
         AdvSearchAddNewTerm(1);
     });
 
