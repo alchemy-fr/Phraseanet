@@ -13,6 +13,7 @@ namespace KonsoleKommander;
 
 use Alchemy\Phrasea\Command\Setup\ConfigurationEditor;
 use Alchemy\Phrasea\Command\Setup\FixAutoincrements;
+use Alchemy\Phrasea\Command\Setup\FixLogCollId;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
 use Alchemy\Phrasea\Command\Setup\Install;
@@ -78,6 +79,7 @@ $app->command(new CheckEnvironment('check:system'));
 $app->command(new Install('system:install', $app['phraseanet.structure-template']));
 $app->command(new CrossDomainGenerator());
 $app->command(new FixAutoincrements('system:fix-autoincrements'));
+$app->command(new FixLogCollId());
 
 $app['phraseanet.setup_mode'] = true;
 

@@ -50,7 +50,7 @@
     "alchemy/embed-bundle": "^0.3.4",
     "alchemy/geonames-api-consumer": "~0.1.0",
     "alchemy/mediavorus": "^0.4.4",
-    "alchemy/oauth2php": "1.0.0",
+    "alchemy/oauth2php": "1.1.0",
     "alchemy/phlickr": "0.2.9",
     "alchemy/phpexiftool": "^0.7.0",
     "alchemy/rest-bundle": "^0.0.5",
@@ -119,7 +119,8 @@
     "alchemy/worker-bundle": "^0.1.6",
     "alchemy/queue-bundle": "^0.1.5",
     "google/recaptcha": "^1.1",
-    "facebook/graph-sdk": "^5.6"
+    "facebook/graph-sdk": "^5.6",
+    "box/spout": "^2.7"
   },
   "require-dev": {
     "mikey179/vfsStream": "~1.5",

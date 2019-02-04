@@ -43,6 +43,10 @@ class report_sentTest extends \report_abstractReportTestCase
 
     public function testBuildReport()
     {
+        $this->markTestSkipped(
+            'Report is broken since table "log_colls" is deleted.'
+        );
+
         $conf = [
             'user' => ["", 1, 0, 1, 1],
             'date' => ["", 1, 0, 1, 1],

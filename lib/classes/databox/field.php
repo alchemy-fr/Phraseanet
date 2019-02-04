@@ -100,7 +100,6 @@ class databox_field implements cache_cacheableInterface
     protected $original_dces;
     protected $aggregable;
 
-    const TYPE_TEXT = "text";
     const TYPE_DATE = "date";
     const TYPE_STRING = "string";
     const TYPE_NUMBER = "number";
@@ -438,6 +437,16 @@ class databox_field implements cache_cacheableInterface
         }
 
         return isset($this->labels[$code]) && '' !== $this->labels[$code] ? $this->labels[$code] : $this->name;
+    }
+
+    /**
+     * get all localized labels
+     *
+     * @return string[]
+     */
+    public function get_labels()
+    {
+        return $this->labels;
     }
 
     /**
