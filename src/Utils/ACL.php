@@ -28,11 +28,13 @@ use App\Core\Event\Acl\RightsToBaseChangedEvent;
 use App\Core\Event\Acl\RightsToSbasChangedEvent;
 use App\Core\Event\Acl\SysadminChangedEvent;
 use App\Entity\User;
-use Alchemy\Phrasea\Model\RecordInterface;
-use Alchemy\Phrasea\Model\RecordReferenceInterface;
-use Alchemy\Phrasea\Utilities\NullableDateTime;
+use App\Model\RecordInterface;
+use App\Model\RecordReferenceInterface;
+use App\Utils\NullableDateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Statement;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 class ACL implements \App\Utils\cache\cache_cacheableInterface
@@ -175,12 +177,13 @@ class ACL implements \App\Utils\cache\cache_cacheableInterface
      * Constructor
      *
      * @param User        $user
-     * @param Application $app
+//     * @param Application $app
      */
-    public function __construct(User $user, Application $app)
+    //public function __construct(User $user, Application $app)
+    public function __construct(User $user)
     {
         $this->user = $user;
-        $this->app = $app;
+        //$this->app = $app;
     }
 
     /**
@@ -497,7 +500,7 @@ class ACL implements \App\Utils\cache\cache_cacheableInterface
      * @param $base_id
      * @param $right
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function has_right_on_base($base_id, $right)
     {
@@ -512,7 +515,7 @@ class ACL implements \App\Utils\cache\cache_cacheableInterface
         }
 
         if (!isset($this->_rights_bas[$base_id][$right])) {
-            throw new Exception('right ' . $right . ' does not exists');
+            throw new \Exception('right ' . $right . ' does not exists');
         }
 
         return ($this->_rights_bas[$base_id][$right] === true);
@@ -1677,7 +1680,7 @@ class ACL implements \App\Utils\cache\cache_cacheableInterface
         return $this->_limited[$base_id];
     }
 
-    public function set_limits($base_id, $limit, DateTime $limit_from = null, DateTime $limit_to = null)
+    public function set_limits($base_id, $limit, \DateTime $limit_from = null, \DateTime $limit_to = null)
     {
         $sql = "UPDATE basusr\n"
             . " SET time_limited = :time_limited, limited_from = :limited_from, limited_to = :limited_to\n"
@@ -1688,8 +1691,8 @@ class ACL implements \App\Utils\cache\cache_cacheableInterface
             ':time_limited' => $limit ? 1 : 0,
             ':usr_id' => $this->user->getId(),
             ':base_id' => $base_id,
-            ':limited_from' => NullableDateTime::format($limit_from, DATE_ISO8601),
-            ':limited_to' => NullableDateTime::format($limit_to, DATE_ISO8601),
+            ':limited_from' => \App\Utils\NullableDateTime::format($limit_from, DATE_ISO8601),
+            ':limited_to' => \App\Utils\NullableDateTime::format($limit_to, DATE_ISO8601),
         ]);
         $stmt->closeCursor();
 

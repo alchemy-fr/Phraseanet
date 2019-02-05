@@ -70,3 +70,7 @@ services:
     conf:
         class: App\Utils\Conf
         public: true
+
+    acl:
+        class: App\Application\Helper\AclAwareService
+        public: true

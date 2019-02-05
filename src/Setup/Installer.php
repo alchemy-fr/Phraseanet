@@ -89,6 +89,18 @@ class Installer
 
         $databox = \App\Utils\databox::create($dbConn, $template, $this->container);
 
+        $this->container->get('acl')->getAclForUser($admin)
+            ->give_access_to_sbas([$databox->get_sbas_id()])
+            ->update_rights_to_sbas(
+                $databox->get_sbas_id(),
+                [
+                    \App\Utils\ACL::BAS_MANAGE        => true,
+                    \App\Utils\ACL::BAS_MODIFY_STRUCT => true,
+                    \App\Utils\ACL::BAS_MODIF_TH      => true,
+                    \App\Utils\ACL::BAS_CHUPUB        => true
+                ]
+            );
+
 //        $this->acl->getAclForUser($admin)
 //            ->give_access_to_sbas([$databox->get_sbas_id()])
 //            ->update_rights_to_sbas(
