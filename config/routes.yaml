@@ -23,17 +23,21 @@ setup:
     controller: App\Controller\SetupController::rootInstaller
 
 install_step2:
-    path: /installer/step2/
+    path: /installer/step2
     controller: App\Controller\SetupController::getInstallForm
 
 install_do_install:
-    path: /installer/install/
+    path: /installer/install
     controller: App\Controller\SetupController::doInstall
 
 install_root:
-    path: /installer/
+    path: /installer
     controller: App\Controller\SetupController::rootInstaller
 
 admin:
-    path: /admin/
+    path: /admin
     controller: App\Controller\Admin\RootController::indexAction
+
+login:
+    path: /login
+    controller: App\Controller\Root\LoginController::login

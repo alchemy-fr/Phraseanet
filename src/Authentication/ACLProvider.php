@@ -12,8 +12,7 @@
 namespace App\Authentication;
 
 use App\Entity\User;
-use Silex\Application;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+//use Silex\Application;
 
 class ACLProvider
 {
@@ -88,6 +87,8 @@ class ACLProvider
      */
     private function fetch(User $user)
     {
-        return self::$cache[$user->getId()] = new \App\Utils\ACL($user, $this->app);
+        //return self::$cache[$user->getId()] = new \App\Utils\ACL($user, $this->app);
+        return self::$cache[$user->getId()] = new \App\Utils\ACL($user);
     }
+
 }

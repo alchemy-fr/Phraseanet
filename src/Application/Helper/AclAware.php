@@ -17,7 +17,7 @@ trait AclAware
     private $aclProvider;
 
     /**
-     * @param ACLProvider|callable $provider
+     * @param \App\Authentication\ACLProvider|callable $provider
      * @return $this
      */
     public function setAclProvider($provider)
@@ -36,7 +36,7 @@ trait AclAware
     }
 
     /**
-     * @return ACLProvider
+     * @return \App\Authentication\ACLProvider
      */
     public function getAclProvider()
     {
