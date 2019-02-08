@@ -234,7 +234,61 @@
                     <div class="well well-large" style="border: 1px solid #333333;">
                         <div style="max-width: 400px;margin-left: 52px">
                             <input type="submit" class="btn btn-info btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+
                         </div>
+
+                        <div style="max-width: 400px;margin-left: 52px; margin-top:20px">
+
+                            {% if not user.isadmin() and not user.hasLdapCreated() and not isOwnerPublisher and not isOwnerFeedbackSend %}
+
+                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block ">{{ 'Delete my account' | trans }}</a>
+
+                                <!-- Modal -->
+                                <div id="delete-account-process" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        <h3 id="myModalLabel">Process to delete account</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{{ "Are you sure you want to delete your account?" | trans }} </p>
+                                        <h6>{{ "List of data to be deleted" | trans }}</h6>
+
+                                        {% if baskets|length > 0  %}
+                                            - {{ 'Paniers' | trans }}
+                                            <ul style="padding-left: 30px">
+                                                {% for basket in baskets %}
+                                                    <li>{{ basket.getName() }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+                                        {% if api_accounts|length > 0 %}
+                                            - {{ "My application " | trans }}
+                                            <ul style="padding-left: 30px">
+                                                {% for api_account in api_accounts %}
+                                                    <li>{{ api_account.getApplication().getName() ~ " => Client_id: " ~ api_account.getApplication().getClientId() }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif%}
+
+                                            - {{ "My phraseanet account" | trans }}
+                                            <ul style="padding-left: 30px">
+                                                <li>Name : {{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</li>
+                                                <li>Login : {{ user.getLogin() }}</li>
+                                            </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">{{ "No" | trans }}</button>
+                                        <a href="{{ path("account_process_delete") }}" class="btn btn-info">{{ "Yes" | trans }}</a>
+                                    </div>
+                                </div>
+
+                            {% else %}
+                                <p style="font-size: 12px"> {{ "<< your account can be deleted via admin interface >> " | trans }}</p>
+                            {% endif %}
+
+                        </div>
+
                     </div>
                 </div>
             </form>

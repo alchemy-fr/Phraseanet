@@ -283,3 +283,8 @@ workers:
       user: guest
       password: guest
       vhost: /
+
+registry:
+    actions:
+        delete-account-email-notification: true
+

@@ -57,6 +57,14 @@ class ApiApplicationManipulator implements ManipulatorInterface
         $this->om->flush();
     }
 
+    public function deleteApiApplications(array $applications)
+    {
+        foreach ($applications as $application) {
+            $this->om->remove($application);
+        }
+        $this->om->flush();
+    }
+
     public function update(ApiApplication $application)
     {
         $this->om->persist($application);

@@ -17,19 +17,25 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
+use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\ApiAccountRepository;
 use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
+use Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository;
+use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -299,11 +305,99 @@ class AccountController extends Controller
         $manager = $this->getEventManager();
         $user = $this->getAuthenticatedUser();
 
+        $repo_baskets = $this->getBasketRepository();
+        $baskets = $repo_baskets->findActiveValidationAndBasketByUser($user);
+
+        $apiAccounts = $this->getApiAccountRepository()->findByUser($user);
+
+        $ownerPublisher = $this->getFeedPublisherRepository()->findBy(['user' => $user, 'owner' => true]);
+
+        $ownerFeedbackSend = $this->getValidationSessionRepository()->findby(['initiator' => $user, ]);
+
         return $this->render('account/account.html.twig', [
-            'user'          => $user,
-            'evt_mngr'      => $manager,
-            'notifications' => $manager->list_notifications_available($user),
+            'user'                => $user,
+            'evt_mngr'            => $manager,
+            'notifications'       => $manager->list_notifications_available($user),
+            'baskets'             => $baskets,
+            'api_accounts'        => $apiAccounts,
+            'isOwnerPublisher'    => count($ownerPublisher) ? true : false,
+            'isOwnerFeedbackSend' => count($ownerFeedbackSend) ? true : false,
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function processDeleteAccount(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+
+        if($this->app['conf']->get(['registry', 'actions', 'delete-account-email-notification'])) {
+
+            // send email confirmation
+
+            try {
+                $receiver = Receiver::fromUser($user);
+            } catch (InvalidArgumentException $e) {
+                $this->app->addFlash('error', $this->app->trans('phraseanet::erreur: echec du serveur de mail'));
+
+                return $this->app->redirectPath('account');
+            }
+
+            $token = $this->getTokenManipulator()->createAccountDeleteToken($user, $user->getEmail());
+            $url = $this->app->url('account_confirm_delete', ['token' => $token->getValue()]);
+
+
+            $mail = MailRequestAccountDelete::create($this->app, $receiver);
+            $mail->setButtonUrl($url);
+            $mail->setExpiration($token->getExpiration());
+
+            $this->deliver($mail);
+
+            $this->app->addFlash('info', $this->app->trans('Un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour terminer la suppression du compte'));
+
+            return $this->app->redirectPath('account');
+
+        } else {
+            $this->doDeleteAccount($user);
+
+            $response = $this->app->redirectPath('homepage', [
+                'redirect' => $request->query->get("redirect")
+            ]);
+
+            $response->headers->clearCookie('persistent');
+            $response->headers->clearCookie('last_act');
+
+            return $response;
+        }
+
+    }
+
+    public function confirmDeleteAccount(Request $request)
+    {
+        if (null !== $tokenValue = $request->query->get('token')) {
+            if (null === $token = $this->getTokenRepository()->findValidToken($tokenValue)) {
+                $this->app->addFlash('error', $this->app->trans('Token not found'));
+
+                return $this->app->redirectPath('account');
+            }
+
+            $user = $token->getUser();
+            // delete account and datas
+            $this->doDeleteAccount($user);
+
+            $this->getTokenManipulator()->delete($token);
+        }
+
+        $response = $this->app->redirectPath('homepage', [
+            'redirect' => $request->query->get("redirect")
+        ]);
+
+        $response->headers->clearCookie('persistent');
+        $response->headers->clearCookie('last_act');
+
+        return $response;
     }
 
     /**
@@ -407,6 +501,38 @@ class AccountController extends Controller
     }
 
     /**
+     * @param User $user
+     */
+    private function doDeleteAccount(User $user)
+    {
+        // basket
+        $repo_baskets = $this->getBasketRepository();
+        $baskets = $repo_baskets->findActiveByUser($user);
+        $this->getBasketManipulator()->removeBaskets($baskets);
+
+        // application
+        $applications = $this->getApiApplicationRepository()->findByUser($user);
+
+        $this->getApiApplicationManipulator()->deleteApiApplications($applications);
+
+
+        //  revoke access and delete phraseanet user account
+
+        $list = array_keys($this->app['repo.collections-registry']->getBaseIdMap());
+
+        $this->app->getAclForUser($user)->revoke_access_from_bases($list);
+
+        if ($this->app->getAclForUser($user)->is_phantom()) {
+            $this->app['manipulator.user']->delete($user);
+        }
+
+
+        $this->getAuthenticator()->closeAccount();
+        $this->app->addFlash('info', $this->app->trans('Le compte a bien été supprimé'));
+
+    }
+
+    /**
      * @return PasswordEncoder
      */
     private function getPasswordEncoder()
@@ -500,5 +626,45 @@ class AccountController extends Controller
     private function getEventManager()
     {
         return $this->app['events-manager'];
+    }
+
+    /**
+     * @return BasketManipulator
+     */
+    private function getBasketManipulator()
+    {
+        return $this->app['manipulator.basket'];
+    }
+
+    /**
+     * @return BasketRepository
+     */
+    private function getBasketRepository()
+    {
+        return $this->app['repo.baskets'];
+    }
+
+    /**
+     * @return ApiApplicationManipulator
+     */
+    private function getApiApplicationManipulator()
+    {
+        return $this->app['manipulator.api-application'];
+    }
+
+    /**
+     * @return FeedPublisherRepository
+     */
+    private function getFeedPublisherRepository()
+    {
+        return $this->app['repo.feed-publishers'];
+    }
+
+    /**
+     * @return ValidationSessionRepository
+     */
+    private function getValidationSessionRepository()
+    {
+        return $this->app['repo.validation-session'];
     }
 }
