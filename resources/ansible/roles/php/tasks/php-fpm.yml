@@ -1,48 +1,48 @@
 ---
 - name: Set permissions on socket - owner
-  lineinfile: "dest=/etc/php5/fpm/pool.d/www.conf state=present regexp='^;?listen.owner' line='listen.owner = www-data'"
-  notify: restart php5-fpm
+  lineinfile: "dest=/etc/php/{{ phpversion }}/fpm/pool.d/www.conf state=present regexp='^;?listen.owner' line='listen.owner = www-data'"
+  notify: restart php{{ phpversion }}-fpm
 
 - name: Set permissions on socket - group
-  lineinfile: "dest=/etc/php5/fpm/pool.d/www.conf state=present regexp='^;?listen.group' line='listen.group = www-data'"
-  notify: restart php5-fpm
+  lineinfile: "dest=/etc/php/{{ phpversion }}/fpm/pool.d/www.conf state=present regexp='^;?listen.group' line='listen.group = www-data'"
+  notify: restart php{{ phpversion }}-fpm
 
 - name: Set permissions on socket - mode
-  lineinfile: "dest=/etc/php5/fpm/pool.d/www.conf state=present regexp='^;?listen.mode' line='listen.mode = 0660'"
-  notify: restart php5-fpm
+  lineinfile: "dest=/etc/php/{{ phpversion }}/fpm/pool.d/www.conf state=present regexp='^;?listen.mode' line='listen.mode = 0660'"
+  notify: restart php{{ phpversion }}-fpm
 
 - name: ensure timezone is set in fpm php.ini
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp='date.timezone ='
               line='date.timezone = {{ server.timezone }}'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
 
 - name: enabling opcache
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp=';?opcache.enable=\d'
               line='opcache.enable=1'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
 
 - name: Disable PHP cache limiter
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp=';?\s*session.cache_limiter\s*=\s*'
               line='session.cache_limiter = ""'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
 
 - name: set post_max_size
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp=';?post_max_size\s*=\s*'
               line='post_max_size = 2G'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
 
 - name: set upload_max_filesize
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp=';?upload_max_filesize\s*=\s*'
               line='upload_max_filesize = 2G'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
 
 - name: set max_input_vars
-  lineinfile: dest=/etc/php5/fpm/php.ini
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
               regexp=';?max_input_vars\s*=\s*'
               line='max_input_vars = 12000'
-  notify: restart php5-fpm
+  notify: restart php{{ phpversion }}-fpm
