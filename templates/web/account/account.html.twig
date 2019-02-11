@@ -241,17 +241,17 @@
 
                             {% if not user.isadmin() and not user.hasLdapCreated() and not isOwnerPublisher and not isOwnerFeedbackSend %}
 
-                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block ">{{ 'Delete my account' | trans }}</a>
+                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block ">{{ 'phraseanet::account: Delete my account' | trans }}</a>
 
                                 <!-- Modal -->
                                 <div id="delete-account-process" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        <h3 id="myModalLabel">Process to delete account</h3>
+                                        <h3 id="myModalLabel">{{ "phraseanet::account: Process to delete account" }}</h3>
                                     </div>
                                     <div class="modal-body">
-                                        <p>{{ "Are you sure you want to delete your account?" | trans }} </p>
-                                        <h6>{{ "List of data to be deleted" | trans }}</h6>
+                                        <p>{{ "phraseanet::account: Are you sure you want to delete your account?" | trans }} </p>
+                                        <h6>{{ "phraseanet::account: List of data to be deleted" | trans }}</h6>
 
                                         {% if baskets|length > 0  %}
                                             - {{ 'Paniers' | trans }}
@@ -271,20 +271,24 @@
                                             </ul>
                                         {% endif%}
 
-                                            - {{ "My phraseanet account" | trans }}
+                                            - {{ "phraseanet::account: My phraseanet account" | trans }}
                                             <ul style="padding-left: 30px">
                                                 <li>Name : {{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</li>
                                                 <li>Login : {{ user.getLogin() }}</li>
                                             </ul>
                                     </div>
                                     <div class="modal-footer">
+                                        <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">{{ "phraseanet::account: I am agree to delete those data with the account" | trans }}
+                                            <input class="input_element input-xlarge" type="checkbox" id="delete_account_aggree"/>
+                                        </label>
+
                                         <button class="btn" data-dismiss="modal" aria-hidden="true">{{ "No" | trans }}</button>
-                                        <a href="{{ path("account_process_delete") }}" class="btn btn-info">{{ "Yes" | trans }}</a>
+                                        <a id="delete_account_confirm" href="{{ path("account_process_delete") }}" class="btn btn-info" style="opacity:0.5;pointer-events: none;" >{{ "Yes" | trans }}</a>
                                     </div>
                                 </div>
 
                             {% else %}
-                                <p style="font-size: 12px"> {{ "<< your account can be deleted via admin interface >> " | trans }}</p>
+                                <p style="font-size: 12px"> {{ "phraseanet::account: << your account can be deleted via admin interface >> " | trans }}</p>
                             {% endif %}
 
                         </div>
@@ -294,4 +298,19 @@
             </form>
         </div>
     </div>
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#delete_account_aggree").bind("click", function(e) {
+                if ($(this).is(":checked")) {
+                    $("#delete_account_confirm").css({"opacity": "1", "pointer-events": "auto"});
+                } else {
+                    $("#delete_account_confirm").css({"opacity": "0.5", "pointer-events": "none"});
+                }
+
+            });
+        });
+    </script>
+
 {% endblock %}

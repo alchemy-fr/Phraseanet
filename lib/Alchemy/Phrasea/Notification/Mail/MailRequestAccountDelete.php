@@ -26,7 +26,7 @@ class MailRequestAccountDelete extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return $this->app->trans('List of data to be deleted: ...');
+        return $this->app->trans('In Phraseanet,your baskets and your api application will be deleted with your account.Click the button to confirm deletion');
     }
 
     /**

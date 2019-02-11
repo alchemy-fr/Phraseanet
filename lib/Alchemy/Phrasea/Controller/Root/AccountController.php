@@ -355,7 +355,7 @@ class AccountController extends Controller
 
             $this->deliver($mail);
 
-            $this->app->addFlash('info', $this->app->trans('Un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour terminer la suppression du compte'));
+            $this->app->addFlash('info', $this->app->trans('phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion'));
 
             return $this->app->redirectPath('account');
 
@@ -528,7 +528,7 @@ class AccountController extends Controller
 
 
         $this->getAuthenticator()->closeAccount();
-        $this->app->addFlash('info', $this->app->trans('Le compte a bien été supprimé'));
+        $this->app->addFlash('info', $this->app->trans('phraseanet::account The account has been deleted'));
 
     }
 
