@@ -20,13 +20,39 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: MemcacheCache
+        type: RedisCache
         options:
             host: localhost
-            port: 11211
+            port: 6379
     search-engine:
-        type: phrasea
-        options: []
+        type: elasticsearch
+        options:
+            host: 'localhost'
+            port: 9200
+            index: ''
+            shards: 3
+            replicas: 0
+            minScore: 2
+            highlight: true
+            maxResultWindow: 500000
+            populate_order: RECORD_ID
+            populate_direction: DESC
+            activeTab: '#elastic-search'
+            base_aggregate_limit: 10
+            collection_aggregate_limit: 10
+            doctype_aggregate_limit: 0
+            camera_model_aggregate_limit: 0
+            iso_aggregate_limit: 0
+            aperture_aggregate_limit: 0   
+            shutterspeed_aggregate_limit: 0
+            flashfired_aggregate_limit: 0
+            framerate_aggregate_limit: 0
+            audiosamplerate_aggregate_limit: 0
+            videocodec_aggregate_limit: 0
+            audiocodec_aggregate_limit: 0
+            orientation_aggregate_limit: 0
+            colorspace_aggregate_limit: 0
+            mimetype_aggregate_limit: 0
     task-manager:
         status: started
         enabled: true
@@ -74,20 +100,6 @@ main:
         download: null
         lazaret: null
         caption: null
-    bridge:
-        youtube:
-            enabled: false
-            client_id: null
-            client_secret: null
-            developer_key: null
-        flickr:
-            enabled: false
-            client_id: null
-            client_secret: null
-        dailymotion:
-            enabled: false
-            client_id: null
-            client_secret: null
 border-manager:
     enabled: true
     extension-mapping:
