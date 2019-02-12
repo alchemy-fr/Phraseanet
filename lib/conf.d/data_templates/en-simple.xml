@@ -148,7 +148,7 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
