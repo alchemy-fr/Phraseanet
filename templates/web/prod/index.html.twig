@@ -403,8 +403,9 @@
                                                     </label>
                                                     <span>
                                                         <select name="date_field" class="input-medium" onchange="checkFilters(true);" style="width: 166px;">
-                                                            <option selected="selected"
-                                                                    value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            <option selected="selected" value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            <option value="updated_on">{{ 'updated_on' | trans }}</option>
+                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
                                                                     class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
