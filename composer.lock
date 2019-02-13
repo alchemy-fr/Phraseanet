@@ -4334,16 +4334,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.1",
+            "version": "0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514"
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/b82bb891640cb1ce5d5523235047c34c64194514",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
                 "shasum": ""
             },
             "require": {
@@ -4404,7 +4404,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2016-03-16T13:11:52+00:00"
+            "time": "2019-01-25T12:09:11+00:00"
         },
         {
             "name": "monolog/monolog",
