@@ -449,13 +449,15 @@
                                                         </div>
                                                     </label>
                                                     <span>
-                                                        <select name="date_field" class="input-medium check-filters" data-save="true" style="width: 166px;">
+                                                        <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
                                                                     class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
                                                             {% endfor %}
+                                                             <option value="updated_on">{{ 'updated_on' | trans }}</option>
+                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
                                                         </select>
                                                     </span>
                                                     <span id="ADVSRCH_DATE_SELECTORS"  style="display: inline-block;height: 26px;line-height: 26px;">
