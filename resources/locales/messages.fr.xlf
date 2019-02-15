@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-02-11T14:49:28Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2019-02-15T12:52:23Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4481,7 +4481,7 @@
       <trans-unit id="816c52fd2bdd94a63cd0944823a6c0aa9384c103" resname="No" approved="yes">
         <source>No</source>
         <target state="translated">Non</target>
-        <jms:reference-file line="285">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="290">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="32">web/developers/applications.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8c123d8ad43d08cc48c3d6a7676e65f71eea59df" resname="No URL available" approved="yes">
@@ -7624,7 +7624,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="5397e0583f14f6c88de06b1ef28f460a1fb5b0ae" resname="Yes" approved="yes">
         <source>Yes</source>
         <target state="translated">Oui</target>
-        <jms:reference-file line="286">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="291">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="13">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="33">web/developers/applications.html.twig</jms:reference-file>
       </trans-unit>
@@ -10750,7 +10750,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; ">
         <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >> ]]></source>
         <target state="new"><![CDATA[phraseanet::account: << your account can be deleted via admin interface >> ]]></target>
-        <jms:reference-file line="291">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="296">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion">
         <source>phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</source>
@@ -10767,10 +10767,15 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">phraseanet::account: Delete my account</target>
         <jms:reference-file line="244">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1253aef52c904a2b84ba410a6fffc2b8bb567047" resname="phraseanet::account: I am agree to delete those data with the account">
-        <source>phraseanet::account: I am agree to delete those data with the account</source>
-        <target state="new">phraseanet::account: I am agree to delete those data with the account</target>
-        <jms:reference-file line="281">web/account/account.html.twig</jms:reference-file>
+      <trans-unit id="b7993903466c49139bfae4c34c63446ff24b1474" resname="phraseanet::account: I am agree to delete my account">
+        <source>phraseanet::account: I am agree to delete my account</source>
+        <target state="new">phraseanet::account: I am agree to delete my account</target>
+        <jms:reference-file line="285">web/account/account.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1b836fda2a5c65abfd05c215d4c4dd66361e4f0f" resname="phraseanet::account: I am agree to delete my account, need confirmation on mail">
+        <source>phraseanet::account: I am agree to delete my account, need confirmation on mail</source>
+        <target state="new">phraseanet::account: I am agree to delete my account, need confirmation on mail</target>
+        <jms:reference-file line="283">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="121aa945bfcb3565989acc06a1ccda5b36be6bf0" resname="phraseanet::account: List of data to be deleted">
         <source>phraseanet::account: List of data to be deleted</source>

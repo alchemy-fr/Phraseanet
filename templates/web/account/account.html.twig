@@ -232,16 +232,16 @@
                         </div>
                     </div>
                     <div class="well well-large" style="border: 1px solid #333333;">
-                        <div style="max-width: 400px;margin-left: 52px">
+                        <div style="max-width: 400px;margin-left: 2%;display: inline-block;width: 47%;margin-right: 1%;">
                             <input type="submit" class="btn btn-info btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
 
                         </div>
 
-                        <div style="max-width: 400px;margin-left: 52px; margin-top:20px">
+                        <div style="max-width: 400px;margin-left: 1%;width: 47%;display: inline-block;margin-right: 2%;float: right;">
 
                             {% if not user.isadmin() and not user.hasLdapCreated() and not isOwnerPublisher and not isOwnerFeedbackSend %}
 
-                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block ">{{ 'phraseanet::account: Delete my account' | trans }}</a>
+                                <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block btn-large">{{ 'phraseanet::account: Delete my account' | trans }}</a>
 
                                 <!-- Modal -->
                                 <div id="delete-account-process" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -278,7 +278,12 @@
                                             </ul>
                                     </div>
                                     <div class="modal-footer">
-                                        <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">{{ "phraseanet::account: I am agree to delete those data with the account" | trans }}
+                                        <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">
+                                            {% if app['conf'].get(['registry', 'actions', 'delete-account-require-email-confirmation']) %}
+                                                {{ "phraseanet::account: I am agree to delete my account, need confirmation on mail" | trans }}
+                                            {% else %}
+                                                {{ "phraseanet::account: I am agree to delete my account" | trans }}
+                                            {% endif %}
                                             <input class="input_element input-xlarge" type="checkbox" id="delete_account_aggree"/>
                                         </label>
 

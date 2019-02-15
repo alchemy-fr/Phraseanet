@@ -320,8 +320,8 @@ class AccountController extends Controller
             'notifications'       => $manager->list_notifications_available($user),
             'baskets'             => $baskets,
             'api_accounts'        => $apiAccounts,
-            'isOwnerPublisher'    => count($ownerPublisher) ? true : false,
-            'isOwnerFeedbackSend' => count($ownerFeedbackSend) ? true : false,
+            'isOwnerPublisher'    => count($ownerPublisher) > 0 ? true : false,
+            'isOwnerFeedbackSend' => count($ownerFeedbackSend) > 0 ? true : false,
         ]);
     }
 
@@ -333,7 +333,7 @@ class AccountController extends Controller
     {
         $user = $this->getAuthenticatedUser();
 
-        if($this->app['conf']->get(['registry', 'actions', 'delete-account-email-notification'])) {
+        if($this->app['conf']->get(['registry', 'actions', 'delete-account-require-email-confirmation'])) {
 
             // send email confirmation
 
@@ -376,7 +376,7 @@ class AccountController extends Controller
 
     public function confirmDeleteAccount(Request $request)
     {
-        if (null !== $tokenValue = $request->query->get('token')) {
+        if (($tokenValue = $request->query->get('token')) !== null ) {
             if (null === $token = $this->getTokenRepository()->findValidToken($tokenValue)) {
                 $this->app->addFlash('error', $this->app->trans('Token not found'));
 
