@@ -80,7 +80,7 @@ Menu contextuel
 .context-menu-theme-flat {
   min-width: 160px;
   background-image: none;
-  background-color: #535353;
+  background-color: $answersToolsBg;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -89,9 +89,11 @@ Menu contextuel
   .context-menu-item-inner {
     margin-left: 0;
     font-weight: bold;
-    color: $darkerTextColor;
     &:hover {
-      background-color: #7f7f7f;
+      background-color: $answersToolsBgHover;
+      a {
+        color: $answersToolsBgColor;
+      }
     }
   }
   a {
@@ -99,6 +101,7 @@ Menu contextuel
     font-size: 14px;
     font-weight: 500;
     display: block;
+    color: $answersToolsBgColor;
     img {
       width: 24px;
       margin-bottom: -2px;

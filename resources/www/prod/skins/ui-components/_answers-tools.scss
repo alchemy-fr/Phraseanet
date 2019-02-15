@@ -49,47 +49,74 @@
       margin: 0;
       height: 45px;
       border: 0;
+      box-shadow: none;
+      text-shadow: none;
+      padding-left: 14px;
+    }
+    .classicButton button.btn-inverse.dropdown-toggle,
+    .dropdownButton button.btn-inverse.dropdown-toggle {
+      padding-right: 16px;
+      padding-left: 8px;
     }
     .classicButton button.btn-inverse {
       border-right: 0;
+      padding-right: 16px;
     }
     .dropdownButton button.btn-inverse {
+      padding-right: 2px;
       border-left: 0;
       border-right: 0;
       .caret{
         border-top-color: $mediumTextColor;
         border-bottom-color: $mediumTextColor;
       }
+      &:hover .caret {
+        border-top-color: $mediumTextHoverColor;
+        border-bottom-color: $mediumTextHoverColor;
+      }
     }
     .classicButton button.btn-inverse:hover,
     .dropdownButton button.btn-inverse:hover {
-      background-color: $answersToolsBtnBg;
-      *background-color: $answersToolsBtnBg;
+      background-color: $mediumBackgroundColor;
       color: $textPrimaryHoverColor;
+      text-shadow: $textShadow;
     }
 
     .classicButton button.btn-inverse img,
     .dropdownButton button.btn-inverse img {
-      margin: 0 2px;
+      margin: 0 5px 0 2px;
       max-width: none;
-      width: 16px;
+      width: 21px;
     }
     .dropdown-menu {
-      min-width: 95px;
+      min-width: 120px;
       background-color: $answersToolsBtnBg;
-      *border: 1px solid $answersToolsBtnBorder;
+      padding: 0;
+      margin: 0px;
+      border: 0 none;
+      border-radius: 6px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      overflow: hidden;
       a {
-        padding: 3px 10px;
+        padding: 10px 14px;
         font-size: $mediumFontSize;
         color: $answersToolsBtnColor;
         cursor: pointer;
         &:hover {
-          background-color: $answersToolsBtnHoverBg;
+          background: $workzoneToolsLabelColor;
           color: $highlightTextColor; //$answersToolsBtnHoverColor;
         }
       }
       img {
         margin-right: 5px;
+        width: 21px;
+        max-width: unset;
+      }
+      .divider {
+        margin: 0;
+        height: 0;
+        border-bottom-color: $workzoneToolsLabelColor;
       }
     }
     #settings {

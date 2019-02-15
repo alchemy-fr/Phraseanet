@@ -4,7 +4,6 @@ server:
     packages:
         - vim
         - git
-        - zip
         - imagemagick
         - htop
         - iotop
@@ -17,19 +16,30 @@ server:
         - memcached
         - build-essential
         - libssl-dev
-        - libjpeg-dev
-        - libgif-dev
-        - libfreetype6-dev
         - unoconv
+        - swftools
         - xpdf
         - libav-tools
         - gpac
+        - python
+        - python-urllib3
+        - python3-openssl
+        - python-pyasn1
+        - python-pyasn1-modules
+        - python3-pyasn1
+        - python-pip
     timezone: UTC
     locales:
         - en_GB.UTF-8
         - fr_FR.UTF-8
         - de_DE.UTF-8
         - nl_NL.UTF-8
+repositories:
+    php: 'ppa:ondrej/php'
+    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    elasticsearch: 'ppa:webupd8team/java'
+    rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
+    yarn: 'https://dl.yarnpkg.com/debian/'
 vagrant_local:
     install: '1'
     vm:
@@ -47,13 +57,12 @@ mariadb:
     appbox_db: ab_master
     databox_db: db_master
     alt_databox_db: db_alt
-    test_appbox_db: ab_test
-    test_databox_db: db_test
     user: phraseanet
     password: phraseanet
     dump: ''
 elasticsearch:
     install: '1'
+    host: '127.0.0.1'
     port: '9200'
     version: '2.3.3'
     plugins:
@@ -85,15 +94,20 @@ php:
     pecl_packages:
         - {name: zmq, package: zmq-beta}
         - {name: amqp, package: amqp-1.9.3}
+node:
+    install: '1'
+    version: '9.4.0'
 xdebug:
     install: '1'
+    idekey: 'PHPSTORM'
+    port: '10001'
+
 composer:
     install: '1'
 
 mailcatcher:
     install: '1'
 
-# setting global compilation path
-source_dir: /tmp
-bin_dir: /usr/local/bin
-build_dir: /tmp
+ffmpeg:
+    install: '1'
+    version: '3.1.10'
