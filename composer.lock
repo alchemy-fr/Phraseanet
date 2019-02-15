@@ -421,16 +421,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae"
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +490,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2018-10-19T13:28:17+00:00"
+            "time": "2019-02-13T13:06:43+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
