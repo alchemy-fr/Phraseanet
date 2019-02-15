@@ -7,4 +7,4 @@
 - name: Install specific nodejs version
   become: yes
   become_user: vagrant
-  shell: export NVM_DIR="$HOME/.nvm" &&. ~/.nvm/nvm.sh && nvm install 4.0 && nvm alias default 4.0
+  shell: export NVM_DIR="$HOME/.nvm" &&. ~/.nvm/nvm.sh && nvm install {{ node.version }} && nvm alias default {{ node.version }}

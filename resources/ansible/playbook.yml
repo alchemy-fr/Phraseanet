@@ -5,14 +5,17 @@
     - vars/all.yml
   roles:
     - server
+    - repositories
     - vagrant_local
     - nginx
     - mariadb
     - elasticsearch
+    - rabbitmq
     - php
-    - swftools
     - xdebug
     - composer
     - mailcatcher
     - node
+    - yarn
     - app
+    - ffmpeg
