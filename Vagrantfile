@@ -35,7 +35,7 @@ else if which('ifconfig')
 end
 
 $php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "7.0";
 
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
