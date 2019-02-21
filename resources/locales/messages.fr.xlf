@@ -577,9 +577,9 @@
         <target state="translated">Accès aux sous résolutions</target>
         <jms:reference-file line="351">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="yes">
+      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="no">
         <source>Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</source>
-        <target state="translated">Pour accéder aux bases ci-dessus, vous devez d'abord accepter les conditions générales d'utilisation.</target>
+        <target state="needs-translation">L'accès aux ressources de cette base implique l'acceptation des Conditions générales d'utilisation suivantes :</target>
         <jms:reference-file line="19">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9db7fb32c517586a4123d511613b492d910aecaa" resname="Access user have readonly access" approved="yes">
