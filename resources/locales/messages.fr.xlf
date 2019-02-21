@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-02-15T12:52:23Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2019-02-21T13:35:09Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -577,7 +577,7 @@
         <target state="translated">Accès aux sous résolutions</target>
         <jms:reference-file line="351">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="no">
+      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU).">
         <source>Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</source>
         <target state="needs-translation">L'accès aux ressources de cette base implique l'acceptation des Conditions générales d'utilisation suivantes :</target>
         <jms:reference-file line="19">web/account/access.html.twig</jms:reference-file>
@@ -1401,7 +1401,7 @@
       <trans-unit id="ae1378dc6a6f7df2435c398db9e6eac71646092b" resname="Bad request format, only JSON is allowed" approved="yes">
         <source>Bad request format, only JSON is allowed</source>
         <target state="translated">Mauvais format de requête. Seul JSON est autorisé.</target>
-        <jms:reference-file line="186">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="187">Controller/Root/AccountController.php</jms:reference-file>
         <jms:reference-file line="58">Controller/Admin/RootController.php</jms:reference-file>
         <jms:reference-file line="220">Controller/Admin/RootController.php</jms:reference-file>
         <jms:reference-file line="573">Controller/Admin/DataboxController.php</jms:reference-file>
@@ -1988,7 +1988,7 @@
       <trans-unit id="2d4f012e5f06719ae9bbd6de1696d7502474ba2d" resname="Could not perform request, please contact an administrator." approved="yes">
         <source>Could not perform request, please contact an administrator.</source>
         <target state="translated">Impossible d'exécuter la requête. Veuillez contacter un administrateur.</target>
-        <jms:reference-file line="93">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="94">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c183d160b24ba4d8cd1a39ffb5ceed69be38ee51" resname="Could not retrieve the file ID, please retry or contact an admin if problem persist" approved="yes">
         <source>Could not retrieve the file ID, please retry or contact an admin if problem persist</source>
@@ -2357,10 +2357,10 @@
         <jms:reference-file line="352">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="25">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="344b143a9890159c9f4d7ecd54899175c39b5f4d" resname="Delete account confirmation">
-        <source>Delete account confirmation</source>
-        <target state="new">Delete account confirmation</target>
-        <jms:reference-file line="21">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
+      <trans-unit id="1b5737dea168495fa0495e00ce58b4832772a492" resname="Delete account successfull">
+        <source>Delete account successfull</source>
+        <target state="new">Delete account successfull</target>
+        <jms:reference-file line="21">Notification/Mail/MailSuccessAccountDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7533d4121d8de10e9b2b4b9c5afa5dfbde846af1" resname="Delete all users rights" approved="yes">
         <source>Delete all users rights</source>
@@ -2377,11 +2377,6 @@
         <source>Delete current</source>
         <target state="new">Delete current</target>
         <jms:reference-file line="131">Controller/Prod/LanguageController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="2ae3a019040b2afd5fa5c1c7f7a1766b7c4ae831" resname="Delete my account">
-        <source>Delete my account</source>
-        <target state="new">Delete my account</target>
-        <jms:reference-file line="37">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1635174e702895e9ee5d2723b89707eca38da582" resname="Delete records" approved="yes">
         <source>Delete records</source>
@@ -2790,6 +2785,27 @@
         <source>Email test result : %email_status%</source>
         <target state="translated">Résultat du test d'e-mail : %email_status%</target>
         <jms:reference-file line="136">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c839b2905a9c9e4e611519e461c6f3e0dde4ec78" resname="Email:deletion:request:message Hello %civility% %firstName% %lastName%.&#10;            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.&#10;            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%&#10;            Link is valid for one hour.">
+        <source>Email:deletion:request:message Hello %civility% %firstName% %lastName%.
+            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.
+            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%
+            Link is valid for one hour.</source>
+        <target state="new">Email:deletion:request:message Hello %civility% %firstName% %lastName%.
+            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.
+            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%
+            Link is valid for one hour.</target>
+        <jms:reference-file line="51">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ccbd5b5d94afa34b04935d0b084335f2656d96af" resname="Email:deletion:request:subject Delete account confirmation">
+        <source>Email:deletion:request:subject Delete account confirmation</source>
+        <target state="new">Email:deletion:request:subject Delete account confirmation</target>
+        <jms:reference-file line="39">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b37c2cc6df6ff49078905d16da4e3fa3a28490e4" resname="Email:deletion:request:textButton Delete my account">
+        <source>Email:deletion:request:textButton Delete my account</source>
+        <target state="new">Email:deletion:request:textButton Delete my account</target>
+        <jms:reference-file line="68">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="473558393914486d8e60b9968e5443e40be433e0" resname="Emails" approved="yes">
         <source>Emails</source>
@@ -3677,11 +3693,6 @@
         <target state="translated">"Imagine Driver"</target>
         <jms:reference-file line="52">Form/Configuration/ExecutablesFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fb9357d96b8e7a421b37ee84a18f5844a11ac2f7" resname="In Phraseanet,your baskets and your api application will be deleted with your account.Click the button to confirm deletion">
-        <source>In Phraseanet,your baskets and your api application will be deleted with your account.Click the button to confirm deletion</source>
-        <target state="new">In Phraseanet,your baskets and your api application will be deleted with your account.Click the button to confirm deletion</target>
-        <jms:reference-file line="29">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="ca13920228ea59b30c40b8372f53df3bf4631520" resname="In the answer grid" approved="yes">
         <source>In the answer grid</source>
         <target state="translated">Dans une infobulle séparée</target>
@@ -3790,7 +3801,7 @@
       <trans-unit id="8a3506d6dd32abc6a9d3651ec8b9bba513f65e81" resname="Invalid password provided" approved="yes">
         <source>Invalid password provided</source>
         <target state="translated">Mot de passe fournis invalide.</target>
-        <jms:reference-file line="70">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="71">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1244ab057df1737a47854d003cc98ec33ad3c09" resname="Invalid target collection" approved="yes">
         <source>Invalid target collection</source>
@@ -3974,7 +3985,7 @@
       <trans-unit id="1486ba721fa0e62d17c809eb55964a1c514f6d3f" resname="Le contenu de cet email est confidentiel, ne le divulguez pas." approved="yes">
         <source>Le contenu de cet email est confidentiel, ne le divulguez pas.</source>
         <target state="translated">Le contenu de cet e-mail est confidentiel. Ne le divulguez pas.</target>
-        <jms:reference-file line="119">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="125">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d90d64a516aa1d05e3aa4c5beb4f9e80bf77bb1" resname="Le nom de base de donnee est incorrect" approved="yes">
         <source>Le nom de base de donnee est incorrect</source>
@@ -4267,7 +4278,7 @@
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
         <target state="translated">Message automatique de Phraseanet</target>
-        <jms:reference-file line="128">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="134">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f17a172513ae816fbe5f183f85cd0c465de0860" resname="Mettre a jour" approved="yes">
         <source>Mettre a jour</source>
@@ -5089,7 +5100,7 @@
       <trans-unit id="b7a45fd93ff9471252ff1535c56c82f2f2d93865" resname="Pour gérer l'envoi d'email automatique, connectez-vous à %link%" approved="yes">
         <source>Pour gérer l'envoi d'email automatique, connectez-vous à %link%</source>
         <target state="translated">Pour régler les préférences de réception d'e-mails automatiques, connectez-vous à %link%</target>
-        <jms:reference-file line="134">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="140">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb6a1b19177957adc64d41ef7744e5f3f2f1d220" resname="Preference saved !" approved="yes">
         <source>Preference saved !</source>
@@ -6757,7 +6768,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="0845a443aa08307788a65ee5e1218a618dfcc9aa" resname="This link is valid until" approved="yes">
         <source>This link is valid until</source>
         <target state="translated">Ce lien est valide jusqu'au</target>
-        <jms:reference-file line="109">templates/web/email-template.html.twig</jms:reference-file>
+        <jms:reference-file line="115">templates/web/email-template.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58e76d1cc6a26f43783774d888c3a260970f637b" resname="This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases." approved="yes">
         <source>This option disables the selecting of the databases on which a user can register himself, and registration is made on all granted databases.</source>
@@ -6830,7 +6841,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="e894979930445d4b2bd8c947d6e2e6b816fcb0ab" resname="Token not found">
         <source>Token not found</source>
         <target state="new">Token not found</target>
-        <jms:reference-file line="381">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="383">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f97edaa0ce78a61e01095cae4169cada477d52dc" resname="Tool box" approved="yes">
         <source>Tool box</source>
@@ -7913,10 +7924,15 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Vos documents et leurs sous-résolutions (vignettes, prévisualisation et autres sous-définitions) sont stockés dans ces répertoires</target>
         <jms:reference-file line="736">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="bd5a589e9bed2de0b0180ca950ea0593249f7f69" resname="Your phraseanet account on %urlInstance% has been deleted!">
+        <source>Your phraseanet account on %urlInstance% has been deleted!</source>
+        <target state="new">Your phraseanet account on %urlInstance% has been deleted!</target>
+        <jms:reference-file line="29">Notification/Mail/MailSuccessAccountDelete.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="257253d658fdcbe73c4f4d02d2a3442ea8e4011d" resname="Your registration requests have been taken into account." approved="yes">
         <source>Your registration requests have been taken into account.</source>
         <target state="translated">Les demandes d'inscription ont été prises en compte.</target>
-        <jms:reference-file line="424">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="426">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e63b3e4d7c2710f8973d4371433e1a0875a02c12" resname="a propos" approved="yes">
         <source>a propos</source>
@@ -8589,7 +8605,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="29d3952c833272679cb313988c698f11cb6bbb64" resname="admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer" approved="yes">
         <source>admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer</source>
         <target state="translated">Un e-mail de confirmation vient de vous être envoyé. Veuillez suivre les instructions contenues dans celui-ci pour continuer</target>
-        <jms:reference-file line="133">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="134">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="00a39eeb4e86af2189a6080e16418d249d98a12b" resname="admin::compte-utilisateur ville" approved="yes">
         <source>admin::compte-utilisateur ville</source>
@@ -8603,7 +8619,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="2f752312fcd370b6547b296ca173da51487a2c5d" resname="admin::compte-utilisateur: L'email a correctement ete mis a jour" approved="yes">
         <source>admin::compte-utilisateur: L'email a correctement ete mis a jour</source>
         <target state="translated">L'adresse e-mail a été mise à jour</target>
-        <jms:reference-file line="157">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="158">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="65b62caf0d011a7a87ac02e39fcea79869f0d26a" resname="admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?" approved="yes">
         <source>admin::compte-utilisateur: Pourquoi me demande-t-on mon mot de passe pour changer mon adresse email ?</source>
@@ -8624,7 +8640,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="5bea2ac2d5d9b17df772d715e4a452316e6625f6" resname="admin::compte-utilisateur: erreur lors de la mise a jour" approved="yes">
         <source>admin::compte-utilisateur: erreur lors de la mise a jour</source>
         <target state="translated">La mise à jour a échoué</target>
-        <jms:reference-file line="148">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="149">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56d75cba0bcd6dae815548d79af45f8a58c822cf" resname="admin::compte-utilisateur::securite caracteres majuscules" approved="yes">
         <source>admin::compte-utilisateur::securite caracteres majuscules</source>
@@ -8660,7 +8676,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="d7ef5ce109bd15843f144dc60ed2e594ddd04d41" resname="admin::compte-utilisateur:ftp: Le mot de passe est errone" approved="yes">
         <source>admin::compte-utilisateur:ftp: Le mot de passe est errone</source>
         <target state="translated">Le mot de passe est erroné</target>
-        <jms:reference-file line="99">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="100">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bf7a0391d97674b47027a4021a3fa438db12b2d" resname="admin::compte-utilisateur:ftp: Nombre d'essais max" approved="yes">
         <source>admin::compte-utilisateur:ftp: Nombre d'essais max</source>
@@ -9811,7 +9827,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="e6ae91533b29ee255483b85273eaeb74f9c1ac60" resname="forms::l'email semble invalide" approved="yes">
         <source>forms::l'email semble invalide</source>
         <target state="translated">L'e-mail semble invalide</target>
-        <jms:reference-file line="105">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="106">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3edc07eb02649e91baa490fbf402ebbedb10d2cf" resname="forms::la valeur donnee est trop courte" approved="yes">
         <source>forms::la valeur donnee est trop courte</source>
@@ -9842,7 +9858,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="61cc4acf7d6a30e2177360defda8d8b94eb01d53" resname="forms::les emails ne correspondent pas" approved="yes">
         <source>forms::les emails ne correspondent pas</source>
         <target state="translated">Les e-mails ne correspondent pas</target>
-        <jms:reference-file line="111">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="112">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="39adae60eaec2c7664f31f59c482634f90eea3c1" resname="forms::les mots de passe ne correspondent pas" approved="yes">
         <source>forms::les mots de passe ne correspondent pas</source>
@@ -10058,12 +10074,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="5cdbff50d2a3ae92720c5af32d4cd560d1351a91" resname="login::notification: Changements enregistres" approved="yes">
         <source>login::notification: Changements enregistres</source>
         <target state="translated">Changements confirmés</target>
-        <jms:reference-file line="488">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="490">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="46f7a3bb71222626147c7e64c6a59a3f4c3d8e42" resname="login::notification: Mise a jour du mot de passe avec succes" approved="yes">
         <source>login::notification: Mise a jour du mot de passe avec succes</source>
         <target state="translated">Mise à jour du mot de passe effectuée</target>
-        <jms:reference-file line="66">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="67">Controller/Root/AccountController.php</jms:reference-file>
         <jms:reference-file line="396">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28dd2416483329c548279196d0c60f722578632f" resname="login::notification: demande de confirmation par mail envoyee" approved="yes">
@@ -10745,7 +10761,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="245fd09d0518644a6580518f710add762804ca9a" resname="phraseanet::account The account has been deleted">
         <source>phraseanet::account The account has been deleted</source>
         <target state="new">phraseanet::account The account has been deleted</target>
-        <jms:reference-file line="531">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="544">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; ">
         <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >> ]]></source>
@@ -10755,7 +10771,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion">
         <source>phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</source>
         <target state="new">phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</target>
-        <jms:reference-file line="358">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="360">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d0ee9e2c90a05b113b00bf7accd590557bd78528" resname="phraseanet::account: Are you sure you want to delete your account?">
         <source>phraseanet::account: Are you sure you want to delete your account?</source>
@@ -10817,8 +10833,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="754677fa0aa06c7f10237a728e6f33eaea06d42b" resname="phraseanet::erreur: echec du serveur de mail" approved="yes">
         <source>phraseanet::erreur: echec du serveur de mail</source>
         <target state="translated">Echec du serveur de mails</target>
-        <jms:reference-file line="122">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="343">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="123">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="344">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="533">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a5db6bf8928d23c54b13277fa7d5289a1f52744" resname="phraseanet::jours:: dimanche" approved="yes">
         <source>phraseanet::jours:: dimanche</source>
@@ -11085,7 +11102,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Vous ne possédez pas les autorisations d'accès requises sur les documents pour effectuer cette action.</target>
         <jms:reference-file line="35">Controller/Prod/MoveCollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="no">
+      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation">
         <source>prod::advancesearch:tooltips:datefield_restriction_explanation</source>
         <target state="needs-translation">Limiter l'affichage des résultats à des dates</target>
         <jms:reference-file line="447">web/prod/index.html.twig</jms:reference-file>

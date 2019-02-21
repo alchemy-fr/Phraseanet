@@ -37,6 +37,7 @@ use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
+use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountDelete;
 use Alchemy\Phrasea\Notification\Receiver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -333,7 +334,7 @@ class AccountController extends Controller
     {
         $user = $this->getAuthenticatedUser();
 
-        if($this->app['conf']->get(['registry', 'actions', 'delete-account-require-email-confirmation'])) {
+        if($this->app['conf']->get(['main', 'delete-account-require-email-confirmation'])) {
 
             // send email confirmation
 
@@ -350,6 +351,7 @@ class AccountController extends Controller
 
 
             $mail = MailRequestAccountDelete::create($this->app, $receiver);
+            $mail->setUserOwner($user);
             $mail->setButtonUrl($url);
             $mail->setExpiration($token->getExpiration());
 
@@ -523,9 +525,20 @@ class AccountController extends Controller
         $this->app->getAclForUser($user)->revoke_access_from_bases($list);
 
         if ($this->app->getAclForUser($user)->is_phantom()) {
-            $this->app['manipulator.user']->delete($user);
-        }
+            // send confirmation email: the account has been deleted
 
+            try {
+                $receiver = Receiver::fromUser($user);
+            } catch (InvalidArgumentException $e) {
+                $this->app->addFlash('error', $this->app->trans('phraseanet::erreur: echec du serveur de mail'));
+            }
+
+            $mail = MailSuccessAccountDelete::create($this->app, $receiver);
+
+            $this->app['manipulator.user']->delete($user);
+
+            $this->deliver($mail);
+        }
 
         $this->getAuthenticator()->closeAccount();
         $this->app->addFlash('info', $this->app->trans('phraseanet::account The account has been deleted'));

@@ -11,14 +11,32 @@
 
 namespace Alchemy\Phrasea\Notification\Mail;
 
+use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\User;
+
 class MailRequestAccountDelete extends AbstractMailWithLink
 {
+    const MAIL_SKIN = 'warning';
+
+    /** @var User */
+    private $user;
+
+    /**
+     * Set the user owner
+     *
+     * @param User $userOwner
+     */
+    public function setUserOwner(User $userOwner)
+    {
+        $this->user = $userOwner;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getSubject()
     {
-        return $this->app->trans('Delete account confirmation');
+        return $this->app->trans('Email:deletion:request:subject Delete account confirmation');
     }
 
     /**
@@ -26,7 +44,20 @@ class MailRequestAccountDelete extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return $this->app->trans('In Phraseanet,your baskets and your api application will be deleted with your account.Click the button to confirm deletion');
+        if (!$this->user) {
+            throw new LogicException('You must set a user before calling getMessage');
+        }
+
+        return $this->app->trans("Email:deletion:request:message Hello %civility% %firstName% %lastName%.
+            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.
+            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%
+            Link is valid for one hour.", [
+            '%civility%' => $this->getOwnerCivility(),
+            '%firstName%'=> $this->user->getFirstName(),
+            '%lastName%' => $this->user->getLastName(),
+            '%urlInstance%' => '<a href="'.$this->getPhraseanetURL().'">'.$this->getPhraseanetURL().'</a>',
+            '%resetPassword%' => '<a href="'.$this->app->url('reset_password').'">'.$this->app->url('reset_password').'</a>',
+        ]);
     }
 
     /**
@@ -34,7 +65,7 @@ class MailRequestAccountDelete extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Delete my account');
+        return $this->app->trans('Email:deletion:request:textButton Delete my account');
     }
 
     /**
@@ -45,4 +76,30 @@ class MailRequestAccountDelete extends AbstractMailWithLink
         return $this->url;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getMailSkin()
+    {
+        return self::MAIL_SKIN;
+    }
+
+    private function getOwnerCivility()
+    {
+        if (!$this->user) {
+            throw new LogicException('You must set a user before calling getMessage');
+        }
+
+        $civilities = [
+            User::GENDER_MISS => 'Miss',
+            User::GENDER_MRS  => 'Mrs',
+            User::GENDER_MR   => 'Mr',
+        ];
+
+        if (array_key_exists($this->user->getGender(), $civilities)) {
+            return $civilities[$this->user->getGender()];
+        } else {
+            return '';
+        }
+    }
 }

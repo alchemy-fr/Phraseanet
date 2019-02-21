@@ -279,7 +279,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">
-                                            {% if app['conf'].get(['registry', 'actions', 'delete-account-require-email-confirmation']) %}
+                                            {% if app['conf'].get(['main', 'delete-account-require-email-confirmation']) %}
                                                 {{ "phraseanet::account: I am agree to delete my account, need confirmation on mail" | trans }}
                                             {% else %}
                                                 {{ "phraseanet::account: I am agree to delete my account" | trans }}
@@ -288,7 +288,7 @@
                                         </label>
 
                                         <button class="btn" data-dismiss="modal" aria-hidden="true">{{ "No" | trans }}</button>
-                                        <a id="delete_account_confirm" href="{{ path("account_process_delete") }}" class="btn btn-info" style="opacity:0.5;pointer-events: none;" >{{ "Yes" | trans }}</a>
+                                        <a id="delete_account_confirm" class="btn btn-info" style="opacity:0.5;pointer-events: none;" >{{ "Yes" | trans }}</a>
                                     </div>
                                 </div>
 
@@ -307,11 +307,14 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
+            var deleteButton = $("#delete_account_confirm");
             $("#delete_account_aggree").bind("click", function(e) {
                 if ($(this).is(":checked")) {
-                    $("#delete_account_confirm").css({"opacity": "1", "pointer-events": "auto"});
+                    deleteButton.attr("href", '{{ path("account_process_delete") }}');
+                    deleteButton.css({"opacity": "1", "pointer-events": "auto"});
                 } else {
-                    $("#delete_account_confirm").css({"opacity": "0.5", "pointer-events": "none"});
+                    deleteButton.removeAttr("href");
+                    deleteButton.css({"opacity": "0.5", "pointer-events": "none"});
                 }
 
             });
