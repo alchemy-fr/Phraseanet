@@ -59,21 +59,34 @@ class SubdefGenerator
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if($record->get_hd_file() !== null){
+        if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
             $metadatas = $mediaSource->getMetadatas();
 
-            if($metadatas->containsKey('XMP-xmp:PageImage')){
+            if ($metadatas->containsKey('XMP-xmp:PageImage')) {
                 if(!isset($this->tmpFilesystem)){
                     $this->tmpFilesystem = Manager::create();
                 }
-                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory();
+                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory(0777, 500);
 
-                try {
-                    $this->app['filesystem']->dumpFile($tmpDir.'/file.jpg', $metadatas->get('XMP-xmp:PageImage')->getValue()->asString());
-                    $this->tmpFilePath = $tmpDir.'/file.jpg';
-                } catch (\Exception $e) {
-                    $this->logger->error(sprintf('Unable to write temporary file : %s', $e->getMessage()));
+                $files = $this->app['exiftool.preview-extractor']->extract($record->get_hd_file()->getPathname(), $tmpDir);
+
+                $selected = null;
+                $size = null;
+
+                foreach ($files as $file) {
+                    if ($file->isDir() || $file->isDot()) {
+                        continue;
+                    }
+
+                    if (is_null($selected) || $file->getSize() > $size) {
+                        $selected = $file->getPathname();
+                        $size = $file->getSize();
+                    }
+                }
+
+                if ($selected) {
+                    $this->tmpFilePath =  $selected;
                 }
             }
         }

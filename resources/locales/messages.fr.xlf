@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2019-01-10T13:00:16Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -577,9 +577,9 @@
         <target state="translated">Accès aux sous résolutions</target>
         <jms:reference-file line="351">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="yes">
+      <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="no">
         <source>Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</source>
-        <target state="translated">Pour accéder aux bases ci-dessus, vous devez d'abord accepter les conditions générales d'utilisation.</target>
+        <target state="needs-translation">L'accès aux ressources de cette base implique l'acceptation des Conditions générales d'utilisation suivantes :</target>
         <jms:reference-file line="19">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9db7fb32c517586a4123d511613b492d910aecaa" resname="Access user have readonly access" approved="yes">
@@ -636,7 +636,7 @@
       </trans-unit>
       <trans-unit id="c4a4f00323184bd750ee72b5c05e6e17d1584bfd" resname="Activate highlight" approved="yes">
         <source>Activate highlight</source>
-        <target state="translated">Activer le surlignage (beta). impact les performances de recherche</target>
+        <target state="translated">Activer le surlignage (beta). Impacte les performances de recherche</target>
         <jms:reference-file line="93">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
         <jms:reference-file line="679">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
@@ -823,9 +823,9 @@
         <jms:reference-file line="131">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="139">actions/Feedback/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cff1e86ef3cd4771d8b9a289d1e75a465d5b48a7" resname="All these conditions">
+      <trans-unit id="cff1e86ef3cd4771d8b9a289d1e75a465d5b48a7" resname="All these conditions" approved="yes">
         <source>All these conditions</source>
-        <target state="needs-translation">Toutes les conditions</target>
+        <target state="translated">Toutes les conditions</target>
         <jms:reference-file line="357">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4f5920cee28837f31429fd82f7bc5a335272a436" resname="All values" approved="yes">
@@ -1286,9 +1286,9 @@
         <target state="translated">OBSOLETE, autoriser *Phraseanet Navigator*</target>
         <jms:reference-file line="27">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect.">
+      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect." approved="yes">
         <source>Authorize Adobe cc Plugin to connect.</source>
-        <target state="new">Authorize Adobe cc Plugin to connect.</target>
+        <target state="translated">Autoriser la connexion du plugin Adobe CC</target>
         <jms:reference-file line="36">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e1ead524b95ba3b45281df7ba45d2addbbf1a79" resname="Authorize Microsoft Office Plugin to connect." approved="yes">
@@ -1905,9 +1905,9 @@
         <target state="translated">Consulter en ligne les prérequis et la configuration du serveur Web</target>
         <jms:reference-file line="316">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="33e15d008d511f3101566a2e25203ef2a3f605a0" resname="Contains">
+      <trans-unit id="33e15d008d511f3101566a2e25203ef2a3f605a0" resname="Contains" approved="yes">
         <source>Contains</source>
-        <target state="needs-translation">Contient</target>
+        <target state="translated">Contient</target>
         <jms:reference-file line="376">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="34326e71e2592544dedcb84077a6317dc5a5e700" resname="Continuer ?" approved="yes">
@@ -5760,9 +5760,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Voir les résultats de la demande de validation</target>
         <jms:reference-file line="81">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd6294adde442e65458da9640beeafed76f7f66a" resname="Select a field">
+      <trans-unit id="fd6294adde442e65458da9640beeafed76f7f66a" resname="Select a field" approved="yes">
         <source>Select a field</source>
-        <target state="needs-translation">Choisir un champs</target>
+        <target state="translated">Choisir un champ</target>
         <jms:reference-file line="368">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68679be6d90db68ca5ceebaded92d5d83de8761c" resname="Select a list on the left and edit it !" approved="yes">
@@ -7043,9 +7043,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Suggestion d'utilisateurs</target>
         <jms:reference-file line="134">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:">
+      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="yes">
         <source>Utilisation prevue:</source>
-        <target state="needs-translation">Utilisation prévue:</target>
+        <target state="translated">Utilisation prévue :</target>
         <jms:reference-file line="875">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b3e9155f69edf73caab337bf5f64231188b1e48" resname="VALIDATION" approved="yes">
@@ -7100,9 +7100,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Validations envoyées</target>
         <jms:reference-file line="31">WorkZone/Browser/Browser.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links">
+      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links" approved="yes">
         <source>Validity period of the download links</source>
-        <target state="needs-translation">Durée de validité des liens de téléchargement</target>
+        <target state="translated">Durée de validité des liens de téléchargement</target>
         <jms:reference-file line="61">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db671097785924a80ca79c2a37675116e90899e8" resname="Vers quel API voulez vous vous connecter ?" approved="yes">
@@ -10830,14 +10830,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Vous ne possédez pas les autorisations d'accès requises sur les documents pour effectuer cette action.</target>
         <jms:reference-file line="10">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation">
+      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="no">
         <source>prod::advancesearch:tooltips:datefield_restriction_explanation</source>
-        <target state="new">prod::advancesearch:tooltips:datefield_restriction_explanation</target>
+        <target state="needs-translation">Limiter l'affichage des résultats à des dates</target>
         <jms:reference-file line="406">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="33a0abb0b5ac4e1a5eb5970f3507fc3d448db9d4" resname="prod::advancesearch:tooltips:field_restiction_explanation">
+      <trans-unit id="33a0abb0b5ac4e1a5eb5970f3507fc3d448db9d4" resname="prod::advancesearch:tooltips:field_restiction_explanation" approved="no">
         <source>prod::advancesearch:tooltips:field_restiction_explanation</source>
-        <target state="new">prod::advancesearch:tooltips:field_restiction_explanation</target>
+        <target state="needs-translation">Effectuer des recherches sur les contenus des champs</target>
         <jms:reference-file line="349">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b8698f202f815bbde691f54c7d51b691bef0263" resname="prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)" approved="yes">
