@@ -316,7 +316,7 @@ function checkFilters(save) {
     }
 
     // if one filter shows danger, show it on the query
-    if (danger) {
+    if ($('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || $('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || $('#ADVSRCH_FIELDS_ZONE', adv_box).hasClass('danger') || $('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
         $('#EDIT_query').addClass('danger');
     }
     else {
