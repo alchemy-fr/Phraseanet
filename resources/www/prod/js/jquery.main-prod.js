@@ -151,8 +151,18 @@ function checkFilters(save) {
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
+    var statusField = $('#ADVSRCH_FIELDS_ZONE .danger_indicator', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+
+    // Manage Fields status
+    statusField.removeClass('danger');
+    $.each(fieldsSelectFake, function(index,el){
+        if( $(el).val() !== '' ) {
+            danger = true;
+            statusField.addClass('danger');
+        }
+    });
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
@@ -202,6 +212,7 @@ function checkFilters(save) {
         else {
             $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
             $(this).siblings(".clksbas").addClass("danger");
+            danger = true;
         }
 
         // if one coll is not checked, show danger
@@ -284,7 +295,7 @@ function checkFilters(save) {
                 n_unchecked++;
             }
         });
-        if(n_checked != 0) {
+        if(n_checked === 0) {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
         }
         else {
@@ -316,7 +327,7 @@ function checkFilters(save) {
     }
 
     // if one filter shows danger, show it on the query
-    if (danger) {
+    if (danger == true) {
         $('#EDIT_query').addClass('danger');
     }
     else {
