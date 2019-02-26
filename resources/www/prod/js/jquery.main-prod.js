@@ -212,6 +212,7 @@ function checkFilters(save) {
         else {
             $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
             $(this).siblings(".clksbas").addClass("danger");
+            danger = true;
         }
 
         // if one coll is not checked, show danger
@@ -294,7 +295,7 @@ function checkFilters(save) {
                 n_unchecked++;
             }
         });
-        if(n_checked != 0) {
+        if(n_checked === 0) {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
         }
         else {
@@ -326,7 +327,7 @@ function checkFilters(save) {
     }
 
     // if one filter shows danger, show it on the query
-    if (danger) {
+    if (danger === true) {
         $('#EDIT_query').addClass('danger');
     }
     else {
