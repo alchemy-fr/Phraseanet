@@ -151,8 +151,18 @@ function checkFilters(save) {
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
+    var statusField = $('#ADVSRCH_FIELDS_ZONE .danger_indicator', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+
+    // Manage Fields status 
+    statusField.removeClass('danger');
+    $.each(fieldsSelectFake, function(index,el){
+        if( $(el).val() !== '' ) {
+            danger = true;
+            statusField.addClass('danger');
+        }
+    });
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
