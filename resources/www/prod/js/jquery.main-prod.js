@@ -155,15 +155,6 @@ function checkFilters(save) {
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
 
-    // Manage Fields status
-    statusField.removeClass('danger');
-    $.each(fieldsSelectFake, function(index,el){
-        if( $(el).val() !== '' ) {
-            danger = true;
-            statusField.addClass('danger');
-        }
-    });
-
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
 
@@ -247,6 +238,7 @@ function checkFilters(save) {
     });
 
     // enable also the select if the first option ("choose:") was selected
+    statusField.removeClass('danger');
     fieldsSelectFake.each(function(e) {
         var $this = $(this);
         var term_ok = $('option:selected:enabled', $this).closest(".term_select_wrapper");
@@ -254,6 +246,8 @@ function checkFilters(save) {
         if($this.val() !== "") {
             $("select.term_select_op", term_ok).enable(true);
             $("input.term_select_value", term_ok).enable(true);
+            danger = true;
+            statusField.addClass('danger');
         }
     });
 
