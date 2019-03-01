@@ -97,13 +97,17 @@
     {% endif %}
   </div>
 </div>
-  <script>
+{% endmacro %}
+
+{# ResultTableJavascript use to call just once a time in a page after ResultTable #}
+{% macro  ResultTableJavascript()%}
+  <script type="text/javascript">
 
   $(document).ready(function(){
     var $editor = $('#list-editor-search-results');
 
-    $('a.next, a.prev', $editor).bind('click', function(){
-      var page = $(this).attr('value');
+          $editor.on('click', 'a.next, a.prev', function(){
+              var page = $(this).attr('value');
 
       $('input[name="page"]', $form).val(page);
       $form.trigger('submit');
@@ -115,7 +119,8 @@
 
     $('input[name="page"]', $form).val('');
 
-    $('th.sortable', $editor).bind('click', function(){
+          $editor.on('click', 'th.sortable', function (){
+//          $('th.sortable', $editor).bind('click', function(){
 
       var $this = $(this);
 
@@ -134,12 +139,15 @@
       $('input[name="srt"]', $form).val(sort);
       $('input[name="ord"]', $form).val(ord);
 
-      $form.trigger('submit');
-    })
-    .bind('mouseover', function(){$(this).addClass('hover');})
-    .bind('mouseout', function(){$(this).removeClass('hover');});
+              $form.trigger('submit');
+          })
+              .on('mouseover', 'th.sortable', function(){$(this).addClass('hover');})
+              //              .bind('mouseover', function(){$(this).addClass('hover');})
+              .on('mouseout', 'th.sortable', function(){$(this).removeClass('hover');});
+//              .bind('mouseout', function(){$(this).removeClass('hover');});
 
-    $('tbody tr', $editor).bind('click', function(){
+          $editor.on('click', 'tbody tr', function(){
+//          $('tbody tr', $editor).bind('click', function(){
 
       var $this = $(this);
       var usr_id = $('input[name="usr_id"]', $this).val();
