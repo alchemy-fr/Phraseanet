@@ -151,6 +151,7 @@ function checkFilters(save) {
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
+    var statusField = $('#ADVSRCH_FIELDS_ZONE .danger_indicator', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
 
@@ -202,6 +203,7 @@ function checkFilters(save) {
         else {
             $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
             $(this).siblings(".clksbas").addClass("danger");
+            danger = true;
         }
 
         // if one coll is not checked, show danger
@@ -236,6 +238,7 @@ function checkFilters(save) {
     });
 
     // enable also the select if the first option ("choose:") was selected
+    statusField.removeClass('danger');
     fieldsSelectFake.each(function(e) {
         var $this = $(this);
         var term_ok = $('option:selected:enabled', $this).closest(".term_select_wrapper");
@@ -243,6 +246,8 @@ function checkFilters(save) {
         if($this.val() !== "") {
             $("select.term_select_op", term_ok).enable(true);
             $("input.term_select_value", term_ok).enable(true);
+            danger = true;
+            statusField.addClass('danger');
         }
     });
 
@@ -284,7 +289,7 @@ function checkFilters(save) {
                 n_unchecked++;
             }
         });
-        if(n_checked != 0) {
+        if(n_checked === 0) {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
         }
         else {
@@ -316,7 +321,7 @@ function checkFilters(save) {
     }
 
     // if one filter shows danger, show it on the query
-    if (danger) {
+    if (danger == true) {
         $('#EDIT_query').addClass('danger');
     }
     else {
