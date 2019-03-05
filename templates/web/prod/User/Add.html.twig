@@ -108,11 +108,13 @@
             }
         });
     };
-
-    $addUserForm.find('.geoname_field').geocompleter({
-        "server": "{{ app['geonames.server-uri'] }}",
-        "limit": 40
-    });
+    geolink = '{{ app['geonames.server-uri'] }}';
+    if(geolink.length > 0) {
+        $addUserForm.find('.geoname_field').geocompleter({
+            "server": "{{ app['geonames.server-uri'] }}",
+            "limit": 40
+        });
+    }
 
     $addUserForm.on('submit', function(event) {
         event.preventDefault();
