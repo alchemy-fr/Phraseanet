@@ -33,22 +33,14 @@
                                         <input type="file" name="files[]" multiple>
                                     </span>
                                     <br />
-                                    <input type="url" value="" style="width: 350px;" id="add-url"><button class="add-url">add this url</button>
+                                    <p class="or_upload">{{ "Or" | trans }}</p>
+                                    <div class="url_upload"><input type="url" value="" id="add-url"><button class="add-url add_url_upload">{{ 'Add this url' | trans }}</button></div>
                                     <br/>
                                     <span class="comment">
                                         ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                     </span>
                                 </td>
-                                {#<td class='uploader-icon'>#}
-                                {#<img src='/assets/common/images/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>#}
-                                {#</td>#}
-                                {#<td class="uploader-info">#}
-                                {#<p>#}
-                                {#{{ 'You are using the HTML5 uploader.' | trans }}#}
-                                {#{% if not app['browser'].supportFileAPI() %}#}
-                                {#{{ 'Your browser does not support all HTML5 features properly.' | trans }}#}
-                                {#{% endif %}#}
-                                {#</p>#}
+
                                 <a style="display: none" id="UPLOAD_FLASH_LINK" href="{{ path('upload_flash_form') }}"
                                    class="dialog full-dialog">{{ 'Use the Flash uploader' | trans }}</a>
                                 {#</td>#}
