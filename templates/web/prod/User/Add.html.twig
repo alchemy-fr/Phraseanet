@@ -47,7 +47,7 @@
                     <label for="">{{ 'City' | trans }}</label>
                 </td>
                 <td>
-                    <input name="city" type="text" value="" class="geoname_field"/>
+                    <input name="city" type="text" value="" class="{% if app['geonames.server-uri'] %}geoname_field{% endif %}"/>
                 </td>
             </tr>
             <tr>
@@ -108,14 +108,12 @@
             }
         });
     };
-    geolink = '{{ app['geonames.server-uri'] }}';
-    if(geolink.length > 0) {
+    if($('.geoname_field').length > 0) {
         $addUserForm.find('.geoname_field').geocompleter({
             "server": "{{ app['geonames.server-uri'] }}",
             "limit": 40
         });
     }
-
     $addUserForm.on('submit', function(event) {
         event.preventDefault();
         submitAddUser();
