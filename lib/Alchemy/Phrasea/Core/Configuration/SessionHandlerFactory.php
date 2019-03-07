@@ -51,13 +51,15 @@ class SessionHandlerFactory
             case 'memcache':
                 return new WriteCheckSessionHandler(
                     new MemcacheSessionHandler(
-                        $this->connectionFactory->getMemcacheConnection($options, $serverOpts)
+                        $this->connectionFactory->getMemcacheConnection($options),
+                        $serverOpts
                     )
                 );
             case 'memcached':
                 return new WriteCheckSessionHandler(
                     new MemcachedSessionHandler(
-                        $this->connectionFactory->getMemcachedConnection($options, $serverOpts)
+                        $this->connectionFactory->getMemcachedConnection($options),
+                        $serverOpts
                     )
                 );
             case 'file':
@@ -65,7 +67,8 @@ class SessionHandlerFactory
             case 'redis':
                 return new WriteCheckSessionHandler(
                     new RedisSessionHandler(
-                        $this->connectionFactory->getRedisConnection($options, $serverOpts)
+                        $this->connectionFactory->getRedisConnection($options),
+                        $serverOpts
                     )
                 );
             case 'native':
