@@ -547,6 +547,10 @@ class PushController extends Controller
                 ->like($request->get('like_field'), $request->get('query'))
                 ->like_match(\User_Query::LIKE_MATCH_OR);
         }
+
+        if (is_array($request->get('EmailDomain'))) {
+            $query->haveEmailDomains($request->get('EmailDomain'));
+        }
         if (is_array($request->get('Activity'))) {
             $query->haveActivities($request->get('Activity'));
         }
