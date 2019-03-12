@@ -60,8 +60,14 @@ class patch_406a implements patchInterface
      */
     public function apply(base $databox, Application $app)
     {
+        // @see : https://phraseanet.atlassian.net/browse/PHRAS-2468
+        // to be able to migrate from 3.5 to 4.0.8, we must not delete the table anymore
+        // so the cli "bin/setup patch:log_coll_id" can be executed.
+
+        /*
         $sql = "DROP TABLE IF EXISTS `log_colls`";
         $databox->get_connection()->prepare($sql)->execute();
+        */
 
         /*
          * no need to do those ops, it's done by system:upgrade after fixing the xml scheme
