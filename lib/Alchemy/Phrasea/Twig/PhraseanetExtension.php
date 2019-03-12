@@ -88,7 +88,7 @@ class PhraseanetExtension extends \Twig_Extension
             $highlightValue = $highlights[$field];
 
             // if field is multivalued, merge highlighted values with captions ones
-            if (is_array($value)) {
+            if (is_array($value) && count($value) > 1) {
                 $highlightValue = array_merge($highlightValue, array_diff($value, array_map(function($value) {
                     return str_replace(array('[[em]]', '[[/em]]'), array('', ''), $value);
                 }, $highlightValue)));
