@@ -62,8 +62,8 @@ $(document).ready(function () {
             e.stopPropagation();
             var value = $(this).attr('rel'),
                 form = $(this).closest('form');
-            $(".form2 .collist", form).hide();
-            $(".form2 .collist-" + value, form).show();
+            $(".collist", form).hide();
+            $(".collist-" + value, form).show();
         });
       
         $(document).click(function() {
@@ -72,7 +72,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.form2 .collist').each(function() {
+    $('.collist').each(function() {
         var $this = $(this),
             form = $this.closest('form'),
             i = $this.closest('form').find('.sbas_select').val()
@@ -99,15 +99,53 @@ function bindEvents() {
      * "Download" buttons
     **/
     $('.formsubmiter').bind('click', function () {
-        var form = $($(this).attr('data-form_selector'));
-        var action = form.find("select.sbas_select");
+        var collectionsArr = [],
+            fieldsArr = [],
+            form = $($(this).attr('data-form_selector')),
+            action = form.find("select.sbas_select")
+        ;
+
         if(action.length != 1) {    // should never happen with select !
             return false;   // prevent button to submit form
         }
+        $(".form2 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+                $.each($(el).find('input'), function(i, inputEl) {
+                    collectionsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
+        $(".form3 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+                $.each($(el).find('input'), function(i, inputEl) {
+                    fieldsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
         action = action.find(':selected').data('action');
 
         form.attr("action", action);
         form.submit();
+        $(".form2 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+
+                $.each($(el).find('input'), function(j, inputEl) {
+                    $(inputEl).prop('checked', collectionsArr[j]);
+                });
+            }
+        });
+        $(".form3 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+
+                $.each($(el).find('input'), function(j, inputEl) {
+                    $(inputEl).prop('checked', fieldsArr[j]);
+                });
+            }
+        });
+        collectionsArr = [];
+        fieldsArr = [];
 
         return false;   // prevent button to submit form
     });
