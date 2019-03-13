@@ -64,33 +64,33 @@
             {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
 
             {% block form_records %}
-            <div class="form3 form_content">
+            <div class="form3 form_content form_content_checkboxes">
                 <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
 
-                <div class="collist">
-                    <div class="collist_buttons">
-                        <button class="select-all btn btn-mini" data-target_selector="#chkfld-records input:checkbox">
+                {% for sbas_id,databox in granted_bases %}
+                    <div class="collist collist-{{ sbas_id }}">
+                        <div class="collist_buttons">
+                            <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Select all{% endtrans %}
-                        </button>
-                        <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records input:checkbox">
+                            </button>
+                            <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Deselect all{% endtrans %}
-                        </button>
-                    </div>
+                            </button>
+                        </div>
 
-                    <ul id="chkfld-records" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
-                        {% for sbas_id,databox in granted_bases %}
+                        <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
                             {% for meta in databox.metas %}
-                            <li>
-                                <label class="checkbox custom_checkbox_label">
-                                    <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
-                                    <span class="custom_checkbox"></span>
-                                    {{ meta }}
-                                </label>
-                            </li>
+                                <li>
+                                    <label class="checkbox custom_checkbox_label">
+                                        <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                        <span class="custom_checkbox"></span>
+                                        {{ meta }}
+                                    </label>
+                                </li>
                             {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                {% endfor %}
             </div>
             {% endblock form_records %}
         </form>

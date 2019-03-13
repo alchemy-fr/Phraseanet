@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+<<<<<<< HEAD
   <file date="2019-03-07T06:31:34Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+=======
+  <file date="2019-03-07T06:51:51Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -254,7 +258,11 @@
       <trans-unit id="d7c38bf41291d1f920c6e0b56a1c4a1cfc0b6743" resname="%quantity% selected files" approved="yes">
         <source>%quantity% selected files</source>
         <target state="translated">%quantity% selected files</target>
+<<<<<<< HEAD
         <jms:reference-file line="111">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="112">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="eae910e840fe7df8ef8211d587e72af74ab69463" resname="%quantity_records% records have been sent for validation to %quantity_users% users" approved="yes">
         <source>%quantity_records% records have been sent for validation to %quantity_users% users</source>
@@ -687,6 +695,11 @@
         <source>Add an admin</source>
         <target state="translated">Add an admin</target>
         <jms:reference-file line="109">web/admin/dashboard.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url">
+        <source>Add this url</source>
+        <target state="new">Add this url</target>
+        <jms:reference-file line="37">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f347a8ddd22508ed0310a2f9d8cf43dd96be34b1" resname="Add user" approved="yes">
         <source>Add user</source>
@@ -1532,7 +1545,11 @@
         <source>Cancel all</source>
         <target state="translated">Cancel all</target>
         <jms:reference-file line="118">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="131">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="132">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="82695f04e6097106923a58949a9e1b0fadd1a989" resname="Cannot upload Zero Byte files" approved="yes">
         <source>Cannot upload Zero Byte files</source>
@@ -1728,7 +1745,11 @@
         <source>Clear list</source>
         <target state="translated">Clear list</target>
         <jms:reference-file line="106">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="112">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="113">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="0fcdb8c5215c8bd73769c3492e47d86ec3f6837e" resname="Client application" approved="yes">
         <source>Client application</source>
@@ -2385,7 +2406,11 @@
         <target state="translated">Deselect all</target>
         <jms:reference-file line="193">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="61">web/report/form_date_and_base.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="92">web/report/report_layout_child.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
         <source>Detailed view URL</source>
@@ -4629,6 +4654,11 @@
         <target state="translated">Open the URL in a new window</target>
         <jms:reference-file line="125">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or">
+        <source>Or</source>
+        <target state="new">Or</target>
+        <jms:reference-file line="36">prod/upload/upload.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="94946e4d2391ccf8ff24f984869ae8fcf9ede7c4" resname="Or login with" approved="yes">
         <source>Or login with</source>
         <target state="translated">Or login with</target>
@@ -5783,7 +5813,11 @@
         <target state="translated">Select all</target>
         <jms:reference-file line="192">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="58">web/report/form_date_and_base.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="73">web/report/report_layout_child.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="89">web/report/report_layout_child.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="7c83f0d10a0a04ab6ae1ceb098113b081e9bc4d5" resname="Select all collections" approved="yes">
         <source>Select all collections</source>
@@ -5827,7 +5861,11 @@
         <jms:reference-file line="185">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="216">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="107">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="113">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="114">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="3b6564ae1423d96730d38a49a4c796ed79c6e0b1" resname="Send an email to the user to setup his password" approved="yes">
         <source>Send an email to the user to setup his password</source>
@@ -6684,7 +6722,11 @@
         <source>Transmited files</source>
         <target state="translated">Transmitted files</target>
         <jms:reference-file line="115">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="122">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="123">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="6e764776541fbe428a3566f42ee7956312af98b7" resname="Trier par" approved="yes">
         <source>Trier par</source>
@@ -6965,15 +7007,24 @@
         <source>Use the Flash uploader</source>
         <target state="translated">Use the Flash uploader version</target>
         <jms:reference-file line="129">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="53">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="146">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="54">prod/upload/upload.html.twig</jms:reference-file>
+        <jms:reference-file line="147">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="b9473cfd4d6d6383f40de2d9be11adcca7b76ab6" resname="Use the HTML5 uploader" approved="yes">
         <source>Use the HTML5 uploader</source>
         <target state="translated">Switch to HTML5 uploader</target>
         <jms:reference-file line="48">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="128">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="145">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="146">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="1d2b0439bd02b54c622696c45588eab8d051dfb9" resname="Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token" approved="yes">
         <source>Use with mod_token. Attention requires the apache modules and mod_h264_streaming mod_auth_token</source>
@@ -7557,8 +7608,13 @@
         <source>You can not upload files</source>
         <target state="translated">You are not allowed to upload files</target>
         <jms:reference-file line="99">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="104">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="150">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="105">prod/upload/upload.html.twig</jms:reference-file>
+        <jms:reference-file line="151">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="4faca55769348dcbc9714b19438181057aa2510e" resname="You do not enough rights to update status" approved="yes">
         <source>You do not enough rights to update status</source>
@@ -9946,7 +10002,11 @@
         <source>maximum : %maxFileSizeReadable%</source>
         <target state="translated">Maximum filesize: %maxFileSizeReadable%</target>
         <jms:reference-file line="33">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="39">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="40">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="024b6bde2b38cc102db445880d243021b5ed8509" resname="mediatype" approved="yes">
         <source>mediatype</source>
@@ -12737,13 +12797,21 @@
         <source>upload:: Destination (collection) :</source>
         <target state="translated">Collection</target>
         <jms:reference-file line="55">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="60">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="61">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="39e4890a2d75f483b1cb2131b2d19f8cf96a502b" resname="upload:: Status :" approved="yes">
         <source>upload:: Status :</source>
         <target state="translated">Apply status</target>
         <jms:reference-file line="72">prod/upload/upload-flash.html.twig</jms:reference-file>
+<<<<<<< HEAD
         <jms:reference-file line="77">prod/upload/upload.html.twig</jms:reference-file>
+=======
+        <jms:reference-file line="78">prod/upload/upload.html.twig</jms:reference-file>
+>>>>>>> 64013b5ead552983a321fb6272c64bda119c5f9b
       </trans-unit>
       <trans-unit id="8adc0b977e7abdf06ac1974f7b58937c1cd2b0d9" resname="use truncation" approved="yes">
         <source>use truncation</source>

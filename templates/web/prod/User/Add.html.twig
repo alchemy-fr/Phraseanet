@@ -109,11 +109,6 @@
         });
     };
 
-    $addUserForm.find('.geoname_field').geocompleter({
-        "server": "{{ app['geonames.server-uri'] }}",
-        "limit": 40
-    });
-
     $addUserForm.on('submit', function(event) {
         event.preventDefault();
         submitAddUser();
@@ -130,3 +125,13 @@
         return false;
     });
     </script>
+
+    {% if app['geonames.server-uri'] %}
+        <script type="text/javascript">
+            $addUserForm.find('.geoname_field').geocompleter({
+                "server": "{{ app['geonames.server-uri'] }}",
+                "limit": 40
+            });
+        </script>
+    {% endif %}
+
