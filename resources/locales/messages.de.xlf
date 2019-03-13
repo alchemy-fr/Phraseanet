@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-03-07T06:48:11Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2019-03-13T06:36:29Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -2390,7 +2390,7 @@
         <target state="translated">Alle abwählen</target>
         <jms:reference-file line="193">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="61">web/report/form_date_and_base.html.twig</jms:reference-file>
-        <jms:reference-file line="92">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="104">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
         <source>Detailed view URL</source>
@@ -5793,7 +5793,7 @@
         <target state="translated">Alle auswählen</target>
         <jms:reference-file line="192">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="58">web/report/form_date_and_base.html.twig</jms:reference-file>
-        <jms:reference-file line="89">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="101">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7c83f0d10a0a04ab6ae1ceb098113b081e9bc4d5" resname="Select all collections" approved="yes">
         <source>Select all collections</source>
@@ -11294,6 +11294,61 @@
         <target state="translated">ohne Titel</target>
         <jms:reference-file line="905">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
+        <source>report:: (connexions)</source>
+        <target state="new">report:: (connexions)</target>
+        <jms:reference-file line="22">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav">
+        <source>report:: (connexions) nav</source>
+        <target state="new">report:: (connexions) nav</target>
+        <jms:reference-file line="24">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version">
+        <source>report:: (connexions) nav,version</source>
+        <target state="new">report:: (connexions) nav,version</target>
+        <jms:reference-file line="25">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os">
+        <source>report:: (connexions) os</source>
+        <target state="new">report:: (connexions) os</target>
+        <jms:reference-file line="26">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav">
+        <source>report:: (connexions) os,nav</source>
+        <target state="new">report:: (connexions) os,nav</target>
+        <jms:reference-file line="27">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version">
+        <source>report:: (connexions) os,nav,version</source>
+        <target state="new">report:: (connexions) os,nav,version</target>
+        <jms:reference-file line="28">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res">
+        <source>report:: (connexions) res</source>
+        <target state="new">report:: (connexions) res</target>
+        <jms:reference-file line="29">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user">
+        <source>report:: (connexions) user</source>
+        <target state="new">report:: (connexions) user</target>
+        <jms:reference-file line="23">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)">
+        <source>report:: (downloads)</source>
+        <target state="new">report:: (downloads)</target>
+        <jms:reference-file line="74">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record">
+        <source>report:: (downloads) record</source>
+        <target state="new">report:: (downloads) record</target>
+        <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user">
+        <source>report:: (downloads) user</source>
+        <target state="new">report:: (downloads) user</target>
+        <jms:reference-file line="75">web/report/report_layout_child.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
         <source>report:: 1 - Periode</source>
         <target state="translated">1 - Zeit</target>
@@ -11313,12 +11368,12 @@
         <source>report:: 3 - Type de report</source>
         <target state="translated">3 - Bericht Typ</target>
         <jms:reference-file line="11">web/report/report_layout_child.html.twig</jms:reference-file>
-        <jms:reference-file line="59">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="67">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bbf54f30e0791db4dc06243d939468640ddb6cc5" resname="report:: 4 - Fields">
         <source>report:: 4 - Fields</source>
         <target state="new">report:: 4 - Fields</target>
-        <jms:reference-file line="84">web/report/report_layout_child.html.twig</jms:reference-file>
+        <jms:reference-file line="95">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67272ff4fb66e47f6a5e55c7171e994c69b6f162" resname="report:: Au (date)" approved="yes">
         <source>report:: Au (date)</source>
