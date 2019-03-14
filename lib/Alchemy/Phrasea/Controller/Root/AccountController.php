@@ -311,18 +311,18 @@ class AccountController extends Controller
 
         $apiAccounts = $this->getApiAccountRepository()->findByUser($user);
 
-        $ownerPublisher = $this->getFeedPublisherRepository()->findBy(['user' => $user, 'owner' => true]);
+        $ownedFeeds = $this->getFeedPublisherRepository()->findBy(['user' => $user, 'owner' => true]);
 
-        $ownerFeedbackSend = $this->getValidationSessionRepository()->findby(['initiator' => $user, ]);
+        $initiatedValidations = $this->getValidationSessionRepository()->findby(['initiator' => $user, ]);
 
         return $this->render('account/account.html.twig', [
-            'user'                => $user,
-            'evt_mngr'            => $manager,
-            'notifications'       => $manager->list_notifications_available($user),
-            'baskets'             => $baskets,
-            'api_accounts'        => $apiAccounts,
-            'isOwnerPublisher'    => count($ownerPublisher) > 0 ? true : false,
-            'isOwnerFeedbackSend' => count($ownerFeedbackSend) > 0 ? true : false,
+            'user'                  => $user,
+            'evt_mngr'              => $manager,
+            'notifications'         => $manager->list_notifications_available($user),
+            'baskets'               => $baskets,
+            'api_accounts'          => $apiAccounts,
+            'owned_feeds'           => $ownedFeeds,
+            'initiated_validations' => $initiatedValidations,
         ]);
     }
 

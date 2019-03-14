@@ -239,7 +239,7 @@
 
                         <div style="max-width: 400px;margin-left: 1%;width: 47%;display: inline-block;margin-right: 2%;float: right;">
 
-                            {% if not user.isadmin() and not user.hasLdapCreated() and not isOwnerPublisher and not isOwnerFeedbackSend %}
+                            {% if not user.isadmin() and not user.hasLdapCreated() and not owned_feeds and not initiated_validations %}
 
                                 <a  href="#delete-account-process" type="button" role="button" data-toggle="modal" class="btn btn-danger btn-block btn-large">{{ 'phraseanet::account: Delete my account' | trans }}</a>
 
