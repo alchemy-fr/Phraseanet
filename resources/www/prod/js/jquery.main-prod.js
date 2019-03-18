@@ -830,7 +830,7 @@ function loadFacets(facets) {
 function hideSingleValueFacet(source) {
     var filteredSource = [];
     _.forEach(source, function(facet) {
-        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.data.field]))) {
+        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.field]))) {
             filteredSource.push(facet);
         }
     });
