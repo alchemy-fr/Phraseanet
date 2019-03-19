@@ -510,7 +510,7 @@
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                        <input type="checkbox"  class="field_switch field_{{databox_id}}"
                                                                                value="0"
                                                                                data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
                                                                                name="status[{{databox_id}}][{{status_bit}}]"
@@ -524,7 +524,7 @@
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                        <input type="checkbox" class="field_switch field_{{databox_id}}"
                                                                                value="1"
                                                                                data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
                                                                                name="status[{{databox_id}}][{{status_bit}}]"
