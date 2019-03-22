@@ -30,14 +30,14 @@ class ValueChecker
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    if ($is_numeric) {
+//                    if ($is_numeric) {
                         $filtered[] = $item;
-                    }
+//                    }
                     break;
                 case FieldMapping::TYPE_DATE:
-                    if ($is_valid_date) {
+//                    if ($is_valid_date) {
                         $filtered[] = $item;
-                    }
+//                    }
                     break;
                 case FieldMapping::TYPE_STRING:
                 default:
