@@ -73,8 +73,11 @@ class TextNode extends AbstractTermNode implements ContextAbleInterface
         $query = $query_builder($context->getUnrestrictedFields());
 
         // Private fields
+        $all_fields = $context->getHighlightedFields();
+        $unrestricted_fields = $context->getUnrestrictedFields();
         $private_fields = $context->getPrivateFields();
-        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
+
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $unrestricted_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 
