@@ -46,18 +46,21 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
 
                 $queueConfigurations = $configuration->get(['workers', 'queue'], $defaultConfiguration);
 
-                $queueConfiguration = reset($queueConfigurations);
-                $queueKey = key($queueConfigurations);
+                $config = [];
 
-                if (! isset($queueConfiguration['name'])) {
-                    if (! is_string($queueKey)) {
-                        throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                foreach($queueConfigurations as $name => $queueConfiguration) {
+                    $queueKey = $name;
+
+                    if (! isset($queueConfiguration['name'])) {
+                        if (! is_string($queueKey)) {
+                            throw new \RuntimeException('Invalid queue configuration: configuration has no key or name.');
+                        }
+
+                        $queueConfiguration['name'] = $queueKey;
                     }
 
-                    $queueConfiguration['name'] = $queueKey;
+                    $config[$queueConfiguration['name']] = $queueConfiguration ;
                 }
-
-                $config = [ $queueConfiguration['name'] => $queueConfiguration ];
 
                 return $config;
             }
