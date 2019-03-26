@@ -265,7 +265,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                                     "multi_match": {
                                         "fields": [
                                             "concept_path.bar",
-                                            "concept.path.foo"
+                                            "concept_path.foo"
                                         ],
                                         "query": "/qux"
                                     }
