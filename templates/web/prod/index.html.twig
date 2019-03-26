@@ -373,7 +373,7 @@
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                     {# % if field['type'] != 'date' % #}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="field.{{field_id}}">{{field['fieldname']}}</option>
+                                                                    <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="STRING-FIELD" value="field.{{field_id}}">{{field['fieldname']}}</option>
                                                                     {# % endif % #}
                                                                 {% endfor %}
                                                             </select>
