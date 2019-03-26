@@ -2257,9 +2257,9 @@
         <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/Story/Reorder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)">
+      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)" approved="yes">
         <source>Date(s) from field(s)</source>
-        <target state="new">Date(s) from field(s)</target>
+        <target state="translated">Date(s)</target>
         <jms:reference-file line="443">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b98c9b528241fc8135fb9fd472c7db12ec14964" resname="De" approved="yes">
@@ -2997,9 +2997,9 @@
         <target state="translated">Envoi avec succès</target>
         <jms:reference-file line="445">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals">
+      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals" approved="yes">
         <source>Equals</source>
-        <target state="new">Equals</target>
+        <target state="translated">Egale</target>
         <jms:reference-file line="418">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab546c237a6685e5c75689266cfa715eeb21b7db" resname="Erreur" approved="yes">
@@ -3140,9 +3140,9 @@
         <jms:reference-file line="13">Bridge/Dailymotion/video_deleteelement.html.twig</jms:reference-file>
         <jms:reference-file line="13">Bridge/Youtube/video_deleteelement.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne">
+      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne" approved="yes">
         <source>Ex : Paris, bleu, montagne</source>
-        <target state="new">Ex : Paris, bleu, montagne</target>
+        <target state="translated">Ex : Paris, bleu, montagne</target>
         <jms:reference-file line="420">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9c067c65c9f9d5a8e96791db7d189bc22eca9c1" resname="Executables externes" approved="yes">
@@ -3428,9 +3428,9 @@
         <target state="translated">Générer un fichier flexpaper flash</target>
         <jms:reference-file line="32">Media/Subdef/FlexPaper.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file">
+      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file" approved="yes">
         <source>Generates a pdf file</source>
-        <target state="new">Generates a pdf file</target>
+        <target state="translated">Générer un fichier PDF</target>
         <jms:reference-file line="24">Media/Subdef/Pdf.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d40d73fbcffe62e09f9430c0043ec2e7011a801b" resname="Generates a video file" approved="yes">
@@ -11114,7 +11114,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation">
         <source>prod::advancesearch:tooltips:datefield_restriction_explanation</source>
-        <target state="needs-translation">Limiter l'affichage des résultats à des dates</target>
+        <target state="needs-translation">Limiter la recherche des résultats à des dates</target>
         <jms:reference-file line="447">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation">
@@ -11758,9 +11758,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Information sur les utilisateurs correspondant à %critere%</target>
         <jms:reference-file line="415">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report">
+      <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report" approved="yes">
         <source>report:: Phraseanet report</source>
-        <target state="new">report:: Phraseanet report</target>
+        <target state="translated">Phraseanet Report</target>
         <jms:reference-file line="6">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a5c2d01ec9cd2716cb44a02ba1851d82de40aa8a" resname="report:: Plateforme" approved="yes">
