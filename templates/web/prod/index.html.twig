@@ -264,10 +264,11 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
+
                     {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                        <div id="FIRST_QUERY_CONTAINER" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
+                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
                     {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-                        <div id="FIRST_QUERY_CONTAINER" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
+                        <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
                     {% endif %}
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
@@ -414,7 +415,7 @@
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
                                                                    {# {% if field['type'] != 'date' %}#}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
                                                                     {#{% endif %}#}
                                                                 {% endfor %}
                                                             </select>
