@@ -19,7 +19,7 @@
                     src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                     frameborder="0" allowfullscreen></iframe>
         </div>
-    {% elseif record_type == 'FLEXPAPER' %}
+    {% elseif record_type == 'FLEXPAPER' or record_type == 'PDF' %}
         <div id="phraseanet-embed-frame" class="documentTips"
              data-original-width="{{original_w}}"
              data-original-height="{{original_h}}"

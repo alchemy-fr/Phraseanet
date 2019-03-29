@@ -35,7 +35,7 @@ else if which('ifconfig')
 end
 
 $php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
+$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "7.0";
 
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
@@ -70,6 +70,9 @@ def config_net(config)
 			  vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
           end
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+        
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 if $env == "mac" || $env == "linux"

@@ -197,39 +197,43 @@
                     {% endif %}
                 </div>
             </div>
-            <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
+            <div id="basket_menu" class="context-menu context-menu-theme-flat" style="display:none;">
                 <ul style="list-style-type:none;margin:0;padding:0">
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'action:: nouveau panier' | trans }}" class="basket-create-action" href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/new_basket.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-New.png"
                                      title="{{ 'action:: nouveau panier' | trans }}"/>
                                 <span>{{ 'action:: nouveau panier' | trans }}</span>
                             </a>
                         </div>
+                    </li>
+                    <li class="context-menu-item">
                         <div class="context-menu-item-inner">
                             <a title="{{ 'Browse Baskets' | trans }}" class="basket-browse-action" href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/browse_basket.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-Browse.png"
                                      title="{{ 'Browse Baskets' | trans }}"/>
                                 <span>{{ 'Browse Baskets' | trans }}</span>
                             </a>
                         </div>
+                    </li>
+                    <li class="context-menu-item divider"></li>
+                    <li class="context-menu-item">
                         {% if app['conf'].get(['registry', 'modules', 'stories']) and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADDRECORD')) %}
-                            <div class="context-menu-item-inner" style="line-height: 34px;">
-                                <div class="divider"></div>
+                            <div class="context-menu-item-inner">
                                 <a title="{{ 'action:: nouveau reportage' | trans }}" class="story-create-action" href="#">
-                                    <img style="cursor:pointer;" src="/assets/common/images/icons/new_report.png"
+                                    <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-New-Story.png"
                                          title="{{ 'action:: nouveau reportage' | trans }}"/>
                                     <span>{{ 'action:: nouveau reportage' | trans }}</span>
                                 </a>
-                                <div class="divider"></div>
                             </div>
                        {% endif %}
                     </li>
+                    <li class="context-menu-item divider"></li>
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="date">
                             <a title="{{ 'phraseanet:: tri par date' | trans }} " href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_date.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Sort-Date.png"
                                      title="{{ 'phraseanet:: tri par date' | trans }}"/>
                                 <span>{{ 'phraseanet:: tri par date' | trans }}</span>
                             </a>
@@ -238,7 +242,7 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-filter-action" data-sort="name">
                             <a title="{{ 'phraseanet:: tri par nom' | trans }} " href="#">
-                                <img style="cursor:pointer;" src="/assets/common/images/icons/sort_alpha.png"
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Alphabetique.png"
                                      title="{{ 'phraseanet:: tri par nom' | trans }}"/>
                                 <span>{{ 'phraseanet:: tri par nom' | trans }}</span>
                             </a>
@@ -247,6 +251,8 @@
                     <li class="context-menu-item">
                         <div class="context-menu-item-inner basket-preferences-action">
                             <a title="{{ 'Preferences' | trans }} " href="#">
+                                <img style="cursor:pointer;" src="/assets/common/images/icons/Basket-Settings.png"
+                                     title="{{ 'phraseanet:: Preferences' | trans }}"/>
                                 <span>{{ 'Preferences' | trans }}</span>
                             </a>
                         </div>

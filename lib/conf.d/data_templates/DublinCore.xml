@@ -148,7 +148,7 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
@@ -198,7 +198,7 @@
         <Coverage src="XMP-dc:Coverage" report="1" />
         <Rights src="XMP-dc:Rights" report="0" />
         <Comments src="" business="1" report="0" />
-        <Filename src="Phraseanet:tf-basename" readonly="1" type="text" report="1"/>
+        <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
         <CameraDevice src="IFD0:Model" readonly="1" report="0" />
         <Latitude src="GPS:GPSLatitude" readonly="1" report="0" />
         <Longitude src="GPS:GPSLongitude" readonly="1" report="0"/>

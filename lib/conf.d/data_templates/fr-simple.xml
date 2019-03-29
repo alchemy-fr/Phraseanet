@@ -148,7 +148,7 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
@@ -202,7 +202,7 @@
         <Longitude src="GPS:GPSLongitude" readonly="1"/>
         <Latitude src="GPS:GPSLatitude" readonly="1"/>
         <AppareilPhoto src="IFD0:Model" readonly="1"/>
-        <NomDeFichier src="Phraseanet:tf-basename" readonly="1" type="text" />
+        <NomDeFichier src="Phraseanet:tf-basename" readonly="1" type="string" />
     </description>
 
     <statbits>

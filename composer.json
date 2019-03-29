@@ -50,7 +50,7 @@
     "alchemy/embed-bundle": "^0.3.4",
     "alchemy/geonames-api-consumer": "~0.1.0",
     "alchemy/mediavorus": "^0.4.4",
-    "alchemy/oauth2php": "1.0.0",
+    "alchemy/oauth2php": "1.1.0",
     "alchemy/phlickr": "0.2.9",
     "alchemy/phpexiftool": "^0.7.0",
     "alchemy/rest-bundle": "^0.0.5",
