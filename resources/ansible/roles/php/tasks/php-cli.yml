@@ -28,3 +28,13 @@
   lineinfile: dest=/etc/php/{{ phpversion }}/cli/php.ini
               regexp=';?max_input_vars\s*=\s*'
               line='max_input_vars = 12000'
+
+- name: set session.hash_function cli
+  lineinfile: dest=/etc/php/{{ phpversion }}/cli/php.ini
+              regexp=';?session.hash_function\s*=\s*'
+              line='session.hash_function = 1'
+
+- name: set session.hash_bits_per_character cli
+  lineinfile: dest=/etc/php/{{ phpversion }}/cli/php.ini
+              regexp=';?session.hash_bits_per_character\s*=\s*'
+              line='session.hash_bits_per_character = 6'

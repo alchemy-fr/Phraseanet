@@ -46,3 +46,16 @@
               regexp=';?max_input_vars\s*=\s*'
               line='max_input_vars = 12000'
   notify: restart php{{ phpversion }}-fpm
+
+- name: set session.hash_function fpm
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
+              regexp=';?session.hash_function\s*=\s*'
+              line='session.hash_function = 1'
+  notify: restart php{{ phpversion }}-fpm
+
+
+- name: set session.hash_bits_per_character fpm
+  lineinfile: dest=/etc/php/{{ phpversion }}/fpm/php.ini
+              regexp=';?session.hash_bits_per_character\s*=\s*'
+              line='session.hash_bits_per_character = 6'
+  notify: restart php{{ phpversion }}-fpm
