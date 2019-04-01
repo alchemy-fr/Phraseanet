@@ -69,3 +69,5 @@ grammar/jison-*
 pimple.json
 playbook.retry
 npm-debug.log
+
+/Phrasea_datas
