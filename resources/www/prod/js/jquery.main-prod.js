@@ -545,18 +545,23 @@ function initAnswerForm() {
 
         // fix bug : if a sb is dual checked, both values are sent with the SAME name
         //     we can remove those since it means we don't care about this sb
+        // /!\ silly fixed bug : in sb[] we will test if a key exists using "_undefined()"
+        //     BUT sb["sort”] EXISTS ! it is the array.sort() function !
+        //     so the side effect in "_filter()" was that data["sort"] was removed.
+        //     quick solution : prefix the key with "k_"
         var sb = [];
-        _.each(data, function(v) {
-            var name = v.name;
-            if(name.substr(0, 7) === "status[") {
+        _.each(data, function (v) {
+            var name = "k_" + v.name;
+            if (name.substr(0, 9) === "k_status[") {
                 if (_.isUndefined(sb[name])) {
                     sb[name] = 0;
                 }
-                sb[name]++;
+                sb[name]++; // so sb["k_x"] is the number of occurences of sb checkbox named "x"
             }
         });
-        data = _.filter(data, function(e) {
-            return _.isUndefined(sb[e.name]) || sb[e.name] == 1;
+        // now if a sb checkbox appears 2 times, it is removed from data
+        data = _.filter(data, function (e) {
+            return (_.isUndefined(sb["k_" + e.name])) || (sb["k_" + e.name] === 1);
         });
         // end of sb fix
 
@@ -825,7 +830,7 @@ function loadFacets(facets) {
 function hideSingleValueFacet(source) {
     var filteredSource = [];
     _.forEach(source, function(facet) {
-        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.data.field]))) {
+        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.field]))) {
             filteredSource.push(facet);
         }
     });
@@ -873,7 +878,7 @@ function getFacetsTree() {
     var $facetsTree = $('#proposals');
     if (!$facetsTree.data('ui-fancytree')) {
         $facetsTree.fancytree({
-            clickFolderMode: 3, // activate and expand
+            clickFolderMode: 2, // expand
             icons:false,
             source: [],
 

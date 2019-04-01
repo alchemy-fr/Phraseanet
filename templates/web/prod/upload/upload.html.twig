@@ -33,7 +33,8 @@
                                         <input type="file" name="files[]" multiple>
                                     </span>
                                     <br />
-                                    <input type="url" value="" style="width: 350px;" id="add-url"><button class="add-url">add this url</button>
+                                    <p class="or_upload">{{ "Or" | trans }}</p>
+                                    <div class="url_upload"><input type="url" value="" id="add-url"><button class="add-url add_url_upload">{{ 'Add this url' | trans }}</button></div>
                                     <br/>
                                     <span class="comment">
                                         ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
