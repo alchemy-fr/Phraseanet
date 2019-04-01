@@ -878,7 +878,7 @@ function getFacetsTree() {
     var $facetsTree = $('#proposals');
     if (!$facetsTree.data('ui-fancytree')) {
         $facetsTree.fancytree({
-            clickFolderMode: 3, // activate and expand
+            clickFolderMode: 2, // expand
             icons:false,
             source: [],
 

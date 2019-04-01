@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2019-03-13T06:40:20Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -688,9 +688,9 @@
         <target state="translated">Ajouter un administrateur Phraseanet</target>
         <jms:reference-file line="109">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url">
+      <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url" approved="no">
         <source>Add this url</source>
-        <target state="new">Add this url</target>
+        <target state="needs-translation">Ajouter cette URL</target>
         <jms:reference-file line="37">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f347a8ddd22508ed0310a2f9d8cf43dd96be34b1" resname="Add user" approved="yes">
@@ -1240,9 +1240,9 @@
         <target state="translated">Fréquence d'échantillonage</target>
         <jms:reference-file line="172">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="31afcc88a7f552bfd4d330c2c70d8fafd7b8e0f9" resname="Audio channel">
+      <trans-unit id="31afcc88a7f552bfd4d330c2c70d8fafd7b8e0f9" resname="Audio channel" approved="no">
         <source>Audio channel</source>
-        <target state="new">Audio channel</target>
+        <target state="needs-translation">Canal Audio</target>
         <jms:reference-file line="38">Media/Subdef/Audio.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec" approved="yes">
@@ -2209,9 +2209,9 @@
         <target state="translated">Date de modification</target>
         <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)">
+      <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)" approved="yes">
         <source>Date(s) from field(s)</source>
-        <target state="needs-translation">Date(s)</target>
+        <target state="translated">Date(s)</target>
         <jms:reference-file line="396">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b98c9b528241fc8135fb9fd472c7db12ec14964" resname="De" approved="yes">
@@ -2890,9 +2890,9 @@
         <target state="translated">Envoi avec succès</target>
         <jms:reference-file line="447">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals">
+      <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals" approved="yes">
         <source>Equals</source>
-        <target state="needs-translation">Egale</target>
+        <target state="translated">Egale</target>
         <jms:reference-file line="382">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab546c237a6685e5c75689266cfa715eeb21b7db" resname="Erreur" approved="yes">
@@ -3033,9 +3033,9 @@
         <jms:reference-file line="13">Bridge/Dailymotion/video_deleteelement.html.twig</jms:reference-file>
         <jms:reference-file line="13">Bridge/Youtube/video_deleteelement.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne">
+      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne" approved="yes">
         <source>Ex : Paris, bleu, montagne</source>
-        <target state="new">Ex : Paris, bleu, montagne</target>
+        <target state="translated">Ex : Paris, bleu, montagne</target>
         <jms:reference-file line="384">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9c067c65c9f9d5a8e96791db7d189bc22eca9c1" resname="Executables externes" approved="yes">
@@ -3321,9 +3321,9 @@
         <target state="translated">Générer un fichier flexpaper flash</target>
         <jms:reference-file line="32">Media/Subdef/FlexPaper.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file">
+      <trans-unit id="b2af9671fd7a6a61d5dd01e3c033bcade0d9695a" resname="Generates a pdf file" approved="yes">
         <source>Generates a pdf file</source>
-        <target state="needs-translation">Générer un fichier PDF</target>
+        <target state="translated">Générer un fichier PDF</target>
         <jms:reference-file line="24">Media/Subdef/Pdf.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d40d73fbcffe62e09f9430c0043ec2e7011a801b" resname="Generates a video file" approved="yes">
@@ -10850,9 +10850,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Vous ne possédez pas les autorisations d'accès requises sur les documents pour effectuer cette action.</target>
         <jms:reference-file line="10">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation">
+      <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="no">
         <source>prod::advancesearch:tooltips:datefield_restriction_explanation</source>
-        <target state="needs-translation">Limiter l'affichage des résultats à des dates</target>
+        <target state="needs-translation">Limiter la recherche des résultats à des dates</target>
         <jms:reference-file line="400">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33a0abb0b5ac4e1a5eb5970f3507fc3d448db9d4" resname="prod::advancesearch:tooltips:field_restiction_explanation">
@@ -11297,59 +11297,59 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Sans titre</target>
         <jms:reference-file line="905">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
+      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
-        <target state="new">report:: (connexions)</target>
+        <target state="translated">Rapport des connexions utilisateurs</target>
         <jms:reference-file line="22">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav">
+      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav" approved="no">
         <source>report:: (connexions) nav</source>
-        <target state="new">report:: (connexions) nav</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur</target>
         <jms:reference-file line="24">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version">
+      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version" approved="no">
         <source>report:: (connexions) nav,version</source>
-        <target state="new">report:: (connexions) nav,version</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur et version</target>
         <jms:reference-file line="25">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os">
+      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os" approved="no">
         <source>report:: (connexions) os</source>
-        <target state="new">report:: (connexions) os</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par OS</target>
         <jms:reference-file line="26">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav">
+      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav" approved="no">
         <source>report:: (connexions) os,nav</source>
-        <target state="new">report:: (connexions) os,nav</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur et OS</target>
         <jms:reference-file line="27">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version">
+      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version" approved="no">
         <source>report:: (connexions) os,nav,version</source>
-        <target state="new">report:: (connexions) os,nav,version</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur, version et OS</target>
         <jms:reference-file line="28">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res">
+      <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res" approved="yes">
         <source>report:: (connexions) res</source>
-        <target state="new">report:: (connexions) res</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par résolution d'écran</target>
         <jms:reference-file line="29">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user">
+      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user" approved="no">
         <source>report:: (connexions) user</source>
-        <target state="new">report:: (connexions) user</target>
+        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par Utilisateur</target>
         <jms:reference-file line="23">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)">
+      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)" approved="no">
         <source>report:: (downloads)</source>
-        <target state="new">report:: (downloads)</target>
+        <target state="needs-translation">Rapport des téléchargements sortant</target>
         <jms:reference-file line="74">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record">
+      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record" approved="no">
         <source>report:: (downloads) record</source>
-        <target state="new">report:: (downloads) record</target>
+        <target state="needs-translation">Rapport des téléchargements sortant, groupé par record</target>
         <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user">
+      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user" approved="no">
         <source>report:: (downloads) user</source>
-        <target state="new">report:: (downloads) user</target>
+        <target state="needs-translation">Rapport des téléchargements sortant, groupé par utilisateur</target>
         <jms:reference-file line="75">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
@@ -11440,9 +11440,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Information sur les utilisateurs correspondant à %critere%</target>
         <jms:reference-file line="415">module/report/nav.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report">
+      <trans-unit id="d61b0b1a419a5b37db8576e1072307a5503dba79" resname="report:: Phraseanet report" approved="yes">
         <source>report:: Phraseanet report</source>
-        <target state="needs-translation">Phraseanet Report</target>
+        <target state="translated">Phraseanet Report</target>
         <jms:reference-file line="6">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a5c2d01ec9cd2716cb44a02ba1851d82de40aa8a" resname="report:: Plateforme" approved="yes">
