@@ -104,6 +104,8 @@ border-manager:
     enabled: true
     extension-mapping:
         mxf: application/mxf
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
     checkers:
         -
             type: Checker\Sha256
