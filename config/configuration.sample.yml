@@ -90,7 +90,9 @@ main:
             client_secret: null
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
     checkers:
         -
             type: Checker\Sha256
