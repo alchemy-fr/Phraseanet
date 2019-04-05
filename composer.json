@@ -78,7 +78,6 @@
     "hoa/router": "~2.0",
     "igorw/get-in": "~1.0",
     "imagine/imagine": "0.6.x-dev",
-    "ircmaxell/random-lib": "~1.0",
     "jms/serializer": "~0.10",
     "jms/translation-bundle": "dev-rebase-2015-10-20",
     "justinrainbow/json-schema": "2.0.3 as 1.6.1",
@@ -120,7 +119,8 @@
     "alchemy/queue-bundle": "^0.1.5",
     "google/recaptcha": "^1.1",
     "facebook/graph-sdk": "^5.6",
-    "box/spout": "^2.7"
+    "box/spout": "^2.7",
+    "paragonie/random-lib": "^2.0"
   },
   "require-dev": {
     "mikey179/vfsStream": "~1.5",
