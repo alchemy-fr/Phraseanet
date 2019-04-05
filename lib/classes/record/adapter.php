@@ -941,7 +941,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->set_data_to_cache(self::CACHE_TITLE, $title);
         }
 
-        return htmlspecialchars($title);
+        return $title;
     }
 
     /**
