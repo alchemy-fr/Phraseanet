@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2019-04-05T07:13:13Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -1327,9 +1327,9 @@
         <target state="translated">DEPRECATED, Authorise *Phraseanet Navigator*</target>
         <jms:reference-file line="27">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect.">
+      <trans-unit id="b85de40822e66ce4309b94ccad5bb731f2a89373" resname="Authorize Adobe cc Plugin to connect." approved="no">
         <source>Authorize Adobe cc Plugin to connect.</source>
-        <target state="new">Authorize Adobe cc Plugin to connect.</target>
+        <target state="needs-translation">Authorize Adobe CC Plugin to log in</target>
         <jms:reference-file line="36">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e1ead524b95ba3b45281df7ba45d2addbbf1a79" resname="Authorize Microsoft Office Plugin to connect." approved="yes">
@@ -3143,9 +3143,9 @@
         <jms:reference-file line="13">Bridge/Dailymotion/video_deleteelement.html.twig</jms:reference-file>
         <jms:reference-file line="13">Bridge/Youtube/video_deleteelement.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne">
+      <trans-unit id="46a1884f7b083976b0fd0678f10b8f00ee93cde9" resname="Ex : Paris, bleu, montagne" approved="no">
         <source>Ex : Paris, bleu, montagne</source>
-        <target state="new">Ex : Paris, bleu, montagne</target>
+        <target state="needs-translation">Ex : Paris, blue, mountain</target>
         <jms:reference-file line="420">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9c067c65c9f9d5a8e96791db7d189bc22eca9c1" resname="Executables externes" approved="yes">
@@ -6005,9 +6005,9 @@
         <jms:reference-file line="121">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="47">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="49fae2071d9672ce46d9fbadda409a3fa0cbc238" resname="Selected base(s)">
+      <trans-unit id="49fae2071d9672ce46d9fbadda409a3fa0cbc238" resname="Selected base(s)" approved="no">
         <source>Selected base(s)</source>
-        <target state="new">Selected base(s)</target>
+        <target state="needs-translation">Selected database(s)</target>
         <jms:reference-file line="329">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c418c187fb3108749d7156765e7b9b16a51215f" resname="Selected files" approved="yes">
@@ -11674,9 +11674,9 @@ It is possible to place several search areas</target>
         <target state="translated">Untitled</target>
         <jms:reference-file line="938">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
+      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="no">
         <source>report:: 1 - Periode</source>
-        <target state="translated">1 - Time space</target>
+        <target state="needs-translation">Time Range</target>
         <jms:reference-file line="3">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="87cb22fb5598f714cf44b13ef0d2fcfa0fe1e01a" resname="report:: 2 - Base">
@@ -11689,9 +11689,9 @@ It is possible to place several search areas</target>
         <target state="new">report:: 3 - Collections</target>
         <jms:reference-file line="39">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a807c0ef7e32813081616c65bbc134acdf30666b" resname="report:: 3 - Type de report" approved="yes">
+      <trans-unit id="a807c0ef7e32813081616c65bbc134acdf30666b" resname="report:: 3 - Type de report" approved="no">
         <source>report:: 3 - Type de report</source>
-        <target state="translated">3 - Type of report</target>
+        <target state="needs-translation">Type of report</target>
         <jms:reference-file line="11">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="36">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
