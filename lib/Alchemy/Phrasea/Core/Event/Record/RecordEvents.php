@@ -29,6 +29,8 @@ final class RecordEvents
     const SUB_DEFINITIONS_CREATED = 'record.sub_definitions_created';
     const SUB_DEFINITION_CREATION_FAILED = 'record.sub_definition_creation_failed';
 
+    const SUB_DEFINITION_REBUILD = 'record.sub_definition_rebuild';
+
     const MEDIA_SUBSTITUTED = 'record.media_substituted';
 
     const STORY_COVER_CHANGED = 'record.story_cover_changed';
