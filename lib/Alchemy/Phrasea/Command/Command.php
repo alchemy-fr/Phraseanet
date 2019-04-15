@@ -114,16 +114,16 @@ abstract class Command extends SymfoCommand implements CommandInterface
      */
     public function getFormattedDuration($seconds)
     {
-        $duration = ceil($seconds) . ' seconds';
 
-        if ($duration > 60) {
-            $duration = round($duration / 60, 1) . ' minutes';
-        } elseif ($duration > 3600) {
-            $duration = round($duration / (60 * 60), 1) . ' hours';
-        } elseif ($duration > (24 * 60 * 60)) {
-            $duration = round($duration / (24 * 60 * 60), 1) . ' days';
+        $seconds = ceil($seconds);
+        $duration = $seconds . ' seconds';
+        if ($seconds > 60) {
+            $duration = round($seconds / 60, 1) . ' minutes';
+        } elseif ($seconds > 3600) {
+            $duration = round($seconds / (60 * 60), 1) . ' hours';
+        } elseif ($seconds > (24 * 60 * 60)) {
+            $duration = round($seconds / (24 * 60 * 60), 1) . ' days';
         }
-
         return $duration;
     }
 
