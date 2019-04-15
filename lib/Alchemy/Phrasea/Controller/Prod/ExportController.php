@@ -193,27 +193,69 @@ class ExportController extends Controller
 
         if (count($destMails) > 0) {
 
-            $emitterId = $this->getAuthenticatedUser()->getId();
+            //  if the service worker plugin is installed and enabled , use it
+            if ($this->app['plugins.manager']->isEnabled('phraseanet-plugin-services')) {
 
-            $tokenValue = $token->getValue();
+                $emitterId = $this->getAuthenticatedUser()->getId();
 
-            $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
+                $tokenValue = $token->getValue();
 
-            $params = [
-                'url'               =>  $url,
-                'textmail'          =>  $request->request->get('textmail'),
-                'reading_confirm'   =>  !!$request->request->get('reading_confirm', false),
-                'ssttid'            =>  $ssttid = $request->request->get('ssttid', ''),
-                'lst'               =>  $lst = $request->request->get('lst', ''),
-            ];
+                $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
 
-            $this->dispatch(PhraseaEvents::EXPORT_MAIL_CREATE, new ExportMailEvent(
-                $emitterId,
-                $tokenValue,
-                $destMails,
-                $params
-            ));
+                $params = [
+                    'url'               =>  $url,
+                    'textmail'          =>  $request->request->get('textmail'),
+                    'reading_confirm'   =>  !!$request->request->get('reading_confirm', false),
+                    'ssttid'            =>  $ssttid = $request->request->get('ssttid', ''),
+                    'lst'               =>  $lst = $request->request->get('lst', ''),
+                ];
 
+                $this->dispatch(PhraseaEvents::EXPORT_MAIL_CREATE, new ExportMailEvent(
+                    $emitterId,
+                    $tokenValue,
+                    $destMails,
+                    $params
+                ));
+
+            } else {
+
+                //zip documents
+                \set_export::build_zip(
+                    $this->app,
+                    $token,
+                    $list,
+                    $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
+                );
+
+                $remaingEmails = $destMails;
+
+                $url = $this->app->url('prepare_download', ['token' => $token->getValue(), 'anonymous' => false, 'type' => \Session_Logger::EVENT_EXPORTMAIL]);
+
+                $user = $this->getAuthenticatedUser();
+                $emitter = new Emitter($user->getDisplayName(), $user->getEmail());
+
+                foreach ($destMails as $key => $mail) {
+                    try {
+                        $receiver = new Receiver(null, trim($mail));
+                    } catch (InvalidArgumentException $e) {
+                        continue;
+                    }
+
+                    $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $request->request->get('textmail'));
+                    $mail->setButtonUrl($url);
+                    $mail->setExpiration($token->getExpiration());
+
+                    $this->deliver($mail, !!$request->request->get('reading_confirm', false));
+                    unset($remaingEmails[$key]);
+                }
+
+                //some mails failed
+                if (count($remaingEmails) > 0) {
+                    foreach ($remaingEmails as $mail) {
+                        $this->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($this->getAuthenticatedUser(), $ssttid, $lst, \eventsmanager_notify_downloadmailfail::MAIL_FAIL, $mail));
+                    }
+                }
+            }
         }
 
         return $this->app->json([

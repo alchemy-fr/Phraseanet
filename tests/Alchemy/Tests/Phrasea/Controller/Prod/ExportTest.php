@@ -165,8 +165,7 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
      */
     public function testExportMail()
     {
-          // the deliver function deplaced in the plugin service
-//        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
+        $this->mockNotificationDeliverer('Alchemy\Phrasea\Notification\Mail\MailRecordsExport');
 
         $this->getClient()->request('POST', '/prod/export/mail/', [
             'lst'        => $this->getRecord1()->getId(),
