@@ -362,22 +362,20 @@ class UploadController extends Controller
     private function getUploadMaxFileSize()
     {
         $postMaxSize = trim(ini_get('post_max_size'));
-
+        $postMaxSizeValue = intval($postMaxSize);
         if ('' === $postMaxSize) {
             $postMaxSize = PHP_INT_MAX;
         }
-
         switch (strtolower(substr($postMaxSize, -1))) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'g':
-                $postMaxSize *= 1024;
+                $postMaxSizeValue *= 1024;
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'm':
-                $postMaxSize *= 1024;
+                $postMaxSizeValue *= 1024;
             case 'k':
-                $postMaxSize *= 1024;
+                $postMaxSizeValue *= 1024;
         }
-
-        return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
+        return min(UploadedFile::getMaxFilesize(), (int) $postMaxSizeValue);
     }
 }
