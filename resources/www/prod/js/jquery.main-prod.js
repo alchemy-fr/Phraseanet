@@ -927,6 +927,8 @@ function getFacetsTree() {
 
             renderNode: function(event, data){
                 var label = "";
+                var selectedlabel = "";
+                var tooltip = "";
                 if(data.node.folder) {
                     // here we render a "fieldname" level
                     if (!_.isUndefined(selectedFacets[data.node.data.field])) {
@@ -944,15 +946,17 @@ function getFacetsTree() {
                         _.each(selectedFacets[data.node.data.field].values, function (facetValue) {
 
                             label = facetValue.value.label;
-                            if (label.length > 15) {
-                                label = label.substring(0, 15) + '…';
+                            selectedlabel = label;
+                            tooltip = label;
+                            if (selectedlabel.length > 15) {
+                                selectedlabel = selectedlabel.substring(0, 15) + '…';
                             }
                             var s_label = document.createElement("SPAN");
                             s_label.setAttribute("class", "facetFilter-label");
-                            s_label.setAttribute("title", label);
+                            s_label.setAttribute("title", tooltip);
 
                             // label is a string ; todo : count may be obsolete when ux is restored ? for now don't print
-                            s_label.appendChild(document.createTextNode(label)); // + ' (' + facetValue.value.count + ')');
+                            s_label.appendChild(document.createTextNode(selectedlabel)); // + ' (' + facetValue.value.count + ')');
 
                             var s_gradient = document.createElement("SPAN");
                             s_gradient.setAttribute("class", "facetFilter-gradient");
