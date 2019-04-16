@@ -111,8 +111,11 @@
   content: "\25B6";
   color: #ffffff;
 }
-.doc-name {
+.white-label {
   color: #ffffff;
+  &.sbas_list label {
+    color: #ffffff;
+  }
 }
 
 /* Vertical Tabs */
