@@ -944,7 +944,9 @@ function getFacetsTree() {
                         _.each(selectedFacets[data.node.data.field].values, function (facetValue) {
 
                             label = facetValue.value.label;
-                            label = label.substring(0, 15) + '…';
+                            if (label.length > 15) {
+                                label = label.substring(0, 15) + '…';
+                            }
                             var s_label = document.createElement("SPAN");
                             s_label.setAttribute("class", "facetFilter-label");
                             s_label.setAttribute("title", label);
