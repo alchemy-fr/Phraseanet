@@ -12,6 +12,8 @@ use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
  */
 class ViadeoTest extends ProviderTestCase
 {
+    const TOKEN = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789';
+
     public function provideDataForFailingCallback()
     {
         $state = md5(mt_rand());
@@ -92,6 +94,14 @@ class ViadeoTest extends ProviderTestCase
         $response->expects($this->any())
             ->method('getStatusCode')
             ->will($this->returnValue(200));
+
+        $response->expects($this->any())
+            ->method('getBody')
+            ->with($this->equalTo(true))
+            ->will($this->returnValue(json_encode([
+                'id'           => self::ID,
+                'access_token' => self::TOKEN,
+            ])));
 
         $requestGet->expects($this->any())
             ->method('send')
@@ -185,9 +195,9 @@ class ViadeoTest extends ProviderTestCase
             ->with($this->equalTo(true))
             ->will($this->returnValue(json_encode([
                 'data' => [
-                   [
-                       'company_name' => self::COMPANY
-                   ]
+                    [
+                        'company_name' => self::COMPANY
+                    ]
                 ],
             ])));
 
