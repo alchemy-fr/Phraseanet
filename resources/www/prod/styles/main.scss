@@ -105,10 +105,18 @@
 
 .deployer_opened::before {
   content: "\25BC";
+  color: #fff;
 }
 
 .deployer_closed::before {
   content: "\25B6";
+  color: #fff;
+}
+.white-label {
+  color: #ffffff;
+  &.sbas_list label {
+    color: #ffffff;
+  }
 }
 
 /* Vertical Tabs */
