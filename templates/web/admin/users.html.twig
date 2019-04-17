@@ -37,8 +37,8 @@
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
                     <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
-                    <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{{ 'Push::filter on countries' | trans }}</option>
-                    <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{{ 'Push::filter on companies' | trans }}</option>
+                    <option {% if parm['like_field'] == "country" %}selected="selected"{% endif %} value="country">{{ 'Push::filter on countries' | trans }}</option>
+                    <option {% if parm['like_field'] == "company" %}selected="selected"{% endif %} value="company">{{ 'Push::filter on companies' | trans }}</option>
                     <option {% if parm['like_field'] == "email" %}selected="selected"{% endif %} value="email">{{ 'Push::filter on emails' | trans }}</option>
                 </select>
                 <span>{{ 'Push::filter starts' | trans }}</span>
