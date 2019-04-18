@@ -206,4 +206,19 @@ $proposalsFacetHoverColor: #FFF !default;
     height: 25px;
     width: 14px;
   }
+  .see_more_btn {
+    display: block;
+    margin: 0 auto;
+    padding: 0px 20px;
+    line-height: 21px;
+    background-color: #202020;
+    border-color: #616161;
+    color: #a3a3a3;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 5px;
+    &:hover {
+      background-color: #454545;
+    }
+  }
 }

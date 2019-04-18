@@ -16,10 +16,10 @@
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               {% if not basket.isRead() %}
-                <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                <img src='/assets/common/images/icons/basket_push_unread.png' style="max-height: 22px;" title=''/>
               {% endif %}
               <img src='/assets/common/images/icons/basket.png' title=''/>
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -27,8 +27,8 @@
                   <tr>
                       <td>
                           <img
-                              title="{{ 'Vous avez recu une demande de validation de document sur ce panier' | trans }}"
-                              class="basketTips"
+                              title="{{ basket.getDescription() }}"
+                              class="basketTips basket_title"
                               src="/assets/common/images/icons/valid.png"
                             />
                       </td>
@@ -92,14 +92,14 @@
                 <img src='/assets/common/images/icons/basket_validation.png' title=''/>
               {% elseif basket.getPusher() %}
                 {% if not basket.isRead() %}
-                  <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                  <img src='/assets/common/images/icons/basket_push_unread.png' style="max-height: 22px;" title=''/>
                 {% else %}
                   <img src='/assets/common/images/icons/basket_push.png' title=''/>
                 {% endif %}
               {% else %}
                 <img src='/assets/common/images/icons/basket.png' title=''/>
               {% endif %}
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -136,57 +136,71 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="context-menu context-menu-theme-vista">
+                    <div class="context-menu context-menu-theme-flat">
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('ssel={{basket.getId()}}');">{{ 'action::exporter' | trans }}
+                        <div class="context-menu-item-inner">
+                          <a href="#" onclick="downloadThis('ssel={{basket.getId()}}');">
+                            <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                            <span>{{ 'action::exporter' | trans }}</span>
+                          </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
+                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
+                            <img src="/assets/lightbox/images/lightbox-icon.png" style="width: 20px; box-shadow: 0 2px 2px rgba(0,0,0,.2);" alt="{{ 'Lightbox' | trans }}">
+                            <span>{{ 'Lightbox' | trans }}</span>
+                          </a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog small-dialog" title="{{ 'action::renommer' | trans }}" href="{{ path('prod_baskets_basket_update', { 'basket' : basket.getId()}) }}">
-                            {{ 'action::renommer' | trans }}
+                            <img src="/assets/common/images/icons/rename.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'action::renommer' | trans }}">
+                            <span>{{ 'action::renommer' | trans }}</span>
                           </a>
                         </div>
                       </div>
 
                       {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
-                            <div class="context-menu-item-inner">
-                              {{ 'action::Valider' | trans }}
-                            </div>
-                          </a>
+                          <div class="context-menu-item-inner">
+                            <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                              <img src="/assets/common/images/icons/basket_validation.png" style="width: 22px;" alt="{{ 'action::Valider' | trans }}">
+                              <span>{{ 'action::Valider' | trans }}</span>
+                            </a>
+                          </div>
                         </div>
                       {% endif %}
 
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="archiveBasket({{ basket.getId() }});return false;">
-                          {{ 'Archive' | trans }}
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
-                             onclick="checkDeleteThis('SSTT',this);return false;">
-                          {{ 'action : supprimer' | trans }}
+                        <div class="context-menu-item-inner">
+                          <a href="#" onclick="archiveBasket({{ basket.getId() }});return false;">
+                            <img src="/assets/common/images/icons/archive.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Archive' | trans }}">
+                            <span>{{ 'Archive' | trans }}</span>
+                          </a>
                         </div>
                       </div>
 
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_baskets_basket_reorder', { 'basket' : basket.getId() }) }}">
-                            {{ 'Re-ordonner' | trans }}
+                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                            <span>{{ 'Re-ordonner' | trans }}</span>
                           </a>
                         </div>
                       </div>
 
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner">
+                          <a href="#" id="SSTTREMOVER_{{basket.getId()}}" onclick="checkDeleteThis('SSTT',this);return false;">
+                            <img src="/assets/common/images/icons/delete.png" style="width: 22px;" alt="{{ 'action : supprimer' | trans }}">
+                            <span>{{ 'action : supprimer' | trans }}</span>
+                          </a>
+                        </div>
                       </div>
+
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -208,7 +222,7 @@
             <span>
             {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
             <img src='/assets/common/images/icons/story.png' title=''/>
-            {{ story.getRecord(app).get_title() }}
+            {{ story.getRecord(app).get_title()|e }}
             </span>
           </a>
           <div class="menu">
@@ -224,34 +238,41 @@
               <tbody>
                 <tr>
                   <td>
-                    <div class="context-menu context-menu-theme-vista">
+                    <div class="context-menu context-menu-theme-flat">
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">{{ 'action::exporter' | trans }}
+                        <div class="context-menu-item-inner">
+                        <a href="#" onclick="downloadThis('lst={{story.getRecord(app).get_serialize_key()}}');">
+                          <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                          <span>{{ 'action::exporter' | trans }}</span>
+                        </a>
                         </div>
                       </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');" style=""
-                             class="context-menu-item-inner">{{ 'action::editer' | trans }}
-                        </div>
-                      </div>
-                        {% endif %}
+                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
-                          <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
-                            {{ 'action::detacher' | trans }}
+                          <a href="#" onclick="editThis('IMGT','{{story.getRecord(app).get_serialize_key()}}');">
+                            <img src="/assets/common/images/icons/edit-pen.png" style="width: 22px;" alt="{{ 'action::editer' | trans }}">
+                             <span>{{ 'action::editer' | trans }}</span>
                           </a>
                         </div>
                       </div>
+                      {% endif %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner">
                           <a class="dialog" title="{{ 'Re-ordonner' | trans }}" href="{{ path('prod_stories_story_reorder', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
-                            {{ 'Re-ordonner' | trans }}
+                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                            <span>{{ 'Re-ordonner' | trans }}</span>
                           </a>
                         </div>
                       </div>
-
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner">
+                          <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
+                            <img src="/assets/common/images/icons/detach.png" style="width: 26px; margin-left: -2px; margin-right: 2px;" alt="{{ 'action::detacher' | trans }}">
+                            <span style="margin-left: 4px;">{{ 'action::detacher' | trans }}</span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -349,27 +370,33 @@
                     {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
                   </td>
                   <td style="width:100%;">
-                      <table style=width:100%>
+                      <table style="width:100%">
                           {% for choice in basket_element.getValidationDatas() %}
                               {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
                               <tr>
-                                  <td> {{ choice.getParticipant().getUser().getDisplayName() }} </td>
+                                  <td style="position: relative;"> 
+                                    <span class="feedback_user_name">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                                    <span class="line_separator"></span>
+                                  </td>
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
-                                            <img style="cursor:help;" src='/assets/common/images/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/red-uncheck.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
-                                        <img style="cursor:help;" src='/assets/common/images/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
+                                        <img style="cursor:help;" src='/assets/common/images/icons/vote-admin.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">
                                   {% if choice.getNote() != '' %}
-                                       <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
+                                      <span class="note_tips_holder">
+                                        <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="image-normal" />
+                                        <img style="cursor:help;" src='/assets/common/images/icons/file-edit-hover.png' class="noteTips image-hover" title="{{choice.getNote()|nl2br}}" />
+                                      </span>
                                   {% endif %}
                                   </td>
                               </tr>

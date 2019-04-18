@@ -32,7 +32,10 @@
                                         <span>{{ 'Select files...' | trans }}</span>
                                         <input type="file" name="files[]" multiple>
                                     </span>
-                                        <br />
+                                    <br />
+                                    <p class="or_upload">{{ "Or" | trans }}</p>
+                                    <div class="url_upload"><input type="url" value="" id="add-url"><button class="add-url add_url_upload">{{ 'Add this url' | trans }}</button></div>
+                                    <br/>
                                     <span class="comment">
                                         ({% trans with {'%maxFileSizeReadable%' : maxFileSizeReadable} %}maximum : %maxFileSizeReadable%{% endtrans %})
                                     </span>
@@ -153,7 +156,7 @@
 
 {% include "prod/templates/upload.html.twig" %}
 
-<script>
+<script >
 
 
 $(document).ready(function () {
@@ -252,6 +255,47 @@ $(document).ready(function () {
         domEl.html(parseInt(domEl.html()) - 1);
     });
 
+    // add a url
+    $("button.add-url", UploaderManager.getContainer()).bind("click", function(e) {
+        e.preventDefault();
+        var url = $("#add-url", UploaderManager.getContainer()).val();
+
+        $('.upload-box').show();
+
+        // perform a "head" request on the url (via php proxy) to get mime and size
+        var distantfileInfos = {
+            'content-type': '?',
+            'content-length' : '?'
+        };
+        $.get(
+            "{{ path('upload_head') }}",
+            {
+                'url' : url
+            }
+        ).done(
+            function(data) {
+                distantfileInfos = data;
+            }
+        ).always(
+            function() {
+                var fileContent = JSON.stringify( {'url' : url} , null, 2);     // the content of the "micro json file" that will be uploaded
+                var blob = new Blob(
+                    [ fileContent ],
+                    {
+                        type : 'application/json'
+                    }
+                );
+                $('#fileupload', UploaderManager.getContainer()).fileupload(
+                    'add',
+                    {
+                        'files': blob,                      // files is an array with 1 element
+                        'fileInfos': [ distantfileInfos ]   // ... so we do the same with our custom data
+                    }
+                );
+            }
+        );
+    });
+
     //Remove all element from upload box
     $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
         UploaderManager.clearUploadBox();
@@ -309,6 +353,7 @@ $(document).ready(function () {
 
             documents.each(function(index, el){
                 var index = $(el).find('input[name=uploadIndex]').val();
+                var data = UploaderManager.getData(index);
                 UploaderManager.getData(index).submit();
             });
         }
@@ -316,6 +361,7 @@ $(document).ready(function () {
 
     $('#fileupload', UploaderManager.getContainer()).fileupload({
         namespace: 'phrasea-upload',
+
         // define our own mediatype to handle and convert the response
         // to prevent errors when Iframe based uploads
         // as they require text/plain or text/html Content-type
@@ -329,18 +375,23 @@ $(document).ready(function () {
                 return $.parseJSON(iframe.find('body').text());
             }
         },
+
         // override "on error" local ajax event to prevent global ajax event from being triggered
         // as all fileupload options are passed as argument to the $.ajax jquery function
-        error: function(){return false;},
+        error: function() {
+            return false;
+        },
+
         // Set singleFileUploads, sequentialUploads to true so the files
         // are upload one by one
-        singleFileUploads : true,
+        singleFileUploads : true,       // There will be ONE AND ONLY ONE file into data.files
         sequentialUploads: true,
         recalculateProgress: true,
+
         //When a file is added
         add: function (e, data) {
-            //Since singleFileUploads &  sequentialUploads are setted to true
-            //There is only on file data.files
+            // Since singleFileUploads & sequentialUploads are setted to true
+            // There is ONE AND ONLY ONE file into data.files
             $.each(data.files, function (index, file) {
                 $('.upload-box').show();
 
@@ -348,11 +399,13 @@ $(document).ready(function () {
                     var params = $.extend({}, file, {error: language.errorFileApi, language: language});
                     var html = _.template($("#upload_items_error_tpl").html(), params);
                     UploaderManager.getUploadBox().append(html);
-                } else if(file.size > maxFileSize){
+                }
+                else if(file.size > maxFileSize) {
                     var params = $.extend({}, file, {error: language.errorFileApiTooBig, language: language});
                     var html = _.template($("#upload_items_error_tpl").html(), params);
                     UploaderManager.getUploadBox().append(html);
-                } else {
+                }
+                else {
                     // Add data to Queue
                     UploaderManager.addData(data);
 
@@ -360,11 +413,19 @@ $(document).ready(function () {
                     var formatedFile = {
                         id: 'file-' + index,
                         size: typeof file.size !== "undefined" ? UploaderManager.Formater.size(file.size) : '',
-                        name: file.name,
+                        name: encodeURI(file.name),
                         type: typeof file.type !== "undefined" ? file.type : '',
                         uploadIndex: UploaderManager.getUploadIndex(),
                         language: language
                     };
+
+                    // if the "file" is a blob (tiny json with url to a distant file),
+                    //   we can find infos of distant file into data, and fix html
+                    if(typeof(data.fileInfos) !== "undefined") {
+                        formatedFile.size = UploaderManager.Formater.size(data.fileInfos[index]["content-length"]);
+                        formatedFile.name = data.fileInfos[index]["basename"];
+                        formatedFile.type = data.fileInfos[index]["content-type"];
+                    }
 
                     //Set context in upload-box
                     var html = _.template($("#upload_items_tpl").html(), formatedFile);
@@ -376,7 +437,7 @@ $(document).ready(function () {
 
                     UploaderManager.addAttributeToData(uploadIndex, 'context', context);
 
-                    UploaderManager.Preview.render(file, function(img){
+                    UploaderManager.Preview.render(file, function (img) {
                         context.find('.thumbnail .canva-wrapper').prepend(img);
                         UploaderManager.addAttributeToData(uploadIndex, 'image', img);
                         UploaderManager.addAttributeToData(uploadIndex, 'b64_image', img.toDataURL("image/png") || '');
@@ -386,6 +447,11 @@ $(document).ready(function () {
 
             UploaderManager.getContainer().trigger("file-added");
         },
+
+        submit: function(e, data) {
+            return false;
+        },
+
         //on success upload
         done: function (e, data) {
             // set progress bar to 100% for preventing mozilla bug which never reach 100%
@@ -415,6 +481,7 @@ $(document).ready(function () {
 
             return false;
         },
+
         fail: function(){
             //disabled cancel-all button, if queue is empty and last upload fail
             if (UploaderManager.Queue.isEmpty()){
@@ -445,7 +512,14 @@ $(document).ready(function () {
 
         //Set new context in download-box
         $.each(data.files, function (index, file) {
-            var params = $.extend({}, file, {language: language, id:'file-'+index});
+            var params = $.extend({}, file, {language: language, id:'file-'+index, name: encodeURI(file.name)});
+
+            // if the "file" is a blob (tiny json with url to a distant file),
+            //   we can find infos of distant file into data, and fix html
+            if(typeof(data.fileInfos) !== "undefined") {
+                params.name = data.fileInfos[index]["basename"];
+            }
+
             var html = _.template($("#download_items_tpl").html(), params);
 
             UploaderManager.getDownloadBox().append(html);

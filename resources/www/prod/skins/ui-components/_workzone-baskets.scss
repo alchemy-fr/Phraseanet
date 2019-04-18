@@ -91,7 +91,7 @@
         padding: 3px;
         margin: 0 5px 0 0;
         table td {
-          width: 20px;
+          width: 24px;
         }
       }
       .workzone-menu-title {
@@ -102,21 +102,29 @@
         display: block;
       }
       img {
-        max-height: 18px;
+        max-height: 24px;
         vertical-align: middle;
         cursor: help;
         margin-right: 9px;
+      }
+      img.basket_title {
+        margin: -5px 9px 0 -9px;
+      }
+      &:hover .contextMenuTrigger,
+      &:focus .contextMenuTrigger {
+        display: inline-block;
       }
     }
     .menu {
       .contextMenuTrigger {
         cursor: pointer;
-        display: block;
+        display: none;
         padding: 0;
-        margin: 0;
-        background: url('#{$iconsPath}contextMenuTrigger.png') 0 13px no-repeat;
-        height: 45px;
-        width: 13px;
+        margin-bottom: -6px;
+        background: url('#{$iconsPath}contextMenuTrigger.png') no-repeat;
+        background-size: 24px 24px;
+        height: 24px;
+        width: 24px;
       }
     }
     .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {

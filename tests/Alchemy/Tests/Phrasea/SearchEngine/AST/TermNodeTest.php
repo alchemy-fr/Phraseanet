@@ -126,12 +126,18 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                             "bool": {
                                 "should": [{
                                     "multi_match": {
-                                        "fields": ["concept_path.bar"],
+                                        "fields": [
+                                            "concept_path.bar",
+                                            "concept_path.foo"
+                                        ],
                                         "query": "/baz"
                                     }
                                 }, {
                                     "multi_match": {
-                                        "fields": ["concept_path.bar"],
+                                        "fields": [
+                                            "concept_path.bar",
+                                            "concept_path.foo"
+                                        ],
                                         "query": "/qux"
                                     }
                                 }]

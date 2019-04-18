@@ -67,7 +67,33 @@ class QueryController extends Controller
             $result = $engine->query($query, $options);
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
-                $userManipulator->setUserSetting($user, 'start_page_query', $query);
+                // try to save the "fulltext" query which will be restored on next session
+                try {
+                    // local code to find "FULLTEXT" value from jsonQuery
+                    $findFulltext = function($clause) use(&$findFulltext) {
+                        if(array_key_exists('_ux_zone', $clause) && $clause['_ux_zone']=='FULLTEXT') {
+                            return $clause['value'];
+                        }
+                        if($clause['type']=='CLAUSES') {
+                            foreach($clause['clauses'] as $c) {
+                                if(($r = $findFulltext($c)) !== null) {
+                                    return $r;
+                                }
+                            }
+                        }
+                        return null;
+                    };
+
+                    $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
+
+                    $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
+                    if(($ft = $findFulltext($jsQuery['query'])) !== null) {
+                        $userManipulator->setUserSetting($user, 'start_page_query', $ft);
+                    }
+                }
+                catch(\Exception $e) {
+                    // no-op
+                }
             }
 
             foreach ($options->getDataboxes() as $databox) {
@@ -185,9 +211,10 @@ class QueryController extends Controller
 
 
             // add technical fields
-            $fieldLabels = [];
+            $fieldsInfosByName = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-                $fieldLabels[$k] = $this->app->trans($f['label']);
+                $fieldsInfosByName[$k] = $f;
+                $fieldsInfosByName[$k]['trans_label'] = $this->app->trans($f['label']);
             }
 
             // add databox fields
@@ -204,8 +231,15 @@ class QueryController extends Controller
                         'business' => $field->isBusiness(),
                         'multi'    => $field->is_multi(),
                     ];
-                    if (!isset($fieldLabels[$name])) {
-                        $fieldLabels[$name] = $field->get_label($this->app['locale']);
+                    if (!isset($fieldsInfosByName[$name])) {
+                        $fieldsInfosByName[$name] = [
+                            'label' => $field->get_label($this->app['locale']),
+                            'type' => $field->get_type(),
+                            'field' => $field->get_name(),
+                            'query' => "field." . $field->get_name() . ":%s",
+                            'trans_label' => $field->get_label($this->app['locale']),
+                        ];
+                        $field->get_label($this->app['locale']);
                     }
                 }
             }
@@ -244,13 +278,24 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
+            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
-                $facet['label'] = isset($fieldLabels[$facetName]) ? $fieldLabels[$facetName] : $facetName;
-
-                $facets[] = $facet;
+                if(array_key_exists($facetName, $fieldsInfosByName)) {
+                    $f = $fieldsInfosByName[$facetName];
+                    $facet['label'] = $f['trans_label'];
+                    $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
+                    $facets[] = $facet;
+                    // $facetClauses[] = [
+                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
+                    //    'field' => $f['field'],
+                    //    'facet' => $facet
+                    // ];
+                }
             }
+
+            // $json['jsq'] = $facetClauses;
 
             $json['facets'] = $facets;
             $json['phrasea_props'] = $proposals;

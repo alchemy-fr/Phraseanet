@@ -5,11 +5,13 @@
      sbas="{{ record.databoxId }}"
      id="{{ prefix|default('IMGT') }}_{{ record.id }}"
      class="IMGT diapo {% if record.story %}grouping{% endif %} type-{{ record.type }}"
-     {% if settings.handle_dblclick %}onDblClick="openPreview(this, '{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');"{% endif %}>
+     {% if settings.handle_dblclick %}onDblClick="openPreview(this, '{{ record.story ? 'REG' : 'RESULT' }}', '{{ record.position|default(0) }}', '{{ record.id }}');"{% endif %}
+     data-record_id="{{ record.recordId }}"
+     >
     <div style="padding: 4px;">
         <div style="height:40px; position: relative; z-index: 95;margin-bottom:0;border-bottom:none;">
             <div class="title" style="max-height:100%" title="{{ record.getTitle(app.locale) }}">
-                {{ record.getTitle(app.locale)|highlight }}
+                {{ record.getTitle(app.locale)|e|highlight }}
             </div>
             <div class="status">
                 {% for flag in record_flags(record) %}
@@ -49,7 +51,7 @@
                 {% endif %}
             </div>
         </div>
-        <div style="height: 25px; position:relative; text-align:left;">
+        <div class="bottom_actions_holder" style="height: 27px; position:relative; text-align:left;">
             <table class="bottom actions" style="width:100%; table-layout:fixed;">
                 <tr>
                     <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
@@ -75,57 +77,62 @@
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
                                 <span class="icon-stack previewTips" tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                                  <i class="icon-circle icon-stack-base"></i>
-                                  <i class="icon-search icon-light"></i>
+                                  <img src="/assets/common/images/icons/iconograph.png">
                                 </span>
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
                             <span class="icon-stack captionRolloverTips"
                                   tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-list icon-light"></i>
+                              <img src="/assets/common/images/icons/icon-caption.png">
                             </span>
                         {% endif %}
 
                         {% if settings.technical_display == '1' %}
                             <span class="icon-stack infoTips" tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-info icon-light"></i>
+                              <img src="/assets/common/images/icons/icon-Information.png">
                             </span>
                         {% endif %}
 
                         {%  if settings.show_context_menu %}
                         <span class="icon-stack contextMenuTrigger"  id="contextTrigger_{{record.id}}"
                               tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                              <i class="icon-circle icon-stack-base"></i>
-                              <i class="icon-ellipsis-horizontal icon-light"></i>
+                              <img src="/assets/common/images/icons/contextMenuTrigger.png">
                         </span>
                         <table cellspacing="0" cellpadding="0" style="display:none;" id="answerContext_{{record.id}}" class="contextMenu answercontextmenu">
                             <tbody>
                             <tr>
                                 <td>
-                                    <div class="context-menu context-menu-theme-vista">
+                                    <div class="context-menu context-menu-theme-flat">
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANPUTINALBUM')]) and not record.story %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
                                                      onclick="evt_add_in_chutier('{{record.databoxId}}','{{record.recordId}}',false,this);return(false);">
-                                                    {{ 'action : ajouter au panier' | trans }}
+                                                    <a title="{{ 'action : ajouter au panier' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/basket-1.png" alt="{{ 'action : ajouter au panier' | trans }}">
+                                                        <span>{{ 'action : ajouter au panier' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         {% if granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDPREVIEW')]) or granted_on_collection(record.baseId, [constant('\\ACL::CANDWNLDHD')]) %}
                                             <div title="" class="context-menu-item">
                                                 <div class="context-menu-item-inner"
-                                                     onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
-                                                    {{ 'action : exporter' | trans }}
+                                                onclick="evt_dwnl('{{record.id}}',false,this);return(false);">
+                                                    <a title="{{ 'action : exporter' | trans }}" href="#">
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/export-shadow.png" alt="{{ 'action : exporter' | trans }}">
+                                                        <span>{{ 'action : exporter' | trans }}</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         {% endif %}
                                         <div title="" class="context-menu-item">
                                             <div class="context-menu-item-inner"
-                                                 onclick="evt_print('{{record.id}}');return(false);">
-                                                {{ 'action : print' | trans }}
+                                                onclick="evt_print('{{record.id}}');return(false);">
+                                                <a title="{{ 'action : print' | trans }}" href="#">
+                                                    <img style="cursor:pointer;" src="/assets/common/images/icons/print-shadow.png" alt="{{ 'action : print' | trans }}">
+                                                    <span>{{ 'action : print' | trans }}</span>
+                                                </a>
                                             </div>
                                         </div>
                                         {% if app['conf'].get(['registry', 'actions', 'social-tools']) == 'all'
@@ -135,7 +142,10 @@
                                                 <div title="" class="context-menu-item">
                                                     <div class="context-menu-item-inner"
                                                          onclick="shareThis('{{record.baseId}}','{{record.recordId}}');">
-                                                        {{ 'reponses:: partager' | trans }}
+                                                        <a title="{{ 'action : partager' | trans }}" href="#">
+                                                            <img style="cursor:pointer;" src="/assets/common/images/icons/Share.png" alt="{{ 'action : partager' | trans }}">
+                                                            <span>{{ 'action : partager' | trans }}</span>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             {% endif %}

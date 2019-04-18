@@ -1,9 +1,12 @@
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 form.phrasea_query input.query {
-  padding-left: 30px;
+  padding-left: 6px;
+  padding-right: 30px;
   font-size: 16px;
   margin: 0;
   width: 59%;
+  background-position: right 7px center;
+  background-image: url('#{$iconsPath}research-dark.png');
 }
 
 .searchFormWrapper {
@@ -35,11 +38,13 @@ form.phrasea_query input.query {
   }
   .danger .danger_indicator,
   .danger.danger_indicator {
-    border-color: #c9c900;
-    background-color: #FCEC98;
-    color: #000000;
+    border-color: #2475b5;
+    background-color: #2196f3;
+    color: #ffffff;
   }
-
+  .advance_search_action .danger.danger_indicator {
+    background-image: url('#{$iconsPath}research-white.png');
+  }
 }
 #adv_search {
   table {
@@ -88,7 +93,7 @@ form.phrasea_query input.query {
 
 .sbasglob .btn-toolbar,
 #sbasfiltercont .btn-toolbar {
-  margin: 10px;
+  margin: 10px 10px 20px;
   text-align: center;
 }
 
@@ -99,12 +104,14 @@ form.phrasea_query input.query {
 .clksbas {
   margin-bottom: 15px;
   .checkbox {
-    padding-top: 0;
-    padding-left: 10px;
+    padding: 0;
   }
   input[type="checkbox"] {
     margin: 0;
-    float: none;
+    position: absolute;
+  }
+  label {
+    font-weight: bold;
   }
 }
 .deployer_toggle {
@@ -116,7 +123,8 @@ form.phrasea_query input.query {
   padding: 0;
   margin: 0 0 0 63px;
   list-style: none;
-  width: calc(100% - 40px);
+  width: calc(100% - 70px);
+  overflow: hidden;
 }
 
 .clkbas {

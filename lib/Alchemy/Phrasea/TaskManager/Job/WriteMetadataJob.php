@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
+use MediaAlchemyst\Specification\Image;
 use PHPExiftool\Driver\Metadata;
 use PHPExiftool\Driver\Value;
 use PHPExiftool\Driver\Tag;
@@ -82,12 +83,16 @@ class WriteMetadataJob extends AbstractJob
                 $type = $record->getType();
 
                 $subdefs = [];
+                $specs = [];
                 foreach ($record->get_subdefs() as $name => $subdef) {
                     $write_document = (($token & PhraseaTokens::WRITE_META_DOC) && $name == 'document');
                     $write_subdef = (($token & PhraseaTokens::WRITE_META_SUBDEF) && $this->isSubdefMetadataUpdateRequired($databox, $type, $name));
 
                     if (($write_document || $write_subdef) && $subdef->is_physically_present()) {
                         $subdefs[$name] = $subdef->getRealPath();
+                        if($name != 'document'){
+                            $specs[$name] = $subdef->getDataboxSubdef()->getSpecs();
+                        }
                     }
                 }
 
@@ -172,9 +177,16 @@ class WriteMetadataJob extends AbstractJob
                 }
 
                 foreach ($subdefs as $name => $file) {
+                    $resolution = [];
+
+                    if( $name != 'document' && $specs[$name] instanceof Image){
+                        $resolution[] = $specs[$name]->getResolutionX();  //xresolution
+                        $resolution[] = $specs[$name]->getResolutionY();  //yresolution
+                    }
+
                     $writer->erase($name != 'document' || $clearDoc, true);
                     try {
-                        $writer->write($file, $metadata);
+                        $writer->write($file, $metadata, null, $resolution);
 
                         $this->log('info',sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $record_id, $name));
                     } catch (PHPExiftoolException $e) {

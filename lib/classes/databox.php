@@ -395,7 +395,6 @@ class databox extends base implements ThumbnailedElement
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
-                    , databox_field::TYPE_TEXT
                     ]
                 ) ? $type : databox_field::TYPE_STRING;
 
@@ -1219,7 +1218,7 @@ class databox extends base implements ThumbnailedElement
 
     public function clear_logs()
     {
-        foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
+        foreach (['log', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
             $this->get_connection()->delete($table, []);
         }
 
@@ -1256,7 +1255,7 @@ class databox extends base implements ThumbnailedElement
             if ($domct !== false) {
                 $nodesToDel = [];
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if(!($n->getAttribute('delbranch'))){
+                    if($n->nodeType == XML_ELEMENT_NODE && !($n->getAttribute('delbranch'))){
                         $nodesToDel[] = $n;
                     }
                 }

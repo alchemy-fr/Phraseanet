@@ -320,6 +320,7 @@ class CollectionService
 
             $result = $userQuery->on_base_ids([ $reference->getBaseId()] )
                 ->who_have_right([\ACL::ORDER_MASTER])
+                ->include_templates(true)
                 ->execute()->get_results();
 
             /** @var ACLProvider $acl */

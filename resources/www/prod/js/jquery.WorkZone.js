@@ -67,17 +67,6 @@ var p4 = p4 || {};
         });
     }
 
-    $("#baskets div.content select[name=valid_ord]").on('change', function () {
-        var active = $('#baskets .SSTT.ui-state-active');
-        if (active.length === 0) {
-            return;
-        }
-
-        var order = $(this).val();
-
-        getContent(active, order);
-    });
-
     function WorkZoneElementRemover(el, confirm) {
         var context = el.data('context');
 
@@ -304,6 +293,17 @@ var p4 = p4 || {};
                 }).bind('click', function (event) {
                     return WorkZoneElementRemover($(this), false);
                 });
+                
+                $("#baskets div.content select[name=valid_ord]").on('change', function () {
+                    var active = $('#baskets .SSTT.ui-state-active');
+                    if (active.length === 0) {
+                        return;
+                    }
+            
+                    var order = $(this).val();
+            
+                    getContent(active, order);
+                });
 
                 dest.droppable({
                     accept: function (elem) {
@@ -324,7 +324,9 @@ var p4 = p4 || {};
                     tolerance: 'pointer'
                 });
 
-                $('.noteTips, .captionRolloverTips', dest).tooltip();
+                $('.noteTips, .captionRolloverTips', dest).tooltip({
+                    extraClass: 'tooltip_flat'
+                });
 
                 dest.find('.CHIM').draggable({
                     helper: function () {

@@ -96,7 +96,7 @@
                         </ul>
                     </ul>
                     <% _.each(field.labels, function(value, code) { %>
-                        <input type="text" value="<%= value %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === lng ? '' : 'style="display:none"'%> >
+                        <input type="text" value="<%= value ? value.replace(/"/g, '&quot;') : value  %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === lng ? '' : 'style="display:none"'%> >
                     <% }); %>
                 </td>
             </tr>
@@ -141,7 +141,6 @@
                         <select id="type">
                             <option <%= field.type == '' ? 'selected' : '' %> value=""></option>
                             <option <%= field.type == 'string' ? 'selected' : '' %> value="string">string</option>
-                            <option <%= field.type == 'text' ? 'selected' : '' %> value="text">text</option>
                             <option <%= field.type == 'number' ? 'selected' : '' %> value="number">number</option>
                             <option <%= field.type == 'date' ? 'selected' : '' %> value="date">date</option>
                         </select>

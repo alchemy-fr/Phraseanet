@@ -149,7 +149,7 @@ class record_preview extends record_adapter
                         $this->original_item = $element;
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = $Basket->getName();
+                        $this->name = htmlspecialchars($Basket->getName());
                         $number = $element->getOrd();
                         $first = false;
                     }
@@ -169,7 +169,7 @@ class record_preview extends record_adapter
                     if ($element->getOrd() == $pos || $first) {
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = $entry->getTitle();
+                        $this->name = htmlspecialchars($entry->getTitle());
                         $this->original_item = $element;
                         $number = $element->getOrd();
                         $first = false;

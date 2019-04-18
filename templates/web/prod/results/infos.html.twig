@@ -12,10 +12,11 @@
     </div>
     dans index {{ results.getIndexes() }}
     {% if not(esquery is null) %}
-    <div>
-        <a href="#" id="esqueryCopy">{{ 'copyClipboardLabel' | trans }}</a>
-    </div>
     <div class="esqueryDataDiv">
+        <textarea id="esqueryDataPaths" style="display:block; height: 180px;" placeholder="{{ 'No thesaurus concept query' | trans }}"></textarea>
+        <div style="overflow: hidden;">
+            <a href="#" id="esqueryCopy">{{ 'copyClipboardLabel' | trans }}</a>
+        </div>
         <textarea id="esqueryData">{{ esquery }}</textarea>
     </div>
     {% endif %}
@@ -23,6 +24,33 @@
 
 <script language="javascript">
     $(document).ready(function(){
+
+        var esqueryDataDiv = $('.esqueryDataDiv');
+        var esQuery = JSON.parse($('#esqueryData').text());
+        var paths = [];
+
+        // Loop the top level
+        $.each(esQuery, testQuery);
+
+        function testQuery(key, value) {
+
+            if (value !== null && typeof value === "object") {
+                if(key === 'multi_match') {
+                    var testValue = value.fields[0];
+                    if(testValue.startsWith('concept_path')) {
+                        paths.push(value.query);
+                    }
+                }
+                else {
+                    // Recurse into children
+                    $.each(value, testQuery);
+                }
+            }
+        }
+
+        $.each(paths, function(i, path) {
+            $('#esqueryDataPaths').append(path + '\n');
+        });
 
         var copyElContentClipboard = function(elId) {
             var copyEl = document.getElementById(elId);

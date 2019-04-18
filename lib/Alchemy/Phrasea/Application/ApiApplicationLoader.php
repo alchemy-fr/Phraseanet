@@ -27,6 +27,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
+use Alchemy\Phrasea\Report\ControllerProvider\ApiReportControllerProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,6 +38,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->register(new OAuth2());
         $app->register(new V1());
         $app->register(new V2());
+        $app->register(new ApiReportControllerProvider());
         $app->register(new JsonSchemaServiceProvider());
     }
 
@@ -137,6 +139,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->mount('/datafiles/', new Datafiles());
         $app->mount('/api/v1', new V1());
         $app->mount('/api/v2', new V2());
+        $app->mount('/api/report', new ApiReportControllerProvider());
         $app->mount('/permalink/', new Permalink());
         $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
         $app->mount('/include/minify/', new Minifier());

@@ -252,7 +252,7 @@ class ThesaurusXmlHttpController extends Controller
                         /** @var DOMElement $n2 */
                         for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                             if ($n2->nodeName == "sy") {
-                                $sy = $n2->getAttribute("v");
+                                $sy = htmlspecialchars($n2->getAttribute("v"));
                                 if (!$firstsy) {
                                     $firstsy = $sy;
                                     if ($request->get("debug")) {
@@ -441,7 +441,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = $n2->getAttribute("v");
+                            $t = htmlspecialchars($n2->getAttribute("v"));
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -586,7 +586,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = $n2->getAttribute("v");
+                            $t = htmlspecialchars($n2->getAttribute("v"));
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -843,7 +843,7 @@ class ThesaurusXmlHttpController extends Controller
             for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                 if ($n2->nodeName == 'sy') {
                     $lng = $n2->getAttribute('lng');
-                    $t = $n2->getAttribute('v');
+                    $t = htmlspecialchars($n2->getAttribute('v'));
                     $key = $n2->getAttribute('w');  // key of the current sy
                     if ($k = $n2->getAttribute('k')) {
                         $key .= ' (' . $k . ')';
@@ -920,7 +920,7 @@ class ThesaurusXmlHttpController extends Controller
                 $bid = $request->get('bid');
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $html .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -967,7 +967,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'TH_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1078,12 +1078,12 @@ class ThesaurusXmlHttpController extends Controller
                 $ret['result'] = array();
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $ret['result'][] = array(
                         'id' => $n->getAttribute('id'),
-                        't'  => $n->getAttribute('v'),
+                        't'  => htmlspecialchars($n->getAttribute('v')),
                     );
                 }
             }
@@ -1103,7 +1103,7 @@ class ThesaurusXmlHttpController extends Controller
         $allsy = array();
         for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeName == 'sy') {
-                $t = $n->getAttribute('v');
+                $t = htmlspecialchars($n->getAttribute('v'));
                 $allsy[] = array(
                     'id' => $n->getAttribute('id'),
                     't'  => $t,
@@ -1190,7 +1190,7 @@ class ThesaurusXmlHttpController extends Controller
             } else {
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     $tid = $n->getAttribute('id');
 
                     $zhtml .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -1213,7 +1213,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = $n->getAttribute('v');
+                    $t = htmlspecialchars($n->getAttribute('v'));
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'GL_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1314,12 +1314,7 @@ class ThesaurusXmlHttpController extends Controller
 
     public function searchTermJson(Request $request)
     {
-        if (null === $lng = $request->get('lng')) {
-            $data = explode('_', $this->app['locale']);
-            if (count($data) > 0) {
-                $lng = $data[0];
-            }
-        }
+        $lng = $request->get('lng');
 
         $html = '';
         $sbid = (int) $request->get('sbid');
@@ -1371,7 +1366,12 @@ class ThesaurusXmlHttpController extends Controller
                     if ($t[1])
                         $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape(
                                 $unicode->remove_indexer_chars($t[1])) . '\')';
-                    $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+
+                    if($lng == null){
+                        $q2 = '//sy[' . $q2 . ']';
+                    }else{
+                        $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+                    }
 
                     $q .= $q2;
 
@@ -1501,7 +1501,7 @@ class ThesaurusXmlHttpController extends Controller
             if ($n2->nodeName == 'sy') {
 
                 $lng = $n2->getAttribute('lng');
-                $t = $n2->getAttribute('v');
+                $t = htmlspecialchars($n2->getAttribute('v'));
                 $key = $n2->getAttribute('w');  // key of the current sy
 
                 if ($k = $n2->getAttribute('k')) {

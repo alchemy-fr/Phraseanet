@@ -160,6 +160,9 @@ class DataboxesController extends Controller
 
         try {
             $connectionSettings = $this->buildSettingsFromRequest($request);
+
+            \phrasea::clear_sbas_params($this->app);
+
             $databox = $databoxService->mountDatabox($dbName, $this->app->getAuthenticatedUser(), $connectionSettings);
 
             return $this->app->redirectPath('admin_database', [
@@ -174,7 +177,8 @@ class DataboxesController extends Controller
         catch (\Exception $exception) {
             return $this->app->redirectPath('admin_databases', [
                 'success' => 0,
-                'error' => 'mount-failed'
+                // 'error' => 'mount-failed'
+                'error' => $exception->getMessage()
             ]);
         }
     }

@@ -76,6 +76,47 @@ Menu contextuel
   background-position: 5px center;
 }
 
+/* Flat theme */
+.context-menu-theme-flat {
+  min-width: 160px;
+  background-image: none;
+  background-color: $answersToolsBg;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.context-menu-theme-flat .context-menu-item {
+  .context-menu-item-inner {
+    margin-left: 0;
+    font-weight: bold;
+    &:hover {
+      background-color: $answersToolsBgHover;
+      a {
+        color: $answersToolsBgColor;
+      }
+    }
+  }
+  a {
+    padding: 9px 16px 9px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    color: $answersToolsBgColor;
+    img {
+      width: 24px;
+      margin-bottom: -2px;
+    }
+    span {
+      margin-left: 8px;
+      vertical-align: initial;
+    }
+  }
+}/* Flat theme End */
+
+.context-menu-item.divider {
+  border-bottom: 1px solid #7f7f7f;
+}
+
 .context-menu-item .divider {
   border-bottom: 1px solid #808080;
   margin-left: 20px;

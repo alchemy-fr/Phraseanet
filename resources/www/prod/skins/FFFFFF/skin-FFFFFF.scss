@@ -14,7 +14,7 @@ $highlightDarkerColor: #0c4554;
 $highlightBackgroundColor: #076882;
 $highlightBackgroundAltColor: #0c4554;
 $highlightBorderColor: #0c4554;
-$highlightTextColor: #FFF;
+$highlightTextColor: #000000;
 
 
 $darkerBackgroundColor: #FFFFFF; // #F1F1F1 <- to try
@@ -29,9 +29,9 @@ $darkTextColor: #9c9c9c;
 $mediumBackgroundColor: #f2f2f2; // B2B2B2 <- to try
 $mediumBorderColor: #FFF; //darken($mediumBackgroundColor, 10);
 $mediumBorderHighlightColor: #bfbfbf;
-$mediumTextColor: $textPrimaryColor;
-$mediumTextHoverColor: #EAEAEA;
-$mediumTextActiveColor: #EAEAEA;
+$mediumTextColor: #777777;
+$mediumTextHoverColor: #000000;
+$mediumTextActiveColor: #000000;
 
 $lightBackgroundColor: #9c9c9c;
 $lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
@@ -40,6 +40,8 @@ $lightBorderColor: #B1B1B1;
 $lightBorderSelectedColor: darken($lightBorderColor, 10);
 $lightBorderActiveColor: darken($lightBorderColor, 10);
 $lightTextColor: #3b3b3b;
+
+$textShadow: -0.25px -0.25px 0 black, 0.25px 0.25px black;
 
 // inverse
 $textInverseColor: #000;
@@ -76,8 +78,11 @@ $basketsTextColor: #777777;
 
 $guiSplitterImg: 'vsplitter2-959595.png';
 
+$answersToolsBg: #d9d9d9;
+$answersToolsBgHover: #c4c4c4;
+$answersToolsBgColor: #2a2a2a;
 $answersToolsBtnSeparatorBorder: #EAEAEA;
-$answersToolsBtnBg: #f2f2f2;
+$answersToolsBtnBg: #e3e3e3;
 $answersToolsBtnBorder: #bfbfbf;
 $answersToolsBtnColor: #5b5b5b;
 $answersToolsBtnHoverBg: #bfbfbf;
@@ -170,7 +175,7 @@ $workzoneTabTopBorder: 1px solid #EAEAEA;
 $workzoneTabBorderBottom: transparent;
 $workzoneBasketAlertDataBg: #fff190;
 $workzoneBasketAlertDataColor: #1a1a1a;
-$workzoneToolsLabelColor: #FFFFFF;
+$workzoneToolsLabelColor: #d0d0d0;
 
 
 /******** TABS CONFIG ********/

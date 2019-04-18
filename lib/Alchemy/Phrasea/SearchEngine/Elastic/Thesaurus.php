@@ -63,6 +63,7 @@ class Thesaurus
         // TODO Use bulk queries for performance
         $concepts = array();
         foreach ($terms as $index => $term) {
+            $strict |= ($term instanceof AST\TermNode);      // a "term" node is [strict group of words]
             $concepts[] = $this->findConcepts($term, $lang, $filters[$index], $strict);
         }
 
