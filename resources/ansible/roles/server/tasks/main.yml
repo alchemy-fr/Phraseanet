@@ -18,6 +18,10 @@
   with_items: '{{ server.packages }}'
   when: server.packages is defined
 
+- name: Pip install ndg-httpsclient
+  shell: pip install ndg-httpsclient
+  sudo: yes
+
 - name: Configure the timezone
   sudo: yes
   template: src=timezone.j2 dest=/etc/timezone

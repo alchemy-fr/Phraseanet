@@ -529,11 +529,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $coll_id_from = $this->getCollectionId();
+        $coll_id_to = $collection->get_coll_id();
 
         $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = [
-            ':coll_id'   => $collection->get_coll_id(),
+            ':coll_id'   => $coll_id_to,
             ':record_id' => $this->getRecordId(),
         ];
 
@@ -542,11 +543,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->base_id = $collection->get_base_id();
+        $this->collection_id = $coll_id_to;
+
+        $this->delete_data_from_cache();
 
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
-
-        $this->delete_data_from_cache();
 
         $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
 

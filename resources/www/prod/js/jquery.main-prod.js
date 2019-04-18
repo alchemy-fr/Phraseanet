@@ -15,9 +15,8 @@ var bodySize = {
     y: 0
 };
 
+var selectedFacets = {};
 var facets = null;
-
-var lastFilterResults = [];
 
 var ORDER_BY_BCT = "ORDER_BY_BCT";
 var ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
@@ -38,7 +37,7 @@ function getHome(cas, page) {
 
     switch (cas) {
         case 'QUERY':
-            selectedFacetValues = [];
+            selectedFacets = {};
             newSearch($("#EDIT_query").val());
             break;
         case 'PUBLI':
@@ -151,18 +150,20 @@ function checkFilters(save) {
     var container = $("#ADVSRCH_OPTIONS_ZONE");
     var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
     var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var fieldsSelect = $('#ADVSRCH_FIELDS_ZONE select.term_select_multiple', container);
     var fieldsSelectFake = $('#ADVSRCH_FIELDS_ZONE select.term_select_field', container);
+    var statusField = $('#ADVSRCH_FIELDS_ZONE .danger_indicator', container);
     var statusFilters = $('#ADVSRCH_SB_ZONE .status-section-title .danger_indicator', container);
     var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
-    var scroll = fieldsSelect.scrollTop();
 
     // hide all the fields in the "sort by" select, so only the relevant ones will be shown again
     $("option.dbx", fieldsSort).hide().prop("disabled", true);  // dbx is for "field of databases"
 
     // hide all the fields in the "fields" select, so only the relevant ones will be shown again
-    $("option.dbx", fieldsSelect).hide().prop("disabled", true);     // option[0] is "all fields"
-    $("option.dbx", fieldsSelectFake).hide().prop("disabled", true);
+    $("option.dbx", fieldsSelectFake).prop("disabled", true);
+    // disable the whole select
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_field', container).enable(false);
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper select.term_select_op', container).enable(false);
+    $('#ADVSRCH_FIELDS_ZONE .term_select_wrapper input.term_select_value', container).enable(false);
 
     // hide all the fields in the "date field" select, so only the relevant ones will be shown again
     $("option.dbx", dateFilterSelect).hide().prop("disabled", true);   // dbx = all "field" entries in the select = all except the firstt
@@ -202,6 +203,7 @@ function checkFilters(save) {
         else {
             $('.infos_sbas_' + sbas_id).empty().append('<span style="color:#2096F3;font-size: 20px;">' + nbSelectedColls + '</span> / ' + nbCols);
             $(this).siblings(".clksbas").addClass("danger");
+            danger = true;
         }
 
         // if one coll is not checked, show danger
@@ -225,12 +227,27 @@ function checkFilters(save) {
             // show again the relevant fields in "sort by" select
             $(".db_"+sbas_id, fieldsSort).show().prop("disabled", false);
             // show again the relevant fields in "from fields" select
-            $(".db_"+sbas_id, fieldsSelect).show().prop("disabled", false);
-            $(".db_"+sbas_id, fieldsSelectFake).show().prop("disabled", false);
+            $(".db_"+sbas_id, fieldsSelectFake).prop("disabled", false);
+            // enable again the whole select, only if the selected option (field name) is relevant for this db
+            $("option.db_"+sbas_id+":selected", fieldsSelectFake).closest("select").enable(true);
             // show the sb
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).show();
             // show again the relevant fields in "date field" select
             $(".db_"+sbas_id, dateFilterSelect).show().prop("disabled", false);
+        }
+    });
+
+    // enable also the select if the first option ("choose:") was selected
+    statusField.removeClass('danger');
+    fieldsSelectFake.each(function(e) {
+        var $this = $(this);
+        var term_ok = $('option:selected:enabled', $this).closest(".term_select_wrapper");
+        $("select.term_select_field", term_ok).enable(true);
+        if($this.val() !== "") {
+            $("select.term_select_op", term_ok).enable(true);
+            $("input.term_select_value", term_ok).enable(true);
+            danger = true;
+            statusField.addClass('danger');
         }
     });
 
@@ -256,44 +273,23 @@ function checkFilters(save) {
     search.elasticSort.by = $("option:selected:enabled", fieldsSort).val();
     search.elasticSort.order = $("option:selected:enabled", fieldsSortOrd).val();
 
-    //--------- from fields filter ---------
-
-    // unselect the unavailable fields (or all fields if "all" is selected)
-    var optAllSelected = false;
-    $("option", fieldsSelect).each(
-        function(idx, opt) {
-            if(idx == 0) {
-                // nb: unselect the "all" field, so it acts as a button
-                optAllSelected = $(opt).is(":selected");
-            }
-            if (idx == 0 || optAllSelected || $(opt).is(":disabled") || $(opt).css('display') === 'none') {
-                $(opt).prop("selected", false);
-            }
-        }
-    );
-
-    // here only the relevant fields are selected
-    search.fields = fieldsSelect.val();
-    if(search.fields == null || search.fields.length == 0) {
-        $('#ADVSRCH_FIELDS_ZONE', container).removeClass('danger');
-        search.fields = [];
-    }
-    else {
-        $('#ADVSRCH_FIELDS_ZONE', container).addClass('danger');
-        danger = true;
-    }
-
     //--------- status bits filter ---------
 
     // here only the relevant sb are checked
     for(sbas_id in search.bases) {
-        var nchecked = 0;
-        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox[checked]", container).each(function () {
-            var n = $(this).attr('n');
-            search.status[n] = $(this).val().split('_');
-            nchecked++;
+        var n_checked = 0;
+        var n_unchecked = 0;
+        $("#ADVSRCH_SB_ZONE_"+sbas_id+" :checkbox", container).each(function (k, o) {
+            var n = $(this).data('sb');
+            if($(o).attr('checked')) {
+                search.status[n] = $(this).val().split('_');
+                n_checked++;
+            }
+            else {
+                n_unchecked++;
+            }
         });
-        if(nchecked == 0) {
+        if(n_checked === 0) {
             $("#ADVSRCH_SB_ZONE_"+sbas_id, container).removeClass('danger');
         }
         else {
@@ -306,26 +302,26 @@ function checkFilters(save) {
 
     // if no date field is selected for filter, select the first option
     $('#ADVSRCH_DATE_ZONE', adv_box).removeClass('danger');
-    if($("option.dbx:selected:enabled", dateFilterSelect).length == 0) {
+    if($("option:selected:enabled", dateFilterSelect).length == 0) {
         $("option:eq(0)", dateFilterSelect).prop("selected", true);
-        $("#ADVSRCH_DATE_SELECTORS", container).hide();
     }
-    else {
+    if($("option:selected", dateFilterSelect).val() !== "") {
         $("#ADVSRCH_DATE_SELECTORS", container).show();
         search.dates.minbound = $('#ADVSRCH_DATE_ZONE input[name=date_min]', adv_box).val();
         search.dates.maxbound = $('#ADVSRCH_DATE_ZONE input[name=date_max]', adv_box).val();
         search.dates.field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', adv_box).val();
-        console.log(search.dates.minbound, search.dates.maxbound, search.dates.field)
+
         if ($.trim(search.dates.minbound) || $.trim(search.dates.maxbound)) {
             danger = true;
             $('#ADVSRCH_DATE_ZONE', adv_box).addClass('danger');
         }
     }
-
-    fieldsSelect.scrollTop(scroll);
+    else {
+        $("#ADVSRCH_DATE_SELECTORS", container).hide();
+    }
 
     // if one filter shows danger, show it on the query
-    if (danger) {
+    if (danger == true) {
         $('#EDIT_query').addClass('danger');
     }
     else {
@@ -373,8 +369,6 @@ function resize() {
 
     answerSizer();
     linearize();
-
-
 }
 
 
@@ -385,41 +379,68 @@ function clearAnswers() {
 }
 
 function reset_adv_search() {
-    var container = $("#ADVSRCH_OPTIONS_ZONE");
-    var fieldsSort = $('#ADVSRCH_SORT_ZONE select[name=sort]', container);
-    var fieldsSortOrd = $('#ADVSRCH_SORT_ZONE select[name=ord]', container);
-    var dateFilterSelect = $('#ADVSRCH_DATE_ZONE select', container);
+    var jsq = {
+        "sort":{
+            "field":"created_on",
+            "order":"desc"
+        },
+        "use_truncation":false,
+        "phrasea_recordtype":"RECORD",
+        "phrasea_mediatype":"",
+        "bases":[ ],
+        "statuses":[ ],
+        "query":{
+            "_ux_zone":"PROD",
+            "type":"CLAUSES",
+            "must_match":"ALL",
+            "enabled":true,
+            "clauses":[
+                {
+                    "_ux_zone":"FIELDS",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":false,
+                    "clauses":[ ]
+                },
+                {
+                    "_ux_zone":"DATE-FIELD",
+                    "type":"DATE-FIELD",
+                    "field":"",
+                    "from":"",
+                    "to":"",
+                    "enabled":false
+                },
+                {
+                    "_ux_zone":"AGGREGATES",
+                    "type":"CLAUSES",
+                    "must_match":"ALL",
+                    "enabled":false,
+                    "clauses":[ ]
+                }
+            ]
+        },
+        "_selectedFacets":{ }
+    };
 
-    $("option.default-selection", fieldsSort).prop("selected", true);
-    $("option.default-selection", fieldsSortOrd).prop("selected", true);
-
-    $('#ADVSRCH_FIELDS_ZONE option').prop("selected", false);
-    $('#ADVSRCH_OPTIONS_ZONE input:checkbox.field_switch').prop("checked", false);
-
-    $("option:eq(0)", dateFilterSelect).prop("selected", true);
-    $('#ADVSRCH_OPTIONS_ZONE .datepicker').val('');
-    $('form.adv_search_bind input:text').val('');
-    checkBases(true);
+    restoreJsonQuery(jsq, false);
 }
 
-function search_doubles() {
-    selectedFacetValues = [];
-    $('#EDIT_query').val('sha256=sha256');
-    newSearch('sha256=sha256');
-}
 
 function newSearch(query) {
     p4.Results.Selection.empty();
 
     clearAnswers();
-    $('#SENT_query').val(query);
-    var histo = $('#history-queries ul');
+    if(query !== null) {
+        // $('#SENT_query').val(query);
 
-    histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+        var histo = $('#history-queries ul');
 
-    var lis = $('li', histo);
-    if (lis.length > 25) {
-        $('li:last', histo).remove();
+        histo.prepend('<li onclick="doSpecialSearch(\'' + query.replace(/\'/g, "\\'") + '\')">' + query + '</li>');
+
+        var lis = $('li', histo);
+        if (lis.length > 25) {
+            $('li:last', histo).remove();
+        }
     }
 
     $('#idFrameC li.proposals_WZ').removeClass('active');
@@ -511,7 +532,7 @@ function initAnswerForm() {
 
     var searchForm = $('#searchForm');
     $('button[type="submit"]', searchForm).bind('click', function () {
-        selectedFacetValues = [];
+        selectedFacets = {};
         newSearch($("#EDIT_query").val());
         return false;
     });
@@ -521,6 +542,41 @@ function initAnswerForm() {
             method = $this.attr('method') ? $this.attr('method') : 'POST';
 
         var data = $this.serializeArray();
+
+        // fix bug : if a sb is dual checked, both values are sent with the SAME name
+        //     we can remove those since it means we don't care about this sb
+        // /!\ silly fixed bug : in sb[] we will test if a key exists using "_undefined()"
+        //     BUT sb["sort”] EXISTS ! it is the array.sort() function !
+        //     so the side effect in "_filter()" was that data["sort"] was removed.
+        //     quick solution : prefix the key with "k_"
+        var sb = [];
+        _.each(data, function (v) {
+            var name = "k_" + v.name;
+            if (name.substr(0, 9) === "k_status[") {
+                if (_.isUndefined(sb[name])) {
+                    sb[name] = 0;
+                }
+                sb[name]++; // so sb["k_x"] is the number of occurences of sb checkbox named "x"
+            }
+        });
+        // now if a sb checkbox appears 2 times, it is removed from data
+        data = _.filter(data, function (e) {
+            return (_.isUndefined(sb["k_" + e.name])) || (sb["k_" + e.name] === 1);
+        });
+        // end of sb fix
+
+
+        var jsonData = serializeJSON(data, selectedFacets, facets);
+        var qry = buildQ(jsonData.query);
+
+        data.push({
+                name: 'jsQuery',
+                value: JSON.stringify(jsonData)
+            },
+            {
+                name: 'qry',
+                value: qry
+            });
 
         answAjax = $.ajax({
             type: method,
@@ -558,14 +614,11 @@ function initAnswerForm() {
                 });
 
                 //load last result collected or [] if length == 0
-                if (datas.facets.length == 0) {
-                    loadFacets(lastFilterResults);
-                } else {
-                    lastFilterResults = datas.facets;
-                    loadFacets(datas.facets);
+                if(!datas.facets) {
+                    datas.facets = [];
                 }
-
                 facets = datas.facets;
+                loadFacets(facets);
 
                 $('#answers').append('<div id="paginate"><div class="navigation"><div id="tool_navigate"></div></div></div>');
 
@@ -604,27 +657,57 @@ function initAnswerForm() {
         });
         return false;
     });
-    if (searchForm.hasClass('triggerAfterInit')) {
-        searchForm.removeClass('triggerAfterInit').trigger('submit');
+
+    // if defined, play the first query
+    //
+    try {
+        var jsq = $("#FIRST_QUERY_CONTAINER");
+        if(jsq.length > 0) {
+            // there is a query to play
+            if(jsq.data('format') === "json") {
+                // json
+                jsq = JSON.parse(jsq.text());
+                restoreJsonQuery(jsq, true);
+            }
+            else {
+                // text : do it the old way : restore only fulltext and submit
+                searchForm.trigger('submit');
+            }
+        }
+    }
+    catch (e) {
+        // malformed jsonquery ?
+        // no-op
     }
 }
 
-/*
- selectedFacetValues[]
- key : facet.name
- value : {
- 'value' : facet.value,
- 'mode' : "AND"|"EXCEPT"
- }
- */
-var selectedFacetValues = [];
 var facetStatus = $.parseJSON(sessionStorage.getItem('facetStatus')) || [];
 var tokens = [['[',']']];
 
+/**
+ *  add missing selected facets fields into "facets", from "selectedFacets"
+ *  why : because if we negates all values for a facet field (all red), the facet will disapear from next query->answers
+ *        (not in "facets" anymore, not in ux). So we lose the posibility to delete or invert a facet value.
+ *  nb : negating all facets values does not mean there will be 0 results, because the field can be empty for some records.
+ */
+function facetsAddMissingSelected(_selectedFacets, _facets) {
+    _.each(_selectedFacets, function (v, k) {
+        // todo : "facets" is an array (no key), change to a k->v (same structure as "selectedFacets")
+        //        too bad for now, we must lookup...
+        var found = _.find(_facets, function (facet) {
+            return (facet.field == k);
+        });
+        if(!found) {
+            var i = _facets.push(_.clone(v)); // add a "fake" facet to facets
+            _facets[i-1].values = [];      // with no values
+        }
+    });
+}
+
 function loadFacets(facets) {
 
-    //get properties of facets
-    var filterFacet = $('#look_box_settings input[name=filter_facet]').prop('checked');
+    //get facets settings
+    var hideSingleValueFacet_setting = $('#look_box_settings input[name=filter_facet]').prop('checked');
     var facetOrder = $('#look_box_settings select[name=orderFacet]').val();
     var facetValueOrder = $('#look_box_settings select[name=facetValuesOrder]').val();
 
@@ -639,22 +722,65 @@ function loadFacets(facets) {
         }
     }
 
+    facetsAddMissingSelected(selectedFacets, facets); // add missing facets fields into "facets" from "selectedFacets"
+
     // Convert facets data to fancytree source format
     var treeSource = _.map(facets, function(facet) {
         // Values
         var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
-            return {
-                title: value.value + ' (' + value.count + ')',
-                query: value.query,
-                label: value.value,
-                tooltip: value.value + ' (' + value.count + ')'
+            var type = facet.type;     // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
+            // patch "color" type values
+            var textLimit = 200;     // cut long values (set to 0 to not cut)
+            var text = (value.value).toString();
+            var label = title = tooltip = text;
+            var match = text.match(/^(.*)\[#([0-9a-fA-F]{6})].*$/);
+            if(match && match[2] != null) {
+                // text looks like a color !
+                var colorCode = '#' + match[2];
+                // add color circle and remove color code from text;
+                var textWithoutColorCode = text.replace('[' + colorCode + ']', '');
+                if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
+                    textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
+                }
+                // patch
+                type = "COLOR-AGGREGATE";
+                label = textWithoutColorCode;
+                tooltip = _.escape(textWithoutColorCode);
+                title = '<span class="color-dot" style="background-color: ' + colorCode + ';"></span> ' + tooltip;
             }
+            else {
+                // keep text as it is, just cut if too long
+                if (textLimit > 0 && text.length > textLimit) {
+                    text = text.substring(0, textLimit) + '…';
+                }
+                label = text;
+                title = tooltip = _.escape(text);
+            }
+
+            return {
+                // custom data
+                query:     value.query,
+                field:     facet.field,
+                raw_value: value.raw_value,
+                value:     value.value,
+                label:     label,             // displayed when selected (blue/red), escape is done later (render)
+                type:      type,              // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value
+                count:     value.count,
+                // jquerytree data
+                title:     title + ' (' + value.count + ')',
+                tooltip:   tooltip + ' (' + value.count + ')'
+            };
         });
         // Facet
         return {
-            name: facet.name,
-            title: facet.label,
-            folder: true,
+            // custom data
+            name:     facet.name,
+            field:    facet.field,
+            label:    facet.label,
+            type:     facet.type,
+            // jquerytree data
+            title:    facet.label,
+            folder:   true,
             children: values,
             expanded: !_.some(facetStatus, function(o) { return _.has(o, facet.name)})
         };
@@ -666,11 +792,9 @@ function loadFacets(facets) {
         treeSource = sortByPredefinedFacets(treeSource, 'name', ['base_aggregate', 'collection_aggregate', 'doctype_aggregate']);
     }
 
-    if(filterFacet == true) {
-        treeSource = shouldFilterSingleContent(treeSource, filterFacet);
+    if(hideSingleValueFacet_setting == true) {
+        treeSource = hideSingleValueFacet(treeSource);
     }
-
-    treeSource = parseColors(treeSource);
 
     return getFacetsTree().reload(treeSource)
         .done(function () {
@@ -697,55 +821,20 @@ function loadFacets(facets) {
         });
 }
 
-function parseColors(source) {
+/**
+ * hide facets with only one value (experimental)
+ *
+ * @param source    treesource
+ * @returns {*}
+ */
+function hideSingleValueFacet(source) {
+    var filteredSource = [];
     _.forEach(source, function(facet) {
-        if(!_.isUndefined(facet.children) && (facet.children.length > 0)) {
-            _.forEach(facet.children, function(child) {
-                var title = child.title;
-                child.title = formatColorText(title.toString());
-            });
+        if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacets[facet.field]))) {
+            filteredSource.push(facet);
         }
     });
-    return source;
-}
-
-function formatColorText(string) {
-    var textLimit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    //get color code from text if exist
-    var regexp = /^(.*)\[#([0-9a-fA-F]{6})].*$/;
-
-
-    var match = string.match(regexp);
-    if(match && match[2] != null) {
-        var colorCode = '#' + match[2];
-        // //add color circle and re move color code from text;
-         var textWithoutColorCode = string.replace('[' + colorCode + ']','');
-         if (textLimit > 0 && textWithoutColorCode.length > textLimit) {
-            textWithoutColorCode = textWithoutColorCode.substring(0, textLimit) + '…';
-         }
-         return '<span class="color-dot" style="background-color: ' + colorCode + '"></span>' + ' ' + textWithoutColorCode;
-    } else {
-        if (textLimit > 0 && string.length > textLimit) {
-            string = string.substring(0, textLimit) + '…';
-        }
-        return string;
-    }
-}
-
-function shouldFilterSingleContent(source, shouldFilter) {
-    var filteredSource = [];
-    if(shouldFilter == true) {
-        _.forEach(source, function(facet) {
-            //close expansion for facet containing selected values
-            // if(!_.isUndefined(selectedFacetValues[facet.title])) {
-            //     facet.expanded = false;
-            // }
-            if(!_.isUndefined(facet.children) && (facet.children.length > 1 || !_.isUndefined(selectedFacetValues[facet.title]))) {
-                filteredSource.push(facet);
-            }
-        });
-        source = filteredSource;
-    }
+    source = filteredSource;
 
     return source;
 }
@@ -789,137 +878,150 @@ function getFacetsTree() {
     var $facetsTree = $('#proposals');
     if (!$facetsTree.data('ui-fancytree')) {
         $facetsTree.fancytree({
-            clickFolderMode: 3, // activate and expand
+            clickFolderMode: 2, // expand
             icons:false,
             source: [],
+
             activate: function(event, data){
-                var query = data.node.data.query;
+                //var query = data.node.data.query;
                 var eventType = event.originalEvent;
                 //if user did not click, then no need to perform any query
                 if(eventType == null) {
                     return;
                 }
-                if (query) {
-                    var facet = data.node.parent;
-                    var facetData = {
-                        value: data.node.data,
-                        mode: event.altKey ? "EXCEPT" : "AND"
-                    };
+                var facet = data.node.parent;
+                var facetData = {
+                    value:   data.node.data,
+                    enabled: true,
+                    negated: event.altKey // ,
+                    // mode:    event.altKey ? "EXCEPT" : "AND"
+                };
 
-                    if (selectedFacetValues[facet.title] == null) {
-                        selectedFacetValues[facet.title] = [];
-                    }
-                    selectedFacetValues[facet.title].push(facetData);
-                    facetCombinedSearch();
+                if (selectedFacets[facet.data.field] == null) {
+                    selectedFacets[facet.data.field] = facet.data;
+                    selectedFacets[facet.data.field].values = [];
                 }
+                selectedFacets[facet.data.field].values.push(facetData);
+
+                $('#searchForm').submit();
             },
-            
-            collapse: function (event, data) {    
-                var dict = {};    
-                dict[data.node.data.name] = "collapse";    
+
+            collapse: function (event, data) {
+                var dict = {};
+                dict[data.node.data.name] = "collapse";
                 if(_.findWhere(facetStatus, dict) !== undefined ) {
-                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict)) 
-                }    
-                facetStatus.push(dict);    
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))
+                }
+                facetStatus.push(dict);
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
+
             expand: function (event, data) {
-            var dict = {};    
-                dict[data.node.data.name] = "collapse";    
-                if (_.findWhere(facetStatus, dict) !== undefined) {         
-                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))     
-                }    
+                var dict = {};
+                dict[data.node.data.name] = "collapse";
+                if (_.findWhere(facetStatus, dict) !== undefined) {
+                    facetStatus = _.without(facetStatus, _.findWhere(facetStatus, dict))
+                }
                 sessionStorage.setItem('facetStatus', JSON.stringify(facetStatus));
             },
+
             renderNode: function(event, data){
-                var facetFilter = "";
-                if(data.node.folder && !_.isUndefined(selectedFacetValues[data.node.title])) {
-                    if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
-                        var dataNode = document.createElement('div');
-                        dataNode.setAttribute("class", "dataNode");
-                        $(".fancytree-folder", data.node.li).append(
-                            dataNode
-                        );
-                    } else {
-                        //remove existing facets
-                        $(".dataNode", data.node.li).empty();
-                    }
-                    _.each(selectedFacetValues[data.node.title], function (facetValue) {
+                var label = "";
+                var selectedlabel = "";
+                var tooltip = "";
+                if(data.node.folder) {
+                    // here we render a "fieldname" level
+                    if (!_.isUndefined(selectedFacets[data.node.data.field])) {
+                        // here the field already contains selected facetvalues (to be rendered blue or red)
+                        if ($(".fancytree-folder", data.node.li).find('.dataNode').length == 0) {
+                            var dataNode = document.createElement('div');
+                            dataNode.setAttribute("class", "dataNode");
+                            $(".fancytree-folder", data.node.li).append(
+                                dataNode
+                            );
+                        } else {
+                            //remove existing facets
+                            $(".dataNode", data.node.li).empty();
+                        }
+                        _.each(selectedFacets[data.node.data.field].values, function (facetValue) {
 
-                        facetFilter = facetValue.value.label;
-
-                        var s_label = document.createElement("SPAN");
-                        s_label.setAttribute("class", "facetFilter-label");
-                        s_label.setAttribute("title", facetFilter);
-
-                        var length = 15;
-                        var facetFilterString = formatColorText(facetFilter.toString(), length);
-
-                        _.each($.parseHTML(facetFilterString), function (elem) {
-                            s_label.appendChild(elem);
-                        });
-
-                        var s_closer = document.createElement("A");
-                        s_closer.setAttribute("class", "facetFilter-closer");
-
-                        var s_gradient = document.createElement("SPAN");
-                        s_gradient.setAttribute("class", "facetFilter-gradient");
-                        s_gradient.appendChild(document.createTextNode("\u00A0"));
-
-                        s_label.appendChild(s_gradient);
-
-                        var s_facet = document.createElement("SPAN");
-                        s_facet.setAttribute("class", "facetFilter" + '_' + facetValue.mode);
-                        s_facet.appendChild(s_label);
-                        s_closer = $(s_facet.appendChild(s_closer));
-
-                        s_closer.click(
-                            function (event) {
-                                event.stopPropagation();
-                                var facetTitle = $(this).parent().data("facetTitle");
-                                var facetFilter = $(this).parent().data("facetFilter");
-                                var mode = $(this).parent().hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
-                                selectedFacetValues[facetTitle] = _.reject(selectedFacetValues[facetTitle], function (obj) {
-                                    return (obj.value.label == facetFilter && obj.mode == mode);
-                                });
-                                //delete selectedFacetValues[facetTitle];
-                                facetCombinedSearch();
-                                return false;
+                            label = facetValue.value.label;
+                            selectedlabel = label;
+                            tooltip = label;
+                            if (selectedlabel.length > 15) {
+                                selectedlabel = selectedlabel.substring(0, 15) + '…';
                             }
-                        );
+                            var s_label = document.createElement("SPAN");
+                            s_label.setAttribute("class", "facetFilter-label");
+                            s_label.setAttribute("title", tooltip);
 
-                        var newNode = document.createElement('div');
-                        newNode.setAttribute("class", "newNode");
-                        s_facet = $(newNode.appendChild(s_facet));
-                        s_facet.data("facetTitle", data.node.title);
-                        s_facet.data("facetFilter", facetFilter);
+                            // label is a string ; todo : count may be obsolete when ux is restored ? for now don't print
+                            s_label.appendChild(document.createTextNode(selectedlabel)); // + ' (' + facetValue.value.count + ')');
 
-                        $(".fancytree-folder .dataNode", data.node.li).append(
-                            newNode
-                        );
+                            var s_gradient = document.createElement("SPAN");
+                            s_gradient.setAttribute("class", "facetFilter-gradient");
+                            s_gradient.appendChild(document.createTextNode("\u00A0"));
 
-                        s_facet.click(
-                            function (event) {
-                                if (event.altKey) {
+                            s_label.appendChild(s_gradient);
+                            var s_facet = document.createElement("SPAN");
+                            s_facet.setAttribute("class", "facetFilter_" + (facetValue.negated ? "EXCEPT" : "AND"));
+                            s_facet.appendChild(s_label);
+
+                            var s_closer = document.createElement("A");
+                            s_closer.setAttribute("class", "facetFilter-closer");
+                            s_closer = $(s_facet.appendChild(s_closer));
+
+                            s_closer.click(
+                                function (event) {
                                     event.stopPropagation();
-                                    var facetTitle = $(this).data("facetTitle");
-                                    var facetFilter = $(this).data("facetFilter");
-                                    var mode = $(this).hasClass("facetFilter_EXCEPT") ? "EXCEPT" : "AND";
-                                    var found = _.find(selectedFacetValues[facetTitle], function (obj) {
-                                        return (obj.value.label == facetFilter && obj.mode == mode);
+                                    var facetField   = $(this).parent().data("facetField");
+                                    var facetLabel   = $(this).parent().data("facetLabel");
+                                    var facetNegated = $(this).parent().data("facetNegated");
+                                    selectedFacets[facetField].values = _.reject(selectedFacets[facetField].values, function (facetValue) {
+                                        return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
                                     });
-                                    if (found) {
-                                        var newMode = mode == "EXCEPT" ? "AND" : "EXCEPT";
-                                        found.mode = newMode;
-                                        //replace class attr
-                                        $(this).replaceClass($(this).attr('class'), "facetFilter" + '_' + newMode);
-                                        facetCombinedSearch();
-                                    }
+
+                                    $('#searchForm').submit();
+                                    return false;
                                 }
-                                return false;
-                            }
-                        );
-                    });
+                            );
+
+                            var newNode = document.createElement('div');
+                            newNode.setAttribute("class", "newNode");
+                            s_facet = $(newNode.appendChild(s_facet));
+                            s_facet.data("facetField",   data.node.data.field);
+                            s_facet.data("facetLabel",   label);
+                            s_facet.data("facetNegated", facetValue.negated);
+
+                            $(".fancytree-folder .dataNode", data.node.li).append(
+                                newNode
+                            );
+
+                            s_facet.click(
+                                function (event) {
+                                    if (event.altKey) {
+                                        event.stopPropagation();
+                                        var facetField   = $(this).data("facetField");
+                                        var facetLabel   = $(this).data("facetLabel");
+                                        var facetNegated = $(this).data("facetNegated");
+                                        var found = _.find(selectedFacets[facetField].values, function (facetValue) {
+                                            return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
+                                        });
+                                        if (found) {
+                                            found.negated = !found.negated;
+                                            //replace class attr
+                                            $(this).replaceClass($(this).attr('class'), "facetFilter_" + (found.negated ? "EXCEPT" : "AND"));
+                                            $('#searchForm').submit();
+                                        }
+                                    }
+                                    return false;
+                                }
+                            );
+                        });
+                    }
+                    else {
+                        // here we render a facet value
+                    }
                 }
             }
         });
@@ -928,39 +1030,431 @@ function getFacetsTree() {
     return $facetsTree.fancytree('getTree');
 }
 
-function facetCombinedSearch() {
-    var q = $("#EDIT_query").val();
-    var q_facet_and = "";
-    var q_facet_except = "";
-    _.each(_.values(selectedFacetValues), function (facet) {
-        _.each(facet, function (facetValue) {
-            switch (facetValue.mode) {
-                case "AND":
-                    q_facet_and += (q_facet_and ? " AND " : "") + '(' + facetValue.value.query + ')';
-                    break;
-                case "EXCEPT":
-                    q_facet_except += (q_facet_except ? " OR " : "") + '(' + facetValue.value.query + ')';
-                    break;
+function findClauseBy_ux_zone(clause, ux_zone) {
+    if(typeof clause._ux_zone != 'undefined' && clause._ux_zone === ux_zone) {
+        return clause;
+    }
+    if(clause.type === "CLAUSES") {
+        for(var i=0; i<clause.clauses.length; i++) {
+            var r = findClauseBy_ux_zone(clause.clauses[i], ux_zone);
+            if(r != null) {
+                return r;
             }
-        });
-    });
-    if(!q && !q_facet_and && q_facet_except) {
-        // too bad : an except with no query.
-        q = "created_on>1900/01/01";    // fake "all"
-    }
-    if(q_facet_and != "") {
-        if (q) {
-            q = '(' + q + ') AND '
         }
-        q += q_facet_and;
     }
-    if(q_facet_except != "") {
-        q = '(' + q + ') EXCEPT (' + q_facet_except + ')';
+    return null;
+}
+
+/**
+ * restore the advansearch ux from a json-query
+ * elements are restored thank's to custom properties ("_xxx") included in json.
+ * nb : for now, _ux_ facets can't be restored _before_sending_the_query_,
+ *      but since "selectedFacets" (js) IS restored, sending the query WILL restore facets.
+ *
+ * @param jsq
+ * @param submit
+ */
+function restoreJsonQuery(jsq, submit) {
+    var clause;
+
+    // restore the "fulltext" input-text
+    clause = findClauseBy_ux_zone(jsq.query, "FULLTEXT");
+    if(clause) {
+        $('#EDIT_query').val(clause.value);
     }
 
-    checkFilters();
-    newSearch(q);
+    // restore the "records/stories" radios
+    if(!_.isUndefined(jsq.phrasea_recordtype)) {
+        $('#searchForm INPUT[name=search_type][value="' + ((jsq.phrasea_recordtype == 'STORY') ? '1' : '0') + '"]').prop('checked', true);  // check one radio will uncheck siblings
+    }
+
+    // restore the "record type" menu (image, video, audio, ...)
+    if(!_.isUndefined(jsq.phrasea_mediatype)) {
+        $('#searchForm SELECT[name=record_type] OPTION[value="' + jsq.phrasea_mediatype.toLowerCase() + '"]').prop('selected', true);
+    }
+
+    // restore the "use truncation" checkbox
+    if(!_.isUndefined(jsq.phrasea_mediatype)) {
+        $('#ADVSRCH_USE_TRUNCATION').prop('checked', jsq.phrasea_mediatype);
+    }
+
+    // restore the "sort results" menus
+    if(!_.isUndefined(jsq.sort)) {
+        if(!_.isUndefined(jsq.sort.field)) {
+            $('#ADVSRCH_SORT_ZONE SELECT[name=sort] OPTION[value="' + jsq.sort.field + '"]').prop('selected', true);
+        }
+        if(!_.isUndefined(jsq.sort.order)) {
+            $('#ADVSRCH_SORT_ZONE SELECT[name=ord] OPTION[value="' + jsq.sort.order + '"]').prop('selected', true);
+        }
+    }
+
+    // restore the "bases" checkboxes
+    if(!_.isUndefined(jsq.bases)) {
+        $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', false);
+        if (jsq.bases.length > 0) {
+            for (var i = 0; i < jsq.bases.length; i++) {
+                $('#ADVSRCH_SBAS_ZONE INPUT.checkbas[value="' + jsq.bases[i] + '"]').attr('checked', true);
+            }
+        } else {
+            // special case : EMPTY array ==> since it's a nonsense, check ALL bases
+            $('#ADVSRCH_SBAS_ZONE INPUT.checkbas').attr('checked', true);
+        }
+    }
+
+    // restore the multiples "fields" (field-menu + op-menu + value-input)
+    clause = findClauseBy_ux_zone(jsq.query, "FIELDS");
+    if(clause) {
+        $('#ADVSRCH_FIELDS_ZONE INPUT[name=must_match][value="' + clause.must_match + '"]').attr('checked', true);
+        $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper').remove();
+        for (var i = 0; i < clause.clauses.length; i++) {
+            var wrapper = AdvSearchAddNewTerm();    // div.term_select_wrapper
+            var f = $(".term_select_field", wrapper);
+            var o = $(".term_select_op", wrapper);
+            var v = $(".term_select_value", wrapper);
+
+            f.data('fieldtype', clause.clauses[i].type);
+            $('option[value="' + clause.clauses[i].field + '"]', f).prop('selected', true);
+            $('option[value="' + clause.clauses[i].operator + '"]', o).prop('selected', true);
+            v.val(clause.clauses[i].value);
+        }
+        if(i === 0) {
+            // if no field, add an empty one to ux
+            AdvSearchAddNewTerm();
+        }
+    }
+
+    // restore the "date field" (field-menu + from + to)
+    clause = findClauseBy_ux_zone(jsq.query, "DATE-FIELD");
+    if(clause) {
+        $("#ADVSRCH_DATE_ZONE SELECT[name=date_field] option[value='" + clause.field + "']").prop('selected', true);
+        $("#ADVSRCH_DATE_ZONE INPUT[name=date_min]").val(clause.from);
+        $("#ADVSRCH_DATE_ZONE INPUT[name=date_max]").val(clause.to);
+    }
+
+    // restore the status-bits (for now dual checked status are restored unchecked)
+    if(!_.isUndefined(jsq.statuses)) {
+        $("#ADVSRCH_SB_ZONE INPUT:checkbox").prop('checked', false);
+        _.each(jsq.statuses, function(db_statuses) {
+            var db = db_statuses.databox;
+            _.each(db_statuses.status, function(sb) {
+                var i = sb.index;
+                var v = sb.value ? "1" : "0";
+                $("#ADVSRCH_SB_ZONE INPUT[name='status[" + db_statuses.databox + "][" + sb.index + "]'][value=" + v + "]").prop('checked', true);
+            });
+        });
+    }
+
+    // restore the selected facets (whole saved as custom property)
+    if(!_.isUndefined(jsq._selectedFacets)) {
+        selectedFacets = jsq._selectedFacets;
+    }
+
+    // the ux is restored, finish the job (hide unavailable fields/status etc, display "danger" where needed)
+    checkFilters(false);
+    // loadFacets([]);  // useless, facets will be restored after the query is sent
+
+    if(submit) {
+        $('#searchForm').submit();
+    }
 }
+
+/**
+ * advsearch : a status-bit is changed
+ * --- NOW BUGGY ---
+ * goal : do not allow to uncheck both sb values (1 and 0) since it's nonsense
+ * since the "name" is the same for both values, it's buggy to send 2 values in request if both are checked.
+ *    so the checkbox are "faked", and the real value is sent by 2 radios
+ * @param o
+ */
+function advSearchChangeStatusBit(o) {
+    /*
+    * BUGGY : one sb should stay checked, but other js sometimes unselect all.
+    * som other js don't know "fakestatus"..
+    * todo : to be finished later
+    var o_a = $(o);                 // the changed sb (value="0" or value="1")
+    var b = o_a.data("sbas_id");
+    var i = o_a.data("sb");
+    var v = o_a.val();
+    var chk = $("#ADVSRCH_SB_"+b+" INPUT[name='fakestatus[" + b + "][" + i + "]']");
+    var o_b = chk.filter("[value=" + (v==='1'?'0':'1') + "]");     // the oposite sb (value="1" or value="0")
+
+    // can't uncheck both
+    if(!o_a.prop('checked')) {
+        o_b.prop('checked', true);  // check the other one
+    }
+
+    // transform fakecheckboxes to radio
+    var rad = $("#ADVSRCH_SB_"+b+" INPUT[name='status[" + b + "][" + i + "]']");
+    rad.prop('checked', false);
+    if(!chk.filter("[value=0]").prop('checked') && chk.filter("[value=1]").prop('checked')) {
+        rad.filter("[value=1]").prop('checked', true);
+    }
+    else if (!chk.filter("[value=1]").prop('checked') && chk.filter("[value=0]").prop('checked')) {
+        rad.filter("[value=0]").prop('checked', true);
+    }
+    */
+    checkFilters(true);
+}
+
+function serializeJSON(data, selectedFacets, facets) {
+    var json = {},
+        obj = {},
+        bases = [],
+        statuses = [],
+        fields = [],
+        aggregates = []
+    ;
+
+    $.each(data, function(i, el) {
+        obj[el.name] = el.value;
+
+        var col = parseInt(el.value);
+
+        if(el.name === 'bases[]') {
+            bases.push(col);
+        }
+
+        if(0 && el.name.startsWith('status')) {
+            var databoxId = el.name.match(/\d+/g)[0],
+                databoxRow = el.name.match(/\d+/g)[1],
+                statusMatch = false;
+
+            $.each(statuses, function(i, status) {
+
+                if (status.databox === databoxId) {
+                    for (var j = 0; j < status.status.length; j++) {
+                        var st = status.status[j].name;
+                        var st_id = st.substr(0, st.indexOf(':'));
+
+                        if (st_id === databoxRow) {
+                            statusMatch = true;
+                        }
+                    }
+                    statuses.splice((databoxId -1), 1);
+                }
+            });
+            if (!statusMatch) {
+                statuses.push({
+                    'databox': databoxId,
+                    'status': [
+                        {
+                            'index': databoxRow,
+                            'value': !!(parseInt(el.value))
+                        }
+                    ]
+                });
+            }
+        }
+    });
+
+    var _tmpStat = [];
+    $("#ADVSRCH_SB_ZONE INPUT[type=checkbox]:checked").each(function(k, o) {
+        o = $(o);
+        var b = o.data("sbas_id");
+        var i = o.data("sb");
+        var v = o.val();
+        if(_.isUndefined(_tmpStat[b])) {
+            _tmpStat[b] = [];
+        }
+        if(_.isUndefined(_tmpStat[b][i])) {
+            // first check
+            _tmpStat[b][i] = v;
+        }
+        else {
+            // both checked
+            _tmpStat[b][i] = -1;
+        }
+    });
+    _.each(_tmpStat, function(v, sbas_id){
+        var status = []
+        _.each(v, function(v, sb_index) {
+            if( v !== -1) {     // ignore both checked
+                status.push({
+                    'index': sb_index,
+                    'value': (v == "1")
+                });
+            }
+        });
+        statuses.push({
+            'databox': sbas_id,
+            'status': status
+        });
+    });
+
+
+    $("#ADVSRCH_FIELDS_ZONE .term_select_wrapper").each(function(i, wrapper) {
+        var f = $(".term_select_field option:selected", wrapper);
+        var o = $(".term_select_op", wrapper);
+        var v = $(".term_select_value", wrapper);
+        var type = f.data('fieldtype');
+        fields.push({
+            'type'    : _.isString(type) ? type.toUpperCase() : "",
+            'field'   : f.val(),
+            'operator': o.val(),
+            'value'   : v.val(),
+            "enabled" : !f.prop('disabled') && f.val() !== '' && v.val() !== ''
+        });
+    });
+
+    _.each(selectedFacets, function(facets) {
+        _.each(facets.values, function(facetValue) {
+            aggregates.push({
+                'type'   : facetValue.value.type,
+                'field'  : facetValue.value.field,
+                'value'  : facetValue.value.raw_value,
+                'negated': facetValue.negated,
+                'enabled': facetValue.enabled
+            });
+        });
+    });
+
+    var date_field = $('#ADVSRCH_DATE_ZONE select[name=date_field]', 'form.phrasea_query .adv_options').val();
+    var date_from  = $('#ADVSRCH_DATE_ZONE input[name=date_min]', 'form.phrasea_query .adv_options').val();
+    var date_to    = $('#ADVSRCH_DATE_ZONE input[name=date_max]', 'form.phrasea_query .adv_options').val();
+
+    json['sort'] = {
+        'field': obj.sort,
+        'order': obj.ord
+    };
+    json['perpage'] = parseInt($('#nperpage_value').val());
+    json['page'] = obj.pag === "" ? 1 : parseInt(obj.pag);
+    json['use_truncation'] = (obj.truncation === "on");
+    json['phrasea_recordtype'] = obj.search_type == 1 ? 'STORY' : 'RECORD';
+    json['phrasea_mediatype'] = obj.record_type.toUpperCase();
+    json['bases'] = bases;
+    json['statuses'] = statuses;
+    json['query'] = {
+        '_ux_zone': $('.menu-bar .selected').text().trim().toUpperCase(),
+        'type': 'CLAUSES',
+        'must_match': 'ALL',
+        'enabled': true,
+        'clauses': [
+            {
+                '_ux_zone': 'FULLTEXT',
+                'type': 'FULLTEXT',
+                'value': obj.fake_qry,
+                'enabled': obj.fake_qry != ""
+            },
+            {
+                '_ux_zone': 'FIELDS',
+                'type': 'CLAUSES',
+                'must_match': obj.must_match,
+                'enabled': fields.length > 0,
+                'clauses': fields
+            },
+            {
+                '_ux_zone': "DATE-FIELD",
+                "type": "DATE-FIELD",
+                "field": date_field,
+                "from": date_from,
+                "to": date_to,
+                "enabled": (date_field != "") && (date_from != "" || date_to != "")
+            },
+            {
+                "_ux_zone": "AGGREGATES",
+                "type": "CLAUSES",
+                "must_match": "ALL",
+                "enabled": aggregates.length > 0,
+                "clauses": aggregates
+            }
+        ]
+    };
+    json['_selectedFacets'] = selectedFacets;
+
+    return json;
+}
+
+var _ALL_Clause_ = "(created_on>1900/01/01)";
+function buildQ(clause) {
+    if(clause.enabled == false) {
+        return "";
+    }
+    switch(clause.type) {
+        case "CLAUSES":
+            var t_pos = [];
+            var t_neg = [];
+            for(var i=0; i<clause.clauses.length; i++) {
+                var _clause = clause.clauses[i];
+                var _sub_q = buildQ(_clause);
+                if(_sub_q !== "()" && _sub_q !== "") {
+                    if(_clause.negated == true) {
+                        t_neg.push(_sub_q);
+                    }
+                    else {
+                        t_pos.push(_sub_q);
+                    }
+                }
+            }
+            if(t_pos.length > 0) {
+                // some "yes" clauses
+                if(t_neg.length > 0) {
+                    // some "yes" and and some "neg" clauses
+                    if(clause.must_match=="ONE") {
+                        // some "yes" and and some "neg" clauses, one is enough to match
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        t_pos.push(neg);
+                        return "(" + t_pos.join(" OR ") + ")";
+                    }
+                    else {
+                        // some "yes" and and some "neg" clauses, all must match
+                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                    }
+                }
+                else {
+                    // only "yes" clauses
+                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                }
+            }
+            else {
+                // no "yes" clauses
+                if(t_neg.length > 0) {
+                    // only "neg" clauses
+                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match == "ALL" ? " OR " : " AND ") + "))";
+                }
+                else {
+                    // no clauses at all
+                    return "";
+                }
+            }
+
+        case "FULLTEXT":
+            return clause.value ? ("(" + clause.value + ")") : "";
+
+        case "DATE-FIELD":
+            var t="";
+            if(clause.from ) {
+                t = clause.field + ">=" + clause.from;
+            }
+            if(clause.to) {
+                t += (t?" AND ":"") + clause.field + "<=" + clause.to;
+            }
+            return t ? ("(" + t + ")") : "";
+
+        case "TEXT-FIELD":
+        case "STRING-FIELD":
+            return clause.field + clause.operator + "\"" + clause.value + "\"";
+
+        case "GEO-DISTANCE":
+            return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
+
+        case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "COLOR-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "NUMBER-AGGREGATE":
+            return clause.field + "=" + clause.value;
+
+        case "BOOLEAN-AGGREGATE":
+            return clause.field + "=" + (clause.value ? '1' : '0');
+
+        default :
+            console.error("Unknown clause type \"" + clause.type + "\"");
+            return null;
+    }
+}
+
 
 
 
@@ -1010,6 +1504,20 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
+        
+        var answerIcons = $('#answers .bottom_actions_holder .icon-stack');
+        var answerIconsHolder = $('.bottom_actions_holder');
+        if (el.outerWidth() < 180) {
+            answerIcons.css('width', '20px');
+        }
+        if (el.outerWidth() > 240) {
+            answerIcons.css({
+                'width': '30px',
+                'height': '27px'
+            });
+            answerIcons.closest('td').css('width', '110px');
+            answerIconsHolder.css('height', '36px');
+        }
     }
 
 }
@@ -1213,16 +1721,34 @@ function HueToRgb(m1, m2, hue) {
     return 255 * v;
 }
 
+/**
+ * add "field" zone on advsearch
+ *
+ * @returns {jQuery|HTMLElement}
+ * @constructor
+ */
+function AdvSearchAddNewTerm() {
+    var block_template = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper_template');
+    var last_block = $('#ADVSRCH_FIELDS_ZONE DIV.term_select_wrapper:last');
+    if(last_block.length === 0) {
+        last_block = block_template;
+    }
+    last_block = block_template.clone(true).insertAfter(last_block);    // true: clone event handlers
+    last_block.removeClass('term_select_wrapper_template').addClass('term_select_wrapper').show();
+    last_block.css("background-color", "");
+
+    return last_block;
+}
+
+
 $(document).ready(function () {
 
     var multi_term_select_html = $('.term_select_wrapper').html();
 
     $('input[name=search_type]').bind('click', function () {
-        console.log('search bind')
         var $this = $(this);
         var $record_types = $('#recordtype_sel');
 
-        console.log($this.hasClass('mode_type_reg'), $record_types)
         if ($this.hasClass('mode_type_reg')) {
             $record_types.css("visibility", "hidden");  // better than hide because does not change layout
             $record_types.prop("selectedIndex", 0);
@@ -1231,37 +1757,8 @@ $(document).ready(function () {
         }
     });
 
-    var previousVal;
-    $(document).on('focus', 'select.term_select_field', function () {
-        previousVal = $(this).val();
-    })
-    .on('change', 'select.term_select_field', function () {
+    $(document).on('change', 'select.term_select_field', function () {
         var $this = $(this);
-
-        // if option is selected
-        if($this.val()) {
-            $this.siblings().prop('disabled', false);
-
-            $('.term_select_multiple option').each(function (index, el) {
-                var $el = $(el);
-                if($this.val() === $el.val()) {
-                    $el.prop('selected', true);
-                }
-                else if (previousVal === $el.val()) {
-                    $el.prop('selected', false);
-                }
-            });
-        }
-        else {
-            $this.siblings().prop('disabled', 'disabled');
-
-            $('.term_select_multiple option').each(function (index, el) {
-                var $el = $(el);
-                if(previousVal === $el.val()) {
-                    $el.prop('selected', false);
-                }
-            });
-        }
         $this.blur();
         checkFilters(true);
     });
@@ -1270,27 +1767,13 @@ $(document).ready(function () {
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
-        var rowOption = $this.siblings('.term_select_field');
-        
-        $('.term_select_multiple option').each(function (index, el) {
-            var $el = $(el);
-            if(rowOption.val() == $el.val()) {
-                console.log('delete: ' + $el.val());
-                $el.prop('selected', false);
-            }
-        });
-        checkFilters(true);
         $this.closest('.term_select_wrapper').remove();
+        checkFilters(true);
     });
 
     $('.add_new_term').on('click', function (event) {
         event.preventDefault();
-        if ($('select.term_select_field').length === 0) {
-            $('.term_select').prepend('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
-        }
-        else if ($('select.term_select_field').last().val() !== '') {
-            $('.term_select_wrapper').last().after('<div class="term_select_wrapper">' + multi_term_select_html + '</div>');
-        }
+        AdvSearchAddNewTerm(1);
     });
 
     $('.adv_search_button').on('click', function () {
@@ -1491,7 +1974,7 @@ $(document).ready(function () {
         }
 
         $('#idFrameC').attr('data-status', 'open');
-        $('.WZbasketTab').css('background-position', '9px 25px');
+        $('.WZbasketTab').css('background-position', '9px 21px');
         $('#idFrameC').removeClass('closed');
     });
 
@@ -1507,7 +1990,7 @@ $(document).ready(function () {
             $('#idFrameC').attr('data-status', 'closed');
             $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
             $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
-            $('.WZbasketTab').css('background-position', '15px 25px');
+            $('.WZbasketTab').css('background-position', '15px 21px');
             $('#idFrameC').addClass('closed');
             previousTab = $('#idFrameC .icon-menu').find('li.ui-tabs-active');
         }else{
@@ -1517,7 +2000,7 @@ $(document).ready(function () {
             $('#rightFrame').width($(window).width()-360);
             $('#idFrameC').attr('data-status', 'open');
             $('.ui-resizable-handle, #basket_menu_trigger').show();
-            $('.WZbasketTab').css('background-position', '9px 25px');
+            $('.WZbasketTab').css('background-position', '9px 21px');
             $('#idFrameC').removeClass('closed');
             $('#idFrameC .icon-menu li').last().find('a').trigger('click');
             $('#idFrameC .icon-menu li').first().find('a').trigger('click');
@@ -1806,6 +2289,10 @@ $(document).ready(function () {
 
     $('.basketTips').tooltip({
         delay: 200
+    });
+
+    $('.basket_title').tooltip({
+        extraClass: 'tooltip_flat'
     });
 
     $('#idFrameC .tabs').tabs({
@@ -2702,7 +3189,7 @@ function doSpecialSearch(qry, allbase) {
     if (allbase) {
         checkBases(true);
     }
-    selectedFacetValues = [];
+    selectedFacets = {};
     $('#EDIT_query').val(decodeURIComponent(qry).replace(/\+/g, " "));
     newSearch(qry);
 }
@@ -2715,78 +3202,6 @@ function clktri(id) {
         $('#TOPIC_TRI' + id + ' ,#TOPIC_UL' + id).removeClass('opened').addClass('closed');
 }
 
-
-// ---------------------- fcts du thesaurus
-function chgProp(path, v, k) {
-    var q2;
-    if (!k)
-        k = "*";
-    //if(k!=null)
-    v = v + " [" + k + "]";
-    $("#thprop_a_" + path).html('"' + v + '"');
-    //	q = document.getElementById("thprop_q").innerText;
-    //	if(!q )
-    //		if(document.getElementById("thprop_q") && document.getElementById("thprop_q").textContent)
-    //			q = document.getElementById("thprop_q").textContent;
-    q = $("#thprop_q").text();
-
-    q2 = "";
-    for (i = 0; i < q.length; i++)
-        q2 += q.charCodeAt(i) == 160 ? " " : q.charAt(i);
-
-    selectedFacetValues = [];
-    $('#EDIT_query').val(q);
-    newSearch(q);
-
-    return(false);
-}
-
-function doDelete(lst) {
-    var children = '0';
-    if (document.getElementById('del_children') && document.getElementById('del_children').checked)
-        children = '1';
-    $.ajax({
-        type: "POST",
-        url: "../prod/delete/",
-        dataType: 'json',
-        data: {
-            lst: lst.join(';'),
-            del_children: children
-        },
-        success: function (data) {
-
-            $.each(data, function (i, n) {
-                var imgt = $('#IMGT_' + n),
-                    chim = $('.CHIM_' + n),
-                    stories = $('.STORY_' + n);
-                $('.doc_infos', imgt).remove();
-                imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").removeClass("IMGT").find("img").unbind();
-
-                if (imgt.data("ui-draggable")) {
-                    imgt.draggable("destroy");
-                }
-
-                imgt.find(".thumb img").attr("src", "/assets/common/images/icons/deleted.png").css({
-                    width: '100%',
-                    height: 'auto',
-                    margin: '0 10px',
-                    top: '0'
-                });
-                chim.parent().slideUp().remove();
-                imgt.find(".status,.title,.bottom").empty();
-
-                p4.Results.Selection.remove(n);
-                if (stories.length > 0) {
-                    p4.WorkZone.refresh();
-                }
-                else {
-                    p4.WorkZone.Selection.remove(n);
-                }
-            });
-            viewNbSelect();
-        }
-    });
-}
 
 function archiveBasket(basket_id) {
     $.ajax({

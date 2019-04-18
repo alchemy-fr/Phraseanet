@@ -67,17 +67,6 @@ var p4 = p4 || {};
         });
     }
 
-    $("#baskets div.content select[name=valid_ord]").on('change', function () {
-        var active = $('#baskets .SSTT.ui-state-active');
-        if (active.length === 0) {
-            return;
-        }
-
-        var order = $(this).val();
-
-        getContent(active, order);
-    });
-
     function WorkZoneElementRemover(el, confirm) {
         var context = el.data('context');
 
@@ -289,11 +278,7 @@ var p4 = p4 || {};
                 header.next().addClass('loading');
             },
             success: function (data) {
-                var imgSrc = $('.workzone-menu-title', header).find('img').attr('src');
-                if(header.hasClass('unread')) {
-                    $('.workzone-menu-title', header).find('img').attr('src', imgSrc.replace('-Unread',''));
-                    header.removeClass('unread');
-                }
+                header.removeClass('unread');
 
                 var dest = header.next();
                 if (dest.data("ui-droppable")) {
@@ -307,6 +292,17 @@ var p4 = p4 || {};
                     return false;
                 }).bind('click', function (event) {
                     return WorkZoneElementRemover($(this), false);
+                });
+                
+                $("#baskets div.content select[name=valid_ord]").on('change', function () {
+                    var active = $('#baskets .SSTT.ui-state-active');
+                    if (active.length === 0) {
+                        return;
+                    }
+            
+                    var order = $(this).val();
+            
+                    getContent(active, order);
                 });
 
                 dest.droppable({
@@ -328,7 +324,9 @@ var p4 = p4 || {};
                     tolerance: 'pointer'
                 });
 
-                $('.noteTips, .captionRolloverTips', dest).tooltip();
+                $('.noteTips, .captionRolloverTips', dest).tooltip({
+                    extraClass: 'tooltip_flat'
+                });
 
                 dest.find('.CHIM').draggable({
                     helper: function () {

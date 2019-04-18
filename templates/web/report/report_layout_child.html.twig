@@ -2,7 +2,7 @@
 
 {% block report_connections_layout %}
     <div id="report-connections" class="inside-container">
-        <form class="form row-fluid" id="report-connections-form" >
+        <form class="form row-fluid" id="report-connections-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "connections", 'route': "report2_connections", 'displayCollections':false } %}
 
@@ -11,15 +11,22 @@
                 <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
                 
                 <select class="select_one" name="group">
-                    <option value="" id="connections_">{{ "report:: (connexions)" | trans }}</option>
-                    {% if not anonymous %}
+                    {# {% if not anonymous %}
                     <option value="user" id="connections_user">{{ "report:: (connexions) Par utilisateurs" | trans }}</option>
-                    {% endif %}
+                    {% endif %} #}
                     
-                    {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
+                    {#{% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
                         {% set l="report:: (connexions) #{x}" %}
                         <option value="{{ x }}" id="connections_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}
+                    {% endfor %}#}
+                    <option value="" id="connections_ ">{{ "report:: (connexions)" | trans }}</option>
+                    <option value="user" id="connections_user">{{ "report:: (connexions) user" | trans }}</option>
+                    <option value="nav" id="connections_nav">{{ "report:: (connexions) nav" | trans }}</option>
+                    <option value="nav,version" id="connections_nav,version">{{ "report:: (connexions) nav,version" | trans }}</option>
+                    <option value="os" id="connections_os">{{ "report:: (connexions) os" | trans }}</option>
+                    <option value="os,nav" id="connections_os,nav">{{ "report:: (connexions) os,nav" | trans }}</option>
+                    <option value="os,nav,version" id="connections_os,nav,version">{{ "report:: (connexions) os,nav,version" | trans }}</option>
+                    <option value="res" id="connections_res">{{ "report:: (connexions) res" | trans }}</option>
 
                 </select>
 
@@ -52,7 +59,7 @@
 
 {% block report_downloads_layout %}
     <div id="report-downloads" class="inside-container">
-        <form class="form row-fluid" id="report-downloads-form" >
+        <form class="form row-fluid" id="report-downloads-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "downloads", 'route': "report2_downloads", 'displayCollections': true }  %}
 
@@ -60,10 +67,13 @@
                 <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
 
                 <select class="select_one" name="group">
-                    {% for x in ['','user','record'] %}
+                   {# {% for x in ['','user','record'] %}
                         {% set l="report:: (downloads) #{x}" %}
                         <option value="{{ x }}" id="downloads_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}
+                    {% endfor %}#}
+                    <option value="" id="downloads_">{{ "report:: (downloads)" | trans }} </option>
+                    <option value="user" id="downloads_user">{{ "report:: (downloads) user" | trans }}</option>
+                    <option value="record" id="downloads_record">{{ "report:: (downloads) record" | trans }}</option>
                 </select>
             </div>
         </form>
@@ -76,38 +86,38 @@
 
 {% block report_records_layout %}
     <div id="report-records" class="inside-container">
-        <form class="form row-fluid" id="report-records-form" >
+        <form class="form row-fluid" id="report-records-form" method="POST">
 
             {% include "report/form_date_and_base.html.twig" with {'tab': "records", 'route': "report2_records", 'displayCollections': true } %}
 
             {% block form_records %}
-            <div class="form3 form_content">
+            <div class="form3 form_content form_content_checkboxes">
                 <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
 
-                <div class="collist">
-                    <div class="collist_buttons">
-                        <button class="select-all btn btn-mini" data-target_selector="#chkfld-records input:checkbox">
+                {% for sbas_id,databox in granted_bases %}
+                    <div class="collist collist-{{ sbas_id }}">
+                        <div class="collist_buttons">
+                            <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Select all{% endtrans %}
-                        </button>
-                        <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records input:checkbox">
+                            </button>
+                            <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Deselect all{% endtrans %}
-                        </button>
-                    </div>
+                            </button>
+                        </div>
 
-                    <ul id="chkfld-records" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
-                        {% for sbas_id,databox in granted_bases %}
+                        <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
                             {% for meta in databox.metas %}
-                            <li>
-                                <label class="checkbox custom_checkbox_label">
-                                    <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
-                                    <span class="custom_checkbox"></span>
-                                    {{ meta }}
-                                </label>
-                            </li>
+                                <li>
+                                    <label class="checkbox custom_checkbox_label">
+                                        <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                        <span class="custom_checkbox"></span>
+                                        {{ meta }}
+                                    </label>
+                                </li>
                             {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                {% endfor %}
             </div>
             {% endblock form_records %}
         </form>

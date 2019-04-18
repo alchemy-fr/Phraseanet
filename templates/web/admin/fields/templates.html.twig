@@ -96,7 +96,7 @@
                         </ul>
                     </ul>
                     <% _.each(field.labels, function(value, code) { %>
-                        <input type="text" value="<%= value.replace(/"/g, '&quot;') %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === lng ? '' : 'style="display:none"'%> >
+                        <input type="text" value="<%= value ? value.replace(/"/g, '&quot;') : value  %>" id="label_<%= code %>" class="input-block-level input-label" <%= code === lng ? '' : 'style="display:none"'%> >
                     <% }); %>
                 </td>
             </tr>

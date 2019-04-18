@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "83e4f489932f9d7d22c8066a788b462b",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "0.3.6",
+            "version": "0.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351"
+                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/dab45fb2e01b927fe7fc085f19eecc0f96674351",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
+                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.6",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.8",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2017-05-17T19:25:26+00:00"
+            "time": "2019-01-11T10:35:41+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -313,16 +313,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.7",
+            "version": "0.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "571d23cfa5ab5195803d217d22b702862c87811b"
+                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/571d23cfa5ab5195803d217d22b702862c87811b",
-                "reference": "571d23cfa5ab5195803d217d22b702862c87811b",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/1a96dc4142ff8474c11285cab9eab11df9683255",
+                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255",
                 "shasum": ""
             },
             "require": {
@@ -371,7 +371,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2018-04-27T11:15:18+00:00"
+            "time": "2019-01-22T11:23:34+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -421,16 +421,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae"
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +490,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2018-10-19T13:28:17+00:00"
+            "time": "2019-02-13T13:06:43+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -1748,12 +1748,12 @@
             "version": "v2.5.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "shasum": ""
             },
@@ -3762,16 +3762,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.1",
+            "version": "0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514"
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/b82bb891640cb1ce5d5523235047c34c64194514",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
                 "shasum": ""
             },
             "require": {
@@ -3832,7 +3832,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2016-03-16T13:11:52+00:00"
+            "time": "2019-01-25T12:09:11+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4496,21 +4496,22 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.8.0",
+
+            "version": "v1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "5e280b50cdaf8da4cc4810e0847a9618be29703d"
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/5e280b50cdaf8da4cc4810e0847a9618be29703d",
-                "reference": "5e280b50cdaf8da4cc4810e0847a9618be29703d",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/87125d5b265f98c4d1b8d83a1f0726607c229421",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421",
                 "shasum": ""
             },
             "require": {
                 "paragonie/random_compat": ">=1",
-                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7"
+                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7|^8"
             },
             "require-dev": {
                 "phpunit/phpunit": "^3|^4|^5"
@@ -4574,7 +4575,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2018-11-29T22:33:39+00:00"
+            "time": "2019-03-20T17:19:05+00:00"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -7671,6 +7672,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {

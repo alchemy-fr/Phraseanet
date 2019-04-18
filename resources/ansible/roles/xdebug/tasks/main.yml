@@ -1,4 +1,9 @@
 ---
-- name: Install xDebug
-  sudo: yes
-  apt: pkg=php{{ phpversion }}-xdebug state=latest
+- name: Install xdebug
+  apt: pkg=php-xdebug state=latest update_cache=yes
+
+- name: Copy xdebug INI into mods-available folder.
+  template: >
+    src=xdebug.ini.j2
+    dest=/etc/php/{{ phpversion }}/mods-available/xdebug.ini
+    owner=root group=root mode=644

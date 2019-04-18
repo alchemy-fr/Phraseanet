@@ -4,7 +4,7 @@
  */
 
 
-//#############START DOCUMENT READY ######################################//
+//############# START DOCUMENT READY ######################################//
 $(document).ready(function () {
 
     //do tabs and resize window on show
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
     $(".select_one").each(function(){
         var $this = $(this),
-        numberOfOptions = $(this).children('option').length;
+            numberOfOptions = $(this).children('option').length;
 
         $this.addClass('select-hidden');
         $this.wrap('<div class="custom_select"></div>');
@@ -51,40 +51,44 @@ $(document).ready(function () {
       
         $listItems.click(function(e) {
             e.stopPropagation();
+            var value = $(this).attr('rel');
             $styledSelect.text($(this).text()).removeClass('active');
-            $this.val($(this).attr('rel'));
-            $this.data('action', $(this).attr('data-action'))
-            console.log($this.data('action'));
+            $this.val(value);
+            $this.data('action', $(this).attr('data-action'));
             $list.hide();
+        });
+
+        $(".form2 .select-options li").click(function(e) {
+            e.stopPropagation();
+            var value = $(this).attr('rel'),
+                form = $(this).closest('form');
+            $(".collist", form).hide();
+            $(".collist-" + value, form).show();
         });
       
         $(document).click(function() {
             $styledSelect.removeClass('active');
             $list.hide();
         });
-
     });
 
-    /** disable submit button if no date (dmin or dmax) **/
-    $('.dmin, .dmax').on('change', function() {
-        console.log(this);
-        
-        var $this = $(this);
-        var container = $this.closest('.inside-container');
-        console.log(container);
-        
-        if ($this.val().length == 0) {
-            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
-            $this.siblings('.add-on').addClass('disabled_image');
-        }
-        else {
-            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
-            $this.siblings('.add-on').removeClass('disabled_image');
-        }
+    $('.collist').each(function() {
+        var $this = $(this),
+            form = $this.closest('form'),
+            i = $this.closest('form').find('.sbas_select').val()
+        ;
+
+        $this.hide();        
+        $(".collist-" + i, form).show();
+    });
+
+    $('.form2').each(function() {
+        if ($(this).html().trim() === '')
+            $(this).hide();
     });
 
 });
-//#############END DOCUMENT READY ######################################//
+//############# END DOCUMENT READY ######################################//
 
 /**
  *
@@ -95,31 +99,72 @@ function bindEvents() {
      * "Download" buttons
     **/
     $('.formsubmiter').bind('click', function () {
-        var form = $($(this).attr('data-form_selector'));
-        var action = form.find("select.select_base");
+        var collectionsArr = [],
+            fieldsArr = [],
+            form = $($(this).attr('data-form_selector')),
+            action = form.find("select.sbas_select")
+        ;
+
         if(action.length != 1) {    // should never happen with select !
             return false;   // prevent button to submit form
         }
+        $(".form2 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+                $.each($(el).find('input'), function(i, inputEl) {
+                    collectionsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
+        $(".form3 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+                $.each($(el).find('input'), function(i, inputEl) {
+                    fieldsArr.push($(inputEl).prop('checked'))
+                });
+                $(el).find('input').prop('checked', false);
+            }
+        });
         action = action.find(':selected').data('action');
 
         form.attr("action", action);
         form.submit();
+        $(".form2 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+
+                $.each($(el).find('input'), function(j, inputEl) {
+                    $(inputEl).prop('checked', collectionsArr[j]);
+                });
+            }
+        });
+        $(".form3 .collist", form).each(function(i, el) {
+            if ($(el).is(':visible') === false) {
+
+                $.each($(el).find('input'), function(j, inputEl) {
+                    $(inputEl).prop('checked', fieldsArr[j]);
+                });
+            }
+        });
+        collectionsArr = [];
+        fieldsArr = [];
 
         return false;   // prevent button to submit form
     });
 
     /**
-     * "databox" radios
+     * disable submit button if no date (dmin or dmax) *
      */
-    $('.select_one').bind('click', function () {
-        var form = $(this).closest("form");
-        var sbas_id = $(this).val();
-
-        $(".collist", form).hide();
-        $(".collist input", form).prop("disabled", true);
-
-        $(".collist-"+sbas_id, form).show();
-        $(".collist-"+sbas_id+" input", form).prop("disabled", false);
+    $('.dmin, .dmax').bind('change', function() {
+        var $this = $(this);
+        var container = $this.closest('.inside-container');
+        
+        if ($this.val().length == 0) {
+            $('.formsubmiter', container).attr('disabled', true).addClass('disabled');
+            $this.siblings('.add-on').addClass('disabled_image');
+        }
+        else {
+            $('.formsubmiter', container).attr('disabled', false).removeClass('disabled');
+            $this.siblings('.add-on').removeClass('disabled_image');
+        }
     });
 
     /**
