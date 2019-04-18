@@ -730,7 +730,7 @@ function loadFacets(facets) {
         var values = _.map(_.sortBy(facet.values, sortIteration), function (value) {
             var type = facet.type;     // todo : define a new phraseanet "color" type for fields. for now we push a "type" for every value, copied from field type
             // patch "color" type values
-            var textLimit = 15;     // cut long values (set to 0 to not cut)
+            var textLimit = 200;     // cut long values (set to 0 to not cut)
             var text = (value.value).toString();
             var label = title = tooltip = text;
             var match = text.match(/^(.*)\[#([0-9a-fA-F]{6})].*$/);
@@ -927,6 +927,8 @@ function getFacetsTree() {
 
             renderNode: function(event, data){
                 var label = "";
+                var selectedlabel = "";
+                var tooltip = "";
                 if(data.node.folder) {
                     // here we render a "fieldname" level
                     if (!_.isUndefined(selectedFacets[data.node.data.field])) {
@@ -944,20 +946,23 @@ function getFacetsTree() {
                         _.each(selectedFacets[data.node.data.field].values, function (facetValue) {
 
                             label = facetValue.value.label;
-
+                            selectedlabel = label;
+                            tooltip = label;
+                            if (selectedlabel.length > 15) {
+                                selectedlabel = selectedlabel.substring(0, 15) + '…';
+                            }
                             var s_label = document.createElement("SPAN");
                             s_label.setAttribute("class", "facetFilter-label");
-                            s_label.setAttribute("title", label);
+                            s_label.setAttribute("title", tooltip);
 
                             // label is a string ; todo : count may be obsolete when ux is restored ? for now don't print
-                            s_label.appendChild(document.createTextNode(label)); // + ' (' + facetValue.value.count + ')');
+                            s_label.appendChild(document.createTextNode(selectedlabel)); // + ' (' + facetValue.value.count + ')');
 
                             var s_gradient = document.createElement("SPAN");
                             s_gradient.setAttribute("class", "facetFilter-gradient");
                             s_gradient.appendChild(document.createTextNode("\u00A0"));
 
                             s_label.appendChild(s_gradient);
-
                             var s_facet = document.createElement("SPAN");
                             s_facet.setAttribute("class", "facetFilter_" + (facetValue.negated ? "EXCEPT" : "AND"));
                             s_facet.appendChild(s_label);
@@ -1314,7 +1319,7 @@ function serializeJSON(data, selectedFacets, facets) {
     json['perpage'] = parseInt($('#nperpage_value').val());
     json['page'] = obj.pag === "" ? 1 : parseInt(obj.pag);
     json['use_truncation'] = (obj.truncation === "on");
-    json['phrasea_recordtype'] = obj.search_type == 0 ? 'RECORD' : 'STORY';
+    json['phrasea_recordtype'] = obj.search_type == 1 ? 'STORY' : 'RECORD';
     json['phrasea_mediatype'] = obj.record_type.toUpperCase();
     json['bases'] = bases;
     json['statuses'] = statuses;
