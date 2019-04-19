@@ -119,7 +119,7 @@ Vagrant.configure("2") do |config|
         ]
     end
 
-    config.vm.box = "ubuntu/trusty64"
+    config.vm.box = "alchemy/Phraseanet-vagrant-dev"
 
     config.ssh.forward_agent = true
     config_net(config)
