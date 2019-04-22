@@ -118,4 +118,12 @@ class BasketManipulator
         $this->manager->remove($basket);
         $this->manager->flush();
     }
+
+    public function removeBaskets(array $baskets)
+    {
+        foreach ($baskets as $basket) {
+            $this->manager->remove($basket);
+        }
+        $this->manager->flush();
+    }
 }
