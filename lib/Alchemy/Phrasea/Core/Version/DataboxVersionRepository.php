@@ -18,6 +18,7 @@ class DataboxVersionRepository implements VersionRepository
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     /**
@@ -25,6 +26,8 @@ class DataboxVersionRepository implements VersionRepository
      */
     public function getVersion()
     {
+
+
         $result = $this->connection->fetchAssoc('SELECT value AS version FROM pref WHERE prop="version"');
 
         if ($result !== false) {
