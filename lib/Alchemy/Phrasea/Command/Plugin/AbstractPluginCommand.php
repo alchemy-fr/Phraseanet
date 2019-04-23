@@ -51,4 +51,43 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
     }
+
+    protected function validateSource($source)
+    {
+        $valid_scheme = false;
+        $valid_extension = false;
+
+        $allowed_scheme = array('http','https','ftp');
+        $allowed_extension = array('zip','git');
+
+        $scheme =  parse_url($source, PHP_URL_SCHEME);
+        if (in_array($scheme, $allowed_scheme)){
+            $valid_scheme = true;
+        }
+
+        $path = parse_url($source, PHP_URL_PATH);
+        if (strpos($path, '.') !== false) {
+            $path_parts = explode('.', $path);
+            $extension = $path_parts[1];
+            if (in_array($extension, $allowed_extension)){
+                $valid_extension = true;
+            }
+        }
+
+        if ($valid_scheme && $valid_extension){
+            return $extension;
+        } else {
+            return false;
+        }
+    }
+
+    public static function delDirTree($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? self::delDirTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
+
+
 }

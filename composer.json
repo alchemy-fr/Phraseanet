@@ -8,15 +8,15 @@
   "repositories": [
     {
       "type": "package",
-        "package": {
-          "name": "facebook/php-sdk",
-          "version": "3.2.3",
-          "source": {
-            "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
-            "type": "git",
-            "reference": "3.2.3"
-            }
-       }
+      "package": {
+        "name": "facebook/php-sdk",
+        "version": "3.2.3",
+        "source": {
+          "url": "https://github.com/facebookarchive/facebook-php-sdk.git",
+          "type": "git",
+          "reference": "3.2.3"
+        }
+      }
     },
     {
       "type": "vcs",
@@ -120,7 +120,8 @@
     "google/recaptcha": "^1.1",
     "facebook/graph-sdk": "^5.6",
     "box/spout": "^2.7",
-    "paragonie/random-lib": "^2.0"
+    "paragonie/random-lib": "^2.0",
+    "czproject/git-php": "^3.17"
   },
   "require-dev": {
     "mikey179/vfsStream": "~1.5",
