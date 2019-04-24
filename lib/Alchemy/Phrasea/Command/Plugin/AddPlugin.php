@@ -24,14 +24,12 @@ class AddPlugin extends AbstractPluginCommand
 
         $this
             ->setDescription('Installs a plugin to Phraseanet')
-            ->addArgument('source', InputArgument::REQUIRED, 'The source is a folder')
-            ->addArgument('destination', InputArgument::OPTIONAL, 'Temporary download destination');
+            ->addArgument('source', InputArgument::REQUIRED, 'The source is a folder');
     }
 
     protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
-        $destination = $input->getArgument('destination');
 
         $download = $this->validateSource($source);
 
@@ -39,8 +37,7 @@ class AddPlugin extends AbstractPluginCommand
             $command = $this->getApplication()->find('plugins:download');
             $arguments = [
                 'command' => 'plugins:download',
-                'source'  => $source,
-                'destination'  => $destination,
+                'source'  => $source
             ];
 
             $downloadInput = new ArrayInput($arguments);

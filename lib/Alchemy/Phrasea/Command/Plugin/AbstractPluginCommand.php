@@ -57,7 +57,7 @@ abstract class AbstractPluginCommand extends Command
         $valid_scheme = false;
         $valid_extension = false;
 
-        $allowed_scheme = array('http','https','ftp');
+        $allowed_scheme = array('https','ssh');
         $allowed_extension = array('zip','git');
 
         $scheme =  parse_url($source, PHP_URL_SCHEME);
