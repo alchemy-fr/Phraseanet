@@ -14,9 +14,9 @@ namespace Alchemy\Phrasea\Command\Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\ArrayInput;
 
 use Cz\Git\GitRepository as GitRepository;
-use RandomLib\Factory as RandomLib;
 
 
 
@@ -136,43 +136,18 @@ class DownloadPlugin extends AbstractPluginCommand
 
         }
 
+        $command = $this->getApplication()->find('plugins:add');
+        $arguments = [
+            'command' => 'plugins:add',
+            'source'  => $local_plugin_source
+        ];
 
-        $temporaryDir = $this->container['temporary-filesystem']->createTemporaryDirectory();
+        $downloadInput = new ArrayInput($arguments);
+        $returnCode = $command->run($downloadInput, $output);
 
-        $output->write("Importing <info>$source</info>...");
-        $this->container['plugins.importer']->import($local_plugin_source, $temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
 
         // remove unpacked archive, keep zip file
         $this->delDirTree($local_unpack_path);
-
-        $output->write("Validating plugin...");
-        $manifest = $this->container['plugins.plugins-validator']->validatePlugin($temporaryDir);
-        $output->writeln(" <comment>OK</comment> found <info>".$manifest->getName()."</info>");
-
-        $targetDir  = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $manifest->getName();
-
-        $output->write("Setting up composer...");
-        $this->container['plugins.composer-installer']->install($temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Installing plugin <info>".$manifest->getName()."</info>...");
-        $this->container['filesystem']->mirror($temporaryDir, $targetDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Copying public files <info>".$manifest->getName()."</info>...");
-        $this->container['plugins.assets-manager']->update($manifest);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Removing temporary directory...");
-        $this->container['filesystem']->remove($temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Activating plugin...");
-        $this->container['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
-        $output->writeln(" <comment>OK</comment>");
-
-        $this->updateConfigFiles($input, $output);
 
         return 0;
     }
