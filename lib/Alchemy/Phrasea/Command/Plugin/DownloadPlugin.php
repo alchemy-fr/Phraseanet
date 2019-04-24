@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 use Cz\Git\GitRepository as GitRepository;
+use RandomLib\Factory as RandomLib;
 
 
 
@@ -39,30 +40,32 @@ class DownloadPlugin extends AbstractPluginCommand
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
+        $destination_subdir = '/plugin-'.time();
+
         if ($destination){
 
             $destination = trim($destination);
             $destination = ltrim($destination, '/');
             $destination = rtrim($destination, '/');
 
-            $local_plugin_path = $destination;
+            $local_download_path = $destination . $destination_subdir;
 
         } else {
 
-            $local_plugin_path = 'tmp/plugin';
+            $local_download_path = 'tmp/plugin-download' . $destination_subdir;
         }
-
-        if (!is_dir($local_plugin_path)) {
-            mkdir($local_plugin_path, 0755, true);
-        }
-
-        $local_download_path = 'tmp/download';
 
         if (!is_dir($local_download_path)) {
             mkdir($local_download_path, 0755, true);
         }
 
-        $local_archive_file = $local_download_path . '/tmp_file.zip';
+        $local_unpack_path = 'tmp/plugin-unpack'. $destination_subdir;
+
+        if (!is_dir($local_unpack_path)) {
+            mkdir($local_unpack_path, 0755, true);
+        }
+
+        $local_archive_file = $local_download_path . '/plugin-downloaded.zip';
 
         $extension = $this->validateSource($source);
 
@@ -90,23 +93,39 @@ class DownloadPlugin extends AbstractPluginCommand
 
                     if ($zip->open($local_archive_file)) {
                         for ($i = 0; $i < $zip->numFiles; $i++) {
-                            if (!($zip->extractTo($local_plugin_path, array($zip->getNameIndex($i))))) {
+                            if (!($zip->extractTo($local_unpack_path, array($zip->getNameIndex($i))))) {
                                 $error_unpack = true;
                             }
                         }
                         $zip->close();
-                        unlink($local_archive_file);
                     }
 
                     if ($error_unpack){
                         $output->writeln("Failed unzipping <info>$source</info>");
+                    } else {
+
+                        // check if composer.json is present in root of extracted files or in subdirectory (git.zip default)
+                        $is_composer_in_root = false;
+                        $ffs = scandir($local_unpack_path);
+                        foreach ($ffs as $ff){
+                            if (is_dir($local_unpack_path.'/'.$ff)){
+                                $local_plugin_source = $local_unpack_path.'/'.$ff;
+                            }
+                            if ($ff == 'composer.json'){
+                                $is_composer_in_root = true;
+                            }
+                        }
+                        if ($is_composer_in_root) {
+                            $local_plugin_source = $local_unpack_path;
+                        }
                     }
 
                     break;
 
                 case 'git':
                     $output->writeln("Downloading <info>$source</info>...");
-                    $repo = GitRepository::cloneRepository($source, $local_plugin_path);
+                    $repo = GitRepository::cloneRepository($source, $local_download_path);
+                    $local_plugin_source = $local_download_path;
                     break;
 
             }
@@ -121,10 +140,11 @@ class DownloadPlugin extends AbstractPluginCommand
         $temporaryDir = $this->container['temporary-filesystem']->createTemporaryDirectory();
 
         $output->write("Importing <info>$source</info>...");
-        $this->container['plugins.importer']->import($local_plugin_path, $temporaryDir);
+        $this->container['plugins.importer']->import($local_plugin_source, $temporaryDir);
         $output->writeln(" <comment>OK</comment>");
 
-        $this->delDirTree($local_plugin_path);
+        // remove unpacked archive, keep zip file
+        $this->delDirTree($local_unpack_path);
 
         $output->write("Validating plugin...");
         $manifest = $this->container['plugins.plugins-validator']->validatePlugin($temporaryDir);
