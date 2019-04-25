@@ -334,7 +334,7 @@ class AccountController extends Controller
     {
         $user = $this->getAuthenticatedUser();
 
-        if($this->app['conf']->get(['main', 'delete-account-require-email-confirmation'])) {
+        if($this->app['conf']->get(['user_account', 'deleting_policies', 'email_confirmation'])) {
 
             // send email confirmation
 
