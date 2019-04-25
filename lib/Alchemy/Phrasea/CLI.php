@@ -73,9 +73,11 @@ class CLI extends Application
 
         $this->bindRoutes();
 
-        $this['logger'] = $this->extend('logger', function () {
-            return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
-        });
+        if ($environment == self::ENV_DEV){
+            $this['logger'] = $this->extend('logger', function () {
+                return new Console\Logger\ConsoleLogger(new Console\Output\ConsoleOutput(Console\Output\ConsoleOutput::VERBOSITY_DEBUG));
+            });
+        }
 
         error_reporting(-1);
         ErrorHandler::register();

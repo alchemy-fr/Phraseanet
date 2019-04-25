@@ -18,7 +18,6 @@ class DataboxVersionRepository implements VersionRepository
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
-        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     /**
