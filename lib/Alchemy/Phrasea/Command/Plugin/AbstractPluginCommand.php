@@ -52,42 +52,45 @@ abstract class AbstractPluginCommand extends Command
         $output->writeln(" <comment>OK</comment>");
     }
 
-    protected function validateSource($source)
+    protected function shouldDownloadPlugin($source)
     {
-        $valid_scheme = false;
-        $valid_extension = false;
-
-        $allowed_scheme = array('https','ssh');
-        $allowed_extension = array('zip','git');
+        $allowedScheme = array('https','ssh');
 
         $scheme =  parse_url($source, PHP_URL_SCHEME);
-        if (in_array($scheme, $allowed_scheme)){
-            $valid_scheme = true;
+        if (in_array($scheme, $allowedScheme)){
+            return true;
+        } else{
+            return false;
         }
+    }
+
+    protected function getURIExtension($source)
+    {
+        $validExtension = false;
+        $allowedExtension = array('zip','git');
 
         $path = parse_url($source, PHP_URL_PATH);
         if (strpos($path, '.') !== false) {
-            $path_parts = explode('.', $path);
-            $extension = $path_parts[1];
-            if (in_array($extension, $allowed_extension)){
-                $valid_extension = true;
+            $pathParts = explode('.', $path);
+            $extension = $pathParts[1];
+            if (in_array($extension, $allowedExtension)){
+                $validExtension = true;
             }
         }
 
-        if ($valid_scheme && $valid_extension){
+        if ($validExtension){
             return $extension;
         } else {
             return false;
         }
     }
 
-    public static function delDirTree($dir) {
+    protected static function delDirTree($dir) {
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::delDirTree("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
     }
-
 
 }

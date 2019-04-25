@@ -30,6 +30,18 @@ class AddPlugin extends AbstractPluginCommand
     protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
+        $shouldDownload = $this->shouldDownloadPlugin($source);
+
+        if ($shouldDownload){
+            $command = $this->getApplication()->find('plugins:download');
+            $arguments = [
+                'command' => 'plugins:download',
+                'source'  => $source
+            ];
+
+            $downloadInput = new ArrayInput($arguments);
+            $command->run($downloadInput, $output);
+        }
 
         $download = $this->validateSource($source);
 
