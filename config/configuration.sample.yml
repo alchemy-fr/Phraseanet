@@ -7,7 +7,6 @@ main:
     languages: []
     key: ''
     api_require_ssl: true
-    delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
         port: 3306
@@ -261,3 +260,7 @@ registry:
         download-link-validity: 24
     web-applications:
         email-optional-for-login: false
+
+user_account:
+    deleting_policies:
+        email_confirmation: true

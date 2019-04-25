@@ -6,7 +6,6 @@ main:
     maintenance: false
     key: ''
     api_require_ssl: true
-    delete-account-require-email-confirmation: true
     database:
         host: 'sql-host'
         port: 3306
@@ -213,3 +212,7 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
