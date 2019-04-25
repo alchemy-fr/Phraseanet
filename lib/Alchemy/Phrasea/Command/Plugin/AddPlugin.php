@@ -41,19 +41,6 @@ class AddPlugin extends AbstractPluginCommand
 
             $downloadInput = new ArrayInput($arguments);
             $command->run($downloadInput, $output);
-        }
-
-        $download = $this->validateSource($source);
-
-        if ($download){
-            $command = $this->getApplication()->find('plugins:download');
-            $arguments = [
-                'command' => 'plugins:download',
-                'source'  => $source
-            ];
-
-            $downloadInput = new ArrayInput($arguments);
-            $returnCode = $command->run($downloadInput, $output);
 
         } else {
 
@@ -93,6 +80,7 @@ class AddPlugin extends AbstractPluginCommand
 
             return 0;
         }
+
 
     }
 }
