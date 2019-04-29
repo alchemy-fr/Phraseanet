@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ORM\Table(name="ValidationSessions")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository")
  */
 class ValidationSession
 {
