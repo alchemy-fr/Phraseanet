@@ -48,6 +48,8 @@ vagrant_local:
         sharedfolder: ./
         useVagrantCloud: '1'
         syncType: nfs
+        hostname: ''
+        docker_hosts_container: 'db elasticsearch redis rabbitmq'
 nginx:
     install: '1'
     docroot: /vagrant
