@@ -212,3 +212,7 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
