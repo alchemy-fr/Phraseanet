@@ -260,3 +260,7 @@ registry:
         download-link-validity: 24
     web-applications:
         email-optional-for-login: false
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
