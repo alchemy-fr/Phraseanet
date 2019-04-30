@@ -26,7 +26,7 @@
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
                         <li class="clkbas">
-                            <label style="line-height: 18px;"
+                            <label class="white-label" style="line-height: 18px;color: #ffffff;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline custom_checkbox_label">
                                 <input class="ck_{{base_id}} checkbas" 
                                 onchange="checkFilters(true);" 
@@ -440,7 +440,7 @@
                                                             <tr>
                                                                 <td colspan="2">
                                                                     <span onclick="deploy(this, '#ADVSRCH_SB_{{databox_id}}' );return false;" class="deployer_toggle deployer_closed" ></span>
-                                                                    <span>{{ databox['name'] }}</span>
+                                                                    <span class="white-label">{{ databox['name'] }}</span>
                                                                 </td>
                                                             </tr>
                                                         </thead>
@@ -452,7 +452,7 @@
                                                                     <input type="radio" value="0" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
                                                                     <input type="radio" value="1" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
                                                                     -->
-                                                                    <label class="checkbox inline custom_checkbox_label">
+                                                                    <label class="checkbox inline custom_checkbox_label white-label">
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
@@ -466,7 +466,7 @@
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    <label class="checkbox inline custom_checkbox_label">
+                                                                    <label class="checkbox inline custom_checkbox_label white-label">
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
