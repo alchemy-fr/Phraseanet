@@ -286,3 +286,7 @@ workers:
       user: guest
       password: guest
       vhost: /
+
+user_account:
+    deleting_policies:
+        email_confirmation: true

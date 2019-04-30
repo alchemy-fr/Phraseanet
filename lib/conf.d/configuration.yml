@@ -241,3 +241,7 @@ video-editor:
         - 1
         - '1.5'
         - 3
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
