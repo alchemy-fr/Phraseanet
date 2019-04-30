@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionRebuildEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
@@ -1082,7 +1084,8 @@ class ArchiveJob extends AbstractJob
         }
 
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
-        $story->rebuild_subdefs();
+
+        $app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($story));
 
         unset($media);
 

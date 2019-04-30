@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Media;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionRebuildEvent;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
@@ -76,7 +77,7 @@ class SubdefSubstituer
         $record->write_metas();
 
         if ($shouldSubdefsBeRebuilt) {
-            $record->rebuild_subdefs();
+            $this->dispatcher->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($record));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
