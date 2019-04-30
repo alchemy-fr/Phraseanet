@@ -16,11 +16,11 @@
 
         {% if context %}
             {% set zterm %}
-                {% trans with {'%term%' : term, '%context%' : context} %}thesaurus:: le terme %term% avec contexte %context%{% endtrans %}
+                {% trans with {'%term%' : term | e, '%context%' : context | e} %}thesaurus:: le terme %term% avec contexte %context%{% endtrans %}
             {% endset %}
         {% else %}
             {% set zterm %}
-                {% trans with {'%term%' : term} %}thesaurus:: le terme %term% sans contexte{% endtrans %}
+                {% trans with {'%term%' : term | e} %}thesaurus:: le terme %term% sans contexte{% endtrans %}
             {% endset %}
         {% endif %}
 

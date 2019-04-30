@@ -8,6 +8,7 @@ main:
     key: ''
     api_require_ssl: true
     api_token_header: false
+    delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
         port: 3306
@@ -285,3 +286,7 @@ workers:
       user: guest
       password: guest
       vhost: /
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
