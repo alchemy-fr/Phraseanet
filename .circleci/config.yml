@@ -125,8 +125,3 @@ workflows:
                 region: AWS_DEFAULT_REGION
                 repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet"
                 tag: "alpha-0.1"
-
-                filters:
-                    branches:
-                        only:
-                            - PHRAS-2539
