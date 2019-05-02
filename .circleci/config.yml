@@ -2,7 +2,6 @@ version: 2.1
 orbs:
     aws-ecr: circleci/aws-ecr@4.0.1
 jobs:
-
     build:
         working_directory: ~/alchemy-fr/Phraseanet
         parallelism: 2
