@@ -107,11 +107,9 @@ workflows:
     version: 2
     oldfashion:
         jobs:
-            - build:
-                filters:
-                    branches:
-                        only:
-                            - master
+            - build
+            
+            
     newfashion:
         jobs:
             - aws-ecr/build_and_push_image:
