@@ -5741,14 +5741,10 @@ jquery-simplecolorpicker@^0.3.1:
   resolved "https://registry.yarnpkg.com/jquery-simplecolorpicker/-/jquery-simplecolorpicker-0.3.1.tgz#4f6befd380ab05470f585d5482e5180556e460eb"
   integrity sha1-T2vv04CrBUcPWF1UguUYBVbkYOs=
 
-"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
-  version "1.4.2"
-  resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
-
-"jquery-treeview@https://github.com/alchemy-fr/jquery-treeview.git":
+"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git", "jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
   version "1.4.2"
   uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
-  resolved "https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+  resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
 
 jquery-ui-datepicker-with-i18n@^1.10.4:
   version "1.10.4"
@@ -8263,10 +8259,10 @@ phraseanet-common@^0.4.1:
     js-cookie "^2.1.0"
     pym.js "^1.3.1"
 
-phraseanet-production-client@0.33.84:
-  version "0.33.84"
-  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.33.84.tgz#6e5a6884ea14576bca293ae0fba4eed9b31a6be6"
-  integrity sha512-2e4HX7PCNvEOKyj5IetrnTXc70heOviopde5suDYtIP3oZt+B7Ipth6MMxkShH39wOUyFVS8n/b8bEKrL+2kag==
+phraseanet-production-client@0.34.7:
+  version "0.34.7"
+  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.7.tgz#72a67ac4af52124be55c198e58883d52999b6da6"
+  integrity sha512-YAbY10obCLVdE7guCBdCm/ohWawQ6mJ+SBSiZ/UG3UVNUIVjDqSN39x7VbjmJ+tRosQpkyR/YUfbQ+Ab3n58RQ==
   dependencies:
     "@mapbox/mapbox-gl-language" "^0.9.2"
     "@turf/turf" "^5.1.6"
