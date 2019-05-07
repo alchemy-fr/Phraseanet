@@ -26,6 +26,7 @@ class TokenManipulator implements ManipulatorInterface
     const TYPE_FEED_ENTRY = 'FEED_ENTRY';
     const TYPE_PASSWORD = 'password';
     const TYPE_ACCOUNT_UNLOCK = 'account-unlock';
+    const TYPE_ACCOUNT_DELETE = 'account-delete';
     const TYPE_DOWNLOAD = 'download';
     const TYPE_MAIL_DOWNLOAD = 'mail-download';
     const TYPE_EMAIL = 'email';
@@ -165,6 +166,16 @@ class TokenManipulator implements ManipulatorInterface
     public function createAccountUnlockToken(User $user)
     {
         return $this->create($user, self::TYPE_ACCOUNT_UNLOCK, new \DateTime('+3 days'));
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return Token
+     */
+    public function createAccountDeleteToken(User $user, $email)
+    {
+        return $this->create($user, self::TYPE_ACCOUNT_DELETE, new \DateTime('+1 hour'), $email);
     }
 
     /**

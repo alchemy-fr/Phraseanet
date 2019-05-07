@@ -89,6 +89,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TYPE_AUDIO_MP3 = 'AUDIO_MP3';
     const TYPE_IMAGE = 'IMAGE';
     const TYPE_NO_PLAYER = 'UNKNOWN';
+    const TYPE_PDF = 'PDF';
 
     /*
      * Technical datas types constants
@@ -407,6 +408,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     {
         static $types = [
             'application/x-shockwave-flash' => self::TYPE_FLEXPAPER,
+            'application/pdf' => self::TYPE_PDF,
             'audio/mp3' => self::TYPE_AUDIO_MP3,
             'audio/mpeg' => self::TYPE_AUDIO_MP3,
             'image/gif' => self::TYPE_IMAGE,

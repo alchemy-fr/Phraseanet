@@ -338,6 +338,8 @@
                 for(var sy=syl.item(0).firstChild; sy; sy=sy.nextSibling )
                 {
                     var lng = sy.getAttribute("lng");
+                    var v = escapeHtmlDataFromXML(sy.getAttribute("v"));
+
                     html += "<tr>";
                     if(lng)
                         if(tFlags[lng])
@@ -347,7 +349,7 @@
                     else
                         html += "<td><span style='background-color:#cccccc'>&nbsp;?&nbsp;</span></td>";
 
-                    html += "<td>&nbsp;"+sy.getAttribute("v")+"</td>";
+                    html += "<td>&nbsp;"+ v +"</td>";
 
                     var hits = 0+sy.getAttribute("hits");
                     if(hits == 1)
@@ -361,6 +363,12 @@
             return(html);
         }
 
+        // Let the browser to do it
+        function escapeHtmlDataFromXML(data){
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(data));
+            return d.innerHTML;
+        }
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //

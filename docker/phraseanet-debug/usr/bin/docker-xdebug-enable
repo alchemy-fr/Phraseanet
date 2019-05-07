@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+HOST_IP=$(docker-get-host-ip);
+
+export HOST_IP
+export XDEBUG_CONFIG="remote_enable=1 remote_host=${HOST_IP} idekey=PHPSTORM";
+export XDEBUG_REMOTE_HOST="${HOST_IP}";
