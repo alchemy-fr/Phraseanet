@@ -74,8 +74,17 @@ class CLI extends Application
         $this->bindRoutes();
 
         $logger = false;
-        $config = $this['configuration.store']->getConfig();
-        if ((isset($config['console_logger_enabled_environments']) && in_array($environment, $config['console_logger_enabled_environments'])) || $environment == self::ENV_DEV){
+
+        if ($this['configuration.store']->isSetup()){
+
+            $config = $this['configuration.store']->getConfig();
+
+            if ((isset($config['console_logger_enabled_environments']) && in_array($environment, $config['console_logger_enabled_environments'])) || $environment == self::ENV_DEV){
+                $logger = true;
+            }
+        }
+
+        if ($environment == self::ENV_DEV){
             $logger = true;
         }
 
