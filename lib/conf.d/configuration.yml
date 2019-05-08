@@ -6,6 +6,7 @@ main:
     maintenance: false
     key: ''
     api_require_ssl: true
+    delete-account-require-email-confirmation: true
     database:
         host: 'sql-host'
         port: 3306
@@ -240,3 +241,7 @@ video-editor:
         - 1
         - '1.5'
         - 3
+
+user_account:
+    deleting_policies:
+        email_confirmation: true
