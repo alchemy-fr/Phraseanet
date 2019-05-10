@@ -51,46 +51,4 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
     }
-
-    protected function shouldDownloadPlugin($source)
-    {
-        $allowedScheme = array('https','ssh');
-
-        $scheme =  parse_url($source, PHP_URL_SCHEME);
-        if (in_array($scheme, $allowedScheme)){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    protected function getURIExtension($source)
-    {
-        $validExtension = false;
-        $allowedExtension = array('zip','git');
-
-        $path = parse_url($source, PHP_URL_PATH);
-        if (strpos($path, '.') !== false) {
-            $pathParts = explode('.', $path);
-            $extension = $pathParts[1];
-            if (in_array($extension, $allowedExtension)){
-                $validExtension = true;
-            }
-        }
-
-        if ($validExtension){
-            return $extension;
-        } else {
-            return false;
-        }
-    }
-
-    protected static function delDirTree($dir) {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? self::delDirTree("$dir/$file") : unlink("$dir/$file");
-        }
-        return rmdir($dir);
-    }
-
 }

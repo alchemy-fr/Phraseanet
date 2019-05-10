@@ -80,7 +80,17 @@ class AddPlugin extends AbstractPluginCommand
 
             return 0;
         }
+    }
 
+    protected function shouldDownloadPlugin($source)
+    {
+        $allowedScheme = array('https','ssh');
 
+        $scheme =  parse_url($source, PHP_URL_SCHEME);
+        if (in_array($scheme, $allowedScheme)){
+            return true;
+        } else{
+            return false;
+        }
     }
 }

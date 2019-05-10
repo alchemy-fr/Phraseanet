@@ -15,10 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\ArrayInput;
-
 use Cz\Git\GitRepository as GitRepository;
-
-
 
 class DownloadPlugin extends AbstractPluginCommand
 {
@@ -122,5 +119,34 @@ class DownloadPlugin extends AbstractPluginCommand
         }
 
         return 0;
+    }
+
+    protected function getURIExtension($source)
+    {
+        $validExtension = false;
+        $allowedExtension = array('zip','git');
+
+        $path = parse_url($source, PHP_URL_PATH);
+        if (strpos($path, '.') !== false) {
+            $pathParts = explode('.', $path);
+            $extension = $pathParts[1];
+            if (in_array($extension, $allowedExtension)){
+                $validExtension = true;
+            }
+        }
+
+        if ($validExtension){
+            return $extension;
+        } else {
+            return false;
+        }
+    }
+
+    protected static function delDirTree($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? self::delDirTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 }
