@@ -25,8 +25,8 @@ class ConnectionFactoryTest extends \PhraseanetTestCase
     }
 
     /**
-     * @expectedException \Alchemy\PHrasea\Exception\RuntimeException
-     * @expectedExceptionMessage Redis instance with host 'unknown-host' and port '666' is not reachable
+     * @expectedException \RedisException
+     * @expectedExceptionMessage php_network_getaddresses: getaddrinfo failed: Name or service not known
      */
     public function testGetInvalidRedisConnection()
     {
