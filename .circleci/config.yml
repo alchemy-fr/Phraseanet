@@ -56,7 +56,8 @@ jobs:
         # This is based on your 1.0 configuration file or project settings
         - run: node -v
         - run: npm -v
-        - run: yarn install
+        - run: npm install -g yarn
+        - run: /opt/circleci/nodejs/v10.12.0/bin/yarn install
         - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
         - run:
             command: elasticsearch-2.3.3/bin/elasticsearch
