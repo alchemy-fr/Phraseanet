@@ -1,5 +1,6 @@
 FROM php:7.1-fpm-stretch as builder
 
+
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -73,6 +74,7 @@ COPY config /var/alchemy/config
 COPY grammar /var/alchemy/grammar
 COPY lib /var/alchemy/lib
 COPY resources /var/alchemy/resources
+RUN ls -la
 COPY templates-profiler /var/alchemy/templates-profiler
 COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
@@ -85,7 +87,6 @@ COPY Makefile /var/alchemy/
 COPY package.json /var/alchemy/
 COPY phpunit.xml.dist /var/alchemy/
 COPY yarn.lock /var/alchemy/
-
 RUN make install_composer
 RUN make clean_assets
 RUN make install_asset_dependencies
