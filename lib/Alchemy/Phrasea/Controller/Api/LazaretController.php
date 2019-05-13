@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 namespace Alchemy\Phrasea\Controller\Api;
+
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 class LazaretController extends Controller
 {
     /**
@@ -23,7 +25,9 @@ class LazaretController extends Controller
     {
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
+
         $ret = $lazaretManipulator->deny($lazaret_id);
+
         return Result::create($request, $ret)->createResponse();
     }
 
@@ -31,7 +35,9 @@ class LazaretController extends Controller
     {
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
+
         $ret = $lazaretManipulator->add($lazaret_id);
+
         return Result::create($request, $ret)->createResponse();
     }
 
@@ -44,9 +50,12 @@ class LazaretController extends Controller
         if( $maxTodo <= 0) {
             $maxTodo = -1;      // all
         }
+
         /** @var LazaretManipulator $lazaretManipulator */
         $lazaretManipulator = $this->app['manipulator.lazaret'];
+
         $ret = $lazaretManipulator->clear($maxTodo);
+
         return Result::create($request, $ret)->createResponse();
     }
 }

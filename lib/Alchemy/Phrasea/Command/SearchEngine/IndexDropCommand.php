@@ -28,7 +28,7 @@ class IndexDropCommand extends Command
                'force',
                null,
                InputOption::VALUE_NONE,
-               "Don't ask for for the dropping of the index, but force the operation to run."
+               "Don't ask for the dropping of the index, but force the operation to run."
             )
         ;
     }

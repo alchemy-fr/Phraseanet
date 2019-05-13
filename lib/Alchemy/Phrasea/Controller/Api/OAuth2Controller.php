@@ -270,6 +270,7 @@ class OAuth2Controller extends Controller
         return '';
 
     }
+
     /**
      *  TOKEN ENDPOINT
      *  Token endpoint - used to exchange an authorization grant for an access token.

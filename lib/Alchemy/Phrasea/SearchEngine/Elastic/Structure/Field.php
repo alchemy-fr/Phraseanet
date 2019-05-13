@@ -45,25 +45,29 @@ class Field implements Typed
 
     private $used_by_collections;
 
-    public static function createFromLegacyField(databox_field $field)
+    public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
     {
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
-        // Thesaurus concept inference
-        $xpath = $field->get_tbranch();
-        if ($type === FieldMapping::TYPE_STRING && !empty($xpath)) {
-            $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
-        } else {
-            $roots = null;
+        $roots = null;
+        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
+            // Thesaurus concept inference
+            $xpath = $field->get_tbranch();
+            if (!empty($xpath)) {
+                $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
+            }
         }
 
-        // Facet (enable + optional limit)
-        $facet = $field->getFacetValuesLimit();
-        if ($facet === databox_field::FACET_DISABLED) {
-            $facet = self::FACET_DISABLED;
-        } elseif ($facet === databox_field::FACET_NO_LIMIT) {
-            $facet = self::FACET_NO_LIMIT;
+        $facet = self::FACET_DISABLED;
+        if($with & Structure::FIELD_WITH_FACETS) {
+            // Facet (enable + optional limit)
+            $facet = $field->getFacetValuesLimit();
+            if ($facet === databox_field::FACET_DISABLED) {
+                $facet = self::FACET_DISABLED;
+            } elseif ($facet === databox_field::FACET_NO_LIMIT) {
+                $facet = self::FACET_NO_LIMIT;
+            }
         }
 
         return new self($field->get_name(), $type, [

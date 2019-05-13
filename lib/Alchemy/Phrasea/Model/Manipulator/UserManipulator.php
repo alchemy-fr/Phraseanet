@@ -35,21 +35,52 @@ use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
  */
 class UserManipulator implements ManipulatorInterface
 {
-    /** @var PasswordEncoderInterface */
+    /**
+     * @var PasswordEncoderInterface
+     */
     protected $passwordEncoder;
-    /** @var UserManager */
+
+    /**
+     * @var UserManager
+     */
     private $manager;
-    /** @var GeonamesConnector */
+
+    /**
+     * @var GeonamesConnector
+     */
     private $geonamesConnector;
-    /** @var Generator */
+
+    /**
+     * @var Generator
+     */
     private $generator;
-    /** @var EntityRepository */
+
+    /**
+     * @var EntityRepository
+     */
     private $repository;
-    /** @var EventDispatcherInterface */
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
 
-
-    public function __construct(UserManager $manager, PasswordEncoderInterface $passwordEncoder, GeonamesConnector $connector, EntityRepository $repo, Generator $generator, EventDispatcherInterface $dispatcher)
+    /**
+     * @param UserManager $manager
+     * @param PasswordEncoderInterface $passwordEncoder
+     * @param GeonamesConnector $connector
+     * @param EntityRepository $repo
+     * @param Generator $generator
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(
+        UserManager $manager,
+        PasswordEncoderInterface $passwordEncoder,
+        GeonamesConnector $connector,
+        EntityRepository $repo,
+        Generator $generator,
+        EventDispatcherInterface $dispatcher
+    )
     {
         $this->manager = $manager;
         $this->generator = $generator;

@@ -1,110 +1,42 @@
-{% set canValid = false %}
 <div class="well-small text-center">
     <form onsubmit="return false" action="{{ path('prod_move_collection_apply') }}" method="post">
-        {% if records.databoxes() | length > 1 %}
+        {% if records | length != records.received() | length %}
             <div class="well-small">
-                {{ 'prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble' | trans }}
-            </div>
-        {% elseif records | length == 0 %}
-            <div class="well-small">
-                {{ 'prod::Vous n\'avez le droit d\'effectuer l\'operation sur aucun document' | trans }}
-            </div>
-        {% elseif collections | length == 0 %}
-            <div class="well-small">
-                {{ 'erreur : Vous n\'avez pas les droits' | trans }}
-            </div>
-        {% else %}
-            {% set canValid = true %}
-
-            {% if records | length != records.received() | length %}
-                <div class="well-small">
-                    {% set countable = records.received().count() - records.count() %}
-                    {% if countable == 1 %}
-                        {% trans %}One document can not be modified.{% endtrans %}
-                    {% else %}
-                        {% trans with {'%countable%' : countable} %}%countable% documents can not be modified.{% endtrans %}
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            <div class="well-small">
-                {% set countable = records | length %}
+                {% set countable = records.received().count() - records.count() %}
                 {% if countable == 1 %}
-                    {% trans %}Move one record to the chosen collection in the list.{% endtrans %}
+                    {% trans %}One document can not be modified.{% endtrans %}
                 {% else %}
-                    {% trans with {'%countable%' : countable} %}Move %countable% records to the chosen collection in the list.{% endtrans %}
+                    {% trans with {'%countable%' : countable} %}%countable% documents can not be modified.{% endtrans %}
                 {% endif %}
             </div>
-
-            <div class="well-small">
-                <select name="base_id">
-                    {% for collection in collections %}
-                        <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            {% if records.stories() | length > 0 %}
-                <div class="well-small">
-                    <label class="checkbox text-info">
-                        <input type="checkbox" value="1" name="chg_coll_son"> {{ 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' | trans }}
-                    </label>
-                </div>
-            {% endif %}
-
-            <input type="hidden" name="act" value="WORK">
-            <input type="hidden" name="lst" value="{{ records.serializedList() }}">
         {% endif %}
+
+        <div class="well-small">
+            {% set countable = records | length %}
+            {% if countable == 1 %}
+                {% trans %}Move one record to the chosen collection in the list.{% endtrans %}
+            {% else %}
+                {% trans with {'%countable%' : countable} %}Move %countable% records to the chosen collection in the list.{% endtrans %}
+            {% endif %}
+        </div>
+
+        <div class="well-small">
+            <select name="base_id">
+                {% for collection in collections %}
+                    <option value="{{ collection.get_base_id() }}">{{ collection.get_label(app['locale']) }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if records.stories() | length > 0 %}
+            <div class="well-small">
+                <label class="checkbox text-info">
+                    <input type="checkbox" value="1" name="chg_coll_son"> {{ 'prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)' | trans }}
+                </label>
+            </div>
+        {% endif %}
+
+        <input type="hidden" name="act" value="WORK">
+        <input type="hidden" name="lst" value="{{ records.serializedList() }}">
     </form>
 </div>
-
-{% if canValid %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $dialog = p4.Dialog.get(1);
-
-            var $form = $dialog.getDomElement();
-            var buttons = {};
-
-            buttons[language.valider] = function(){
-                var coll_son = $('input[name="chg_coll_son"]:checked', $form).length > 0 ? '1' : '0';
-                var datas = {
-                    lst: $('input[name="lst"]', $form).val(),
-                    base_id: $('select[name="base_id"]', $form).val(),
-                    chg_coll_son: coll_son
-                };
-
-                var buttonPanel = $dialog.getDomElement()
-                .closest('.ui-dialog')
-                .find('.ui-dialog-buttonpane');
-
-                $.ajax({
-                    type: "POST",
-                    url: "/prod/records/movecollection/apply/",
-                    dataType: 'json',
-                    data: datas,
-                    beforeSend: function() {
-                        $(":button:contains('" + language.valider + "')", buttonPanel)
-                        .attr("disabled", true).addClass("ui-state-disabled");
-                    },
-                    success: function(data){
-                        $dialog.Close();
-                        if(data.success) {
-                            humane.info(data.message);
-                        } else {
-                            humane.error(data.message);
-                        }
-                    },
-                    complete: function(){
-                        $(":button:contains('" + language.valider + "')", buttonPanel)
-                        .attr("disabled", false).removeClass("ui-state-disabled");
-                    }
-                });
-
-                return false;
-            };
-
-            $dialog.setOption('buttons', buttons);
-        });
-    </script>
-{% endif %}

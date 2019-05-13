@@ -27,12 +27,12 @@ class DataboxFieldFactory
     }
 
     /**
-     * @param array $raw
+     * @param array $row
      * @return databox_field
      */
-    public function create(array $raw)
+    public function create(array $row)
     {
-        return new databox_field($this->app, $this->databox, $raw);
+        return new databox_field($this->app, $this->databox, $row);
     }
 
     /**
@@ -43,8 +43,8 @@ class DataboxFieldFactory
     {
         $instances = [];
 
-        foreach ($rows as $index => $raw) {
-            $instances[$index] = new databox_field($this->app, $this->databox, $raw);
+        foreach ($rows as $index => $row) {
+            $instances[$index] = new databox_field($this->app, $this->databox, $row);
         }
 
         return $instances;

@@ -32,8 +32,8 @@ class ElasticsearchRecordHydrator
             if (substr($key, 0, strlen($prefix)) == $prefix) {
                 $key = substr($key, strlen($prefix));
             }
-            if(substr($key, -6) == '.light') {
-                $key = substr($key, 0, strlen($key)-6);
+            if (substr($key, -6) == '.light') {
+                $key = substr($key, 0, strlen($key) - 6);
                 $highlight[$key] = $value;
             }
         }
@@ -65,7 +65,7 @@ class ElasticsearchRecordHydrator
         $record->setTitles((array) igorw\get_in($data, ['title'], []));
         $record->setCaption((array) igorw\get_in($data, ['caption'], []));
         $record->setPrivateCaption((array) igorw\get_in($data, ['private_caption'], []));
-        $record->setExif((array) igorw\get_in($data, ['metadata_tags'], []));
+        $record->setExif((array)igorw\get_in($data, ['metadata_tags'], []));
         $record->setSubdefs((array) igorw\get_in($data, ['subdefs'], []));
         $record->setFlags((array) igorw\get_in($data, ['flags'], []));
         $record->setHighlight((array) $highlight);

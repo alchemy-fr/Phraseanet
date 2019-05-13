@@ -81,6 +81,7 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Prod\Root::class => [],
             Prod\Share::class => [],
             Prod\Story::class => [],
+            Prod\Subdefs::class => [],
             Prod\Tools::class => [],
             Prod\Tooltip::class => [],
             Prod\TOU::class => [],

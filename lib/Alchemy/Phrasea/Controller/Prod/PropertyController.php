@@ -202,7 +202,7 @@ class PropertyController extends Controller
             $record->setStatus(strrev($newStatus));
 
             $this->getDataboxLogger($record->getDatabox())
-                    ->log($record, \Session_Logger::EVENT_STATUS, '', '');
+                ->log($record, \Session_Logger::EVENT_STATUS, '', '');
 
             return [
                 'current_status' => $currentStatus,

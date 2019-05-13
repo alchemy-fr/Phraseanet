@@ -24,10 +24,10 @@ define([
             "click .btn-cancel-field": "toggleCreateFormAction",
             "keyup input": "onKeyupInput"
         },
+        template: _.template($("#create_template").html()),
         render: function () {
-            var template = _.template($("#create_template").html());
 
-            this.$el.html(template);
+            this.$el.html(this.template());
 
             $("#new-source", this.$el).autocomplete({
                 minLength: 2,
@@ -130,7 +130,8 @@ define([
                 "label_fr": $("#new-label_fr", this.$el).val(),
                 "label_de": $("#new-label_de", this.$el).val(),
                 "label_nl": $("#new-label_nl", this.$el).val(),
-                "multi": $("#new-multivalued", this.$el).is(":checked")
+                "multi": $("#new-multivalued", this.$el).is(":checked"),
+                "report": false
             });
 
             field.save(null, {

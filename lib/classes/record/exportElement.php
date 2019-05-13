@@ -170,7 +170,7 @@ class record_exportElement extends record_adapter
 
             $downloadable[$name] = false;
 
-            $downloadable_settings = $subdef->is_downloadable();
+            $downloadable_settings = $subdef->isDownloadable();
 
             if (! $downloadable_settings || $go_dl[$class] === false) {
                 continue;

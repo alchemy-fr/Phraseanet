@@ -9,51 +9,20 @@
             {% block form_connexion %}
             <div class="form3 form_content">
                 <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
-                
                 <select class="select_one" name="group">
-                    {# {% if not anonymous %}
-                    <option value="user" id="connections_user">{{ "report:: (connexions) Par utilisateurs" | trans }}</option>
-                    {% endif %} #}
-                    
-                    {#{% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
+                    {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
                         {% set l="report:: (connexions) #{x}" %}
                         <option value="{{ x }}" id="connections_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}#}
-                    <option value="" id="connections_ ">{{ "report:: (connexions)" | trans }}</option>
-                    <option value="user" id="connections_user">{{ "report:: (connexions) user" | trans }}</option>
-                    <option value="nav" id="connections_nav">{{ "report:: (connexions) nav" | trans }}</option>
-                    <option value="nav,version" id="connections_nav,version">{{ "report:: (connexions) nav,version" | trans }}</option>
-                    <option value="os" id="connections_os">{{ "report:: (connexions) os" | trans }}</option>
-                    <option value="os,nav" id="connections_os,nav">{{ "report:: (connexions) os,nav" | trans }}</option>
-                    <option value="os,nav,version" id="connections_os,nav,version">{{ "report:: (connexions) os,nav,version" | trans }}</option>
-                    <option value="res" id="connections_res">{{ "report:: (connexions) res" | trans }}</option>
-
+                    {% endfor %}
                 </select>
-
-                {# <div>
-                    <input name="group" type="radio" value="" id="connections_" />
-                    <label for="connections_">{{ "report:: (connexions)" | trans }}</label>
-                </div>
-                {% if not anonymous %}
-                <div>
-                    <input name="group" type="radio" value="user" id="connections_user" />
-                    <label for="connections_user">{{ "report:: (connexions) Par utilisateurs" | trans }}</label>
-                </div>
-                {% endif %}
-                {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
-                <div>
-                    <input name="group" type="radio" value="{{ x }}" id="connections_{{ x }}" />
-                    {% set l="report:: (connexions) #{x}" %}
-                    <label for="connections_{{ x }}">{{ l | trans }}</label>
-                </div>
-                {% endfor %} #}
             </div>
             {% endblock form_connexion %}
         </form>
+
         <div class="form_submit">
             <button class="formsubmiter" data-form_selector="#report-connections-form">Download</button>
         </div>
-
+        
     </div>
 {% endblock report_connections_layout %}
 
@@ -67,16 +36,14 @@
                 <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
 
                 <select class="select_one" name="group">
-                   {# {% for x in ['','user','record'] %}
+                    {% for x in ['','user','record'] %}
                         {% set l="report:: (downloads) #{x}" %}
                         <option value="{{ x }}" id="downloads_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}#}
-                    <option value="" id="downloads_">{{ "report:: (downloads)" | trans }} </option>
-                    <option value="user" id="downloads_user">{{ "report:: (downloads) user" | trans }}</option>
-                    <option value="record" id="downloads_record">{{ "report:: (downloads) record" | trans }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </form>
+
         <div class="form_submit">
             <button class="formsubmiter" data-form_selector="#report-downloads-form">Download</button>
         </div>
@@ -95,28 +62,28 @@
                 <div class="form_titre">{{ "report:: 4 - Fields" | trans }}</div>
 
                 {% for sbas_id,databox in granted_bases %}
-                    <div class="collist collist-{{ sbas_id }}">
-                        <div class="collist_buttons">
-                            <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                <div class="collist collist-{{ sbas_id }}">
+                    <div class="collist_buttons">
+                        <button class="select-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Select all{% endtrans %}
-                            </button>
-                            <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
+                        </button>
+                        <button class="unselect-all btn btn-mini" data-target_selector="#chkfld-records-{{ sbas_id }} input:checkbox">
                             {% trans %}Deselect all{% endtrans %}
-                            </button>
-                        </div>
-
-                        <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
-                            {% for meta in databox.metas %}
-                                <li>
-                                    <label class="checkbox custom_checkbox_label">
-                                        <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
-                                        <span class="custom_checkbox"></span>
-                                        {{ meta }}
-                                    </label>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        </button>
                     </div>
+
+                    <ul id="chkfld-records-{{ sbas_id }}" style="max-height: 150px; overflow-y: auto; overflow-x: hidden;">
+                    {% for meta in databox.metas %}
+                        <li>
+                            <label class="checkbox custom_checkbox_label">
+                                <input name="meta[]" checked="checked" type="checkbox" value="{{ meta }}">
+                                <span class="custom_checkbox"></span>
+                                {{ meta }}
+                            </label>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
                 {% endfor %}
             </div>
             {% endblock form_records %}
@@ -128,4 +95,3 @@
 
     </div>
 {% endblock report_records_layout %}
-

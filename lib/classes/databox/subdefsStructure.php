@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Databox\SubdefGroup;
+use Assert\Assertion;
 use Alchemy\Phrasea\Media\MediaTypeFactory;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -186,9 +187,10 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param  string $class
      * @param  string $mediatype
      * @param  string $preset
+     * @param  string $path
      * @return databox_subdefsStructure
      */
-    public function add_subdef($groupname, $name, $class, $mediatype, $preset)
+    public function add_subdef($groupname, $name, $class, $mediatype, $preset, $path)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -196,7 +198,14 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('presets', $preset);
-        $subdef->setAttribute('mediaType', $mediatype);
+
+        $mediaTypeElement = $dom_struct->createElement('mediatype');
+        $mediaTypeElement->appendChild($dom_struct->createTextNode($mediatype));
+        $subdef->appendChild($mediaTypeElement);
+
+        $pathElement = $dom_struct->createElement('path');
+        $pathElement->appendChild($dom_struct->createTextNode($path));
+        $subdef->appendChild($pathElement);
 
         $dom_xp = $this->databox->get_xpath_structure();
         $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
@@ -223,14 +232,15 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param string $group
      * @param string $name
      * @param string $class
-     * @param string $preset
      * @param boolean $downloadable
      * @param array $options
      * @param array $labels
+     * @param boolean $orderable
+     * @param string $preset
      * @return databox_subdefsStructure
      * @throws Exception
      */
-    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $preset = "Custom")
+    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable = true, $preset = "Custom")
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -238,6 +248,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
+        $subdef->setAttribute('orderable', ($orderable ? 'true' : 'false'));
         $subdef->setAttribute('presets', $preset);
 
         foreach ($labels as $code => $label) {

@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Command\SearchEngine;
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,10 +38,6 @@ class IndexManipulateCommand extends Command
 
     protected function configure()
     {
-        /** @var Indexer $indexer */
-        //$indexer = $this->container['elasticsearch.indexer'];
-        //$options = $indexer->getIndex()->getOptions();
-
         $this
             ->setName('searchengine:index')
             ->setDescription('Manipulates search index')
@@ -127,7 +122,7 @@ class IndexManipulateCommand extends Command
                 $question = '<question>You are about to delete the index and all contained data. Are you sure you wish to continue? (y/n)</question>';
                 $confirmation = $this->getHelper('dialog')->askConfirmation($output, $question, false);
             }
-            
+
             if ($confirmation) {
                 $indexer->deleteIndex();
                 $this->verbose(sprintf('<info>Search index "%s" was dropped.</info>', $idx));
@@ -162,7 +157,6 @@ class IndexManipulateCommand extends Command
 
         if($populate) {
             if(!$indexExists) {
-                $indexer->createIndex();
                 $r = $indexer->createIndex();
                 $this->verbose(sprintf('<info>Search index "%s@%s:%s" -> "%s" was created</info>'
                     , $r['alias']
@@ -196,10 +190,10 @@ class IndexManipulateCommand extends Command
                 if (!$databoxes_id || in_array($databox->get_sbas_id(), $databoxes_id)) {
                     $r = $indexer->populateIndex(Indexer::THESAURUS | Indexer::RECORDS, $databox, false); // , $temporary);
                     $output->writeln(sprintf(
-                        "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
-                        $databox->get_dbname(),
-                        $r['duration']/1000,
-                        $r['memory']/1048576)
+                            "Indexation of databox \"%s\" finished in %0.2f sec (Mem. %0.2f Mo)",
+                            $databox->get_dbname(),
+                            $r['duration']/1000,
+                            $r['memory']/1048576)
                     );
                 }
             }

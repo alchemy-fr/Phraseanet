@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Root\AccountController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -42,6 +42,12 @@ class Account implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        $firewall = $this->getFirewall($app);
+
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
+        });
+
         // Displays current logged in user account
         $controllers->get('/', 'account.controller:displayAccount')
             ->bind('account');
@@ -52,6 +58,7 @@ class Account implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->get('/delete/confirm', 'account.controller:confirmDeleteAccount')
             ->bind('account_confirm_delete');
+
 
         // Updates current logged in user account
         $controllers->post('/', 'account.controller:updateAccount')

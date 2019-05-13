@@ -17,7 +17,6 @@
             </li>
         </ul>
         {# upload tab content #}
-
         <div id="tab-upload">
             {% if collections|length > 0 %}
                 <form id="fileupload" enctype="multipart/form-data" method="POST" action="{{ path('upload_form') }}">
@@ -43,7 +42,7 @@
                                 {#<td class='uploader-icon'>#}
                                 {#<img src='/assets/common/images/icons/html5-logo.png' width="32px" heigh="32px"  title="{{ 'You are using the HTML5 uploader.' | trans }}"/>#}
                                 {#</td>#}
-                                {#<td class="uploader-info">#}
+                                {#<td class="uploader-infmaxFileSizeo">#}
                                 {#<p>#}
                                 {#{{ 'You are using the HTML5 uploader.' | trans }}#}
                                 {#{% if not app['browser'].supportFileAPI() %}#}
@@ -60,50 +59,50 @@
                         <div class='settings-box'>
                             <h5>{{ 'upload:: Destination (collection) :' | trans }} :</h5>
                             {# collections list #}
-                            {% if collections|length > 0 %}
-                                {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
-                                <select onchange="setPref('upload_last_used_collection', $(this).val());" name="base_id" class="span3" style="margin-left: 10px;">
+                            {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
+                            <select name="base_id" class="span3 upload-options-collection" style="margin-left: 10px;">
                                 {% for  sbasId, availableCollections in collections %}
-                                    <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
-                                    {% for collection in availableCollections['databox_collections'] %}
-                                        <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %} value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
-                                    {% endfor %}
+                                    <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}"
+                                              class="select-label">
+                                        {% for collection in availableCollections['databox_collections'] %}
+                                            <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %}
+                                                    value="{{ collection.get_base_id() }}"
+                                                    class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                        {% endfor %}
                                     </optgroup>
                                 {% endfor %}
-                                </select>
-                                {# collections status #}
-                                {% for availableCollections in collections %}
-                                    {% for collection in availableCollections['databox_collections'] %}
-                                        <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
-                                            <h5>{{ 'upload:: Status :' | trans }} :</h5>
-                                            <table class="status-tab">
-                                                <tbody>
-                                                {% for bit, status in availableCollections['databox'].getStatusStructure() %}
-                                                    <tr>
-                                                        <td class="status-tab-left">
-                                                            {% if status['img_off'] is not empty %}
-                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
-                                                        </td>
-                                                        <td class="status-tab-right">
-                                                            <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
-                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                            {% if status['img_on'] is not empty %}
-                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    {% endfor %}
+                            </select>
+                            {# collections status #}
+                            {% for availableCollections in collections %}
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
+                                        <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                        <table class="status-tab">
+                                            <tbody>
+                                            {% for bit, status in availableCollections['databox'].getStatusStructure() %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 {% endfor %}
-                            {% else %}
-                                {{ 'You can not upload files' | trans }}
-                            {% endif %}
+                            {% endfor %}
                         </div>
 
                         {# upload box #}
@@ -156,11 +155,14 @@
 
 {% include "prod/templates/upload.html.twig" %}
 
-<script >
+<script>
+    var uploaderOptions =  {
+        maxFileSize: {{ maxFileSize }}
+    }
 
-
+/*
 $(document).ready(function () {
-    var filesList = $dialog.options.filesList || [];
+
     var iev=0;
     var ieold = (/MSIE (\d+\.\d+);/.test(navigator.userAgent));
     var trident = !!navigator.userAgent.match(/Trident\/7.0/);
@@ -172,7 +174,6 @@ $(document).ready(function () {
 
     if (iev >= 10) {
         $("#UPLOAD_FLASH_LINK").hide();
-        $('#upload_type option[value="flash"]').remove();
     }
     //Upload management
     var UploaderManager = new p4.UploaderManager({
@@ -188,12 +189,6 @@ $(document).ready(function () {
     UploaderManager.Preview.setOptions({
         maxWidth: 130,
         maxHeight: 120
-    });
-
-    $('#upload_type').on('change', function () {
-        if ($(this).val() === 'flash') {
-            $("#UPLOAD_FLASH_LINK").trigger("click");
-        }
     });
 
     //Init jquery tabs
@@ -255,47 +250,6 @@ $(document).ready(function () {
         domEl.html(parseInt(domEl.html()) - 1);
     });
 
-    // add a url
-    $("button.add-url", UploaderManager.getContainer()).bind("click", function(e) {
-        e.preventDefault();
-        var url = $("#add-url", UploaderManager.getContainer()).val();
-
-        $('.upload-box').show();
-
-        // perform a "head" request on the url (via php proxy) to get mime and size
-        var distantfileInfos = {
-            'content-type': '?',
-            'content-length' : '?'
-        };
-        $.get(
-            "{{ path('upload_head') }}",
-            {
-                'url' : url
-            }
-        ).done(
-            function(data) {
-                distantfileInfos = data;
-            }
-        ).always(
-            function() {
-                var fileContent = JSON.stringify( {'url' : url} , null, 2);     // the content of the "micro json file" that will be uploaded
-                var blob = new Blob(
-                    [ fileContent ],
-                    {
-                        type : 'application/json'
-                    }
-                );
-                $('#fileupload', UploaderManager.getContainer()).fileupload(
-                    'add',
-                    {
-                        'files': blob,                      // files is an array with 1 element
-                        'fileInfos': [ distantfileInfos ]   // ... so we do the same with our custom data
-                    }
-                );
-            }
-        );
-    });
-
     //Remove all element from upload box
     $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
         UploaderManager.clearUploadBox();
@@ -334,7 +288,7 @@ $(document).ready(function () {
             $(".number-files-to-transmit").html(totalElement);
             $(".transmit-box").show();
 
-            var dialog = p4.Dialog.get(1);
+            var dialog = dialogModule.dialog.get(1);
 
             //reset progressbar for iframe uploads
             if( ! $.support.xhrFileUpload && ! $.support.xhrFormDataFileUpload) {
@@ -353,7 +307,6 @@ $(document).ready(function () {
 
             documents.each(function(index, el){
                 var index = $(el).find('input[name=uploadIndex]').val();
-                var data = UploaderManager.getData(index);
                 UploaderManager.getData(index).submit();
             });
         }
@@ -361,7 +314,6 @@ $(document).ready(function () {
 
     $('#fileupload', UploaderManager.getContainer()).fileupload({
         namespace: 'phrasea-upload',
-
         // define our own mediatype to handle and convert the response
         // to prevent errors when Iframe based uploads
         // as they require text/plain or text/html Content-type
@@ -375,23 +327,18 @@ $(document).ready(function () {
                 return $.parseJSON(iframe.find('body').text());
             }
         },
-
         // override "on error" local ajax event to prevent global ajax event from being triggered
         // as all fileupload options are passed as argument to the $.ajax jquery function
-        error: function() {
-            return false;
-        },
-
+        error: function(){return false;},
         // Set singleFileUploads, sequentialUploads to true so the files
         // are upload one by one
-        singleFileUploads : true,       // There will be ONE AND ONLY ONE file into data.files
+        singleFileUploads : true,
         sequentialUploads: true,
         recalculateProgress: true,
-
         //When a file is added
         add: function (e, data) {
-            // Since singleFileUploads & sequentialUploads are setted to true
-            // There is ONE AND ONLY ONE file into data.files
+            //Since singleFileUploads &  sequentialUploads are setted to true
+            //There is only on file data.files
             $.each(data.files, function (index, file) {
                 $('.upload-box').show();
 
@@ -399,13 +346,11 @@ $(document).ready(function () {
                     var params = $.extend({}, file, {error: language.errorFileApi, language: language});
                     var html = _.template($("#upload_items_error_tpl").html(), params);
                     UploaderManager.getUploadBox().append(html);
-                }
-                else if(file.size > maxFileSize) {
+                } else if(file.size > maxFileSize){
                     var params = $.extend({}, file, {error: language.errorFileApiTooBig, language: language});
                     var html = _.template($("#upload_items_error_tpl").html(), params);
                     UploaderManager.getUploadBox().append(html);
-                }
-                else {
+                } else {
                     // Add data to Queue
                     UploaderManager.addData(data);
 
@@ -413,19 +358,11 @@ $(document).ready(function () {
                     var formatedFile = {
                         id: 'file-' + index,
                         size: typeof file.size !== "undefined" ? UploaderManager.Formater.size(file.size) : '',
-                        name: encodeURI(file.name),
+                        name: file.name,
                         type: typeof file.type !== "undefined" ? file.type : '',
                         uploadIndex: UploaderManager.getUploadIndex(),
                         language: language
                     };
-
-                    // if the "file" is a blob (tiny json with url to a distant file),
-                    //   we can find infos of distant file into data, and fix html
-                    if(typeof(data.fileInfos) !== "undefined") {
-                        formatedFile.size = UploaderManager.Formater.size(data.fileInfos[index]["content-length"]);
-                        formatedFile.name = data.fileInfos[index]["basename"];
-                        formatedFile.type = data.fileInfos[index]["content-type"];
-                    }
 
                     //Set context in upload-box
                     var html = _.template($("#upload_items_tpl").html(), formatedFile);
@@ -437,7 +374,7 @@ $(document).ready(function () {
 
                     UploaderManager.addAttributeToData(uploadIndex, 'context', context);
 
-                    UploaderManager.Preview.render(file, function (img) {
+                    UploaderManager.Preview.render(file, function(img){
                         context.find('.thumbnail .canva-wrapper').prepend(img);
                         UploaderManager.addAttributeToData(uploadIndex, 'image', img);
                         UploaderManager.addAttributeToData(uploadIndex, 'b64_image', img.toDataURL("image/png") || '');
@@ -447,11 +384,6 @@ $(document).ready(function () {
 
             UploaderManager.getContainer().trigger("file-added");
         },
-
-        submit: function(e, data) {
-            return false;
-        },
-
         //on success upload
         done: function (e, data) {
             // set progress bar to 100% for preventing mozilla bug which never reach 100%
@@ -472,7 +404,7 @@ $(document).ready(function () {
                 progressbarAll.width('100%');
                 bitrateBox.empty();
                 $('#uploadBoxRight .progress').removeClass('progress-striped active');
-                var dialog = p4.Dialog.get(1);
+                var dialog = dialogModule.dialog.get(1);
                 //unbind check before close event & disabled button for cancel all download
                 dialog.getDomElement().unbind("dialogbeforeclose");
                 //disabled cancel-all button, if queue is empty and last upload success
@@ -481,7 +413,6 @@ $(document).ready(function () {
 
             return false;
         },
-
         fail: function(){
             //disabled cancel-all button, if queue is empty and last upload fail
             if (UploaderManager.Queue.isEmpty()){
@@ -512,14 +443,7 @@ $(document).ready(function () {
 
         //Set new context in download-box
         $.each(data.files, function (index, file) {
-            var params = $.extend({}, file, {language: language, id:'file-'+index, name: encodeURI(file.name)});
-
-            // if the "file" is a blob (tiny json with url to a distant file),
-            //   we can find infos of distant file into data, and fix html
-            if(typeof(data.fileInfos) !== "undefined") {
-                params.name = data.fileInfos[index]["basename"];
-            }
-
+            var params = $.extend({}, file, {language: language, id:'file-'+index});
             var html = _.template($("#download_items_tpl").html(), params);
 
             UploaderManager.getDownloadBox().append(html);
@@ -600,12 +524,7 @@ $(document).ready(function () {
             data.context.find('.progress-bar').width('25%');
         }
     });
-
-    if (filesList !== undefined) {
-        $('#fileupload', UploaderManager.getContainer()).fileupload('add', {files: filesList});
-    }
-
-});
+});*/
 </script>
 <style>
     .btn.page-lazaret a {

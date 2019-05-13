@@ -10,7 +10,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Collection\Reference\CollectionReferenceCollection;
+use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
 use Alchemy\Phrasea\Core\Event\Acl\AccessPeriodChangedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseGrantedEvent;
 use Alchemy\Phrasea\Core\Event\Acl\AccessToBaseRevokedEvent;
@@ -770,6 +772,41 @@ class ACL implements cache_cacheableInterface
 
                 $ret[$base_id] = $collection;
             }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return array    baseIds where user can search
+     */
+    public function getSearchableBasesIds()
+    {
+        static $ret = null;
+
+        if($ret === null) {
+            $this->load_rights_bas();
+            foreach ($this->_rights_bas as $baseId => $rights) {
+                if ($this->has_access_to_base($baseId) && !$this->is_limited($baseId)) {
+                    $ret[] = $baseId;
+                }
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return CollectionReference[]    CollectionsReferences where the user can search;
+     */
+    public function getSearchableBasesReferences()
+    {
+        static $ret = null;
+
+        if($ret == null) {
+            /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+            $dbalCollectionReferenceRepository = $this->app['repo.collection-references'];
+            $ret = $dbalCollectionReferenceRepository->findMany($this->getSearchableBasesIds());
         }
 
         return $ret;

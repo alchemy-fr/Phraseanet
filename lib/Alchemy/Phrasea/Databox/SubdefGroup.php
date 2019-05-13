@@ -56,6 +56,16 @@ class SubdefGroup implements \IteratorAggregate, \Countable
         return $this->type;
     }
 
+    public function allowDocumentOrdering()
+    {
+        $this->isDocumentOrderable = true;
+    }
+
+    public function disallowDocumentOrdering()
+    {
+        $this->isDocumentOrderable = false;
+    }
+
     /**
      * @return bool
      */

@@ -145,13 +145,6 @@
             return false;
         });
 
-        $("[name='elasticsearch_settings[use_existing_index]']").click(function(){
-            var checkBoxes = $(this).is(":checked"),
-                indexName = $("[name='elasticsearch_settings[index_name]']");
-
-            indexName.val("");
-            indexName.prop("disabled", !checkBoxes);
-        });
 
         function test_connection_appbox(callback)
         {
@@ -288,7 +281,9 @@
 
 {% block content %}
     <form id="create_admin" method="post" action="{{ path('install_do_install') }}">
-        
+
+
+
     <div class="steps">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
@@ -351,8 +346,7 @@
                         <tr>
                             <td>
                                 <p>
-
-                                    <a href="https://docs.phraseanet.com/4.0/{{ locale }}/Admin/index.html" target="_blank">
+                                    <a href="https://docs.phraseanet.com/4.0/Admin/" target="_blank">
                                         {{ 'Prerequisite and Configuration' | trans }}
                                     </a>
                                 </p>
@@ -381,7 +375,7 @@
             <div class="PNB10 wrapper_left">
                 <div class="PNB10 section_title">
                     <h2>
-                        1/5 {{ 'Executables externes' | trans }}
+                        1/6 {{ 'Executables externes' | trans }}
                     </h2>
                 </div>
                 <div class="PNB10" style="top:50px;overflow-x:hidden;">
@@ -440,11 +434,13 @@
     </div>
 
 
+
+
     <div class="steps">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
                 <div class="PNB10 section_title">
-                    <h2>2/5
+                    <h2>2/6
                         {{ 'Creation de votre compte' | trans }}
                     </h2>
                 </div>
@@ -528,12 +524,19 @@
     </div>
 
 
+
+
+
+
+
+
+
     <div class="steps appbox_settings">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
                 <div class="PNB10 section_title">
                     <h2>
-                        3/5
+                        3/6
                         {% trans %}setup::Configuration de la base de compte ApplicationBox{% endtrans %}
                     </h2>
                 </div>
@@ -638,7 +641,7 @@
             <div class="wrapper">
                 <div class="PNB10 wrapper_left">
                     <div class="PNB10 section_title">
-                        <h2>4/5
+                        <h2>4/6
                             {{ 'SearchEngine settings' | trans }}
                         </h2>
                     </div>
@@ -649,11 +652,11 @@
                                     <table class="main_content_table">
                                         <tr>
                                             <td><label>{{ 'ElasticSearch server host' | trans }}</label></td>
-                                            <td><input class="" type="text" name="elasticsearch_settings[host]" value="" /></td>
+                                            <td><input class="" type="text" name="elasticsearch_settings[host]" value="{{ elasticOptions.host }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'ElasticSearch service port' | trans }}</label></td>
-                                            <td><input class="" type="number" name="elasticsearch_settings[port]" value="" /></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[port]" value="{{ elasticOptions.port }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Use an existing index' | trans }}</label></td>
@@ -661,23 +664,23 @@
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'ElasticSearch index name' | trans }}</label></td>
-                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[index_name]" value="" /></td>
+                                            <td><input class="" disabled="disabled" type="text" name="elasticsearch_settings[index_name]" value="{{ elasticOptions.indexName }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Number of shards' | trans }}</label></td>
-                                            <td><input class="" type="number" name="elasticsearch_settings[shards]" value="" /></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[shards]" value="{{ elasticOptions.shards }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Number of replicas' | trans }}</label></td>
-                                            <td><input class="" type="number" name="elasticsearch_settings[replicas]" value="" /></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[replicas]" value="{{ elasticOptions.replicas }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Thesaurus Min score' | trans }}</label></td>
-                                            <td><input class="" type="number" name="elasticsearch_settings[min_score]" value="" /></td>
+                                            <td><input class="" type="number" name="elasticsearch_settings[min_score]" value="{{ elasticOptions.minScore }}" /></td>
                                         </tr>
                                         <tr>
                                             <td><label>{{ 'Activate highlight' | trans }}</label></td>
-                                            <td><input class="" type="checkbox" name="elasticsearch_settings[highlight]" value="" /></td>
+                                            <td><input class="" type="checkbox" name="elasticsearch_settings[highlight]" value="{{ elasticOptions.highlight }}" {% if elasticOptions.highlight %} checked="checked" {% endif %}/></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -705,7 +708,7 @@
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
                 <div class="PNB10 section_title">
-                    <h2>4/5
+                    <h2>5/6
                         {{ 'setup::Configuration des repertoires de stockage' | trans }}
                     </h2>
                 </div>
@@ -759,11 +762,12 @@
     </div>
 
 
+
     <div class="steps databox_settings">
         <div class="wrapper">
             <div class="PNB10 wrapper_left">
                 <div class="PNB10 section_title">
-                    <h2>5/5
+                    <h2>6/6
                         {% trans %}setup::Configuration de la base de stockage DataBox{% endtrans %}
                     </h2>
                 </div>
@@ -800,7 +804,7 @@
                                         <td>
                                             <select name="db_template" class="databox_creation_input">
                                                 {% for name in available_templates %}
-                                                    <option value="{{ name|escape('js') }}">{{ name }}</option>
+                                                    <option value="{{ name|escape }}">{{ name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </td>

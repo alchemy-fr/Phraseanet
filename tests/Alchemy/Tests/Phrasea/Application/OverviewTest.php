@@ -259,9 +259,8 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
         $substituter = self::$DI['app']['subdef.substituer'];
         if($name == 'document') {
             $substituter->substituteDocument($story, $media);
-        }
-        else {
-            $substituter->substituteSubdef($story, $name, $media);
+        } else {
+             $substituter->substituteSubdef($story, $name, $media);
         }
 
         $path = self::$DI['app']['url_generator']->generate('datafile', [

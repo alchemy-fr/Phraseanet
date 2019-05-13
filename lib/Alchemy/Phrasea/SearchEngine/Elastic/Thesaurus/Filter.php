@@ -46,4 +46,34 @@ class Filter
 
         return $filter;
     }
+
+    public function getQueryFilters()
+    {
+        $filters = [
+            [
+                'term' => [
+                    'databox_id' => $this->databox_id
+                ]
+            ]
+        ];
+        if(!empty($this->paths)) {
+            if (count($this->paths) == 1) {
+                $filters[] = [
+                    'term' => [
+                        'path' => $this->paths[0]
+                    ]
+                ];
+            }
+            else {
+                $filters[] = [
+                    'terms' => [
+                        'path' => $this->paths
+                    ]
+                ];
+            }
+        }
+
+        return $filters;
+    }
+
 }

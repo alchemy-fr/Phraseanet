@@ -6,48 +6,4 @@
         <textarea style="width:98%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
         <button type='button' class="btn btn-inverse" style="margin: 5px 40%;">{{ 'boutton::valider' | trans }}</button>
     </form>
-    <script type="text/javascript">
-      $(document).ready(function(){
-          $('form[name="basket-rename-box"]').on('submit', function(event){
-              event.preventDefault();
-              onSubmitRenameForm(event);
-          });
-
-          $('#basket-rename-box button').on('click', function(event){
-              event.preventDefault();
-              onSubmitRenameForm(event);
-          });
-
-          var onSubmitRenameForm = function(event) {
-              var $form = $(event.currentTarget).closest('form');
-              $.ajax({
-                  type: $form.attr('method'),
-                  url: $form.attr('action'),
-                  dataType: 'json',
-                  data: $form.serializeArray(),
-                  beforeSend:function(){
-
-                  },
-                  success: function(data){
-                      $dialog = p4.Dialog.get(1).Close();
-                      if(data.success) {
-                          humane.info(data.message);
-                          return p4.WorkZone.refresh(data.basket.id);
-                      } else {
-                          humane.error(data.message);
-                          return false;
-                      }
-                  },
-                  error: function(){
-
-                  },
-                  timeout: function(){
-
-                  }
-              });
-
-              return false;
-          };
-      });
-    </script>
 </div>

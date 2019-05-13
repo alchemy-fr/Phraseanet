@@ -78,34 +78,10 @@
     </div>
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            var modal = $("#modal-delete-confirm").modal({
-                "show" : false
-            });
-
-            $("a.delete-session").bind("click", function(e) {
-                e.preventDefault();
-                modal
-                    .data("delete-url", $(this).prop("href"))
-                    .modal("toggle");
-
-                return false;
-            });
-
-            $("a.confirm-delete").on("click", function(e) {
-                e.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: modal.data("delete-url"),
-                    dataType: "json",
-                    success: function(data){
-                        if (data.success) {
-                            $("#row-" +  data.session_id).closest("tr").remove();
-                        }
-                        modal.modal("toggle");
-                    }
-                });
-            });
+        {{parent()}}
+        accountApp.bootstrap({
+            state: 'editSession',
+            geonameServerUrl: '{{ app['geonames.server-uri'] }}'
         });
     </script>
 {% endblock %}

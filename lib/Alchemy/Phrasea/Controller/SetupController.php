@@ -12,7 +12,6 @@ namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
-use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\Setup\RequirementCollectionInterface;
 use Alchemy\Phrasea\Setup\Requirements\BinariesRequirements;
@@ -35,7 +34,6 @@ class SetupController extends Controller
             'available_locales'      => Application::getAvailableLanguages(),
             'current_servername'     => $request->getScheme() . '://' . $request->getHttpHost() . '/',
             'requirementsCollection' => $requirementsCollection,
-            'version'                => new Version()
         ]);
     }
 
@@ -66,7 +64,6 @@ class SetupController extends Controller
         $warnings = [];
 
         $requirementsCollection = $this->getRequirementsCollection();
-
         foreach ($requirementsCollection as $requirements) {
             foreach ($requirements->getRequirements() as $requirement) {
                 if (!$requirement->isFulfilled() && !$requirement->isOptional()) {
@@ -86,6 +83,7 @@ class SetupController extends Controller
             'locale'              => $this->app['locale'],
             'available_locales'   => Application::getAvailableLanguages(),
             'available_templates' => $st->getNames(),
+            'elasticOptions'      =>  ElasticsearchOptions::fromArray([]),
             'warnings'            => $warnings,
             'error'               => $request->query->get('error'),
             'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/',
@@ -100,7 +98,7 @@ class SetupController extends Controller
 
         $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
-         $dbConn = null;
+        $dbConn = null;
 
         $database_host = $request->request->get('hostname');
         $database_port = $request->request->get('port');
@@ -111,6 +109,7 @@ class SetupController extends Controller
         $databox_name = $request->request->get('db_name');
 
         $elastic_settings = $request->request->get('elasticsearch_settings');
+
         $elastic_settings = [
             'host' => (string) $elastic_settings['host'],
             'port' => (int) $elastic_settings['port'],
@@ -129,7 +128,7 @@ class SetupController extends Controller
                 'port'     => $database_port,
                 'user'     => $database_user,
                 'password' => $database_password,
-                'dbname'   => $appbox_name
+                'dbname'   => $appbox_name,
             ];
 
             /** @var Connection $abConn */
@@ -197,6 +196,10 @@ class SetupController extends Controller
             $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
+
+            if(empty($elastic_settings->getHost())){
+                $elastic_settings = ElasticsearchOptions::fromArray([]);
+            }
 
             $this->app['conf']->set(['main', 'search-engine', 'options'], $elastic_settings->toArray());
 

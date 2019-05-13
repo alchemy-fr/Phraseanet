@@ -5,7 +5,8 @@
     <div class="alert">
         {{ 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' | trans }}
     </div>
-    <button class="order_launcher btn rightside"><i class="icon-chevron-left"></i>{{ 'Retour aux commandes' | trans }}</button>
+    <button class="order_launcher btn rightside"><i class="fa fa-chevron-left"
+                                                    aria-hidden="true"></i>{{ 'Retour aux commandes' | trans }}</button>
 </div>
 
 <div style="display:none;position:relative;" id="basket-window" >
@@ -30,7 +31,7 @@
     </div>
 </div>
 
-<div id="order_manager" style="margin-top: 15px;">
+<div id="order_manager" style="margin-top: 15px">
     {% set success = app['request'].query.get('success') %}
     {% set action = app['request'].query.get('action') %}
     {% set message = app['request'].query.get('message') %}
@@ -38,12 +39,12 @@
     {% if  success == '1' %}
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
-             {% if action == 'send' %}
+            {% if action == 'send' %}
                 {{ 'Order has been sent' | trans }}
             {% elseif action == 'deny' %}
                 {{ 'Order has been denied' | trans }}
-             {% elseif action == 'basket' %}
-                 {{ message }}
+            {% elseif action == 'basket' %}
+                {{ message }}
             {% endif %}
         </div>
     {% elseif   success == '0' %}
@@ -63,10 +64,6 @@
             <span class="userdetail"><strong>{{ 'order-manager::order-item: tel' | trans }}</strong> {{ order.getUser().getPhone() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: address' | trans }}</strong> {{ order.getUser().getAddress() }}</span>
             <span class="userdetail"><strong>{{ 'order-manager::order-item: country' | trans }}</strong> {{ order.getUser().getCountry() }}</span>
-            {#<div>#}
-                {#<button id="email-button" onclick="sendMail('{{ order.getUser().getEmail() }}')">#}
-                    {#{{ 'order-manager::order-item: send-mail' | trans }}</button>#}
-            {#</div>#}
         </div>
 
         <table class="table no-border">
@@ -91,11 +88,10 @@
             <tr>
                 <td colspan="2">
                     <span class="text_block">{{ displayName }} (<a
-                                style="font-size: 12px;color: #4990E2;" href="#"
-                                onclick="sendMail()">{{ order.getUser().getEmail() }}</a>)
-                        <span class="icon-stack infoTips" id="userInfo">
-                            <i class="icon-circle icon-stack-base" style="color:#737373"></i>
-                            <i class="icon-info" style="color:#FFF"></i>
+                                style="font-size: 12px;color: #4990E2;" href="#" id="email-btn">{{ order.getUser().getEmail() }}</a>)
+                        <span class="fa-stack infoTips" id="userInfo">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#737373"></i>
+                            <i class="fa fa-info fa-stack-1x" style="color:#FFF" aria-hidden="true"></i>
                         </span>
                     </span>
                 </td>
@@ -107,12 +103,14 @@
                 </td>
             </tr>
         </table>
-        <button class="btn validate outline" disabled><i class="icon-ok-circle"></i>{{ 'order-manager::order-item: validate' |trans }}</button>
+        <button class="btn validate outline" disabled><i class="fa fa-check-circle-o"
+                                                         aria-hidden="true"></i>{{ 'order-manager::order-item: validate' |trans }}
+        </button>
         <div class="order-list-container">
             <div class="order_list" style="width:40%;float:left">
                 <div class="top-bar">
                     <form action="">
-                        <input type="checkbox" onclick="checkAll(this)" name="select-all" value="all"/><span>{{ 'order-manager::order-item: select-all' |trans }}</span>
+                        <input type="checkbox" name="select-all" value="all"/><span>{{ 'order-manager::order-item: select-all' |trans }}</span>
                     </form>
                     <div class="btn-group" id="myDropdown">
                         <button class="btn dropdown-toggle" data-toggle="dropdown">{{ 'order-manager::order-item: create-basket' |trans }}<span class="caret"></span></button>
@@ -181,9 +179,13 @@
             <div id="order_detail" style="width:60%;">
                 <div class="external-order-action" id="order-action" style="display:none; margin: 0 0 1.2em 30px;">
                     <span class="action-text">{{ 'order-manager::order-item: refused-previously' | trans }}</span>
-                    <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                    <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                    <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
+                    <button class="btn deny outline"><i class="fa fa-times" aria-hidden="true"></i>{{ 'Deny' | trans }}
+                    </button>
+                    <button class="btn btn-primary send outline"><i class="fa fa-check"
+                                                                    aria-hidden="true"></i>{{ 'Send' | trans }}</button>
+                    <button class="btn reset outline"><i class="fa fa-refresh"
+                                                         aria-hidden="true"></i>{{ 'order-manager::order-item: reset' | trans }}
+                    </button>
                     <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                     <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                 </div>
@@ -192,9 +194,9 @@
                         {% include 'common/preview.html.twig' with {'record': order.getElements()[0].getRecord(app)}%}
                     </div>
                     <div id="info-header">
-                        <span class="icon-stack infoTips">
-                            <i class="icon-circle icon-stack-base" style="color:#4990E2"></i>
-                            <i class="icon-info" style="color:#FFF"></i>
+                        <span class="fa-stack infoTips">
+                            <i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#4990E2"></i>
+                            <i class="fa fa-info fa-stack-1x" aria-hidden="true" style="color:#FFF"></i>
                         </span>
                         <span class="info-text">{{ 'order-manager::order-item: information' | trans }}</span>
                     </div>
@@ -208,19 +210,24 @@
                         <h4 class="sub-title">{{ 'order-manager::order-item: selected-records' | trans }}</h4>
                         <img class="record record_image imgTips zoomable thumb" oncontextMenu="return(false);"
                              style="width:150px;height:150px;"
-                             src="/assets/common/images/icons/substitution/image_png.png" ondragstart="return false;"/>
+                             src="/assets/common/images/icons/substitution/image_jpg.png" ondragstart="return false;"/>
                         <div id="text-content"></div>
                     </div>
                     <div id="order-action" style="color:#333;">
-                        <button class="btn deny outline"><i class="icon-remove"></i>{{ 'Deny' | trans }}</button>
-                        <button class="btn btn-primary send outline"><i class="icon-ok"></i>{{ 'Send' | trans }}</button>
-                        <button class="btn reset outline"><i class="icon-refresh"></i>{{ 'order-manager::order-item: reset' | trans }}</button>
+                        <button class="btn deny outline"><i class="fa fa-times"
+                                                            aria-hidden="true"></i>{{ 'Deny' | trans }}</button>
+                        <button class="btn btn-primary send outline"><i class="fa fa-check"
+                                                                        aria-hidden="true"></i>{{ 'Send' | trans }}
+                        </button>
+                        <button class="btn reset outline"><i class="fa fa-refresh"
+                                                             aria-hidden="true"></i>{{ 'order-manager::order-item: reset' | trans }}
+                        </button>
                         <img src="/assets/common/images/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
                         <input name="order_id" type="hidden" value="{{ order.getId() }}" />
                     </div>
                 </div>
                 <div id="wrapper-no-item">
-                   <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_png.png">
+                    <img style="width:150px;height:150px;" src="/assets/common/images/icons/substitution/image_jpg.png">
                 </div>
             </div>
         </div>
@@ -228,769 +235,42 @@
 </div>
 
 <script type="text/javascript">
+    var defaultTitle = '{{ 'order-manager::order-list: order-id' | trans }} '
+        + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+        + '{{ order.getCreatedOn()|date('d/m/Y') }}'
+        + ' {{ 'order-manager::order-item: by' |trans }} '
+        + '{{ order.getUser().getDisplayName() }}';
 
-var userInfoIsVisible = false;
-var itemCount = 0;
-var elementsForValidation = [];
-var readyForValidation = false;
-var lastItemChosen = null;
-
-const ELEMENT_TYPE = {
-    VALIDATED: 'validated',
-    DENIED: 'denied',
-    SELECTABLE: 'selectable',
-    SELECTED: 'selected',
-    WAITINGFORVALIDATION: 'waitingForValidation'
-}
-
-$(document).ready(function(){
-    if ($('#notification_box').is(':visible')) {
-        $('#notification_trigger').trigger('mousedown');
-    }
-
-    var dialog = p4.Dialog.get(1);
-    //var order_id = $('input[name=order_id]').val();
-    var trs = $('.order_list .order_row', dialog.getDomElement());
-    var lastSelectedRow;
-
-    dialog.getDomElement().dialog({
-        beforeClose: function() {
-            if(readyForValidation) {
-                if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
-                    dialog.load('{{ path('prod_orders') }}');
-                    return true;
-                }
-                return false;
-            }
-            return true;
-        }
-    });
-;
-    $('.order_launcher', dialog.getDomElement()).bind('click',function(){
-        if(readyForValidation) {
-            if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
-                dialog.load('{{ path('prod_orders') }}');
-            }
-        }else {
-            dialog.load('{{ path('prod_orders') }}');
-        }
-
-    });
-
-    $('.order_list .order_row', dialog.getDomElement()).bind('click',function(event){
-
-        var $this = $(this);
-        lastItemChosen = $this;
-
-        //disable select all checkbox if selected
-        if($('input[name="select-all"]').is(':checked')){
-            $('input[name="select-all"]').prop('checked', false);
-        }
-
-        if(is_ctrl_key(event))
-        {
-            if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
-                return;
-            }
-            if($this.hasClass(ELEMENT_TYPE.SELECTED)) {
-                $this.removeClass(ELEMENT_TYPE.SELECTED);
-                itemCount--;
-            } else {
-                $this.addClass(ELEMENT_TYPE.SELECTED);
-                itemCount++;
-            }
-
-        }
-        else if(is_shift_key(event))
-        {
-            if(!$this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
-                return;
-            }
-            var currentIndex = $this.index('.order_list .order_row');
-            var prevIndex = lastSelectedRow.index('.order_list .order_row');
-            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
-            itemCount = 0;
-            selectRowsBetweenIndexes([prevIndex, currentIndex])
-        }
-        else
-        {
-            $('.order_list .selectable.selected', dialog.getDomElement()).removeClass(ELEMENT_TYPE.SELECTED);
-            if($this.hasClass(ELEMENT_TYPE.SELECTABLE)) {
-                $this.addClass(ELEMENT_TYPE.SELECTED);
-                lastSelectedRow = $this;
-            }
-            itemCount = 1;
-        }
-
-        if(itemCount == 1) {
-            var selected = $('.order_list .selected', dialog.getDomElement());
-            loadPreviewAndCaption(selected);
-        }
-        renderOrderDetailView(itemCount);
-    });
-
-    function selectRowsBetweenIndexes(indexes) {
-        indexes.sort(function(a, b) {
-            return a - b;
-        });
-        for (var i = indexes[0]; i <= indexes[1]; i++) {
-            if ($(trs[i]).hasClass(ELEMENT_TYPE.SELECTABLE)) {
-                $(trs[i]).addClass(ELEMENT_TYPE.SELECTED);
-                itemCount++;
-            }
+    var orderItemData =  {
+        path: '{{ path('prod_orders') }}',
+        userEmail: '{{ order.getUser().getEmail() }}',
+        subject: '{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} '
+            + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
+            + '{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}',
+        body: '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}',
+        description: '{{ order.getOrderUsage()|e('js')|raw }}',
+        translatedText: {
+            rejected: '{{ 'order-manager::order-item: rejected-item' |trans }}',
+            accepted: '{{ 'order-manager::order-item: accepted-item' |trans }}',
+            selected: '{{ 'order-manager::order-item: selected-item' |trans }}',
+            moreText: '{{ 'order-manager::order-item: more' | trans }}',
+            lessText: '{{ 'order-manager::order-item: less' | trans }}',
+            dialogTitle: '{{ 'order-manager::order-item:Create-Basket' | trans }}',
+            createTitle: '{{ 'order-manager::order-item: create' |trans }}',
+            defaultBasketTitle: defaultTitle,
+            message: '{{ 'order-manager::order-item: warning-message-close' |trans }}',
+            validation: '{{ 'order-manager::order-item:Validation' | trans }}',
+            submit: '{{ 'order-manager::order-item: submit' |trans }}',
+            reset: '{{ 'order-manager::order-item: reset' |trans }}',
+            alreadyValidated: '{{ 'order-manager::order-item: already-validated' | trans }}',
+            refusedPreviously: '{{ 'order-manager::order-item: refused-previously' | trans }}',
+            youHaveValidated: '{{ 'order-manager::order-item: you-have-validated' |trans }}',
+            youHaveDenied: '{{ 'order-manager::order-item: you-have-denied' |trans }}',
+            item: '{{ 'order-manager::order-item: item' |trans }}',
+            itemsAlreadySent: '{{ 'order-manager::order-item: items-already-sent' | trans }}',
+            itemsWaitingValidation: '{{ 'order-manager::order-item: items-waiting-validation' | trans }}',
+            nonSentItems: '{{ 'order-manager::order-item: for-non-sent-items' | trans }}'
         }
     }
-
-    $('.captionTips, .captionRolloverTips, .infoTips', dialog.getDomElement()).tooltip({
-        delay:0
-    });
-    $('.previewTips', dialog.getDomElement()).tooltip({
-        fixable:true
-    });
-
-    $('button.send', dialog.getDomElement()).bind('click',function(){
-        updateValidation(ELEMENT_TYPE.VALIDATED);
-        //send_documents(order_id);
-    });
-
-    $('button.deny', dialog.getDomElement()).bind('click',function(){
-        updateValidation(ELEMENT_TYPE.DENIED);
-        //deny_documents(order_id);
-    });
-
-    $('button.reset', dialog.getDomElement()).bind('click',function(){
-        var dialog = p4.Dialog.get(1);
-        var itemsToBeReset = [];
-        $('.order_list .order_row.selected.waitingForValidation', dialog.getDomElement()).each(function(i,n){
-            itemsToBeReset.push($(n));
-        });
-        //if item is not selected, delete item being previewed
-        if(itemsToBeReset.length == 0 && lastItemChosen) {
-            itemsToBeReset.push(lastItemChosen);
-        }
-
-        resetItemForValidation(itemsToBeReset);
-        toggleValidationButton();
-    });
-
-    $('.force_sender', dialog.getDomElement()).bind('click',function(){
-        if(confirm(language.forceSendDocument))
-        {
-            //updateValidation('validated');
-            var element_id = [];
-            element_id.push($(this).closest('.order_row').find('input[name=order_element_id]').val());
-            var order_id = $('input[name=order_id]').val();
-            do_send_documents(order_id, element_id, true);
-        }
-    });
-
-    $('#userInfo').hover(function() {
-        var offset = $('#userInfo').position();
-        $('#userInfoPreview').css({
-            'left': (offset.left - $('#userInfoPreview').width()) + 48,
-            'top': (offset.top+$('#userInfo').height()) + 8
-        });
-        $('#userInfoPreview').show();
-    }, function() {
-        if(!userInfoIsVisible) {
-            $('#userInfoPreview').hide();
-        }
-    });
-
-    $('#userInfo').click(function() {
-        var offset = $('#userInfo').position();
-        if(!userInfoIsVisible) {
-            userInfoIsVisible = true;
-            $('#userInfoPreview').css({
-                'left': (offset.left - $('#userInfoPreview').width()) + 48,
-                'top': (offset.top+$('#userInfo').height()) + 8
-            });
-            $('#userInfoPreview').show();
-        }else {
-            userInfoIsVisible = false;
-            $('#userInfoPreview').hide();
-        }
-    });
-
-    var minimized_elements = $('.minimize');
-
-    $('.minimize').each(function() {
-        var t = $(this).text();
-        if (t.length < 60) return;
-
-        $(this).html(
-                t.slice(0, 60) + '<span>... </span><a href="#" class="more">' + "{{ 'order-manager::order-item: more' | trans }}" + '</a>' +
-                '<span style="display:none;">' + t.slice(60, t.length) + ' <a href="#" class="less">{{ 'order-manager::order-item: less' | trans }}</a></span>'
-        );
-
-    });
-
-
-    $('a.more', minimized_elements).click(function(event){
-        event.preventDefault();
-        $(this).hide().prev().hide();
-        $(this).next().show();
-    });
-
-    $('a.less', minimized_elements).click(function(event) {
-        event.preventDefault();
-        $(this).parent().hide().prev().show().prev().show();
-    });
-
-    $('button.validate', dialog.getDomElement()).bind('click',function(event){
-        openValidationDialog(this,event);
-        return false;
-    });
-
-    $('.basket-btn').click(function(event) {
-        var type = $(this).attr('type');
-        var $dialog = $("#basket-window").dialog({
-            open: function (event, ui) {
-                $('.ui-dialog').css('z-index', 100000);
-                $(".ui-widget-overlay").css('z-index', 100000);
-            },
-            closeOnEscape: true,
-            width: 450,
-            height: 300,
-            modal: true,
-            draggable: false,
-            stack: false,
-            title: "{{ 'order-manager::order-item:Create-Basket' | trans }}",
-            overlay: {
-                backgroundColor: '#000',
-                opacity: 0.7
-            },
-            buttons: {
-                "{{ 'order-manager::order-item: create' |trans }}": function () {
-                    //create basket
-                    createBasket($dialog);
-                    $(this).dialog('close');
-                }
-            }
-        }).dialog('open');
-        populateBasketDialog($dialog, type);
-    return false;
-    });
-
-    $('#myDropdown').on('click', function(){
-        if($('#myDropdown').hasClass('open')) {
-            return;
-        }
-        var dialog = p4.Dialog.get(1);
-        if($('.order_list .selected', dialog.getDomElement()).length > 0) {
-            $('li[type="selected"]').removeClass('disabled');
-        }else {
-            //no selected item
-            if(!$('li[type="selected"]').hasClass('disabled')) {
-                $('li[type="selected"]').addClass('disabled');
-            }
-        }
-    });
-
-});
-
-function createBasket($dialog) {
-    var $form = $('form', $dialog);
-    var dialog = $dialog.closest('.ui-dialog');
-    var buttonPanel = dialog.find('.ui-dialog-buttonpane');
-
-    $.ajax({
-        type: $form.attr('method'),
-        url: $form.attr('action'),
-        data: $form.serializeArray(),
-        dataType: 'json',
-        beforeSend:function(){
-            $(":button:contains('" + language.create + "')", buttonPanel)
-                .attr("disabled", true).addClass("ui-state-disabled");
-        },
-        success: function(data){
-            var order_id = $('input[name=order_id]').val();
-            var success = '0';
-            if(data.success)
-            {
-                success = '1';
-            }
-            var dialog = p4.Dialog.get(1);
-            dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=basket' + '&message='
-                + encodeURIComponent(data.message));
-            p4.WorkZone.refresh(data.basket.id);
-        },
-        error: function(){
-            $(":button:contains('" + language.create + "')", buttonPanel)
-                .attr("disabled", false).removeClass("ui-state-disabled");
-        },
-        timeout: function(){
-
-        }
-    });
-}
-
-function populateBasketDialog($dialog, type) {
-    var lst = [];
-    var orderDialog = p4.Dialog.get(1);
-    //set checkbox to true and disable it
-    $('input[name="lst"]', $dialog).prop('checked', true);
-    $('.checkbox', $dialog).css("visibility","hidden");
-    //set default name
-    var name = "{{ 'order-manager::order-list: order-id' | trans }} "
-        + {{ order.getId() }} + " {{ 'order-manager::order-item: of' |trans }} "
-        + "{{ order.getCreatedOn()|date('d/m/Y') }}"
-        + " {{ 'order-manager::order-item: by' |trans }} "
-        + "{{ order.getUser().getDisplayName() }}";
-    $('input[name="name"]', $dialog).val(name);
-    var description = "{{ order.getOrderUsage()|e('js')|raw }}";
-    var elements_ids = [];
-    switch (type){
-        case 'denied':
-            $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
-                elements_ids.push($(n).attr('elementids'));
-            });
-            break;
-        case 'validated':
-            $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
-                elements_ids.push($(n).attr('elementids'));
-            });
-            break;
-        default :
-            //selected elements;
-            $('.order_list .order_row.' + type, orderDialog.getDomElement()).each(function(i,n) {
-                elements_ids.push($(n).attr('elementids'));
-            });
-    }
-    $('textarea[name="description"]', $dialog).val(description);
-    $('input[name="lst"]', $dialog).val(elements_ids.join('; '));
-}
-
-function openValidationDialog(el, event) {
-    $("#validation-window").dialog({
-        open: function (event, ui) {
-            $('.ui-dialog').css('z-index', 100000);
-            $(".ui-widget-overlay").css('z-index', 100000);
-        },
-        closeOnEscape: true,
-        resizable: false,
-        width: 450,
-        height: 500,
-        modal: true,
-        draggable: false,
-        stack: false,
-        title: '{{ 'order-manager::order-item:Validation' | trans }}',
-        buttons: {
-            "{{ 'order-manager::order-item: submit' |trans }}": function() {
-               //submit documents
-                submitDocuments($(this));
-            },
-            "{{ 'order-manager::order-item: reset' |trans }}": function() {
-                if(confirm("{{ 'order-manager::order-item: warning-message-close' |trans }}")) {
-                    resetAllItemForValidation();
-                    toggleValidationButton();
-                    $(this).dialog("close");
-                }
-            }
-        },
-        overlay: {
-            backgroundColor: '#000',
-            opacity: 0.7
-        }
-    }).dialog('open');
-    createValidationTable();
-}
-
-function submitDocuments(dialogElem) {
-    var order_id = $('input[name=order_id]').val();
-    var validatedArrayNoForceIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState !== ELEMENT_TYPE.DENIED;
-    }).map(function(elem) {
-        return elem.elementId;
-    });
-
-    var validatedArrayWithForceIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === ELEMENT_TYPE.VALIDATED && elem.oldState === ELEMENT_TYPE.DENIED;
-    }).map(function(elem) {
-        return elem.elementId;
-    });
-
-    var deniedArrayIds = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === ELEMENT_TYPE.DENIED;
-    }).map(function(elem) {
-        return elem.elementId;
-    });
-
-    if(validatedArrayNoForceIds.length > 0) {
-        do_send_documents(order_id, validatedArrayNoForceIds, false);
-    }
-    if(validatedArrayWithForceIds.length > 0) {
-        do_send_documents(order_id, validatedArrayWithForceIds, true);
-    }
-    if(deniedArrayIds.length > 0) {
-        do_deny_documents(order_id, deniedArrayIds);
-    }
-    dialogElem.dialog("close");
-}
-
-function createValidationTable() {
-    $('.validation-content').empty();
-    var validatedArray = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === ELEMENT_TYPE.VALIDATED;
-    });
-    var deniedArray = _.filter(elementsForValidation, function(elem) {
-        return elem.newState === ELEMENT_TYPE.DENIED;
-    });
-
-    if(validatedArray.length > 0) {
-        var html = "";
-        html += "<h5>" + "{{ 'order-manager::order-item: you-have-validated' |trans }}" + " " + (validatedArray.length == 1 ? validatedArray.length + " " + "{{ 'order-manager::order-item: item' |trans }}" :  validatedArray.length + " " + "{{ 'order-manager::order-item: items' |trans }}") + "</h5>";
-        html += '<table class="validation-table">';
-        _.each(validatedArray, function(elem) {
-            html += "<tr>";
-            html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
-            html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
-            html += "</tr>";
-        });
-        html += "</table>";
-        $('.validation-content').append(html);
-    }
-
-    if(deniedArray.length > 0) {
-        var html = "";
-        html += "<h5>" + "{{ 'order-manager::order-item: you-have-denied' |trans }}" + " " + (deniedArray.length == 1 ? deniedArray.length + " " + "{{ 'order-manager::order-item: item' |trans }}" :  deniedArray.length + " " + "{{ 'order-manager::order-item: items' |trans }}") + "</h5>";
-        html += '<table class="validation-table">';
-        _.each(deniedArray, function(elem) {
-            html += "<tr>";
-            html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
-            html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
-            html += "</tr>";
-        });
-        html += "</table>";
-        $('.validation-content').append(html);
-    }
-
-}
-
-function removeItemFromArray(item) {
-    var elementId = item.find('input[name=order_element_id]').val();
-    var found = _.where(elementsForValidation, {elementId: elementId});
-    if(found.length > 0) {
-        item.removeClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-        //replace content or row with original content
-        item[0].innerHTML = found[0].element[0].innerHTML;
-        //remove from array
-        elementsForValidation = _.without(elementsForValidation, found[0]);
-    }
-}
-
-function resetItemForValidation(itemsToBeReset) {
-    var elementArrayType = [];
-    itemsToBeReset.forEach(function(item){
-        removeItemFromArray(item);
-        updateButtonStatus(item.attr('class').split(/\s+/));
-        elementArrayType.push(item.attr('class').split(/\s+/));
-    });
-    if(elementsForValidation.length == 0) {
-        readyForValidation = false;
-    }
-    updateButtonStatusMultiple(elementArrayType);
-    toggleValidationButton();
-    //disable select all checkbox if selected
-    if($('input[name="select-all"]').is(':checked')){
-        $('input[name="select-all"]').prop('checked', false);
-    }
-
-}
-
-function resetAllItemForValidation() {
-    var dialog = p4.Dialog.get(1);
-    $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        removeItemFromArray($(n));
-        updateButtonStatus($(n).attr('class').split(/\s+/));
-    });
-    readyForValidation = false;
-    renderOrderDetailView(0);
-}
-
-function updateValidation(newState) {
-    var count = 0;
-    var dialog = p4.Dialog.get(1);
-    $('.order_list .order_row', dialog.getDomElement()).each(function(i,n){
-        if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED) && !$(n).hasClass(ELEMENT_TYPE.DENIED)
-            && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
-            createItemForValidation($(n), ELEMENT_TYPE.SELECTABLE, newState);
-            count++;
-        }
-        else if($(n).hasClass(ELEMENT_TYPE.SELECTED) && !$(n).hasClass(ELEMENT_TYPE.VALIDATED)
-            && !$(n).hasClass(ELEMENT_TYPE.WAITINGFORVALIDATION)){
-            createItemForValidation($(n), ELEMENT_TYPE.DENIED, newState);
-            count++;
-        }
-        $(n).removeClass(ELEMENT_TYPE.SELECTED);
-    });
-
-    //if item is not selected, delete item being previewed
-    if(count == 0 && lastItemChosen) {
-        createItemForValidation(lastItemChosen, ELEMENT_TYPE.SELECTABLE, newState);
-        count++;
-    }
-
-    readyForValidation = true;
-    toggleValidationButton();
-    //disable select all checkbox if selected
-    if($('input[name="select-all"]').is(':checked')){
-        $('input[name="select-all"]').prop('checked', false);
-    }
-
-    //multiple items selected
-    if(count > 1) {
-        $('#wrapper-padding').hide();
-        $('.external-order-action').hide();
-        $('#wrapper-multiple').hide();
-        $('#wrapper-no-item').show();
-    }
-}
-
-function createItemForValidation(element, oldState, newState) {
-    var order = {};
-    order.elementTitle = element.find('span');
-    order.elementPreview = element.find('.order_wrapper');
-    order.elementId = element.find('input[name=order_element_id]').val();
-    order.element = element.clone( true );
-    order.oldState = oldState;
-    order.newState = newState;
-    elementsForValidation.push(order);
-    element.toggleClass(ELEMENT_TYPE.WAITINGFORVALIDATION);
-    element.find('td:first-child').empty();
-    if(newState == 'denied') {
-        element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-remove-circle">');
-    }else {
-        element.find('td:first-child').append('<i style="font-size: 20px;" class="icon-ok-circle">');
-    }
-    updateButtonStatus(element.attr('class').split(/\s+/));
-}
-
-function toggleValidationButton() {
-    if(readyForValidation) {
-        $('button.validate').prop('disabled', false);
-        $('button.validate').css('color', '#7CD21C');
-    }else {
-        $('button.validate').prop('disabled', true);
-        $('button.validate').css('color', '#737373');
-    }
-}
-
-function checkAll(element) {
-    itemCount = 0;
-    var selectable =[];
-    $('.table-order .order_row').each(function(){
-        var el = $(this);
-        if(element.checked && el.hasClass(ELEMENT_TYPE.SELECTABLE)){
-            el.addClass(ELEMENT_TYPE.SELECTED);
-            itemCount++;
-            selectable.push(el);
-        }else {
-            el.removeClass(ELEMENT_TYPE.SELECTED);
-        }
-    });
-    //load preview for single item selected
-    if(selectable.length == 1) {
-        loadPreviewAndCaption(selectable[0]);
-    }
-    renderOrderDetailView(itemCount);
-}
-
-function do_send_documents(order_id, elements_ids, force)
-{
-    var dialog = p4.Dialog.get(1);
-    var cont = dialog.getDomElement();
-
-    $('button.deny, button.send', cont).prop('disabled', true);
-    $('.activity_indicator', cont).show();
-
-    $.ajax({
-        type: "POST",
-        url: "../prod/order/"+order_id+"/send/",
-        dataType:'json',
-        data: {
-            'elements[]':elements_ids,
-            force:(force?1:0)
-        },
-        success: function(data){
-            var success = '0';
-
-            if(data.success)
-            {
-                success = '1';
-            }
-
-            dialog.load('../prod/order/' + order_id + '/?success=' + success + '&action=send');
-        },
-        error: function(){
-            $('button.deny, button.send', cont).prop('disabled', false);
-            $('.activity_indicator', cont).hide();
-        },
-        timeout: function(){
-            $('button.deny, button.send', cont).prop('disabled', false);
-            $('.activity_indicator', cont).hide();
-        }
-    });
-}
-
-function do_deny_documents(order_id, elements_ids) {
-    var dialog = p4.Dialog.get(1);
-    var cont = dialog.getDomElement();
-    $('button.deny, button.send', cont).prop('disabled', true);
-    $('.activity_indicator', cont).show();
-
-    $.ajax({
-        type: "POST",
-        url: "../prod/order/"+ order_id +"/deny/",
-        dataType:'json',
-        data: {
-            'elements[]':elements_ids
-        },
-        success: function(data){
-            var success = '0';
-
-            if(data.success)
-            {
-                success = '1';
-            }
-
-            dialog.load('/prod/order/' + order_id + '/?success=' + success + '&action=deny');
-        },
-        error: function(){
-            $('button.deny, button.send', cont).prop('disabled', false);
-            $('.activity_indicator', cont).hide();
-        },
-        timeout: function(){
-            $('button.deny, button.send', cont).prop('disabled', false);
-            $('.activity_indicator', cont).hide();
-        }
-    });
-}
-
-function sendMail() {
-    var email = "{{ order.getUser().getEmail() }}";
-    var subject = "{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} "
-            + {{ order.getId() }} + " {{ 'order-manager::order-item: of' |trans }} "
-            + "{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}";
-    var body = "{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}";
-    if(email != null) {
-        var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-        window.location.href = link;
-
-    }
-}
-
-function renderOrderDetailView(countSelected) {
-    if(countSelected > 1) {
-        $('#wrapper-padding').hide();
-        $('.external-order-action').hide();
-        $('#wrapper-multiple').show();
-        $('#wrapper-no-item').hide();
-        var dialog = p4.Dialog.get(1);
-        var elementArrayType = [];
-        $('.order_list .selectable.selected', dialog.getDomElement()).each(function(i,n){
-            //elementArrayType = _.union(elementArrayType, $(n).attr('class').split(/\s+/));
-            elementArrayType.push($(n).attr('class').split(/\s+/));
-        });
-        updateButtonStatusMultiple(elementArrayType);
-        //updateButtonStatus(elementArrayType);
-    }else if(countSelected == 1) {
-        $('#wrapper-padding').show();
-        $('.external-order-action').show();
-        $('#wrapper-multiple').hide();
-        $('#wrapper-no-item').hide();
-    }else {
-        $('#wrapper-padding').hide();
-        $('.external-order-action').hide();
-        $('#wrapper-multiple').hide();
-        $('#wrapper-no-item').show();
-    }
-    $('#preview-layout-multiple .title').html(countSelected);
-}
-
-function updateButtonStatusMultiple(elementArrayType) {
-    $('#order-action button.deny, #order-action button.send, #order-action button.reset').hide();
-    var countObj = elementArrayType.reduce(function(m,v){
-        for (var k in m) {
-            if (~v.indexOf(k)) m[k]++;
-        }
-        return m;
-    },{validated:0, selectable: 0, waitingForValidation: 0});
-
-    var html = "";
-    if(countObj.validated > 0) {
-        html += "<p>{{ 'order-manager::order-item: items-already-sent' | trans }}: "
-            + countObj.validated + "</p>";
-    }
-
-    if(countObj.waitingForValidation > 0) {
-        html += "<p>{{ 'order-manager::order-item: items-waiting-validation' | trans }}: "
-            + countObj.waitingForValidation + "</p>";
-    }
-
-    //for the remaining items
-    var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
-    if(remaining > 0) {
-        html += "<p> {{ 'order-manager::order-item: for-non-sent-items' | trans }}: "
-            + remaining + "</p>";
-        $('#order-action button.deny, #order-action button.send').prop('disabled', false);
-        $('#order-action button.deny, #order-action button.send').show();
-    }
-    //contains only items waiting for validation
-    if(countObj.waitingForValidation === countObj.selectable) {
-        $('#order-action button.reset').show();
-    }
-
-    $('#wrapper-multiple #text-content').empty();
-    $('#wrapper-multiple #text-content').append(html);
-}
-
-/* *
-* function to update status of send and deny button
-* params - array of type for each button selected
-*/
-function updateButtonStatus(elementArrayType) {
-    if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED)) {
-        $('#order-action button.deny, #order-action button.send, #order-action button.reset').hide();
-        $('#order-action span.action-text').html("{{ 'order-manager::order-item: already-validated' | trans }}" + '<i class="icon-ok"></i>');
-        $('#order-action span.action-text').show();
-    }else if (_.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
-        $('#order-action button.deny, #order-action button.send, #order-action span.action-text').hide();
-        $('#order-action button.reset').show();
-        //$('#order-action button.send').show();
-        //$('#order-action button.send').prop('disabled', true);
-    }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
-        $('#order-action button.deny, #order-action button.reset').hide();
-        $('#order-action span.action-text').html("{{ 'order-manager::order-item: refused-previously' | trans }}");
-        //$('#order-action button.send').prop('disabled', false);
-        $('#order-action button.send, #order-action span.action-text').show();
-    }else {
-       // $('#order-action button.send, #order-action button.deny').prop('disabled', false);
-        $('#order-action button.send, #order-action button.deny').show();
-        $('#order-action span.action-text, #order-action button.reset').hide();
-    }
-}
-
-
-function loadPreviewAndCaption(elem) {
-    $('#preview-layout').empty();
-    $('#caption-layout').empty();
-    updateButtonStatus(elem.attr('class').split(/\s+/));
-    var elementids = elem.attr('elementids').split('_');
-    var sbasId = elementids[0];
-    var recordId = elementids[1];
-    prevAjax = $.ajax({
-        type: "GET",
-        url: "../prod/records/record/"+sbasId+'/'+recordId+'/',
-        dataType: 'json',
-        success: function (data) {
-            if (data.error) {
-                return;
-            }
-            $('#preview-layout').append(data.html_preview);
-            $('#caption-layout').append(data.desc);
-        }
-    });
-}
 
 </script>

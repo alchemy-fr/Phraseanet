@@ -23,20 +23,20 @@ abstract class V1SearchTransformer extends TransformerAbstract
         $result = $resultView->getResult();
 
         return [
-            'offset_start'      => $result->getOptions()->getFirstResult(),
-            'per_page'          => $result->getOptions()->getMaxResults(),
+            'offset_start' => $result->getOptions()->getFirstResult(),
+            'per_page' => $result->getOptions()->getMaxResults(),
             'available_results' => $result->getAvailable(),
-            'total_results'     => $result->getTotal(),
-            'error'             => (string)$result->getError(),
-            'warning'           => (string)$result->getWarning(),
-            'query_time'        => $result->getDuration(),
-            'search_indexes'    => $result->getIndexes(),
-            'suggestions'       => array_map(
+            'total_results' => $result->getTotal(),
+            'error' => (string)$result->getError(),
+            'warning' => (string)$result->getWarning(),
+            'query_time' => $result->getDuration(),
+            'search_indexes' => $result->getIndexes(),
+            'suggestions' => array_map(
                 function (SearchEngineSuggestion $suggestion) {
                     return $suggestion->toArray();
                 }, $result->getSuggestions()->toArray()),
-            'facets'            => $result->getFacets(),
-            'query'             => $result->getQueryText(),
+            'facets' => $result->getFacets(),
+            'query' => $result->getQueryText(),
         ];
     }
 

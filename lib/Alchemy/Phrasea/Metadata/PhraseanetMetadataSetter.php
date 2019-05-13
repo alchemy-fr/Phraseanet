@@ -120,9 +120,8 @@ class PhraseanetMetadataSetter
                 if (!isset($metadataPerField[$fieldName])) {
                     $metadataPerField[$fieldName] = [];
                 }
-
                 if(in_array($tagName, File::$xmpTag)){
-                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array)File::sanitizeXmpUuid($metadata->getValue()->asString()));
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array) File::sanitizeXmpUuid($metadata->getValue()->asString()));
                 }else{
                     $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
                 }

@@ -45,29 +45,12 @@ class RootController extends Controller
             return $this->app->redirectPath('logout');
         }
 
-        $cssPath = $this->app['root.path'] . '/www/assets/prod/skins';
-
         $css = [];
-
-        $finder = new Finder();
-        /** @var SplFileInfo[] $iterator */
-        $iterator = $finder
-            ->directories()
-            ->depth(0)
-            ->filter(function (\SplFileInfo $fileinfo) {
-                return ctype_xdigit($fileinfo->getBasename());
-            })
-            ->in($cssPath);
-
-        foreach ($iterator as $dir) {
-            $baseName = $dir->getBaseName();
-            $css[$baseName] = $baseName;
-        }
 
         $user = $this->getAuthenticatedUser();
         $cssfile = $this->getSettings()->getUserSetting($user, 'css');
 
-        if (!$cssfile && isset($css['000000'])) {
+        if (!$cssfile) {
             $cssfile = '000000';
         }
 
@@ -76,14 +59,7 @@ class RootController extends Controller
 
         $thjslist = "";
 
-        $queries_topics = '';
-
         $conf = $this->getConf();
-        if ($conf->get(['registry', 'classic', 'render-topics']) == 'popups') {
-            $queries_topics = \queries::dropdown_topics($this->app['translator'], $this->app['locale']);
-        } elseif ($conf->get(['registry', 'classic', 'render-topics']) == 'tree') {
-            $queries_topics = \queries::tree_topics($this->app['locale']);
-        }
 
         $sbas = $bas2sbas = [];
 
@@ -126,13 +102,11 @@ class RootController extends Controller
             'GV_multiAndReport'    => $conf->get(['registry', 'modules', 'stories']),
             'GV_thesaurus'         => $conf->get(['registry', 'modules', 'thesaurus']),
             'cgus_agreement'       => \databox_cgu::askAgreement($this->app),
-            'css'                  => $css,
             'feeds'                => $feeds,
             'aggregate'            => $aggregate,
             'GV_google_api'        => $conf->get(['registry', 'webservices', 'google-charts-enabled']),
-            'queries_topics'       => $queries_topics,
+            'geocodingProviders'    => $conf->get(['geocoding-providers']),
             'search_status'        => \databox_status::getSearchStatus($this->app),
-            'queries_history'      => \queries::history($this->app, $user->getId()),
             'thesau_js_list'       => $thjslist,
             'thesau_json_sbas'     => json_encode($sbas),
             'thesau_json_bas2sbas' => json_encode($bas2sbas),

@@ -38,7 +38,7 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox,ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
         $this->options = $options;
@@ -123,13 +123,11 @@ class Fetcher
 
     /**
      * @return \Doctrine\DBAL\Driver\Statement
-     * @throws \Doctrine\DBAL\DBALException
      */
     private function getExecutedStatement()
     {
         if (!$this->statement) {
-
-           $sql =  "SELECT r.*, c.asciiname AS collection_name, subdef.width, subdef.height, subdef.size\n"
+            $sql =  "SELECT r.*, c.asciiname AS collection_name, subdef.width, subdef.height, subdef.size\n"
                  . " FROM ((\n"
                  . "     SELECT r.record_id, r.coll_id AS collection_id, r.uuid, r.status AS flags_bitfield, r.sha256,\n"
                  . "            r.originalname AS original_name, r.mime, r.type, r.parent_record_id,\n"

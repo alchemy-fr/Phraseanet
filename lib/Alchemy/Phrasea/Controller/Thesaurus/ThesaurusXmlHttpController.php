@@ -252,7 +252,7 @@ class ThesaurusXmlHttpController extends Controller
                         /** @var DOMElement $n2 */
                         for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                             if ($n2->nodeName == "sy") {
-                                $sy = htmlspecialchars($n2->getAttribute("v"));
+                                $sy = $n2->getAttribute("v");
                                 if (!$firstsy) {
                                     $firstsy = $sy;
                                     if ($request->get("debug")) {
@@ -441,7 +441,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = htmlspecialchars($n2->getAttribute("v"));
+                            $t = $n2->getAttribute("v");
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -586,7 +586,7 @@ class ThesaurusXmlHttpController extends Controller
                     for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                         if ($n2->nodeName == "sy") {
                             $lng = $n2->getAttribute("lng");
-                            $t = htmlspecialchars($n2->getAttribute("v"));
+                            $t = $n2->getAttribute("v");
                             $ksy = $n2->getAttribute("w");
                             if ($k = $n2->getAttribute("k")) {
                                 $ksy .= " ($k)";
@@ -843,7 +843,7 @@ class ThesaurusXmlHttpController extends Controller
             for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
                 if ($n2->nodeName == 'sy') {
                     $lng = $n2->getAttribute('lng');
-                    $t = htmlspecialchars($n2->getAttribute('v'));
+                    $t = $n2->getAttribute('v');
                     $key = $n2->getAttribute('w');  // key of the current sy
                     if ($k = $n2->getAttribute('k')) {
                         $key .= ' (' . $k . ')';
@@ -920,7 +920,7 @@ class ThesaurusXmlHttpController extends Controller
                 $bid = $request->get('bid');
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = htmlspecialchars($n->getAttribute('v'));
+                    $t = $n->getAttribute('v');
                     $tid = $n->getAttribute('id');
 
                     $html .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -967,7 +967,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = htmlspecialchars($n->getAttribute('v'));
+                    $t = $n->getAttribute('v');
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'TH_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1078,12 +1078,12 @@ class ThesaurusXmlHttpController extends Controller
                 $ret['result'] = array();
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = htmlspecialchars($n->getAttribute('v'));
+                    $t = $n->getAttribute('v');
                     $tid = $n->getAttribute('id');
 
                     $ret['result'][] = array(
                         'id' => $n->getAttribute('id'),
-                        't'  => htmlspecialchars($n->getAttribute('v')),
+                        't'  => $n->getAttribute('v'),
                     );
                 }
             }
@@ -1103,7 +1103,7 @@ class ThesaurusXmlHttpController extends Controller
         $allsy = array();
         for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
             if ($n->nodeName == 'sy') {
-                $t = htmlspecialchars($n->getAttribute('v'));
+                $t = $n->getAttribute('v');
                 $allsy[] = array(
                     'id' => $n->getAttribute('id'),
                     't'  => $t,
@@ -1190,7 +1190,7 @@ class ThesaurusXmlHttpController extends Controller
             } else {
                 for ($i = 0; $i < $nodes->length; $i++) {
                     $n = $nodes->item($i);
-                    $t = htmlspecialchars($n->getAttribute('v'));
+                    $t = $n->getAttribute('v');
                     $tid = $n->getAttribute('id');
 
                     $zhtml .= '<p id=\'TH_T.' . $bid . '.' . $tid . '\'>';
@@ -1213,7 +1213,7 @@ class ThesaurusXmlHttpController extends Controller
             $allsy = '';
             for ($n = $srcnode->firstChild; $n; $n = $n->nextSibling) {
                 if ($n->nodeName == 'sy') {
-                    $t = htmlspecialchars($n->getAttribute('v'));
+                    $t = $n->getAttribute('v');
                     if ($n->getAttribute('bold')) {
                         $allsy .= ( $allsy ? ' ; ' : '') . '<b id=\'GL_W.' . $bid . '.' . $n->getAttribute('id') . '\'>' . $t . '</b>';
                     } else {
@@ -1257,6 +1257,8 @@ class ThesaurusXmlHttpController extends Controller
 
     public function replaceCandidateJson(Request $request)
     {
+        $tsbas = [];
+
         $ret = [
             'ctermsDeleted'    => [],
             'maxRecsUpdatable' => self::SEARCH_REPLACE_MAXREC,
@@ -1265,48 +1267,158 @@ class ThesaurusXmlHttpController extends Controller
             'msg'              => ''
         ];
 
-        // group ids by base
-        $tsbas = [];
         foreach ($request->get('id') as $id) {
             $id = explode('.', $id);
             $sbas_id = array_shift($id);
-            if (!array_key_exists($sbas_id, $tsbas)) {
-                $tsbas[$sbas_id] = [];
+            if (!array_key_exists('b' . $sbas_id, $tsbas)) {
+                $tsbas['b' . $sbas_id] = [
+                    'sbas_id' => (int) $sbas_id,
+                    'tids'    => [],
+                    'domct'   => null,
+                    'tvals'   => [],
+                    'lid'     => '',
+                    'trids'   => []
+                ];
             }
-            $tsbas[$sbas_id][] = implode('.', $id);
+            $tsbas['b' . $sbas_id]['tids'][] = implode('.', $id);
         }
 
-        // loop on bases
-        foreach ($tsbas as $sbas_id => $sbas) {
+        // first, count the number of records to update
+        foreach ($tsbas as $ksbas => $sbas) {
             try {
-                $databox = $this->findDataboxById($sbas_id);
-                $domct = $databox->get_dom_cterms();
+                $databox = $this->findDataboxById($sbas['sbas_id']);
+                $connbas = $databox->get_connection();
+                $tsbas[$ksbas]['domct'] = $databox->get_dom_cterms();
             } catch (\Exception $e) {
                 continue;
             }
 
-            if (!$domct) {
+            if (!$tsbas[$ksbas]['domct']) {
                 continue;
             }
 
-            $domct_changed = false;
-            $xpathct = new \DOMXPath($domct);
+            $lids = [];
+            $xpathct = new \DOMXPath($tsbas[$ksbas]['domct']);
 
-            foreach ($sbas as $tid) {
+            foreach ($sbas['tids'] as $tid) {
                 $xp = '//te[@id="' . $tid . '"]/sy';
                 $nodes = $xpathct->query($xp);
                 if ($nodes->length == 1) {
                     $sy = $nodes->item(0);
-                    $te = $sy->parentNode;
-                    $ret['ctermsDeleted'][] = $sbas_id . '.' . $te->getAttribute('id');
-                    $te->parentNode->removeChild($te);
-                    $domct_changed = true;
+                    $syid = str_replace('.', 'd', $sy->getAttribute('id')) . 'd';
+                    $lids[] = $syid;
+                    $field = $sy->parentNode->parentNode->getAttribute('field');
+
+                    if (!array_key_exists($field, $tsbas[$ksbas]['tvals'])) {
+                        $tsbas[$ksbas]['tvals'][$field] = [];
+                    }
+                    $tsbas[$ksbas]['tvals'][$field][] = $sy;
                 }
             }
 
-            if ($domct_changed && !$request->get('debug')) {
-                $databox->saveCterms($domct);
+            if (empty($lids)) {
+                // no cterm was found
+                continue;
             }
+            $tsbas[$ksbas]['lid'] = "'" . implode("','", $lids) . "'";
+
+            // count records
+            $sql = 'SELECT DISTINCT record_id AS r'
+                . ' FROM thit WHERE value IN (:lids)'
+                . ' ORDER BY record_id';
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(['lids' => $lids]);
+            $tsbas[$ksbas]['trids'] = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+            $stmt->closeCursor();
+
+            $ret['nRecsToUpdate'] += count($tsbas[$ksbas]['trids']);
+        }
+
+        if ($ret['nRecsToUpdate'] <= self::SEARCH_REPLACE_MAXREC) {
+            foreach ($tsbas as $sbas) {
+
+                try {
+                    $databox = $this->findDataboxById($sbas['sbas_id']);
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                // fix caption of records
+                foreach ($sbas['trids'] as $rid) {
+                    try {
+                        $record = $databox->get_record($rid);
+
+                        $metadatask = [];  // datas to keep
+                        $metadatasd = [];  // datas to delete
+
+                        /* @var $field caption_field */
+                        foreach ($record->get_caption()->get_fields(null, true) as $field) {
+                            $meta_struct_id = $field->get_meta_struct_id();
+                            /* @var $v caption_Field_Value */
+                            $fname = $field->get_name();
+                            if (!array_key_exists($fname, $sbas['tvals'])) {
+                                foreach ($field->get_values() as $v) {
+                                    $metadatask[] = [
+                                        'meta_struct_id' => $meta_struct_id,
+                                        'meta_id'        => $v->getId(),
+                                        'value'          => $v->getValue()
+                                    ];
+                                }
+                            } else {
+                                foreach ($field->get_values() as $v) {
+                                    $keep = true;
+                                    $vtxt = $this->getUnicode()->remove_indexer_chars($v->getValue());
+                                    /** @var DOMElement $sy */
+                                    foreach ($sbas['tvals'][$fname] as $sy) {
+                                        if ($sy->getAttribute('w') == $vtxt) {
+                                            $keep = false;
+                                        }
+                                    }
+
+                                    if ($keep) {
+                                        $metadatask[] = [
+                                            'meta_struct_id' => $meta_struct_id,
+                                            'meta_id'        => $v->getId(),
+                                            'value'          => $v->getValue()
+                                        ];
+                                    } else {
+                                        $metadatasd[] = [
+                                            'meta_struct_id' => $meta_struct_id,
+                                            'meta_id'        => $v->getId(),
+                                            'value'          => $request->get('t') ? $request->get('t') : ''
+                                        ];
+                                    }
+                                }
+                            }
+                        }
+
+                        if (count($metadatasd) > 0) {
+                            if (!$request->get('debug')) {
+                                $record->set_metadatas($metadatasd, true);
+                                $ret['nRecsUpdated']++;
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                }
+
+                foreach ($sbas['tvals'] as $tval) {
+                    foreach ($tval as $sy) {
+                        // remove candidate from cterms
+                        $te = $sy->parentNode;
+                        $te->parentNode->removeChild($te);
+                        $ret['ctermsDeleted'][] = $sbas['sbas_id'] . '.' . $te->getAttribute('id');
+                    }
+                }
+                if (!$request->get('debug')) {
+                    $databox->saveCterms($sbas['domct']);
+                }
+            }
+            $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:%number% record(s) updated', ['%number%' => $ret['nRecsUpdated']]);
+        } else {
+            // too many records to update
+            $ret['msg'] = $this->app->trans('prod::thesaurusTab:dlg:too many (%number%) records to update (limit=%maximum%)', ['%number%' => $ret['nRecsToUpdate'], '%maximum%' => self::SEARCH_REPLACE_MAXREC]);
         }
 
         return $this->app->json($ret);
@@ -1329,6 +1441,7 @@ class ThesaurusXmlHttpController extends Controller
                 $dom = $databox->get_dom_thesaurus();
                 $html = "" . '<LI id="TX_P.' . $sbid . '.T" class="expandable">' . "\n";
             }
+
 
             $html .= "\t" . '<div class="hitarea expandable-hitarea"></div>' . "\n";
             $html .= "\t" . '<span>' . \phrasea::sbas_labels($sbid, $this->app) . '</span>' . "\n";
@@ -1363,17 +1476,15 @@ class ThesaurusXmlHttpController extends Controller
                     $t = $this->splitTermAndContext($request->get('t'));
                     $unicode = $this->getUnicode();
                     $q2 = 'starts-with(@w, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[0])) . '\')';
-                    if ($t[1])
-                        $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape(
-                                $unicode->remove_indexer_chars($t[1])) . '\')';
-
-                    if($lng == null){
-                        $q2 = '//sy[' . $q2 . ']';
-                    }else{
-                        $q2 = '//sy[' . $q2 . ' and @lng=\'' . $lng . '\']';
+                    if ($t[1]) {
+                        $q2 .= ' and starts-with(@k, \'' . \thesaurus::xquery_escape($unicode->remove_indexer_chars($t[1])) . '\')';
                     }
 
-                    $q .= $q2;
+                    if($lng != null){
+                        $q2 .= ' and @lng=\'' . \thesaurus::xquery_escape($lng) . '\'';
+                    }
+
+                    $q .= ('//sy[' . $q2 . ']');
 
                     $nodes = $xpath->query($q);
 
@@ -1451,8 +1562,8 @@ class ThesaurusXmlHttpController extends Controller
                 if ($field0) {
                     $field0 = 'field="' . $field0 . '"';
                 }
-
                 $html .= $tab . '<UL ' . $field0 . '>' . "\n";
+
                 // dump every ts
                 /** @var DOMElement[] $ts */
                 foreach ($tts as $ts) {
@@ -1479,7 +1590,6 @@ class ThesaurusXmlHttpController extends Controller
                     }
                     $html .= $tab . "\t\t" . '<span>' . $ts['label'] . '</span>' . "\n";
 
-
                     $this->getHTMLTerm($type, $sbid, $lng, $ts['n'], $html, $depth + 1);
 
                     $html .= $tab . "\t" . '</LI>' . "\n";
@@ -1501,7 +1611,7 @@ class ThesaurusXmlHttpController extends Controller
             if ($n2->nodeName == 'sy') {
 
                 $lng = $n2->getAttribute('lng');
-                $t = htmlspecialchars($n2->getAttribute('v'));
+                $t = $n2->getAttribute('v');
                 $key = $n2->getAttribute('w');  // key of the current sy
 
                 if ($k = $n2->getAttribute('k')) {

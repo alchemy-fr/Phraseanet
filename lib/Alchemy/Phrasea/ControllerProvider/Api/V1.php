@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
@@ -37,6 +37,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             return (new V1Controller($app))
                 ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ->setDispatcher($app['dispatcher'])
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setJsonBodyHelper(new LazyLocator($app, 'json.body_helper'));
         });
     }

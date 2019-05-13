@@ -8,7 +8,7 @@ class databox_descriptionStructureTest extends \PhraseanetTestCase
 {
     public function testToArray()
     {
-        $structure = new \databox_descriptionStructure();
+        $structure = new \databox_descriptionStructure([], new unicode());
 
         $array = ['name1' => 'value1', 'name2' => 'value2'];
 

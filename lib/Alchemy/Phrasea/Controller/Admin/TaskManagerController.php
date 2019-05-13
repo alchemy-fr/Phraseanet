@@ -107,13 +107,12 @@ class TaskManagerController extends Controller
         if ($request->getRequestFormat() !== "json") {
             $this->app->abort(406, 'Only JSON format is accepted.');
         }
-
         $ret = [
             'name' => $this->app->trans('Task Scheduler'),
             'configuration' => $this->app['task-manager.status']->getStatus(),
         ];
 
-        if(($this->app['phraseanet.configuration']['main']['task-manager']['enabled'] === true)) {
+        if (($this->app['phraseanet.configuration']['main']['task-manager']['enabled'] === true)) {
             $ret['urls'] = [
                 'start' => $this->app->path('admin_tasks_scheduler_start'),
                 'stop'  => $this->app->path('admin_tasks_scheduler_stop'),
@@ -122,7 +121,7 @@ class TaskManagerController extends Controller
         }
         else {
             $ret['urls'] = [
-                'log'   => $this->app->path('admin_tasks_scheduler_log'),
+                'log' => $this->app->path('admin_tasks_scheduler_log'),
             ];
         }
 

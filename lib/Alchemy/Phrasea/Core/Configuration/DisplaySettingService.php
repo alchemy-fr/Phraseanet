@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Model\Entities\User;
 
 class DisplaySettingService
 {
-
     const ORDER_ALPHA_ASC = "ORDER_ALPHA_ASC";
     const ORDER_ALPHA_DESC = "ORDER_ALPHA_DESC";
     const ORDER_BY_ADMIN = "ORDER_BY_ADMIN";
@@ -80,25 +79,6 @@ class DisplaySettingService
     }
 
     /**
-     * Merge default user settings and configuration customisation.
-     */
-    private function loadUsersSettings()
-    {
-        if (null !== $this->usersSettings) {
-            return;
-        }
-
-        $this->usersSettings = array_replace(
-            self::$defaultUserSettings,
-            // removes undefined keys in default settings
-            array_intersect_key(
-                $this->conf->get(['user-settings'], []),
-                self::$defaultUserSettings
-            )
-        );
-    }
-
-    /**
      * Return a user setting given a user.
      *
      * @param User   $user
@@ -111,6 +91,7 @@ class DisplaySettingService
     {
         if (false === $user->getSettings()->containsKey($name)) {
             $this->loadusersSettings();
+
             return array_key_exists($name, $this->usersSettings) ? $this->usersSettings[$name] : $default;
         }
 
@@ -131,6 +112,7 @@ class DisplaySettingService
         if (false === $user->getNotificationSettings()->containsKey($name)) {
             return $default;
         }
+
         return $user->getNotificationSettings()->get($name)->getValue();
     }
 
@@ -145,5 +127,24 @@ class DisplaySettingService
     public function getApplicationSetting($props, $default = null)
     {
         return $this->conf->get(array_merge(['registry'], is_array($props) ? $props : [$props]), $default);
+    }
+
+    /**
+     * Merge default user settings and configuration customisation.
+     */
+    private function loadUsersSettings()
+    {
+        if (null !== $this->usersSettings) {
+            return;
+        }
+
+        $this->usersSettings = array_replace(
+            self::$defaultUserSettings,
+            // removes undefined keys in default settings
+            array_intersect_key(
+                $this->conf->get(['user-settings'], []),
+                self::$defaultUserSettings
+            )
+        );
     }
 }

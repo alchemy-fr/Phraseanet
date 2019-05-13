@@ -218,7 +218,7 @@ class IniReset extends Command
             } else {
                 $output->write(sprintf('Upgrading... from version <info>%s</info> to <info>%s</info>', $this->app->getApplicationBox()->get_version(), $version->getNumber()), true);
             }
-            
+
             $cmd = 'php ' . __DIR__ . '/../../../../../bin/setup system:upgrade -y -f -v';
             $process = new Process($cmd);
             $process->setTimeout(600);

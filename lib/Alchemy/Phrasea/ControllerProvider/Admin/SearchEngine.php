@@ -44,7 +44,7 @@ class SearchEngine implements ControllerProviderInterface, ServiceProviderInterf
             ->bind("admin_searchengine_create_index");
 
         $controllers->get('/setting_from_index', 'controller.admin.search-engine:getSettingFromIndexAction')
-        ->bind('admin_searchengine_setting_from_index');
+            ->bind('admin_searchengine_setting_from_index');
 
         $controllers->match('/', 'controller.admin.search-engine:formConfigurationPanelAction')
             ->method('GET|POST')

@@ -74,7 +74,7 @@ class OAuthListener
 
         $oAuth2Account = $token->getAccount();
         // Sets the Api Version
-
+        
         $CalledController = $request->attributes->get('_controller');
         if(mb_strpos($CalledController, 'controller.api.v1') !== FALSE){
             $request->attributes->set('api_version', V1::VERSION);

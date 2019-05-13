@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\OrderSubscriber;
 use Alchemy\Phrasea\Model\Entities\Order;
 use Alchemy\Phrasea\Order\ValidationNotifier\MailNotifier;

@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -21,12 +20,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\VarDumper\VarDumper;
 
 class Install extends Command
 {
-    const DEFAULT_SERVER_NAME = "phraseanet";
-
     private $executableFinder;
     /** @var StructureTemplate StructureTemplate */
     private $structureTemplate;
@@ -37,10 +33,28 @@ class Install extends Command
      */
     public function __construct($name, $structureTemplate)
     {
+        parent::__construct($name);
+
         $this->structureTemplate = $structureTemplate;
         $this->executableFinder = new ExecutableFinder();
 
-        parent::__construct($name);
+        $this
+            ->setDescription("Installs Phraseanet")
+            ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail address', null)
+            ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Admin password', null)
+            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'MySQL server host', 'localhost')
+            ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
+            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
+            ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
+            ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
+            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
+            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Databox template (' . $this->structureTemplate->toString() . ')', null)
+            ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
+            ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
+            ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
+
+        return $this;
     }
 
     private function serverNameToAppBoxName($serverName)
@@ -51,29 +65,6 @@ class Install extends Command
     private function serverNameToDataBoxName($serverName)
     {
         return "db_" . $serverName;
-    }
-
-    public function configure()
-    {
-        $this
-            ->setDescription("Installs Phraseanet")
-            ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name', null)
-            ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'MySQL server host', 'localhost')
-            ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
-            ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user', 'phrasea')
-            ->addOption('db-password', null, InputOption::VALUE_OPTIONAL, 'MySQL server password', null)
-            ->addOption('appbox', null, InputOption::VALUE_OPTIONAL, 'Database name for the ApplicationBox', null)
-            ->addOption('databox', null, InputOption::VALUE_OPTIONAL, 'Database name for the DataBox', null)
-            ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Databox template (' . $this->structureTemplate->toString() . ')', null)
-            ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Admin e-mail address', null)
-            ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Admin password', null)
-            ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
-            ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
-            ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
-            ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
-            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
-
-        return $this;
     }
 
     /**
@@ -92,8 +83,8 @@ class Install extends Command
 |  Hello !                                       |      |             |
 |                                                |      |             |
 |  You are on your way to install Phraseanet,    |     ,';\".________.-.
-|  You will need access to 2 MySQL databases     |     ;';_'         )]
-|  and an ElasticSearch server.                  |    ;             `-|
+|  You will need access to 2 MySQL databases.    |     ;';_'         )]
+|                                                |    ;             `-|
 |                                                `.    `T-            |
  `----------------------------------------------._ \    |             |
                                                   `-;   |             |
@@ -130,21 +121,6 @@ class Install extends Command
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
 
-        if (! $input->getOption('yes')) {
-            $output->writeln("<info>--- ElasticSearch connection settings ---</info>");
-        }
-
-        list($esHost, $esPort) = $this->getESHost($input, $output, $dialog);
-        $esIndexName = $this->getESIndexName($input, $output, $dialog);
-
-        $esOptions = ElasticsearchOptions::fromArray([
-            'host' => $esHost,
-            'port' => $esPort,
-            'index' => $esIndexName
-        ]);
-
-        $output->writeln('');
-
         if (!$input->getOption('yes')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
 
@@ -156,7 +132,6 @@ class Install extends Command
         }
 
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
-        $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
@@ -170,27 +145,7 @@ class Install extends Command
         return 0;
     }
 
-    private function getServerName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
-    {
-        $serverName = $input->getOption('server-name');
-
-        if (!$serverName && !$input->getOption('yes')) {
-            do {
-                $serverName = $dialog->ask($output, 'Server name <comment>[default: "'.self::DEFAULT_SERVER_NAME.'"]</comment> : ', self::DEFAULT_SERVER_NAME);
-            } while (!$serverName);
-        }
-        else {
-            $output->writeln('Server name : '.$serverName);
-        }
-
-        if (!$serverName) {
-            throw new \RuntimeException('Server name is required');
-        }
-
-        return $serverName;
-    }
-
-    private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog, $serverName)
+    private function getABConn(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
         $abConn = $info = null;
         if (!$input->getOption('appbox')) {
@@ -213,15 +168,13 @@ class Install extends Command
                 try {
                     $abConn = $this->container['dbal.provider']($info);
                     $abConn->connect();
-                    $output->writeln("    <info>Application-Box : Connection successful !</info>");
-                }
-                catch (\Exception $e) {
-                    $output->writeln("    <error>Application-Box : Failed to connect, try again.</error>");
+                    $output->writeln("<info>Application-Box : Connection successful !</info>");
+                } catch (\Exception $e) {
+                    $output->writeln("<error>Application-Box : Failed to connect, try again.</error>");
                     $abConn = null;
                 }
             } while (!$abConn);
-        }
-        else {
+        } else {
             $info = [
                 'host'     => $input->getOption('db-host'),
                 'port'     => $input->getOption('db-port'),
@@ -232,7 +185,7 @@ class Install extends Command
 
             $abConn = $this->container['dbal.provider']($info);
             $abConn->connect();
-            $output->writeln("    <info>Application-Box : Connection successful !</info>");
+            $output->writeln("<info>Application-Box : Connection successful !</info>");
         }
 
         // add dbs.option & orm.options services to use orm.em later
@@ -251,7 +204,6 @@ class Install extends Command
 
         if (!$input->getOption('databox')) {
             do {
-                $dbConn = null;
                 $retry = false;
                 $dbName = $dialog->ask($output, 'Data-Box name, will not be created if empty : ', null);
 
@@ -267,20 +219,16 @@ class Install extends Command
 
                         $dbConn = $this->container['dbal.provider']($info);
                         $dbConn->connect();
-                        $output->writeln("    <info>Data-Box : Connection successful !</info>");
-                    }
-                    catch (\Exception $e) {
+                        $output->writeln("<info>Data-Box : Connection successful !</info>");
+                    } catch (\Exception $e) {
                         $output->writeln("    <error>Data-Box : Failed to connect, try again.</error>");
                         $retry = true;
                     }
+                } else {
+                    $output->writeln("No databox will be created");
                 }
-                else {
-                    $output->writeln("    No databox will be created");
-                }
-
             } while ($retry);
-        }
-        else {
+        } else {
             $info = [
                 'host'     => $input->getOption('db-host'),
                 'port'     => $input->getOption('db-port'),
@@ -291,7 +239,7 @@ class Install extends Command
 
             $dbConn = $this->container['dbal.provider']($info);
             $dbConn->connect();
-            $output->writeln("    <info>Databox : Connection successful !</info>");
+            $output->writeln("<info>Data-Box : Connection successful !</info>");
         }
 
         // add dbs.option & orm.options services to use orm.em later
@@ -311,7 +259,7 @@ class Install extends Command
                 do {
                     $templateName = $dialog->ask($output, 'Choose a template from ('.$templates->toString().') for metadata structure <comment>[default: "'.$defaultDBoxTemplate.'"]</comment> : ', $defaultDBoxTemplate);
                     if(!$templates->getByName($templateName)) {
-                        $output->writeln("    <error>Data-Box template : Template not found, try again.</error>");
+                        $output->writeln("<error>Data-Box template : Template not found, try again.</error>");
                     }
                 }
                 while (!$templates->getByName($templateName));
@@ -339,16 +287,14 @@ class Install extends Command
                 $password = $dialog->askHiddenResponse($output, 'Please provide a password (hidden, 6 character min) : ');
             } while (strlen($password) < 6);
 
-            $output->writeln("    <info>Email / Password successfully set</info>");
-        }
-        elseif ($input->getOption('email') && $input->getOption('password')) {
+            $output->writeln("<info>Email / Password successfully set</info>");
+        } elseif ($input->getOption('email') && $input->getOption('password')) {
             if (!\Swift_Validate::email($input->getOption('email'))) {
                 throw new \RuntimeException('Invalid email addess');
             }
             $email = $input->getOption('email');
             $password = $input->getOption('password');
-        }
-        else {
+        } else {
             throw new \RuntimeException('You have to provide both email and password');
         }
 
@@ -376,33 +322,21 @@ class Install extends Command
         return $dataPath;
     }
 
-    private function getESHost(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    private function getServerName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
     {
-        $host = $input->getOption('es-host');
-        $port = (int) $input->getOption('es-port');
+        $serverName = $input->getOption('server-name');
 
-        if (! $input->getOption('yes')) {
-            while (! $host) {
-                $host = $dialog->ask($output, 'ElasticSearch server host : ', null);
-            };
-
-            while ($port <= 0 || $port >= 65535) {
-                $port = (int) $dialog->ask($output, 'ElasticSearch server port : ', null);
-            };
+        if (!$serverName && !$input->getOption('yes')) {
+            do {
+                $serverName = $dialog->ask($output, 'Please provide the server name : ', null);
+            } while (!$serverName);
         }
 
-        return [ $host, $port ];
-    }
-
-    private function getESIndexName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
-    {
-        $index = $input->getOption('es-index');
-
-        if (! $input->getOption('yes')) {
-            $index = $dialog->ask($output, 'ElasticSearch server index name (blank to autogenerate) : ', null);
+        if (!$serverName) {
+            throw new \RuntimeException('Server name is required');
         }
 
-        return $index;
+        return $serverName;
     }
 
     private function detectBinaries()

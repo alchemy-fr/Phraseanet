@@ -42,12 +42,41 @@ class SearchEngineController extends Controller
         ]);
     }
 
+
+
+    public function dropIndexAction(Request $request)
+    {
+        $indexer = $this->app['elasticsearch.indexer'];
+        if ($indexer->indexExists()) {
+            $indexer->deleteIndex();
+        }
+        return $this->app->redirectPath('admin_searchengine_form');
+    }
+
+    public function createIndexAction(Request $request)
+    {
+        $indexer = $this->app['elasticsearch.indexer'];
+        if (!$indexer->indexExists()) {
+            $indexer->createIndex();
+        }
+        return $this->app->redirectPath('admin_searchengine_form');
+    }
+
     /**
      * @return ElasticsearchOptions
      */
     private function getElasticsearchOptions()
     {
         return $this->app['elasticsearch.options'];
+    }
+
+    /**
+     * @param ElasticsearchOptions $configuration
+     * @return void
+     */
+    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
+    {
+        $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
     }
 
     /**
@@ -62,37 +91,6 @@ class SearchEngineController extends Controller
     }
 
     /**
-     * @param ElasticsearchOptions $configuration
-     * @return void
-     */
-    private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
-    {
-        $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
-    }
-
-    public function dropIndexAction(Request $request)
-    {
-        $indexer = $this->app['elasticsearch.indexer'];
-
-        if ($indexer->indexExists()) {
-            $indexer->deleteIndex();
-        }
-
-        return $this->app->redirectPath('admin_searchengine_form');
-    }
-
-    public function createIndexAction(Request $request)
-    {
-        $indexer = $this->app['elasticsearch.indexer'];
-
-        if (!$indexer->indexExists()) {
-            $indexer->createIndex();
-        }
-
-        return $this->app->redirectPath('admin_searchengine_form');
-    }
-
-    /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
@@ -101,10 +99,8 @@ class SearchEngineController extends Controller
         if (!$request->isXmlHttpRequest()) {
             $this->app->abort(400);
         }
-
         $indexer = $this->app['elasticsearch.indexer'];
         $index = $request->get('index');
-
         if (!$indexer->indexExists() || is_null($index))
         {
             return $this->app->json([
@@ -112,10 +108,9 @@ class SearchEngineController extends Controller
                 'message' => $this->app->trans('An error occurred'),
             ]);
         }
-
         return $this->app->json([
-                'success' => true,
-                'response' => $indexer->getSettings(['index' => $index])
+            'success' => true,
+            'response' => $indexer->getSettings(['index' => $index])
         ]);
     }
 }

@@ -22,6 +22,7 @@ define([
     var FieldEditView = Backbone.View.extend(_.extend({}, MultiViews, {
         tagName: "div",
         className: "field-edit",
+        template: _.template($("#edit_template").html()),
         initialize: function () {
             this.model.on("change", this._onModelChange, this);
         },
@@ -34,15 +35,15 @@ define([
         },
         render: function () {
             var self = this;
-            var template = _.template($("#edit_template").html(), {
-                lng: AdminFieldApp.lng(),
-                field: this.model.toJSON(),
-                vocabularyTypes: AdminFieldApp.vocabularyCollection.toJSON(),
-                modelErrors: AdminFieldApp.errorManager.getModelError(this.model),
-                languages: AdminFieldApp.languages
-            });
 
-            this.$el.empty().html(template);
+            this.$el.empty().html(this.template({
+                    lng: AdminFieldApp.lng(),
+                    field: this.model.toJSON(),
+                    vocabularyTypes: AdminFieldApp.vocabularyCollection.toJSON(),
+                    modelErrors: AdminFieldApp.errorManager.getModelError(this.model),
+                    languages: AdminFieldApp.languages
+                }
+            ));
 
             this._assignView({
                 ".dc-fields-subview": new DcFieldView({
@@ -93,7 +94,8 @@ define([
             "keyup input.input-label": "labelChangedAction",
             "change input[type=checkbox]": "fieldChangedAction",
             "change select": "selectionChangedAction",
-            "click .lng-label a": "_toggleLabels"
+            "click .lng-label a": "_toggleLabels",
+            "click input#multi": "multiClickdAction"
         },
         triggerControlledVocabulary: function (e) {
             if ($(e.target, this.$el).find("option:selected").val() === "") {
@@ -133,6 +135,16 @@ define([
 
             return this;
         },
+        multiClickdAction: function (e) {
+            if($(e.target).is(":checked")) {
+                $("#separatorZone").show();
+            }
+            else {
+                $("#separatorZone").hide();
+            }
+
+            return this;
+        },
         tagFieldChangedAction: function (e) {
             var $this = this;
             var fieldTag = $(e.target);
@@ -154,7 +166,7 @@ define([
                 } else {
                     $this.fieldChangedAction(e);
                 }
-            }
+            };
 
             if ("" !== fieldTagValue) {
                 var jqxhr = $.get("/admin/fields/tags/" + fieldTagValue, onFieldValid).fail(function () {

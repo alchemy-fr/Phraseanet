@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
-
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -27,19 +25,12 @@ class Prod extends Helper
 
         $bases = $fields = $dates = $sort = $elasticSort = array();
 
-        $sort = [
-            \databox_field::TYPE_STRING => [],
-            \databox_field::TYPE_NUMBER => [],
-            \databox_field::TYPE_DATE => []
-        ];
-
         if (!$this->app->getAuthenticatedUser()) {
             return $searchData;
         }
 
         $searchSet = json_decode($this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'search', '{}'), true);
         $saveSettings = $this->app['settings']->getUserSetting($this->app->getAuthenticatedUser(), 'advanced_search_reload');
-
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
         foreach ($acl->get_granted_sbas() as $databox) {
             $sbasId = $databox->get_sbas_id();
@@ -55,9 +46,9 @@ class Prod extends Helper
                 $selected = $saveSettings ? ((isset($searchSet['bases']) && isset($searchSet['bases'][$sbasId])) ? (in_array($coll->get_base_id(), $searchSet['bases'][$sbasId])) : true) : true;
                 $bases[$sbasId]['collections'][] = array(
                     'selected' => $selected,
-                    'base_id' => $coll->get_base_id(),
-                    'name'    => $coll->get_name(),
-                    'order'   => $coll->get_ord()
+                    'base_id'  => $coll->get_base_id(),
+                    'name'     => $coll->get_name(),
+                    'order'    => $coll->get_ord()
                 );
             }
 
@@ -66,7 +57,7 @@ class Prod extends Helper
             $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
 
             // a temporary array to sort the collections
-            $aName = array();
+            $aName = [];
             list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
             switch ($userOrderSetting) {
                 case $settings::ORDER_ALPHA_ASC :
@@ -109,13 +100,11 @@ class Prod extends Helper
                     $dates[$name]['sbas'][] = $sbasId;
                 }
 
-                if (array_key_exists($type, $sort)) {  // TYPE_STRING, TYPE_NUMBER or TYPE_DATE
-                    if (!array_key_exists($name, $sort[$type])) {
-                        $sort[$type][$name] = [
-                            'sbas' => []
-                        ];
+                if ($fieldMeta->get_type() == \databox_field::TYPE_NUMBER || $fieldMeta->get_type() === \databox_field::TYPE_DATE) {
+                    if (!array_key_exists($name, $sort)) {
+                        $sort[$name] = array('sbas' => array());
                     }
-                    $sort[$type][$name]['sbas'][] = $sbasId;
+                    $sort[$name]['sbas'][] = $sbasId;
                 }
 
                 if (isset($fields[$name])) {
@@ -144,7 +133,7 @@ class Prod extends Helper
         $searchData['fields'] = $fields;
         $searchData['dates'] = $dates;
         $searchData['bases'] = $bases;
-        $searchData['sort'] = array_map(function($v){ksort($v, SORT_NATURAL);return $v;}, $sort); // sort by name of field
+        $searchData['sort'] = $sort;
         $searchData['elasticSort'] = $elasticSort;
 
         return $searchData;

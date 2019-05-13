@@ -149,7 +149,7 @@ class record_preview extends record_adapter
                         $this->original_item = $element;
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = htmlspecialchars($Basket->getName());
+                        $this->name = $Basket->getName();
                         $number = $element->getOrd();
                         $first = false;
                     }
@@ -169,7 +169,7 @@ class record_preview extends record_adapter
                     if ($element->getOrd() == $pos || $first) {
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = htmlspecialchars($entry->getTitle());
+                        $this->name = $entry->getTitle();
                         $this->original_item = $element;
                         $number = $element->getOrd();
                         $first = false;
@@ -386,10 +386,8 @@ class record_preview extends record_adapter
             }
             if(!$this->app->getAclForUser($this->app->getAuthenticatedUser())
                 ->has_right_on_base($this->getBaseId(), \ACL::CANREPORT)) {
-
                 return( ($this->statistics = false) );
             }
-
             $this->statistics = [
                 'days'          => $nbDays,
                 'from'          => '',
@@ -428,7 +426,6 @@ class record_preview extends record_adapter
                     // some more entries can be added if the referrer does not match anything
                 ]
             ];
-
             // preset 30 dates in the past
             //
             $nbDays--;      // because 0 is included
@@ -442,14 +439,12 @@ class record_preview extends record_adapter
                 elseif($d == 0) {
                     $this->statistics['to'] = $date;
                 }
-
                 $this->statistics['by_day'][$date] = [
                     'label'     => $date,
                     'views'     => 0,
                     'downloads' => 0
                 ];
             }
-
             //------- views stats
             //
             $sql = "SELECT COUNT(id) AS n, DATE_FORMAT(date, '%Y-%m-%d') AS datee FROM `log_view`\n"
@@ -457,7 +452,6 @@ class record_preview extends record_adapter
                 . "  AND date >= :from AND date <= :to\n"
                 . "  AND site_id = :site\n"
                 . " GROUP BY datee ORDER BY datee ASC";
-
             $result = $this->getDataboxConnection()
                 ->executeQuery($sql, [
                     ':record_id' => $this->getRecordId(),
@@ -466,7 +460,6 @@ class record_preview extends record_adapter
                     ':to'        => $this->statistics['to']
                 ])
                 ->fetchAll(PDO::FETCH_ASSOC);
-
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -476,7 +469,6 @@ class record_preview extends record_adapter
                     }
                 }
             }
-
             //------- downloads stats
             //
             $sql = "SELECT COUNT(d.id) AS n, DATE_FORMAT(d.date, '%Y-%m-%d') AS datee\n"
@@ -487,7 +479,6 @@ class record_preview extends record_adapter
                 . "  AND d.date >= :from AND d.date <= :to\n"
                 . "  AND site= :site\n"
                 . " GROUP BY datee ORDER BY datee ASC";
-
             $result = $this->getDataboxConnection()
                 ->executeQuery($sql, [
                     ':record_id' => $this->getRecordId(),
@@ -496,7 +487,6 @@ class record_preview extends record_adapter
                     ':to'        => $this->statistics['to']
                 ])
                 ->fetchAll(PDO::FETCH_ASSOC);
-
             foreach ($result as $row) {
                 $date = $row['datee'];
                 if(array_key_exists($date, $this->statistics['by_day'])) {
@@ -506,14 +496,12 @@ class record_preview extends record_adapter
                     }
                 }
             }
-
             //------- referers stats
             //
             $sql = "SELECT count( id ) AS n, referrer FROM `log_view`\n"
                 . " WHERE record_id = :record_id\n"
                 . "  AND date >= :from AND date <= :to\n"
                 . " GROUP BY referrer ORDER BY referrer ASC";
-
             $result = $this->getDataboxConnection()
                 ->executeQuery($sql, [
                     ':record_id' => $this->getRecordId(),
@@ -521,7 +509,6 @@ class record_preview extends record_adapter
                     ':to'        => $this->statistics['to']
                 ])
                 ->fetchAll(PDO::FETCH_ASSOC);
-
             foreach ($result as $row) {
                 $k = $row['referrer'];
                 if ($k == 'NO REFERRER') {
@@ -555,13 +542,10 @@ class record_preview extends record_adapter
                 $this->statistics['referrers'][$k]['count'] += (int)$row['n'];
             }
         }
-
         return $this->statistics;
     }
 
     /**
-     * @deprecated
-     *
      * @return media_adapter
      */
     public function get_view_popularity()
@@ -646,8 +630,6 @@ class record_preview extends record_adapter
     }
 
     /**
-     * @deprecated
-     *
      * @return media_adapter
      */
     public function get_refferer_popularity()
@@ -716,8 +698,6 @@ class record_preview extends record_adapter
     }
 
     /**
-     * @deprecated
-     *
      * @return media_adapter
      */
     public function get_download_popularity()

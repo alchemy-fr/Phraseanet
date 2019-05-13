@@ -3,23 +3,9 @@
         <img src="{{ item['permalink'].get_url() }}" />
     {% endfor %}
 </div>
-
+<script type="text/javascript" src="/assets/vendors/jquery-galleria/galleria.min.js"></script>
 <script type="text/javascript">
-    requirejs.config({
-        paths: {
-            'galleria' : '../assets/vendors/jquery-galleria/galleria.min'
-        },
-        shim: {
-            'galleria': {
-                deps: ['jquery'],
-                exports: 'Galleria'
-            }
-        }
-    });
-
-    require(["jquery", "galleria"], function($, Galleria) {
-        Galleria.loadTheme('/assets/vendors/jquery-galleria/galleria.classic.min.js');
-        Galleria.run("#galleria");
-        $("#galleria").removeClass("hidden");
-    });
+    Galleria.loadTheme('/assets/vendors/jquery-galleria/galleria.classic.min.js');
+    Galleria.run("#galleria");
+    $("#galleria").removeClass("hidden");
 </script>

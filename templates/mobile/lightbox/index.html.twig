@@ -1,7 +1,9 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+   {# <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>#}
 {% endblock %}
 
 {% block stylesheet %}
@@ -60,6 +62,7 @@
 
 <div id="about" data-role="page">
     <div data-role="header">
+        <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{ 'a propos' | trans }}</h1>
   </div>
     <div data-role="content">
@@ -79,7 +82,7 @@
 
 <div id="validation" data-role="page">
     <div data-role="header">
-     <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
      <h1>{{ 'Validations' | trans }}</h1>
   </div>
     <div data-role="content">
@@ -109,6 +112,7 @@
 
 <div id="baskets" data-role="page">
     <div data-role="header">
+        <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
      <h1>{{ 'Paniers' | trans }}</h1>
   </div>
     <div data-role="content">
@@ -135,4 +139,14 @@
 
   </div>
 </div>
+
+
+    <script>
+        var lightboxApp = lightboxMobileApplication.bootstrap({
+            lang: '{{ app.locale }}',
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}'
+        });
+    </script>
+
 {% endblock %}

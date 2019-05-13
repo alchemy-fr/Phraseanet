@@ -22,16 +22,16 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image;
-use MediaAlchemyst\Exception\FileNotFoundException;
 use MediaAlchemyst\Specification\Video;
 use MediaVorus\MediaVorus;
-use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
-use Unoconv\Unoconv;
 use Unoconv\Exception\ExceptionInterface as UnoconvException;
 use Unoconv\Exception\RuntimeException;
+use Unoconv\Unoconv;
+use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
+use MediaAlchemyst\Exception\FileNotFoundException;
 
 class SubdefGenerator
 {
@@ -47,6 +47,7 @@ class SubdefGenerator
     private $mediavorus;
     private $tmpFilePath;
     private $tmpFilesystem;
+    private $tmpDirectory;
 
     public function __construct(Application $app, Alchemyst $alchemyst, FilesystemService $filesystem, MediaVorus $mediavorus, LoggerInterface $logger)
     {
@@ -55,11 +56,12 @@ class SubdefGenerator
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->mediavorus = $mediavorus;
+        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'tmp_files']);;
     }
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
+        if ($record->get_hd_file() !== null) {
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
             $metadatas = $mediaSource->getMetadatas();
 
@@ -67,31 +69,19 @@ class SubdefGenerator
                 if(!isset($this->tmpFilesystem)){
                     $this->tmpFilesystem = Manager::create();
                 }
-                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory(0777, 500);
+                $tmpDir = $this->tmpFilesystem->createTemporaryDirectory();
 
-                $files = $this->app['exiftool.preview-extractor']->extract($record->get_hd_file()->getPathname(), $tmpDir);
-
-                $selected = null;
-                $size = null;
-
-                foreach ($files as $file) {
-                    if ($file->isDir() || $file->isDot()) {
-                        continue;
-                    }
-
-                    if (is_null($selected) || $file->getSize() > $size) {
-                        $selected = $file->getPathname();
-                        $size = $file->getSize();
-                    }
+                try {
+                    $this->app['filesystem']->dumpFile($tmpDir.'/file.jpg', $metadatas->get('XMP-xmp:PageImage')->getValue()->asString());
+                    $this->tmpFilePath = $tmpDir.'/file.jpg';
+                } catch (\Exception $e) {
+                    $this->logger->error(sprintf('Unable to write temporary file : %s', $e->getMessage()));
                 }
 
-                if ($selected) {
-                    $this->tmpFilePath =  $selected;
-                }
             }
         }
 
-        if(null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())){
+        if (null === $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())) {
             $this->logger->info(sprintf('Nothing to do for %s', $record->getType()));
             $subdefs = [];
         }
@@ -189,11 +179,9 @@ class SubdefGenerator
                 return;
             }
 
-            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
-
-            if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
+            if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
                 $destFile = $pathdest;
-                $pathdest = $this->filesystem->generateTemporarySubdefPathname($record, $subdef_class, $tmpDir);
+                $pathdest = $this->filesystem->generateTemporaryFfmpegPathname($record, $subdef_class, $this->tmpDirectory);
             }
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
@@ -224,12 +212,12 @@ class SubdefGenerator
         if($start){
             $duration = $stop - $start;
 
-            $originFileSize = $this->hummanReadable($record->get_hd_file()->getSize());
+            $originFileSize = $this->sizeHumanReadable($record->get_hd_file()->getSize());
 
             if($destFile){
-                $generatedFileSize = $this->hummanReadable(filesize($destFile));
+                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
             }else{
-                $generatedFileSize = $this->hummanReadable(filesize($pathdest));
+                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
             }
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
@@ -244,6 +232,7 @@ class SubdefGenerator
                 )
             );
         }
+
     }
 
     private function generatePdfSubdef($source, $pathdest)
@@ -271,7 +260,7 @@ class SubdefGenerator
 
     }
 
-    private function hummanReadable($bytes) {
+    private function sizeHumanReadable($bytes) {
         $i = floor(log($bytes, 1024));
         return round($bytes / pow(1024, $i), [0,0,2,2,3][$i]).['B','kB','MB','GB'][$i];
     }

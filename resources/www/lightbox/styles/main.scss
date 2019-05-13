@@ -46,10 +46,14 @@ img {
 }
 
 #top_container {
-  bottom: 220px; }
+  bottom: 220px;
+}
 
 .documentTips {
   height: 100%;
+  iframe {
+    height: 100%;
+  }
 }
 
 #bottom_container {
@@ -92,7 +96,7 @@ img {
   }
   .lightbox_container {
     top: 30px;
-    overflow: hidden;
+    overflow: scroll;
   }
   .display_id {
     top: 5px;
@@ -280,12 +284,13 @@ img {
 }
 
 #right_column .right_column_wrapper {
-  top: 30px;
+  //top: 30px;
   bottom: 45px;
 }
 
 #right_column .right_column_wrapper.caption {
-  bottom: 85px;
+  bottom: 0px;
+  top: 30px;
 }
 
 #record_infos {
@@ -456,9 +461,9 @@ table th i {
 .basket_wrapper .thumb_wrapper {
   margin-top: 10px;
   margin-bottom: 10px;
-  .thumb {
-    position: static;
-  }
+    .thumb {
+      position: static;
+    }
 }
 
 #sc_wrapper .thumb_wrapper {

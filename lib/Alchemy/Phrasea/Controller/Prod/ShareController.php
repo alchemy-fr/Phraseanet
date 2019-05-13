@@ -29,15 +29,11 @@ class ShareController extends Controller
         $subdefs = $record->get_subdefs();
 
         $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
-
         $acl = $this->getAclForUser();
-
         $subdefList = [];
-        $defaultKey =  null;
-
+        $defaultKey = null;
         foreach ($subdefs as $subdef) {
             $subdefName = $subdef->get_name();
-
             if ($subdefName == 'document') {
                 if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
                     continue;
@@ -48,24 +44,22 @@ class ShareController extends Controller
                 if (!$acl->has_access_to_subdef($record, $subdefName)) {
                     continue;
                 }
-
                 $label = $databoxSubdefs->getSubdef($subdefName)->get_label($this->app['locale']);
             }
             else {
                 // this subdef does no exists anymore in databox structure ?
                 continue;   // don't publish it
             }
-
             $value = $subdef->get_name();
             $preview = $record->get_subdef($value);
             $defaultKey = $value;   // will set a default option if neither preview,thumbnail or document is present
 
-            if ( ($previewLink = $preview->get_permalink()) !== null ) {
+
+            if (($previewLink = $preview->get_permalink()) !== null) {
                 $permalinkUrl = $previewLink->get_url()->__toString();
                 $permaviewUrl = $previewLink->get_page();
                 $previewWidth = $preview->get_width();
                 $previewHeight = $preview->get_height();
-
                 $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
                 $previewData = [
                     'label'        => $label,
@@ -80,47 +74,19 @@ class ShareController extends Controller
         }
 
         // candidates as best default selected option
-        foreach(["preview", "thumbnail", "document"] as $k) {
+        foreach (["preview", "thumbnail", "document"] as $k) {
             if (array_key_exists($k, $subdefList)) {
                 $defaultKey = $k;
                 break;
             }
         }
-
         // if no subdef was sharable, subdefList is empty and defaultKey is null
         // the twig MUST handle that
         $outputVars = [
             'isAvailable' => !empty($subdefList),
-            'subdefList' => $subdefList,
-            'defaultKey' => $defaultKey
+            'subdefList'  => $subdefList,
+            'defaultKey'  => $defaultKey
         ];
-
-//        if (!$this->getAclForUser()->has_access_to_subdef($record, 'thumbnail')) {
-//            $this->app->abort(403);
-//        }
-
-//        $preview = $record->get_preview();
-//
-//        if (null !== $previewLink = $preview->get_permalink()) {
-//            $permalinkUrl = $previewLink->get_url();
-//            $permaviewUrl = $previewLink->get_page();
-//            $previewWidth = $preview->get_width();
-//            $previewHeight = $preview->get_height();
-//
-//            $embedUrl = $this->app->url('alchemy_embed_view', ['url' => (string)$permalinkUrl]);
-//
-//            $outputVars = [
-//                'isAvailable' => true,
-//                'subdefList' => $subdefList,
-//                'preview' => [
-//                    'permalinkUrl' => $permalinkUrl,
-//                    'permaviewUrl' => $permaviewUrl,
-//                    'embedUrl' => $embedUrl,
-//                    'width' => $previewWidth,
-//                    'height' => $previewHeight
-//                ]
-//            ];
-//        }
 
         return $this->renderResponse('prod/Share/record.html.twig', $outputVars);
     }

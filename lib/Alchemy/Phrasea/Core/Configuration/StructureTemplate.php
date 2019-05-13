@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of Phraseanet
  *
@@ -10,8 +9,6 @@
  */
 
 namespace Alchemy\Phrasea\Core\Configuration;
-
-use Alchemy\Phrasea\Application;
 
 /**
  * Class StructureTemplate
@@ -39,10 +36,6 @@ class StructureTemplate
         $this->names = $this->templates = null;    // lazy loaded, not yet set
     }
 
-    /**
-     * @return $this
-     * @throws \Exception
-     */
     private function load()
     {
         if(!is_null($this->templates)) {
@@ -53,6 +46,7 @@ class StructureTemplate
 
         $this->templates = [];
         $this->names     = [];
+
         foreach ($templateList as $template) {
             if ($template->isDot()
                 || !$template->isFile()
@@ -69,8 +63,8 @@ class StructureTemplate
     }
 
     /**
-     * @param string $templateName
-     * @return \SplFileInfo | null
+     * @param $templateName
+     * @return null|\SplFileInfo
      */
     public function getByName($templateName)
     {

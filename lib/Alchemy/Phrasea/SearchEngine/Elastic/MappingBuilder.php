@@ -49,18 +49,18 @@ class MappingBuilder
      * @param string $name
      * @return FieldMapping
      */
-    public function addGeoPointField($name)
+    public function addLongField($name)
     {
-        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_GEO_POINT));
+        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_LONG));
     }
 
     /**
      * @param string $name
      * @return FieldMapping
      */
-    public function addLongField($name)
+    public function addGeoPointField($name)
     {
-        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_LONG));
+        return $this->mapping->addField(new FieldMapping($name, FieldMapping::TYPE_GEO_POINT));
     }
 
     /**

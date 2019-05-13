@@ -101,10 +101,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRouteMeStructure()
     {
         $this->setToken($this->userAccessToken);
+
         $route = '/api/v1/me/structures/';
+
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
         $this->assertArrayHasKey('meta_fields', $content['response']);
         $this->assertArrayHasKey('aggregable_fields', $content['response']);
         $this->assertArrayHasKey('technical_fields', $content['response']);
@@ -113,10 +117,14 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
     public function testRouteMeSubdefs()
     {
         $this->setToken($this->userAccessToken);
+
         $route = '/api/v1/me/subdefs/';
+
         $this->evaluateMethodNotAllowedRoute($route, [ 'POST', 'PUT' ]);
+
         self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
+
         $this->assertArrayHasKey('subdefs', $content['response']);
     }
 

@@ -31,14 +31,14 @@ class OrderRepository extends EntityRepository
     /**
      * Returns an array of all the orders, starting at $offsetStart, limited to $perPage
      *
-     * @param array   $baseIds
+     * @param array $baseIds
      * @param integer $offsetStart
      * @param integer $perPage
-     * @param string  $sort
-     * @param ArrayCollection  $filters
+     * @param string $sort
+     * @param ArrayCollection $filters
      * @return Order[]
      */
-    public function listOrders($baseIds, $offsetStart = 0, $perPage = 10, $sort = "created_on", $filters = [])
+    public function listOrders($baseIds, $offsetStart = 0, $perPage = 20, $sort = "created_on", $filters = [])
     {
         $qb = $this
             ->createQueryBuilder('o');
@@ -46,21 +46,25 @@ class OrderRepository extends EntityRepository
         $this->performQuery($qb, $baseIds, $filters);
         $qb->groupBy('o.id');
 
-         if ($sort === 'user') {
-             $qb->orderBy('o.user', 'ASC');
-         } elseif ($sort === 'usage') {
-             $qb->orderBy('o.orderUsage', 'ASC');
-         } else {
-             $qb->orderBy('o.createdOn', 'DESC');
-         }
+        if ($sort === 'user') {
+            $qb->orderBy('o.user', 'ASC');
+        }
+        elseif ($sort === 'usage') {
+            $qb->orderBy('o.orderUsage', 'ASC');
+        }
+        else {
+            $qb->orderBy('o.createdOn', 'DESC');
+        }
 
-         $qb
-             ->setFirstResult((int) $offsetStart)
-             ->setMaxResults(max(10, (int) $perPage));
-         return $qb->getQuery()->getResult();
+        $qb
+            ->setFirstResult((int)$offsetStart)
+            ->setMaxResults(max(10, (int)$perPage));
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function performQuery($qb, $baseIds, $filters) {
+    public function performQuery($qb, $baseIds, $filters)
+    {
         if (!empty($baseIds)) {
             $qb
                 ->innerJoin('o.elements', 'e')
@@ -68,7 +72,8 @@ class OrderRepository extends EntityRepository
             if ($filters['todo'] == Order::STATUS_TODO) {
                 $qb
                     ->andWhere('o.todo != 0');
-            }elseif ($filters['todo'] == Order::STATUS_PROCESSED) {
+            }
+            elseif ($filters['todo'] == Order::STATUS_PROCESSED) {
                 $qb
                     ->andWhere('o.todo = 0');
             }
@@ -90,7 +95,7 @@ class OrderRepository extends EntityRepository
 
                 case Order::STATUS_PAST_WEEK:    //last week
                     $time = strtotime('last week');
-                    $lastWeekStartDate = date('Y-m-d',strtotime("Monday", $time));
+                    $lastWeekStartDate = date('Y-m-d', strtotime("Monday", $time));
                     $createdOn = $lastWeekStartDate;
                     $qb->andWhere("o.createdOn >= '" . $createdOn . "'");
                     break;
@@ -102,14 +107,14 @@ class OrderRepository extends EntityRepository
                     break;
 
                 case Order::STATUS_BEFORE:    //before specific date
-                    if(isset($filters['limit']['date'])) {
+                    if (isset($filters['limit']['date'])) {
                         $createdOn = date('Y-m-d', strtotime($filters['limit']['date']));
                         $qb->andWhere("o.createdOn < '" . $createdOn . "'");
                     }
                     break;
 
                 case Order::STATUS_AFTER:    //before specific date
-                    if(isset($filters['limit']['date'])) {
+                    if (isset($filters['limit']['date'])) {
                         $createdOn = date('Y-m-d', strtotime($filters['limit']['date']));
                         $qb->andWhere("o.createdOn > '" . $createdOn . "'");
                     }
@@ -137,7 +142,7 @@ class OrderRepository extends EntityRepository
         $builder = $this->createQueryBuilder('o');
         $builder->select($builder->expr()->countDistinct('o.id'));
         $this->performQuery($builder, $baseIds, $filters);
+
         return $builder->getQuery()->getSingleScalarResult();
     }
-
 }

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\PermalinkController;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;

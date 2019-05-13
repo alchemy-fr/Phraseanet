@@ -53,8 +53,6 @@ class StringHelperTest extends \PhraseanetTestCase
         ];
     }
 
-
-
     /**
      * @dataProvider provideStringsForSqlQuote
      * @covers Alchemy\Phrasea\Utilities\StringHelper::SqlQuote

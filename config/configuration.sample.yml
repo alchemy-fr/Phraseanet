@@ -7,6 +7,8 @@ main:
     languages: []
     key: ''
     api_require_ssl: true
+    api_token_header: false
+    delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
         port: 3306
@@ -20,39 +22,13 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: RedisCache
+        type: MemcacheCache
         options:
             host: localhost
-            port: 6379
+            port: 11211
     search-engine:
-        type: elasticsearch
-        options:
-            host: 'localhost'
-            port: 9200
-            index: ''
-            shards: 3
-            replicas: 0
-            minScore: 2
-            highlight: true
-            maxResultWindow: 500000
-            populate_order: RECORD_ID
-            populate_direction: DESC
-            activeTab: '#elastic-search'
-            base_aggregate_limit: 10
-            collection_aggregate_limit: 10
-            doctype_aggregate_limit: 0
-            camera_model_aggregate_limit: 0
-            iso_aggregate_limit: 0
-            aperture_aggregate_limit: 0   
-            shutterspeed_aggregate_limit: 0
-            flashfired_aggregate_limit: 0
-            framerate_aggregate_limit: 0
-            audiosamplerate_aggregate_limit: 0
-            videocodec_aggregate_limit: 0
-            audiocodec_aggregate_limit: 0
-            orientation_aggregate_limit: 0
-            colorspace_aggregate_limit: 0
-            mimetype_aggregate_limit: 0
+        type: phrasea
+        options: []
     task-manager:
         status: started
         enabled: true
@@ -86,7 +62,6 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
-        exiftool_timeout: 60
     task-manager:
         status: started
         listener:
@@ -100,10 +75,23 @@ main:
         download: null
         lazaret: null
         caption: null
+    bridge:
+        youtube:
+            enabled: false
+            client_id: null
+            client_secret: null
+            developer_key: null
+        flickr:
+            enabled: false
+            client_id: null
+            client_secret: null
+        dailymotion:
+            enabled: false
+            client_id: null
+            client_secret: null
 border-manager:
     enabled: true
     extension-mapping:
-        mxf: application/mxf
         otc: application/vnd.oasis.opendocument.chart-template
         ttc: application/x-font-ttf
     checkers:
@@ -118,6 +106,7 @@ border-manager:
             enabled: false
             options:
                 colorspaces: [cmyk, grayscale, rgb]
+                media_types: [Image]
         -
             type: Checker\Dimension
             enabled: false
@@ -253,13 +242,50 @@ embed_bundle:
     document:
         player: flexpaper
         enable-pdfjs: true
-
-registry:
-    actions:
-        export-stamp-choice: false
-        download-link-validity: 24
-    web-applications:
-        email-optional-for-login: false
+geocoding-providers:
+    -
+        map-provider: mapboxWebGL
+        enabled: false
+        public-key: ''
+        map-layers:
+            -
+                name: Light
+                value: 'mapbox://styles/mapbox/light-v9'
+            -
+                name: Streets
+                value: 'mapbox://styles/mapbox/streets-v9'
+            -
+                name: Basic
+                value: 'mapbox://styles/mapbox/basic-v9'
+            -
+                name: Satellite
+                value: 'mapbox://styles/mapbox/satellite-v9'
+            -
+                name: Dark
+                value: 'mapbox://styles/mapbox/dark-v9'
+        transition-mapboxgl:
+            -
+                animate: true
+                speed: '2.2'
+                curve: '1.42'
+        default-position:
+            - '48.879162'
+            - '2.335062'
+        default-zoom: 5
+        marker-default-zoom: 9
+        geonames-field-mapping: true
+        cityfields: City, Ville
+        provincefields: Province
+        countryfields: Country, Pays
+workers:
+  queue:
+    worker-queue:
+      registry: alchemy_worker.queue_registry
+      host: localhost
+      port: 5672
+      user: guest
+      password: guest
+      vhost: /
 
 user_account:
     deleting_policies:

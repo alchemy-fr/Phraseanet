@@ -66,7 +66,7 @@ class DatabaseMaintenanceService
 
     public function upgradeDatabase(\base $base, $applyPatches)
     {
-        $this->reconnect();
+       $this->reconnect();
 
         $recommends = [];
         $allTables = [];

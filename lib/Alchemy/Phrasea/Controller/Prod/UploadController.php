@@ -54,92 +54,6 @@ class UploadController extends Controller
         ]);
     }
 
-    /**
-     * Get POST max file size
-     *
-     * @return integer
-     */
-    private function getUploadMaxFileSize()
-    {
-        $postMaxSize = trim(ini_get('post_max_size'));
-
-        if ('' === $postMaxSize) {
-            $postMaxSize = PHP_INT_MAX;
-        }
-
-        switch (strtolower(substr($postMaxSize, -1))) {
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'g':
-                $postMaxSize *= 1024;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'm':
-                $postMaxSize *= 1024;
-            case 'k':
-                $postMaxSize *= 1024;
-        }
-
-        return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
-    }
-
-    /**
-     * Get current user's granted collections where he can upload
-     *
-     * @param \ACL $acl The user's ACL.
-     *
-     * @return array
-     */
-    private function getGrantedCollections(\ACL $acl)
-    {
-        $collections = [];
-
-        foreach ($acl->get_granted_sbas() as $databox) {
-            $sbasId = $databox->get_sbas_id();
-
-            foreach ($acl->get_granted_base([\ACL::CANADDRECORD], [$sbasId]) as $collection) {
-                $databox = $collection->get_databox();
-
-                if ( ! isset($collections[$sbasId])) {
-                    $collections[$databox->get_sbas_id()] = [
-                        'databox'             => $databox,
-                        'databox_collections' => []
-                    ];
-                }
-                $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
-
-                /** @var DisplaySettingService $settings */
-                $settings = $this->app['settings'];
-                $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
-
-                // a temporary array to sort the collections
-                $aName = [];
-                list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
-                switch ($userOrderSetting) {
-                    case $settings::ORDER_ALPHA_ASC :
-                        list($ukey, $uorder) = ["name", SORT_ASC];
-                        break;
-
-                    case $settings::ORDER_ALPHA_DESC :
-                        list($ukey, $uorder) = ["name", SORT_DESC];
-                        break;
-                }
-
-                foreach ($collections[$databox->get_sbas_id()]['databox_collections'] as $key => $row) {
-                    if ($ukey == "order") {
-                        $aName[$key] = $row->get_ord();
-                    }
-                    else {
-                        $aName[$key] = $row->get_name();
-                    }
-                }
-
-                // sort the collections
-                array_multisort($aName, $uorder, SORT_REGULAR, $collections[$databox->get_sbas_id()]['databox_collections']);
-            }
-        }
-
-        return $collections;
-    }
-
     public function getHtml5UploadForm()
     {
         $maxFileSize = $this->getUploadMaxFileSize();
@@ -233,7 +147,6 @@ class UploadController extends Controller
         /** @var UploadedFile $file */
         $file = current($request->files->get('files'));
 
-
         if (!$file->isValid()) {
             throw new BadRequestHttpException('Uploaded file is invalid');
         }
@@ -262,11 +175,24 @@ class UploadController extends Controller
             $uploadedFilename = $renamedFilename = $tempfile;
 
             $originalName = $pi['filename'] . '.' . $pi['extension'];
-        }
-        else {
+
+        } else {
             // Add file extension, so mediavorus can guess file type for octet-stream file
             $uploadedFilename = $file->getRealPath();
-            $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $renamedFilename = null;
+
+            if(!empty($this->app['conf']->get(['main', 'storage', 'tmp_files']))) {
+                $tmpStorage = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'tmp_files'])).'upload/';
+
+                if(!is_dir($tmpStorage)){
+                    $this->getFilesystem()->mkdir($tmpStorage);
+                }
+
+                $renamedFilename = $tmpStorage. pathinfo($file->getRealPath(), PATHINFO_FILENAME) .'.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+            } else {
+                $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            }
 
             $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
 
@@ -374,5 +300,84 @@ class UploadController extends Controller
         $response->headers->set('Content-type', 'text/html');
 
         return $response;
+    }
+
+    /**
+     * Get current user's granted collections where he can upload
+     *
+     * @param \ACL $acl The user's ACL.
+     *
+     * @return array
+     */
+    private function getGrantedCollections(\ACL $acl)
+    {
+        $collections = [];
+
+        foreach ($acl->get_granted_sbas() as $databox) {
+            $sbasId = $databox->get_sbas_id();
+            foreach ($acl->get_granted_base([\ACL::CANADDRECORD], [$sbasId]) as $collection) {
+                $databox = $collection->get_databox();
+                if (!isset($collections[$sbasId])) {
+                    $collections[$databox->get_sbas_id()] = [
+                        'databox'             => $databox,
+                        'databox_collections' => []
+                    ];
+                }
+                $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
+                /** @var DisplaySettingService $settings */
+                $settings = $this->app['settings'];
+                $userOrderSetting = $settings->getUserSetting($this->app->getAuthenticatedUser(), 'order_collection_by');
+                // a temporary array to sort the collections
+                $aName = [];
+                list($ukey, $uorder) = ["order", SORT_ASC];     // default ORDER_BY_ADMIN
+                switch ($userOrderSetting) {
+                    case $settings::ORDER_ALPHA_ASC :
+                        list($ukey, $uorder) = ["name", SORT_ASC];
+                        break;
+                    case $settings::ORDER_ALPHA_DESC :
+                        list($ukey, $uorder) = ["name", SORT_DESC];
+                        break;
+                }
+                foreach ($collections[$databox->get_sbas_id()]['databox_collections'] as $key => $row) {
+                    if ($ukey == "order") {
+                        $aName[$key] = $row->get_ord();
+                    }
+                    else {
+                        $aName[$key] = $row->get_name();
+                    }
+                }
+                // sort the collections
+                array_multisort($aName, $uorder, SORT_REGULAR, $collections[$databox->get_sbas_id()]['databox_collections']);
+            }
+        }
+        return $collections;
+
+    }
+
+    /**
+     * Get POST max file size
+     *
+     * @return integer
+     */
+    private function getUploadMaxFileSize()
+    {
+        $postMaxSize = trim(ini_get('post_max_size'));
+
+        if ('' === $postMaxSize) {
+            $postMaxSize = PHP_INT_MAX;
+        }
+
+        switch (strtolower(substr($postMaxSize, -1))) {
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'g':
+                $postMaxSize *= 1024;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'm':
+                $postMaxSize *= 1024;
+            case 'k':
+                $postMaxSize *= 1024;
+        }
+
+        return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);
     }
 }

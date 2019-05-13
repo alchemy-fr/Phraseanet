@@ -13,8 +13,8 @@ define([
     "backbone"
 ], function ($, _, Backbone) {
     var TaskView = Backbone.View.extend({
+        template: _.template($('#task_template').html()),
         initialize: function () {
-            this.template = _.template($('#task_template').html());
             // render only parts of the model
             this.model.on('change:id', this.renderId, this);
             this.model.on('change:configuration', this.renderConfiguration, this);

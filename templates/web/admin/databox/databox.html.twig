@@ -375,11 +375,10 @@
                         } else if(submitLink.hasClass('reload-tree')) {
                             AdminApp.LeftView.reloadTree('bases:bases', true);
                         }
-
-                        if ("undefined" !== typeof datas.msg) {
+                        //display message
+                        if (typeof datas.msg !== "undefined") {
                             alert(datas.msg);
                         }
-
                     } else {
                         alert(datas.msg);
                     }

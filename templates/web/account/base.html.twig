@@ -4,7 +4,7 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block icon %}
-      <link rel="shortcut icon" type="image/x-icon" href="/assets/account/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/account/images/favicon.ico">
 {% endblock %}
 
 {% block stylesheet %}
@@ -40,8 +40,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/account/js/account{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/account{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -81,13 +81,6 @@
         </div>
         <div id="DIALOG"></div>
         {% block scripts %}
-            <script type="text/javascript">
-                // close alerts
-                $(document).on("click", ".alert .alert-block-close a", function(e){
-                    e.preventDefault();
-                    $(this).closest('.alert').alert('close');
-                    return false;
-                });
-            </script>
+            <script type="text/javascript"></script>
         {% endblock %}
 {% endblock %}

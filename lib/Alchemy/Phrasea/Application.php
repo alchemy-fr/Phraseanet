@@ -73,6 +73,7 @@ use Alchemy\Phrasea\Core\Provider\TasksServiceProvider;
 use Alchemy\Phrasea\Core\Provider\TokensServiceProvider;
 use Alchemy\Phrasea\Core\Provider\UnicodeServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebhookServiceProvider;
+use Alchemy\Phrasea\Core\Provider\WorkerConfigurationServiceProvider;
 use Alchemy\Phrasea\Core\Provider\ZippyServiceProvider;
 use Alchemy\Phrasea\Core\Provider\WebProfilerServiceProvider as PhraseaWebProfilerServiceProvider;
 use Alchemy\Phrasea\Databox\Caption\CaptionServiceProvider;
@@ -86,12 +87,17 @@ use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\QueueProvider\QueueServiceProvider;
+use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
+use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -243,8 +249,29 @@ class Application extends SilexApplication
         $this->setupEventDispatcher();
 
         $this->register(new DataboxServiceProvider());
+        $this->register(new QueueServiceProvider());
+        $this->register(new WorkerServiceProvider());
+        $this->register(new WorkerConfigurationServiceProvider());
+
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
+
+        $this['monolog'] = $this->share(
+            $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
+
+                $logger->pushHandler(new ErrorLogHandler(
+                    ErrorLogHandler::SAPI,
+                    Logger::ERROR
+                ));
+
+                $logger->pushHandler(new StreamHandler(
+                    fopen('php://stderr', 'w'),
+                    Logger::ERROR
+                ));
+
+                return $logger;
+            })
+        );
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */

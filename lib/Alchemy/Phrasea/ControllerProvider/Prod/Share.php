@@ -48,13 +48,13 @@ class Share implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/record/{base_id}/{record_id}/', 'controller.prod.share:shareRecord')
             ->before(function (Request $request) use ($app, $firewall) {
                 $socialTools = $app['conf']->get(['registry', 'actions', 'social-tools']);
-                if($socialTools === "all") {
+                if ($socialTools === "all") {
                     return;
                 }
-                elseif($socialTools === "none") {
+                elseif ($socialTools === "none") {
                     $app->abort(403, 'social tools disabled');
                 }
-                elseif($socialTools === "publishers") {
+                elseif ($socialTools === "publishers") {
                     $firewall->requireRightOnSbas(
                         \phrasea::sbasFromBas($app, $request->attributes->get('base_id')),
                         \ACL::BAS_CHUPUB
@@ -68,5 +68,4 @@ class Share implements ControllerProviderInterface, ServiceProviderInterface
 
         return $controllers;
     }
-
 }

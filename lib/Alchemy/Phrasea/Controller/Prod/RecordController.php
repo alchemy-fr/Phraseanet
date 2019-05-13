@@ -14,9 +14,14 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Twig\Fit;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -68,16 +73,30 @@ class RecordController extends Controller
             $options
         );
 
+        $currentRecord = $this->getContainerResult($record);
+
         if ($record->is_from_reg()) {
             $train = $this->render('prod/preview/reg_train.html.twig', ['record' => $record]);
-        }
-
-        if ($record->is_from_basket() && $reloadTrain) {
+        } else if ($record->is_from_basket() && $reloadTrain) {
             $train = $this->render('prod/preview/basket_train.html.twig', ['record' => $record]);
+        } else if ($record->is_from_feed()) {
+            $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
         }
 
-        if ($record->is_from_feed()) {
-            $train = $this->render('prod/preview/feed_train.html.twig', ['record' => $record]);
+        $recordCaptions = [];
+        foreach ($record->get_caption()->get_fields(null, true) as $field) {
+            // get field's values
+            $recordCaptions[$field->get_name()] = $field->get_serialized_values();
+        }
+        $recordCaptions["technicalInfo"] = $record->getPositionFromTechnicalInfos();
+
+        //  escape record title before rendering
+        $recordTitle = explode("</span>", $record->get_title());
+        if (count($recordTitle) >1) {
+            $recordTitle[1] = htmlspecialchars($recordTitle[1]);
+            $recordTitle = implode("</span>", $recordTitle);
+        } else {
+            $recordTitle = htmlspecialchars($record->get_title());
         }
 
         return $this->app->json([
@@ -87,44 +106,78 @@ class RecordController extends Controller
                 'searchEngine'  => $searchEngine,
                 'searchOptions' => $options,
             ]),
+            "recordCaptions"  => $recordCaptions,
             "html_preview"    => $this->render('common/preview.html.twig', [
-                'record' => $record
+                'record'        => $record
             ]),
             "others"          => $this->render('prod/preview/appears_in.html.twig', [
-                'parents' => $record->get_grouping_parents(),
-                'baskets' => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
+                'parents'       => $record->get_grouping_parents(),
+                'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
             "current"         => $train,
+            "record"          => $currentRecord,
             "history"         => $this->render('prod/preview/short_history.html.twig', [
-                'record' => $record,
+                'record'        => $record,
             ]),
             "popularity"      => $this->render('prod/preview/popularity.html.twig', [
-                'record' => $record,
+                'record'        => $record,
             ]),
             "tools"           => $this->render('prod/preview/tools.html.twig', [
-                'record' => $record,
+                'record'        => $record,
             ]),
             "pos"             => $record->getNumber(),
-            "title"           => $record->get_title(),
+            "title"           => $recordTitle,
             "databox_name"    => $record->getDatabox()->get_dbname(),
-            "databox_label"   => $record->getDatabox()->get_label($this->app['locale']),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);
     }
 
+    /**
+     * @param \record_preview $recordContainer
+     * @return array
+     */
+    private function getContainerResult(\record_preview $recordContainer)
+    {
+        /* @var $recordPreview \media_subdef */
+        $helpers = new PhraseanetExtension($this->app);
+
+        $recordData = [
+          'databoxId' => $recordContainer->getBaseId(),
+          'id' => $recordContainer->getId(),
+          'isGroup' => $recordContainer->isStory(),
+          'url' => (string)$helpers->getThumbnailUrl($recordContainer),
+        ];
+        $userHaveAccess = $this->app->getAclForUser($this->getAuthenticatedUser())->has_access_to_subdef($recordContainer, 'preview');
+        if ($userHaveAccess) {
+            $recordPreview = $recordContainer->get_preview();
+        } else {
+            $recordPreview = $recordContainer->get_thumbnail();
+        }
+
+        $recordData['preview'] = [
+          'width' => $recordPreview->get_width(),
+          'height' => $recordPreview->get_height(),
+          'url' => $this->app->url('alchemy_embed_view', [
+            'url' => (string)($this->getAuthenticatedUser() ? $recordPreview->get_url() : $recordPreview->get_permalink()->get_url()),
+            'autoplay' => false
+          ])
+        ];
+
+        return $recordData;
+    }
+
     public function getRecordById($sbasId, $recordId)
     {
         $record = new \record_adapter($this->app, $sbasId, $recordId);
-
         return $this->app->json([
-                "html_preview"  => $this->render('common/preview.html.twig', [
-                    'record'        => $record
-                ]),
-                "desc"  => $this->render('common/caption.html.twig', [
-                    'record'        => $record,
-                    'view'          => 'preview'
-                ])
+            "html_preview"  => $this->render('common/preview.html.twig', [
+                'record'        => $record
+            ]),
+            "desc"  => $this->render('common/caption.html.twig', [
+                'record'        => $record,
+                'view'          => 'preview'
+            ])
         ]);
     }
 
@@ -147,10 +200,13 @@ class RecordController extends Controller
         $StoryWZRepository = $this->getStoryWorkZoneRepository();
 
         $deleted = [];
+
         /** @var \collection[] $trashCollectionsBySbasId */
         $trashCollectionsBySbasId = [];
 
         $manager = $this->getEntityManager();
+
+        /** @var \record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -166,6 +222,10 @@ class RecordController extends Controller
                     $manager->remove($attachedStory);
                 }
 
+                foreach($record->get_grouping_parents() as $story) {
+                    $this->getEventDispatcher()->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+                }
+
                 $sbasId = $record->getDatabox()->get_sbas_id();
                 if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
                     $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
@@ -175,19 +235,17 @@ class RecordController extends Controller
                     if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                         // record is already in trash so delete it
                         $record->delete();
-                    }
-                    else {
+                    } else {
                         // move to trash collection
                         $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
                         // disable permalinks
                         foreach($record->get_subdefs() as $subdef) {
                             if( ($pl = $subdef->get_permalink()) ) {
-                                $pl->set_is_activated(false);
+                                    $pl->set_is_activated(false);
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     // no trash collection, delete
                     $record->delete();
                 }
@@ -231,51 +289,46 @@ class RecordController extends Controller
             [\ACL::CANDELETERECORD]
         );
 
-
         $filteredRecord = $this->filterRecordToDelete($records);
-
-//        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-//            'records'   => $records,
-//            'goingToTrash' => $goingToTrash
-//        ]);
 
         return $this->app->json([
             'renderView'     => $this->render('prod/actions/delete_records_confirm.html.twig', [
                 'records'        => $records,
                 'filteredRecord' => $filteredRecord
-             ]),
+            ]),
             'filteredRecord' => $filteredRecord
-            ]);
+        ]);
+
     }
 
     private function filterRecordToDelete(RecordsRequest $records)
     {
-    $trashCollectionsBySbasId = [];
-    $goingToTrash = [];
+        $trashCollectionsBySbasId = [];
+        $goingToTrash = [];
         $delete = [];
-    foreach($records as $record) {
-        $sbasId = $record->getDatabox()->get_sbas_id();
-        if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
-            $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
-        }
-        if($trashCollectionsBySbasId[$sbasId] !== null) {
-            if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
-                // record is already in trash
-                $delete[] = $record;
-            }else {
-                // will be moved to trash
-                $goingToTrash[] = $record;
+        foreach ($records as $record) {
+            $sbasId = $record->getDatabox()->get_sbas_id();
+            if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
             }
-        }else {
-            // trash does not exist
-            $delete[] = $record;
+            if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                    // record is already in trash
+                    $delete[] = $record;
+                }
+                else {
+                    // will be moved to trash
+                    $goingToTrash[] = $record;
+                }
+            }
+            else {
+                // trash does not exist
+                $delete[] = $record;
+            }
         }
-    }
-
-    //check if all values in array are true
+        //check if all values in array are true
         //return (!in_array(false, $goingToTrash, true));
         return ['trash' => $goingToTrash, 'delete' => $delete];
-
     }
 
     /**
@@ -295,5 +348,13 @@ class RecordController extends Controller
         };
 
         return $this->app->json($renewed);
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
+    {
+        return $this->app['dispatcher'];
     }
 }

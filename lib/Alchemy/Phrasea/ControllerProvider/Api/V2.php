@@ -13,7 +13,7 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\BasketController;
 use Alchemy\Phrasea\Controller\Api\LazaretController;
 use Alchemy\Phrasea\Controller\Api\SearchController;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
@@ -39,7 +39,6 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
                     ->setJsonBodyHelper($app['json.body_helper']);
             }
         );
-
         $app['controller.api.v2.lazaret'] = $app->share(
             function (PhraseaApplication $app) {
                 return (new LazaretController($app));

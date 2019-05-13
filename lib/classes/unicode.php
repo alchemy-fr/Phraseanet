@@ -503,6 +503,7 @@ class unicode
             "\xD5\x94" => "\xD6\x84"    ,  /* U+0554: ARMENIAN CAPITAL LETTER KEH                              -> U+0584: ARMENIAN SMALL LETTER KEH                              */
             "\xD5\x95" => "\xD6\x85"    ,  /* U+0555: ARMENIAN CAPITAL LETTER OH                               -> U+0585: ARMENIAN SMALL LETTER OH                               */
             "\xD5\x96" => "\xD6\x86"       /* U+0556: ARMENIAN CAPITAL LETTER FEH                              -> U+0586: ARMENIAN SMALL LETTER FEH                              */
+
         ];
     }
 
@@ -884,6 +885,7 @@ class unicode
             "\xD3\xB5" => "\xD1\x87",  /* U+04F5: CYRILLIC SMALL LETTER CHE WITH DIAERESIS                 -> U+0447: CYRILLIC SMALL LETTER CHE                        */
             "\xD3\xB8" => "\xD0\xAB",  /* U+04F8: CYRILLIC CAPITAL LETTER YERU WITH DIAERESIS              -> U+042B: CYRILLIC CAPITAL LETTER YERU                     */
             "\xD3\xB9" => "\xD1\x8B"   /* U+04F9: CYRILLIC SMALL LETTER YERU WITH DIAERESIS                -> U+044B: CYRILLIC SMALL LETTER YERU                       */
+
         ];
     }
 
@@ -1566,6 +1568,7 @@ class unicode
             "\xD5\x94" => "\xD6\x84"    ,  /* U+0554: ARMENIAN CAPITAL LETTER KEH                              -> U+0584: ARMENIAN SMALL LETTER KEH                          */
             "\xD5\x95" => "\xD6\x85"    ,  /* U+0555: ARMENIAN CAPITAL LETTER OH                               -> U+0585: ARMENIAN SMALL LETTER OH                           */
             "\xD5\x96" => "\xD6\x86"       /* U+0556: ARMENIAN CAPITAL LETTER FEH                              -> U+0586: ARMENIAN SMALL LETTER FEH                          */
+
         ];
     }
 

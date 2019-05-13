@@ -119,7 +119,7 @@ Vagrant.configure("2") do |config|
         ]
     end
 
-	# Switch between Phraseanet box and native trusty64
+    # Switch between Phraseanet box and native trusty64
     config.vm.box = "alchemy/Phraseanet-vagrant-dev"
     #config.vm.box = "ubuntu/trusty64"
 

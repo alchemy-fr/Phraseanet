@@ -220,13 +220,13 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
         $status['searchable'] = (Boolean) $properties['searchable'];
         $status['printable'] = (Boolean) $properties['printable'];
 
-        if (!isset($properties['img_on'])) {
-            $status['img_on'] = null;
-        }
-
-        if (!isset($properties['img_off'])) {
-            $status['img_off'] = null;
-        }
+//        if (!isset($properties['img_on'])) {
+//            $status['img_on'] = null;
+//        }
+//
+//        if (!isset($properties['img_off'])) {
+//            $status['img_off'] = null;
+//        }
 
         $statusStructure->setStatus($bit, $status);
 

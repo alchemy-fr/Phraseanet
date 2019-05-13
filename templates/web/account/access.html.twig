@@ -9,69 +9,65 @@
 {% block content_account %}
     <form name="updatingDemand" id="updatingDemand" action="{{ path("submit_update_account") }}" method="post">
         <div class="base-block">
-            {% for sbasId, baseInfo in inscriptions if baseInfo["display"]%}
+            {% for sbasId, baseInfo in inscriptions if baseInfo["display"] %}
                 {% set sbasName = sbasId | sbas_labels(app) %}
-            <h3 onclick="$( this ).toggleClass('toggled');$( this ).next('div').slideToggle();">{{ sbasName }}</h3>
-            <div class="block">
-                {% if attribute(baseInfo["cgu"], app['locale']) is defined %}
-                    {% set TOU = attribute(baseInfo["cgu"], app['locale']) %}
-                    {% if(TOU['value'] != '') %}
-                    <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
-                    <div class="cgu-block">
-                        <blockquote>{{ TOU['value']|raw  }}</blockquote>
-                    </div>
+                <h3 onclick="$( this ).toggleClass('toggled');$( this ).next('div').slideToggle();">{{ sbasName }}</h3>
+                <div class="block">
+                    {% if attribute(baseInfo["cgu"], app['locale']) is defined %}
+                        {% set TOU = attribute(baseInfo["cgu"], app['locale']) %}
+                        {% if(TOU['value'] != '') %}
+                            <h4>{{ "Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." | trans }}</h4>
+                            <div class="cgu-block">
+                                <blockquote>{{ TOU['value']|raw  }}</blockquote>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-
-                {% for baseId, collInfo in baseInfo["collections"] %}
-                    {% set type = collInfo['type'] %}
-
-                    {% if type == 'inactive' and collInfo['can-register'] %}
-                        {% set type = 'registrable' %}
-                    {% endif %}
-
-                    {% set show = false %}
-                    {% if type == 'active' or type == 'registrable' or type == 'in-time' or type == 'out-dated'
-                       or type == 'pending' or type == 'rejected' or type == 'accepted' %}
-                        {% set show = true %}
-                    {% endif %}
-
-                    {% if show == true %}
-                    <div class="registration">
-                        <div class="coll-name">
+                    {% for baseId, collInfo in baseInfo["collections"] %}
+                        {% set type = collInfo['type'] %}
+                        {% if type == 'inactive' and collInfo['can-register'] %}
+                            {% set type = 'registrable' %}
+                        {% endif %}
+                        {% set show = false %}
+                        {% if type == 'active' or type == 'registrable' or type == 'in-time' or type == 'out-dated'
+                            or type == 'pending' or type == 'rejected' or type == 'accepted' %}
+                            {% set show = true %}
+                        {% endif %}
+                        {% if show == true %}
+                            <div class="registration">
+                                <div class="coll-name">
                             <span>
                                 {{ collInfo["coll-name"] }}
                             </span>
-                        </div>
-                        <div class="icon-box">
-                            {% if type == 'registrable' %}
-                                <input class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
-                            {% else %}
-                            <span class="icon {{ type }}"></span>
-                            {% endif %}
-                        </div>
-                        <div class="status-box">
+                                </div>
+                                <div class="icon-box">
+                                    {% if type == 'registrable' %}
+                                        <input class="checkbox" type="checkbox" name="registrations[]" value="{{ baseId }}" />
+                                    {% else %}
+                                        <span class="icon {{ type }}"></span>
+                                    {% endif %}
+                                </div>
+                                <div class="status-box">
                             <span class="status {{ type }}" >
-+                            {% if type == 'active' %}
-                                   {{ "registration:collection.active" | trans }}
-                            {% elseif type == 'registrable' %}
-                                   {{ "registration:collection.registrable" | trans }}
-                            {% elseif type == 'in-time' %}
-                                   {{ "registration:collection.in-time" | trans }}
-                            {% elseif type == 'out-dated' %}
-                                   {{ "registration:collection.out-dated" | trans }}
-                            {% elseif type == 'pending' %}
-                                   {{ "registration:collection.pending" | trans }}
-                            {% elseif type == 'rejected' %}
-                                   {{ "registration:collection.rejected" | trans }}
-                            {% elseif type == 'accepted' %}
-                                   {{ "registration:collection.accepted" | trans }}
-                            {% endif %}
+                            {% if type == 'active' %}
+                                    {{ "registration:collection.active" | trans }}
+                                {% elseif type == 'registrable' %}
+                                    {{ "registration:collection.registrable" | trans }}
+                                {% elseif type == 'in-time' %}
+                                    {{ "registration:collection.in-time" | trans }}
+                                {% elseif type == 'out-dated' %}
+                                    {{ "registration:collection.out-dated" | trans }}
+                                {% elseif type == 'pending' %}
+                                    {{ "registration:collection.pending" | trans }}
+                                {% elseif type == 'rejected' %}
+                                    {{ "registration:collection.rejected" | trans }}
+                                {% elseif type == 'accepted' %}
+                                    {{ "registration:collection.accepted" | trans }}
+                                {% endif %}
                             </span>
-                        </div>
-                    </div>
-                    {% endif %}
-                {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>

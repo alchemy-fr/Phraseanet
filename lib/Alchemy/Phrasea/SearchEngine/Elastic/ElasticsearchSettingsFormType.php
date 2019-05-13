@@ -58,60 +58,57 @@ class ElasticsearchSettingsFormType extends AbstractType
                 'constraints' => new Range(['min' => 0]),
             ]);
 
-        foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-
-            if(array_key_exists('choices', $f)) {
-                // choices[] : choice_key => choice_value
-                $choices = $f['choices'];
+            foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+                if(array_key_exists('choices', $f)) {
+                    // choices[] : choice_key => choice_value
+                    $choices = $f['choices'];
+                }
+                else {
+                    $choices = [
+                        "10 values" => 10,
+                        "20 values" => 20,
+                        "50 values" => 50,
+                        "100 values" => 100,
+                        "all values" => -1
+                    ];
+                }
+                // array_unshift($choices, "not aggregated");  //  always as first choice
+                $choices = array_merge(["not aggregated" => 0], $choices);
+                $builder
+                    ->add($k.'_limit', ChoiceType::class, [
+                        // 'label' => $f['label'],// . ' ' . 'aggregate limit',
+                        'choices_as_values' => true,
+                        'choices'           => $choices,
+                        'attr'              => [
+                            'class' => 'aggregate'
+                        ]
+                    ]);
             }
-            else {
-                $choices = [
-                    "10 values" => 10,
-                    "20 values" => 20,
-                    "50 values" => 50,
-                    "100 values" => 100,
-                    "all values" => -1
-                ];
-            }
-
-            // array_unshift($choices, "not aggregated");  //  always as first choice
-            $choices = array_merge(["not aggregated" => 0], $choices);
 
             $builder
-                ->add($k.'_limit', ChoiceType::class, [
-                    // 'label' => $f['label'],// . ' ' . 'aggregate limit',
-                    'choices_as_values' => true,
-                    'choices'           => $choices,
-                    'attr'              => [
-                        'class' => 'aggregate'
+                ->add('highlight', 'checkbox', [
+                    'label' => 'Activate highlight',
+                    'required' => false
+                ])
+//                ->add('save', 'submit', [
+//                    'attr' => ['class' => 'btn btn-primary']
+//                ])
+                ->add('esSettingFromIndex', 'button', [
+                    'label' => 'Get setting form index',
+                    'attr' => [
+                        'onClick' => 'esSettingFromIndex()',
+                        'class' => 'btn'
                     ]
-                ]);
-        }
+                ])
+                ->add('dumpField', 'textarea', [
+                    'label' => false,
+                    'required' => false,
+                    'mapped' => false,
+                    'attr' => ['class' => 'dumpfield hide']
+                ])
+                ->add('activeTab', 'hidden');
 
-        $builder
-            ->add('highlight', 'checkbox', [
-                'label' => 'Activate highlight',
-                'required' => false
-            ])
-//            ->add('save', 'submit', [
-//                'attr' => ['class' => 'btn btn-primary']
-//            ])
-            ->add('esSettingFromIndex', 'button', [
-                'label' => 'Get setting form index',
-                'attr' => [
-                    'onClick' => 'esSettingFromIndex()',
-                    'class' => 'btn'
-                ]
-            ])
-            ->add('dumpField', 'textarea', [
-                'label' => false,
-                'required' => false,
-                'mapped' => false,
-                'attr' => ['class' => 'dumpfield hide']
-            ])
-            ->add('activeTab', 'hidden');
-
-        ;
+            ;
     }
 
     public function getName()

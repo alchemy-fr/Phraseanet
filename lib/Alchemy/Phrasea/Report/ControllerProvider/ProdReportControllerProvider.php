@@ -58,7 +58,7 @@ class ProdReportControllerProvider implements ControllerProviderInterface, Servi
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
-
+        
         $controllers
             ->match('/connections/{sbasId}/', 'controller.prod.report:connectionsAction')
             ->assert('sbasId', '\d+')

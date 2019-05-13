@@ -22,11 +22,19 @@ class DataboxPathExtractor
         $this->appbox = $appbox;
     }
 
-    public function extractPaths()
+    /**
+     * @param string $type
+     * @return array
+     */
+    public function extractPaths($type = null)
     {
         $paths = [];
 
         foreach ($this->appbox->get_databoxes() as $databox) {
+            if ($type === 'xsendfile') {
+                $paths[] = (string) $databox->get_sxml_structure()->path;
+            }
+
             foreach ($databox->get_subdef_structure()->getSubdefGroup('video') as $subdef) {
                 $paths[] = $subdef->get_path();
             }

@@ -54,12 +54,12 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $stubGrantedBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
             $acl->expects($this->any())
                 ->method($method)
-                ->will($this->returnValue([self::$DI['collection']]));
+                ->will($this->returnValue([$this->getCollection()]));
         };
         $stubGrantedSBase = function (PHPUnit_Framework_MockObject_MockObject $acl, $method) {
             $acl->expects($this->any())
                 ->method($method)
-                ->will($this->returnValue([self::$DI['collection']->get_databox()]));
+                ->will($this->returnValue([$this->getCollection()->get_databox()]));
         };
 
         $stubs = [
@@ -214,12 +214,10 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $result = new SearchEngineResult(
             new SearchEngineOptions(),
             new ArrayCollection([$elasticsearchRecord]), // Records
-
             $queryText,    // the query as typed by the user
             $queryAST,
             $queryCompiled,
             $queryESLib,
-
             0, // Duration
             0, // offsetStart
             1, // available

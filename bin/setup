@@ -11,8 +11,8 @@
 
 namespace KonsoleKommander;
 
-use Alchemy\Phrasea\Command\Setup\FixAutoincrements;
 use Alchemy\Phrasea\Command\Setup\ConfigurationEditor;
+use Alchemy\Phrasea\Command\Setup\FixAutoincrements;
 use Alchemy\Phrasea\Command\Setup\FixLogCollId;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
@@ -50,7 +50,7 @@ $app = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-    . ' SETUP', $version->getName() . ' ' . $version->getNumber());
+            . ' SETUP', $version->getName() . ' ' . $version->getNumber());
 
 $app->register(new DoctrineMigrationServiceProvider());
 
@@ -69,9 +69,9 @@ if ($configurationTester->isInstalled()) {
     $app->command(new ConfigurationEditor('system:config'));
 }
 
-$app->command(new AddPlugin('setup'));
-$app->command(new ListPlugin('setup'));
-$app->command(new RemovePlugin('setup'));
+$app->command(new AddPlugin());
+$app->command(new ListPlugin());
+$app->command(new RemovePlugin());
 $app->command(new PluginsReset());
 $app->command(new EnablePlugin());
 $app->command(new DisablePlugin());
@@ -83,4 +83,4 @@ $app->command(new FixLogCollId());
 
 $app['phraseanet.setup_mode'] = true;
 
-exit(is_int($app->run()) ? : 1);
+$app->run();

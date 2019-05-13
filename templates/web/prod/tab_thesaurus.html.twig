@@ -18,15 +18,15 @@
                     <div class="wizard wiz_2" style="display:none">
                         <div class="txt">{{ 'prod::thesaurusTab:wizard:remplacer par le terme' | trans }}</div>
                     </div>
-                    <form class="gform form-inline" onsubmit="T_Gfilter(this);return(false);">
+                    <form class="gform form-inline thesaurus-filter-submit-action">
                         <div class="input-append">
-                            <input type="text" name="search_value" class="input-medium"
-                                   onkeyup="T_Gfilter_delayed(this.value, 300);"/>
+                            <input type="text" name="search_value" class="input-medium thesaurus-filter-suggest-action"/>
                             <button type="submit" class="th_ok btn btn-inverse">
-                                <i class="icon-search"></i>
+                                <i class="fa fa-search" aria-hidden="true"></i>
                             </button>
-                            <button class="th_cancel btn btn-inverse" onclick="thesauCancelWizard();return(false);">
-                                <i class="icon-undo"></i>
+
+                            <button type="button" class="th_cancel btn btn-inverse thesaurus-cancel-wizard-action">
+                                <i class="fa fa-undo" aria-hidden="true"></i>
                             </button>
                             <input type="button" class="th_clear"/>
                         </div>
@@ -34,7 +34,7 @@
                 </div>
                 <div id="THPD_T">
                     <div id='THPD_T_treeBox' class="searchZone">
-                        <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
+                        <div class="thesaurus-branch-action" data-context="thesaurus">
                             <ul class="treeview" id="THPD_T_tree">
                                 {% for base in search_datas['bases'] %}
                                     {% if base['thesaurus'] %}
@@ -53,7 +53,7 @@
                 {% if has_access_to_module %}
                     <div id="THPD_C">
                         <div id='THPD_C_treeBox' class="searchZone">
-                            <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
+                            <div class="thesaurus-branch-action" data-context="candidate">
                                 <ul class="treeview" id="THPD_C_tree">
                                     {% for base in search_datas['bases'] %}
                                         {% if base['cterms'] %}

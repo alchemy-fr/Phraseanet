@@ -33,12 +33,17 @@
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
-            <span>{{ 'Filter' | trans }}</span>
+                <span class="checkbox">
+                    {{ 'admin::userlist: filterguestuser' | trans }}
+                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px" />
+                </span>
+                <br/>
+                <span>{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
                     <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
-                    <option {% if parm['like_field'] == "country" %}selected="selected"{% endif %} value="country">{{ 'Push::filter on countries' | trans }}</option>
-                    <option {% if parm['like_field'] == "company" %}selected="selected"{% endif %} value="company">{{ 'Push::filter on companies' | trans }}</option>
+                    <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{{ 'Push::filter on countries' | trans }}</option>
+                    <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{{ 'Push::filter on companies' | trans }}</option>
                     <option {% if parm['like_field'] == "email" %}selected="selected"{% endif %} value="email">{{ 'Push::filter on emails' | trans }}</option>
                 </select>
                 <span>{{ 'Push::filter starts' | trans }}</span>
@@ -53,6 +58,7 @@
                 <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
             </fieldset>
         </form>
+
         <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
         <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>
 
@@ -286,37 +292,41 @@
             });
 
             var buttons = {};
-            buttons[language.create_user] = function () {
-                check_new_user(false);
-            };
             buttons[language.annuler] = function () {
                 $('#user_add_dialog').dialog('close')
             };
+            buttons[language.create_user] = function () {
+                check_new_user(false);
+            };
 
-            $('#user_add_dialog').dialog({
+            var userAddDialog = $('#user_add_dialog').dialog({
                 buttons: buttons,
                 modal: true,
                 resizable: false,
                 draggable: false,
-                width: 500
+                width: 382,
             }).dialog('close');
 
+            userAddDialog.closest('.ui-dialog').addClass('dialog_container');
+
             var buttons = {};
-            buttons[language.create_template] = function () {
-                check_new_user(true);
-            };
             buttons[language.annuler] = function () {
                 $('#template_add_dialog').dialog('close');
             };
+            buttons[language.create_template] = function () {
+                check_new_user(true);
+            };
 
-            $('#template_add_dialog').dialog({
+            var templateAddDialog = $('#template_add_dialog').dialog({
                 buttons: buttons,
                 modal: true,
                 resizable: false,
                 draggable: false,
-                width: 500
+                width: 382,
 
             }).dialog('close');
+
+            templateAddDialog.closest('.ui-dialog').addClass('dialog_container');
 
             function check_new_user(is_template) {
                 var container = is_template ? $('#template_add_dialog') : $('#user_add_dialog');
@@ -396,7 +406,6 @@
             $('#users_page_search').on('submit', function () {
                 var datas = $('#users_page_search').serializeArray();
                 $('#right-ajax').empty().addClass('loading');
-                console.log(datas);
                 $.ajax({
                     type: 'POST',
                     url: '../admin/users/search/',
@@ -448,7 +457,7 @@
 
                 var k = el.attr('id').split('_').pop();
 
-                if (is_shift_key(evt) && $('tr.last_selected', cont).length != 0) {
+                if (utilsModule.is_shift_key(evt) && $('tr.last_selected', cont).length != 0) {
                     var lst = $('tr', cont);
                     var index1 = $.inArray($('tr.last_selected', cont)[0], lst);
                     var index2 = $.inArray($(el)[0], lst);
@@ -479,7 +488,7 @@
                     }
                 }
                 else {
-                    if (!is_ctrl_key(evt)) {
+                    if (!utilsModule.is_ctrl_key(evt)) {
                         if ($.inArray(k, p4.users.sel) < 0) {
                             p4.users.sel = new Array();
                             $('tr', cont).removeClass('selected');
@@ -657,7 +666,6 @@
                     e.preventDefault();
                 }
             });
-
             $("#users_page_form .input-mini").keyup(function (e) {
                 if (e.which == 13) {
                     e.preventDefault();
@@ -666,7 +674,6 @@
                     var perPage = parseInt($('select[name="per_page"]', form).val());
                     current_page = isNaN(current_page) || current_page < 1
                     || current_page > {{ pages|floor }} ? 1 : current_page;
-
                     var offset_start = (current_page-1) * perPage;
                     $('input[name="offset_start"]', form).val(offset_start);
                     $('#users_page_form').trigger('submit');

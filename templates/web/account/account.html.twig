@@ -11,39 +11,9 @@
 {% block javascript %}
     {{ parent() }}
     <script type="text/javascript">
-            requirejs.config({
-                baseUrl: "/scripts",
-                paths: {
-                    jquery: "../assets/vendors/jquery/jquery.min",
-                    "jquery.ui": "../assets/vendors/jquery-ui/jquery-ui.min",
-                    "jquery.geonames": "../assets/vendors/jquery.geonames/jquery.geonames"
-                },
-                shim: {
-                    "jquery.geonames": {
-                        deps: ["jquery", "jquery.ui"],
-                        exports: "$.fn.geocompleter"
-                    },
-                    "common/geonames": {
-                        deps: ["jquery.geonames"]
-                    }
-                }
-            });
-
-            require([
-                "jquery",
-                "common/geonames"
-            ], function ($, geonames) {
-                $(document).ready(function() {
-                    $('legend').bind('click', function () {
-                        $(".form-info").hide(200);
-                        $($(this).data('target')).show();
-                    });
-
-                    geonames.init($("#form_geonameid"), {
-                        "server": "{{ app['geonames.server-uri'] }}",
-                        "limit": 40
-                    });
-                });
+            accountApp.bootstrap({
+                state: 'editAccount',
+                geonameServerUrl: '{{ app['geonames.server-uri'] }}'
             });
     </script>
 {% endblock %}
@@ -130,7 +100,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_city"><strong>{{ "admin::compte-utilisateur ville" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().getGeonameId() }}" />
+                                    <input class="input_element input-xlarge geoname_field" type="text" name="form_geonameid" id="form_geonameid" value="{{ app["authentication"].getUser().getGeonameId() }}" autocomplete="false"/>
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
@@ -264,6 +234,7 @@
                     <div class="well well-large" style="border: 1px solid #333333;">
                         <div style="max-width: 400px;margin-left: 2%;display: inline-block;width: 47%;margin-right: 1%;">
                             <input type="submit" class="btn btn-info btn-block btn-large" value="{{ 'boutton::valider' | trans }}"/>
+
                         </div>
 
                         <div style="max-width: 400px;margin-left: 1%;width: 47%;display: inline-block;margin-right: 2%;float: right;">
@@ -300,11 +271,11 @@
                                             </ul>
                                         {% endif%}
 
-                                        - {{ "phraseanet::account: My phraseanet account" | trans }}
-                                        <ul style="padding-left: 30px">
-                                            <li>Name : {{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</li>
-                                            <li>Login : {{ user.getLogin() }}</li>
-                                        </ul>
+                                            - {{ "phraseanet::account: My phraseanet account" | trans }}
+                                            <ul style="padding-left: 30px">
+                                                <li>Name : {{ user.getFirstName() ~ ' ' ~ user.getLastName() }}</li>
+                                                <li>Login : {{ user.getLogin() }}</li>
+                                            </ul>
                                     </div>
                                     <div class="modal-footer">
                                         <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">
@@ -326,11 +297,13 @@
                             {% endif %}
 
                         </div>
+
                     </div>
                 </div>
             </form>
         </div>
     </div>
+
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -347,4 +320,5 @@
             });
         });
     </script>
+
 {% endblock %}

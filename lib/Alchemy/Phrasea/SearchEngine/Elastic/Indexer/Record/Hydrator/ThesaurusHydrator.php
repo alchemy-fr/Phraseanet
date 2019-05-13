@@ -78,7 +78,9 @@ class ThesaurusHydrator implements HydratorInterface
                 }
             }
         }
-
+        if(empty($terms)) {
+            return;
+        }
         $bulk = $this->thesaurus->findConceptsBulk($terms, null, $filters, true);
 
         foreach ($bulk as $offset => $item_concepts) {

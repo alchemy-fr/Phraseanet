@@ -15,546 +15,615 @@
     {#<script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>#}
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $('.path_testable').path_file_test();
-      $('.url_testable').url_test();
-      $('.tabs').tabs({
-        beforeActivate:function(event, ui){
-          $('.path_testable:visible, .url_testable:visible').trigger('keyup');
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.path_testable').path_file_test();
+            $('.url_testable').url_test();
+            $('.tabs').tabs({
+                beforeActivate: function (event, ui) {
+                    $('.path_testable:visible, .url_testable:visible').trigger('keyup');
+                }
+            });
+
+            $(".toggle").on("click", function () {
+                var box = $(this).data("toggle");
+                $(box).toggle("500");
+            });
+
+            $("input, select").one("change", activeSubmit);
+        });
+
+        function activeSubmit() {
+            $(".subviews-submit").removeAttr("disabled");
+            $("input, select").off("change", activeSubmit);
         }
-      });
 
-        $(".toggle").on("click", function() {
-            var box = $(this).data("toggle");
-            $(box).toggle("500");
-        });
+        function fillCheckbox(section, name, defType, fieldname, values) {
 
-        $("input, select").one("change", activeSubmit);
-    });
+            $("[name='" + section + "_" + name + "_" + defType + "[" + fieldname + "][]']").each(function () {
+                $(this).removeAttr("checked");
 
-    function activeSubmit() {
-        $(".subviews-submit").removeAttr("disabled");
-        $("input, select").off("change", activeSubmit);
-    }
+                for (var key in values) {
+                    if ($(this).val() == values[key])
+                        $(this).prop("checked", "true");
+                }
+            });
+        }
+        function fillRadio(section, name, defType, fieldname, value) {
+            $("[name='" + section + "_" + name + "_" + defType + "[" + fieldname + "]'][value='" + value + "']").prop("checked", true);
+        }
 
-    function fillCheckbox(section, name, defType, fieldname, values) {
+        function fillSelect(section, name, defType, fieldname, value) {
+            $("[name='" + section + "_" + name + "_" + defType + "[" + fieldname + "]']").val(value)
+        }
 
-        $("[name='"+section+"_"+name+"_"+defType+"["+fieldname+"][]']").each(function(){
-            $(this).removeAttr("checked");
-
-            for(var key in values){
-                if($(this).val() == values[key])
-                    $(this).prop("checked", "true");
-            }
-        });
-    }
-    function fillRadio(section, name, defType, fieldname, value) {
-        $("[name='"+section+"_"+name+"_"+defType+"["+fieldname+"]'][value='"+value+"']").prop( "checked", true );
-    }
-
-    function fillSelect(section, name, defType, fieldname, value) {
-        $("[name='"+section+"_"+name+"_"+defType+"["+fieldname+"]']").val(value)
-    }
-
-    function fillSlide(section, name, defType, fieldname, value) {
-        $("#slider"+section+name+defType+fieldname).slider({value:value});
-        $("#slidervalue"+section+name+defType+fieldname).val(value);
-    }
+        function fillSlide(section, name, defType, fieldname, value) {
+            $("#slider" + section + name + defType + fieldname).slider({value: value});
+            $("#slidervalue" + section + name + defType + fieldname).val(value);
+        }
 
 
-    function populate_values(section, name) {
+        function populate_values(section, name) {
 
-        var config = JSON.parse('{{ config |json_encode|raw }}'),
+            var config = JSON.parse('{{ config |json_encode|raw }}'),
                 i = 0,
-                defType = $('[name="'+section+'_'+name+'_mediatype"]').val(),
-                preset = $('[name="'+section+'_'+name+'_presets"]').val(),
-                optionValue = $('[name="'+section+'_'+name+'_presets"] option:selected').attr("value");
+                defType = $('[name="' + section + '_' + name + '_mediatype"]').val(),
+                preset = $('[name="' + section + '_' + name + '_presets"]').val(),
+                optionValue = $('[name="' + section + '_' + name + '_presets"] option:selected').attr("value");
 
-        if(typeof optionValue === 'undefined'){
+            if (typeof optionValue === 'undefined') {
 
-            return;
+                return;
+            }
+
+            for (var input in config[defType].form) {
+                if (config[defType].form[input] == "slide") {
+                    fillSlide(section, name, defType, input, config[defType].definitions[preset][input]);
+                }
+                if (config[defType].form[input] == "radio") {
+                    fillRadio(section, name, defType, input, config[defType].definitions[preset][input]);
+                }
+                if (config[defType].form[input] == "select") {
+                    fillSelect(section, name, defType, input, config[defType].definitions[preset][input]);
+                }
+                if (config[defType].form[input] == "checkbox") {
+                    fillCheckbox(section, name, defType, input, config[defType].definitions[preset][input]);
+                }
+                i++;
+            }
         }
 
-        for (var input in config[defType].form) {
-            if(config[defType].form[input] == "slide"){
-                fillSlide(section, name, defType, input, config[defType].definitions[preset][input]);
-            }
-            if(config[defType].form[input] == "radio"){
-                fillRadio(section, name, defType, input, config[defType].definitions[preset][input]);
-            }
-            if(config[defType].form[input] == "select"){
-                fillSelect(section, name, defType, input, config[defType].definitions[preset][input]);
-            }
-            if(config[defType].form[input] == "checkbox"){
-                fillCheckbox(section, name, defType, input, config[defType].definitions[preset][input]);
-            }
-            i++;
-        }
-    }
-
-    function select_mediatype(type, name, selector)
-    {
-        var config = JSON.parse('{{ config |json_encode|raw }}'),
-                inputPresets = '[name="'+type+'_'+name+'_presets"]',
+        function select_mediatype(type, name, selector) {
+            var config = JSON.parse('{{ config |json_encode|raw }}'),
+                inputPresets = '[name="' + type + '_' + name + '_presets"]',
                 defType = $(selector).val();
 
 
-        $('.'+type+name).hide();
+            $('.' + type + name).hide();
 
-        $('[data-toggle^="#box'+type+name+'"]').hide();
-        $('[data-toggle="#box'+type+name+defType+'"]').show();
+            $('[data-toggle^="#box' + type + name + '"]').hide();
+            $('[data-toggle="#box' + type + name + defType + '"]').show();
 
-        $('#box'+type+name+$(selector).val()).show();
+            $('#box' + type + name + $(selector).val()).show();
 
-        if(defType == 'flexpaper'){
-            $(inputPresets).closest("tr").hide();
-            return;
-        }else{
-            $(inputPresets).closest("tr").show();
-        }
+            if (defType == 'flexpaper') {
+                $(inputPresets).closest("tr").hide();
+                return;
+            } else {
+                $(inputPresets).closest("tr").show();
+            }
 
-        $(inputPresets)
-            .find('option')
-            .remove()
-            .end()
-            .append($("<option value='custom'></option>").text('{{ 'Custom' | trans }}'));
+            $(inputPresets)
+                .find('option')
+                .remove()
+                .end()
+                .append($("<option value='custom'></option>").text('{{ 'Custom' | trans }}'));
 
-        if(typeof config[defType] === 'undefined'){
+            if (typeof config[defType] === 'undefined') {
 
-            return;
-        }
+                return;
+            }
 
-        for (var key in config[defType].definitions) {
-            if (config[defType].definitions[key] == null){
-                $(inputPresets).append($("<option></option>")
+            for (var key in config[defType].definitions) {
+                if (config[defType].definitions[key] == null) {
+                    $(inputPresets).append($("<option></option>")
                         .attr("disabled", "disabled")
                         .text(key)
-                );
-            }else{
-                $(inputPresets).append($("<option></option>")
+                    );
+                } else {
+                    $(inputPresets).append($("<option></option>")
                         .attr("value", key)
                         .text(key)
-                );
+                    );
+                }
             }
         }
-    }
 
-    function subview_type(selector) {
-        var mapping = JSON.parse('{{ subviews_mapping |json_encode|raw }}'),
+        function subview_type(selector) {
+            var mapping = JSON.parse('{{ subviews_mapping |json_encode|raw }}'),
                 subviewType = $(selector).val();
 
-        $("#mediaType")
+            $("#mediaType")
                 .find('option')
                 .remove()
                 .end()
                 .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
 
-        for (var key in mapping[subviewType]) {
-            $("#mediaType").append($('<option></option>')
+            for (var key in mapping[subviewType]) {
+                $("#mediaType").append($('<option></option>')
                     .attr("value", mapping[subviewType][key])
                     .text(mapping[subviewType][key])
-            );
+                );
+            }
         }
-    }
-    
-    function media_type(selector){
-        var config = JSON.parse('{{ config |json_encode|raw }}'),
+
+        function media_type(selector) {
+            var config = JSON.parse('{{ config |json_encode|raw }}'),
                 defType = $(selector).val();
 
-        $("#presets")
+            $("#presets")
                 .find('option')
                 .remove()
                 .end()
                 .append($("<option></option>").text('{{ 'Choisir' | trans }}'));
 
-        if(typeof config[defType] === 'undefined'){
+            if (typeof config[defType] === 'undefined') {
 
-            return;
-        }
+                return;
+            }
 
-        for (var key in config[defType].definitions) {
-            if (config[defType].definitions[key] == null){
-                $("#presets").append($("<option></option>")
+            for (var key in config[defType].definitions) {
+                if (config[defType].definitions[key] == null) {
+                    $("#presets").append($("<option></option>")
                         .attr("disabled", "disabled")
                         .text(key)
-                );
-            }else{
-                $("#presets").append($('<option></option>')
+                    );
+                } else {
+                    $("#presets").append($('<option></option>')
                         .attr("value", key)
                         .text(key)
-                );
+                    );
+                }
             }
         }
-    }
 
-    $(function() {
-      // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
-      $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        $(function () {
+            // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
+            $("#dialog:ui-dialog").dialog("destroy");
 
-      var name = $( "#name" ), accessclass = $( "#accessclass" ), subviewType =$( "#subviewType" ) , mediaType = $( "#mediaType" ), presets = $( "#presets" ),
-      allFields = $( [] ).add( name ).add(accessclass).add(subviewType).add(mediaType).add(presets),
-      tips = $( ".validateTips" );
+            var name = $("#name"), accessclass = $("#accessclass"), subviewType = $("#subviewType"),
+                mediaType = $("#mediaType"), presets = $("#presets"), subviewPath = $("#subviewPath"),
+                allFields = $([]).add(name).add(accessclass).add(subviewType).add(mediaType).add(presets),
+                tips = $(".validateTips");
 
-      function updateTips( t ) {
-        tips
-        .text( t )
-        .addClass( "ui-state-highlight" );
-        setTimeout(function() {
-          tips.removeClass( "ui-state-highlight", 1500 );
-        }, 500 );
-      }
-
-      function checkLength( o, n, min, max ) {
-        if ( o.val().length > max || o.val().length < min ) {
-          o.addClass( "ui-state-error" );
-          updateTips( "Length of " + n + " must be between " +
-            min + " and " + max + "." );
-
-          return false;
-        } else {
-          return true;
-        }
-      }
-
-      function checkPresence( mediaType, o ) {
-
-        var el = $('input[name="subdefs[]"][value="'+mediaType+'_'+o.val()+'"]');
-        if ( el.length !== 0 ) {
-          o.addClass( "ui-state-error" );
-          updateTips( "SubdefName should be unique per group" );
-
-          return false;
-        } else {
-          return true;
-        }
-      }
-
-      function checkSpecialChar( o )
-      {
-        var ok = true;
-        var reg = new RegExp("[A-Za-z0-9-]+","g");
-
-        if(o.val().match(reg)[0].length !== o.val().length)
-        {
-            ok = false;
-            o.addClass( "ui-state-error" );
-            updateTips( "Special characters (except minus) or espaces are not authorized" );
-         }
-
-         return ok;
-      }
-
-
-      $( "#dialog-form" ).dialog({
-        autoOpen: false,
-        height: 420,
-        width: 300,
-        modal: true,
-        buttons: {
-          "Create a Subdef": function() {
-            var bValid = true;
-
-            allFields.removeClass( "ui-state-error" );
-
-            bValid = bValid && checkLength( name, "subdef name", 3, 16 );
-            bValid = bValid && checkSpecialChar( name );
-            bValid = bValid && checkPresence( subviewType.val(), name );
-
-            if ( bValid ) {
-              $('input[name="add_subdef[group]"]').val(subviewType.val());
-              $('input[name="add_subdef[name]"]').val(name.val());
-              $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
-              $('input[name="add_subdef[class]"]').val(accessclass.val());
-              $('input[name="add_subdef[presets]"]').val(presets.val());
-              $( this ).dialog( "close" );
-              $('form.subdefs').submit();
+            function updateTips(t) {
+                tips
+                    .text(t)
+                    .addClass("ui-state-highlight");
+                setTimeout(function () {
+                    tips.removeClass("ui-state-highlight", 1500);
+                }, 500);
             }
-          },
-          Cancel: function() {
-            $( this ).dialog( "close" );
-          }
-        },
-        close: function() {
-          allFields.val( "" ).removeClass( "ui-state-error" );
-        }
-      });
 
-      $( "#create-subdef" )
-      // .button()
-      .click(function() {
-        $( "#dialog-form" ).dialog( "open" );
-      });
+            function checkLength(o, n, min, max) {
+                if (o.val().length > max || o.val().length < min) {
+                    o.addClass("ui-state-error");
+                    updateTips("Length of " + n + " must be between " +
+                        min + " and " + max + ".");
 
-      $('.subdef_deleter')
-      // .button()
-      .click(function(){
-        delete_subdef($(this).next('input[name="subdef"]').val());
-
-        return false;
-      });
-
-      function delete_subdef(name)
-      {
-        $( "#dialog-delete-subdef" ).dialog({
-          resizable: false,
-          height:140,
-          modal: true,
-          buttons: {
-            "Delete subdef": function() {
-              $('#delete_subdef').val(name);
-              $( this ).dialog( "destroy" );
-              $('form.subdefs').submit();
-            },
-            Cancel: function() {
-              $( this ).dialog( "destroy" );
+                    return false;
+                } else {
+                    return true;
+                }
             }
-          }
+
+            function isNotEmpty(o){
+                if(o.val().length > 0){
+                    return true;
+                }else{
+                    o.addClass("ui-state-error");
+                    updateTips("Path is required");
+                    return false;
+                }
+            }
+
+            function checkPresence(mediaType, o) {
+
+                var el = $('input[name="subdefs[]"][value="' + mediaType + '_' + o.val() + '"]');
+                if (el.length !== 0) {
+                    o.addClass("ui-state-error");
+                    updateTips("SubdefName should be unique per group");
+
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            function checkSpecialChar(o) {
+                var ok = true;
+                var reg = new RegExp("[A-Za-z0-9-]+", "g");
+
+                if (o.val().match(reg)[0].length !== o.val().length) {
+                    ok = false;
+                    o.addClass("ui-state-error");
+                    updateTips("Special characters (except minus) or espaces are not authorized");
+                }
+
+                return ok;
+            }
+
+
+            var subdefCreateDialog = $("#dialog-form").dialog({
+                autoOpen: false,
+                width: 382,
+                modal: true,
+                buttons: {
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    },
+                    "Create a Subdef": function () {
+                        var bValid = true;
+
+                        allFields.removeClass("ui-state-error");
+
+                        bValid = bValid && checkLength(name, "subdef name", 3, 16);
+                        bValid = bValid && checkSpecialChar(name);
+                        bValid = bValid && checkPresence(subviewType.val(), name);
+                        bValid = bValid && isNotEmpty(subviewPath);
+
+                        if (bValid) {
+                            $('input[name="add_subdef[group]"]').val(subviewType.val());
+                            $('input[name="add_subdef[name]"]').val(name.val());
+                            $('input[name="add_subdef[mediaType]"]').val(mediaType.val());
+                            $('input[name="add_subdef[class]"]').val(accessclass.val());
+                            $('input[name="add_subdef[presets]"]').val(presets.val());
+                            $('input[name="add_subdef[path]"]').val(subviewPath.val());
+                            $(this).dialog("close");
+                            $('form.subdefs').submit();
+                        }
+                    }
+                },
+                close: function () {
+                    allFields.val("").removeClass("ui-state-error");
+                }
+            });
+
+            subdefCreateDialog.closest('.ui-dialog').addClass('dialog_container');
+
+            $("#create-subdef")
+            // .button()
+                .click(function () {
+                    $("#dialog-form").dialog("open");
+                });
+
+            $('.subdef_deleter')
+            // .button()
+                .click(function () {
+                    delete_subdef($(this).next('input[name="subdef"]').val());
+
+                    return false;
+                });
+
+            function delete_subdef(name) {
+                $("#dialog-delete-subdef").dialog({
+                    resizable: false,
+                    width: 382,
+                    modal: true,
+                    buttons: {
+                        "Delete subdef": function () {
+                            $('#delete_subdef').val(name);
+                            $(this).dialog("destroy");
+                            $('form.subdefs').submit();
+                        },
+                        Cancel: function () {
+                            $(this).dialog("destroy");
+                        }
+                    }
+                })
+                .closest('.ui-dialog').addClass('dialog_container')
+                .find('.ui-dialog-buttonpane button').css({
+                    float: 'right',
+                    marginRight: '23px'
+                });
+                
+            }
+
         });
-      }
-
-    });
 
 
     </script>
 {% endblock %}
 
 {% block content %}
-<p>
-    <button id="create-subdef" class="btn btn-success">{{ 'Create new subdef' | trans }}</button>
-</p>
-<div id="dialog-delete-subdef" title="{{ 'Delete the subdef ?' | trans }}" style="display:none;">
     <p>
-        <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-        {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
+        <button id="create-subdef" class="btn btn-success">{{ 'create_subdef_button_label' | trans }}</button>
     </p>
-</div>
 
-<div id="dialog-form" title="Create new subdef">
-    <p class="validateTips"></p>
-    <form>
-        <fieldset>
-            <label for="name">{{ 'Subdef name' | trans }}</label>
-            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
-            <label for="accessclass">{{ 'classe d\'acces' | trans }}</label>
-            <select name="accessclass" id="accessclass">
-                <option value="document">{{ 'document' | trans }}</option>
-                <option value="preview" selected="selected">{{ 'preview' | trans }}</option>
-                <option value="thumbnail">{{ 'tout le monde' | trans }}</option>
-            </select>
-            <label for="subviewType">{{ 'subviewType' | trans }}</label>
-            <select name="subviewType" id="subviewType" onchange="subview_type(this)">
-                <option>{{ 'Choisir' | trans }}</option>
-                <option value="image">{{ 'image' | trans }}</option>
-                <option value="video">{{ 'video' | trans }}</option>
-                <option value="audio">{{ 'audio' | trans }}</option>
-                <option value="document">{{ 'document' | trans }}</option>
-                <option value="flash">{{ 'flash' | trans }}</option>
-            </select>
-            <label for="mediaType">{{ 'mediatype' | trans }}</label>
-            <select name="mediaType" id="mediaType" onchange="media_type(this)">
-                <option>{{ 'Choisir' | trans }}</option>
-            </select>
-            <label for="presets">{{ 'Presets' | trans }}</label>
-            <select name="presets" id="presets">
-                <option>{{ 'Choisir' | trans }}</option>
-            </select>
-        </fieldset>
-    </form>
-</div>
+    <div id="dialog-delete-subdef" title="{{ 'Delete the subview ?' | trans }}" style="display:none;">
+        <p>
+            {# <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span> #}
+            {{ 'These subdef will be permanently deleted and cannot be recovered. Are you sure?' | trans }}
+        </p>
+    </div>
 
-<form method="post" action="{{ path('admin_subdefs_subdef_update', { 'sbas_id' : databox.get_sbas_id }) }}" target="_self" class="subdefs">
-    <div class="tabs">
-        <ul>
+    <div id="dialog-form" title="Create new subdef">
+        <p class="validateTips"></p>
+        <form>
+            <fieldset>
+                <label for="name">{{ 'create_subdef_modal_subdefinition_name' | trans }}</label>
+                <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" value=""/><br/>
+                <label for="accessclass">{{ 'create_subdef_modal_access_class' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="accessclass" id="accessclass">
+                        <option value="document">{{ 'create_subdef_modal_access_class_document' | trans }}</option>
+                        <option value="preview"
+                                selected="selected">{{ 'create_subdef_modal_access_class_preview' | trans }}</option>
+                        <option value="thumbnail">{{ 'create_subdef_modal_access_class_no_restriction' | trans }}</option>
+                    </select>
+                </div>
+                <label for="subviewType">{{ 'create_subdef_modal_record_phraseanet_type' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="subviewType" id="subviewType" onchange="subview_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                        <option value="image">{{ 'image' | trans }}</option>
+                        <option value="video">{{ 'video' | trans }}</option>
+                        <option value="audio">{{ 'audio' | trans }}</option>
+                        <option value="document">{{ 'document' | trans }}</option>
+                        <option value="flash">{{ 'flash' | trans }}</option>
+                    </select>
+                </div>
+                <label for="mediaType">{{ 'create_subdef_modal_preview_mediatype' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="mediaType" id="mediaType" onchange="media_type(this)">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
+                <label for="presets">{{ 'create_subdef_modal_presets' | trans }}</label>
+                <div class="selectdiv">
+                    <select name="presets" id="presets">
+                        <option>{{ 'Choisir' | trans }}</option>
+                    </select>
+                </div>
+                <label for="subviewPath">{{ 'Path' | trans }}</label>
+                <input type="text" name="subviewPath" id="subviewPath" class="text ui-widget-content ui-corner-all" value="{{ databox.getSubdefStorage }}" />
+            </fieldset>
+        </form>
+    </div>
+
+    <form method="post" action="{{ path('admin_subdefs_subdef_update', { 'sbas_id' : databox.get_sbas_id }) }}"
+          target="_self" class="subdefs">
+        <div class="tabs">
+            <ul>
+                {% for subdefgroup, subdeflist in subdefs %}
+                    <li><a class="no-ajax" href="#{{ subdefgroup }}">{{ subdefgroup }}</a></li>
+                {% endfor %}
+            </ul>
+            <button type="submit" disabled="disabled"
+                    class="btn btn-primary subviews-submit">{{ 'boutton::valider' | trans }}</button>
             {% for subdefgroup, subdeflist in subdefs %}
-            <li><a class="no-ajax" href="#{{subdefgroup}}">{{subdefgroup}}</a></li>
-            {% endfor %}
-        </ul>
-        <button type="submit" disabled="disabled" class="btn btn-primary subviews-submit">{{ 'boutton::valider' | trans }}</button>
-        {% for subdefgroup, subdeflist in subdefs %}
-        <div id="{{subdefgroup}}">
-            {% for subdefname , subdef in subdeflist %}
-            <div>
-                <input type="hidden" name="subdefs[]" value="{{subdefgroup}}_{{subdefname}}"/>
-                <h2 class="subdefName">{{subdefname}}</h2><button class="subdef_deleter btn btn-danger btn-mini">{{ 'boutton::supprimer' | trans }}</button>
-                <input type="hidden" name="subdef" value="{{subdefgroup}}_{{subdefname}}"/>
-                <br />
-                <table class="subdefTab" cellspacing="0" cellpading="0" border="0" style="display:inline-block;">
-                    <tbody>
-                        <tr>
-                            <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
-                            <td style="width:300px;"><input type="checkbox" name="{{subdefgroup}}_{{subdefname}}_downloadable" {% if subdef.is_downloadable() %}checked="checked"{% endif %} value="1" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{ 'classe' | trans }}
-                            </td>
-                            <td>
-                                <select name="{{subdefgroup}}_{{subdefname}}_class">
-                                    <option>{{ 'classe' | trans }}</option>
-                                    <option value="document" {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{{ 'document' | trans }}</option>
-                                    <option value="preview" {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{{ 'preview' | trans }}</option>
-                                    <option value="thumbnail" {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{{ 'tout le monde' | trans }}</option>
-                                </select>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{ 'mediatype' | trans }}
-                            </td>
-                            <td>
-                                <select onchange="select_mediatype('{{subdefgroup}}', '{{subdefname}}', this);" name="{{subdefgroup}}_{{subdefname}}_mediatype">
-                                    <option>{{ 'Choisir' | trans }}</option>
-                                    {% for subdefType in subdef.getAvailableSubdefTypes() %}
-                                        <option value="{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{ 'Presets' | trans }}
-                            </td>
-                            <td>
-                                <select onchange="populate_values('{{subdefgroup}}', '{{subdefname}}');" name="{{subdefgroup}}_{{subdefname}}_presets">
-                                    <option value="custom">{{ 'Custom' | trans }}</option>
-                                    {% set defType = subdef.getSubdefType.getType() %}
-                                    {% for key, pressets in config[defType].definitions %}
-                                        {% if pressets == null %}
-                                            <option disabled="disabled">{{ key }}</option>
-                                        {% else %}
-                                            <option value="{{ key }}" {% if subdef.get_preset() == key %}selected="selected"{% endif %}>{{ key }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Path
-                            </td>
-                            <td>
-                                <input class="path_testable test_writeable" type="text" value="{{subdef.get_path()}}" name="{{subdefgroup}}_{{subdefname}}_path"/>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{ 'Write Metas' | trans }}
-                            </td>
-                            <td>
-                                <input type="checkbox" value="yes" {% if subdef.isMetadataUpdateRequired() %}checked="checked"{% endif %} name="{{subdefgroup}}_{{subdefname}}_meta"/>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table cellspacing="0" class="langTab" cellpading="0" border="0">
-                    <tr>
-                        <td colspan="2"><h3>Labels</h3></td>
-                    </tr>
-                    {% for code, language in app['locales.available'] %}
-                        <tr>
-                            <td style="width:100px;">{{ language }}</td>
-                            <td style="width:300px;"><input type="text" name="{{subdefgroup}}_{{subdefname}}_label[{{ code }}]" value="{{ subdef.get_label(code, false) }}" /></td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                {% for subdefType in subdef.getAvailableSubdefTypes() %}
-                <span class="toggle" data-toggle="#box{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}" {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
+                <div id="{{ subdefgroup }}">
+                    {% for subdefname , subdef in subdeflist %}
+                        <div>
+                            <input type="hidden" name="subdefs[]" value="{{ subdefgroup }}_{{ subdefname }}"/>
+                            <h2 class="subdefName">{{ subdefname }}</h2>
+                            <button class="subdef_deleter btn btn-danger btn-mini">{{ 'boutton::supprimer' | trans }}</button>
+                            <input type="hidden" name="subdef" value="{{ subdefgroup }}_{{ subdefname }}"/>
+                            <br/>
+                            <table class="subdefTab" cellspacing="0" cellpading="0" border="0"
+                                   style="display:inline-block;">
+                                <tbody>
+                                <tr>
+                                    <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
+                                    <td style="width:300px;"><input type="checkbox"
+                                                                    name="{{ subdefgroup }}_{{ subdefname }}_downloadable"
+                                                                    {% if subdef.isDownloadable() %}checked="checked"{% endif %}
+                                                                    value="1"/></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'subdef.orderable' | trans }}</td>
+                                    <td><input type="checkbox" name="{{ subdefgroup }}_{{ subdefname }}_orderable"
+                                               {% if subdef.isOrderable() %}checked="checked"{% endif %} value="1"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ 'classe' | trans }}
+                                    </td>
+                                    <td>
+                                        <select name="{{ subdefgroup }}_{{ subdefname }}_class">
+                                            <option>{{ 'classe' | trans }}</option>
+                                            <option value="document"
+                                                    {% if subdef.get_class() == "document" %}selected="selected"{% endif %}>{{ 'document' | trans }}</option>
+                                            <option value="preview"
+                                                    {% if subdef.get_class() == "preview" %}selected="selected"{% endif %}>{{ 'preview' | trans }}</option>
+                                            <option value="thumbnail"
+                                                    {% if subdef.get_class() == "thumbnail" %}selected="selected"{% endif %}>{{ 'tout le monde' | trans }}</option>
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ 'mediatype' | trans }}
+                                    </td>
+                                    <td>
+                                        <select onchange="select_mediatype('{{ subdefgroup }}', '{{ subdefname }}', this);"
+                                                name="{{ subdefgroup }}_{{ subdefname }}_mediatype">
+                                            <option>{{ 'Choisir' | trans }}</option>
+                                            {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                                                <option value="{{ subdefType.getType() }}"
+                                                        {% if subdef.getSubdefType.getType() == subdefType.getType() %}selected="selected"{% endif %}>{{ subdefType.getType() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ 'Presets' | trans }}
+                                    </td>
+                                    <td>
+                                        <select onchange="populate_values('{{ subdefgroup }}', '{{ subdefname }}');"
+                                                name="{{ subdefgroup }}_{{ subdefname }}_presets">
+                                            <option value="custom">{{ 'Custom' | trans }}</option>
+                                            {% set defType = subdef.getSubdefType.getType() %}
+                                            {% for key, pressets in config[defType].definitions %}
+                                                {% if pressets == null %}
+                                                    <option disabled="disabled">{{ key }}</option>
+                                                {% else %}
+                                                    <option value="{{ key }}"
+                                                            {% if subdef.get_preset() == key %}selected="selected"{% endif %}>{{ key }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Path
+                                    </td>
+                                    <td>
+                                        <input class="path_testable test_writeable" type="text"
+                                               value="{{ subdef.get_path() }}"
+                                               name="{{ subdefgroup }}_{{ subdefname }}_path"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ 'Write Metas' | trans }}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" value="yes"
+                                               {% if subdef.isMetadataUpdateRequired() %}checked="checked"{% endif %}
+                                               name="{{ subdefgroup }}_{{ subdefname }}_meta"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table cellspacing="0" class="langTab" cellpading="0" border="0">
+                                <tr>
+                                    <td colspan="2"><h3>Labels</h3></td>
+                                </tr>
+                                {% for code, language in app['locales.available'] %}
+                                    <tr>
+                                        <td style="width:100px;">{{ language }}</td>
+                                        <td style="width:300px;"><input type="text"
+                                                                        name="{{ subdefgroup }}_{{ subdefname }}_label[{{ code }}]"
+                                                                        value="{{ subdef.get_label(code, false) }}"/>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            {% for subdefType in subdef.getAvailableSubdefTypes() %}
+                                <span class="toggle"
+                                      data-toggle="#box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
+                                      {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
                     {{ 'Advanced settings' | trans }}
                 </span>
-                <div id="box{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}" class="{{subdefgroup}}{{subdefname}}" {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
-                    <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
-                    {% for option in subdefType.getOptions() %}
-                        {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
-                        <tr>
-                            <td style="width:120px;">
-                                {{option.getDisplayName()}}
-                            </td>
-                            <td style="width:250px;">
-                                {% set extradata = '' %}
-                                {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
-                                    <div style="width:250px;" id="slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}"></div>
-                                    <script type="text/javascript">
+                                <div id="box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
+                                     class="{{ subdefgroup }}{{ subdefname }}"
+                                     {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
+                                    <table cellspacing="0" cellpading="0" border="0" style="width:500px;">
+                                        {% for option in subdefType.getOptions() %}
+                                            {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
+                                            <tr>
+                                                <td style="width:120px;">
+                                                    {{ option.getDisplayName() }}
+                                                </td>
+                                                <td style="width:250px;">
+                                                    {% set extradata = '' %}
+                                                    {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                                        <div style="width:250px;"
+                                                             id="slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}"></div>
+                                                        <script type="text/javascript">
 
-                                        $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}')
-                                                .slider({
-                                            value:{{ option.getValue }},
-                                            min: {{ option.getMinValue() }},
-                                            max: {{ option.getMaxValue() }},
-                                            {% if option.getStep() is not empty %}step : {{ option.getStep() }},{% endif %}
-                                            slide: function( event, ui ) {
-                                                $( "#slidervalue{{subdefgroup}}{{subdefname}}{{ subdefType.getType() }}{{ option.getName() }}" ).val( ui.value );
-                                                jQuery('[name={{subdefgroup}}_{{subdefname}}_presets]').val("custom");
-                                                if(jQuery(".subviews-submit").attr("disabled"))
-                                                    activeSubmit();
-                                            },
-                                            create: function (event, ui) {
-                                                {# add no-ajax class to slider link to prevent page load in IE7 #}
-                                                $("a.ui-slider-handle", event.target).addClass("no-ajax");
-                                            }
-                                        });
+                                                            $('#slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}')
+                                                                .slider({
+                                                                    value:{{ option.getValue }},
+                                                                    min: {{ option.getMinValue() }},
+                                                                    max: {{ option.getMaxValue() }},
+                                                                    {% if option.getStep() is not empty %}step: {{ option.getStep() }},{% endif %}
+                                                                    slide: function (event, ui) {
+                                                                        $("#slidervalue{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}").val(ui.value);
+                                                                        jQuery('[name={{ subdefgroup }}_{{ subdefname }}_presets]').val("custom");
+                                                                        if (jQuery(".subviews-submit").attr("disabled"))
+                                                                            activeSubmit();
+                                                                    },
+                                                                    create: function (event, ui) {
+                                                                        {# add no-ajax class to slider link to prevent page load in IE7 #}
+                                                                        $("a.ui-slider-handle", event.target).addClass("no-ajax");
+                                                                    }
+                                                                });
 
-                                        $('#slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').on('change', function(){
-                                            var $this = $(this);
-                                            $('#slider{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}').slider( "option", "value", $this.val() );
-                                        })
+                                                            $('#slidervalue{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}').on('change', function () {
+                                                                var $this = $(this);
+                                                                $('#slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}').slider("option", "value", $this.val());
+                                                            })
 
-                                    </script>
-                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
-                                    <select name="{{varname}}">
-                                        <option value="">{{ 'Choisir' | trans }}</option>
-                                        {% for pot_value in option.getAvailableValues() %}
-                                            <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
+                                                        </script>
+                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
+                                                        <select name="{{ varname }}">
+                                                            <option value="">{{ 'Choisir' | trans }}</option>
+                                                            {% for pot_value in option.getAvailableValues() %}
+                                                                <option value="{{ pot_value }}"
+                                                                        {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
+                                                    <input name="{{ varname }}" type="radio" value="yes"
+                                                           {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
+                                                    <input name="{{ varname }}" type="radio" value="no"
+                                                           {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
+                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+                                                        {% for pot_value, selected in option.Value(true) %}
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="{{ varname }}[]"
+                                                                   value="{{ pot_value }}"
+                                                                   {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
+                                                        </label>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
+                                                        <input style="width:35px;" value="{{ option.value }}"
+                                                               id="slidervalue{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}"
+                                                               name="{{ varname }}"/>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
                                         {% endfor %}
-                                    </select>
-                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
-                                    <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
-                                    <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
-                                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
-                                    {% for pot_value, selected in option.Value(true) %}
-                                <label class="checkbox inline">
-                                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
-                                    </label>
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if option.type == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
-                                    <input style="width:35px;" value="{{option.value}}" id="slidervalue{{subdefgroup}}{{subdefname}}{{subdefType.getType()}}{{ option.getName() }}" name="{{varname}}" />
-                                {% endif %}
-                            </td>
-                        </tr>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <script>
+                            {% set defType = subdef.getSubdefType.getType() %}
+                            jQuery('#box{{ subdefgroup }}{{ subdefname }}{{ defType }} input, #box{{ subdefgroup }}{{ subdefname }}{{ defType }} select').change(function () {
+                                jQuery('[name={{ subdefgroup }}_{{ subdefname }}_presets]').val("custom");
+                            });
+                        </script>
                     {% endfor %}
-                    </table>
                 </div>
-                {% endfor %}
-            </div>
-            <script>
-                {% set defType = subdef.getSubdefType.getType() %}
-                jQuery('#box{{subdefgroup}}{{subdefname}}{{ defType }} input, #box{{subdefgroup}}{{subdefname}}{{ defType }} select').change(function(){
-                    jQuery('[name={{subdefgroup}}_{{subdefname}}_presets]').val("custom");
-                });
-            </script>
             {% endfor %}
         </div>
-        {% endfor %}
-    </div>
-    <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
-    <input type="hidden" name="add_subdef[group]" value=""/>
-    <input type="hidden" name="add_subdef[name]" value=""/>
-    <input type="hidden" name="add_subdef[mediaType]" value=""/>
-    <input type="hidden" name="add_subdef[class]" value=""/>
-    <input type="hidden" name="add_subdef[presets]" value=""/>
-</form>
+        <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
+        <input type="hidden" name="add_subdef[group]" value=""/>
+        <input type="hidden" name="add_subdef[name]" value=""/>
+        <input type="hidden" name="add_subdef[mediaType]" value=""/>
+        <input type="hidden" name="add_subdef[class]" value=""/>
+        <input type="hidden" name="add_subdef[presets]" value=""/>
+        <input type="hidden" name="add_subdef[path]" value=""/>
+    </form>
 
-<div style="display:none;">
-    <div id="image_template">
+    <div style="display:none;">
+        <div id="image_template">
+        </div>
     </div>
-</div>
 {% endblock %}

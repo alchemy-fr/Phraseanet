@@ -17,9 +17,7 @@ gulp.task('build-thesaurus-js', function(){
     var thesaurusGroup = [
         config.paths.src + 'vendors/jquery-sprintf/js/jquery.sprintf.1.0.3.js',
         config.paths.src + 'thesaurus/js/win.js',
-        config.paths.src + 'thesaurus/js/xmlhttp.js',
-        config.paths.src + 'thesaurus/js/thesaurus.js',
-        config.paths.src + 'thesaurus/js/sprintf.js'
+        config.paths.src + 'thesaurus/js/xmlhttp.js'
     ];
     return utils.buildJsGroup(thesaurusGroup, 'thesaurus', 'thesaurus/js', debugMode);
 });

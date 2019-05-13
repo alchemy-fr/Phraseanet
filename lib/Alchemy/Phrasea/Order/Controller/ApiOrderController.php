@@ -181,12 +181,12 @@ class ApiOrderController extends BaseOrderController
         ignore_user_abort(true);
 
         $tmpDownloadDir = \p4string::addEndSlash($this->app['tmp.download.path']);
-
         if(is_null($tmpDownloadDir)){
             $tmpDownloadDir = '';
         }
 
         $zipFile = $tmpDownloadDir.'order_'.$token->getValue() . '.zip';
+
         $file = \set_export::build_zip($this->app, $token, $exportData, $zipFile);
 
         return $this->deliverFile($file, $exportName, DeliverDataInterface::DISPOSITION_INLINE, 'application/zip');
@@ -248,7 +248,7 @@ class ApiOrderController extends BaseOrderController
         $filtered = [];
 
         foreach ($records as $index => $record) {
-            if ($acl->has_right_on_base($record->getBaseId(), \ACL::CANCMD)) {
+            if (!$record->isStory() && $acl->has_right_on_base($record->getBaseId(), \ACL::CANCMD)) {
                 $filtered[$index] = $record;
             }
         }

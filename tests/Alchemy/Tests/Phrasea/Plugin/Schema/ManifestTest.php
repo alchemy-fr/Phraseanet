@@ -27,7 +27,7 @@ class ManifestTest extends \PhraseanetTestCase
         $this->assertEquals('MIT', $manifest->getLicense());
         $this->assertEquals('0.1', $manifest->getVersion());
         $this->assertEquals('3.8', $manifest->getMinimumPhraseanetVersion());
-        $this->assertEquals('4.1', $manifest->getMaximumPhraseanetVersion());
+        $this->assertEquals('4.2', $manifest->getMaximumPhraseanetVersion());
         $this->assertEquals(['views', 'twig-views'], $manifest->getTwigPaths());
         $this->assertEquals([['class' => 'Vendor\CustomCommand']], $manifest->getCommands());
         $this->assertEquals([['class' => 'Vendor\PluginService']], $manifest->getServices());

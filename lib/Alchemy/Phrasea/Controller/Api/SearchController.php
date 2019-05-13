@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Fractal\ArraySerializer;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
@@ -60,15 +61,12 @@ class SearchController extends Controller
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $result->getQueryText());
 
-        foreach ($options->getDataboxes() as $databox) {
-            $colls = array_map(function (\collection $collection) {
-                return $collection->get_coll_id();
-            }, array_filter($options->getCollections(), function (\collection $collection) use ($databox) {
-                return $collection->get_databox()->get_sbas_id() == $databox->get_sbas_id();
-            }));
-
-            $this->getSearchEngineLogger()
-                ->log($databox, $result->getQueryText(), $result->getTotal(), $colls);
+        // log array of collectionIds (from $options) for each databox
+        $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
+        foreach ($collectionsReferencesByDatabox as $sbid => $references) {
+            $databox = $this->findDataboxById($sbid);
+            $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+            $this->getSearchEngineLogger()->log($databox, $result->getQueryText(), $result->getTotal(), $collectionsIds);
         }
 
         $this->getSearchEngine()->clearCache();

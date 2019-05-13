@@ -1,6 +1,6 @@
 {% macro ResultTable(query, results, list, sort, ord) %}
 <div id="list-editor-search-results" class="list-editor-results PNB">
-  <div class="PNB" style="overflow-y:scroll;overflow-x:hidden;bottom:20px;">
+  <div class="PNB" style="overflow-x:hidden;bottom:20px;padding-bottom:20px;">
     <table style="width:100%;table-layout:fixed;">
         <thead>
           <tr>
@@ -75,7 +75,7 @@
               {{ user.getCountry() }}
             </td>
             <td>
-                {% if user.getLastAppliedTemplate() is null %} - {% else %} {{ user.getLastAppliedTemplate().getLogin() }} {% endif %}
+              {{ user.getLogin() }}
             </td>
             <td>
               {{ app['date-formatter'].getDate(user.getCreated()) }}
@@ -85,119 +85,38 @@
         </tbody>
     </table>
   </div>
-  <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
-    {% set length = list.getEntries().count() %}
-    <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}</span>
+  <div class="PNB list_editor_results_footer" style="top:auto;height:20px;text-align:right;line-height:20px;">
+    <span class="textinfo">
+      {{ query.get_page() }} / {{ query.get_total_page() }} {{ 'Pages' | trans }}
+    </span>
     {% if query.get_page() > 1 %}
-      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {{ 'Previous' | trans }}</a>
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#"><span></span> {{ 'Previous' | trans }}</a>
     {% endif %}
-    {{ query.get_page() }} / {{ query.get_total_page() }}
     {% if query.get_page() < query.get_total_page() %}
-      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} ></a>
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{{ 'Next' | trans }} <span></span></a>
     {% endif %}
   </div>
 </div>
-{% endmacro %}
-
-{# ResultTableJavascript use to call just once a time in a page after ResultTable #}
-{% macro  ResultTableJavascript()%}
-  <script type="text/javascript">
-
-  $(document).ready(function(){
-    var $editor = $('#list-editor-search-results');
-
-          $editor.on('click', 'a.next, a.prev', function(){
-              var page = $(this).attr('value');
-
-      $('input[name="page"]', $form).val(page);
-      $form.trigger('submit');
-
-      return false;
-    });
-
-    var $form = $('#ListManager .editor').find('form[name="list-editor-search"]');
-
-    $('input[name="page"]', $form).val('');
-
-          $editor.on('click', 'th.sortable', function (){
-//          $('th.sortable', $editor).bind('click', function(){
-
-      var $this = $(this);
-
-      var sort = $('input', $this).val();
-
-      if((sort == $('input[name="srt"]', $form).val())
-        && ($('input[name="ord"]', $form).val() == 'asc'))
-      {
-        var ord = 'desc';
-      }
-      else
-      {
-        var ord = 'asc';
-      }
-
-      $('input[name="srt"]', $form).val(sort);
-      $('input[name="ord"]', $form).val(ord);
-
-              $form.trigger('submit');
-          })
-              .on('mouseover', 'th.sortable', function(){$(this).addClass('hover');})
-              //              .bind('mouseover', function(){$(this).addClass('hover');})
-              .on('mouseout', 'th.sortable', function(){$(this).removeClass('hover');});
-//              .bind('mouseout', function(){$(this).removeClass('hover');});
-
-          $editor.on('click', 'tbody tr', function(){
-//          $('tbody tr', $editor).bind('click', function(){
-
-      var $this = $(this);
-      var usr_id = $('input[name="usr_id"]', $this).val();
-
-      var counters = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-      if($this.hasClass('selected'))
-      {
-        $this.removeClass('selected');
-        p4.ListManager.getList().removeUser(usr_id);
-
-        counters.each(function(i,el){
-          var n = parseInt($(el).text());
-          $(el).text(n - 1);
-        });
-      }
-      else
-      {
-        $this.addClass('selected');
-        p4.ListManager.getList().addUser(usr_id);
-
-        counters.each(function(i,el){
-          var n = parseInt($(el).text());
-          $(el).text(n + 1);
-        });
-      }
-
-    });
-  });
-  </script>
 
 {% endmacro %}
 
 
 {% macro badgeReadonly(entry, role) %}
-  <div class="badge">
+  <div class="badge listmanager_badge">
     <input type="hidden" value="{{ entry.getUser().getId() }}" name="id">
-    {% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-      <a class="deleter" href="#">
+    {#{% if role >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+      <a class="deleter listmanager-delete-list-user-action" href="#" data-list-id="" data-user-id="{{ entry.getUser().getId() }}">
         <img src="/assets/prod/images/Push/close_badge.png">
       </a>
-    {% endif %}
+    {% endif %}#}
     <table>
       <tr>
-        <td>
-          <img src="/assets/common/images/icons/user.png"/>
+        <td class="listmanager_badge_img">
+          <img src="/assets/common/images/icons/user-white.png"/>
         </td>
         <td class="infos" >
           <span class="name">{{ entry.getUser().getDisplayName() }}</span>
-          <span class="subtite"></span>
+          <span class="subtite">{{ entry.getUser().getCompany() }}</span>
         </td>
       </tr>
     </table>

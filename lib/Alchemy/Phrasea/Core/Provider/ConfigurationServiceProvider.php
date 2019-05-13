@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Provider;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\Configuration\AccessRestriction;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
@@ -19,7 +20,6 @@ use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Configuration\Compiler;
 use Alchemy\Phrasea\Core\Configuration\RegistryManipulator;
-use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Core\Event\Subscriber\ConfigurationLoaderSubscriber;
 use Silex\Application as SilexApplication;
 use Silex\ServiceProviderInterface;

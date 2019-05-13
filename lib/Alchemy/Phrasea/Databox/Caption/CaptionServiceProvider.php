@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Databox\Caption;
 
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Databox\ClosureDataboxBoundRepositoryFactory;
 use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Alchemy\Phrasea\Databox\DataboxConnectionProvider;

@@ -247,17 +247,16 @@ class Order
         return count($this->elements);
     }
 
-
-   public function getTotalTreatedItems()
-   {
+    public function getTotalTreatedItems()
+    {
         $count = 0;
         foreach($this->elements as $element) {
-             if(!is_null($element->getDeny())) {
+            if(!is_null($element->getDeny())) {
                 $count++;
-             }
+            }
         }
         return $count;
-   }
+    }
 
     /**
      * Get order_usage

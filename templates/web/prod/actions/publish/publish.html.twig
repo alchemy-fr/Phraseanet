@@ -5,18 +5,9 @@
     </div>
 {% endmacro %}
 
-<style type="text/css">
-    .record_list .sortable.ui-sortable-placeholder{
-        width:112px;
-        height:118px;
-        position:relative;
-        float:left;
-    }
-</style>
-
 <div id="modal_feed">
     <div class="row-fluid" style="height:120px">
-        <div class="span12" style="overflow:auto;">
+        <div class="span12 record_list" style="overflow:auto;">
             {% for record in publishing %}
                 <div class="sortable" style="position:relative;float:left;">
                     {{ _self.format_diapo(record) }}
@@ -46,7 +37,8 @@
                         {% if app['conf'].get(['registry', 'actions', 'enable-feed-notification']) %}
                         <label class="checkbox">
                             <input class="required_text checkbox" type="checkbox" name="notify" id="feed_add_notify" value="1" style="min-height: 0; height: auto" />
-                            <i class="icon icon-envelope"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
+                            <i class="icon fa fa-envelope"
+                               aria-hidden="true"></i>&nbsp;{{ 'Notify users about this publication' | trans }}
                         </label>
                         <br />
                         {% endif %}
@@ -83,16 +75,3 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#modal_feed .record_list').sortable({
-            stop:function(event, ui){
-                var lst = [];
-                $('#modal_feed .record_list .sortable form').each(function(i, el){
-                    lst.push($('input[name="sbas_id"]', el).val()+'_'+$('input[name="record_id"]', el).val());
-                });
-                $('#modal_feed form.main_form input[name="lst"]').val(lst.join(';'));
-            }
-        });
-    });
-</script>

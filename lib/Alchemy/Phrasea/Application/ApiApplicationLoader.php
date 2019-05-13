@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Report\ControllerProvider\ApiReportControllerProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class ApiApplicationLoader extends BaseApplicationLoader
 {
     protected function doPrePluginServiceRegistration(Application $app)

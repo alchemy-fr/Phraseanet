@@ -154,7 +154,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         ]];
 
         foreach ($fields as $fieldData) {
-            $field = \databox_field::create($this->getApplication(), $databox, $fieldData['name'], $fieldData['multi']);
+            $field = \databox_field::create($this->getApplication(), $databox, $fieldData['name']);
             $field
                 ->set_thumbtitle($fieldData['thumbtitle'])
                 ->set_tag(\databox_field::loadClassFromTagName($fieldData['tag']))
@@ -167,7 +167,8 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
                 ->set_tbranch($fieldData['tbranch'])
                 ->set_report($fieldData['report'])
                 ->setVocabularyControl(null)
-                ->setVocabularyRestricted(false);
+                ->setVocabularyRestricted(false)
+                ->set_multi($fieldData['multi']);
             $field->save();
             $fieldObjects[] = $field;
         }
@@ -271,7 +272,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $databox = $this->getFirstDatabox($app);
 
-        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand());
 
         $data = $field->toArray();
 
@@ -289,7 +290,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $databox = $this->getFirstDatabox($app);
 
-        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand());
 
         $data = $field->toArray();
 
@@ -308,7 +309,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->getApplication();
         $databox = $this->getFirstDatabox($app);
 
-        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand(), false);
+        $field = \databox_field::create($app, $databox, 'testfield' . mt_rand());
         $fieldId = $field->get_id();
 
         $data = $field->toArray();

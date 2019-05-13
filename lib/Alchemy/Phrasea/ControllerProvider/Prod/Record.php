@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\RecordController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -50,9 +50,9 @@ class Record implements ControllerProviderInterface, ServiceProviderInterface
             ->method('GET|POST');
 
         $controllers->get('/record/{sbasId}/{recordId}/', 'controller.prod.records:getRecordById')
-             ->bind('record_single')
-             ->assert('sbasId', '\d+')
-             ->assert('recordId', '\d+');
+            ->bind('record_single')
+            ->assert('sbasId', '\d+')
+            ->assert('recordId', '\d+');
 
         $controllers->post('/delete/', 'controller.prod.records:doDeleteRecords')
             ->bind('record_delete');

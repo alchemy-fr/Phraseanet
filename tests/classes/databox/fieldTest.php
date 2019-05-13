@@ -32,10 +32,12 @@ class databox_fieldTest extends \PhraseanetTestCase
         $this->object_multi = $this->databox->get_meta_structure()->get_element_by_name($this->name_multi);
 
         if (! $this->object_mono instanceof databox_field) {
-            $this->object_mono = databox_field::create(self::$DI['app'], $this->databox, $this->name_mono, false);
+            $this->object_mono = databox_field::create(self::$DI['app'], $this->databox, $this->name_mono);
+            $this->object_mono->set_multi(false);
         }
         if (! $this->object_multi instanceof databox_field) {
-            $this->object_multi = databox_field::create(self::$DI['app'], $this->databox, $this->name_multi, true);
+            $this->object_multi = databox_field::create(self::$DI['app'], $this->databox, $this->name_multi);
+            $this->object_multi->set_multi(true);
         }
     }
 

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\QueryController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -44,6 +44,8 @@ class Query implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/', 'controller.prod.query:query')
             ->bind('prod_query');
+
+        $controllers->post('/completion/', 'controller.prod.query:completion');
 
         $controllers->post('/answer-train/', 'controller.prod.query:queryAnswerTrain')
             ->bind('preview_answer_train');

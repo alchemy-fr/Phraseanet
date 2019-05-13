@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\LazyLocator;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\ToolsController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
@@ -68,6 +68,11 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/thumb-extractor/apply/', 'controller.prod.tools:applyThumbnailExtractionAction');
 
         $controllers->post('/sharing-editor/{base_id}/{record_id}/', 'controller.prod.tools:editRecordSharing');
+
+        $controllers->post('/metadata/save/', 'controller.prod.tools:saveMetasAction')
+            ->bind('prod_tools_metadata_save');
+
+        $controllers->get('/videoEditor', 'controller.prod.tools:videoEditorAction');
 
         return $controllers;
     }

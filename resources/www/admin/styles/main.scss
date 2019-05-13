@@ -1,7 +1,8 @@
 @import '../../_shared/styles/variables';
 
 @import '../../vendors/jquery-treeview/jquery.treeview'; // to inline import css file, don't put extension
-@import '../../../../www/bower_components/jquery-file-upload/css/jquery.fileupload-ui'; // to inline import css file, don't put extension
+@import '../../../../node_modules/blueimp-file-upload/css/jquery.fileupload-ui';
+// to inline import css file, don't put extension
 @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
 @import '../../_shared/styles/main';
 
@@ -117,6 +118,7 @@ div.finder div.content div.title {
   margin-top:10px;
   width: 400px;
 }
+
 /******* MAIN MENU ************************************************************/
 
 
@@ -229,6 +231,139 @@ div.switch_right.unchecked {
 .ui-datepicker {
   z-index: 1500;
 }
+
+.dialog_container {
+  #template_add_dialog, #user_add_dialog, #dialog-form {
+    &.ui-dialog-content {
+      margin-bottom: 0;
+      margin-top: 8px;
+    }
+    form {
+      margin-bottom: 10px;
+    }
+    label {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #1d1d1d;
+    }
+    input[type=text] {
+      width: 94%;
+      background-color: #ffffff;
+      border: solid 1px #979797;
+    }
+  }
+}
+
+.dialog_container {
+  #dialog-form {
+    .selectdiv {
+      position: relative;
+    }
+    select::-ms-expand {
+      display: none;
+    }
+    .selectdiv:after {
+      content: "";
+      /* background-color: #000; */
+      background-image: url(/assets/common/images/icons/arrow.png);
+      background-position: center;
+      background-size: cover;
+      right: 18px;
+      top: 9px;
+      position: absolute;
+      width: 8px;
+      height: 12px;
+      pointer-events: none;
+    }
+    .selectdiv select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      display: block;
+      width: 98%;
+      height: 30px;
+      margin: 5px 0px;
+      padding: 0px 8px;
+      line-height: 1.75;
+      -ms-word-break: normal;
+      word-break: normal;
+      border: solid 1px #979797;
+      background-image: linear-gradient(16deg, transparent 50%, transparent 50%),
+      linear-gradient(135deg, transparent, transparent), linear-gradient(to right, #979797, #979797);
+      background-position: calc(100% - 3px) calc(1em + 2px), calc(100% - 4px) calc(1em + 2px), 100% 0;
+      background-size: 5px 5px, 5px 5px, 30px 2.5em;
+      background-repeat: no-repeat;
+      margin-bottom: 20px;
+    }
+    input[type=text] {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.dialog_container {
+  .ui-dialog-title {
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #4a4a4a;
+  }
+  .ui-dialog-titlebar-close {
+    border: none;
+    margin-right: 4px;
+  }
+  .ui-icon.ui-icon-closethick {
+    background-image: url("/assets/common/images/icons/cross-white.png");
+    background-position: center;
+    background-size: cover;
+  }
+  .ui-dialog-buttonpane {
+    border-top: solid 1px #979797;
+  }
+  .ui-dialog-buttonpane .ui-button {
+    border-radius: 15px;
+    background-color: #ffffff;
+    border: solid 1px #4a4a4a;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #1d1d1d;
+    height: 30px;
+    min-width: 135px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .ui-dialog-buttonpane .ui-button:nth-child(2) {
+    background-color: #4a4a4a;
+    color: #FFFFFF;
+  }
+  .ui-button-icon-only {
+    text-indent: -9999px;
+    background: transparent;
+  }
+  .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none;
+    text-align: center;
+  }
+}
+
 /******* BOARD ****************************************************************/
 .board_section {
   margin: 0 0 30px;
@@ -326,6 +461,19 @@ div.switch_right.unchecked {
 #admin_setup_registry .form-horizontal .controls, #admin_setup_registry .form-horizontal .help-message {
   margin-left: 300px;
 }
+.alert .close{
+  text-decoration: none;
+}
+
+#users_page .user_modifier {
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+#users_page .user_deleter {
+  margin-top: 5px;
+}
+
 .alert .close {
   text-decoration: none;
 }
@@ -340,6 +488,7 @@ div.switch_right.unchecked {
   right: 40px;
   z-index: 1;
 }
+
 h2.subdefName {
   display: inline-block;
   margin-right: 1.5rem;
@@ -354,7 +503,7 @@ h2.subdefName {
   vertical-align: top;
 }
 
-.langTab h3{
+.langTab h3 {
   font-weight: 700;
   font-size: 13px;
   margin: 4px 0;
@@ -362,13 +511,14 @@ h2.subdefName {
   text-align: center;
 }
 
-.toggle{
+.toggle {
   display: block;
   margin: 15px 0;
   color: #08c;
   cursor: pointer;
 }
-.subdefTab input, .langTab input{
+
+.subdefTab input, .langTab input {
   margin: 0;
 }
 
@@ -377,6 +527,7 @@ label[for="elasticsearch_settings_highlight"] {
   margin-left: 0.5rem;
   margin-bottom: 1rem;
 }
+
 input[id="elasticsearch_settings_highlight"] {
   float: left;
 }
@@ -384,6 +535,7 @@ input[id="elasticsearch_settings_highlight"] {
 #downbutton {
   margin: 1rem 0;
 }
+
 #upbutton {
   width: 100%;
   text-align: left;
@@ -402,31 +554,6 @@ input[id="elasticsearch_settings_highlight"] {
 .form-horizontal .controls + div {
   margin-left: 180px;
   font-style: italic;
-}
-
-#users_page .user_modifier {
-  margin-top: 5px;
-  margin-left: 10px;
-}
-
-#users_page .user_deleter {
-  margin-top: 5px;
-}
-
-.ui-dialog .ui-dialog-content {
-  position: relative;
-  border: 0;
-  padding: .5em 1em;
-  background: none;
-  margin-bottom: 7rem;
-  overflow: visible;
-}
-
-#masks_dialog {
-  margin-bottom: 0;
-  form {
-    margin: 0;
-  }
 }
 
 /******* SETUP *******************************************************************/
@@ -533,10 +660,10 @@ span.simplecolorpicker.picker {
   .top-bar-shadow {
     margin-top: 1px;
     background: #aaa8a5; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to bottom, #aaa8a5 , rgba(255, 255, 255, 0.15)); /* Standard syntax */
+    background: -webkit-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, #aaa8a5, rgba(255, 255, 255, 0.15)); /* Standard syntax */
     height: 4px;
   }
   .ui-tabs-active {
@@ -616,6 +743,7 @@ span.simplecolorpicker.picker {
     display: inline-block;
     width: 100%;
     vertical-align: middle;
+    margin-bottom: 0px;
   }
   select {
     float: right;
@@ -623,8 +751,89 @@ span.simplecolorpicker.picker {
   }
 }
 
+.personalise-logo-row-container {
+  height: 105px;
+  td:first-child {
+    border-right: 1px solid #3b99fc;
+  }
+  td {
+    padding: 4px 40px 10px 40px;
+    min-width: 100px;
+    max-width: 200px;
+    vertical-align: top;
+    input[type="radio"] {
+      height: 25px;
+      margin: 0;
+    }
+    label {
+      display: inline-block;
+      line-height: 25px;
+      margin-left: 10px;
+    }
+    .image-container {
+      height: 41px;
+      width: 120px;
+      border: 1px solid #979797;
+      display: block;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: scale-down;
+    }
+    a {
+      font-family: Roboto;
+      font-size: 10px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #3b99fc;
+      text-align: left;
+      display: block;
+      margin-top: 10px;
+    }
+    #select-logo-btn {
+      border-radius: 5px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.09);
+      background-color: #ffffff;
+      border: solid 1px #c3c3c3;
+      font-family: Roboto;
+      font-size: 11px;
+      text-align: left;
+      color: #000000;
+      margin-top: 10px;
+      padding: 3px 20px;
+      line-height: 11px;
+      margin-left: 0;
+    }
+    #help-text {
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: normal;
+      text-align: left;
+      color: #000000;
+    }
+    #error-text {
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: italic;
+      line-height: 1.33;
+      letter-spacing: normal;
+      text-align: left;
+      color: #ff0404;
+    }
+    input[type="file"] {
+      display: none;
+    }
+  }
+}
+
 @media screen and (max-width: 1150px) {
-  .langTab{
+  .langTab {
     display: block;
   }
 }

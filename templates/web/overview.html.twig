@@ -22,13 +22,22 @@
         <h1>{{ local_title }}</h1>
 
         <div class="preview">
-            <iframe width="100%" height="{{ subdef.get_height() }}"
-                    src="{{ recordUrl }}"
-                    frameborder="0" allowfullscreen></iframe>
+            <div id="phraseanet-embed-frame"></div>
         </div>
 
         <div class="caption">
             {% include 'common/caption.html.twig' %}
         </div>
     </div>
+    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js"></script>
+
+    <script type="text/javascript">
+        window.permApp = PermaviewApplication.bootstrap({
+            lang: "{{ app.locale }}",
+            baseUrl: '{{ app['request'].getUriForPath('/') }}',
+            basePath: '{{ app.request.basePath|e('js') }}',
+            recordUrl: '{{ url('alchemy_embed_view', {url: recordUrl|trim, autoplay: autoplay|default('false') }) }}',
+            debug: {% if app.debug == true %}true{% else %}false{% endif %}
+        });
+    </script>
 {% endblock %}

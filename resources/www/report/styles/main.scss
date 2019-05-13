@@ -12,27 +12,23 @@ $mainMenuBottomBorder: none;
 $mainMenuLinkColor: #b1b1b1;
 $mainMenuLinkHoverColor: #FFFFFF;
 $mainMenuLinkActiveColor: #FFFFFF;
+$select-color: #000;
+$select-background: #FFFFFF;
+$select-width: 330px;
+$select-height: 26px;
 // $mainMenuMarginBottom: 30px;
 @import '../../_shared/styles/main-menu';
-
-$select-color: #000;
-$select-background: #fff;
-$select-width: 330px;
-$select-height: 26px; 
 
 /* Report layout */
 #mainContent {
   background-color: $reportBackgroundColor;
 }
-
 .report_wrapper {
   padding-bottom: 24px;
-
   #form-container {
     width: 860px;
     margin: 0 auto;
     padding-top: 10px;
-
     .report_heading {
       font-size: 30px;
       color: #fff;
@@ -42,10 +38,8 @@ $select-height: 26px;
       background-color: #565656;
       padding: 0;
       border: 0 none;
-
       #navigation {
         padding: 0;
-
         .navigation_tab {
           width: 33.3333%;
           margin: 0;
@@ -69,8 +63,7 @@ $select-height: 26px;
             float: none;
             padding: 6px 16px;
             box-shadow: inset -1px 0 0 #000;
-
-            &:hover {
+             &:hover {
               background-color: #444444;
               color: #f4f4f4;
             }
@@ -103,7 +96,6 @@ $select-height: 26px;
         .form_content {
           position: relative;
           padding: 16px 27px 10px;
-
           .form_titre {
             font-size: 22px;
             padding-bottom: 20px;
@@ -112,7 +104,6 @@ $select-height: 26px;
             display: inline-block;
             margin-right: 24px;
             margin-bottom: 6px;
-
             label {
               display: inline;
               margin-right: 2px;
@@ -140,12 +131,10 @@ $select-height: 26px;
             }
           }
           .collist {
-
             .collist_buttons {
               position: absolute;
               right: 60px;
               top: 20px;
-
               button {
                 background: #3f3f3f;
                 border: 0 none;

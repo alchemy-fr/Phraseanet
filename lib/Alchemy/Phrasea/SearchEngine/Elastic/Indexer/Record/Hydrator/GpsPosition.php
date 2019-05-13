@@ -34,12 +34,18 @@ class GpsPosition
         switch ($tag_name) {
             case self::LONGITUDE_TAG_NAME:
                 Assertion::numeric($value);
-                $this->longitude = (float) $value;
+                $value = (float) $value;
+                if($value >= -180.0 && $value <= 180.0 ) {
+                    $this->longitude = $value;
+                }
                 break;
 
             case self::LATITUDE_TAG_NAME:
                 Assertion::numeric($value);
-                $this->latitude = (float) $value;
+                $value = (float) $value;
+                if($value >= -90.0 && $value <= 90.0 ) {
+                    $this->latitude = $value;
+                }
                 break;
 
             case self::LONGITUDE_REF_TAG_NAME:
@@ -79,6 +85,30 @@ class GpsPosition
             && $this->longitude_ref !== null
             && $this->latitude !== null
             && $this->latitude_ref !== null;
+    }
+
+    public function isCompleteComposite()
+    {
+        return $this->longitude !== null
+            && $this->latitude !== null;
+    }
+
+    public function getCompositeLongitude()
+    {
+        if ($this->longitude === null) {
+            return null;
+        }
+
+        return $this->longitude ;
+    }
+
+    public function getCompositeLatitude()
+    {
+        if ($this->latitude === null) {
+            return null;
+        }
+
+        return $this->latitude;
     }
 
     public function getSignedLongitude()

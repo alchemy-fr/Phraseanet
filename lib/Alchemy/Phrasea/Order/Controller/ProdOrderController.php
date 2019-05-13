@@ -116,9 +116,9 @@ class ProdOrderController extends BaseOrderController
         $baseIds = array_keys($this->getAclForUser()->get_granted_base([\ACL::ORDER_MASTER]));
 
         $ordersListTodo = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
-        ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
+            ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
         $ordersListProcessed = $this->getOrderRepository()->listOrders($baseIds, $offsetStart, $perPage, $sort,
-        ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
+            ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
         $totalTodo = $this->getOrderRepository()->countTotalOrders($baseIds, ['todo' => Order::STATUS_TODO, 'created_on' => $start, 'limit' => $limit]);
         $totalProcessed = $this->getOrderRepository()->countTotalOrders($baseIds, ['todo' => Order::STATUS_PROCESSED, 'created_on' => $start, 'limit' => $limit]);
 
@@ -213,4 +213,6 @@ class ProdOrderController extends BaseOrderController
             'action'  => 'send',
         ]);
     }
+
+
 }

@@ -4,6 +4,6 @@ var utils = require('../../utils.js');
 
 gulp.task('build-json2', [], function(){
     return utils.buildJsGroup([
-        config.paths.vendors + 'json2/json2.js'
+        config.paths.nodes + 'JSON2/json2.js'
     ], 'json2', 'vendors/json2');
 });

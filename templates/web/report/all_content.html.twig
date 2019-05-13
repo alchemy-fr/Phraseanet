@@ -2,7 +2,6 @@
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/report/css/report{% if not app.debug %}.min{% endif %}.css" media="screen">
-    <link type="text/css" rel="stylesheet" href="/assets/report/css/print{% if not app.debug %}.min{% endif %}.css" media="print">
 {% endblock stylesheet %}
 
 {% block icon %}
@@ -10,6 +9,10 @@
 {% endblock  icon%}
 
 {% block javascript %}
+    <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript">
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+    </script>
     <script type="text/javascript" >
 
             var usrId = '{{ app.getAuthenticator().user.getId }}' ;
@@ -35,9 +38,6 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript">
-        gvChartInit();
-    </script>
 
 {% endblock javascript%}
 

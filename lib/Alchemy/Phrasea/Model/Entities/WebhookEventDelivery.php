@@ -57,6 +57,11 @@ class WebhookEventDelivery
     private $created;
 
     /**
+     * @ORM\OneToOne(targetEntity="WebhookEventPayload", mappedBy="delivery")
+     */
+    private $payload;
+
+    /**
      * @param \DateTime $created
      *
      * @return WebhookEvent
@@ -162,5 +167,13 @@ class WebhookEventDelivery
     public function getWebhookEvent()
     {
         return $this->event;
+    }
+
+    /**
+     * @return WebhookEventPayload
+     */
+    public function getPayload()
+    {
+        return $this->payload;
     }
 }

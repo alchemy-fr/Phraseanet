@@ -152,10 +152,10 @@ class ReportDownloads extends Report
             $subdefsToReport = join(',', $subdefsToReport);
 
             $filter = "`action`='download' AND `ld`.`coll_id` IN(" . join(',', $collIds) . ")\n"
-                . "  AND `l`.`usrid`>0\n"
-                . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
+                    . "  AND `l`.`usrid`>0\n"
+                    . "  AND `ld`.`final` IN(" . $subdefsToReport . ")";
 
-            // next line : comment to disable "site", to test on an imported dataset from another instance
+                // next line : comment to disable "site", to test on an imported dataset from another instance
             $filter .= "\n  AND `l`.`site` =  " . $this->databox->get_connection()->quote($this->appKey);
 
             if($this->parms['dmin']) {

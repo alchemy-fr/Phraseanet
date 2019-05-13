@@ -7,11 +7,11 @@ use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
 use Alchemy\Phrasea\Databox\DataboxConnectionSettings;
 use Alchemy\Phrasea\Databox\DataboxService;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
 
 class CreateDataboxCommand extends Command
 {
@@ -20,7 +20,7 @@ class CreateDataboxCommand extends Command
     {
         $this->setName('databox:create')
             ->addArgument('databox', InputArgument::REQUIRED, 'Database name for the databox', null)
-            ->addArgument('owner', InputArgument::REQUIRED, 'Email of the databox admin user', null)
+            ->addArgument('owner', InputArgument::REQUIRED, 'Login of the databox admin user', null)
             ->addOption('connection', 'c', InputOption::VALUE_NONE, 'Flag to set new database settings')
             ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'MySQL server host', 'localhost')
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port', 3306)
@@ -58,7 +58,6 @@ class CreateDataboxCommand extends Command
             return 1;
         }
 
-
         /** @var DataboxService $databoxService */
         $databoxService = $this->container['databox.service'];
 
@@ -67,7 +66,6 @@ class CreateDataboxCommand extends Command
 
             return 1;
         }
-
 
         /** @var StructureTemplate $templates */
         $templates = $this->container['phraseanet.structure-template'];

@@ -5,6 +5,7 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Cache\Manager as CacheManager;
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
@@ -199,6 +200,12 @@ abstract class PhraseanetTestCase extends WebTestCase
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll']);
         });
 
+        self::$DI['collectionReference'] = self::$DI->share(function ($DI) {
+            /** @var \Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository $repo */
+            $repo = self::$DI['app']['repo.collection-references'];
+            return $repo->find(self::$fixtureIds['collection']['coll']);
+        });
+
         self::$DI['collection_no_access'] = self::$DI->share(function ($DI) {
             return collection::getByBaseId($DI['app'], self::$fixtureIds['collection']['coll_no_access']);
         });
@@ -329,6 +336,14 @@ abstract class PhraseanetTestCase extends WebTestCase
         return self::$DI['collection'];
     }
 
+    /**
+     * @return CollectionReference
+     */
+    public function getCollectionReference()
+    {
+        return self::$DI['collectionReference'];
+    }
+
     public static function tearDownAfterClass()
     {
         gc_collect_cycles();
@@ -356,10 +371,13 @@ abstract class PhraseanetTestCase extends WebTestCase
         } else {
             $app = new Application($environment);
         }
+
         $this->addAppCacheFlush($app);
 
         $this->loadDb($app);
         $this->addMocks($app);
+
+        $app->boot();
 
         return $app;
     }
@@ -691,15 +709,15 @@ abstract class PhraseanetTestCase extends WebTestCase
     protected function mockNotificationDeliverer($expectedMail, $qty = 1, $receipt = null)
     {
         $app = $this->getApplication();
-        $app['notification.deliverer'] = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
+        $delivererMock = $this->getMockBuilder('Alchemy\Phrasea\Notification\Deliverer')
             ->disableOriginalConstructor()
             ->getMock();
-
-        $app['notification.deliverer']->expects($this->exactly($qty))
+        $delivererMock->expects($this->exactly($qty))
             ->method('deliver')
             ->with($this->isInstanceOf($expectedMail), $this->equalTo($receipt));
+        $app['notification.deliverer'] = $delivererMock;
     }
-
+    
     protected function mockUserNotificationSettings($notificationName, $returnValue = true)
     {
         $app = $this->getApplication();

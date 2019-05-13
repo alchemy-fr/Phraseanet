@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
@@ -57,7 +58,15 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
-    public function __construct(Application $app, Structure $structure, Client $client, $indexName, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    /**
+     * @param Application $app
+     * @param Structure $structure
+     * @param Client $client
+     * @param QueryContextFactory $context_factory
+     * @param callable $facetsResponseFactory
+     * @param ElasticsearchOptions $options
+     */
+    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -66,11 +75,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
 
-        if ('' === trim($indexName)) {
-            throw new \InvalidArgumentException('The provided index name is invalid.');
-        }
-
-        $this->indexName = $indexName;
+        $this->indexName = $options->getIndexName();
 
     }
 
@@ -105,7 +110,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         unset($data['version']);
 
         foreach ($version as $prop => $value) {
-            $data['version:' . $prop] = $value;
+            $data['version:'.$prop] = $value;
         }
 
         $ret = [];
@@ -132,7 +137,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableSort()
     {
         return [
-            SearchEngineOptions::SORT_RELEVANCE  => $this->app->trans('pertinence'),
+            SearchEngineOptions::SORT_RELEVANCE => $this->app->trans('pertinence'),
             SearchEngineOptions::SORT_CREATED_ON => $this->app->trans('date dajout'),
             SearchEngineOptions::SORT_UPDATED_ON => $this->app->trans('date de modification'),
         ];
@@ -276,7 +281,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
-        $queryAST = $query_compiler->parse($queryText)->dump();
+        $queryAST      = $query_compiler->parse($queryText)->dump();
         $queryCompiled = $query_compiler->compile($queryText, $context);
 
         $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
@@ -286,12 +291,11 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $queryESLib['body']['from'] = $options->getFirstResult();
         $queryESLib['body']['size'] = $options->getMaxResults();
-        if ($this->options->getHighlight()) {
+        if($this->options->getHighlight()) {
             $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
         $aggs = $this->getAggregationQueryParams($options);
-
         if ($aggs) {
             $queryESLib['body']['aggs'] = $aggs;
         }
@@ -310,12 +314,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         return new SearchEngineResult(
             $options,
             $results,      // ArrayCollection of results
-
             $queryText,    // the query as typed by the user
             $queryAST,
             $queryCompiled,
             $queryESLib,
-
             $res['took'],   // duration
             $options->getFirstResult(),
             $res['hits']['total'],  // available
@@ -335,7 +337,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             'index' => $this->indexName,
             'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
-                'sort' => $this->createSortQueryParams($options),
+                'sort'   => $this->createSortQueryParams($options),
             ]
         ];
 
@@ -389,11 +391,9 @@ class ElasticSearchEngine implements SearchEngineInterface
         $filters = [];
 
         $filters[]['term']['record_type'] = $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
-            SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
+                    SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY;
 
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
-            $structure = $this->context_factory->getLimitedStructure($options);
-
             $range = [];
             if ($options->getMaxDate()) {
                 $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
@@ -403,12 +403,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             }
 
             foreach ($options->getDateFields() as $dateField) {
-                $ESField = $structure->get($dateField->get_name());
-                if ($ESField) {
-                    $ESName = $ESField->getIndexField();
-
-                    $filters[]['range'][$ESName] = $range;
-                }
+                $filters[]['range']['caption.'.$dateField->get_name()] = $range;
             }
         }
 
@@ -416,9 +411,9 @@ class ElasticSearchEngine implements SearchEngineInterface
             $filters[]['term']['type'] = $type;
         }
 
-        $collections = $options->getCollections();
-        if (count($collections) > 0) {
-            $filters[]['terms']['base_id'] = array_keys($collections);
+        $bases = $options->getBasesIds();
+        if (count($bases) > 0) {
+            $filters[]['terms']['base_id'] = $bases;
         }
 
         if (count($options->getStatus()) > 0) {
@@ -426,7 +421,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $flagNamesMap = $this->getFlagsKey($this->app['phraseanet.appbox']);
 
             foreach ($options->getStatus() as $databoxId => $status) {
-                $status_filter = $databox_status = [];
+                $status_filter = $databox_status =[];
                 $status_filter[] = ['term' => ['databox_id' => $databoxId]];
                 foreach ($status as $n => $v) {
                     if (!isset($flagNamesMap[$databoxId][$n])) {
@@ -434,7 +429,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                     }
 
                     $label = $flagNamesMap[$databoxId][$n];
-                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool)$v]];
+                    $databox_status[] = ['term' => [sprintf('flags.%s', $label) => (bool) $v]];
                 };
                 $status_filter[] = $databox_status;
 
@@ -452,7 +447,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         foreach ($appbox->get_databoxes() as $databox) {
             $databoxId = $databox->get_sbas_id();
             $statusStructure = $databox->getStatusStructure();
-            foreach ($statusStructure as $bit => $status) {
+            foreach($statusStructure as $bit => $status) {
                 $flags[$databoxId][$bit] = Flag::normalizeName($status['labelon']);
             }
         }
@@ -564,12 +559,12 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $filters = [];
 
-        $collections = $options->getCollections();
+        $bases = $options->getBasesIds();
 
         $collectionsWoRules = [];
         $collectionsWoRules['terms']['base_id'] = [];
         foreach ($aclRules as $baseId => $flagsRules) {
-            if (!array_key_exists($baseId, $collections)) {
+            if(!in_array($baseId, $bases)) {
                 // no need to add a filter if the collection is not searched
                 continue;
             }
@@ -594,7 +589,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 $ruleFilter['bool']['must'][] = $flagFilter;
             }
 
-            if (count($ruleFilter['bool']['must']) > 1) {
+            if(count($ruleFilter['bool']['must']) > 1) {
                 // some rules found, add the filter
                 $filters[] = $ruleFilter;
             }
@@ -605,12 +600,12 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
         if (count($collectionsWoRules['terms']['base_id']) > 0) {
             // collections w/o rules : add a simple list ?
-            if (count($filters) > 0) {   // no need to add a big 'should' filter only on collections
+            if(count($filters) > 0) {   // no need to add a big 'should' filter only on collections
                 $filters[] = $collectionsWoRules;
             }
         }
 
-        if (count($filters) > 0) {
+        if(count($filters) > 0) {
             return ['bool' => ['should' => $filters]];
         }
         else {
@@ -630,9 +625,8 @@ class ElasticSearchEngine implements SearchEngineInterface
                     $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field . ".light"] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
-                        // 'matched_fields' => [$index_field, $raw_index_field],
-                        'type'           => 'fvh',
-                        //'type'           => 'plain',
+//                        'matched_fields' => [$index_field, $raw_index_field],
+                        'type' => 'fvh',
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
@@ -648,7 +642,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             'pre_tags'  => ['[[em]]'],
             'post_tags' => ['[[/em]]'],
-            // 'order'     => 'score',
+            'order'     => 'score',
             'fields'    => $highlighted_fields
         ];
     }
@@ -656,7 +650,6 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function getAggregationQueryParams(SearchEngineOptions $options)
     {
         $aggs = [];
-
         // technical aggregates (enable + optional limit)
         foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
             $size = $this->options->getAggregableFieldLimit($k);
@@ -673,9 +666,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 $aggs[$k] = $agg;
             }
         }
-
         // fields aggregates
-
         $structure = $this->context_factory->getLimitedStructure($options);
         foreach ($structure->getFacetFields() as $name => $field) {
             // 2015-05-26 (mdarse) Removed databox filtering.
@@ -698,7 +689,68 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function autocomplete($query, SearchEngineOptions $options)
     {
-        throw new RuntimeException('Elasticsearch engine currently does not support auto-complete.');
+        $params = $this->createCompletionParams($query, $options);
+
+        $res = $this->client->suggest($params);
+
+        $ret = [
+            'text'    => [],
+            'byField' => []
+        ];
+        foreach (array_keys($params['body']) as $fname) {
+            $t = [];
+            foreach ($res[$fname] as $suggest) {    // don't know why there is a sub-array level
+                foreach ($suggest['options'] as $option) {
+                    $text = $option['text'];
+                    if (!in_array($text, $ret['text'])) {
+                        $ret['text'][] = $text;
+                    }
+                    $t[] = [
+                        'label' => $text,
+                        'query' => $fname . ':' . $text
+                    ];
+                }
+            }
+            if (!empty($t)) {
+                $ret['byField'][$fname] = $t;
+            }
+        }
+
+        return $ret;
+    }
+
+    private function createCompletionParams($query, SearchEngineOptions $options)
+    {
+        $body = [];
+        $context = [
+            'record_type' => $options->getSearchType() === SearchEngineOptions::RECORD_RECORD ?
+                SearchEngineInterface::GEM_TYPE_RECORD : SearchEngineInterface::GEM_TYPE_STORY
+        ];
+
+        $base_ids = $options->getBasesIds();
+        if (count($base_ids) > 0) {
+            $context['base_id'] = $base_ids;
+        }
+
+        $search_context = $this->context_factory->createContext($options);
+        $fields = $search_context->getUnrestrictedFields();
+        foreach ($fields as $field) {
+            if ($field->getType() == FieldMapping::TYPE_STRING) {
+                $k = '' . $field->getName();
+                $body[$k] = [
+                    'text'       => $query,
+                    'completion' => [
+                        'field'   => "caption." . $field->getName() . ".suggest",
+                        'context' => &$context
+                    ]
+                ];
+            }
+        }
+
+        return [
+            'index' => $this->indexName,
+            'body'  => $body
+        ];
     }
 
     /**

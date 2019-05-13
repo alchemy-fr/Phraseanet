@@ -166,23 +166,21 @@ class TwigServiceProvider implements ServiceProviderInterface
                 $time = [];
                 $hours = floor($secondsInDecimals / 3600);
                 $secondsInDecimals -= $hours * 3600;
-
                 $minutes = floor($secondsInDecimals / 60);
                 $secondsInDecimals -= $minutes * 60;
-
                 $seconds = intVal($secondsInDecimals % 60, 10);
-
                 if ($hours > 0) {
                     array_push($time, (strlen($hours) < 2) ? "0{$hours}" : $hours);
                 }
                 array_push($time, (strlen($minutes) < 2) ? "0{$minutes}" : $minutes);
                 array_push($time, (strlen($seconds) < 2) ? "0{$seconds}" : $seconds);
-
                 $formattedTime = implode(':', $time);
 
                 return $formattedTime;
-            }));
+            }
+        ));
     }
+
     /**
      * Bootstraps the application.
      *

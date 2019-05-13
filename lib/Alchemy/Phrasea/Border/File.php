@@ -294,7 +294,7 @@ class File
     }
 
     /**
-     * Sanitize xmp uuid
+     * Sanitize XMP UUID
      * @param $uuid
      * @return mixed
      */

@@ -240,7 +240,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_mail"  => "mouse"
-            , 'sorted_lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
+            , 'lst'   => self::$DI['record_1']->get_serialize_key() . ";" . self::$DI['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
         ];
 
         self::$DI['client']->request('POST', '/prod/feeds/entry/' . $entry->getId() . '/update/', $params);
@@ -281,7 +281,7 @@ class FeedTest extends \PhraseanetAuthenticatedWebTestCase
             "title"         => $entry->getTitle(),
             "author_name"   => $entry->getAuthorName(),
             "author_mail"   => $entry->getAuthorEmail(),
-            'sorted_lst'    => $item1->getId() . '_' . $item2->getOrd() . ';'
+            'lst'    => $item1->getId() . '_' . $item2->getOrd() . ';'
                              . $item2->getId() . '_' . $item1->getOrd()
             ];
 

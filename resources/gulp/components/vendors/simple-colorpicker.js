@@ -7,6 +7,6 @@ gulp.task('build-simple-colorpicker', function () {
 });
 
 gulp.task('copy-simple-colorpicker', function () {
-    return gulp.src(config.paths.vendors + 'jquery-simplecolorpicker/*')
+    return gulp.src(config.paths.nodes + 'jquery-simplecolorpicker/*')
         .pipe(gulp.dest(config.paths.build + 'vendors/jquery-simplecolorpicker'));
 });

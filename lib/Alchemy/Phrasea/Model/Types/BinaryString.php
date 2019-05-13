@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Types;
 
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class BinaryString extends Type

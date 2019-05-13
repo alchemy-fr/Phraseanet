@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Databox\Subdef;
 
 class SubdefPresetProvider
 {
-
     private $presets = [];
 
     /**
@@ -13,7 +12,7 @@ class SubdefPresetProvider
      */
     public function getPresets($type)
     {
-        if (! isset($this->presets[$type])) {
+        if (!isset($this->presets[$type])) {
             throw new \InvalidArgumentException('Invalid type');
         }
 

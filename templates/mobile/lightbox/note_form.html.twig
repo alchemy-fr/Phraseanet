@@ -3,7 +3,18 @@
 {% extends "common/index.html.twig" %}
 
 {% block javascript %}
-  <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+  <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
+  <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+  <script type="text/javascript">
+
+
+    var lightboxApp = lightboxMobileApplication.bootstrap({
+      lang: '{{ app.locale }}',
+      baseUrl: '{{ app['request'].getUriForPath('/') }}',
+      basePath: '{{ app.request.basePath|e('js') }}',
+      releasable: false
+    });
+  </script>
 {% endblock %}
 
 {% block stylesheet %}

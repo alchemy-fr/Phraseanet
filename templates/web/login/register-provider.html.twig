@@ -41,7 +41,7 @@
                     {% endif %}
                     <div class="row-fluid">
                         <div class="span12">
-                            {{ auth_macro.fieldInput(form.email, "registerForm", 'icon-envelope') }}
+                            {{ auth_macro.fieldInput(form.email, "registerForm", 'fa fa-envelope') }}
                         </div>
                     </div>
 
@@ -91,5 +91,9 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ path('minifier', {'f': 'scripts/apps/login/home/registerProvider.js'}) }}"></script>
+    <script>
+        authenticateApp.bootstrap({
+            state: 'registerProvider'
+        });
+    </script>
 {% endblock %}

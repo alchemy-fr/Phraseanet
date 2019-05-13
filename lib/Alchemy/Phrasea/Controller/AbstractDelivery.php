@@ -41,7 +41,7 @@ abstract class AbstractDelivery
         $disposition = $request->query->get('download') ? DeliverDataInterface::DISPOSITION_ATTACHMENT : DeliverDataInterface::DISPOSITION_INLINE;
 
         // nb: $filename will be sanitized, no need to do it here
-        $response = $this->deliverFile($pathOut, $filename, $disposition, $mediaSubdefinition->get_mime());
+        $response = $this->deliverFile($pathOut,  $filename, $disposition, $mediaSubdefinition->get_mime());
 
         if (in_array($subdef, array('document', 'preview'))) {
             $response->setPrivate();

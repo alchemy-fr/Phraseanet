@@ -288,6 +288,7 @@ class User
 
     /**
      * @param string $login
+     * @return $this
      */
     public function setLogin($login)
     {
@@ -306,6 +307,7 @@ class User
 
     /**
      * @param string $email
+     * @return $this
      */
     public function setEmail($email)
     {
@@ -325,6 +327,7 @@ class User
     /**
      *
      * @param string $password
+     * @return $this
      */
     public function setPassword($password)
     {
@@ -343,6 +346,7 @@ class User
 
     /**
      * @param string $nonce
+     * @return $this
      */
     public function setNonce($nonce)
     {
@@ -361,6 +365,7 @@ class User
 
     /**
      * @param boolean $saltedPassword
+     * @return $this
      */
     public function setSaltedPassword($saltedPassword)
     {
@@ -379,6 +384,7 @@ class User
 
     /**
      * @param string $firstName
+     * @return $this
      */
     public function setFirstName($firstName)
     {
@@ -398,6 +404,7 @@ class User
     /**
      *
      * @param string $lastName
+     * @return $this
      */
     public function setLastName($lastName)
     {
@@ -451,6 +458,7 @@ class User
 
     /**
      * @param string $address
+     * @return $this
      */
     public function setAddress($address)
     {
@@ -469,6 +477,7 @@ class User
 
     /**
      * @param string $city
+     * @return $this
      */
     public function setCity($city)
     {
@@ -487,6 +496,7 @@ class User
 
     /**
      * @param string $country
+     * @return $this
      */
     public function setCountry($country)
     {
@@ -505,6 +515,7 @@ class User
 
     /**
      * @param string $zipCode
+     * @return $this
      */
     public function setZipCode($zipCode)
     {
@@ -523,6 +534,7 @@ class User
 
     /**
      * @param integer $geonameId
+     * @return $this
      */
     public function setGeonameId($geonameId)
     {
@@ -545,6 +557,7 @@ class User
 
     /**
      * @param string $locale
+     * @return $this
      *
      * @throws InvalidArgumentException
      */
@@ -569,6 +582,7 @@ class User
 
     /**
      * @param string $timezone
+     * @return $this
      */
     public function setTimezone($timezone)
     {
@@ -587,6 +601,7 @@ class User
 
     /**
      * @param string $job
+     * @return $this
      */
     public function setJob($job)
     {
@@ -605,6 +620,7 @@ class User
 
     /**
      * @param string $activity
+     * @return $this
      */
     public function setActivity($activity)
     {
@@ -623,6 +639,7 @@ class User
 
     /**
      * @param string $company
+     * @return $this
      */
     public function setCompany($company)
     {
@@ -641,6 +658,7 @@ class User
 
     /**
      * @param string $phone
+     * @return $this
      */
     public function setPhone($phone)
     {
@@ -659,6 +677,7 @@ class User
 
     /**
      * @param string $fax
+     * @return $this
      */
     public function setFax($fax)
     {
@@ -677,6 +696,7 @@ class User
 
     /**
      * @param boolean $admin
+     * @return $this
      */
     public function setAdmin($admin)
     {
@@ -695,6 +715,7 @@ class User
 
     /**
      * @param boolean $guest
+     * @return $this
      */
     public function setGuest($guest)
     {
@@ -713,6 +734,7 @@ class User
 
     /**
      * @param boolean $mailNotifications
+     * @return $this
      */
     public function setMailNotificationsActivated($mailNotifications)
     {
@@ -731,6 +753,7 @@ class User
 
     /**
      * @param boolean $requestNotifications
+     * @return $this
      */
     public function setRequestNotificationsActivated($requestNotifications)
     {
@@ -749,6 +772,7 @@ class User
 
     /**
      * @param boolean $ldapCreated
+     * @return $this
      */
     public function setLdapCreated($ldapCreated)
     {
@@ -767,6 +791,7 @@ class User
 
     /**
      * @param User $owner
+     * @return $this
      */
     public function setTemplateOwner(User $owner)
     {
@@ -785,6 +810,7 @@ class User
 
     /**
      * @param User $lastAppliedTemplate
+     * @return $this
      */
     public function setLastAppliedTemplate(User $lastAppliedTemplate)
     {
@@ -803,6 +829,7 @@ class User
 
     /**
      * @param string $pushList
+     * @return $this
      */
     public function setPushList($pushList)
     {
@@ -821,6 +848,7 @@ class User
 
     /**
      * @param boolean $canChangeProfil
+     * @return $this
      */
     public function setCanChangeProfil($canChangeProfil)
     {
@@ -839,6 +867,7 @@ class User
 
     /**
      * @param boolean $canChangeFtpProfil
+     * @return $this
      */
     public function setCanChangeFtpProfil($canChangeFtpProfil)
     {
@@ -857,6 +886,7 @@ class User
 
     /**
      * @param \DateTime $lastConnection
+     * @return $this
      */
     public function setLastConnection(\DateTime $lastConnection)
     {
@@ -875,6 +905,7 @@ class User
 
     /**
      * @param boolean $mailLocked
+     * @return $this
      */
     public function setMailLocked($mailLocked)
     {
@@ -921,6 +952,7 @@ class User
 
     /**
      * @param \Datetime $created
+     * @return $this
      */
     public function setCreated(\Datetime $created)
     {
@@ -931,6 +963,7 @@ class User
 
     /**
      * @param \Datetime $updated
+     * @return $this
      */
     public function setUpdated(\Datetime $updated)
     {

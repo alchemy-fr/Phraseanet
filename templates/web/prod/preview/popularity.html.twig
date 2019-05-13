@@ -10,7 +10,7 @@
     <div id="chart_pie" style="width: 100%; min-width: 250px; max-width: 1000px"></div>
 </div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
 
         var referrersValues = [], statistics = null;
@@ -18,7 +18,9 @@
         if(statistics != null) {
             var arrayViews = [], arrayDownloads = [], arrayReferrers = [];
 
-            var statisticsArrayByDay = _(statistics.by_day).toArray();
+            var statisticsArrayByDay = $.map(statistics.by_day, function(value, index) {
+                return [value];
+            });
             statisticsArrayByDay.map(function(objByDay) {
                 //[new Date(2017, 0, 1), 5],
                 arrayViews.push([new Date(objByDay.label), objByDay.views]);
@@ -27,10 +29,13 @@
 
             //add header for piechart
             arrayReferrers.push(['Links', 'Visualisation']);
-            var statisticsReferrers = _(statistics.referrers).toArray();
+            var statisticsReferrers = $.map(statistics.referrers, function(value, index) {
+                return [value];
+            });
 
             //sort array in descending order - referrers count
-            statisticsReferrers = _.sortBy(statisticsReferrers, "count").reverse();
+            //statisticsReferrers = _.sortBy(statisticsReferrers, "count").reverse();
+            statisticsReferrers.sort(function(a,b) {return a.count - b.count}).reverse()
             statisticsReferrers.map(function(objReferrers) {
                 referrersValues.push(objReferrers.count);
                 arrayReferrers.push([objReferrers.label, objReferrers.count]);
@@ -66,8 +71,8 @@
         function drawChartVisualisation() {
             var maxValue = statistics.max_views < 4 ? 4 : statistics.max_views;
             var data = new google.visualization.DataTable();
-            data.addColumn('date', "{{ 'preview::date' | trans }}");
-            data.addColumn('number', "{{ 'preview::visualisation' | trans }}");
+            data.addColumn('date', '{{ 'preview::date' | trans }}');
+            data.addColumn('number', '{{ 'preview::visualisation' | trans }}');
 
             data.addRows(arrayViews);
 
@@ -80,7 +85,7 @@
                 'backgroundColor': 'transparent',
                 chartArea: {width:'70%',height:'70%'},
                 hAxis: {
-                    title: "{{ 'preview::date' | trans }}",
+                    title: '{{ 'preview::date' | trans }}',
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -93,7 +98,7 @@
                     baselineColor: '#FFF'
                 },
                 vAxis: {
-                    title: "{{ 'preview::visualisation' | trans }}",
+                    title: '{{ 'preview::visualisation' | trans }}',
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -116,8 +121,8 @@
         function drawChartDownload() {
             var maxValue = statistics.max_downloads < 4 ? 4 : statistics.max_downloads;
             var data = new google.visualization.DataTable();
-            data.addColumn('date', "{{ 'preview::date' | trans }}");
-            data.addColumn('number', "{{ 'preview::downloads' | trans }}");
+            data.addColumn('date', '{{ 'preview::date' | trans }}');
+            data.addColumn('number', '{{ 'preview::downloads' | trans }}');
 
             data.addRows(arrayDownloads);
 
@@ -130,7 +135,7 @@
                 'backgroundColor': 'transparent',
                 chartArea: {width:'70%',height:'70%'},
                 hAxis: {
-                    title: "{{ 'preview::date' | trans }}",
+                    title: '{{ 'preview::date' | trans }}',
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -143,7 +148,7 @@
                     baselineColor: '#FFF'
                 },
                 vAxis: {
-                    title: "{{ 'preview::downloads' | trans }}",
+                    title: '{{ 'preview::downloads' | trans }}',
                     titleTextStyle: {
                         color: 'white',
                         fontSize: 11
@@ -194,4 +199,4 @@
     });
 
 
-  </script>
+</script>

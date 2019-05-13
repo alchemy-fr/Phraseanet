@@ -17,12 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class SearchEngineResult
 {
     protected $results;
-
     protected $queryText;
     protected $queryAST;
     protected $queryCompiled;
     protected $queryESLib;
-
     protected $duration;
     protected $offsetStart;
     protected $available;
@@ -61,12 +59,10 @@ class SearchEngineResult
     public function __construct(
         SearchEngineOptions $options,
         ArrayCollection $results,
-
         $queryText,
         $queryAST,
         $queryCompiled,
         $queryESLib,
-
         $duration,
         $offsetStart,
         $available,
@@ -80,12 +76,10 @@ class SearchEngineResult
     ) {
         $this->options = $options;
         $this->results = $results;
-
         $this->queryText = $queryText;
         $this->queryAST = $queryAST;
         $this->queryCompiled = $queryCompiled;
         $this->queryESLib = $queryESLib;
-
         $this->duration = (float) $duration;
         $this->offsetStart = (int) $offsetStart;
         $this->available = (int) $available;
@@ -125,6 +119,7 @@ class SearchEngineResult
     {
         return $this->queryText;
     }
+
 
     public function getQueryAST()
     {

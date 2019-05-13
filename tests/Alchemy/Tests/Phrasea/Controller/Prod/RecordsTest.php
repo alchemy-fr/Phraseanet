@@ -103,7 +103,8 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
 
         $options = new SearchEngineOptions();
         $acl = $app->getAclForUser($app->getAuthenticatedUser());
-        $options->onCollections($acl->get_granted_base());
+        $searchableBasesIds = $acl->getSearchableBasesIds();
+        $options->onBasesIds($searchableBasesIds);
         $serializedOptions = $options->serialize();
 
         $response = $this->XMLHTTPRequest('POST', '/prod/records/', [

@@ -56,11 +56,13 @@
                         {# collections list #}
                         {% if collections|length > 0 %}
                             {% set last_used_collection = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'upload_last_used_collection') %}
-                            <select onchange="setPref('upload_last_used_collection', $(this).val());" name="base_id" class="span3" style="margin-left: 10px;">
+                            <select name="base_id" class="span3 upload-options-collection" style="margin-left: 10px;">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_label(app['locale']) }}" class="select-label">
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %} value="{{ collection.get_base_id() }}" class="select-row">{{ collection.get_label(app['locale']) }}</option>
+                                    <option {% if last_used_collection == collection.get_base_id() %} selected="selected" {% endif %}
+                                            value="{{ collection.get_base_id() }}"
+                                            class="select-row">{{ collection.get_label(app['locale']) }}</option>
                                 {% endfor %}
                                 </optgroup>
                             {% endfor %}
@@ -68,7 +70,8 @@
                             {# collections status #}
                             {% for availableCollections in collections %}
                                 {% for collection in availableCollections['databox_collections'] %}
-                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.parent.loop.first and loop.first ? "display:block" :"display:none" }}'>
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'
+                                         style='{{ last_used_collection == collection.get_base_id() ? "display:block" :"display:none" }}'>
                                         <h5>{{ 'upload:: Status :' | trans }} :</h5>
                                         <table class="status-tab">
                                             <tbody>
@@ -144,12 +147,6 @@
             uploadBox: $('#uploadBox .upload-box-addedfiles'),
             settingsBox: $('#uploadBox .settings-box'),
             downloadBox: $('#uploadBox .download-box')
-        });
-
-        $('#upload_type').on('change', function () {
-            if ($(this).val() === 'html') {
-                $("#UPLOAD_HTML5_LINK").trigger("click");
-            }
         });
 
         {# Create tabs #}
@@ -360,7 +357,7 @@
 
                 if (this.getStats().files_queued === 0) {
                     $("#cancel-all", UploaderManager.getContainer()).addClass("disabled").attr("disabled", true);
-                    var dialog = p4.Dialog.get(1);
+                    var dialog = dialogModule.dialog.get(1);
                     //unbind check before close event & disabled button for cancel all download
                     dialog.getDomElement().unbind("dialogbeforeclose");
 
@@ -380,7 +377,7 @@
         $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(e){
 
             //prevent dialog box from being closed while files are being downloaded
-            p4.Dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
+            dialogModule.dialog.get(1).getDomElement().bind("dialogbeforeclose", function(event, ui) {
                 if ( swfu.getStats().files_queued > 0) {
                     p4.Alerts(language.warning, language.fileBeingDownloaded);
                     return false;

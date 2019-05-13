@@ -38,6 +38,12 @@ class Developers implements ControllerProviderInterface, ServiceProviderInterfac
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        $firewall = $this->getFirewall($app);
+
+        $controllers->before(function () use ($firewall) {
+            $firewall->requireNotGuest();
+        });
+
         $controllers->get('/applications/', 'controller.account.developers:listApps')
             ->bind('developers_applications');
 

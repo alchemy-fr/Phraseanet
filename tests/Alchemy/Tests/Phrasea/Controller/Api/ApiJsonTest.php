@@ -877,7 +877,6 @@ class ApiJsonTest extends ApiTestCase
         $this->setToken($this->userAccessToken);
         $response = $this->request('POST', '/api/v1/records/search/', $this->getParameters(), ['HTTP_Accept' => $this->getAcceptMimeType()]);
         $content = $this->unserialize($response->getContent());
-
         $this->evaluateResponse200($response);
         $this->evaluateMeta200($content);
 
@@ -1065,7 +1064,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());
@@ -1093,7 +1092,7 @@ class ApiJsonTest extends ApiTestCase
 
         $route = '/api/v1/records/' . self::$DI['record_1']->get_sbas_id() . '/' . self::$DI['record_1']->get_record_id() . '/embed/';
 
-        self::$DI['client']->request('GET', $route, $this->getParameters(), [], ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        self::$DI['client']->request('GET', $route, $this->getParameters(), [], array('HTTP_Accept' => $this->getAcceptMimeType()));
         $content = $this->unserialize(self::$DI['client']->getResponse()->getContent());
 
         $this->evaluateResponse200(self::$DI['client']->getResponse());

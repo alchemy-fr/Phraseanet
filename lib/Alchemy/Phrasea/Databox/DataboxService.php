@@ -73,6 +73,11 @@ class DataboxService
         $this->rootPath = $rootPath;
     }
 
+    /**
+     * @param $databaseName
+     * @param DataboxConnectionSettings|null $connectionSettings
+     * @return bool
+     */
     public function exists($databaseName, DataboxConnectionSettings $connectionSettings = null)
     {
         $connectionSettings = $connectionSettings ?: DataboxConnectionSettings::fromArray(
@@ -115,9 +120,9 @@ class DataboxService
     }
 
     /**
+     * @param $databaseName
+     * @param $templateName
      * @param User $owner
-     * @param string $databaseName
-     * @param string $templateName
      * @param DataboxConnectionSettings|null $connectionSettings
      * @return \databox
      * @throws \Exception_InvalidArgument

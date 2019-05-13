@@ -141,6 +141,7 @@ class ProdReportController extends Controller
                 'anonymize' => $this->anonymousReport,
             ]
         );
+
         $report->setFormat(self::$mapFromExtension[$this->extension]['format']);
 
         $response = new StreamedResponse();

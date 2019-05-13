@@ -17,10 +17,7 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\ControllerProvider\Root\Login;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
-use Alchemy\Phrasea\Core\Event\RegistrationEvent;
-use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Form\Login\PhraseaRenewPasswordForm;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -42,15 +39,12 @@ use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountDelete;
 use Alchemy\Phrasea\Notification\Receiver;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-
-
 
 class AccountController extends Controller
 {
@@ -214,6 +208,7 @@ class AccountController extends Controller
      */
     public function accountAccess()
     {
+        //var_dump($this->getRegistrationManager()->getRegistrationSummary($this->getAuthenticatedUser()));die;
         return $this->render('account/access.html.twig', [
             'inscriptions' => $this->getRegistrationManager()->getRegistrationSummary($this->getAuthenticatedUser())
         ]);
@@ -239,9 +234,9 @@ class AccountController extends Controller
             $this->getApiApplicationRepository()->findByUser($user) as $application) {
             $account = $this->getApiAccountRepository()->findByUserAndApplication($user, $application);
 
-            if(!in_array($application->getName(), $nativeApp)) {
+            if(!in_array($application->getName(), $nativeApp)){
                 $data[$application->getId()] = [
-                    'application'  => $application,
+                    'application' => $application,
                     'user-account' => $account,
                 ];
             }
@@ -421,19 +416,13 @@ class AccountController extends Controller
             $this->app->abort(400, '"registrations" parameter must be an array of base ids.');
         }
 
-        $successfulRegistrations = [];
         $user = $this->getAuthenticatedUser();
 
         if (0 !== count($registrations)) {
             foreach ($registrations as $baseId) {
                 $this->getRegistrationManipulator()
                     ->createRegistration($user, \collection::getByBaseId($this->app, $baseId));
-                $successfulRegistrations[$baseId] = \collection::getByBaseId($this->app, $baseId);;
             }
-
-            $this->getEventDispatcher()
-                ->dispatch(PhraseaEvents::REGISTRATION_CREATE, new RegistrationEvent($user, $successfulRegistrations));
-
             $this->app->addFlash('success', $this->app->trans('Your registration requests have been taken into account.'));
         }
 
@@ -527,6 +516,7 @@ class AccountController extends Controller
         $applications = $this->getApiApplicationRepository()->findByUser($user);
 
         $this->getApiApplicationManipulator()->deleteApiApplications($applications);
+
 
         //  revoke access and delete phraseanet user account
 
@@ -649,14 +639,6 @@ class AccountController extends Controller
     private function getEventManager()
     {
         return $this->app['events-manager'];
-    }
-
-    /**
-     * @return EventDispatcherInterface
-     */
-    private function getEventDispatcher()
-    {
-        return $this->app['dispatcher'];
     }
 
     /**

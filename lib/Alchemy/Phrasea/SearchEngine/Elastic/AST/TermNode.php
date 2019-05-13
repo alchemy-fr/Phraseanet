@@ -21,8 +21,8 @@ class TermNode extends AbstractTermNode
 
         $unrestricted_fields = $context->getUnrestrictedFields();
         $private_fields = $context->getPrivateFields();
-
         $query = $query_builder($unrestricted_fields);
+
         foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $unrestricted_fields, $query_builder) as $concept_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $concept_query);
         }

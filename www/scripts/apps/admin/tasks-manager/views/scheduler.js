@@ -13,8 +13,8 @@ define([
     "backbone"
 ], function ($, _, Backbone) {
     var SchedulerView = Backbone.View.extend({
+        template: _.template($('#scheduler_template').html()),
         initialize: function () {
-            this.template = _.template($('#scheduler_template').html());
             // render only parts of the model
             this.model.on('change:configuration', this.renderConfiguration, this);
             this.model.on('change:actual', this.renderActual, this);

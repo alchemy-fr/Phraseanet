@@ -165,24 +165,46 @@ class GooglePlusTest extends ProviderTestCase
         $provider->setGuzzleClient($guzzle);
         $provider->getSession()->set('google-plus.provider.id', '12345678');
 
-        $people = $this->getMockBuilder('Google_PeopleServiceResource')
+        $googleClient = $this->getMockBuilder('\Google_Client')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $people->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue([
-                'name' => [
-                    'givenName' => self::FIRSTNAME,
-                    'familyName' => self::LASTNAME,
-                ],
-                'id' => self::ID,
-                'image' => [
-                    'url' => self::IMAGEURL
-                ]
-        ]));
+        $googleClient->expects($this->any())
+            ->method("getAccessToken")
+            ->will($this->returnValue(
+                json_encode([
+                    'access_token' => 'fakeAccessToken',
+                    'expires_in'   => 3599,
+                    'id_token'     => 'fakeIdToken',
+                    'token_type'   => 'Bearer',
+                    'created'      => 1511374176,
+                ])
+            ));
 
-        $provider->getGooglePlusService()->people = $people;
+        $googleClient->expects($this->any())
+            ->method("verifyIdToken")
+            ->with($this->equalTo("fakeIdToken"))
+            ->will($this->returnValue(
+                [
+                    'azp'            => '1234azerty.apps.googleusercontent.com',
+                    'aud'            => '1234azerty.apps.googleusercontent.com',
+                    'sub'            => self::ID,
+                    'hd'             => 'somewhere.fr',
+                    'email'          => self::EMAIL,
+                    'email_verified' => true,
+                    'at_hash'        => '123456789',
+                    'iss'            => 'https://accounts.google.com',
+                    'iat'            => 1511522056,
+                    'exp'            => 1511525656,
+                    'name'           => self::FIRSTNAME . ' ' . self::LASTNAME,
+                    'picture'        => self::IMAGEURL,
+                    'given_name'     => self::FIRSTNAME,
+                    'family_name'    => self::LASTNAME,
+                    'locale'         => 'fr',
+                ]
+            ));
+
+        $provider->setGoogleClient($googleClient);
 
         return $provider;
     }
@@ -255,12 +277,7 @@ class GooglePlusTest extends ProviderTestCase
             ->method('createAuthUrl')
             ->will($this->returnValue('https://www.google.com/auth'));
 
-        $plus = $this->getMockBuilder('Google_PlusService')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $google =  new GooglePlus($this->getUrlGeneratorMock(), $this->getMockSession(), $googleMock, $this->getGuzzleMock());
-        $google->setGooglePlusService($plus);
 
         return $google;
     }

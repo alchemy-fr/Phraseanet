@@ -122,18 +122,18 @@ class patch_390alpha6a extends patchAbstract
             $stmt->execute(['export_id' => $row['id']]);
             $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            foreach ($rs as $element) {
+            foreach ($rs as $element_row) {
                 $element = new FtpExportElement();
-                $element->setBaseId($row['base_id'])
-                    ->setRecordId($row['record_id'])
-                    ->setBusinessfields($row['businessfields'])
+                $element->setBaseId($element_row['base_id'])
+                    ->setRecordId($element_row['record_id'])
+                    ->setBusinessfields($element_row['businessfields'])
                     ->setCreated(new \DateTime($row['date']))
                     ->setUpdated(new \DateTime($row['date']))
-                    ->setDone(!!$row['done'])
-                    ->setError(!!$row['error'])
-                    ->setFilename($row['filename'])
-                    ->setFolder($row['folder'])
-                    ->setSubdef($row['subdef'])
+                    ->setDone(!!$element_row['done'])
+                    ->setError(!!$element_row['error'])
+                    ->setFilename($element_row['filename'])
+                    ->setFolder($element_row['folder'])
+                    ->setSubdef($element_row['subdef'])
                     ->setExport($export);
 
                 $export->addElement($element);

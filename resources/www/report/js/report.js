@@ -3,7 +3,6 @@
  *
  */
 
-
 //############# START DOCUMENT READY ######################################//
 $(document).ready(function () {
 
@@ -13,32 +12,27 @@ $(document).ready(function () {
     reportDatePicker();
     bindEvents();
 
-    /** custom select boxes **/
-
+    /**
+     * custom select boxes
+     */
     $(".select_one").each(function(){
         var $this = $(this),
-            numberOfOptions = $(this).children('option').length;
-
+        numberOfOptions = $(this).children('option').length;
         $this.addClass('select-hidden');
         $this.wrap('<div class="custom_select"></div>');
         $this.after('<div class="select-styled"></div>');
-
         var $styledSelect = $this.next('div.select-styled');
         $styledSelect.text($this.children('option').eq(0).text());
-
         var $list = $('<ul />', {
             'class': 'select-options'
         }).insertAfter($styledSelect);
-
         for (var i = 0; i < numberOfOptions; i++) {
             $('<li />', {
                 text: $this.children('option').eq(i).text(),
                 rel: $this.children('option').eq(i).val(),
                 'data-action': $this.children('option').eq(i).data('action')
-
             }).appendTo($list);
         }
-
         var $listItems = $list.children('li');
   
         $styledSelect.click(function(e) {
@@ -58,18 +52,19 @@ $(document).ready(function () {
             $list.hide();
         });
 
-        $(".form2 .select-options li").click(function(e) {
-            e.stopPropagation();
-            var value = $(this).attr('rel'),
-                form = $(this).closest('form');
-            $(".collist", form).hide();
-            $(".collist-" + value, form).show();
-        });
-      
         $(document).click(function() {
             $styledSelect.removeClass('active');
             $list.hide();
         });
+     });        
+     
+     $(".form2 .select-options li").click(function(e) {
+        e.stopPropagation();
+        var $this = $(this),
+            value = $this.attr('rel'),
+            form = $this.closest('form');
+        $(".collist", form).hide();
+        $(".collist-" + value, form).show();
     });
 
     $('.collist').each(function() {
@@ -77,7 +72,6 @@ $(document).ready(function () {
             form = $this.closest('form'),
             i = $this.closest('form').find('.sbas_select').val()
         ;
-
         $this.hide();        
         $(".collist-" + i, form).show();
     });
@@ -86,7 +80,6 @@ $(document).ready(function () {
         if ($(this).html().trim() === '')
             $(this).hide();
     });
-
 });
 //############# END DOCUMENT READY ######################################//
 
@@ -104,10 +97,11 @@ function bindEvents() {
             form = $($(this).attr('data-form_selector')),
             action = form.find("select.sbas_select")
         ;
-
+        
         if(action.length != 1) {    // should never happen with select !
             return false;   // prevent button to submit form
         }
+        
         $(".form2 .collist", form).each(function(i, el) {
             if ($(el).is(':visible') === false) {
                 $.each($(el).find('input'), function(i, inputEl) {
@@ -117,7 +111,7 @@ function bindEvents() {
             }
         });
         $(".form3 .collist", form).each(function(i, el) {
-            if ($(el).is(':visible') === false) {
+            if ($(el).is(':visible') === false) {                
                 $.each($(el).find('input'), function(i, inputEl) {
                     fieldsArr.push($(inputEl).prop('checked'))
                 });
@@ -125,29 +119,30 @@ function bindEvents() {
             }
         });
         action = action.find(':selected').data('action');
-
         form.attr("action", action);
         form.submit();
-        $(".form2 .collist", form).each(function(i, el) {
+        
+        $(".form2 .collist", form).each(function(i, el) {            
             if ($(el).is(':visible') === false) {
-
-                $.each($(el).find('input'), function(j, inputEl) {
+                
+                $.each($(el).find('input'), function(j, inputEl) {                    
                     $(inputEl).prop('checked', collectionsArr[j]);
                 });
             }
         });
-        $(".form3 .collist", form).each(function(i, el) {
-            if ($(el).is(':visible') === false) {
 
-                $.each($(el).find('input'), function(j, inputEl) {
+        $(".form3 .collist", form).each(function(i, el) {            
+            if ($(el).is(':visible') === false) {
+                
+                $.each($(el).find('input'), function(j, inputEl) {                    
                     $(inputEl).prop('checked', fieldsArr[j]);
                 });
             }
         });
         collectionsArr = [];
         fieldsArr = [];
-
-        return false;   // prevent button to submit form
+        
+        return false;   // prevent button to submit form    
     });
 
     /**
@@ -174,7 +169,7 @@ function bindEvents() {
         var form = $(this).closest("form");
         var selector = $(this).attr("data-target_selector");
         $(selector, form).prop('checked', true);
-
+        
         return false;   // prevent button to submit form
     });
 
@@ -224,7 +219,7 @@ function pollNotifications() {
         },
         success: function (data) {
             if (data) {
-                manageSession(data);
+                commonModule.manageSession(data);
             }
             var t = 120000;
             if (data.apps && parseInt(data.apps) > 1) {

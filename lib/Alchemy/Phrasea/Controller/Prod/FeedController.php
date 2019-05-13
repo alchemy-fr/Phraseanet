@@ -54,7 +54,7 @@ class FeedController extends Controller
 
         $user = $this->getAuthenticatedUser();
         $publisher = $this->getFeedPublisherRepository()->findOneBy([
-            'feed' => $feed, 
+            'feed' => $feed,
             'user' => $user,
         ]);
 
@@ -148,7 +148,7 @@ class FeedController extends Controller
             $entry->setFeed($new_feed);
         }
 
-        $items = explode(';', $request->request->get('sorted_lst'));
+        $items = explode(';', $request->request->get('lst'));
 
         $item_repository = $this->getFeedItemRepository();
         $manager = $this->getEntityManager();
@@ -167,7 +167,7 @@ class FeedController extends Controller
 
         return $this->app->json([
             'error'   => false,
-            'message' => 'succes',
+            'message' => 'success',
             'datas'   => $this->render('prod/results/entry.html.twig', ['entry' => $entry]),
         ]);
     }

@@ -139,7 +139,6 @@ class CollectionService
             . "WHERE r.coll_id = :coll_id\n"
             . "AND r.type='image' AND s.name IN ('preview', 'document')";
 
-
         $params = [':coll_id' => $collection->getCollectionId()];
 
         if ($record_id) {
@@ -321,7 +320,8 @@ class CollectionService
             $result = $userQuery->on_base_ids([ $reference->getBaseId()] )
                 ->who_have_right([\ACL::ORDER_MASTER])
                 ->include_templates(true)
-                ->execute()->get_results();
+                ->execute()
+                ->get_results();
 
             /** @var ACLProvider $acl */
             $acl = $this->app['acl'];
