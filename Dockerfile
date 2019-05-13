@@ -149,3 +149,4 @@ ADD ./docker/nginx/ /
 
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
 
+
