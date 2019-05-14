@@ -79,7 +79,7 @@ class CLI extends Application
 
             $config = $this['configuration.store']->getConfig();
 
-            if ((isset($config['console_logger_enabled_environments']) && in_array($environment, $config['console_logger_enabled_environments'])) || $environment == self::ENV_DEV){
+            if ((isset($config['console_logger_enabled_environments']) && in_array($environment, $config['console_logger_enabled_environments']))){
                 $logger = true;
             }
         }
