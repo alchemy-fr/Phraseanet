@@ -42,7 +42,6 @@
   },
   "dependencies": {
     "JSON2": "^0.1.0",
-    "alchemy-embed-medias": "0.5.5-dev",
     "backbone": "^1.3.3",
     "blueimp-file-upload": "^8.3.0",
     "blueimp-load-image": "^2.17.1",
