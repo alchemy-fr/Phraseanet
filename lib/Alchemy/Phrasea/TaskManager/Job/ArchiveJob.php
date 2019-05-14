@@ -69,6 +69,7 @@ class ArchiveJob extends AbstractJob
     protected function doJob(JobData $data)
     {
         $app = $data->getApplication();
+        $app->getApplicationBox()->get_connection();
 
         // $app['debug'] = true;
 

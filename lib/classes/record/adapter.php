@@ -1154,6 +1154,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function createStory(Application $app, \collection $collection)
     {
+        $app->getApplicationBox()->get_connection();
         $connection = $collection->get_databox()->get_connection();
 
         $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)'
