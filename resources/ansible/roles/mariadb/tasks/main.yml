@@ -10,7 +10,10 @@
 
 - name: mariadb | Install MariaDB Packages
   sudo: yes
-  apt: pkg={{ item }} state=latest
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    allow_unauthenticated: yes
   with_items:
     - mariadb-server
     - python-mysqldb
