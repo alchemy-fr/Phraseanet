@@ -26,6 +26,7 @@ use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+
 class ArchiveJob extends AbstractJob
 {
     const MINCOLD = 5;
