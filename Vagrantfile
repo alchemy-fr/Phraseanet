@@ -120,8 +120,8 @@ Vagrant.configure("2") do |config|
     end
 
     # Switch between Phraseanet box and native trusty64
-    config.vm.box = “alchemy/Phraseanet-vagrant-dev”
-    #config.vm.box = “ubuntu/xenial64"
+    config.vm.box = "alchemy/Phraseanet-vagrant-dev"
+    #config.vm.box = "ubuntu/xenial64"
 
     # In case, Phraseanet box, choose the php version
     # For php 7.0 use box 0.0.1
