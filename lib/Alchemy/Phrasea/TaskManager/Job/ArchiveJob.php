@@ -72,6 +72,9 @@ class ArchiveJob extends AbstractJob
 
         // $app['debug'] = true;
 
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+
         $task = $data->getTask();
 
         $settings = simplexml_load_string($task->getSettings());
@@ -84,6 +87,9 @@ class ArchiveJob extends AbstractJob
         }
 
         $databox = $app->findDataboxById($sbasId);
+
+        // quick fix to reconnect if mysql is lost
+        $databox->get_connection();
 
         $TColls = [];
         $collection = null;
@@ -605,6 +611,10 @@ class ArchiveJob extends AbstractJob
 
     private function archive(Application $app, \databox $databox, \DOMDOcument $dom, \DOMElement $node, $path, $path_archived, $path_error, $depth, $moveError, $moveArchived, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         if ($node->getAttribute('temperature') == 'hot') {
             return;
         }
@@ -872,6 +882,10 @@ class ArchiveJob extends AbstractJob
 
     private function archiveGrp(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $moveError, $moveArchived, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $xpath = new \DOMXPath($dom);
 
         // grp folders stay in place
@@ -1051,6 +1065,10 @@ class ArchiveJob extends AbstractJob
 
     public function createStory(Application $app, \collection $collection, $pathfile, $captionFile, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $collection->get_connection();
+
         $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app->getMediaFromUri($pathfile);
@@ -1101,6 +1119,10 @@ class ArchiveJob extends AbstractJob
      */
     public function createRecord(Application $app, \collection $collection, $pathfile, $captionFile, $grp_rid, $force, $stat0, $stat1)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $collection->get_connection();
+
         $status = \databox_status::operation_or($stat0, $stat1);
 
         $media = $app->getMediaFromUri($pathfile);
@@ -1212,6 +1234,10 @@ class ArchiveJob extends AbstractJob
      */
     private function archiveFile(Application $app, \databox $databox, \DOMDocument $dom, \DOMElement $node, $path, $path_archived, $path_error, array &$nodesToDel, $grp_rid, $stat0, $stat1, $moveError, $moveArchived)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $match = $node->getAttribute('match');
 
         if ($match == '*') {
@@ -1272,6 +1298,10 @@ class ArchiveJob extends AbstractJob
      */
     private function archiveFileAndCaption(Application $app, \databox $databox, \DOMElement $node, \DOMElement $captionFileNode = null, $path, $path_archived, $path_error, $grp_rid, array &$nodesToDel, $stat0, $stat1, $moveError, $moveArchived)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+        $databox->get_connection();
+
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : null;
@@ -1455,6 +1485,9 @@ class ArchiveJob extends AbstractJob
      */
     protected function getLazaretSession(Application $app)
     {
+        // quick fix to reconnect if mysql is lost
+        $app->getApplicationBox()->get_connection();
+
         $lazaretSession = new LazaretSession();
 
         $app['orm.em']->persist($lazaretSession);
