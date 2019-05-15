@@ -123,6 +123,11 @@ Vagrant.configure("2") do |config|
     config.vm.box = "alchemy/Phraseanet-vagrant-dev"
     #config.vm.box = "ubuntu/trusty64"
 
+    # In case, Phraseanet box, choose the php version
+    # For php 7.0 use box 0.0.1
+    # For php 7.1 use box 0.0.2
+    config.vm.box_version = "0.0.1"
+
     config.ssh.forward_agent = true
     config_net(config)
 
