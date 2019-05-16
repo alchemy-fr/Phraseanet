@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\Plugin\EnablePlugin;
 use Alchemy\Phrasea\Command\Plugin\DisablePlugin;
+use Alchemy\Phrasea\Command\Plugin\DownloadPlugin;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Setup\CheckEnvironment;
 use Alchemy\Phrasea\Core\CLIProvider\DoctrineMigrationServiceProvider;
@@ -50,7 +51,7 @@ $app = new CLI("
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-            . ' SETUP', $version->getName() . ' ' . $version->getNumber());
+    . ' SETUP', $version->getName() . ' ' . $version->getNumber());
 
 $app->register(new DoctrineMigrationServiceProvider());
 
@@ -70,6 +71,7 @@ if ($configurationTester->isInstalled()) {
 }
 
 $app->command(new AddPlugin());
+$app->command(new DownloadPlugin());
 $app->command(new ListPlugin());
 $app->command(new RemovePlugin());
 $app->command(new PluginsReset());
