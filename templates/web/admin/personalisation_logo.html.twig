@@ -91,7 +91,6 @@
                         image.file = this.file;
                         image.data = this.data;
 
-                        console.log(image.file.type);
                         if (image.file.type != 'image/png' && image.file.type!= 'image/svg+xml') {
                             $('#general_personalize-logo-choice_personalizeLogoInput').val("");
                             $('#error-text').text(errorFileType);
