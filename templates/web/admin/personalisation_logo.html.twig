@@ -90,19 +90,22 @@
                         image.src = _file.target.result;
                         image.file = this.file;
                         image.data = this.data;
+
+                        console.log(image.file.type);
+                        if (image.file.type != 'image/png' && image.file.type!= 'image/svg+xml') {
+                            $('#general_personalize-logo-choice_personalizeLogoInput').val("");
+                            $('#error-text').text(errorFileType);
+                            $('#error-text').show();
+                            $('#help-text').hide();
+                            $('#personalize-image-container').hide();
+                            return false;
+                        }
+
                         image.onload = function () {
                             var w = this.width,
                                 h = this.height;
 
                             var ext = this.file.type.split('/').pop().toLowerCase();
-                            if (ext != 'png' && ext != 'svg+xml') {
-                                $('#general_personalize-logo-choice_personalizeLogoInput').val("");
-                                $('#error-text').text(errorFileType);
-                                $('#error-text').show();
-                                $('#help-text').hide();
-                                $('#personalize-image-container').hide();
-                                return false;
-                            }
 
                             if (h > 41 || w > 120 ) {
                                 $('#error-text').text(errorDimension);
