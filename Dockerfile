@@ -74,7 +74,6 @@ COPY config /var/alchemy/config
 COPY grammar /var/alchemy/grammar
 COPY lib /var/alchemy/lib
 COPY resources /var/alchemy/resources
-RUN ls -la
 COPY templates-profiler /var/alchemy/templates-profiler
 COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
