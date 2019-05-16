@@ -7,12 +7,12 @@
 #    - server
 #    - repositories
 #    - vagrant_local
-#    - nginx
+    - nginx
 #    - mariadb
 #    - elasticsearch
 #    - rabbitmq
 #    - php
-#    - xdebug
+    - xdebug
 #    - composer
 #    - mailcatcher
 #    - node
