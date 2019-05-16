@@ -1,6 +1,10 @@
 version: 2.1
 orbs:
     aws-ecr: circleci/aws-ecr@4.0.1
+executors:
+  docker_build:
+    machine:
+      docker_layer_caching: true
 jobs:
     build:
         working_directory: ~/alchemy-fr/Phraseanet
@@ -109,8 +113,6 @@ workflows:
     oldfashion:
         jobs:
             - build
-            
-            
     newfashion:
         jobs:
             - aws-ecr/build_and_push_image:
