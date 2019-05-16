@@ -1781,7 +1781,7 @@ $(document).ready(function () {
         var parent = searchForm.parent();
 
         var options = {
-            title: 'Advanced search',
+            title: $('#advanced-search-title').val(),
             size: (bodySize.x - 120)+'x'+(bodySize.y - 120),
             loading: false,
             closeCallback: function (dialog) {

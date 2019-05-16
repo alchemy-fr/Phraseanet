@@ -206,6 +206,11 @@
                         <div id="FIRST_QUERY_CONTAINER" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
                     {% endif %}
 
+                    {#container fetched by js #}
+
+                    <input type="hidden" name="advanced-search-title" id="advanced-search-title" value="{{ 'Advanced Search' | trans }}">
+                    
+
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
