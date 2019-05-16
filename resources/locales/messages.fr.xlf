@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-04-22T12:50:32Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2019-05-08T13:17:04Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -2315,9 +2315,9 @@
         <jms:reference-file line="29">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="25">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b5737dea168495fa0495e00ce58b4832772a492" resname="Delete account successfull" approved="no">
+      <trans-unit id="1b5737dea168495fa0495e00ce58b4832772a492" resname="Delete account successfull" approved="yes">
         <source>Delete account successfull</source>
-        <target state="needs-translation">Suppression du compte réalisée avec succès</target>
+        <target state="translated">Suppression du compte réalisée avec succès</target>
         <jms:reference-file line="21">Notification/Mail/MailSuccessAccountDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7533d4121d8de10e9b2b4b9c5afa5dfbde846af1" resname="Delete all users rights" approved="yes">
@@ -2400,7 +2400,7 @@
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
         <source>Detailed view URL</source>
         <target state="translated">URL de la vue détaillée</target>
-        <jms:reference-file line="44">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="50">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc3decbb93847518f1a049dcf49d0d7c6560bcc6" resname="Details" approved="yes">
         <source>Details</source>
@@ -2715,22 +2715,22 @@
         <target state="translated">Résultat du test d'e-mail : %email_status%</target>
         <jms:reference-file line="136">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c839b2905a9c9e4e611519e461c6f3e0dde4ec78" resname="Email:deletion:request:message Hello %civility% %firstName% %lastName%.&#10;            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.&#10;            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%&#10;            Link is valid for one hour." approved="no">
+      <trans-unit id="c839b2905a9c9e4e611519e461c6f3e0dde4ec78" resname="Email:deletion:request:message Hello %civility% %firstName% %lastName%.&#10;            We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.&#10;            If you are not at the origin of this request, please change your password as soon as possible %resetPassword%&#10;            Link is valid for one hour." approved="yes">
         <source>Email:deletion:request:message Hello %civility% %firstName% %lastName%.
             We have received an account deletion request for your account on %urlInstance%, please confirm this deletion by clicking on the link below.
             If you are not at the origin of this request, please change your password as soon as possible %resetPassword%
             Link is valid for one hour.</source>
-        <target state="needs-translation">Bonjour %civility% %firstName% %lastName%. Nous avons reçu une demande de suppression de compte pour votre compte sur %urlInstance%, veuillez confirmer cette suppression en cliquant sur le lien ci-dessous. Si toutefois vous n'étiez pas à l'origine de cette demande, merci de modifier votre mot de passe aussi rapidement que possible. %resetPassword%. Le lien est valable pendant une heure.</target>
+        <target state="translated">Bonjour %civility% %firstName% %lastName%. Nous avons reçu une demande de suppression de compte pour votre compte sur %urlInstance%, veuillez confirmer cette suppression en cliquant sur le lien ci-dessous. Si toutefois vous n'étiez pas à l'origine de cette demande, merci de modifier votre mot de passe aussi rapidement que possible. %resetPassword%. Le lien est valable pendant une heure.</target>
         <jms:reference-file line="51">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ccbd5b5d94afa34b04935d0b084335f2656d96af" resname="Email:deletion:request:subject Delete account confirmation" approved="no">
+      <trans-unit id="ccbd5b5d94afa34b04935d0b084335f2656d96af" resname="Email:deletion:request:subject Delete account confirmation" approved="yes">
         <source>Email:deletion:request:subject Delete account confirmation</source>
-        <target state="needs-translation">Confirmation de suppression de votre compte</target>
+        <target state="translated">Confirmation de suppression de votre compte</target>
         <jms:reference-file line="39">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b37c2cc6df6ff49078905d16da4e3fa3a28490e4" resname="Email:deletion:request:textButton Delete my account" approved="no">
+      <trans-unit id="b37c2cc6df6ff49078905d16da4e3fa3a28490e4" resname="Email:deletion:request:textButton Delete my account" approved="yes">
         <source>Email:deletion:request:textButton Delete my account</source>
-        <target state="needs-translation">Supprimer mon compte</target>
+        <target state="translated">Supprimer mon compte</target>
         <jms:reference-file line="68">Notification/Mail/MailRequestAccountDelete.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="473558393914486d8e60b9968e5443e40be433e0" resname="Emails" approved="yes">
@@ -2741,7 +2741,7 @@
       <trans-unit id="7884b9b422d77cabded5da8a9a56524a84481930" resname="Embed code" approved="yes">
         <source>Embed code</source>
         <target state="translated">Code d'intégration (Embed code)</target>
-        <jms:reference-file line="53">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="59">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5afbbe7023486a123b45581f49820899571c415" resname="Empty a collection" approved="yes">
         <source>Empty a collection</source>
@@ -4313,7 +4313,7 @@
         <jms:reference-file line="64">admin/fields/templates.html.twig</jms:reference-file>
         <jms:reference-file line="127">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b369c4651e2b82200334fa587669b3828071192" resname="My application " approved="no">
+      <trans-unit id="1b369c4651e2b82200334fa587669b3828071192" resname="My application ">
         <source>My application </source>
         <target state="needs-translation">Mon application</target>
         <jms:reference-file line="295">web/account/account.html.twig</jms:reference-file>
@@ -4392,7 +4392,7 @@
       <trans-unit id="8c123d8ad43d08cc48c3d6a7676e65f71eea59df" resname="No URL available" approved="yes">
         <source>No URL available</source>
         <target state="translated">Aucune URL de disponible</target>
-        <jms:reference-file line="132">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="138">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="486829367591dc8209f3fc6960814c0bdd8930d1" resname="No account yet?" approved="yes">
         <source>No account yet?</source>
@@ -4643,9 +4643,9 @@
         <target state="translated">Un document ne peut être modifié.</target>
         <jms:reference-file line="23">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c15c49205663ceff94e31db82030bb5da10df870" resname="One of these conditions">
+      <trans-unit id="c15c49205663ceff94e31db82030bb5da10df870" resname="One of these conditions" approved="yes">
         <source>One of these conditions</source>
-        <target state="needs-translation">Une de ces conditions</target>
+        <target state="translated">Une de ces conditions</target>
         <jms:reference-file line="367">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ae26e7b698cf33577df1bd9fd55ddd1d0771802" resname="Only %nbEditableDocuments% records can be modified." approved="yes">
@@ -4663,7 +4663,7 @@
         <target state="translated">Ouvrir l'URL dans une nouvelle fenêtre</target>
         <jms:reference-file line="125">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or" approved="no">
+      <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or">
         <source>Or</source>
         <target state="needs-translation">Ou</target>
         <jms:reference-file line="36">prod/upload/upload.html.twig</jms:reference-file>
@@ -5592,7 +5592,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="8e78cff6cd2bb8595029060cb53dba7a4ba72b8a" resname="Resource URL" approved="yes">
         <source>Resource URL</source>
         <target state="translated">URL de la ressource</target>
-        <jms:reference-file line="34">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="40">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2479ef7e025d9d4c6e5463dc366c2d6c79aaefbe" resname="Resquest access" approved="yes">
         <source>Resquest access</source>
@@ -5846,7 +5846,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="49fae2071d9672ce46d9fbadda409a3fa0cbc238" resname="Selected base(s)">
         <source>Selected base(s)</source>
-        <target state="needs-translation">Rechercher dans les Bases</target>
+        <target state="needs-translation">Rechercher dans les Bases :</target>
         <jms:reference-file line="264">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c418c187fb3108749d7156765e7b9b16a51215f" resname="Selected files" approved="yes">
@@ -5880,6 +5880,13 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Send to Facebook</source>
         <target state="translated">Envoyer vers Facebook</target>
         <jms:reference-file line="28">prod/Share/record.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="60b2d62f2951ccf92ed7fb647ee7d6ab7ecfdd5e" resname="Send to Linkedin">
+        <source>Send to Linkedin</source>
+        <target state="new">Send to Linkedin</target>
+        <jms:reference-file line="33">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="34">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="29f82ee42eeecce87dfe9223d5d7ff716dc68ead" resname="Send to Twitter" approved="yes">
         <source>Send to Twitter</source>
@@ -6686,7 +6693,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Jeton</target>
         <jms:reference-file line="99">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e894979930445d4b2bd8c947d6e2e6b816fcb0ab" resname="Token not found" approved="no">
+      <trans-unit id="e894979930445d4b2bd8c947d6e2e6b816fcb0ab" resname="Token not found">
         <source>Token not found</source>
         <target state="needs-translation">Token non trouvé</target>
         <jms:reference-file line="388">Controller/Root/AccountController.php</jms:reference-file>
@@ -7485,7 +7492,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Ecriture des métadonnées</target>
         <jms:reference-file line="447">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d3f8f7b810c4b08f0b4ac4e47fdf8d265a10d869" resname="YYYY-MM-DD" approved="no">
+      <trans-unit id="d3f8f7b810c4b08f0b4ac4e47fdf8d265a10d869" resname="YYYY-MM-DD">
         <source>YYYY-MM-DD</source>
         <target state="needs-translation">AAAA-MM-JJ</target>
         <jms:reference-file line="10">web/report/form_date_and_base.html.twig</jms:reference-file>
@@ -7800,7 +7807,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Vos documents et leurs sous-résolutions (vignettes, prévisualisation et autres sous-définitions) sont stockés dans ces répertoires</target>
         <jms:reference-file line="733">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bd5a589e9bed2de0b0180ca950ea0593249f7f69" resname="Your phraseanet account on %urlInstance% has been deleted!" approved="no">
+      <trans-unit id="bd5a589e9bed2de0b0180ca950ea0593249f7f69" resname="Your phraseanet account on %urlInstance% has been deleted!">
         <source>Your phraseanet account on %urlInstance% has been deleted!</source>
         <target state="needs-translation">Votre compte Phraseanet sur %urlInstance% a été supprimé!</target>
         <jms:reference-file line="29">Notification/Mail/MailSuccessAccountDelete.php</jms:reference-file>
@@ -9462,9 +9469,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>copyClipboardLabel</source>
         <target state="translated">Copier dans le presse-papier</target>
         <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
-        <jms:reference-file line="40">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="48">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="61">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="46">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="54">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="67">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="670f6628c7b72287a36ecd01262005e81428451c" resname="created_on" approved="yes">
         <source>created_on</source>
@@ -9838,7 +9845,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Ordre technique</target>
         <jms:reference-file line="798">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6b9516a3c46d7ad246a9fbb3df693ba6c783c986" resname="index::advance_search: facet-values-order" approved="no">
+      <trans-unit id="6b9516a3c46d7ad246a9fbb3df693ba6c783c986" resname="index::advance_search: facet-values-order">
         <source>index::advance_search: facet-values-order</source>
         <target state="needs-translation">Ordre des valeurs de facettes</target>
         <jms:reference-file line="804">web/prod/index.html.twig</jms:reference-file>
@@ -10599,47 +10606,47 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Ne plus afficher ce message</target>
         <jms:reference-file line="38">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="245fd09d0518644a6580518f710add762804ca9a" resname="phraseanet::account The account has been deleted" approved="no">
+      <trans-unit id="245fd09d0518644a6580518f710add762804ca9a" resname="phraseanet::account The account has been deleted">
         <source>phraseanet::account The account has been deleted</source>
         <target state="needs-translation">Le compte a été supprimé</target>
         <jms:reference-file line="554">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="no">
+      <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; ">
         <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >> ]]></source>
-        <target state="needs-translation">Votre compte peut être supprimé via l'interface d'Administration</target>
+        <target state="needs-translation">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="325">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion" approved="no">
+      <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion">
         <source>phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</source>
         <target state="needs-translation">Un email de confirmation a été envoyé. Veuillez suivre les instructions pour poursuivre la procédure de suppression du compte.</target>
         <jms:reference-file line="365">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d0ee9e2c90a05b113b00bf7accd590557bd78528" resname="phraseanet::account: Are you sure you want to delete your account?" approved="no">
+      <trans-unit id="d0ee9e2c90a05b113b00bf7accd590557bd78528" resname="phraseanet::account: Are you sure you want to delete your account?">
         <source>phraseanet::account: Are you sure you want to delete your account?</source>
         <target state="needs-translation">Etes-vous sûr(e) de vouloir supprimer votre compte?</target>
         <jms:reference-file line="282">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b98be91d0f8cadb22e52e6217584b7a11370fbb6" resname="phraseanet::account: Delete my account" approved="no">
+      <trans-unit id="b98be91d0f8cadb22e52e6217584b7a11370fbb6" resname="phraseanet::account: Delete my account">
         <source>phraseanet::account: Delete my account</source>
         <target state="needs-translation">Supprimer mon compte</target>
         <jms:reference-file line="273">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b7993903466c49139bfae4c34c63446ff24b1474" resname="phraseanet::account: I am agree to delete my account" approved="no">
+      <trans-unit id="b7993903466c49139bfae4c34c63446ff24b1474" resname="phraseanet::account: I am agree to delete my account">
         <source>phraseanet::account: I am agree to delete my account</source>
         <target state="needs-translation">Je suis d'accord pour supprimer mon compte</target>
         <jms:reference-file line="314">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1b836fda2a5c65abfd05c215d4c4dd66361e4f0f" resname="phraseanet::account: I am agree to delete my account, need confirmation on mail" approved="no">
+      <trans-unit id="1b836fda2a5c65abfd05c215d4c4dd66361e4f0f" resname="phraseanet::account: I am agree to delete my account, need confirmation on mail">
         <source>phraseanet::account: I am agree to delete my account, need confirmation on mail</source>
         <target state="needs-translation">Je suis d'accord pour supprimer mon compte et j'ai besoin d'une confirmation par email</target>
         <jms:reference-file line="312">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="121aa945bfcb3565989acc06a1ccda5b36be6bf0" resname="phraseanet::account: List of data to be deleted" approved="no">
+      <trans-unit id="121aa945bfcb3565989acc06a1ccda5b36be6bf0" resname="phraseanet::account: List of data to be deleted">
         <source>phraseanet::account: List of data to be deleted</source>
         <target state="needs-translation">Liste des données à supprimer</target>
         <jms:reference-file line="283">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8d168955d9cfb26df27fbdcb4f83bbfe78654703" resname="phraseanet::account: My phraseanet account" approved="no">
+      <trans-unit id="8d168955d9cfb26df27fbdcb4f83bbfe78654703" resname="phraseanet::account: My phraseanet account">
         <source>phraseanet::account: My phraseanet account</source>
         <target state="needs-translation">Mon compte Phraseanet</target>
         <jms:reference-file line="303">web/account/account.html.twig</jms:reference-file>
@@ -10876,9 +10883,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="7ac5447a13806c0a2e2602b51644729fe8464e0e" resname="previewLinkLabel" approved="yes">
         <source>previewLinkLabel</source>
         <target state="translated">Prévisualiser</target>
-        <jms:reference-file line="39">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="47">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="60">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="45">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="53">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="66">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
         <source>print:: image de choix et description</source>
@@ -11185,14 +11192,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="45">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record" approved="yes">
+      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record">
         <source>prod:app trash: also-move-record</source>
-        <target state="translated">Déplacer à la corbeille les enregistrements lier a ces reportages.</target>
+        <target state="needs-translation">Déplacer à la corbeille les enregistrements liés à ces reportages</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete">
+      <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete" approved="yes">
         <source>prod:app trash: record-delete</source>
-        <target state="needs-translation">Enregistrement(s) définitivement supprimé(s) !</target>
+        <target state="translated">enregistrement(s) définitivement supprimé(s) !</target>
         <jms:reference-file line="40">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -11420,7 +11427,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rapport des connexions utilisateurs, groupé par résolution d'écran</target>
         <jms:reference-file line="29">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user" approved="no">
+      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user">
         <source>report:: (connexions) user</source>
         <target state="needs-translation">Rapport des connexions utilisateurs, groupé par utilisateur</target>
         <jms:reference-file line="23">web/report/report_layout_child.html.twig</jms:reference-file>
@@ -11440,7 +11447,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Rapport des téléchargements sortant, groupé par utilisateur</target>
         <jms:reference-file line="75">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="no">
+      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode">
         <source>report:: 1 - Periode</source>
         <target state="needs-translation">Période</target>
         <jms:reference-file line="3">web/report/form_date_and_base.html.twig</jms:reference-file>
@@ -12038,9 +12045,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Lien Personnalisable</target>
         <jms:reference-file line="54">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance" approved="yes">
+      <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance">
         <source>share::share-record: advance</source>
-        <target state="translated">Réglage avancé</target>
+        <target state="needs-translation">Réglage avancé</target>
         <jms:reference-file line="9">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def" approved="yes">

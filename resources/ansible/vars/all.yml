@@ -36,7 +36,7 @@ server:
         - nl_NL.UTF-8
 repositories:
     php: 'ppa:ondrej/php'
-    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    mariadb: 'deb [arch=amd64] http://mirror.zol.co.zw/mariadb/repo/10.3/ubuntu'
     elasticsearch: 'ppa:webupd8team/java'
     rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
     yarn: 'https://dl.yarnpkg.com/debian/'
