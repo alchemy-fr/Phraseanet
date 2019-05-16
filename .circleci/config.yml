@@ -1,6 +1,10 @@
 version: 2.1
 orbs:
     aws-ecr: circleci/aws-ecr@4.0.1
+executors:
+  docker_build:
+    machine:
+      docker_layer_caching: true
 jobs:
     build:
         working_directory: ~/alchemy-fr/Phraseanet
@@ -109,8 +113,6 @@ workflows:
     oldfashion:
         jobs:
             - build
-            
-            
     newfashion:
         jobs:
             - aws-ecr/build_and_push_image:
@@ -120,7 +122,18 @@ workflows:
                 context: "AWS London"
                 create-repo: true
                 dockerfile: Dockerfile
-                #profile-name: myProfileName
+                extra-build-args: "--target phraseanet"
                 region: AWS_DEFAULT_REGION
                 repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet"
+                tag: "alpha-0.1"
+            - aws-ecr/build_and_push_image:
+                account-url: AWS_ACCOUNT_URL
+                aws-access-key-id: AWS_ACCESS_KEY_ID
+                aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+                context: "AWS London"
+                create-repo: true
+                dockerfile: Dockerfile
+                extra-build-args: "--target phraseanet-nginx"
+                region: AWS_DEFAULT_REGION
+                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet-nginx"
                 tag: "alpha-0.1"
