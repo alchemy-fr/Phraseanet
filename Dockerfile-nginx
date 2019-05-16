@@ -1,0 +1,7 @@
+FROM nginx:1.15
+
+RUN useradd -u 1000 app
+
+ADD ./docker/nginx/ /
+
+COPY www /var/alchemy/Phraseanet/

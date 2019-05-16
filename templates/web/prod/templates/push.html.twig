@@ -12,17 +12,17 @@
                         <table>
                             <tr>
                                 <td>
-                                    <span class="name"><%= item.display_name %></span>
+                                    <span class="name"><%= htmlEncode(item.display_name) %></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="email"><i><%= item.email %></i></span>
+                                    <span class="email"><i><%= htmlEncode(item.email) %></i></span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="subtite"><%= item.subtitle || '' %></span>
+                                    <span class="subtite"><%= htmlEncode(item.subtitle) || '' %></span>
                                 </td>
                             </tr>
                         </table>
@@ -47,7 +47,7 @@
                         <table>
                             <tr>
                                 <td>
-                                    <span class="name"><%= item.name %></span>
+                                    <span class="name"><%= htmlEncode(item.name) %></span>
                                 </td>
                             </tr>
                             <tr>
@@ -81,12 +81,12 @@
                     <table>
                         <tr>
                             <td colspan="3">
-                                <span class="name"><%= user.display_name %></span>
+                                <span class="name"><%= htmlEncode(user.display_name) %></span>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <span class="subtite"><%= user.subtitle || '' %></span>
+                                <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
                             </td>
                         </tr>
                         <tr class="toggles">
@@ -201,12 +201,12 @@
                     <table>
                         <tr>
                             <td colspan="3">
-                                <span class="name"><%= user.display_name %></span>
+                                <span class="name"><%= htmlEncode(user.display_name) %></span>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <span class="subtite"><%= user.subtitle || '' %></span>
+                                <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
                             </td>
                         </tr>
                         <tr class="toggles">
@@ -242,12 +242,12 @@
                 <table>
                     <tr>
                         <td colspan="3">
-                            <span class="name"><%= user.display_name %></span>
+                            <span class="name"><%= htmlEncode(user.display_name) %></span>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="3">
-                            <span class="subtite"><%= user.subtitle || '' %></span>
+                            <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
                         </td>
                     </tr>
                     <tr class="toggles">
@@ -267,3 +267,22 @@
 </div>
 </script>
 
+<script>
+    function htmlEncode(str) {
+        return str.replace(/[&"'<>]/g, function(c){
+            switch (c)
+            {
+                case "&":
+                    return "&amp;";
+                case "'":
+                    return "&#39;";
+                case '"':
+                    return "&quot;";
+                case "<":
+                    return "&lt;";
+                case ">":
+                    return "&gt;";
+            }
+        });
+    }
+</script>

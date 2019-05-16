@@ -1,4 +1,4 @@
-Phraseanet 4.0 - Digital Asset Management application
+Phraseanet 4.1 - Digital Asset Management application
 =====================================================
 
 [![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
@@ -33,12 +33,14 @@ https://www.phraseanet.com/download/
 For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
 
 - git clone 
-- vagrant up 
+- vagrant up
+
 
 For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
 
 # License :
 
 Phraseanet is licensed under GPL-v3 license.
+
 
 

@@ -51,7 +51,7 @@
                                           <tr>
                                               <td>
                                                   <h2 class="title15">
-                                                      {{basket.getName()|raw}}
+                                                      {{basket.getName()|e}}
                                                   </h2>
                                                   {% if basket.getValidation().isFinished() %}
                                                       {{ '(validation) session terminee' | trans }}
@@ -116,7 +116,7 @@
                                           <tr>
                                               <td>
                                                   <h2 class="title15">
-                                                      {{ basket.getName()|raw}}
+                                                      {{ basket.getName()|e}}
                                                   </h2>
                                               </td>
                                               <td class="right">
