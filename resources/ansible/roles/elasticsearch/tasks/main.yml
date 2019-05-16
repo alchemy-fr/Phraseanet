@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Install Dependencies
-  apt: pkg=openjdk-7-jre state=latest
+  apt: pkg=openjdk-8-jre state=latest
 
 - name: Remove temporary debian package
   shell: rm -f /tmp/elasticsearch-{{ elasticsearch.version }}.deb
