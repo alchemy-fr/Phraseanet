@@ -45,6 +45,8 @@ Phraseanet is licensed under GPL-v3 license.
 
 # Docker build
 
+WARNING : still in a work-in-progress status and can be used only for test purposes.
+
 The docker distribution come with 2 differents containers :
 * an nginx that act as the front http server.
 * the php-fpm who serves the php files through nginx.

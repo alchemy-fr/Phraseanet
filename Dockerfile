@@ -65,34 +65,35 @@ RUN mkdir /entrypoint /var/alchemy \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
 
-
 ADD ./docker/phraseanet/ /
 
 WORKDIR /var/alchemy/
 
-COPY config /var/alchemy/config
-COPY grammar /var/alchemy/grammar
-COPY lib /var/alchemy/lib
-COPY resources /var/alchemy/resources
-COPY templates-profiler /var/alchemy/templates-profiler
-COPY templates /var/alchemy/templates
-COPY tests /var/alchemy/tests
-COPY tmp /var/alchemy/tmp
-COPY www /var/alchemy/www
-COPY composer.json /var/alchemy/
-COPY composer.lock /var/alchemy/
 COPY gulpfile.js /var/alchemy/
 COPY Makefile /var/alchemy/
 COPY package.json /var/alchemy/
 COPY phpunit.xml.dist /var/alchemy/
 COPY yarn.lock /var/alchemy/
+COPY bin /var/alchemy/bin
+COPY composer.json /var/alchemy/
+COPY composer.lock /var/alchemy/
 RUN make install_composer
+COPY resources /var/alchemy/resources
+COPY www /var/alchemy/www
 RUN make clean_assets
 RUN make install_asset_dependencies
 RUN make install_assets
 
-FROM php:7.1-fpm-stretch as phraseanet
+COPY lib /var/alchemy/lib
+COPY tmp /var/alchemy/tmp
+COPY config /var/alchemy/config
+COPY grammar /var/alchemy/grammar
+COPY templates-profiler /var/alchemy/templates-profiler
+COPY templates /var/alchemy/templates
+COPY tests /var/alchemy/tests
 
+# Phraseanet
+FROM php:7.1-fpm-stretch as phraseanet
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -137,15 +138,13 @@ RUN apt-get update \
 RUN mkdir -p /var/alchemy/logs && chmod 777 /var/alchemy/logs \
     && mkdir -p /var/alchemy/cache && chmod 777 /var/alchemy/cache
 COPY --from=builder [^(www)] /var/alchemy /var/alchemy
-
+WORKDIR /var/alchemy/
 CMD ["php-fpm"]
 
+# phraseanet-nginx
 FROM nginx:1.15 as phraseanet-nginx
-
 RUN useradd -u 1000 app
-
 ADD ./docker/nginx/ /
-
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
 
 
