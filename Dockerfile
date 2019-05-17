@@ -135,10 +135,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/log/supervisor
 
-RUN mkdir -p /var/alchemy/logs && chmod 777 /var/alchemy/logs \
-    && mkdir -p /var/alchemy/cache && chmod 777 /var/alchemy/cache
-COPY --from=builder [^(www)] /var/alchemy /var/alchemy
-WORKDIR /var/alchemy/
+RUN mkdir -p /var/alchemy/Phraseanet/logs && chmod 777 /var/alchemy/Phraseanet/logs \
+    && mkdir -p /var/alchemy/Phraseanet/cache && chmod 777 /var/alchemy/Phraseanet/cache
+COPY --from=builder /var/alchemy /var/alchemy/Phraseanet
+WORKDIR /var/alchemy/Phraseanet
 CMD ["php-fpm"]
 
 # phraseanet-nginx
