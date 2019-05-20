@@ -279,7 +279,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <label style="text-align: left;" class="form_label checkbox" for="delete_account_aggree">
-                                            {% if app['conf'].get(['main', 'delete-account-require-email-confirmation']) %}
+                                            {% if app['conf'].get(['user_account', 'deleting_policies', 'email_confirmation']) %}
                                                 {{ "phraseanet::account: I am agree to delete my account, need confirmation on mail" | trans }}
                                             {% else %}
                                                 {{ "phraseanet::account: I am agree to delete my account" | trans }}

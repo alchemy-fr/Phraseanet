@@ -47,7 +47,7 @@
     "php": ">=5.5.9",
     "ext-intl": "*",
     "alchemy-fr/tcpdf-clone": "~6.0",
-    "alchemy/embed-bundle": "^0.3.4",
+    "alchemy/embed-bundle": "^2.0.2",
     "alchemy/geonames-api-consumer": "~0.1.0",
     "alchemy/mediavorus": "^0.4.4",
     "alchemy/oauth2php": "1.1.0",
@@ -123,7 +123,7 @@
     "paragonie/random-lib": "^2.0"
   },
   "require-dev": {
-    "mikey179/vfsStream": "~1.5",
+    "mikey179/vfsstream": "~1.5",
     "phpunit/phpunit": "^4.8|^5.0"
   },
   "autoload": {

@@ -264,6 +264,12 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
+
+                    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
+                    {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+                        <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
+                    {% endif %}
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
@@ -404,27 +410,27 @@
                                                     </label>
 
                                                     <div class="term_select">
-                                                        <div class="term_select_wrapper">
-                                                            <select class="term_select_field" style="vertical-align:middle; width:30%;">
+                                                        <div class="term_select_wrapper_template" style="display: none;">
+                                                        <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
-                                                                    {% if field['type'] != 'date' %}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                                    {% endif %}
+                                                                   {# {% if field['type'] != 'date' %}#}
+                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="{{ field['type'] }}-FIELD" value="{{field_id}}">{{field['fieldname']}}</option>
+                                                                    {#{% endif %}#}
                                                                 {% endfor %}
                                                             </select>
-                                                            <select disabled style="vertical-align:middle; width: 23%;">
-                                                                <option value="contains">{{ 'Contains' | trans }}</option>
-                                                                <option value="equals">{{ 'Equals' | trans }}</option>
+                                                            <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
+                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option value="=">{{ 'Equals' | trans }}</option>
                                                             </select>
-                                                            <input disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
-                                                            <input class="term_deleter" style="margin-bottom: 4px;" disabled>
+                                                            <input class="term_select_value" disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
+                                                            <input class="term_deleter" style="margin-bottom: 4px;">
                                                         </div>
 
                                                         <button class="add_new_term"><span>&plus;</span> Add</button>
                                                     </div>
 
-                                                    <div style="display:none;">
+                                                   {# <div style="display:none;">
                                                         <select class="term_select_multiple" size="8" multiple onchange="prodApp.appEvents.emit('search.doCheckFilters', true);" name="fields[]" style="vertical-align:middle; width:99%;">
                                                             <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
                                                             {% for field_id, field in search_datas['fields'] %}
@@ -433,7 +439,7 @@
                                                                 {% endif %}
                                                             {% endfor %}
                                                         </select>
-                                                    </div>
+                                                    </div>#}
                                                 </div>
 
                                                 <div id="ADVSRCH_DATE_ZONE">
@@ -449,13 +455,15 @@
                                                         </div>
                                                     </label>
                                                     <span>
-                                                        <select name="date_field" class="input-medium check-filters" data-save="true" style="width: 166px;">
+                                                        <select name="date_field" class="date-field input-medium check-filters" data-save="true" style="width: 166px;">
                                                             <option selected="selected"
                                                                     value="">{{ 'Rechercher dans un champ date' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
                                                                     class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
                                                             {% endfor %}
+                                                             <option value="updated_on">{{ 'updated_on' | trans }}</option>
+                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
                                                         </select>
                                                     </span>
                                                     <span id="ADVSRCH_DATE_SELECTORS"  style="display: inline-block;height: 26px;line-height: 26px;">
@@ -498,13 +506,16 @@
                                                             {% for status_bit, status in databox.status %}
                                                             <tr>
                                                                 <td>
+
                                                                     <label class="checkbox inline custom_checkbox_label">
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
-                                                                        type="checkbox" value="0"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
+                                                                        <input type="checkbox"  class="field_switch field_{{databox_id}}"
+                                                                               value="0"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_off_i18n'][app['locale']]}}
                                                                     </label>
@@ -514,9 +525,11 @@
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input class="field_switch field_{{databox_id}} check-filters" data-save="true"
-                                                                        type="checkbox" value="1"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
+                                                                        <input type="checkbox" class="field_switch field_{{databox_id}}"
+                                                                               value="1"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
                                                                     </label>

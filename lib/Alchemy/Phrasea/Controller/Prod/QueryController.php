@@ -161,7 +161,33 @@ class QueryController extends Controller
             $result = $engine->query($query, $options);
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
-                $userManipulator->setUserSetting($user, 'start_page_query', $query);
+                // try to save the "fulltext" query which will be restored on next session
+                try {
+                    // local code to find "FULLTEXT" value from jsonQuery
+                    $findFulltext = function($clause) use(&$findFulltext) {
+                        if(array_key_exists('_ux_zone', $clause) && $clause['_ux_zone']=='FULLTEXT') {
+                            return $clause['value'];
+                        }
+                        if($clause['type']=='CLAUSES') {
+                            foreach($clause['clauses'] as $c) {
+                                if(($r = $findFulltext($c)) !== null) {
+                                    return $r;
+                                }
+                            }
+                        }
+                        return null;
+                    };
+
+                    $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
+
+                    $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
+                    if(($ft = $findFulltext($jsQuery['query'])) !== null) {
+                        $userManipulator->setUserSetting($user, 'start_page_query', $ft);
+                    }
+                }
+                catch(\Exception $e) {
+                    // no-op
+                }
             }
 
             // log array of collectionIds (from $options) for each databox
