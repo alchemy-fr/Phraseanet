@@ -27,13 +27,16 @@ class DownloadPlugin extends AbstractPluginCommand
         $this
             ->setDescription('Downloads a plugin to Phraseanet')
             ->addArgument('source', InputArgument::REQUIRED, 'The source is a remote url (.zip or .git)')
-            ->addArgument('destination', InputArgument::OPTIONAL, 'Download destination');
+            ->addArgument('destination', InputArgument::OPTIONAL, 'Download destination')
+            ->addArgument('shouldInstallPlugin', InputArgument::OPTIONAL, 'True or false, determines if plugin should be installed after download');
     }
 
     protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
+        $shouldInstallPlugin = false;
+        $shouldInstallPlugin = $input->getArgument('shouldInstallPlugin');
 
         $destinationSubdir = '/plugin-'.md5($source);
 
@@ -98,6 +101,7 @@ class DownloadPlugin extends AbstractPluginCommand
                         $output->writeln("Failed unzipping <info>$source</info>");
                     } else {
                         $output->writeln("Plugin downloaded to <info>$localDownloadPath</info>");
+                        if ($shouldInstallPlugin) $this->doInstallPlugin($localDownloadPath, $input, $output);
                     }
 
                     // remove zip archive
@@ -109,6 +113,7 @@ class DownloadPlugin extends AbstractPluginCommand
                     $output->writeln("Downloading <info>$source</info>...");
                     $repo = GitRepository::cloneRepository($source, $localDownloadPath);
                     $output->writeln("Plugin downloaded to <info>$localDownloadPath</info>");
+                    if ($shouldInstallPlugin) $this->doInstallPlugin($localDownloadPath, $input, $output);
                     break;
 
             }
