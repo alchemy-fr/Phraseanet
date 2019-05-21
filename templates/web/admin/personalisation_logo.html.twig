@@ -13,9 +13,9 @@
             {{ form_widget(form.logoChoice[1]) }}
             {{ form_label(form.logoChoice[1]) }}
             <br>
-            <span id="help-text">{{ 'prod::setup: help text' | trans }}</span>
+            <span id="help-text">{{ 'admin::setup:personalisation_logo: help text' | trans }}</span>
             <br>
-            <a id="download-image-template" href="#">{{ 'prod::setup: download gabari' | trans }}</a>
+            <a id="download-image-template" href="#">{{ 'admin::setup:personalisation_logo: download gabari' | trans }}</a>
             <br>
             <div class="image-container" id="personalize-image-container">
                 {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
@@ -28,7 +28,7 @@
             <div>
                 {{ form_widget(form.personalizeLogoInput) }}
                 <label for="general_personalize-logo-choice_personalizeLogoInput"
-                       id="select-logo-btn">{{ 'prod::setup: select file' | trans }}</label>
+                       id="select-logo-btn">{{ 'admin::setup:personalisation_logo: select file' | trans }}</label>
             </div>
             <span id="error-text"></span>
         </td>
@@ -41,8 +41,8 @@
     $(document).ready(function () {
         var fileToUpload = null;
 
-        var errorDimension = '{{ 'prod::setup: error text dimension' | trans }}';
-        var errorFileType = '{{ 'prod::setup: error text file type' | trans }}';
+        var errorDimension = '{{ 'admin::setup:personalisation_logo: error text dimension' | trans }}';
+        var errorFileType = '{{ 'admin::setup:personalisation_logo: error text file type' | trans }}';
 
         $('#help-text').show();
 
