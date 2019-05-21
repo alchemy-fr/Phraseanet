@@ -4470,9 +4470,9 @@
         <jms:reference-file line="8">WorkZone/Browser/Results.html.twig</jms:reference-file>
         <jms:reference-file line="111">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query">
+      <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query" approved="yes">
         <source>No thesaurus concept query</source>
-        <target state="needs-translation">Pas de recherche Thesaurus</target>
+        <target state="translated">Pas de recherche Thesaurus</target>
         <jms:reference-file line="16">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6866c8b666718aff85382e93b25ef50cd321669b" resname="No users selected" approved="yes">
@@ -4663,9 +4663,9 @@
         <target state="translated">Ouvrir l'URL dans une nouvelle fenêtre</target>
         <jms:reference-file line="125">Core/Provider/TwigServiceProvider.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or">
+      <trans-unit id="e72184f55cc026514b7160d78c3c5aef63c2a050" resname="Or" approved="yes">
         <source>Or</source>
-        <target state="needs-translation">Ou</target>
+        <target state="translated">Ou</target>
         <jms:reference-file line="36">prod/upload/upload.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="94946e4d2391ccf8ff24f984869ae8fcf9ede7c4" resname="Or login with" approved="yes">
@@ -4676,9 +4676,9 @@
         <jms:reference-file line="102">web/login/index.html.twig</jms:reference-file>
         <jms:reference-file line="55">api/auth/end_user_authorization.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1d75774c0f96b6ee44eb6643c9fea71b50b90ea8" resname="Order">
+      <trans-unit id="1d75774c0f96b6ee44eb6643c9fea71b50b90ea8" resname="Order" approved="yes">
         <source>Order</source>
-        <target state="needs-translation">Ordre d'affichage</target>
+        <target state="translated">Ordre d'affichage</target>
         <jms:reference-file line="80">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f982eff2494d435291fce6a44332cad26e2d63bb" resname="Order has been denied" approved="yes">
@@ -11192,9 +11192,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="45">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="70">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record">
+      <trans-unit id="501adfe6ea4c900a76df9f3c1d55834e6db5b9a9" resname="prod:app trash: also-move-record" approved="yes">
         <source>prod:app trash: also-move-record</source>
-        <target state="needs-translation">Déplacer à la corbeille les enregistrements liés à ces reportages</target>
+        <target state="translated">Déplacer à la corbeille les enregistrements liés à ces reportages</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dd9daa2dc851f005bbcb2ce0ea0c8de6b86ad52" resname="prod:app trash: record-delete" approved="yes">
@@ -11397,29 +11397,29 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rapport des connexions utilisateurs</target>
         <jms:reference-file line="22">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav">
+      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav" approved="yes">
         <source>report:: (connexions) nav</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par navigateur</target>
         <jms:reference-file line="24">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version">
+      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version" approved="yes">
         <source>report:: (connexions) nav,version</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur et version</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par navigateur et version</target>
         <jms:reference-file line="25">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os">
+      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os" approved="yes">
         <source>report:: (connexions) os</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par OS</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par OS</target>
         <jms:reference-file line="26">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav">
+      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav" approved="yes">
         <source>report:: (connexions) os,nav</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur et OS</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par navigateur et OS</target>
         <jms:reference-file line="27">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version">
+      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version" approved="yes">
         <source>report:: (connexions) os,nav,version</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par navigateur, version et OS</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par navigateur, version et OS</target>
         <jms:reference-file line="28">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res" approved="yes">
@@ -11427,34 +11427,34 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rapport des connexions utilisateurs, groupé par résolution d'écran</target>
         <jms:reference-file line="29">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user">
+      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user" approved="yes">
         <source>report:: (connexions) user</source>
-        <target state="needs-translation">Rapport des connexions utilisateurs, groupé par utilisateur</target>
+        <target state="translated">Rapport des connexions utilisateurs, groupé par utilisateur</target>
         <jms:reference-file line="23">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)">
+      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)" approved="yes">
         <source>report:: (downloads)</source>
-        <target state="needs-translation">Rapport des téléchargements sortant</target>
+        <target state="translated">Rapport des téléchargements sortant</target>
         <jms:reference-file line="74">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record">
+      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record" approved="yes">
         <source>report:: (downloads) record</source>
-        <target state="needs-translation">Rapport des téléchargements sortant, groupé par record</target>
+        <target state="translated">Rapport des téléchargements sortant, groupé par record</target>
         <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user">
+      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user" approved="yes">
         <source>report:: (downloads) user</source>
-        <target state="needs-translation">Rapport des téléchargements sortant, groupé par utilisateur</target>
+        <target state="translated">Rapport des téléchargements sortant, groupé par utilisateur</target>
         <jms:reference-file line="75">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode">
+      <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
         <source>report:: 1 - Periode</source>
-        <target state="needs-translation">Période</target>
+        <target state="translated">Période</target>
         <jms:reference-file line="3">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="87cb22fb5598f714cf44b13ef0d2fcfa0fe1e01a" resname="report:: 2 - Base">
+      <trans-unit id="87cb22fb5598f714cf44b13ef0d2fcfa0fe1e01a" resname="report:: 2 - Base" approved="yes">
         <source>report:: 2 - Base</source>
-        <target state="needs-translation">Bases</target>
+        <target state="translated">Bases</target>
         <jms:reference-file line="26">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="49e279e2253aaf0d8aebad389584f5c7c77e5a78" resname="report:: 3 - Collections" approved="yes">
@@ -11468,9 +11468,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="11">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="67">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bbf54f30e0791db4dc06243d939468640ddb6cc5" resname="report:: 4 - Fields">
+      <trans-unit id="bbf54f30e0791db4dc06243d939468640ddb6cc5" resname="report:: 4 - Fields" approved="yes">
         <source>report:: 4 - Fields</source>
-        <target state="needs-translation">Champs exportés</target>
+        <target state="translated">Champs exportés</target>
         <jms:reference-file line="95">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67272ff4fb66e47f6a5e55c7171e994c69b6f162" resname="report:: Au (date)" approved="yes">
@@ -11485,9 +11485,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="9">web/report/report_layout.html.twig</jms:reference-file>
         <jms:reference-file line="22">web/report/all_content.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="afa9685c95f7dff29cb2ad048da368c6e3dbadbc" resname="report:: Databox content">
+      <trans-unit id="afa9685c95f7dff29cb2ad048da368c6e3dbadbc" resname="report:: Databox content" approved="yes">
         <source>report:: Databox content</source>
-        <target state="needs-translation">Contenus</target>
+        <target state="translated">Contenus</target>
         <jms:reference-file line="11">web/report/report_layout.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afa00f7f0e9cf982c242e1a53235360b4aac707d" resname="report:: Detail des connexions" approved="yes">
@@ -12045,9 +12045,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Lien Personnalisable</target>
         <jms:reference-file line="54">web/admin/setup.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance">
+      <trans-unit id="5107f9819cd4c0812c1d78cc07d24aff304c58fa" resname="share::share-record: advance" approved="yes">
         <source>share::share-record: advance</source>
-        <target state="needs-translation">Réglage avancé</target>
+        <target state="translated">Réglage avancé</target>
         <jms:reference-file line="9">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f51d8ca24dc67572beccf115c79671ba1c3f545a" resname="share::share-record: select-shared-def" approved="yes">
