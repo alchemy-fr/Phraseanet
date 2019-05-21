@@ -4207,7 +4207,7 @@
       </trans-unit>
       <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType" approved="yes">
         <source>MimeType</source>
-        <target state="translated">Mime Type</target>
+        <target state="translated">MimeType</target>
         <jms:reference-file line="207">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
@@ -9852,7 +9852,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="yes">
         <source>index::advance_search: order-by-hits</source>
-        <target state="translated">Par occurrences</target>
+        <target state="translated">Trier les facettes par hits</target>
         <jms:reference-file line="810">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
