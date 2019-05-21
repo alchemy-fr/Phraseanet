@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-05-15T13:26:45Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2019-05-21T05:53:02Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -8908,6 +8908,31 @@
         <target state="needs-translation">Aggregateinstellungen</target>
         <jms:reference-file line="5">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="08772ff0da8ce970d5fac07a7afb6f855401d235" resname="admin::setup:personalisation_logo: download gabari">
+        <source>admin::setup:personalisation_logo: download gabari</source>
+        <target state="new">admin::setup:personalisation_logo: download gabari</target>
+        <jms:reference-file line="18">web/admin/personalisation_logo.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a051f8357ca68bd96210d071cdfacfe8a54de2af" resname="admin::setup:personalisation_logo: error text dimension">
+        <source>admin::setup:personalisation_logo: error text dimension</source>
+        <target state="new">admin::setup:personalisation_logo: error text dimension</target>
+        <jms:reference-file line="44">web/admin/personalisation_logo.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4499d392aa84b8bf806252937b820281034ffd0c" resname="admin::setup:personalisation_logo: error text file type">
+        <source>admin::setup:personalisation_logo: error text file type</source>
+        <target state="new">admin::setup:personalisation_logo: error text file type</target>
+        <jms:reference-file line="45">web/admin/personalisation_logo.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="78a276b502761ddad6d621bf315ed17362b12748" resname="admin::setup:personalisation_logo: help text">
+        <source>admin::setup:personalisation_logo: help text</source>
+        <target state="new">admin::setup:personalisation_logo: help text</target>
+        <jms:reference-file line="16">web/admin/personalisation_logo.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1ae037eda66d81b87705cdbdc04e4d8c0a953755" resname="admin::setup:personalisation_logo: select file">
+        <source>admin::setup:personalisation_logo: select file</source>
+        <target state="new">admin::setup:personalisation_logo: select file</target>
+        <jms:reference-file line="31">web/admin/personalisation_logo.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
         <source>admin::status: case A</source>
         <target state="translated">Off</target>
@@ -11266,31 +11291,6 @@
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
         <target state="translated">Achtung : Die ausgewählte Datenbanken Liste für die Suche wurde verändert</target>
         <jms:reference-file line="33">Controller/Prod/LanguageController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="93e6180a1f0f64a4dfc76fd640c4dc0049be00fc" resname="prod::setup: download gabari">
-        <source>prod::setup: download gabari</source>
-        <target state="new">prod::setup: download gabari</target>
-        <jms:reference-file line="10">web/admin/personalisation_logo.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7751e538494c3f8ed3f5518422715b60b28d306a" resname="prod::setup: error text dimension">
-        <source>prod::setup: error text dimension</source>
-        <target state="new">prod::setup: error text dimension</target>
-        <jms:reference-file line="41">web/admin/personalisation_logo.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="a9f8a6a629117e38936d41b34cbb3dbcc13353fa" resname="prod::setup: error text file type">
-        <source>prod::setup: error text file type</source>
-        <target state="new">prod::setup: error text file type</target>
-        <jms:reference-file line="42">web/admin/personalisation_logo.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7950ac5291b8ffafd5cfa55c429cada508a2fdd1" resname="prod::setup: help text">
-        <source>prod::setup: help text</source>
-        <target state="new">prod::setup: help text</target>
-        <jms:reference-file line="16">web/admin/personalisation_logo.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="acd399272f9331ebe8c669752339051f920a4084" resname="prod::setup: select file">
-        <source>prod::setup: select file</source>
-        <target state="new">prod::setup: select file</target>
-        <jms:reference-file line="29">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
         <source>prod::thesaurusTab:candidats</source>
