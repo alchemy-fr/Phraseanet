@@ -10076,7 +10076,7 @@
       </trans-unit>
       <trans-unit id="1758356db21759f7c5a0da9b4dd1db8fd6feab3f" resname="or" approved="yes">
         <source>or</source>
-        <target state="translated">oder</target>
+        <target state="translated">Or</target>
         <jms:reference-file line="91">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63be34306e4a9f792a8ee15b97659affe4ad97e" resname="order-manager::mail: your-order-of" approved="yes">
@@ -10615,7 +10615,7 @@
       </trans-unit>
       <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion" approved="yes">
         <source>phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</source>
-        <target state="translated">Eine Bestätigungs-E-Mail wurde gesendet. Bitte folgen Sie den Anweisungen der fortlaufenden Kontenlöschung</target>
+        <target state="translated">Eine Bestätigungs-E-Mail wurde gesendet. Bitte folgen Sie den Anweisungen der fortlaufenden Kontolöschung</target>
         <jms:reference-file line="365">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d0ee9e2c90a05b113b00bf7accd590557bd78528" resname="phraseanet::account: Are you sure you want to delete your account?" approved="yes">
