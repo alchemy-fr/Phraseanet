@@ -2206,7 +2206,7 @@
       </trans-unit>
       <trans-unit id="c004345fde85bded2c74513e29c8cd58d74b594f" resname="Date de modification" approved="yes">
         <source>Date de modification</source>
-        <target state="translated">Date de modification</target>
+        <target state="translated">Modification date</target>
         <jms:reference-file line="11">prod/Baskets/Reorder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ce084029e351b4bfa9f425ae70e8aaa14a8904e5" resname="Date(s) from field(s)" approved="yes">
@@ -9493,7 +9493,7 @@
       </trans-unit>
       <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="yes">
         <source>date de modification</source>
-        <target state="translated">Modification Date</target>
+        <target state="translated">Modification date</target>
         <jms:reference-file line="137">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
