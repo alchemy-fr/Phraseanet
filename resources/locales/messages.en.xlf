@@ -5881,7 +5881,7 @@
       </trans-unit>
       <trans-unit id="60b2d62f2951ccf92ed7fb647ee7d6ab7ecfdd5e" resname="Send to Linkedin" approved="yes">
         <source>Send to Linkedin</source>
-        <target state="translated">Send to Linkedin</target>
+        <target state="translated">Send to LinkedIn</target>
         <jms:reference-file line="33">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="34">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/Share/record.html.twig</jms:reference-file>
