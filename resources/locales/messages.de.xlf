@@ -2464,9 +2464,9 @@
         <jms:reference-file line="71">web/report/report_layout_child.html.twig</jms:reference-file>
         <jms:reference-file line="48">web/report/form_date_and_base.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd281ce85e6f98a7dad0aa31a2e493a85ef178ca" resname="Design of personalization logo section">
+      <trans-unit id="fd281ce85e6f98a7dad0aa31a2e493a85ef178ca" resname="Design of personalization logo section" approved="yes">
         <source>Design of personalization logo section</source>
-        <target state="new">Design of personalization logo section</target>
+        <target state="translated">Logo Anpassung</target>
         <jms:reference-file line="60">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac930a136ebd04a19bc5f2ce1769fc065efb7bdf" resname="Detailed view URL" approved="yes">
@@ -3923,9 +3923,9 @@
         <jms:reference-file line="38">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="103">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="89b86ab0e66f527166d98df92ddbcf5416ed58f6" resname="Language">
+      <trans-unit id="89b86ab0e66f527166d98df92ddbcf5416ed58f6" resname="Language" approved="yes">
         <source>Language</source>
-        <target state="new">Language</target>
+        <target state="translated">Sprache</target>
         <jms:reference-file line="674">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="863cb39fbe7d70597076af1960b7ae4618d9e1bc" resname="Last Name" approved="yes">
@@ -8908,29 +8908,29 @@
         <target state="translated">Aggregateinstellungen</target>
         <jms:reference-file line="5">admin/search-engine/search-engine-settings.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="08772ff0da8ce970d5fac07a7afb6f855401d235" resname="admin::setup:personalisation_logo: download gabari">
+      <trans-unit id="08772ff0da8ce970d5fac07a7afb6f855401d235" resname="admin::setup:personalisation_logo: download gabari" approved="yes">
         <source>admin::setup:personalisation_logo: download gabari</source>
-        <target state="new">admin::setup:personalisation_logo: download gabari</target>
+        <target state="translated">Template herunterladen</target>
         <jms:reference-file line="18">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a051f8357ca68bd96210d071cdfacfe8a54de2af" resname="admin::setup:personalisation_logo: error text dimension">
+      <trans-unit id="a051f8357ca68bd96210d071cdfacfe8a54de2af" resname="admin::setup:personalisation_logo: error text dimension" approved="yes">
         <source>admin::setup:personalisation_logo: error text dimension</source>
-        <target state="new">admin::setup:personalisation_logo: error text dimension</target>
+        <target state="translated">Fehler: Dateigrösse ist falsch, bitte wählen Sie aus: 120 x 41 px in .png</target>
         <jms:reference-file line="44">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4499d392aa84b8bf806252937b820281034ffd0c" resname="admin::setup:personalisation_logo: error text file type">
+      <trans-unit id="4499d392aa84b8bf806252937b820281034ffd0c" resname="admin::setup:personalisation_logo: error text file type" approved="yes">
         <source>admin::setup:personalisation_logo: error text file type</source>
-        <target state="new">admin::setup:personalisation_logo: error text file type</target>
+        <target state="translated">Fehler: Das Datei-Format ist falsch, bitte wählen Sie eine Datei in .png</target>
         <jms:reference-file line="45">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="78a276b502761ddad6d621bf315ed17362b12748" resname="admin::setup:personalisation_logo: help text">
+      <trans-unit id="78a276b502761ddad6d621bf315ed17362b12748" resname="admin::setup:personalisation_logo: help text" approved="yes">
         <source>admin::setup:personalisation_logo: help text</source>
-        <target state="new">admin::setup:personalisation_logo: help text</target>
+        <target state="translated">Importieren Sie Ihr Logo: 120 x 41 px max in .png</target>
         <jms:reference-file line="16">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1ae037eda66d81b87705cdbdc04e4d8c0a953755" resname="admin::setup:personalisation_logo: select file">
+      <trans-unit id="1ae037eda66d81b87705cdbdc04e4d8c0a953755" resname="admin::setup:personalisation_logo: select file" approved="yes">
         <source>admin::setup:personalisation_logo: select file</source>
-        <target state="new">admin::setup:personalisation_logo: select file</target>
+        <target state="translated">Datei auswählen</target>
         <jms:reference-file line="31">web/admin/personalisation_logo.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fb48b51ad1962dc1b6a3643964f38fc48853161" resname="admin::status: case A" approved="yes">
@@ -10505,9 +10505,9 @@
         <jms:reference-file line="117">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/orders/order_box.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0259e4e17a1f2697d4f4f0108080276a5d7573de" resname="original logo">
+      <trans-unit id="0259e4e17a1f2697d4f4f0108080276a5d7573de" resname="original logo" approved="yes">
         <source>original logo</source>
-        <target state="new">original logo</target>
+        <target state="translated">Originales logo</target>
         <jms:reference-file line="23">Form/Configuration/PersonalisationLogoFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5898fc860300e228dcd54c0b1045b5fa0dcda502" resname="oui" approved="yes">
