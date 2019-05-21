@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83e4f489932f9d7d22c8066a788b462b",
+    "content-hash": "700e5d6496ac1d797c5026c33de5393d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "0.3.8",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef"
+                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
-                "reference": "8a9699bc51e2b2997ccfd357bb2892f3702c33ef",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/db6ec7c18128e7c122d9b722089c790b55f61934",
+                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.8",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/1.0.1",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-01-11T10:35:41+00:00"
+            "time": "2019-05-16T13:15:19+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -7052,12 +7052,12 @@
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },
