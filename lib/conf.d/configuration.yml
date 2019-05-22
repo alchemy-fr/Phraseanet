@@ -1,5 +1,4 @@
 servername: 'http://local.phrasea/'
-Console_logger_enabled_environments: [test]
 languages:
     available: []
     default: 'fr'
@@ -287,5 +286,5 @@ video-editor:
         - 1
         - '1.5'
         - 3
-
+Console_logger_enabled_environments: [test]
 
