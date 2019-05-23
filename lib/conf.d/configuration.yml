@@ -232,7 +232,7 @@ embed_bundle:
         autoplay: false
     document:
         #player: flexpaper
-        enable-pdfjs: true
+        enable_pdfjs: true
 geocoding-providers:
     -
         map-provider: 'mapboxWebGL'
