@@ -53,10 +53,10 @@
                 {% endif %}
             </div>
         </div>
-        <div class="bottom_actions_holder" style="height: 27px; position:relative; text-align:left;">
+        <div style="height: 25px; position:relative; text-align:left;">
             <table class="bottom actions" style="width:100%; table-layout:fixed;">
                 <tr>
-                    <td class="text-stack-wrapper" style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
+                    <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
                         {% set collectionLogo = collection_logo(record.baseId) %}
                         {% if collectionLogo is empty %}
                         {{ record.collectionName }}
@@ -74,7 +74,7 @@
                     {% endif %}
 
                     {# drop down options #}
-                    <td class="icon-stack-wrapper" style="text-align:right;width:{{l_width}}px;" valign="bottom">
+                    <td style="text-align:right;width:{{l_width}}px;" valign="bottom">
 
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
