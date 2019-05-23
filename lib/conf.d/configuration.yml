@@ -235,7 +235,7 @@ embed_bundle:
         enable-pdfjs: true
 geocoding-providers:
     -
-        name: 'mapBox'
+        map-provider: 'mapboxWebGL'
         enabled: true
         public-key: ''
         map-layers:
@@ -265,9 +265,9 @@ geocoding-providers:
         default-zoom: 2
         marker-default-zoom: 11
         position-fields:
-            -
-                name: GpsCompositePosition
-                type: latlng
+            #-
+            #   name: GpsCompositePosition
+            #   type: latlng
             # -
             #    name: Longitude
             #    type: lng
