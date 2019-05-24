@@ -1,6 +1,10 @@
 servername: 'http://local.phrasea/'
 languages:
-    available: []
+    available:
+        - fr
+        - en
+        - de
+        - nl
     default: 'fr'
 main:
     maintenance: false
@@ -264,7 +268,7 @@ geocoding-providers:
             - 48.879162
         default-zoom: 2
         marker-default-zoom: 11
-        position-fields:
+        position-fields: []
             #-
             #   name: GpsCompositePosition
             #   type: latlng
