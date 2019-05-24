@@ -1,6 +1,5 @@
 FROM php:7.1-fpm-stretch as builder
 
-
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -135,8 +134,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /var/log/supervisor
 
+RUN mkdir /entrypoint /var/alchemy \
+    && useradd -u 1000 app \
+    && mkdir -p /home/app/.composer \
+    && chown -R app: /home/app /var/alchemy
 
-COPY --from=builder /var/alchemy /var/alchemy/Phraseanet
+COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/ /
 RUN mkdir -p /var/alchemy/Phraseanet/logs \
     && chmod -R 777 /var/alchemy/Phraseanet/logs \
     && mkdir -p /var/alchemy/Phraseanet/cache \
@@ -150,11 +154,10 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
     && mkdir -p /var/alchemy/Phraseanet/config \
     && chmod -R 777 /var/alchemy/Phraseanet/config
 WORKDIR /var/alchemy/Phraseanet
-CMD ["php-fpm"]
+CMD ["/boot.sh"]
 
 # phraseanet-nginx
 FROM nginx:1.15 as phraseanet-nginx
 RUN useradd -u 1000 app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
-
