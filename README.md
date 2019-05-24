@@ -56,9 +56,9 @@ The docker distribution come with 2 differents containers :
 The two images can be built respectively with these two commands :
 
     # nginx server
-    docker build --target phraseanet-nginx -t phraseanet-nginx .
+    docker build --target phraseanet-nginx -t local/phraseanet-nginx .
 
     # php-fpm application
-    docker build --target phraseanet -t phraseanet .
+    docker build --target phraseanet -t local/phraseanet .
 
 
