@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "New assets",
+  "description": "List of assets to enqueue on Phraseanet",
+  "type": "object",
+  "properties": {
+    "assets": {
+      "type": "array"
+    },
+    "publisher": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "assets",
+    "publisher"
+  ]
+}

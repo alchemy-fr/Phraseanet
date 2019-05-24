@@ -284,6 +284,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
         $controllers->post('/accounts/unlock/{token}/', 'controller.api.v1:unlockAccount')
             ->before('controller.api.v1:ensureUserManagementRights');
 
+        $controllers->post('/upload/enqueue/', 'controller.api.v1:sendAssetsInQueue')
+            ->before('controller.api.v1:ensureJsonContentType');
+
         return $controllers;
     }
 }

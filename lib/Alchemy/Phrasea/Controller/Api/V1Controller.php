@@ -29,6 +29,7 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Event\AssetsCreateEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -1951,6 +1952,27 @@ class V1Controller extends Controller
 
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
+        ])->createResponse();
+    }
+
+    public function sendAssetsInQueue(Request $request)
+    {
+        $jsonBodyHelper = $this->getJsonBodyHelper();
+
+        $schema = $jsonBodyHelper->retrieveSchema("assets_enqueue.json");
+
+        $data = $request->getContent();
+
+        $errors = $jsonBodyHelper->validateJson(json_decode($data), $schema);
+
+        if (count($errors) > 0) {
+            return Result::createError($request, 422, $errors[0])->createResponse();
+        }
+
+        $this->dispatch(PhraseaEvents::ASSETS_CREATE, new AssetsCreateEvent($data));
+
+        return Result::create($request, [
+            "data" => json_decode($data),
         ])->createResponse();
     }
 

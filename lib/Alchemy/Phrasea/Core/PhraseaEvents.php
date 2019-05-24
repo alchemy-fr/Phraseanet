@@ -26,6 +26,8 @@ final class PhraseaEvents
     const API_LOAD_END = 'api.load.end';
     const API_RESULT = 'api.result';
 
+    const ASSETS_CREATE = 'assets.create';
+
     const ORDER_CREATE = 'order.create';
     const ORDER_DELIVER = 'order.deliver';
     const ORDER_DENY = 'order.deny';
