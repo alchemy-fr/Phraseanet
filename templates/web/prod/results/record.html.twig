@@ -86,7 +86,7 @@
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
-                            <span class="fa-stack fa-lg captionRolloverTips"
+                            <span class="fa-stack fa-lg captionRolloverTips" title="{{ macro.caption(record, can_see_business, false) | e }}"
                                   tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
                               <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
                               <i class="fa fa-list fa-stack-1x fa-inverse" aria-hidden="true"></i>
