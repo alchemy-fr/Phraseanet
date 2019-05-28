@@ -43,7 +43,8 @@ class LocaleServiceProvider implements ServiceProviderInterface
 
                 if (0 === count($enabledLanguages)) {
                     $app['monolog']->error('Wrong language configuration, no language activated');
-
+                    $app['monolog']->error(var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true));
+                    // throw new \Exception('Wrong language configuration, no language activated');
                     return $availableLanguages;
                 }
 

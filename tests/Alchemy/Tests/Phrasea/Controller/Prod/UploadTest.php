@@ -106,6 +106,7 @@ class UploadTest extends \PhraseanetAuthenticatedWebTestCase
 
             $record = new \record_adapter(self::$DI['app'], $id[0], $id[1]);
             $this->assertTrue($record->get_thumbnail()->is_physically_present());
+            $zzz = $record->get_caption()->get_fields();
             $fields = $record->get_caption()->get_fields(['FileName']);
             $field = array_pop($fields);
             $this->assertEquals('KIKOO.JPG', $field->get_serialized_values());

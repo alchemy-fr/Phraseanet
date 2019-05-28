@@ -256,6 +256,7 @@ class Application extends SilexApplication
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
 
+
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
 
@@ -272,6 +273,7 @@ class Application extends SilexApplication
                 return $logger;
             })
         );
+
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */
