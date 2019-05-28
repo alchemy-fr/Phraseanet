@@ -380,8 +380,6 @@ abstract class PhraseanetTestCase extends WebTestCase
 
         $app->boot();
 
-        // $app['monolog'] = $this->getMock('Psr\Log\LoggerInterface');
-
         return $app;
     }
 
