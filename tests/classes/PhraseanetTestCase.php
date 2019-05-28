@@ -273,7 +273,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         static $decodedFixtureIds;
 
         if (is_null($decodedFixtureIds)) {
-            $p = sys_get_temp_dir().'/fixtures.json';
             $decodedFixtureIds = json_decode(file_get_contents(sys_get_temp_dir().'/fixtures.json'), true);
         }
         self::$fixtureIds = $decodedFixtureIds;
