@@ -211,13 +211,13 @@ $mainMenuBottomBorder: none !default;
       }
     }
     #nav_menu_container {
-      left: 0;
+      left: 5px;
       width: 172px;
       .nav_menu {
         top: 9px;
       }
       .arrow-up {
-        left: 10px;
+        left: 5px;
         display: block;
         position: absolute;
       }
@@ -225,7 +225,7 @@ $mainMenuBottomBorder: none !default;
     #nav_customlink_container {
       display: none;
       position: relative;
-      left: 0;
+      left: 4px;
       width: auto;
       .nav-wrapper-box {
         position: absolute;
@@ -251,7 +251,7 @@ $mainMenuBottomBorder: none !default;
         }
       }
       .arrow-up {
-        left: 10px;
+        left: 5px;
         display: block;
         position: absolute;
       }
