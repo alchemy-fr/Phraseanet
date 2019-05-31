@@ -60,6 +60,7 @@ http {
         location / {
             # First attempt to serve request as file, then
             # as directory, then fall back to index.html
+            client_max_body_size $MAX_BODY_SIZE;
             try_files $uri $uri/ @rewriteapp;
         }
 
