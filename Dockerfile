@@ -1,4 +1,4 @@
-FROM php:7.1-fpm-stretch as builder
+FROM php:7.0-fpm-stretch as builder
 
 RUN apt-get update \
     && apt-get install -y \
@@ -92,7 +92,7 @@ COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
 
 # Phraseanet
-FROM php:7.1-fpm-stretch as phraseanet
+FROM php:7.0-fpm-stretch as phraseanet
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
