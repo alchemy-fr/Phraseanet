@@ -161,3 +161,4 @@ FROM nginx:1.15 as phraseanet-nginx
 RUN useradd -u 1000 app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
+CMD ["/boot.sh"]
