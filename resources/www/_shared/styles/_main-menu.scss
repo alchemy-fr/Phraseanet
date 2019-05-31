@@ -38,13 +38,13 @@ $mainMenuBottomBorder: none !default;
     display: inline-block !important;
   }
   .show-menu {
-    display: none;
     i {
       font-size: 26px;
       vertical-align: middle;
       color: $mainMenuLinkActiveColor;
     }
     img {
+      display: none;
       margin-top: 5px;
     }
   }
@@ -152,8 +152,10 @@ $mainMenuBottomBorder: none !default;
   }
   #mainMenu {
     .show-menu {
-      display: inline-block;
       cursor: pointer;
+      img {
+        display: inline-block;
+      }
     }
     .mobilemenu {
       display: block;
