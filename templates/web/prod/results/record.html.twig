@@ -1,5 +1,5 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
@@ -25,7 +25,7 @@
         {% set can_see_business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
 
         <div class="thumb captionTips"
-             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro.caption(record, can_see_business, false) | e }}"{% endif %}
+             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro_caption.caption(record, can_see_business, false) | e }}"{% endif %}
              {% if settings.rollover_thumbnail == 'preview' %}tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"{% endif %}
              style="height:{{ settings.images_size }}px; z-index:90;">
             <div class="doc_infos">
