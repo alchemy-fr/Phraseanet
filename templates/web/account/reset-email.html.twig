@@ -1,6 +1,6 @@
 {% extends "account/base.html.twig" %}
 
-{% import "common/macros.html.twig" as auth_macro %}
+{% import "common/macro_flashes.html.twig" as macro_flashes %}
 
 {% block title %}
     {{ "Change my email address" | trans }}
@@ -15,7 +15,7 @@
 {% block content_account %}
     <div class="row-fluid">
         <div class="span12">
-            {{ auth_macro.flashes() }}
+            {{ macro_flashes.flashes() }}
             <form method="POST" action="{{ path("reset_email") }}" id="mainform" name="changeEmail" class="form-horizontal" style="background: #191919;border: 1px solid #333333;padding-top:20px">
                 <div class="control-group">
                     <label class="control-label" for="form_login">{{ "admin::compte-utilisateur identifiant" | trans }}</label>
