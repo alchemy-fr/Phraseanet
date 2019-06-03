@@ -61,7 +61,7 @@ class RawNode extends Node
 
         $private_fields = $context->getPrivateFields();
         $private_fields = ValueChecker::filterByValueCompatibility($private_fields, $this->text);
-        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $query_builder) as $private_field_query) {
+        foreach (QueryHelper::wrapPrivateFieldQueries($private_fields, $unrestricted_fields, $query_builder) as $private_field_query) {
             $query = QueryHelper::applyBooleanClause($query, 'should', $private_field_query);
         }
 

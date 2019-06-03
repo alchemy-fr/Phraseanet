@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Notification\ReceiverInterface;
 
 abstract class AbstractMail implements MailInterface
 {
+    const MAIL_SKIN = 'default';
+
     /** @var Application */
     protected $app;
     /** @var EmitterInterface */
@@ -59,6 +61,7 @@ abstract class AbstractMail implements MailInterface
             'expiration'        => $this->getExpiration(),
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
+            'mailSkin'          => $this->getMailSkin(),
         ]);
     }
 
@@ -164,6 +167,14 @@ abstract class AbstractMail implements MailInterface
     public function setButtonUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailSkin()
+    {
+        return self::MAIL_SKIN;
     }
 
     /**

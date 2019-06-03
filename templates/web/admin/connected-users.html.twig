@@ -94,7 +94,7 @@
         <tbody>
             {% for session in data['sessions'] %}
                 {% set row = session['session'] %}
-            <tr title="{{ _self.tooltip_connected_users(row) | raw }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
+            <tr title="{{ _self.tooltip_connected_users(row) | e }}" class="{% if loop.index is odd %}odd{% else %}even{% endif %} usrTips" id="TREXP_{{ row.getId()}}">
 
                 {% if row.getId() == app['session'].get('session_id') %}
                     <td style="color:#ff0000"><i>{{ row.getUser().getDisplayName() }}</i></td>

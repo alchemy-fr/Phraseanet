@@ -145,6 +145,7 @@ class SubdefsController extends Controller
                         $options[Audio::OPTION_AUDIOBITRATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOBITRATE];
                         $options[Audio::OPTION_AUDIOSAMPLERATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOSAMPLERATE];
                         $options[Audio::OPTION_ACODEC] = $config["audio"]["definitions"][$preset][Audio::OPTION_ACODEC];
+                        $options[Audio::OPTION_AUDIOCHANNEL] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOCHANNEL];
                         foreach ($config["audio"]["definitions"][$preset][Subdef::OPTION_DEVICE] as $devices) {
                             $options[Subdef::OPTION_DEVICE][] = $devices;
                         }
@@ -211,7 +212,7 @@ class SubdefsController extends Controller
     {
         $mapping = [
             Type::TYPE_IMAGE    => [Subdef::TYPE_IMAGE, Subdef::TYPE_PDF],
-            Type::TYPE_VIDEO    => [Subdef::TYPE_IMAGE, Subdef::TYPE_VIDEO, Subdef::TYPE_ANIMATION],
+            Type::TYPE_VIDEO    => [Subdef::TYPE_IMAGE, Subdef::TYPE_VIDEO, Subdef::TYPE_ANIMATION, Subdef::TYPE_AUDIO],
             Type::TYPE_AUDIO    => [Subdef::TYPE_IMAGE, Subdef::TYPE_AUDIO],
             Type::TYPE_DOCUMENT => [Subdef::TYPE_IMAGE, Subdef::TYPE_FLEXPAPER, Subdef::TYPE_PDF],
             Type::TYPE_FLASH    => [Subdef::TYPE_IMAGE]
@@ -525,22 +526,36 @@ class SubdefsController extends Controller
             ],
             Subdef::TYPE_AUDIO     => [
                 "definitions" => [
-                    "Low AAC 96 kbit/s"     => [
+                    "Low MP3 96 kbit/s"     => [
                         Audio::OPTION_AUDIOBITRATE    => "100",
                         Audio::OPTION_AUDIOSAMPLERATE => "8000",
                         Audio::OPTION_ACODEC          => "libmp3lame",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
-                    "Normal AAC 128 kbit/s" => [
+                    "Normal MP3 128 kbit/s" => [
                         Audio::OPTION_AUDIOBITRATE    => "180",
                         Audio::OPTION_AUDIOSAMPLERATE => "44100",
                         Audio::OPTION_ACODEC          => "libmp3lame",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
-                    "High AAC 320 kbit/s"   => [
+                    "High MP3 320 kbit/s"   => [
                         Audio::OPTION_AUDIOBITRATE    => "230",
                         Audio::OPTION_AUDIOSAMPLERATE => "50000",
                         Audio::OPTION_ACODEC          => "libmp3lame",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "Wave Mono 16 kHz"   => [
+                        Audio::OPTION_AUDIOBITRATE    => "256",
+                        Audio::OPTION_AUDIOSAMPLERATE => "16000",
+                        Audio::OPTION_ACODEC          => "pcm_s16le",
+                        Audio::OPTION_AUDIOCHANNEL    => "mono",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "Wave Mono 8 kHz"   => [
+                        Audio::OPTION_AUDIOBITRATE    => "128",
+                        Audio::OPTION_AUDIOSAMPLERATE => "8000",
+                        Audio::OPTION_ACODEC          => "pcm_s16le",
+                        Audio::OPTION_AUDIOCHANNEL    => "mono",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                 ],
@@ -548,6 +563,7 @@ class SubdefsController extends Controller
                     Audio::OPTION_AUDIOBITRATE    => "slide",
                     Audio::OPTION_AUDIOSAMPLERATE => "select",
                     Audio::OPTION_ACODEC          => "select",
+                    Audio::OPTION_AUDIOCHANNEL    => "select",
                     Subdef::OPTION_DEVICE         => "checkbox",
                 ],
             ],

@@ -1,5 +1,5 @@
 {% import 'prod/results/macro.html.twig' as result_macro %}
-{% import 'common/macros.html.twig' as macro %}
+{% import 'common/macro_caption.html.twig' as macro_caption %}
 
 <div style="width:{{ settings.images_size + 30}}px;"
      sbas="{{ record.databoxId }}"
@@ -25,7 +25,7 @@
         {% set can_see_business = granted_on_collection(record.baseId, [constant('\\ACL::CANMODIFRECORD')]) %}
 
         <div class="thumb captionTips"
-             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro.caption(record, can_see_business, false) | e }}"{% endif %}
+             {% if settings.rollover_thumbnail == 'caption' %}title="{{ macro_caption.caption(record, can_see_business, false) | e }}"{% endif %}
              {% if settings.rollover_thumbnail == 'preview' %}tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}"{% endif %}
              style="height:{{ settings.images_size }}px; z-index:90;">
             <div class="doc_infos">
@@ -53,10 +53,10 @@
                 {% endif %}
             </div>
         </div>
-        <div style="height: 25px; position:relative; text-align:left;">
+        <div class="bottom_actions_holder" style="height: 27px; position:relative; text-align:left;">
             <table class="bottom actions" style="width:100%; table-layout:fixed;">
                 <tr>
-                    <td style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
+                    <td class="text-stack-wrapper" style="text-align:left;text-overflow:ellipsis;overflow:hidden;">
                         {% set collectionLogo = collection_logo(record.baseId) %}
                         {% if collectionLogo is empty %}
                         {{ record.collectionName }}
@@ -74,7 +74,7 @@
                     {% endif %}
 
                     {# drop down options #}
-                    <td style="text-align:right;width:{{l_width}}px;" valign="bottom">
+                    <td class="icon-stack-wrapper" style="text-align:right;width:{{l_width}}px;" valign="bottom">
 
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
@@ -86,7 +86,7 @@
                             {% endif %}
                         {% endif %}
                         {% if settings.rollover_thumbnail == 'preview' %}
-                            <span class="fa-stack fa-lg captionRolloverTips"
+                            <span class="fa-stack fa-lg captionRolloverTips" title="{{ macro.caption(record, can_see_business, false) | e }}"
                                   tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
                               <i class="fa fa-circle fa-stack-2x" aria-hidden="true"></i>
                               <i class="fa fa-list fa-stack-1x fa-inverse" aria-hidden="true"></i>
