@@ -264,9 +264,11 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
-
                     {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
+                        {% set startq = "{\"query\":{\"_ux_zone\":\"\",\"type\":\"CLAUSES\",\"must_match\":\"ALL\",\"enabled\":true,\"clauses\":[{\"_ux_zone\":\"FULLTEXT\",\"type\":\"FULLTEXT\",\"value\":\"" %}
+                        {% set startq = startq ~ (app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query') | replace({'"': '\\"'})) %}
+                        {% set startq = startq ~ "\",\"enabled\":true}]}}" %}
+                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="json">{{ startq | raw }}</div>
                     {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
                         <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
                     {% endif %}
