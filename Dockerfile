@@ -64,8 +64,6 @@ RUN mkdir /entrypoint /var/alchemy \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
 
-ADD ./docker/phraseanet/ /
-
 WORKDIR /var/alchemy/
 
 COPY gulpfile.js /var/alchemy/
@@ -83,6 +81,7 @@ RUN make clean_assets
 RUN make install_asset_dependencies
 RUN make install_assets
 
+ADD ./docker/phraseanet/ /
 COPY lib /var/alchemy/lib
 COPY tmp /var/alchemy/tmp
 COPY config /var/alchemy/config
