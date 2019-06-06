@@ -100,6 +100,7 @@ RUN apt-get update \
         gnupg2 \
     && apt-get update \
     && apt-get install -y --no-install-recommends zlib1g-dev \
+        gettext \
         git \
         ghostscript \
         gpac \
