@@ -24,7 +24,6 @@ RUN apt-get update \
         libzmq3-dev \
         locales \
         mcrypt \
-        supervisor \
         swftools \
         unoconv \
         unzip \
@@ -38,9 +37,7 @@ RUN apt-get update \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /var/log/supervisor
-    #&& chown -R app: /var/log/supervisor
+    && rm -rf /var/lib/apt/lists/*
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
@@ -52,7 +49,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
 # https://yarnpkg.com/lang/en/docs/install/#debian-stable
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt install nodejs \
+    && apt install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update && apt-get install -y --no-install-recommends yarn \
@@ -117,7 +114,6 @@ RUN apt-get update \
         libzmq3-dev \
         locales \
         mcrypt \
-        supervisor \
         swftools \
         unoconv \
         unzip \
@@ -131,8 +127,7 @@ RUN apt-get update \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /var/log/supervisor
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
@@ -154,6 +149,7 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
     && mkdir -p /var/alchemy/Phraseanet/config \
     && chmod -R 777 /var/alchemy/Phraseanet/config
 WORKDIR /var/alchemy/Phraseanet
+ENTRYPOINT ["/phraseanet-entrypoint.sh"]
 CMD ["/boot.sh"]
 
 # phraseanet-nginx
