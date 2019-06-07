@@ -49,6 +49,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   }
 }
 
+
 [class^="icon-"], [class*=" icon-"].icomoon {
   display: inline-block;
   width: inherit;
@@ -61,6 +62,17 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 }
 .icon-picto-three-little-point {
   font-size: 4.5px;
+}
+.macroFileEdit {
+  width: 24px;
+  height: 24px;
+  background: url(../images/icons/file-edit.png) no-repeat center;
+  cursor: help;
+  display: inline-block;
+  transition: 0.3s all;
+  &:hover, &:focus {
+    background-image: url(../images/icons/file-edit-hover.png);
+  }
 }
 
 .icomoon{
