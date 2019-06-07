@@ -1,7 +1,18 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/PhraseanetIcomoon/fonts/icomoon.eot?xt8hfo');
+  src:  url('../fonts/PhraseanetIcomoon/fonts/icomoon.eot?xt8hfo#iefix') format('embedded-opentype'),
+  url('../fonts/PhraseanetIcomoon/fonts/icomoon.ttf?xt8hfo') format('truetype'),
+  url('../fonts/PhraseanetIcomoon/fonts/icomoon.woff?xt8hfo') format('woff'),
+  url('../fonts/PhraseanetIcomoon/fonts/icomoon.svg?xt8hfo#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 /**
  * Common stylesheet, builded into assets/common/styles/common.css
  */
 @import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
+@import './fonts/PhraseanetIcomoon/style';
 @import './roboto.scss';
 @import '../../_shared/styles/variables';
 @import '../../vendors/bootstrap/bootstrap';
@@ -38,6 +49,20 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   }
 }
 
+
+[class^="icon-"], [class*=" icon-"].icomoon {
+  display: inline-block;
+  width: inherit;
+  height: inherit;
+  margin-right: inherit;
+  line-height: inherit;
+  vertical-align: inherit;
+  background-image:none;
+  margin-top: inherit;
+}
+.icon-picto-three-little-point {
+  font-size: 4.5px;
+}
 .macroFileEdit {
   width: 24px;
   height: 24px;
@@ -50,5 +75,11 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   }
 }
 
-
-
+.icomoon{
+  &.with-shadow {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+  &.with-white-shadow {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
+  }
+}
