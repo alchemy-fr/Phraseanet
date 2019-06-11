@@ -11,6 +11,7 @@ class MyCustomError < StandardError
 	"[#{code} #{super}]"
 	end
 end
+
 # Check to determine whether we're on a windows or linux/os-x host,
 # later on we use this to launch ansible in the supported way
 # source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
@@ -34,15 +35,43 @@ else if which('ifconfig')
     end
 end
 
-$php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "7.0";
-
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
 
-unless $php.include?($phpVersion)
-    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
+if ARGV[1] == '--provision'
+    print "Choose a PHP version for your build (Available : 5.6, 7.0, 7.1, 7.2)\n"
+    phpversion = STDIN.gets.chomp
+    print "\n"
+    # Php version selection
+    case (phpversion)
+        when "5.6", "7.0", "7.1", "7.2"
+            print "Selected PHP version : "+phpversion+"\n"
+            print "Continue ? (Y/n) \n"
+            continue = STDIN.gets.chomp
+            case continue
+               when 'n', 'no', 'N', 'NO'
+                  raise "Build aborted"
+               else
+                  print "Build with PHP"+phpversion+"\n"
+            end
+
+        else
+            raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2)\n\n"
+    end
+
+    print "Choose a Build type (1 local, 2 box)\n"
+    type = STDIN.gets.chomp
+    print "\n"
+    # Switch between Phraseanet box and native trusty64
+    case (type)
+       when '1'
+          $box = "ubuntu/xenial64"
+       when '2'
+          $box = "alchemy/Phraseanet-vagrant-dev_php"
+          $box.concat(phpversion)
+    end
+    print "Build with "+$box+" box\n"
 end
 
 $root = File.dirname(File.expand_path(__FILE__))
@@ -119,14 +148,12 @@ Vagrant.configure("2") do |config|
         ]
     end
 
-    # Switch between Phraseanet box and native trusty64
-    config.vm.box = "alchemy/Phraseanet-vagrant-dev"
-    #config.vm.box = "ubuntu/trusty64"
+    config.vm.box = ($box) ? $box : "ubuntu/xenial64"
 
     # In case, Phraseanet box, choose the php version
     # For php 7.0 use box 0.0.1
     # For php 7.1 use box 0.0.2
-    config.vm.box_version = "0.0.1"
+    #config.vm.box_version = "0.0.1"
 
     config.ssh.forward_agent = true
     config_net(config)
@@ -141,7 +168,7 @@ Vagrant.configure("2") do |config|
             ansible.extra_vars = {
                 hostname: $hostname,
                 host_addresses: $hostIps,
-                phpversion: $phpVersion,
+                phpversion: phpversion,
                 postfix: {
                     postfix_domain: $hostname + ".vb"
                 }
