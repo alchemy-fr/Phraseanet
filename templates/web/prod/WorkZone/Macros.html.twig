@@ -19,7 +19,7 @@
                 <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
               {% endif %}
               <img src='/assets/common/images/icons/basket.png' title=''/>
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -27,8 +27,8 @@
                   <tr>
                       <td>
                           <img
-                              title="{{ 'Vous avez recu une demande de validation de document sur ce panier' | trans }}"
-                              class="basketTips"
+                              title="{{ basket.getDescription() }}"
+                              class="basketTips basket_title"
                               src="/assets/common/images/icons/valid.png"
                             />
                       </td>
@@ -99,7 +99,7 @@
               {% else %}
                 <img src='/assets/common/images/icons/basket.png' title=''/>
               {% endif %}
-              {{basket.getName()}}
+              {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
@@ -385,19 +385,19 @@
                                   <td>
                                   {% if choice.getParticipant().getCanAgree() %}
                                         {% if choice.getAgreement() == true %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/agree.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
                                         {% elseif choice.getAgreement() is null %}
-                                            <img style="cursor:help;" src='/assets/common/images/icons/valid.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
-                                            <img style="cursor:help;" src='/assets/lightbox/images/disagree.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                                            <img style="cursor:help;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                                         {% endif %}
                                   {% else %}
-                                        <img style="cursor:help;" src='/assets/common/images/icons/no-valid.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
+                                        <img style="cursor:help;" src='/assets/common/images/icons/vote-admin.png' title="{{ "This user does not participate to the validation but is only viewer." | trans }}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">
                                   {% if choice.getNote() != '' %}
-                                       <img style="cursor:help;" src='/assets/common/images/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
+                                      <span class="noteTips macroFileEdit"  title="{{choice.getNote()|nl2br}}">&nbsp;</span>
                                   {% endif %}
                                   </td>
                               </tr>

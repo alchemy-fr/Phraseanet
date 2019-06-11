@@ -38,7 +38,7 @@ class LazaretController extends Controller
      *
      * @param Request     $request The current request
      *
-     * @return Response
+     * @return String
      */
     public function listElement(Request $request)
     {

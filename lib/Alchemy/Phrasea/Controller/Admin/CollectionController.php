@@ -50,6 +50,7 @@ class CollectionController extends Controller
             $query = $this->createUserQuery();
             $admins = $query->on_base_ids([$bas_id])
                 ->who_have_right([\ACL::ORDER_MASTER])
+                ->include_templates(true)
                 ->execute()
                 ->get_results();
         }

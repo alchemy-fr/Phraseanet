@@ -90,35 +90,44 @@ class RecordController extends Controller
         }
         $recordCaptions["technicalInfo"] = $record->getPositionFromTechnicalInfos();
 
+        //  escape record title before rendering
+        $recordTitle = explode("</span>", $record->get_title());
+        if (count($recordTitle) >1) {
+            $recordTitle[1] = htmlspecialchars($recordTitle[1]);
+            $recordTitle = implode("</span>", $recordTitle);
+        } else {
+            $recordTitle = htmlspecialchars($record->get_title());
+        }
+
         return $this->app->json([
-            "desc"          => $this->render('prod/preview/caption.html.twig', [
+            "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
                 'highlight'     => $query,
                 'searchEngine'  => $searchEngine,
                 'searchOptions' => $options,
             ]),
-            "recordCaptions"=> $recordCaptions,
-            "html_preview"  => $this->render('common/preview.html.twig', [
+            "recordCaptions"  => $recordCaptions,
+            "html_preview"    => $this->render('common/preview.html.twig', [
                 'record'        => $record
             ]),
-            "others"        => $this->render('prod/preview/appears_in.html.twig', [
+            "others"          => $this->render('prod/preview/appears_in.html.twig', [
                 'parents'       => $record->get_grouping_parents(),
                 'baskets'       => $record->get_container_baskets($this->getEntityManager(), $this->getAuthenticatedUser()),
             ]),
-            "current"       => $train,
-            "record"        => $currentRecord,
-            "history"       => $this->render('prod/preview/short_history.html.twig', [
+            "current"         => $train,
+            "record"          => $currentRecord,
+            "history"         => $this->render('prod/preview/short_history.html.twig', [
                 'record'        => $record,
             ]),
-            "popularity"    => $this->render('prod/preview/popularity.html.twig', [
+            "popularity"      => $this->render('prod/preview/popularity.html.twig', [
                 'record'        => $record,
             ]),
-            "tools"         => $this->render('prod/preview/tools.html.twig', [
+            "tools"           => $this->render('prod/preview/tools.html.twig', [
                 'record'        => $record,
             ]),
-            "pos"           => $record->getNumber(),
-            "title"         => $record->get_title(),
-            "databox_name" => $record->getDatabox()->get_dbname(),
+            "pos"             => $record->getNumber(),
+            "title"           => $recordTitle,
+            "databox_name"    => $record->getDatabox()->get_dbname(),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);
