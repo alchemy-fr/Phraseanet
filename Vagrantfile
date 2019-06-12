@@ -40,6 +40,20 @@ unless Vagrant.has_plugin?('vagrant-hostmanager')
 end
 
 if ARGV[1] == '--provision'
+
+
+    print "\nChoose a Build type :\n\n(1) Build local\n(2) Pre-built Phraseanet box\n"
+    type = STDIN.gets.chomp
+    print "\n"
+    # Switch between Phraseanet box and native trusty64
+    case (type)
+       when '1'
+          $box = "ubuntu/xenial64"
+       when '2'
+          $box = "alchemy/Phraseanet-vagrant-dev_php"
+    end
+    print "Build with "+$box+" box\n"
+
     print "Choose a PHP version for your build (Available : 5.6, 7.0, 7.1, 7.2)\n"
     phpversion = STDIN.gets.chomp
     print "\n"
@@ -53,25 +67,15 @@ if ARGV[1] == '--provision'
                when 'n', 'no', 'N', 'NO'
                   raise "Build aborted"
                else
+               if (type == '2')
+                  $box.concat(phpversion)
+               end
                   print "Build with PHP"+phpversion+"\n"
             end
 
         else
             raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2)\n\n"
     end
-
-    print "Choose a Build type (1 local, 2 box)\n"
-    type = STDIN.gets.chomp
-    print "\n"
-    # Switch between Phraseanet box and native trusty64
-    case (type)
-       when '1'
-          $box = "ubuntu/xenial64"
-       when '2'
-          $box = "alchemy/Phraseanet-vagrant-dev_php"
-          $box.concat(phpversion)
-    end
-    print "Build with "+$box+" box\n"
 end
 
 $root = File.dirname(File.expand_path(__FILE__))
