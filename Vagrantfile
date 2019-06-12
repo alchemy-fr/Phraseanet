@@ -40,41 +40,46 @@ unless Vagrant.has_plugin?('vagrant-hostmanager')
 end
 
 if ARGV[1] == '--provision'
-
-
-    print "\nChoose a Build type :\n\n(1) Build local\n(2) Pre-built Phraseanet box\n"
+    print "\033[34m \nChoose a Build type :\n\n(1) Use prebuilt Phraseanet Box\n(2) Build Phraseanet from scratch (xenial)\n\033[00m"
     type = STDIN.gets.chomp
     print "\n"
     # Switch between Phraseanet box and native trusty64
     case (type)
        when '1'
-          $box = "ubuntu/xenial64"
+            $box = "alchemy/Phraseanet-vagrant-dev_php"
        when '2'
-          $box = "alchemy/Phraseanet-vagrant-dev_php"
+            $box = "ubuntu/xenial64"
+            print("\033[91mComplete build selected, don't forget to uncomment all roles on playbook.yml\n\n\033[00m")
+       else
+            raise "\033[31mYou should specify Build type before running vagrant\n\n (Available : 1, 2)\n\n\033[00m"
     end
+    print "\033[32m-----------------------------------------------\n"
     print "Build with "+$box+" box\n"
+    print "-----------------------------------------------\n\n\033[00m"
 
-    print "Choose a PHP version for your build (Available : 5.6, 7.0, 7.1, 7.2)\n"
+    print "\033[34mChoose a PHP version for your build (Available : 5.6, 7.0, 7.1, 7.2)\n\033[00m"
     phpversion = STDIN.gets.chomp
     print "\n"
     # Php version selection
     case (phpversion)
         when "5.6", "7.0", "7.1", "7.2"
-            print "Selected PHP version : "+phpversion+"\n"
+            print "\033[32mSelected PHP version : "+phpversion+"\n\033[00m"
             print "Continue ? (Y/n) \n"
             continue = STDIN.gets.chomp
             case continue
                when 'n', 'no', 'N', 'NO'
-                  raise "Build aborted"
+                  raise "\033[31mBuild aborted\033[00m"
                else
-               if (type == '2')
+               if (type == '1')
                   $box.concat(phpversion)
                end
+                  print "\033[32m-----------------------------------------------\n"
                   print "Build with PHP"+phpversion+"\n"
-            end
+                  print "-----------------------------------------------\n\n\033[00m"
 
+            end
         else
-            raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2)\n\n"
+            raise "\033[31mYou should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2)\n\n\033[00m"
     end
 end
 
