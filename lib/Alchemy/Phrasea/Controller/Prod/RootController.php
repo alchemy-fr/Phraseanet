@@ -20,6 +20,8 @@ use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Request;
+// use Alchemy\Phrasea\Plugin\ActionBarPluginInterface;
+
 
 class RootController extends Controller
 {
@@ -84,6 +86,22 @@ class RootController extends Controller
 
         /** @var \Closure $filter */
         $filter = $this->app['plugin.filter_by_authorization'];
+
+        /* prepare work to extend whole taskbar... later
+        $menus = [
+            'push' => ['native'=>true, 'n'=>0],
+            'tools' => ['native'=>true, 'n'=>0],
+        ];
+        / ** @var ActionBarPluginInterface $plugin * /
+        foreach($filter('actionbar') as $kplugin=>$plugin) {
+            foreach($plugin->getActionBar() as $kmenu=>$menu) {
+                if(!array_key_exists($kmenu, $menus)) {
+                    $menus[$kmenu] = ['native'=>false, 'n'=>0];
+                }
+                $menus[$kmenu]['n']++;
+            }
+        }
+        */
 
         $plugins = [
             'workzone' => $filter('workzone'),
