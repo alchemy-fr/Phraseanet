@@ -88,7 +88,7 @@ COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
 
 # Phraseanet
-FROM php:7.0-fpm-stretch as phraseanet
+FROM php:7.0-fpm-stretch as phraseanet-fpm
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -151,6 +151,10 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
 WORKDIR /var/alchemy/Phraseanet
 ENTRYPOINT ["/phraseanet-entrypoint.sh"]
 CMD ["/boot.sh"]
+
+# phraseanet-worker
+FROM phraseanet-fpm as phraseanet-worker
+CMD ["/worker-boot.sh"]
 
 # phraseanet-nginx
 FROM nginx:1.15 as phraseanet-nginx
