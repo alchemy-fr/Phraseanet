@@ -56,13 +56,14 @@ For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel
 
 WARNING : still in a work-in-progress status and can be used only for test purposes.
 
-The docker distribution come with 2 differents containers :
-* an nginx that act as the front http server.
-* the php-fpm who serves the php files through nginx.
+The docker distribution come with 3 differents containers :
+* An nginx that act as the front http server.
+* The php-fpm who serves the php files through nginx.
+* The worker who execute Phraseanet scheduler.
 
 ## How to build
 
-The two images can be built respectively with these two commands :
+The three images can be built respectively with these commands :
 
     # nginx server
     docker build --target phraseanet-nginx -t local/phraseanet-nginx .
