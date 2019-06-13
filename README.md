@@ -68,6 +68,8 @@ The two images can be built respectively with these two commands :
     docker build --target phraseanet-nginx -t local/phraseanet-nginx .
 
     # php-fpm application
-    docker build --target phraseanet -t local/phraseanet .
+    docker build --target phraseanet-fpm -t local/phraseanet-fpm .
 
+    # worker
+    docker build --target phraseanet-worker -t local/phraseanet-worker .
 
