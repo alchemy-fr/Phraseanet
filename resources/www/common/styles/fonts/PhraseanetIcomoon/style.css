@@ -1,0 +1,34 @@
+
+[class^="icon-"].icomoon, [class*=" icon-"].icomoon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-picto-information:before {
+  content: "\e900";
+}
+.icon-pastille-rond:before {
+  content: "\e901";
+}
+.icon-pastille-carre:before {
+  content: "\e902";
+}
+.icon-picto-point-list:before {
+  content: "\e903";
+}
+.icon-picto-three-little-point:before {
+  content: "\e904";
+}
+.icon-picto-search-new:before {
+  content: "\e905";
+}

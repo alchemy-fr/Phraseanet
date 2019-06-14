@@ -1,8 +1,8 @@
 user  app;
 worker_processes  auto;
 
-error_log  /var/log/ngnix_error.log info;
-#error_log /dev/stdout info;
+#error_log  /var/log/ngnix_error.log info;
+error_log /dev/stdout info;
 
 pid        /var/run/nginx.pid;
 #daemon off;
@@ -52,6 +52,7 @@ http {
         root         /var/alchemy/Phraseanet/www;
 
         index        index.php;
+        client_max_body_size $MAX_BODY_SIZE;
 
         location /api {
             rewrite ^(.*)$ /api.php/$1 last;

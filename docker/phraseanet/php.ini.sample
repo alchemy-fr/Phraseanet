@@ -397,7 +397,7 @@ max_input_time = 60
 ;max_input_nesting_level = 64
 
 ; How many GET/POST/COOKIE input variables may be accepted
-;max_input_vars = 1000
+max_input_vars = $MAX_INPUT_VARS
 
 ; Maximum amount of memory a script may consume (128MB)
 ; http://php.net/memory-limit
@@ -669,7 +669,7 @@ auto_globals_jit = On
 ; Its value may be 0 to disable the limit. It is ignored if POST data reading
 ; is disabled through enable_post_data_reading.
 ; http://php.net/post-max-size
-post_max_size = 8M
+post_max_size = $MAX_BODY_SIZE
 
 ; Automatically add files before PHP document.
 ; http://php.net/auto-prepend-file
@@ -821,7 +821,7 @@ file_uploads = On
 
 ; Maximum allowed size for uploaded files.
 ; http://php.net/upload-max-filesize
-upload_max_filesize = 2M
+upload_max_filesize = $MAX_BODY_SIZE
 
 ; Maximum number of files that can be uploaded via a single request
 max_file_uploads = 20
@@ -1428,7 +1428,7 @@ session.referer_check =
 ; Set to {nocache,private,public,} to determine HTTP caching aspects
 ; or leave this empty to avoid sending anti-caching headers.
 ; http://php.net/session.cache-limiter
-session.cache_limiter = off
+session.cache_limiter = $SESSION_CACHE_LIMITER
 
 ; Document expires after n minutes.
 ; http://php.net/session.cache-expire
@@ -1744,10 +1744,10 @@ ldap.max_links = -1
 
 [opcache]
 ; Determines if Zend OPCache is enabled
-;opcache.enable=1
+opcache.enable=$OPCACHE_ENABLED
 
 ; Determines if Zend OPCache is enabled for the CLI version of PHP
-;opcache.enable_cli=0
+;opcache.enable_cli=$OPCACHE_ENABLED
 
 ; The OPcache shared memory storage size.
 ;opcache.memory_consumption=128

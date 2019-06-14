@@ -1,6 +1,6 @@
 {% extends "login/layout/sidebar-layout.html.twig" %}
 
-{% import "common/macros.html.twig" as macro %}
+{% import "common/macro_captcha.html.twig" as macro_captcha %}
 {% import "login/common/macros.html.twig" as auth_macro %}
 
 {% block title %}
@@ -60,7 +60,7 @@
                     {% if recaptcha_display %}
                         <div class="row-fluid">
                             <div class="span12">
-                                {{ macro.captcha() }}
+                                {{ macro_captcha.captcha() }}
                             </div>
                         </div>
                     {% endif %}
