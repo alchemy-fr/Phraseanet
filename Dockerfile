@@ -48,7 +48,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Reference :
 # https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
 # https://yarnpkg.com/lang/en/docs/install/#debian-stable
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
     && apt install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
@@ -61,13 +61,16 @@ RUN mkdir /entrypoint /var/alchemy \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
 
+RUN npm install -g bower recess
+
 WORKDIR /var/alchemy/
 
 COPY gulpfile.js /var/alchemy/
 COPY Makefile /var/alchemy/
 COPY package.json /var/alchemy/
 COPY phpunit.xml.dist /var/alchemy/
-COPY yarn.lock /var/alchemy/
+COPY bower.json /var/alchemy/
+COPY .bowerrc /var/alchemy/
 COPY bin /var/alchemy/bin
 COPY composer.json /var/alchemy/
 COPY composer.lock /var/alchemy/
