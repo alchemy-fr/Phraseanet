@@ -1,4 +1,4 @@
-FROM php:7.1-fpm-stretch as builder
+FROM php:7.0-fpm-stretch as builder
 
 RUN apt-get update \
     && apt-get install -y \
@@ -24,7 +24,6 @@ RUN apt-get update \
         libzmq3-dev \
         locales \
         mcrypt \
-        supervisor \
         swftools \
         unoconv \
         unzip \
@@ -38,9 +37,7 @@ RUN apt-get update \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /var/log/supervisor
-    #&& chown -R app: /var/log/supervisor
+    && rm -rf /var/lib/apt/lists/*
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "if (hash_file('sha384', 'composer-setup.php') === '48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
@@ -52,7 +49,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
 # https://yarnpkg.com/lang/en/docs/install/#debian-stable
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt install nodejs \
+    && apt install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update && apt-get install -y --no-install-recommends yarn \
@@ -63,8 +60,6 @@ RUN mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
-
-ADD ./docker/phraseanet/ /
 
 WORKDIR /var/alchemy/
 
@@ -83,6 +78,7 @@ RUN make clean_assets
 RUN make install_asset_dependencies
 RUN make install_assets
 
+ADD ./docker/phraseanet/ /
 COPY lib /var/alchemy/lib
 COPY tmp /var/alchemy/tmp
 COPY config /var/alchemy/config
@@ -92,7 +88,7 @@ COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
 
 # Phraseanet
-FROM php:7.1-fpm-stretch as phraseanet
+FROM php:7.0-fpm-stretch as phraseanet-fpm
 RUN apt-get update \
     && apt-get install -y \
         apt-transport-https \
@@ -100,6 +96,7 @@ RUN apt-get update \
         gnupg2 \
     && apt-get update \
     && apt-get install -y --no-install-recommends zlib1g-dev \
+        gettext \
         git \
         ghostscript \
         gpac \
@@ -117,7 +114,6 @@ RUN apt-get update \
         libzmq3-dev \
         locales \
         mcrypt \
-        supervisor \
         swftools \
         unoconv \
         unzip \
@@ -131,8 +127,7 @@ RUN apt-get update \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /var/log/supervisor
+    && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
@@ -154,10 +149,16 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
     && mkdir -p /var/alchemy/Phraseanet/config \
     && chmod -R 777 /var/alchemy/Phraseanet/config
 WORKDIR /var/alchemy/Phraseanet
+ENTRYPOINT ["/phraseanet-entrypoint.sh"]
 CMD ["/boot.sh"]
+
+# phraseanet-worker
+FROM phraseanet-fpm as phraseanet-worker
+CMD ["/worker-boot.sh"]
 
 # phraseanet-nginx
 FROM nginx:1.15 as phraseanet-nginx
 RUN useradd -u 1000 app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
+CMD ["/boot.sh"]
