@@ -63,7 +63,6 @@ RUN mkdir /entrypoint /var/alchemy \
 
 RUN npm install -g bower recess
 
-WORKDIR /var/alchemy/
 
 COPY gulpfile.js /var/alchemy/
 COPY Makefile /var/alchemy/
@@ -74,9 +73,19 @@ COPY .bowerrc /var/alchemy/
 COPY bin /var/alchemy/bin
 COPY composer.json /var/alchemy/
 COPY composer.lock /var/alchemy/
+
+RUN chown -R app: /var/alchemy
+USER app
+WORKDIR /var/alchemy/
+
 RUN make install_composer
+
+USER root
 COPY resources /var/alchemy/resources
 COPY www /var/alchemy/www
+RUN chown -R app: /var/alchemy
+
+USER app
 RUN make clean_assets
 RUN make install_asset_dependencies
 RUN make install_assets
