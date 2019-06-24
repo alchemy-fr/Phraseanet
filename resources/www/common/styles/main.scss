@@ -60,8 +60,8 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   background-image:none;
   margin-top: inherit;
 }
-.icon-picto-three-little-point {
-  font-size: 4.5px;
+.icon-round-more_horiz-24px {
+  font-size: 2em;
 }
 .macroFileEdit {
   width: 24px;
@@ -76,6 +76,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 }
 
 .icomoon{
+  font-family: 'icomoon';
   &.with-shadow {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   }
