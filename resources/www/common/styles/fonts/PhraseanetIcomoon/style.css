@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?3yb8ac');
-  src:  url('fonts/icomoon.eot?3yb8ac#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?3yb8ac') format('truetype'),
-    url('fonts/icomoon.woff?3yb8ac') format('woff'),
-    url('fonts/icomoon.svg?3yb8ac#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?81kpnc');
+  src:  url('fonts/icomoon.eot?81kpnc#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?81kpnc') format('truetype'),
+    url('fonts/icomoon.woff?81kpnc') format('woff'),
+    url('fonts/icomoon.svg?81kpnc#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-search:before {
+  content: "\e913";
+}
+.icon-interrogation:before {
+  content: "\e936";
+}
+.icon-i-information:before {
+  content: "\e958";
+}
 .icon-baseline-add_box-24px:before {
   content: "\e900";
 }
@@ -81,15 +90,8 @@
 .icon-baseline-beach_access-24px:before {
   content: "\e911";
 }
-.icon-baseline-border_color-24px .path1:before {
+.icon-baseline-border_color-24px:before {
   content: "\e912";
-  color: rgb(0, 0, 0);
-}
-.icon-baseline-border_color-24px .path2:before {
-  content: "\e913";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
-  opacity: 0.36;
 }
 .icon-baseline-casino-24px:before {
   content: "\e914";
@@ -163,9 +165,6 @@
 .icon-baseline-remove_circle-24px:before {
   content: "\e92b";
 }
-.icon-double-arrows:before {
-  content: "\e92c";
-}
 .icon-baseline-reply_all-24px:before {
   content: "\e92d";
 }
@@ -190,14 +189,8 @@
 .icon-baseline-smoking_rooms-24px:before {
   content: "\e934";
 }
-.icon-baseline-spa-24px .path1:before {
+.icon-baseline-spa-24px:before {
   content: "\e935";
-  color: rgb(96, 125, 139);
-}
-.icon-baseline-spa-24px .path2:before {
-  content: "\e936";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
 }
 .icon-baseline-star_half-24px:before {
   content: "\e937";
@@ -295,14 +288,8 @@
 .icon-user-three:before {
   content: "\e956";
 }
-.icon-user-circle-line .path1:before {
+.icon-user-circle-line:before {
   content: "\e957";
-  color: rgb(20, 20, 20);
-}
-.icon-user-circle-line .path2:before {
-  content: "\e958";
-  margin-left: -1em;
-  color: rgb(0, 0, 0);
 }
 .icon-user-talk:before {
   content: "\e959";
@@ -357,6 +344,9 @@
 }
 .icon-baseline-chevron_left-24px:before {
   content: "\e96b";
+}
+.icon-double-arrows:before {
+  content: "\e92c";
 }
 .icon-baseline-chevron_right-24px:before {
   content: "\e96c";

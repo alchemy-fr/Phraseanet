@@ -81,7 +81,7 @@
                                 <span class="fa-stack fa-lg previewTips"
                                       tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                                   <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
-                                  <i class="icomoon icon-picto-search-new white fa-stack-1x " aria-hidden="true"></i>
+                                  <i class="icomoon icon-search white fa-stack-1x " aria-hidden="true"></i>
                                 </span>
                             {% endif %}
                         {% endif %}
@@ -89,7 +89,7 @@
                             <span class="fa-stack fa-lg captionRolloverTips" title="{{ macro.caption(record, can_see_business, false) | e }}"
                                   tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId, 'context' : 'answer', 'number' : record.position|default(0) }) }}">
                               <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
-                              <i class="icomoon icon-picto-point-list white fa-stack-1x " aria-hidden="true"></i>
+                              <i class="icomoon icon-round-list-24px white fa-stack-1x " aria-hidden="true"></i>
                             </span>
                         {% endif %}
 
@@ -97,7 +97,7 @@
                             <span class="fa-stack infoTips"
                                   tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                               <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
-                              <i class="icomoon icon-picto-information white fa-stack-1x " aria-hidden="true"></i>
+                              <i class="icomoon icon-i-information white fa-stack-1x " aria-hidden="true"></i>
                             </span>
                         {% endif %}
 
