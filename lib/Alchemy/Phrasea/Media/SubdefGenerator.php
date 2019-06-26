@@ -167,6 +167,24 @@ class SubdefGenerator
         );
     }
 
+    /**
+     * set a logger to use
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * to get the logger
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
         $start = microtime(true);
