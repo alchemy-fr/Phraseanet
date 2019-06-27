@@ -14,6 +14,7 @@
 @import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
 @import './fonts/PhraseanetIcomoon/style';
 @import './roboto.scss';
+@import './colorpicker.scss';
 @import '../../_shared/styles/variables';
 @import '../../vendors/bootstrap/bootstrap';
 @import '../../vendors/bootstrap/responsive';
@@ -87,3 +88,4 @@ $mainMenuLinkBackgroundHoverColor: transparent;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
   }
 }
+
