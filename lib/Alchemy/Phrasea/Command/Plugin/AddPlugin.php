@@ -47,6 +47,8 @@ class AddPlugin extends AbstractPluginCommand
 
             $this->doInstallPlugin($source, $input, $output);
         }
+
+        return 0;
     }
 
     protected function shouldDownloadPlugin($source)
