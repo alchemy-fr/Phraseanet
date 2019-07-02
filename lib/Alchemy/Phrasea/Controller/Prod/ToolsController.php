@@ -157,8 +157,6 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $record->rebuild_subdefs();
-
                 $this->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($record));
             }
         }
