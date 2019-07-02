@@ -40,6 +40,7 @@ h1 {
   font-size: 26px;
   font-weight: bold;
   padding: 30px 0 20px;
+  word-break: break-all;
 }
 
 .content-container {
@@ -65,6 +66,9 @@ h1 {
 
 dl {
   margin-bottom: 20px;
+  &.dl-horizontal {
+    word-break: break-all;
+  }
 }
 
 dt,

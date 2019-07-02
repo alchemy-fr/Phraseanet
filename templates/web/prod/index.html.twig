@@ -264,11 +264,18 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
-
                     {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
+                        {% set startq = "{\"query\":{\"_ux_zone\":\"\",\"type\":\"CLAUSES\",\"must_match\":\"ALL\",\"enabled\":true,\"clauses\":[{\"_ux_zone\":\"FULLTEXT\",\"type\":\"FULLTEXT\",\"value\":\"" %}
+                        {% set startq = startq ~ (app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query') | replace({'"': '\\"'})) %}
+                        {% set startq = startq ~ "\",\"enabled\":true}]}}" %}
+                        <div id="FIRST_QUERY_CONTAINER" class="start-query" style="display: none" data-format="json">{{ startq | raw }}</div>
                     {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-                        <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
+                        {% set startq = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') %}
+                        {% if startq is empty %}
+                            {% set startq = "{\"query\":{\"_ux_zone\":\"\",\"type\":\"CLAUSES\",\"must_match\":\"ALL\",\"enabled\":true,\"clauses\":[{\"_ux_zone\":\"FULLTEXT\",\"type\":\"FULLTEXT\",\"value\":\"" %}
+                            {% set startq = startq ~ "\",\"enabled\":true}]}}" %}
+                        {% endif %}
+                        <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{ startq | raw }}</div>
                     {% endif %}
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
@@ -288,7 +295,7 @@
                                 {% endif %}
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
-                            <div class="control-group pull-left">
+                            <div class="control-group pull-left search-header-block">
                             {% if GV_multiAndReport %}
                                 <label for="mode_type_doc" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>

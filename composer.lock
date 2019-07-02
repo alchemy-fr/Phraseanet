@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00c4f9dbfee9b7175a3d237fee594168",
+    "content-hash": "a9c7fed873d5bfe962c81d543b33330f",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.2",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "b1e5483442bc30411e423abc36d0c694df756e49"
+                "reference": "99a701d1a201bbe79e7c6c20a0797c5e9182a001"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/b1e5483442bc30411e423abc36d0c694df756e49",
-                "reference": "b1e5483442bc30411e423abc36d0c694df756e49",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/99a701d1a201bbe79e7c6c20a0797c5e9182a001",
+                "reference": "99a701d1a201bbe79e7c6c20a0797c5e9182a001",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.2",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.5",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-05-16T07:39:07+00:00"
+            "time": "2019-06-20T13:32:05+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -1155,48 +1155,6 @@
                 "slugify"
             ],
             "time": "2016-08-09T20:10:17+00:00"
-        },
-        {
-            "name": "czproject/git-php",
-            "version": "v3.17.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/czproject/git-php.git",
-                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/czproject/git-php/zipball/a7b911b81a2fe626f748a4ac8955353c5777bc6c",
-                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "nette/tester": "^1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Jan Pecha",
-                    "email": "janpecha@email.cz"
-                }
-            ],
-            "description": "Library for work with Git repository in PHP.",
-            "keywords": [
-                "git"
-            ],
-            "time": "2019-02-09T13:11:36+00:00"
         },
         {
             "name": "dailymotion/sdk",

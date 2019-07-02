@@ -34,12 +34,14 @@ server:
         - fr_FR.UTF-8
         - de_DE.UTF-8
         - nl_NL.UTF-8
+
 repositories:
     php: 'ppa:ondrej/php'
-    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    mariadb: 'deb [arch=amd64,arm64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.3/ubuntu'
     elasticsearch: 'ppa:webupd8team/java'
     rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
     yarn: 'https://dl.yarnpkg.com/debian/'
+
 vagrant_local:
     install: '1'
     vm:
