@@ -73,6 +73,9 @@ class SubdefSubstituer
 
         $this->createMediaSubdef($record, 'document', $media);
 
+        $record->setMimeType($media->getFile()->getMimeType());
+        $record->setType($media->getType());
+
         $record->write_metas();
 
         if ($shouldSubdefsBeRebuilt) {
