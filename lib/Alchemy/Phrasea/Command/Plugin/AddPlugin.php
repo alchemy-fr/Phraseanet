@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Command\Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\ArrayInput;
 
 class AddPlugin extends AbstractPluginCommand
 {
@@ -29,41 +30,36 @@ class AddPlugin extends AbstractPluginCommand
     protected function doExecutePluginAction(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
+        $shouldDownload = $this->shouldDownloadPlugin($source);
 
-        $temporaryDir = $this->container['temporary-filesystem']->createTemporaryDirectory();
+        if ($shouldDownload){
+            $command = $this->getApplication()->find('plugins:download');
+            $arguments = [
+                'command' => 'plugins:download',
+                'source'  => $source,
+                'shouldInstallPlugin' => true
+            ];
 
-        $output->write("Importing <info>$source</info>...");
-        $this->container['plugins.importer']->import($source, $temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
+            $downloadInput = new ArrayInput($arguments);
+            $command->run($downloadInput, $output);
 
-        $output->write("Validating plugin...");
-        $manifest = $this->container['plugins.plugins-validator']->validatePlugin($temporaryDir);
-        $output->writeln(" <comment>OK</comment> found <info>".$manifest->getName()."</info>");
+        } else {
 
-        $targetDir  = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $manifest->getName();
-
-        $output->write("Setting up composer...");
-        $this->container['plugins.composer-installer']->install($temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Installing plugin <info>".$manifest->getName()."</info>...");
-        $this->container['filesystem']->mirror($temporaryDir, $targetDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Copying public files <info>".$manifest->getName()."</info>...");
-        $this->container['plugins.assets-manager']->update($manifest);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Removing temporary directory...");
-        $this->container['filesystem']->remove($temporaryDir);
-        $output->writeln(" <comment>OK</comment>");
-
-        $output->write("Activating plugin...");
-        $this->container['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
-        $output->writeln(" <comment>OK</comment>");
-
-        $this->updateConfigFiles($input, $output);
+            $this->doInstallPlugin($source, $input, $output);
+        }
 
         return 0;
+    }
+
+    protected function shouldDownloadPlugin($source)
+    {
+        $allowedScheme = array('https','ssh');
+
+        $scheme =  parse_url($source, PHP_URL_SCHEME);
+        if (in_array($scheme, $allowedScheme)){
+            return true;
+        } else{
+            return false;
+        }
     }
 }

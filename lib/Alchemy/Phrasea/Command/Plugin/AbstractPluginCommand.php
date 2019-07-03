@@ -51,4 +51,41 @@ abstract class AbstractPluginCommand extends Command
         $this->container['plugins.autoloader-generator']->write($manifests);
         $output->writeln(" <comment>OK</comment>");
     }
+
+    protected function doInstallPlugin($source, InputInterface $input, OutputInterface $output)
+    {
+        $temporaryDir = $this->container['temporary-filesystem']->createTemporaryDirectory();
+
+        $output->write("Importing <info>$source</info>...");
+        $this->container['plugins.importer']->import($source, $temporaryDir);
+        $output->writeln(" <comment>OK</comment>");
+
+        $output->write("Validating plugin...");
+        $manifest = $this->container['plugins.plugins-validator']->validatePlugin($temporaryDir);
+        $output->writeln(" <comment>OK</comment> found <info>".$manifest->getName()."</info>");
+
+        $targetDir  = $this->container['plugin.path'] . DIRECTORY_SEPARATOR . $manifest->getName();
+
+        $output->write("Setting up composer...");
+        $this->container['plugins.composer-installer']->install($temporaryDir);
+        $output->writeln(" <comment>OK</comment>");
+
+        $output->write("Installing plugin <info>".$manifest->getName()."</info>...");
+        $this->container['filesystem']->mirror($temporaryDir, $targetDir);
+        $output->writeln(" <comment>OK</comment>");
+
+        $output->write("Copying public files <info>".$manifest->getName()."</info>...");
+        $this->container['plugins.assets-manager']->update($manifest);
+        $output->writeln(" <comment>OK</comment>");
+
+        $output->write("Removing temporary directory...");
+        $this->container['filesystem']->remove($temporaryDir);
+        $output->writeln(" <comment>OK</comment>");
+
+        $output->write("Activating plugin...");
+        $this->container['conf']->set(['plugins', $manifest->getName(), 'enabled'], true);
+        $output->writeln(" <comment>OK</comment>");
+
+        $this->updateConfigFiles($input, $output);
+    }
 }
