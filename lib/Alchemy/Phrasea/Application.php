@@ -24,6 +24,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\RecordSubdefinitionCreateSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
@@ -118,6 +119,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
+
 
 class Application extends SilexApplication
 {
@@ -730,6 +732,8 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
                 $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
+
+                $dispatcher->addSubscriber(new RecordSubdefinitionCreateSubscriber($app));
 
                 return $dispatcher;
             })

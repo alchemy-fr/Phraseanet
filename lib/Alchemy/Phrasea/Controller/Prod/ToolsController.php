@@ -25,6 +25,7 @@ use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use PHPExiftool\Reader;
 use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreateEvent;
 
 class ToolsController extends Controller
 {
@@ -156,7 +157,7 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $record->rebuild_subdefs();
+                $this->dispatch(RecordEvents::SUB_DEFINITIONS_CREATE, new SubDefinitionsCreateEvent($record));
             }
         }
 
