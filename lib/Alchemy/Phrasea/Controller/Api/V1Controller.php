@@ -88,9 +88,10 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-use JMS\TranslationBundle\Annotation\Ignore;
+use Guzzle\Http\Client as Guzzle;
 use League\Fractal\Resource\Item;
 use media_subdef;
+use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -905,19 +906,6 @@ class V1Controller extends Controller
 
     public function addRecordAction(Request $request)
     {
-        if (count($request->files->get('file')) == 0) {
-            return $this->getBadRequestAction($request, 'Missing file parameter');
-        }
-
-        $file = $request->files->get('file');
-        if (!$file instanceof UploadedFile) {
-            return $this->getBadRequestAction($request, 'You can upload one file at time');
-        }
-
-        if (!$file->isValid()) {
-            return $this->getBadRequestAction($request, 'Data corrupted, please try again');
-        }
-
         if (!$request->get('base_id')) {
             return $this->getBadRequestAction($request, 'Missing base_id parameter');
         }
@@ -930,16 +918,54 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        // Add file extension
-        $uploadedFilename = $file->getRealPath();
+        if (count($request->files->get('file')) == 0) {
+            if(count($request->get('url')) == 0) {
+                return $this->getBadRequestAction($request, 'Missing file parameter');
+            }
+            else {
+                // upload via url
+                $url = $request->get('url');
+                $pi = pathinfo($url);   // filename, extension
 
-        $renamedFilename = $file->getRealPath() . '.' . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+                /** @var TemporaryFilesystemInterface $tmpFs */
+                $tmpFs = $this->app['temporary-filesystem'];
+                $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
 
-        $this->getFilesystem()->rename($uploadedFilename, $renamedFilename);
+                try {
+                    $guzzle = new Guzzle($url);
+                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                }
+                catch (\Exception $e) {
+                    return $this->getBadRequestAction($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
+                }
 
-        $media = $this->app->getMediaFromUri($renamedFilename);
+                if($res->getStatusCode() !== 200) {
+                    return $this->getBadRequestAction($request, sprintf('Error %s downloading "%s"', $res->getStatusCode(), $url));
+                }
 
-        $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
+                $originalName = $pi['filename'] . '.' . $pi['extension'];
+                $newPathname = $tempfile;
+            }
+        }
+        else {
+            // upload via file
+            $file = $request->files->get('file');
+            if (!$file instanceof UploadedFile) {
+                return $this->getBadRequestAction($request, 'You can upload one file at time');
+            }
+            if (!$file->isValid()) {
+                return $this->getBadRequestAction($request, 'Data corrupted, please try again');
+            }
+            $originalName = $file->getClientOriginalName();
+            $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+            if (false === rename($file->getPathname(), $newPathname)) {
+                return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+            }
+        }
+
+        $media = $this->app->getMediaFromUri($newPathname);
+
+        $Package = new File($this->app, $media, $collection, $originalName);
 
         if ($request->get('status')) {
             $Package->addAttribute(new Status($this->app, $request->get('status')));

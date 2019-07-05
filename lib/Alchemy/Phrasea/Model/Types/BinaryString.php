@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Types;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class BinaryString extends Type
@@ -23,10 +24,21 @@ class BinaryString extends Type
         return static::BINARY_STRING;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see: https://blog.vandenbrand.org/2015/06/25/creating-a-custom-doctrine-dbal-type-the-right-way/
+     *     about the reason of the COMMENT in the column
+     */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         if ($platform->getName() === 'mysql') {
-            return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration)." ". $platform->getCollationFieldDeclaration('utf8_bin');
+            /** @var MySqlPlatform $platform */
+            return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration)
+                // . " CHARACTER SET utf8"
+                . " " . $platform->getColumnCollationDeclarationSQL('utf8_bin')
+                . " COMMENT '(DC2Type:binary_string)'"
+                ;
         }
 
         return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
@@ -38,5 +50,13 @@ class BinaryString extends Type
     public function getDefaultLength(AbstractPlatform $platform)
     {
         return $platform->getVarcharDefaultLength();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
     }
 }

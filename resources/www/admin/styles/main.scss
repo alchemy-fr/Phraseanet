@@ -148,6 +148,9 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 }
 #FNDR a {
   text-decoration: none;
+  img {
+    width: 16px;
+  }
 }
 #FNDR a:hover {
   text-decoration: none;

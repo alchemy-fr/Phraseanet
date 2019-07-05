@@ -1,11 +1,11 @@
 <div id="mainMenu" class="">
     {% set configuration = app['conf'].get(['registry', 'custom-links']) %}
     <div class="PNB menu-bar" style="overflow:hidden;">
-      <ol>
-        <li>
+        <ol>
+            <li>
             <span class="title">
                 {% if app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'logoChoice']) == 'personalize' and
-                app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
+                    app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'personalizeFile']) == 'true' %}
                     {% set extension = app['conf'].get(['registry', 'general', 'personalize-logo-choice', 'fileType']) %}
                     {% set personalise_path = '/custom/minilogos/personalize_logo.' ~ extension %}
 
@@ -17,127 +17,185 @@
 
                 {% endif %}
             </span>
-        </li>
-          <li class="show-menu" id="toggle-menu-main">
-              <img src="/assets/common/images/icons/menu-burger.png"/>
-          </li>
-          <div id="nav_menu_container" class="desktopmenu">
-              <div class="arrow-up"></div>
-              <ol class="nav_menu">
-                  {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
-                      <li class="menu-bar-item">
-                          <a target="_blank" href="{{ path('prod') }}">
-                              <img src="/assets/common/images/icons/menu-prod.png" class="mobilemenu"/>
-                              <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
-                          {{ 'admin::monitor: production' | trans }}
-                        </span>
-                          </a>
-                      </li>
+            </li>
+            {% if module is defined and module != "lightbox" and app.getAuthenticator().isAuthenticated() %}
+                <li class="show-menu" id="toggle-menu-main">
+                    <img src="/assets/common/images/icons/menu-burger.png"/>
 
-                      {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
-                          <li class="menu-bar-item">
-                              <a target="_blank" href="{{ path('thesaurus') }}">
-                                  <img src="/assets/common/images/icons/menu-thesaurus.png" class="mobilemenu"/>
-                                  <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
-                                  {{ 'admin::monitor: module thesaurus' | trans }}
-                                  </span>
-                              </a>
-                          </li>
-                      {% endif %}
+                    <div id="nav_menu_container" class="desktopmenu">
+                        <div class="arrow-up"></div>
+                        <ol class="nav_menu">
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('prod') }}">
+                                        <img src="/assets/common/images/icons/menu-prod.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
+                                  {{ 'admin::monitor: production' | trans }}
+                                </span>
+                                    </a>
+                                </li>
+
+                                {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
+                                    <li class="menu-bar-item">
+                                        <a target="_blank" href="{{ path('thesaurus') }}">
+                                            <img src="/assets/common/images/icons/menu-thesaurus.png" class="mobilemenu"/>
+                                            <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
+                                          {{ 'admin::monitor: module thesaurus' | trans }}
+                                          </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
 
 
-                      {# MODULE #}
-                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
-                          <li class="menu-bar-item">
-                              <a target="_blank" href="{{ path('admin') }}">
-                                  <img src="/assets/common/images/icons/menu-admin.png" class="mobilemenu"/>
-                                  <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
-                                    {{ 'admin::monitor: module admin' | trans }}
-                                  </span>
-                              </a>
-                          </li>
-                      {% endif %}
+                                {# MODULE #}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
+                                    <li class="menu-bar-item">
+                                        <a target="_blank" href="{{ path('admin') }}">
+                                            <img src="/assets/common/images/icons/menu-admin.png" class="mobilemenu"/>
+                                            <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module admin' | trans }}
+                                          </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
 
-                      {# MODULE #}
-                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
-                          <li class="menu-bar-item">
-                              <a target="_blank" href="{{ path('report_dashboard') }}">
-                                  <img src="/assets/common/images/icons/menu-report.png" class="mobilemenu"/>
-                                  <span class="{% if module is defined and module == "report" %}selected{% endif %}">
-                                    {{ 'admin::monitor: module report' | trans }}
-                                  </span>
-                              </a>
-                          </li>
-                      {% endif %}
+                                {# MODULE #}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
+                                    <li class="menu-bar-item">
+                                        <a target="_blank" href="{{ path('report_dashboard') }}">
+                                            <img src="/assets/common/images/icons/menu-report.png" class="mobilemenu"/>
+                                            <span class="{% if module is defined and module == "report" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module report' | trans }}
+                                          </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
 
-                      {# MODULE #}
-                      <li class="menu-bar-item">
-                          <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
-                              <img src="/assets/common/images/icons/menu-lightbox.png" class="mobilemenu"/>
-                              <span>
-                              {{ 'admin::monitor: module validation' | trans }}
-                              </span>
-                          </a>
-                      </li>
+                                {# MODULE #}
+                                <li class="menu-bar-item">
+                                    <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
+                                        <img src="/assets/common/images/icons/menu-lightbox.png" class="mobilemenu"/>
+                                        <span>
+                                      {{ 'admin::monitor: module validation' | trans }}
+                                      </span>
+                                    </a>
+                                </li>
 
-                      {# MODULE #}
-                      {% if module is defined and module == "prod" %}
-                          {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
-                              <li class="menu-bar-item">
-                                  {% set link = path('upload_html5_form') %}
+                                {# MODULE #}
+                                {% if module is defined and module == "prod" %}
+                                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
+                                        <li class="menu-bar-item">
+                                            {% set link = path('upload_html5_form') %}
 
-                                  {% if not app['browser'].supportFileAPI() %}
-                                      {% set link = path('upload_flash_form') %}
-                                  {% endif %}
+                                            {% if not app['browser'].supportFileAPI() %}
+                                                {% set link = path('upload_flash_form') %}
+                                            {% endif %}
 
-                                  <a href="{{ link }}" class="uploader-open-action" title="{{ 'Upload' | trans }}">
-                                      <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
+                                            <a href="{{ link }}" class="uploader-open-action"
+                                               title="{{ 'Upload' | trans }}">
+                                                <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
+                                                <span>
+                                                {{ 'admin::monitor: module upload' | trans }}
+                                            </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+
+                                {# MODULE #}
+                                {% if module == "prod" %}
+                                    <li class="menu-bar-item">
+                                        <a href="#" class="state-navigation" data-state="publication">
+                                            <img src="/assets/common/images/icons/menu-publication.png" class="mobilemenu"/>
+                                            <span>
+                                            {{ 'Publications' | trans }}
+                                          </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
+                                    <li class="menu-bar-item">
+                                        <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
                                       <span>
-                                        {{ 'admin::monitor: module upload' | trans }}
-                                    </span>
-                                  </a>
-                              </li>
-                          {% endif %}
-                      {% endif %}
+                                        {{ 'Commandes' | trans }}
+                                      </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
 
-                      {# MODULE #}
-                      {% if module == "prod" %}
-                          <li class="menu-bar-item">
-                              <a href="#" class="state-navigation" data-state="publication">
-                                  <img src="/assets/common/images/icons/menu-publication.png" class="mobilemenu"/>
-                                  <span>
-                                    {{ 'Publications' | trans }}
-                                  </span>
-                              </a>
-                          </li>
-                      {% endif %}
+                        </ol>
+                    </div>
+                </li>
+            {% endif %}
+            <li class="show-menu" id="toggle-menu-link">
+                <img src="/assets/common/images/icons/menu-web-site.png"/>
+                <div id="nav_customlink_container" class="mobile-link">
+                    <div class="arrow-up"></div>
+                    <div class="nav-wrapper-box">
+                        <ol class="nav_menu"></ol>
+                    </div>
+                </div>
+            </li>
+            <li class="show-menu" id="toggle-menu-account" style="float: right;margin-right: 16px;">
+                <img src="/assets/common/images/icons/menu-user.png"/>
+                <div class="PNB right mobilemenu" id="nav_account_container">
+                    <div class="arrow-up"></div>
+                    <div class="nav-wrapper-box">
+                        <ol class="nav_menu">
+                            {% if app.getAuthenticator().isAuthenticated() %}
+                                <li class="menu-bar-item">
+                                    {% if app.getAuthenticatedUser().isGuest %}
+                                        <img src="/assets/common/images/icons/menu-name-user.png"/>
+                                        <span>{{ 'Guest' | trans }}</span>
+                                    {% else %}
+                                        <a target="_blank" href="{{ path('account') }}"
+                                           title="{{ 'login:: Mon compte' | trans }}">
+                                            <img src="/assets/common/images/icons/menu-name-user.png"/>
+                                            <span>{{ app.getAuthenticatedUser().getDisplayName() }}</span>
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                <li class="menu-bar-item">
+                                    <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}"
+                                       target="_self">
+                                        <img src="/assets/common/images/icons/menu-logout.png"/>
+                                        <span>{{ 'phraseanet:: deconnection' | trans }}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="menu-bar-item">
+                                <a target="_blank" href="https://docs.phraseanet.com/4.0/">
+                                    <img src="/assets/common/images/icons/menu-help.png"/>
+                                    <span>
+              {{ 'phraseanet:: aide' | trans }}
+                                        <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
+                                              id="help-trigger"></span>
+            </span>
+                                </a>
+                            </li>
+                            {% if module is defined and module == "prod" %}
+                                <li class="menu-bar-item">
+                                    <a href="#">
+                                        <img src="/assets/common/images/icons/menu-help.png"/>
+                                        <span style="" class="shortcuts-trigger">
+                        {{ 'phraseanet:: raccourcis clavier' | trans }}
+                    </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="menu-bar-item">
+                                <a href="#">
+                                    <img src="/assets/common/images/icons/menu-help.png"/>
+                                    <span style="" class="infoDialog"
+                                          infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</span>
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </li>
 
-                      {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
-                          <li class="menu-bar-item">
-                              <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
-                              <span>
-                                {{ 'Commandes' | trans }}
-                              </span>
-                              </a>
-                          </li>
-                      {% endif %}
-
-                  {% endif %}
-              </ol>
-          </div>
-          <li class="show-menu" id="toggle-menu-link">
-              <img src="/assets/common/images/icons/menu-web-site.png"/>
-          </li>
-          <li class="show-menu" id="toggle-menu-account" style="float: right;margin-right: 16px;">
-              <img src="/assets/common/images/icons/menu-user.png"/>
-          </li>
-          <div id="nav_customlink_container">
-              <div class="arrow-up"></div>
-              <div class="nav-wrapper-box">
-                  <ol class="nav_menu"></ol>
-              </div>
-          </div>
-      </ol>
+        </ol>
 
     </div>
 
@@ -232,73 +290,9 @@
             </li>
         {% endif %}
     </div>
-
-    <div class="PNB right mobilemenu" id="nav_account_container">
-        <div class="arrow-up"></div>
-        <div class="nav-wrapper-box">
-            <ol class="nav_menu">
-
-                <li class="menu-bar-item">
-                    {% if app.getAuthenticator().isAuthenticated() %}
-                        {% if app.getAuthenticatedUser().isGuest %}
-                            <img src="/assets/common/images/icons/menu-name-user.png"/>
-                            <span>
-                {{ 'Guest' | trans }}
-              </span>
-                        {% else %}
-                            <a target="_blank" href="{{ path('account') }}" title="{{ 'login:: Mon compte' | trans }}">
-                                <img src="/assets/common/images/icons/menu-name-user.png"/>
-                                <span>
-                  {{ app.getAuthenticatedUser().getDisplayName() }}
-                </span>
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                </li>
-                <li class="menu-bar-item">
-                    {% if app.getAuthenticator().isAuthenticated() %}
-                        <a href="{{ path('logout', { 'redirect' : '..' ~ app['request'].getPathInfo() }) }}"
-                           target="_self">
-                            <img src="/assets/common/images/icons/menu-logout.png"/>
-                            <span>
-                  {{ 'phraseanet:: deconnection' | trans }}
-                </span>
-                        </a>
-                    {% endif %}
-                </li>
-                <li class="menu-bar-item">
-                    <a target="_blank" href="https://docs.phraseanet.com/4.0/">
-                        <img src="/assets/common/images/icons/menu-help.png"/>
-                        <span>
-              {{ 'phraseanet:: aide' | trans }}
-                            <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
-                                  id="help-trigger"></span>
-            </span>
-                    </a>
-                </li>
-                {% if module is defined and module == "prod" %}
-                    <li class="menu-bar-item">
-                        <a href="#">
-                            <img src="/assets/common/images/icons/menu-help.png"/>
-                            <span style="" class="shortcuts-trigger">
-                        {{ 'phraseanet:: raccourcis clavier' | trans }}
-                    </span>
-                        </a>
-                    </li>
-                {% endif %}
-                <li class="menu-bar-item">
-                    <a href="#">
-                        <img src="/assets/common/images/icons/menu-help.png"/>
-                        <span style="" class="infoDialog"
-                              infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</span>
-                    </a>
-                </li>
-            </ol>
-        </div>
-    </div>
 </div>
 
- {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
+{% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
     <div style="display:none;z-index:30000;" id="notification_box">
         {% set notifications = app['events-manager'].get_notifications %}
         {% include 'prod/notifications.html.twig' %}
@@ -312,9 +306,21 @@
         //seperate array based on location of link
         var seperatedLinksByLocation = _.groupBy(configurationSettingLinks, "linkLocation");
 
+
         for (key in seperatedLinksByLocation) {
             if (key === 'navigation-bar') {
                 var sortedCustomLinks = _.sortBy(seperatedLinksByLocation[key], 'linkOrder');
+                /*show navigation-bar if there is some result*/
+                console.log(sortedCustomLinks);
+
+                $(window).resize(function () {
+                    if (($(window).width() <= 1064) && (sortedCustomLinks != undefined)) {
+                        $('#toggle-menu-link img').show();
+                    } else {
+                        $('#toggle-menu-link img').hide();
+                    }
+                });
+
 
                 _.each(sortedCustomLinks, function (linksData) {
                     if (linksData.linkLanguage == 'all' || linksData.linkLanguage === '{{ app['locale'] }}') {
@@ -353,7 +359,7 @@
             }
         }
 
-        $('#toggle-menu-main').on('click', function (event) {
+        $('#toggle-menu-main > img').on('click', function (event) {
             $('#nav_menu_container').toggle();
             if ($('#nav_customlink_container').is(":visible")) {
                 $('#nav_customlink_container').hide();
@@ -363,7 +369,7 @@
             }
         });
 
-        $('#toggle-menu-link').on('click', function (event) {
+        $('#toggle-menu-link  > img').on('click', function (event) {
             $('#nav_customlink_container').toggle();
             if ($('#nav_menu_container').is(":visible")) {
                 $('#nav_menu_container').hide();
@@ -373,7 +379,7 @@
             }
         });
 
-        $('#toggle-menu-account').on('click', function (event) {
+        $('#toggle-menu-account > img').on('click', function (event) {
             $('#nav_account_container').toggle();
             if ($('#nav_menu_container').is(":visible")) {
                 $('#nav_menu_container').hide();

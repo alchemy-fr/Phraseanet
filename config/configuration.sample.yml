@@ -7,6 +7,8 @@ main:
     languages: []
     key: ''
     api_require_ssl: true
+    api_token_header: false
+    delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
         port: 3306
@@ -89,7 +91,9 @@ main:
             client_secret: null
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
     checkers:
         -
             type: Checker\Sha256
@@ -282,3 +286,7 @@ workers:
       user: guest
       password: guest
       vhost: /
+
+user_account:
+    deleting_policies:
+        email_confirmation: true

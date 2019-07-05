@@ -89,7 +89,6 @@ class Field implements Typed
             case databox_field::TYPE_NUMBER:
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
-            case databox_field::TYPE_TEXT:
                 return FieldMapping::TYPE_STRING;
         }
 

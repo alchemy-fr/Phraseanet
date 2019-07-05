@@ -11,6 +11,7 @@ class MyCustomError < StandardError
 	"[#{code} #{super}]"
 	end
 end
+
 # Check to determine whether we're on a windows or linux/os-x host,
 # later on we use this to launch ansible in the supported way
 # source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
@@ -34,15 +35,52 @@ else if which('ifconfig')
     end
 end
 
-$php = [ "5.6", "7.0", "7.1", "7.2" ]
-$phpVersion = ENV['phpversion'] ? ENV['phpversion'] : "5.6";
-
 unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
 
-unless $php.include?($phpVersion)
-    raise "You should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2 | default => 5.6)\n\n Exemple: phpversion='7.0' vagrant up \n\n"
+if ARGV[1] == '--provision'
+    print "\033[34m \nChoose a Build type :\n\n(1) Use prebuilt Phraseanet Box\n(2) Build Phraseanet from scratch (xenial)\n\033[00m"
+    type = STDIN.gets.chomp
+    print "\n"
+    # Switch between Phraseanet box and native trusty64
+    case (type)
+       when '1'
+            $box = "alchemy/Phraseanet-vagrant-dev_php"
+       when '2'
+            $box = "ubuntu/xenial64"
+            print("\033[91mComplete build selected, don't forget to uncomment all roles on playbook.yml\n\n\033[00m")
+       else
+            raise "\033[31mYou should specify Build type before running vagrant\n\n (Available : 1, 2)\n\n\033[00m"
+    end
+    print "\033[32m-----------------------------------------------\n"
+    print "Build with "+$box+" box\n"
+    print "-----------------------------------------------\n\n\033[00m"
+
+    print "\033[34mChoose a PHP version for your build (Available : 5.6, 7.0, 7.1, 7.2)\n\033[00m"
+    phpversion = STDIN.gets.chomp
+    print "\n"
+    # Php version selection
+    case (phpversion)
+        when "5.6", "7.0", "7.1", "7.2"
+            print "\033[32mSelected PHP version : "+phpversion+"\n\033[00m"
+            print "Continue ? (Y/n) \n"
+            continue = STDIN.gets.chomp
+            case continue
+               when 'n', 'no', 'N', 'NO'
+                  raise "\033[31mBuild aborted\033[00m"
+               else
+               if (type == '1')
+                  $box.concat(phpversion)
+               end
+                  print "\033[32m-----------------------------------------------\n"
+                  print "Build with PHP"+phpversion+"\n"
+                  print "-----------------------------------------------\n\n\033[00m"
+
+            end
+        else
+            raise "\033[31mYou should specify php version before running vagrant\n\n (Available : 5.6, 7.0, 7.1, 7.2)\n\n\033[00m"
+    end
 end
 
 $root = File.dirname(File.expand_path(__FILE__))
@@ -70,6 +108,9 @@ def config_net(config)
 			  vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant", "1"]
           end
         end
+
+        config.vm.network :public_network, bridge:"en0: Ethernet"
+        
         config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
             if vm.id
                 if $env == "mac" || $env == "linux"
@@ -116,7 +157,12 @@ Vagrant.configure("2") do |config|
         ]
     end
 
-    config.vm.box = "ubuntu/trusty64"
+    config.vm.box = ($box) ? $box : "ubuntu/xenial64"
+
+    # In case, Phraseanet box, choose the php version
+    # For php 7.0 use box 0.0.1
+    # For php 7.1 use box 0.0.2
+    #config.vm.box_version = "0.0.1"
 
     config.ssh.forward_agent = true
     config_net(config)
@@ -131,7 +177,7 @@ Vagrant.configure("2") do |config|
             ansible.extra_vars = {
                 hostname: $hostname,
                 host_addresses: $hostIps,
-                phpversion: $phpVersion,
+                phpversion: phpversion,
                 postfix: {
                     postfix_domain: $hostname + ".vb"
                 }

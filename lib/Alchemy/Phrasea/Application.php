@@ -92,9 +92,12 @@ use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
+use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -252,6 +255,23 @@ class Application extends SilexApplication
 
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
+
+        $this['monolog'] = $this->share(
+            $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
+
+                $logger->pushHandler(new ErrorLogHandler(
+                    ErrorLogHandler::SAPI,
+                    Logger::ERROR
+                ));
+
+                $logger->pushHandler(new StreamHandler(
+                    fopen('php://stderr', 'w'),
+                    Logger::ERROR
+                ));
+
+                return $logger;
+            })
+        );
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */

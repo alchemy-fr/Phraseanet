@@ -619,6 +619,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
                 case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field . ".light"] = [
@@ -628,13 +630,10 @@ class ElasticSearchEngine implements SearchEngineInterface
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
-                case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_INTEGER:
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    continue;
-                case FieldMapping::TYPE_DATE:
                 default:
                     continue;
             }
@@ -660,7 +659,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 }
                 $agg = [
                     'terms' => [
-                        'field' => $f['field'],
+                        'field' => $f['esfield'],
                         'size'  => $size
                     ]
                 ];
