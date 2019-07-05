@@ -12,8 +12,9 @@
 namespace Alchemy\Phrasea\Core\Event\Record;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\SerializableEventInterface;
 
-class SubDefinitionsCreateEvent extends RecordEvent
+class SubDefinitionsCreateEvent extends RecordEvent implements SerializableEventInterface
 {
     private $subDefinitionsNames;
 
@@ -32,17 +33,22 @@ class SubDefinitionsCreateEvent extends RecordEvent
         return $this->subDefinitionsNames;
     }
 
-    protected function getData()
+
+    /** **************** SerializableEventInterface interface ************** */
+
+    public function getAsScalars()
     {
         return [
-            '_' => parent::getData(),
+            '_' => parent::getAsScalars(),
             'subDefinitionsNames' => $this->subDefinitionsNames
         ];
     }
 
-    protected function restoreData($data, Application $app)
+    public function restoreFromScalars($data, Application $app)
     {
-        parent::restoreData($data['_'], $app);
+        parent::restoreFromScalars($data['_'], $app);
         $this->subDefinitionsNames = $data['subDefinitionsNames'];
     }
+
+    /** ******************************************************************** */
 }

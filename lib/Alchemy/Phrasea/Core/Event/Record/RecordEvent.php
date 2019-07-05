@@ -11,10 +11,11 @@
 namespace Alchemy\Phrasea\Core\Event\Record;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\SerializableEventInterface;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-abstract class RecordEvent extends Event implements \Serializable
+abstract class RecordEvent extends Event implements SerializableEventInterface, \Serializable
 {
     private $record;
     protected $__data;
@@ -32,20 +33,26 @@ abstract class RecordEvent extends Event implements \Serializable
         return $this->record;
     }
 
-    protected function getData()
+
+
+    /** **************** SerializableEventInterface interface ************** */
+
+    public function getAsScalars()
     {
         return [
-            'sbas_id' => $this->record->getDataboxId(),
+            'sbas_id'   => $this->record->getDataboxId(),
             'record_id' => $this->record->getRecordId()
         ];
     }
 
-    protected function restoreData($data, Application $app)
+    public function restoreFromScalars($data, Application $app)
     {
         $this->record = $app->getApplicationBox()
             ->get_databox($data['sbas_id'])
             ->get_record($data['record_id']);
     }
+
+    /** ******************************************************************** */
 
 
     public function convertToMessage()
@@ -64,7 +71,7 @@ abstract class RecordEvent extends Event implements \Serializable
 
     public function serialize()
     {
-        return serialize(json_encode($this->getData()));
+        return serialize(json_encode($this->getAsScalars()));
     }
 
     public function unserialize($serialized)
