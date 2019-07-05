@@ -121,7 +121,7 @@ class WriteMetadataJob extends AbstractJob
                     $fieldName = $fieldStructure->get_name();
 
                     // skip fields with no src
-                    if($tagName == '') {
+                    if($tagName == '' || $tagName == 'Phraseanet:no-source') {
                         continue;
                     }
 
@@ -139,13 +139,13 @@ class WriteMetadataJob extends AbstractJob
                         if ($fieldStructure->is_multi()) {
                             $values = array();
                             foreach ($fieldValues as $value) {
-                                $values[] = $value->getValue();
+                                $values[] = $this->removeNulChar($value->getValue());
                             }
 
                             $value = new Value\Multi($values);
                         } else {
                             $fieldValue = array_pop($fieldValues);
-                            $value = $fieldValue->getValue();
+                            $value = $this->removeNulChar($fieldValue->getValue());
 
                             $value = new Value\Mono($value);
                         }
@@ -214,5 +214,10 @@ class WriteMetadataJob extends AbstractJob
         }
 
         return false;
+    }
+
+    private function removeNulChar($value)
+    {
+        return str_replace("\0", "", $value);
     }
 }
