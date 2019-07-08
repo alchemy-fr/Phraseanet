@@ -19,7 +19,7 @@ use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionRebuildEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionBuildEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
@@ -285,7 +285,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
-            $this->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($this));
+            $this->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($this));
         }
 
         $this->type = $type;
@@ -342,7 +342,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($this));
+            $this->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($this));
             $this->delete_data_from_cache();
         }
 

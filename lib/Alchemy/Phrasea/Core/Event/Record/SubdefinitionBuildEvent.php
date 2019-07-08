@@ -11,5 +11,5 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-class SubDefinitionRebuildEvent extends RecordEvent
+class SubdefinitionBuildEvent extends RecordEvent
 {}

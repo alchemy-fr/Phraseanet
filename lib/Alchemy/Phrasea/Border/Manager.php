@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionRebuildEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionBuildEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
@@ -335,7 +335,7 @@ class Manager
         $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
-            $this->app['dispatcher']->dispatch(RecordEvents::SUB_DEFINITION_REBUILD, new SubDefinitionRebuildEvent($element));
+            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($element));
         }
 
         return $element;
