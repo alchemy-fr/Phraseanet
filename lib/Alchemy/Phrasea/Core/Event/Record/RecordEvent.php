@@ -11,14 +11,15 @@
 namespace Alchemy\Phrasea\Core\Event\Record;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\SerializableEventInterface;
+use Alchemy\Phrasea\Core\Event\WorkerableEventInterface;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Alchemy\Phrasea\Core\Event\WorkerableEvent;
 
-abstract class RecordEvent extends Event implements SerializableEventInterface, \Serializable
+
+abstract class RecordEvent extends WorkerableEvent implements WorkerableEventInterface
 {
-    private $record;
     protected $__data;
+    private $record;
 
     public function __construct(RecordInterface $record)
     {
@@ -35,7 +36,7 @@ abstract class RecordEvent extends Event implements SerializableEventInterface, 
 
 
 
-    /** **************** SerializableEventInterface interface ************** */
+    /** **************** WorkerableEventInterface interface ************** */
 
     public function getAsScalars()
     {
@@ -52,30 +53,6 @@ abstract class RecordEvent extends Event implements SerializableEventInterface, 
             ->get_record($data['record_id']);
     }
 
-    /** ******************************************************************** */
+    /** ******************************************************************* */
 
-
-    public function convertToMessage()
-    {
-        return serialize($this);
-    }
-
-    public static function restoreFromMessage($message, Application $app)
-    {
-        /** @var RecordEvent $event */
-        $event = unserialize($message);
-        $data = $event->__data;
-        $event->restoreData($data, $app);
-        return $event;
-    }
-
-    public function serialize()
-    {
-        return serialize(json_encode($this->getAsScalars()));
-    }
-
-    public function unserialize($serialized)
-    {
-        $this->__data = json_decode(unserialize($serialized), true);
-    }
 }

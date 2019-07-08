@@ -11,7 +11,7 @@ namespace Alchemy\Phrasea\Core\Event;
 use Alchemy\Phrasea\Application;
 
 
-interface SerializableEventInterface
+interface WorkerableEventInterface
 {
     /**
      * info : similar from "serialize" php magic method

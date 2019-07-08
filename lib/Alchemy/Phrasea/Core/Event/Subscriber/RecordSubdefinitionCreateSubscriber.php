@@ -46,8 +46,8 @@ class RecordSubdefinitionCreateSubscriber implements EventSubscriberInterface
         }
         $into = true;
 
-        $message = $event->convertToMessage();
-        $event = RecordEvent::restoreFromMessage($message, $this->app);
+        $message = $event->convertToWorkerMessage();
+        $event = RecordEvent::restoreFromWorkerMessage($message, $this->app);
 
         $record = $this->convertToRecordAdapter($event->getRecord());
         $this->getSubdefGenerator($this->app)->generateSubdefs(
