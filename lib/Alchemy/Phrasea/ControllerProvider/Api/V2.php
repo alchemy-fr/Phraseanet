@@ -22,6 +22,7 @@ use Silex\Application;
 use Silex\Controller;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
+use Alchemy\Phrasea\Worker\Controller\ApiWorkerController;
 
 class V2 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -66,6 +67,19 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
                     ->setDelivererLocator(new LazyLocator($app, 'phraseanet.file-serve'))
                     ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                     ->setJsonBodyHelper($app['json.body_helper']);
+
+                return $controller;
+            }
+        );
+
+        $app['controller.api.v2.worker'] = $app->share(
+            function (PhraseaApplication $app) {
+                $controller = new ApiWorkerController(
+                    $app
+                );
+
+                $controller
+                    ->setDispatcher($app['dispatcher']);
 
                 return $controller;
             }
@@ -134,6 +148,9 @@ class V2 extends Api implements ControllerProviderInterface, ServiceProviderInte
         $controllers->get('/orders/{orderId}/archive', 'controller.api.v2.orders:getArchiveAction')
             ->assert('orderId', '\d+')
             ->bind('api_v2_orders_archive');
+
+        $controllers->post('/worker/execute', 'controller.api.v2.worker:executeAction')
+             ->bind('api_v2_worker_execute');
 
         return $controllers;
     }

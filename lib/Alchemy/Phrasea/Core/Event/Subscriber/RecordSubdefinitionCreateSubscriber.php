@@ -46,14 +46,28 @@ class RecordSubdefinitionCreateSubscriber implements EventSubscriberInterface
         }
         $into = true;
 
-        $message = $event->convertToWorkerMessage();
-        $event = RecordEvent::restoreFromWorkerMessage($message, $this->app);
+        if(!$event->isReplayed()) {
+            // this is a first shot event, let's push it into a queue
+            $message = $event->convertToWorkerMessage(RecordEvents::SUB_DEFINITIONS_CREATE);
 
-        $record = $this->convertToRecordAdapter($event->getRecord());
-        $this->getSubdefGenerator($this->app)->generateSubdefs(
-            $record,
-            $event->getSubDefinitionsNames()
-        );
+            // todo : push, for now the quick and dirty : tail the file and post with postman...
+            file_put_contents("/tmp/phraseanet-eventsq.txt", sprintf("%s\n\n", $message), FILE_APPEND);
+
+            // here to check that a restored event is the (almost) the same as the original one
+            // $restored_event = RecordEvent::restoreFromWorkerMessage($message, $this->app);
+
+            $event->stopPropagation();
+        }
+        else {
+            // this event was restored from a queue (it was posted to /api/v2/worker/execute)
+            // Since here we are already into the internal phraseanet suscriber (not into a plugin),
+            //   we must do the real job
+            $record = $this->convertToRecordAdapter($event->getRecord());
+            $this->getSubdefGenerator($this->app)->generateSubdefs(
+                $record,
+                $event->getSubDefinitionsNames()
+            );
+        }
 
         $into = false;
     }
