@@ -9,6 +9,7 @@
 namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Application;
+use Firebase\JWT\JWT;
 use Symfony\Component\EventDispatcher\Event;
 
 
@@ -45,6 +46,12 @@ class WorkerableEvent extends Event implements WorkerableEventInterface, \Serial
     private $__replayed = false;    // prevent endless suscriber catch
 
     /**
+     * todo : define the jwt parameters in settings
+     */
+    const JWT_KEY = 'this-is-the-key';
+    const JWT_TTL = (24*60*60);    // 24h as seconds
+
+    /**
      * the suscriber should mark the "poped from queue" event as replayed
      */
     public function setReplayed()
@@ -61,41 +68,87 @@ class WorkerableEvent extends Event implements WorkerableEventInterface, \Serial
         return $this->__replayed;
     }
 
-
+    /**
+     * convert the event to a message (jwt or json)
+     * too bad, we cannot get the eventname from the event, it must be passed as arg.
+     *
+     * @param $eventName
+     * @return false|string
+     */
     public function convertToWorkerMessage($eventName)
     {
-        return json_encode([
-            'name' => $eventName,
-            'data' => serialize($this)
-        ]);
+        $payload = [
+            'iat'  => time(),
+            'iss'  => 0,        // should be a user id    $issuer->getId(),
+            'exp'  => time() + self::JWT_TTL,
+            'data' => [
+                'name' => $eventName,
+                'data' => serialize($this)
+            ]
+        ];
+
+        if(self::JWT_KEY) {
+            return JWT::encode(
+                $payload,
+                self::JWT_KEY,
+                'HS256'
+            );
+        }
+        else {
+            // to debug : message is only json
+            return json_encode($payload);
+        }
     }
 
+    /**
+     * backconvert a message to a pair event-name / event
+     *
+     * @param $message
+     * @param Application $app
+     * @return array
+     */
     public static function restoreFromWorkerMessage($message, Application $app)
     {
-        $o = json_decode($message, true);
+        if(self::JWT_KEY) {
+            $payload = (array)JWT::decode($message, self::JWT_KEY, ['HS256']);
+        }
+        else {
+            $payload = json_decode($message, true);
+        }
+        $o = (array)$payload['data'];
 
         /** @var WorkerableEvent $event */
-        $event = unserialize($o['data']);
+        $event = unserialize($o['data']);   // will call the magic unserialize() which will set __data
         $data = $event->__data;
         $event->restoreFromScalars($data, $app);
 
         return [
-            'name' => $o['name'],
+            'name'  => $o['name'],
             'event' => $event
         ];
     }
 
+    /**
+     * magic
+     *
+     * @return string
+     */
     public function serialize()
     {
-        // return serialize(json_encode($this->getAsScalars()));
         return serialize($this->getAsScalars());
     }
 
+    /**
+     * magic
+     * too bad this will build an object (event), no way to "return" data, so we use the propery "__data"
+     *
+     * @param string $serialized
+     */
     public function unserialize($serialized)
     {
-        // $this->__data = json_decode(unserialize($serialized), true);
         $this->__data = unserialize($serialized);
     }
+
 
     /** **************** WorkerableEventInterface interface ************** */
 

@@ -13,11 +13,11 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreateEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Assert\Assertion;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 
 class RecordSubdefinitionCreateSubscriber implements EventSubscriberInterface
 {
@@ -54,7 +54,7 @@ class RecordSubdefinitionCreateSubscriber implements EventSubscriberInterface
             file_put_contents("/tmp/phraseanet-eventsq.txt", sprintf("%s\n\n", $message), FILE_APPEND);
 
             // here to check that a restored event is the (almost) the same as the original one
-            // $restored_event = RecordEvent::restoreFromWorkerMessage($message, $this->app);
+            //   $restored_event = RecordEvent::restoreFromWorkerMessage($message, $this->app);
 
             $event->stopPropagation();
         }
