@@ -71,18 +71,19 @@
                                     {% else %}
                                         {% set docRatio = '' %}
                                     {% endif %}
+                                    {% if loop.index == 1 %}
+                                       <video id="thumb_video" controls="" preload="auto" data-ratio="{{ docRatio }}" data-test="{{ loop.index }}">
+                                                {% for subdef in previewHtml5 %}
+                                                    <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                                {% endfor %}
+                                                {{ 'No preview available' | trans }}
+                                        </video>
 
-                                    <video id="thumb_video" controls="" preload="auto" data-ratio="{{ docRatio }}">
-                                        {% for subdef in previewHtml5 %}
-                                            <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
-                                        {% endfor %}
-                                        {{ 'No preview available' | trans }}
-                                    </video>
-
-                                    <div data-width="{{ subdef.get_width() }}"
-                                            data-height="{{ subdef.get_height() }}"
-                                            data-name="{{ subdef.get_name() }}"
-                                            class="alt_canvas" id="{{ subdef.get_name() }}" ></div>
+                                        <div data-width="{{ subdef.get_width() }}"
+                                                data-height="{{ subdef.get_height() }}"
+                                                data-name="{{ subdef.get_name() }}"
+                                                class="alt_canvas" id="{{ subdef.get_name() }}" ></div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
 
