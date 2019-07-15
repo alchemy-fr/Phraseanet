@@ -59,16 +59,16 @@ class BasketRepository extends EntityRepository
      */
     public function findActiveByUser(User $user, $sort = null)
     {
-        $dql = 'SELECT b
-            FROM Phraseanet:Basket b
-            LEFT JOIN b.elements e
-            WHERE b.user = :usr_id
-            AND b.archived = false';
+        $dql = "SELECT b\n"
+            . " FROM Phraseanet:Basket b\n"
+            . " WHERE b.user = :usr_id\n"
+            . " AND b.archived = false";
 
         if ($sort == 'date') {
-            $dql .= ' ORDER BY b.created DESC';
-        } elseif ($sort == 'name') {
-            $dql .= ' ORDER BY b.name ASC';
+            $dql .= "\n ORDER BY b.created DESC";
+        }
+        elseif ($sort == 'name') {
+            $dql .= "\n ORDER BY b.name ASC";
         }
 
         $query = $this->_em->createQuery($dql);
@@ -85,19 +85,19 @@ class BasketRepository extends EntityRepository
      */
     public function findUnreadActiveByUser(User $user)
     {
-        $dql = 'SELECT b
-            FROM Phraseanet:Basket b
-            JOIN b.elements e
-            LEFT JOIN b.validation s
-            LEFT JOIN s.participants p
-            WHERE b.archived = false
-            AND (
-              (b.user = :usr_id_owner AND b.isRead = false)
-              OR (b.user != :usr_id_ownertwo
-                  AND p.user = :usr_id_participant
-                  AND p.is_aware = false)
-              )
-            AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
+        $dql = "SELECT b\n"
+            . " FROM (Phraseanet:Basket b LEFT JOIN b.validation s)\n"
+            . " INNER JOIN s.participants p\n"
+            . " WHERE b.archived = false\n"
+            . " AND (\n"
+            . "   (b.user = :usr_id_owner AND b.isRead = false)\n"
+            . "    OR \n"
+            . "   (b.user != :usr_id_ownertwo\n"
+            . "      AND p.user = :usr_id_participant\n"
+            . "      AND p.is_aware = false\n"
+            . "      AND s.expires > CURRENT_TIMESTAMP()\n"
+            . "   )\n"
+            . " )";
 
         $params = [
             'usr_id_owner'       => $user->getId(),
