@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.5",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "99a701d1a201bbe79e7c6c20a0797c5e9182a001"
+                "reference": "53ba295dfd0554a31c35e93902a5ef6cb8eca31a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/99a701d1a201bbe79e7c6c20a0797c5e9182a001",
-                "reference": "99a701d1a201bbe79e7c6c20a0797c5e9182a001",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/53ba295dfd0554a31c35e93902a5ef6cb8eca31a",
+                "reference": "53ba295dfd0554a31c35e93902a5ef6cb8eca31a",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.5",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.6",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-06-20T13:32:05+00:00"
+            "time": "2019-07-11T12:59:49+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -7789,12 +7789,12 @@
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },

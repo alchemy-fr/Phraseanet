@@ -44,7 +44,7 @@ main:
             doctype_aggregate_limit: 0
             camera_model_aggregate_limit: 0
             iso_aggregate_limit: 0
-            aperture_aggregate_limit: 0   
+            aperture_aggregate_limit: 0
             shutterspeed_aggregate_limit: 0
             flashfired_aggregate_limit: 0
             framerate_aggregate_limit: 0
@@ -234,6 +234,7 @@ embed_bundle:
     audio:
         player: videojs
         autoplay: false
+        cover_subdef: thumbnail
     document:
         #player: flexpaper
         enable_pdfjs: true
@@ -297,6 +298,6 @@ rabbitmq:
         user: ''
         password: ''
         vhost: /
-        
+
 Console_logger_enabled_environments: [test]
 
