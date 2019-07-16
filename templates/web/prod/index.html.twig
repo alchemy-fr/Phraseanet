@@ -146,7 +146,7 @@
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
             prodApp.appEvents.emit('search.updateFacetData');
-
+            $('body').addClass('{{ cssfile }}')
 
         });
     </script>
