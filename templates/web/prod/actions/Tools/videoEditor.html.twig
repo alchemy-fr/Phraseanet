@@ -49,6 +49,7 @@
                                 {#Set the preview Ratio #}
                                 {% set width = technical_info[dataW].value %}
                                 {% set height = technical_info[dataH].value %}
+                                {% set prevRatio = '' %}
 
                                 {% if width and height %}
                                     {% set rawRatio =  (width / height)|number_format(3, '.') %}
@@ -59,7 +60,7 @@
                                 {% endif %}
 
                                 {#Set the document Ratio #}
-                                {% for subdef in outputFormats %}
+                                {% for subdef in previewHtml5 %}
 
                                     {% set width = subdef.get_width()  %}
                                     {% set height = subdef.get_height() %}
@@ -67,24 +68,21 @@
                                     {% if width and height %}
                                         {% set rawRatio =  (width / height)|number_format(3, '.') %}
                                         {% set rawRatioLength =  rawRatio|length %}
-                                        {% set docRatio = rawRatio|slice(0,rawRatioLength-1) %}
+                                        {% if subdef.get_name()=='preview' %}
+                                            {% set prevRatio = rawRatio|slice(0,rawRatioLength-1) %}
+                                        {% endif %}
                                     {% else %}
-                                        {% set docRatio = '' %}
+                                        {% set prevRatio = '' %}
                                     {% endif %}
-                                    {% if loop.index == 1 %}
-                                       <video id="thumb_video" controls="" preload="auto" data-ratio="{{ docRatio }}" data-test="{{ loop.index }}">
-                                                {% for subdef in previewHtml5 %}
-                                                    <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
-                                                {% endfor %}
-                                                {{ 'No preview available' | trans }}
-                                        </video>
 
-                                        <div data-width="{{ subdef.get_width() }}"
-                                                data-height="{{ subdef.get_height() }}"
-                                                data-name="{{ subdef.get_name() }}"
-                                                class="alt_canvas" id="{{ subdef.get_name() }}" ></div>
-                                    {% endif %}
                                 {% endfor %}
+                                <video id="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                    {% for subdef in previewHtml5 %}
+                                        <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                    {% endfor %}
+                                    {{ 'No preview available' | trans }}
+                                </video>
+
                             </div>
 
                             <div id="thumb_camera_button"></div>
