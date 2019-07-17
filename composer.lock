@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64830cb4d53b32b47e02d4a19df9cef2",
+    "content-hash": "6341722edcd5bfa22e933f5411225144",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -383,16 +383,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.0",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95"
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/7372ca4e43473328bf06bca810558fbad7bb2f95",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
                 "shasum": ""
             },
             "require": {
@@ -452,7 +452,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2017-05-18T19:04:04+00:00"
+            "time": "2019-02-13T13:06:43+00:00"
         },
         {
             "name": "alchemy/queue-bundle",
