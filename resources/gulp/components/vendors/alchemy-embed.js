@@ -11,7 +11,7 @@ gulp.task('copy-alchemy-embed-debug', function(){
 
 gulp.task('copy-alchemy-embed', function(){
     // copy all dist folder:
-    return gulp.src('vendor/alchemy/embed-bundle/dist/!**!/!*')
+    return gulp.src('vendor/alchemy/embed-bundle/dist/**/*')
         .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
 
 
