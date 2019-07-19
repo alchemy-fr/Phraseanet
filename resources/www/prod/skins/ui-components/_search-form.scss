@@ -56,13 +56,31 @@ form.phrasea_query input.query {
     }
   }
 }
+.search-header-block {
+  background: $storyBg;
+  padding: 4px 4px 4px 10px;
+  border-radius: 5px;
+  label {
+    &.inline {
+      padding-top: 0;
+      line-height: 19px;
+      padding-right: 5px;
+    }
+  }
+  .custom_checkbox_label .custom_radio {
+    top: calc(50% - 7px);
+  }
+  .custom_select_dark {
+    transition: 0.3s all;
+  }
+}
 
 /******* SEARCH ***************************************************************/
 
 #adv_search .sbasglob,
 .adv_options .sbasglob,
 #sbasfiltercont {
-  color: $lightTextColor;
+  color: #ffffff;
   margin: 0 0 0 10px;
 }
 

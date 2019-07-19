@@ -65,7 +65,10 @@
         &.ui-corner-top {
           border: none;
           top: 0;
-          background-color: $mediumBackgroundColor;
+          background-color: $STTHover;
+        }
+        a {
+          color: $basketTitleHov;
         }
       }
       &.grouping {

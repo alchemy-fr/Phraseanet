@@ -83,6 +83,7 @@ Menu contextuel
   background-color: $answersToolsBg;
   border-radius: 6px;
   overflow: hidden;
+  box-shadow: 2px 2px 4px 0 $contextMenuShadow;
 }
 
 .context-menu-theme-flat .context-menu-item {
@@ -114,7 +115,7 @@ Menu contextuel
 }/* Flat theme End */
 
 .context-menu-item.divider {
-  border-bottom: 1px solid #7f7f7f;
+  border-bottom: 1px solid $contextDivider;
 }
 
 .context-menu-item .divider {

@@ -20,6 +20,10 @@
     box-sizing: border-box;
     border-bottom: none; //1px solid $darkerBorderColor;
   }
+  .btn-inverse .caret {
+    border-top-color: $whiteCaret;
+    border-bottom-color: $whiteCaret;
+  }
   .tools {
     &:first-child .btn-group {
       border-right: 1px solid $answersToolsBtnSeparatorBorder;
@@ -74,12 +78,15 @@
         border-top-color: $mediumTextHoverColor;
         border-bottom-color: $mediumTextHoverColor;
       }
+      .open &, &:hover, &:active, &:focus {
+        background-color: $btnHovLight;
+      }
     }
     .classicButton button.btn-inverse:hover,
     .dropdownButton button.btn-inverse:hover {
-      background-color: $mediumBackgroundColor;
+      background-color: $btnHovLight;
       color: $textPrimaryHoverColor;
-      text-shadow: $textShadow;
+      /*text-shadow: $textShadow*/;
     }
 
     .classicButton button.btn-inverse img,
@@ -101,14 +108,22 @@
       a {
         padding: 10px 14px;
         font-size: $mediumFontSize;
-        color: $answersToolsBtnColor;
+        color: $answersToolsBtnColorSub;
+        background-color: $answersToolsBtnBgSub;
         cursor: pointer;
         &:hover {
-          background: $workzoneToolsLabelColor;
-          color: $highlightTextColor; //$answersToolsBtnHoverColor;
+          background-color: $answersToolsBtnHoverBgSub;
+          color: $answersToolsBtnColorSub;
         }
       }
-      img {
+      > li > a {
+          &:hover, &:focus, &:active {
+          background-color: $answersToolsBtnHoverBgSub;
+          background-image: none;
+          }
+      }
+
+    img {
         margin-right: 5px;
         width: 21px;
         max-width: unset;
