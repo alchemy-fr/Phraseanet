@@ -37,11 +37,13 @@ $uiLinkColor2: $uiLinkColor !default;
   font-weight: bold;
   color: $uiTextTitleColor;
 }
-.ui-state-default a,
-.ui-state-default a:link,
-.ui-state-default a:visited {
+.ui-state-default a {
   color: $uiLinkColor;
   text-decoration: none;
+  &:visited, &:link, &.ui-state-hover {
+    color: #000000;
+    text-decoration: none;
+  }
 }
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,

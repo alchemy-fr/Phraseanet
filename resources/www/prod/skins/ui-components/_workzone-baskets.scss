@@ -137,6 +137,15 @@
   }
 }
 
+#idFrameC .tools .tools-block {
+  position: relative;
+  padding: 2px 10px;
+  font-weight: bold;
+  background-color: $mainMenuBackgroundColor;
+  color: $mainMenuLinkColor;
+
+}
+
 /** hack IE7 only */
 *:first-child + html .workzone-menu-title {
   margin-right: 65px;
