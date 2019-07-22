@@ -120,23 +120,23 @@ class BasketRepository extends EntityRepository
      */
     public function findActiveValidationByUser(User $user, $sort = null)
     {
-        $dql = 'SELECT b
-            FROM Phraseanet:Basket b
-            JOIN b.elements e
-            JOIN e.validation_datas v
-            JOIN b.validation s
-            JOIN s.participants p
-            WHERE b.user != ?1 AND p.user = ?2
-             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
+        $dql = "SELECT b\n"
+            . "FROM Phraseanet:Basket b\n"
+            . "  JOIN b.validation s\n"
+            . "  JOIN s.participants p\n"
+            . "WHERE b.user != ?1 AND p.user = ?2\n"
+            . "  AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())";
 
         if ($sort == 'date') {
-            $dql .= ' ORDER BY b.created DESC';
+            $dql .= "\nORDER BY b.created DESC";
         } elseif ($sort == 'name') {
-            $dql .= ' ORDER BY b.name ASC';
+            $dql .= "\nORDER BY b.name ASC";
         }
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([1 => $user->getId(), 2 => $user->getId()]);
+        $sql = $query->getSQL();
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, var_export($sql, true)), FILE_APPEND);
 
         return $query->getResult();
     }
@@ -210,30 +210,27 @@ class BasketRepository extends EntityRepository
     {
         switch ($type) {
             case self::RECEIVED:
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                JOIN b.elements e
-                WHERE b.user = :usr_id AND b.pusher_id IS NOT NULL';
+                $dql = "SELECT b\n"
+                    . "FROM Phraseanet:Basket b\n"
+                    . "WHERE b.user = :usr_id AND b.pusher_id IS NOT NULL";
                 $params = [
                     'usr_id' => $user->getId()
                 ];
                 break;
             case self::VALIDATION_DONE:
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                JOIN b.elements e
-                JOIN b.validation s
-                JOIN s.participants p
-                WHERE b.user != ?1 AND p.user = ?2';
+                $dql = "SELECT b\n"
+                    . "FROM Phraseanet:Basket b\n"
+                    . "  JOIN b.validation s\n"
+                    . "  JOIN s.participants p\n"
+                    . "WHERE b.user != ?1 AND p.user = ?2";
                 $params = [
-                    1       => $user->getId()
-                    , 2       => $user->getId()
+                    1 => $user->getId(),
+                    2 => $user->getId()
                 ];
                 break;
             case self::VALIDATION_SENT:
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
-                JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.user = :usr_id';
                 $params = [
@@ -243,7 +240,6 @@ class BasketRepository extends EntityRepository
             case self::MYBASKETS:
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
-                LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.user = :usr_id)';
