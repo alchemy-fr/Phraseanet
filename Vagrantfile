@@ -1,16 +1,5 @@
 Vagrant.require_version ">= 1.5"
-
-class MyCustomError < StandardError
-	attr_reader :code
-
-	def initialize(code)
-		@code = code
-	end
-
-	def to_s
-	"[#{code} #{super}]"
-	end
-end
+require 'json'
 
 # Check to determine whether we're on a windows or linux/os-x host,
 # later on we use this to launch ansible in the supported way
@@ -39,7 +28,16 @@ unless Vagrant.has_plugin?('vagrant-hostmanager')
     raise "vagrant-hostmanager is not installed! Please run\n  vagrant plugin install vagrant-hostmanager\n\n"
 end
 
-if ARGV[1] == '--provision'
+# Check to determine if box_meta JSON is present
+# if provisionned : pick name of box
+if File.file?(".vagrant/machines/default/virtualbox/box_meta")
+    data = File.read(".vagrant/machines/default/virtualbox/box_meta")
+    parsed_json = JSON.parse(data)
+    $box = parsed_json["name"]
+end
+
+# if not : run prompt to configure provisioning
+if !File.file?(".vagrant/machines/default/virtualbox/box_meta") && ARGV[0] == 'up'
     print "\033[34m \nChoose a Build type :\n\n(1) Use prebuilt Phraseanet Box\n(2) Build Phraseanet from scratch (xenial)\n\033[00m"
     type = STDIN.gets.chomp
     print "\n"
@@ -47,9 +45,10 @@ if ARGV[1] == '--provision'
     case (type)
        when '1'
             $box = "alchemy/Phraseanet-vagrant-dev_php"
+            $playbook = "resources/ansible/playbook-boxes.yml"
        when '2'
             $box = "ubuntu/xenial64"
-            print("\033[91mComplete build selected, don't forget to uncomment all roles on playbook.yml\n\n\033[00m")
+            $playbook = "resources/ansible/playbook.yml"
        else
             raise "\033[31mYou should specify Build type before running vagrant\n\n (Available : 1, 2)\n\n\033[00m"
     end
@@ -133,8 +132,6 @@ else if $env == "linux"
         $hostIps = `ifconfig | sed -nE 's/[[:space:]]*inet ([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})(.*)$/\\1/p'`.split("\n");
     else
         $hostIps = `resources/ansible/inventories/GetIpAdresses.cmd`;
-		# raise MyCustomError.new($hostIps), "HOST IP"
-
     end
 end
 
@@ -157,31 +154,28 @@ Vagrant.configure("2") do |config|
         ]
     end
 
-    config.vm.box = ($box) ? $box : "ubuntu/xenial64"
-
-    # In case, Phraseanet box, choose the php version
-    # For php 7.0 use box 0.0.1
-    # For php 7.1 use box 0.0.2
-    #config.vm.box_version = "0.0.1"
-
+    config.vm.box = $box
     config.ssh.forward_agent = true
     config_net(config)
 
     # If ansible is in your path it will provision from your HOST machine
     # If ansible is not found in the path it will be instaled in the VM and provisioned from there
     if which('ansible-playbook')
-        config.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "resources/ansible/playbook.yml"
-            ansible.limit = 'all'
-            ansible.verbose = 'vvv'
-            ansible.extra_vars = {
-                hostname: $hostname,
-                host_addresses: $hostIps,
-                phpversion: phpversion,
-                postfix: {
-                    postfix_domain: $hostname + ".vb"
+
+        if $playbook
+            config.vm.provision "ansible_local" do |ansible|
+                ansible.playbook = $playbook
+                ansible.limit = 'all'
+                ansible.verbose = 'vvv'
+                ansible.extra_vars = {
+                    hostname: $hostname,
+                    host_addresses: $hostIps,
+                    phpversion: phpversion,
+                    postfix: {
+                        postfix_domain: $hostname + ".vb"
+                    }
                 }
-            }
+            end
         end
 
         config.vm.provision "ansible_local", run: "always" do |ansible|
@@ -194,10 +188,6 @@ Vagrant.configure("2") do |config|
             }
         end
     else
-		# raise MyCustomError.new([$hostname, $phpVersion, $hostIps]), "HOST IP"
-		# raise MyCustomError.new($hostIps), "HOST IP"
-		# raise MyCustomError.new($hostIps), "HOST IP"
-
         config.vm.provision :shell, path: "resources/ansible/windows.sh", args: [$hostname, $phpVersion, $hostIps]
        # config.vm.provision :shell, run: "always", path: "resources/ansible/windows-always.sh", args: ["default"]
     end
