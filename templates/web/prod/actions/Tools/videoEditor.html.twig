@@ -52,11 +52,7 @@
                                 {% set prevRatio = '' %}
 
                                 {% if width and height %}
-                                    {% set rawRatio =  (width / height)|number_format(3, '.') %}
-                                    {% set rawRatioLength =  rawRatio|length %}
-                                    {% set ratio = rawRatio|slice(0,rawRatioLength-1) %}
-                                {% else %}
-                                    {% set ratio = '' %}
+                                    {% set ratio =  (width / height)|number_format(3, '.') %}
                                 {% endif %}
 
                                 {#Set the document Ratio #}
@@ -66,13 +62,9 @@
                                     {% set height = subdef.get_height() %}
 
                                     {% if width and height %}
-                                        {% set rawRatio =  (width / height)|number_format(3, '.') %}
-                                        {% set rawRatioLength =  rawRatio|length %}
                                         {% if subdef.get_name()=='preview' %}
-                                            {% set prevRatio = rawRatio|slice(0,rawRatioLength-1) %}
+                                            {% set prevRatio =  (width / height)|number_format(3, '.') %}
                                         {% endif %}
-                                    {% else %}
-                                        {% set prevRatio = '' %}
                                     {% endif %}
 
                                 {% endfor %}
