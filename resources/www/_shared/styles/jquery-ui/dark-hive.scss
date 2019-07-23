@@ -4,6 +4,7 @@ $uiTextTitleColor: #333333 !default;
 $uiLinkColor: #ffffff !default;
 $uiLinkFocusColor: #c77405 !default;
 $uiLinkActiveColor: #eb8f00 !default;
+$whiteCaret: #ffffff !default;
 @import './shared';
 .ui-widget-content {
   border: 1px solid #555555;
@@ -46,13 +47,13 @@ $uiLinkActiveColor: #eb8f00 !default;
   border: 1px solid #0b93d5;
   background: #003147 url('#{$imagesPath}ui-bg_highlight-soft_33_003147_1x100.png') 50% 50% repeat-x;
   font-weight: normal;
-  color: #ffffff;
+  color: $whiteCaret;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
 .ui-state-hover a:link,
 .ui-state-hover a:visited {
-  color: #ffffff;
+  color: $whiteCaret;
   text-decoration: none;
 }
 .ui-state-active,
@@ -61,12 +62,12 @@ $uiLinkActiveColor: #eb8f00 !default;
   border: 1px solid #26b3f7;
   background: #0972a5 url('#{$imagesPath}ui-bg_highlight-hard_20_0972a5_1x100.png') 50% 50% repeat-x;
   font-weight: normal;
-  color: #ffffff;
+  color: $whiteCaret;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-  color: #ffffff;
+  color: $whiteCaret;
   text-decoration: none;
 }
 

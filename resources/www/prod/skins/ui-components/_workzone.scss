@@ -16,14 +16,19 @@ $workzoneTabActiveTextColor: $lightTextColor !default;
 
 $workzoneTabDisabledBackgroundColor: $tabBackgroundColor !default;
 $workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
-
+$white: #4990e2 !default;
+$toolsPanelBg: #464646 !default;
+$toolTitleColor: #b9b9b9 !default;
+$basketTips: rgba(0, 0, 0, 0.2) !default;
+$basketTips2: rgba(0, 0, 0, 0.19) !default;
+$dividerBg: #6c6c6c !default;
 
 /**
  * Workzone
  */
 #idFrameC {
   top: 0 !important;
-  min-width: 360px;
+  min-width: 300px;
   bottom: 0 !important;
   &.closed {
     min-width: 0;
