@@ -1278,6 +1278,27 @@
               <field>id</field>
             </fields>
           </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>unread</name>
+            <type>INDEX</type>
+            <fields>
+              <field>unread</field>
+            </fields>
+          </index>
+          <index>
+            <name>created_on</name>
+            <type>INDEX</type>
+            <fields>
+              <field>created_on</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
