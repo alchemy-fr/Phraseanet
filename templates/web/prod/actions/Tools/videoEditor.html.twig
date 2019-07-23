@@ -52,7 +52,7 @@
                                 {% set prevRatio = '' %}
 
                                 {% if width and height %}
-                                    {% set ratio =  (width / height)|number_format(3, '.') %}
+                                    {% set ratio =  (width / height)|number_format(2, '.') %}
                                 {% endif %}
 
                                 {#Set the document Ratio #}
@@ -63,7 +63,7 @@
 
                                     {% if width and height %}
                                         {% if subdef.get_name()=='preview' %}
-                                            {% set prevRatio =  (width / height)|number_format(3, '.') %}
+                                            {% set prevRatio =  (width / height)|number_format(2, '.') %}
                                         {% endif %}
                                     {% endif %}
 
