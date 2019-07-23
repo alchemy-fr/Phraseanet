@@ -799,7 +799,7 @@ function loadFacets(facets) {
     return getFacetsTree().reload(treeSource)
         .done(function () {
             _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
-                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
 
                 var li_s = $(element).next().children('li');
                 var ul = $(element).next();
