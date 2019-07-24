@@ -120,7 +120,8 @@ class SessionController extends Controller
 
                 return $this->app->json($ret);
             }
-        } else {
+        }
+        else {
             $ret['status'] = 'disconnected';
 
             return $this->app->json($ret);
@@ -128,7 +129,8 @@ class SessionController extends Controller
 
         try {
             $this->getApplicationBox()->get_connection();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return $this->app->json($ret);
         }
 
@@ -140,7 +142,14 @@ class SessionController extends Controller
 
         /** @var \Alchemy\Phrasea\Model\Entities\Session $session */
         $session = $this->getSessionRepository()->find($this->getSession()->get('session_id'));
-        $session->setUpdated(new \DateTime());
+        try {
+            $now = new \DateTime();
+        }
+        catch (\Exception $e) {
+            // no-op : DateTime() without arg should not fail...
+            $now = null;    // prevent phpstorm warning about undefine var.
+        }
+        $session->setUpdated($now);
 
         $manager = $this->getEntityManager();
         if (!$session->hasModuleId($moduleId)) {
@@ -148,8 +157,9 @@ class SessionController extends Controller
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $manager->persist($module);
-        } else {
-            $manager->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+        }
+        else {
+            $manager->persist($session->getModuleById($moduleId)->setUpdated($now));
         }
 
         $manager->persist($session);
@@ -231,7 +241,10 @@ class SessionController extends Controller
      */
     private function getBasketRepository()
     {
-        return $this->getEntityManager()->getRepository('Phraseanet:Basket');
+        /** @var BasketRepository $ret */
+        $ret = $this->getEntityManager()->getRepository('Phraseanet:Basket');
+
+        return $ret;
     }
 
     /**
