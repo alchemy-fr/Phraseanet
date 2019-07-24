@@ -10,7 +10,7 @@
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox custom_checkbox_label" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <input type="checkbox" checked id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
                        onchange="clksbas(this, {{sbas_id}});" />
-                    
+
                     <span class="base_indicator">
                         {{sbas_id|sbas_labels(app)}}
                     </span>
@@ -28,8 +28,8 @@
                         <li class="clkbas">
                             <label class="white-label" style="line-height: 18px;color: #ffffff;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline custom_checkbox_label">
-                                <input class="ck_{{base_id}} checkbas" 
-                                onchange="checkFilters(true);" 
+                                <input class="ck_{{base_id}} checkbas"
+                                onchange="checkFilters(true);"
                                 id="ck_{{base_id}}_{{unique_id}}" type="checkbox"
                                 name="bases[]" value="{{base_id}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                 <span class="custom_checkbox"></span>
@@ -209,7 +209,7 @@
                     {#container fetched by js #}
 
                     <input type="hidden" name="advanced-search-title" id="advanced-search-title" value="{{ 'Advanced Search' | trans }}">
-                    
+
 
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
@@ -223,7 +223,7 @@
                                 </a>
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
-                            <div class="control-group pull-left">
+                            <div class="control-group pull-left search-header-block">
                             {% if GV_multiAndReport %}
                                 <label for="mode_type_doc" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
@@ -360,7 +360,7 @@
                                                             </p>
                                                         </div>
                                                     </label>
-                                                    
+
                                                     <label for="multiple-terms" class="radio inline custom_checkbox_label">
                                                         <input type="radio" class="multiple_terms" name="must_match" value="ALL" checked="checked" id="multiple-terms"/>
                                                         <span class="custom_radio"></span>
@@ -957,6 +957,8 @@
             });
 
             dragOnModalClosed();
+
+            $('body').addClass('{{ cssfile }}');
         });
 
 
@@ -1048,6 +1050,7 @@
                 value: color,
                 t: Math.random()
             }, function(data){
+                $('body').removeClass().addClass('PNB ' + color);
                 return;
             });
             if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {

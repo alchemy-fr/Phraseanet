@@ -10,6 +10,7 @@
     "modernizr": "~2.8.3",
     "normalize-css": "~2.1.3",
     "json2": "latest",
+    "html5shiv": "^3.7.3",
     "humane-js": "~3.0.6",
     "jquery-file-upload": "~8.3.2",
     "blueimp-load-image": "latest",

@@ -8,6 +8,8 @@ $tabActiveBackgroundColor: $tabContentBackgroundColor !default;
 $tabActiveTextColor: $lightTextColor !default;
 $tabDisabledBackgroundColor: $tabBackgroundColor !default;
 $tabDisabledTextColor: $mediumTextActiveColor !default;
+$mediumBackgroundColor2: $mediumBackgroundColor !default;
+$basketBg: $darkBackgroundColor !default;
 
 .ui-dialog .ui-dialog-content.loading, .loading {
   background-image: url('#{$iconsPath}#{$contentLoaderImg}');
@@ -30,6 +32,9 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
 .ui-widget-header {
   background: none;
   border: transparent 0px none;
+  .push_dialog_container &, .feedback_dialog_container & {
+    background: #000000;
+  }
 }
 .ui-tabs {
   .ui-tabs-nav {
@@ -152,9 +157,12 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: $mediumBackgroundColor;
+  background-color: $mediumBackgroundColor2;
   border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
   border-radius: 0;
+  &:hover {
+    background-color: $accordionBgHeaderHover;
+  }
 }
 
 .ui-accordion .ui-accordion-header.unread .workzone-menu-title {
@@ -180,7 +188,7 @@ $tabDisabledTextColor: $mediumTextActiveColor !default;
 
 
 .ui-accordion .ui-accordion-content {
-  background-color: $darkBackgroundColor;
+  background-color: $basketBg;
   border-top: none;
   margin-top: -1px;
   margin-bottom: 0;

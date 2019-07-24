@@ -799,7 +799,7 @@ function loadFacets(facets) {
     return getFacetsTree().reload(treeSource)
         .done(function () {
             _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
-                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
 
                 var li_s = $(element).next().children('li');
                 var ul = $(element).next();
@@ -1504,7 +1504,7 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
-        
+
         var answerIcons = $('#answers .bottom_actions_holder .icon-stack');
         var answerIconsHolder = $('.bottom_actions_holder');
         if (el.outerWidth() < 180) {
@@ -1750,10 +1750,10 @@ $(document).ready(function () {
         var $record_types = $('#recordtype_sel');
 
         if ($this.hasClass('mode_type_reg')) {
-            $record_types.css("visibility", "hidden");  // better than hide because does not change layout
+            $record_types.css("display", "none");
             $record_types.prop("selectedIndex", 0);
         } else {
-            $record_types.css("visibility", "visible");
+            $record_types.css("display", "inline-block");
         }
     });
 
@@ -1763,7 +1763,7 @@ $(document).ready(function () {
         checkFilters(true);
     });
 
-    
+
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
