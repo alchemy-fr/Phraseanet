@@ -11,16 +11,12 @@ gulp.task('copy-alchemy-embed-debug', function(){
 
 gulp.task('copy-alchemy-embed', function(){
     // copy all dist folder:
-    return gulp.src('vendor/alchemy/embed-bundle/dist/**/*')
-        .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
-
-
-   /* if( debugMode === true) {
-        return gulp.src('vendor/alchemy/embed-bundle/dist/!**!/!*')
+    if( debugMode === true) {
+        return gulp.src('vendor/alchemy/embed-bundle/dist/**/*')
             .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
     }
-    return gulp.src(config.paths.vendors + 'alchemy-embed-medias/dist/!**!/!*')
-        .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));*/
+    return gulp.src(config.paths.vendors + 'alchemy-embed-medias/dist/**/*')
+        .pipe(gulp.dest( config.paths.build + 'vendors/alchemy-embed-medias'));
 });
 gulp.task('watch-alchemy-embed-js', function() {
     debugMode = true;
