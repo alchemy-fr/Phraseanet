@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "700e5d6496ac1d797c5026c33de5393d",
+    "content-hash": "a10180db4c87c9f82d0afb16ab44d003",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934"
+                "reference": "53ba295dfd0554a31c35e93902a5ef6cb8eca31a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/db6ec7c18128e7c122d9b722089c790b55f61934",
-                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/53ba295dfd0554a31c35e93902a5ef6cb8eca31a",
+                "reference": "53ba295dfd0554a31c35e93902a5ef6cb8eca31a",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/1.0.1",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.6",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-05-16T13:15:19+00:00"
+            "time": "2019-07-11T12:59:49+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
