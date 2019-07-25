@@ -77,9 +77,6 @@ class BasketRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters(['usr_id' => $user->getId()]);
 
-        $sql = $query->getSQL();
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n\n", __FILE__, __LINE__, var_export($sql, true)), FILE_APPEND);
-
         return $query->getResult();
     }
 
@@ -93,10 +90,10 @@ class BasketRepository extends EntityRepository
     {
         // checked : 2 usages, "b.elements" is useless
         $dql = "SELECT b\n"
-            . " FROM (Phraseanet:Basket b\""
+            . " FROM Phraseanet:Basket b\n"
             // . "  JOIN b.elements e\n"
-            . "  LEFT JOIN b.validation s)\n"
-            . "  INNER JOIN s.participants p\n"
+            . "  LEFT JOIN b.validation s\n"
+            . "  LEFT JOIN s.participants p\n"
             . " WHERE b.archived = false\n"
             . " AND (\n"
             . "   (b.user = :usr_id_owner AND b.isRead = false)\n"
@@ -116,9 +113,6 @@ class BasketRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
-
-        $sql = $query->getSQL();
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n\n", __FILE__, __LINE__, var_export($sql, true)), FILE_APPEND);
 
         return $query->getResult();
     }
@@ -143,6 +137,15 @@ class BasketRepository extends EntityRepository
             . "WHERE b.user != ?1 AND p.user = ?2\n"
             . "  AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())";
 
+        $dql = 'SELECT b
+            FROM Phraseanet:Basket b
+            JOIN b.elements e
+            JOIN e.validation_datas v
+            JOIN b.validation s
+            JOIN s.participants p
+            WHERE b.user != ?1 AND p.user = ?2
+             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
+
         if ($sort == 'date') {
             $dql .= "\nORDER BY b.created DESC";
         } elseif ($sort == 'name') {
@@ -151,8 +154,6 @@ class BasketRepository extends EntityRepository
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([1 => $user->getId(), 2 => $user->getId()]);
-        $sql = $query->getSQL();
-        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n\n", __FILE__, __LINE__, var_export($sql, true)), FILE_APPEND);
 
         return $query->getResult();
     }
