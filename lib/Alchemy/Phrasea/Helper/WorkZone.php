@@ -31,7 +31,7 @@ class WorkZone extends Helper
      * @param  null|string $sort     "date"|"name"
      * @return ArrayCollection
      */
-    public function getContent(string $sort = null)
+    public function getContent($sort = null)
     {
         /* @var $repo_baskets BasketRepository */
         $repo_baskets = $this->app['repo.baskets'];

@@ -58,7 +58,7 @@ class BasketRepository extends EntityRepository
      * @param null|string $sort
      * @return Basket[]
      */
-    public function findActiveByUser(User $user, string $sort = null)
+    public function findActiveByUser(User $user, $sort = null)
     {
         // checked : 4 usages, "b.elements" is useless
         $dql = "SELECT b\n"
