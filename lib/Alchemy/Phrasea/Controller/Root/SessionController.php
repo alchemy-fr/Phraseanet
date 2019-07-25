@@ -94,10 +94,9 @@ class SessionController extends Controller
     }
 
     /**
-     * Check session state
-     *
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
+     * @throws \Exception       in case "new \DateTime()" fails ?
      */
     public function updateSession(Request $request)
     {
@@ -142,14 +141,7 @@ class SessionController extends Controller
 
         /** @var \Alchemy\Phrasea\Model\Entities\Session $session */
         $session = $this->getSessionRepository()->find($this->getSession()->get('session_id'));
-        try {
-            $now = new \DateTime();
-        }
-        catch (\Exception $e) {
-            // no-op : DateTime() without arg should not fail...
-            $now = null;    // prevent phpstorm warning about undefine var.
-        }
-        $session->setUpdated($now);
+        $session->setUpdated(new \DateTime());
 
         $manager = $this->getEntityManager();
         if (!$session->hasModuleId($moduleId)) {
