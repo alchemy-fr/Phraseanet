@@ -335,7 +335,7 @@ class Manager
         $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
-            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($element));
+            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($element, true));
         }
 
         return $element;

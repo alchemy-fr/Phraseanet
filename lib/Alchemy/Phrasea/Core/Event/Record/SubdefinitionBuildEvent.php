@@ -11,5 +11,24 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
+use Alchemy\Phrasea\Model\RecordInterface;
+
 class SubdefinitionBuildEvent extends RecordEvent
-{}
+{
+    private $isNewRecord;
+
+    public function __construct(RecordInterface $record, $isNewRecord = false)
+    {
+        parent::__construct($record);
+
+        $this->isNewRecord = $isNewRecord;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNewRecord()
+    {
+        return $this->isNewRecord;
+    }
+}
