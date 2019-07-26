@@ -2465,19 +2465,44 @@ function deleteThis(lst) {
         title: language.warning
     });
 
+    /*convert to array by 3 records*/
+    /*https://ourcodeworld.com/articles/read/278/how-to-split-an-array-into-chunks-of-the-same-size-easily-in-javascript*/
+    function chunkArray(myArray, chunk_size){
+        var index = 0;
+        var arrayLength = myArray.length;
+        var tempArray = [];
+
+        for (index = 0; index < arrayLength; index += chunk_size) {
+            myChunk = myArray.slice(index, index+chunk_size);
+            // Do something if you want with the group
+            tempArray.push(myChunk);
+        }
+
+        return tempArray;
+    }
+
+    var dividend = 3;
+    var elt = lst.split(';');
+
+    var tab = chunkArray(elt, dividend);
+
+
+    var my_lst = tab.map(function(t){ return t.join(';'); });
+
     $.ajax({
         type: "POST",
         url: "../prod/records/delete/what/",
         dataType: 'html',
-        data: {lst: lst},
+        data: {lst: lst, my_lst: my_lst},
         success: function (data) {
             var response = JSON.parse(data);
             $dialog.setOption('height', 'auto');
-
+            console.log(my_lst);
             $dialog.setContent(response.renderView);
 
             //reset top position of dialog
             $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
+            $('input[name="all_lst"]').val(my_lst);
         }
     });
 
