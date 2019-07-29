@@ -14,7 +14,7 @@
 #    - php
     - xdebug
 #    - composer
-#    - mailcatcher
+    - mailcatcher
 #    - node
 #    - yarn
 #    - ffmpeg
