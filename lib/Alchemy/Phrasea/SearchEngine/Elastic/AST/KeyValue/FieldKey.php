@@ -41,7 +41,7 @@ class FieldKey implements Key, QueryPostProcessor
         return QueryHelper::wrapPrivateFieldQuery($field, $query);
     }
 
-    private function getField(QueryContext $context)
+    public function getField(QueryContext $context)
     {
         $hash = spl_object_hash($context);
         if (!isset($this->field_cache[$hash])) {

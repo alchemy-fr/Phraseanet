@@ -20,7 +20,7 @@ class ValueChecker
     {
         Assertion::allIsInstanceOf($list, Typed::class);
         $is_numeric = is_numeric($value);
-        $is_valid_date = RecordHelper::validateDate($value);
+        $is_valid_date = (RecordHelper::sanitizeDate($value) !== null);
         $filtered = [];
         foreach ($list as $item) {
             switch ($item->getType()) {
