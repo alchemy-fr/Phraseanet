@@ -46,6 +46,7 @@
                                value="1"> {{ "Also delete records that rely on groupings." | trans }}
                     </label>
                 {% endif %}
+                <div class="delete_count"></div>
             </div>
         {% endif %}
         <div class="form-actions" style="background-color:transparent;">
@@ -77,6 +78,7 @@
             /*deletion loop*/
             var get_all_list = $('input[name="all_lst"]').val();
             var all_list = get_all_list.split(',');
+            var count = 0;
 
             function deleteRecordbyDivident(i) {
                 $('input[name="lst"]').val(all_list[i]);
@@ -86,19 +88,38 @@
                     data: form.serializeArray(),
                     dataType: "json",
                     beforeSend:function(){
-                        $this.prop('disabled', true);
-                        $closeButton.prop('disabled', true);
-                        $cancelButton.prop('disabled', true);
-                        $dialog.setOption('closeOnEscape', false);
-                        loader.show();
+                        if ( i == 0) {
+
+                            /*Before sending request*/
+                            $this.prop('disabled', true);
+                            $closeButton.prop('disabled', true);
+                            $cancelButton.prop('disabled', true);
+                            $dialog.setOption('closeOnEscape', false);
+                            loader.show();
+
+                        }
+
+                        var nbDelete = {{ nbDelete }};
+                            count = all_list[i].split(';').length + count;
+                            console.log( count + ' deleted');
+                            $('.delete_count').html(count  + '/' + '{{ nbDelete + nbTrash }}' + 'deleted' );
+
+
+
                     },
                     success: function(data){
-                        console.log(all_list[i] + ' deleted');
                         $.each(data,function(i,n){
                             var imgt = $('#IMGT_'+n),
                                 chim = $('.CHIM_'+n),
                                 stories = $('.STORY_'+n);
-                            $('.doc_infos', imgt).remove();
+                                $('.doc_infos', imgt).remove();
+                            //chim.parent().slideUp().remove();
+                            if ( i == (all_list.length - 1)) {
+                                chim.parent().slideUp().remove();
+                               // $('.ui-dialog').slideUp().remove();
+                            }
+
+                            imgt.find(".status,.title,.bottom").empty();
                             imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
                             imgt.find(".thumb img").attr("src","/assets/common/images/icons/deleted.png").css({
                                 width:'100%',
@@ -106,8 +127,7 @@
                                 margin: '0 10px',
                                 top: '0'
                             });
-                            chim.parent().slideUp().remove();
-                            imgt.find(".status,.title,.bottom").empty();
+
 
                             p4.Results.Selection.remove(n);
                             if(stories.length > 0)
@@ -122,21 +142,31 @@
                         viewNbSelect();
                     },
                     complete: function(){
+                        if ( i == (all_list.length - 1)) {
 
+
+                            $('.ui-dialog').slideUp().remove();
+                            /*all is done*/
+                            $dialog.Close();
+                            $this.prop('disabled', false);
+                            $closeButton.prop('disabled', false);
+                            $cancelButton.prop('disabled', false);
+                            $dialog.setOption('closeOnEscape', true);
+                            loader.hide();
+                        }
                     }
                 });
             }
 
+
             for(let i = 0; i < all_list.length; i++){
                 deleteRecordbyDivident(i);
             }
-            /*all is done*/
-            $dialog.Close();
-            $this.prop('disabled', false);
-            $closeButton.prop('disabled', false);
-            $cancelButton.prop('disabled', false);
-            $dialog.setOption('closeOnEscape', true);
-            loader.hide();
+
+
+
+
+
 
             /*end of loop*/
         });
