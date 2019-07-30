@@ -11,6 +11,7 @@ use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
 use InvalidArgumentException;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 
 class QueryVisitor implements Visit
 {
@@ -164,7 +165,7 @@ class QueryVisitor implements Visit
         $boundary = $node->getChild(1)->accept($this);
 
         if ($this->isDateKey($key)) {
-            if(($v = QueryHelper::sanitizeDate($boundary)) !== null) {
+            if(($v = RecordHelper::sanitizeDate($boundary)) !== null) {
                 $boundary = $v;
             }
         }

@@ -10,7 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as StructureField;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 
 class RangeExpression extends Node
 {
@@ -65,10 +65,10 @@ class RangeExpression extends Node
 
         if($this->key->getFieldType($context) === FieldMapping::TYPE_DATE) {
             if($lower_bound !== null) {
-                $lower_bound = QueryHelper::sanitizeDate($lower_bound);
+                $lower_bound = RecordHelper::sanitizeDate($lower_bound);
             }
             if($higher_bound !== null) {
-                $higher_bound = QueryHelper::sanitizeDate($higher_bound);
+                $higher_bound = RecordHelper::sanitizeDate($higher_bound);
             }
         }
 

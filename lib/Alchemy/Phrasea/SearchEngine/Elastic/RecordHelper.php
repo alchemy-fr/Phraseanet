@@ -19,6 +19,7 @@ use appbox;
 use DateTime;
 use igorw;
 
+
 class RecordHelper
 {
     /**
@@ -89,4 +90,73 @@ class RecordHelper
         return $this->collectionMap;
     }
 
+    /**
+     * @param string $value
+     * @return null|string
+     */
+    public static function sanitizeDate($value)
+    {
+        $v_fix = null;
+        try {
+            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            switch (count($a)) {
+                case 1:     // yyyy
+                    $date = new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
+                    $v_fix = $date->format('Y');
+                    break;
+                case 2:     // yyyy;mm
+                    $date = new \DateTime( $a[0] . '-' . $a[1] . '-01');
+                    $v_fix = $date->format('Y-m');
+                    break;
+                case 3:     // yyyy;mm;dd
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $v_fix = $date->format('Y-m-d');
+                    break;
+                case 4:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 5:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 6:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+            }
+        }
+        catch (\Exception $e) {
+            // no-op, v_fix = null
+        }
+
+        return $v_fix;
+    }
+
+    public function sanitizeValue($value, $type)
+    {
+        switch ($type) {
+            case FieldMapping::TYPE_DATE:
+                return self::sanitizeDate($value);
+
+            case FieldMapping::TYPE_FLOAT:
+            case FieldMapping::TYPE_DOUBLE:
+                return (float) $value;
+
+            case FieldMapping::TYPE_INTEGER:
+            case FieldMapping::TYPE_LONG:
+            case FieldMapping::TYPE_SHORT:
+            case FieldMapping::TYPE_BYTE:
+                return (int) $value;
+
+            case FieldMapping::TYPE_BOOLEAN:
+                return (bool) $value;
+
+            case FieldMapping::TYPE_STRING:
+                return str_replace("\0", '', $value);
+
+            default:
+                return $value;
+        }
+    }
 }
