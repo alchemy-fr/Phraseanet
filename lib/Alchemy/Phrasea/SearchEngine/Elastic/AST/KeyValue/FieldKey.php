@@ -30,6 +30,11 @@ class FieldKey implements Key, QueryPostProcessor
         return $this->getField($context)->getIndexField($raw);
     }
 
+    public function getFieldType(QueryContext $context)
+    {
+        return $this->getField($context)->getType();
+    }
+
     public function isValueCompatible($value, QueryContext $context)
     {
         return ValueChecker::isValueCompatible($this->getField($context), $value);
@@ -41,7 +46,7 @@ class FieldKey implements Key, QueryPostProcessor
         return QueryHelper::wrapPrivateFieldQuery($field, $query);
     }
 
-    public function getField(QueryContext $context)
+    private function getField(QueryContext $context)
     {
         $hash = spl_object_hash($context);
         if (!isset($this->field_cache[$hash])) {
