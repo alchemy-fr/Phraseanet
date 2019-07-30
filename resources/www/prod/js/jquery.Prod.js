@@ -4,7 +4,7 @@
         humane.error = humane.spawn({addnCls: 'humane-libnotify-error', timeout: 1000});
 
         $('body').on('click', 'a.dialog', function (event) {
-            $('.context-menu').hide();
+            $('#basket_menu').hide();
             var $this = $(this), size = 'Medium';
 
             if ($this.hasClass('small-dialog')) {
