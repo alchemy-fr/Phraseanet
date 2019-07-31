@@ -88,7 +88,7 @@
                     data: form.serializeArray(),
                     dataType: "json",
                     beforeSend:function(){
-                        if ( i == 0) {
+                         if ( i == 0) {
 
                             /*Before sending request*/
                             $this.prop('disabled', true);
@@ -97,14 +97,12 @@
                             $dialog.setOption('closeOnEscape', false);
                             loader.show();
 
-                        }
+                         }
 
                         var nbDelete = {{ nbDelete }};
                             count = all_list[i].split(';').length + count;
+                            $('.delete_count').html(count  + 'deleted' );
                             console.log( count + ' deleted');
-                            $('.delete_count').html(count  + '/' + '{{ nbDelete + nbTrash }}' + 'deleted' );
-
-
 
                     },
                     success: function(data){
@@ -143,8 +141,6 @@
                     },
                     complete: function(){
                         if ( i == (all_list.length - 1)) {
-
-
                             $('.ui-dialog').slideUp().remove();
                             /*all is done*/
                             $dialog.Close();
