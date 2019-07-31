@@ -175,11 +175,10 @@ class QueryController extends Controller
                         null
                 ]
             );
-// <span>'.$result->getTotal().'</span>
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
                 . '</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span id="test">'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;
