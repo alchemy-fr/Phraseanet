@@ -67,7 +67,10 @@ class PhraseanetMetadataSetter
                 }
 
                 if ($field->get_type() == 'date') {
-                    $value = date_format(date_create($value),"Y/m/d H:i:s");
+                    $dateTime = date_create($value);
+                    if ($dateTime) {
+                        $value = date_format($dateTime,"Y/m/d H:i:s");
+                    }
                 }
 
                 $data['value'] = $value;
