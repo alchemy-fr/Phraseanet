@@ -1751,7 +1751,7 @@ $(document).ready(function () {
 
         if ($this.hasClass('mode_type_reg')) {
             $record_types.css("display", "none");
-            $record_types.prop("selectedIndex", 0);
+            $('#recordtype_sel select').find('option').removeAttr('selected');
         } else {
             $record_types.css("display", "inline-block");
         }
