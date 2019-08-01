@@ -66,8 +66,11 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                $data['value'] = $value;
+                if ($field->get_type() == 'date') {
+                    $value = date_format(date_create($value),"Y/m/d H:i:s");
+                }
 
+                $data['value'] = $value;
                 $metadataInRecordFormat[] = $data;
             }
         }
