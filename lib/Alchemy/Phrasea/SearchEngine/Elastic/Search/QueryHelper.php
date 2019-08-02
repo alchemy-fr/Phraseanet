@@ -110,41 +110,51 @@ class QueryHelper
         }
     }
 
-    public static function getRangeFromDateString($string)
+    public static function getRangeFromDateString($value)
     {
-        $formats = ['Y/m/d', 'Y/m', 'Y'];
-        $deltas = ['+1 day', '+1 month', '+1 year'];
-        $to = null;
-        while ($format = array_pop($formats)) {
-            $delta = array_pop($deltas);
-            $from = date_create_from_format($format, $string);
-            if ($from !== false) {
-                // Rewind to start of range
-                $month = 1;
-                $day = 1;
-                switch ($format) {
-                    case 'Y/m/d':
-                        $day = (int) $from->format('d');
-                    case 'Y/m':
-                        $month = (int) $from->format('m');
-                    case 'Y':
-                        $year = (int) $from->format('Y');
-                }
-                date_date_set($from, $year, $month, $day);
-                date_time_set($from, 0, 0, 0);
-                // Create end of the the range
-                $to = date_modify(clone $from, $delta);
-                break;
+        $date_from = null;
+        $date_to   = null;
+        try {
+            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            switch (count($a)) {
+                case 1:     // yyyy
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-01-01 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new \DateInterval('P1Y'));
+                    break;
+                case 2:     // yyyy;mm
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-01 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new \DateInterval('P1M'));
+                    break;
+                case 3:     // yyyy;mm;dd
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new \DateInterval('P1D'));
+                    break;
+                case 4:
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00'));
+                    $date_to->add(new \DateInterval('PT1H'));
+                    break;
+                case 5:
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00'));
+                    $date_to->add(new \DateInterval('PT1M'));
+                    break;
+                case 6:
+                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]));
+                    // $date_to->add(new \DateInterval('PT1S'));    // no need since precision is 1 sec, a "equal" will be generated when from==to
+                    break;
             }
         }
+        catch (\Exception $e) {
+            // no-op
+        }
 
-        if (!$from || !$to) {
-            throw new \InvalidArgumentException(sprintf('Invalid date "%s".', $string));
+        if ($date_from === null || $date_to === null) {
+            throw new \InvalidArgumentException(sprintf('Invalid date "%s".', $value));
         }
 
         return [
-            'from' => $from->format(FieldMapping::DATE_FORMAT_CAPTION_PHP),
-            'to'   => $to->format(FieldMapping::DATE_FORMAT_CAPTION_PHP)
+            'from' => $date_from->format('Y-m-d H:i:s'),
+            'to'   => $date_to->format('Y-m-d H:i:s')
         ];
     }
+
 }
