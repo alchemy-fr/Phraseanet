@@ -52,6 +52,11 @@ class NativeKey implements Key
         $this->key = $key;
     }
 
+    public function getFieldType(QueryContext $context)
+    {
+        return $this->type;
+    }
+
     public function getIndexField(QueryContext $context, $raw = false)
     {
         return $this->key;
