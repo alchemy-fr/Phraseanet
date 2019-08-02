@@ -265,6 +265,7 @@ function display_basket() {
     $('.basket_element', sc_wrapper).parent()
         .bind('click', function (event) {
             scid_click(event, this);
+            adjust_visibility(this);
             return false;
         });
 
@@ -565,7 +566,7 @@ function get_next() {
 
     $('.basket_element', current_wrapper).parent().trigger('click');
 
-    adjust_visibility($('.basket_element', current_wrapper));
+    adjust_visibility($('.basket_element', current_wrapper).parent());
 
     if ($(document).data('slideshow')) {
         var timer = setTimeout('get_next();', 3500);
@@ -587,7 +588,7 @@ function get_prev() {
 
     $('.basket_element', current_wrapper).parent().trigger('click');
 
-    adjust_visibility($('.basket_element', current_wrapper));
+    adjust_visibility($('.basket_element', current_wrapper).parent());
 }
 
 function slideshow(boolean_value) {
