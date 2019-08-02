@@ -526,17 +526,18 @@ function is_viewable(el) {
     var sc_wrapper = $('#sc_wrapper');
     var sc_container = $('#sc_container');
 
-    var el_width = $(el).parent().outerWidth();
-    var el_position = $(el).parent().position();
+    var el_width = $(el).parent().width();
+    var el_position = $(el).parent().offset();
     var sc_scroll_left = sc_wrapper.scrollLeft();
 
-    var boundup = sc_wrapper.width(),
-        bounddown = 0,
-        placeup = el_position.left + el_width - sc_scroll_left,
-        placedown = el_position.left - sc_scroll_left;
+    var boundRight = sc_wrapper.width(),
+        boundLeft = 0,
+        placeRight = el_position.left + el_width + sc_scroll_left,
+        placeLeft = el_position.left - sc_scroll_left;
 
-    if (placeup <= boundup && placedown >= bounddown)
+    if (placeRight <= boundRight && placeLeft >= boundLeft) {
         return true;
+    }
     return false;
 }
 
@@ -547,7 +548,7 @@ function adjust_visibility(el) {
     var sc_wrapper = $('#sc_wrapper');
     var el_parent = $(el).parent();
 
-    var sc_left = el_parent.position().left + el_parent.outerWidth() / 2 - sc_wrapper.width() / 2;
+    var sc_left = el_parent.position().left + el_parent.outerWidth() - sc_wrapper.width() / 2;
 
     sc_wrapper.stop().animate({
         'scrollLeft': sc_left
