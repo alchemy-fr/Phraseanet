@@ -396,10 +396,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format('Y-m-d');
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format('Y-m-d');
             }
 
             foreach ($options->getDateFields() as $dateField) {
