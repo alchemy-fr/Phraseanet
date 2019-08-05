@@ -12,7 +12,7 @@
     {% endif %}
 
     <form id="delete-record-form" style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
-        <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
+        <input type="hidden" value="{{ records.serializedList() }}" name="lst"/>
         {% if nbTrash > 0 %}
             <div class="well-small label-important"
                  style="background-color: #ffef22;">
@@ -37,7 +37,7 @@
                     <img src="/assets/common/images/icons/icon_empty_bin.png"/>
                 </div>
                 <div class="dialog-right-section">
-                    <span>{{ nbDelete }} {{ "prod:app trash: record-delete" | trans }}</span>
+                    <span class="to_delete_count">{{ nbDelete }}</span> {{ "prod:app trash: record-to-delete" | trans }}
                 </div>
                 {% if records.stories().count() %}
                     <label class="checkbox story">
@@ -50,9 +50,6 @@
         <div class="form-actions" style="background-color:transparent;">
             <button type="button" class="btn btn-danger submiter">{{ "Ok" | trans }}</button>
             <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-            <span class="form-action-loader" style="display:none;">
-                        <img src="/assets/common/images/icons/loader000.gif"/>
-                    </span>
         </div>
     </form>
 
@@ -64,64 +61,113 @@
         var titleBox = $(".ui-dialog-title", $dialogBox.parent());
         titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
 
-        $cancelButton.bind("click", function(){
+        $cancelButton.bind("click", function () {
             $dialog.Close();
         });
 
-        $("button.submiter", $dialogBox).bind("click", function(){
+        $("button.submiter", $dialogBox).bind("click", function () {
             var $this = $(this);
             var form = $(this).closest("form");
-            var loader = form.find("form-action-loader");
+            var $to_delete_count = form.find(".to_delete_count");
 
-            $.ajax({
-                type: form.attr("method"),
-                url: form.attr("action"),
-                data: form.serializeArray(),
-                dataType: "json",
-                beforeSend:function(){
-                    $this.prop('disabled', true);
-                    $closeButton.prop('disabled', true);
-                    $cancelButton.prop('disabled', true);
-                    $dialog.setOption('closeOnEscape', false);
-                    loader.show();
-                },
-                success: function(data){
-                    $dialog.Close();
-                    $.each(data,function(i,n){
-                        var imgt = $('#IMGT_'+n),
-                        chim = $('.CHIM_'+n),
-                        stories = $('.STORY_'+n);
+            $this.prop('disabled', true);
+            $this.hide();
+            $closeButton.bind("click", function () {
+                lst = [];
+                toDelCount = 0;
+            });
+            $cancelButton.bind("click", function () {
+                lst = [];
+                toDelCount = 0;
+            });
+            $dialog.setOption('closeOnEscape', false);
+
+            var del_children = $("input[name='del_children']", form).is(':checked');
+            var lst = $("input[name='lst']", form).val().split(';');
+            var toDelCount = lst.length;
+            var requests = [];
+            var iChunk = 0;
+
+            var f = function (autoloop) {
+                $.ajax({
+                        type:     form.attr("method"),
+                        url:      form.attr("action"),
+                        data:     {
+                            'lst':          lst.splice(0, 3).join(';'),
+                            'del_children': del_children
+                        },
+                        dataType: "json",
+                        'xhr': function() {
+                            var xhr = $.ajaxSettings.xhr();
+                            requests[iChunk++] = xhr;
+                            console.log("xhr:", xhr);
+                            return xhr;
+                        }
+                    }
+                ).done(function (data, textStatus, jqXHR) {
+                    $.each(data, function (i, n) {
+                        var imgt = $('#IMGT_' + n),
+                            chim = $('.CHIM_' + n),
+                            stories = $('.STORY_' + n);
+
                         $('.doc_infos', imgt).remove();
-                        imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
-                        imgt.find(".thumb img").attr("src","/assets/common/images/icons/deleted.png").css({
-                            width:'100%',
-                            height:'auto',
-                            margin: '0 10px',
-                            top: '0'
-                        });
+
+                        imgt.unbind("click")
+                            .removeAttr("ondblclick")
+                            .removeClass("selected")
+                            .draggable("destroy")
+                            .removeClass("IMGT")
+                            .find("img")
+                            .unbind();
+
+                        imgt.find(".thumb img")
+                            .attr("src", "/assets/common/images/icons/deleted.png")
+                            .css({
+                                width:  '100%',
+                                height: 'auto',
+                                margin: '0 10px',
+                                top:    '0'
+                            });
+
                         chim.parent().slideUp().remove();
+
                         imgt.find(".status,.title,.bottom").empty();
 
                         p4.Results.Selection.remove(n);
-                        if(stories.length > 0)
-                        {
+
+                        if (stories.length > 0) {
                             p4.WorkZone.refresh();
                         }
-                        else
-                        {
+                        else {
                             p4.WorkZone.Selection.remove(n);
                         }
                     });
-                    viewNbSelect();
-                },
-                complete: function(){
-                    $this.prop('disabled', false);
-                    $closeButton.prop('disabled', false);
-                    $cancelButton.prop('disabled', false);
-                    $dialog.setOption('closeOnEscape', true);
-                    loader.hide();
+
+                }).then(function (data, textStatus, jqXHR) {
+                    $to_delete_count.html(toDelCount);
+                    toDelCount -= 3;
+                    if (lst.length === 0 && toDelCount <= 0) {
+                        console.log("---- fini ----");
+                        requests.map(function(r) { if(r.readyState < 2) { r.abort(); } });
+                        $dialog.Close();
+                        viewNbSelect();
+                    }
+                    else if (autoloop) {
+                        window.setTimeout(f, 1, autoloop);
+                    }
+                });
+            };
+
+            if (false) {
+                // delete in serial
+                f(true);
+            }
+            else {
+                // delete in //
+                while (lst.length > 0) {
+                    f(false);
                 }
-            });
+            }
         });
     </script>
 {% elseif nbReceived == 0 %}
