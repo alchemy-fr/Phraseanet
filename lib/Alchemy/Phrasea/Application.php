@@ -241,9 +241,10 @@ class Application extends SilexApplication
                     'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
                 ]
             ]);
+
+            $this->setupXpdf();
         }
 
-        $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
