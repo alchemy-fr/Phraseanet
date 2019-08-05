@@ -50,6 +50,9 @@
         <div class="form-actions" style="background-color:transparent;">
             <button type="button" class="btn btn-danger submiter">{{ "Ok" | trans }}</button>
             <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
+            <span class="form-action-loader" style="display:none;">
+                <img src="/assets/common/images/icons/loader000.gif"/>
+            </span>
         </div>
     </form>
 
@@ -59,52 +62,63 @@
         var $closeButton = $("button.ui-dialog-titlebar-close", $dialogBox.parent());
         var $cancelButton = $("button.cancel", $dialogBox);
         var titleBox = $(".ui-dialog-title", $dialogBox.parent());
+
         titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
 
         $cancelButton.bind("click", function () {
+            // while no task is running, simply close the dlg
             $dialog.Close();
         });
 
         $("button.submiter", $dialogBox).bind("click", function () {
+            var CHUNKSIZE = 3;
+            var MAXTASKS  = 1;
+
             var $this = $(this);
             var form = $(this).closest("form");
             var $to_delete_count = form.find(".to_delete_count");
+            var $loader = form.find(".form-action-loader");
+            var canceling = false;
 
             $this.prop('disabled', true);
             $this.hide();
-            $closeButton.bind("click", function () {
-                lst = [];
-                toDelCount = 0;
-            });
-            $cancelButton.bind("click", function () {
-                lst = [];
-                toDelCount = 0;
-            });
+
+            var fCancel = function() {
+                // since tasks are running we wait for the end
+                $closeButton.hide();
+                $cancelButton.hide();
+                $loader.show();
+                // lst = [];   // this will cause every task to end up
+                canceling = true;
+            };
+
+            // cancel or close the dlg is the same : wait
             $dialog.setOption('closeOnEscape', false);
+            $closeButton.unbind("click").bind("click", fCancel);
+            $cancelButton.unbind("click").bind("click", fCancel);
 
             var del_children = $("input[name='del_children']", form).is(':checked');
             var lst = $("input[name='lst']", form).val().split(';');
-            var toDelCount = lst.length;
-            var requests = [];
-            var iChunk = 0;
+            var runningTasks;
 
-            var f = function (autoloop) {
-                $.ajax({
+            // task fct : will loop itself while there is job to do
+            var f = function (itask) {
+                console.log("batch[" + itask + "] : l=" + lst.length);
+                if(canceling) {
+                    return;
+                }
+                $.ajax(
+                    {
                         type:     form.attr("method"),
                         url:      form.attr("action"),
                         data:     {
-                            'lst':          lst.splice(0, 3).join(';'),
+                            'lst':          lst.splice(0, CHUNKSIZE).join(';'), // pop & truncate
                             'del_children': del_children
                         },
-                        dataType: "json",
-                        'xhr': function() {
-                            var xhr = $.ajaxSettings.xhr();
-                            requests[iChunk++] = xhr;
-                            console.log("xhr:", xhr);
-                            return xhr;
-                        }
+                        dataType: "json"
                     }
-                ).done(function (data, textStatus, jqXHR) {
+                ).done(function (data) {     // prod feedback only if ok
+
                     $.each(data, function (i, n) {
                         var imgt = $('#IMGT_' + n),
                             chim = $('.CHIM_' + n),
@@ -143,31 +157,35 @@
                         }
                     });
 
-                }).then(function (data, textStatus, jqXHR) {
-                    $to_delete_count.html(toDelCount);
-                    toDelCount -= 3;
-                    if (lst.length === 0 && toDelCount <= 0) {
-                        console.log("---- fini ----");
-                        requests.map(function(r) { if(r.readyState < 2) { r.abort(); } });
-                        $dialog.Close();
-                        viewNbSelect();
+                }).then(function () {    // go on even if case of error
+
+                    // countdown
+                    $to_delete_count.html(lst.length);
+
+                    if (lst.length === 0 || canceling) {
+                        // end of a task
+                        console.log("task " + itask + " end");
+                        runningTasks--;
+
+                        if(runningTasks === 0) {
+                            console.log("closing dialog");
+                            $dialog.Close();
+                            viewNbSelect();
+                        }
                     }
-                    else if (autoloop) {
-                        window.setTimeout(f, 1, autoloop);
+                    else {
+                        // don't recurse, give a delay to running fct to end
+                        window.setTimeout(f, 10, itask);
                     }
+
                 });
             };
 
-            if (false) {
-                // delete in serial
-                f(true);
+            // run a bunch of tasks in //
+            for(runningTasks=0; runningTasks<MAXTASKS; runningTasks++) {
+                f(runningTasks);    // pass the task his index to get nice console logs
             }
-            else {
-                // delete in //
-                while (lst.length > 0) {
-                    f(false);
-                }
-            }
+
         });
     </script>
 {% elseif nbReceived == 0 %}
