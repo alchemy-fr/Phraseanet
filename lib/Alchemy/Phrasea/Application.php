@@ -233,13 +233,15 @@ class Application extends SilexApplication
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
 
-        $binariesConfig = $this['conf']->get(['main', 'binaries']);
-        $executableFinder = new ExecutableFinder();
-        $this->register(new XPDFServiceProvider(), [
-            'xpdf.configuration' => [
-                'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
-            ]
-        ]);
+        if ($this['configuration.store']->isSetup()) {
+            $binariesConfig = $this['conf']->get(['main', 'binaries']);
+            $executableFinder = new ExecutableFinder();
+            $this->register(new XPDFServiceProvider(), [
+                'xpdf.configuration' => [
+                    'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
+                ]
+            ]);
+        }
 
         $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
