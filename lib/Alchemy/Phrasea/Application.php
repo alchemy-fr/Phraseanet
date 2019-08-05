@@ -109,6 +109,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Process\ExecutableFinder;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -231,7 +232,15 @@ class Application extends SilexApplication
 
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
-        $this->register(new XPDFServiceProvider());
+
+        $binariesConfig = $this['conf']->get(['main', 'binaries']);
+        $executableFinder = new ExecutableFinder();
+        $this->register(new XPDFServiceProvider(), [
+            'xpdf.configuration' => [
+                'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
+            ]
+        ]);
+
         $this->setupXpdf();
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
