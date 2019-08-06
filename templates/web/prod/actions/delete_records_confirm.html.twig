@@ -57,13 +57,13 @@
     </form>
 
     <script type="text/javascript">
-        var $dialog = p4.Dialog.get(1);
-        var $dialogBox = $dialog.getDomElement();
-        var $closeButton = $("button.ui-dialog-titlebar-close", $dialogBox.parent());
-        var $cancelButton = $("button.cancel", $dialogBox);
-        var titleBox = $(".ui-dialog-title", $dialogBox.parent());
+        var $dialog       = p4.Dialog.get(1),
+            $dialogBox    = $dialog.getDomElement(),
+            $closeButton  = $("button.ui-dialog-titlebar-close", $dialogBox.parent()),
+            $cancelButton = $("button.cancel", $dialogBox),
+            $titleBox     = $(".ui-dialog-title", $dialogBox.parent());
 
-        titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
+        $titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
 
         $cancelButton.bind("click", function () {
             // while no task is running, simply close the dlg
@@ -71,25 +71,110 @@
         });
 
         $("button.submiter", $dialogBox).bind("click", function () {
-            var CHUNKSIZE = 3;
-            var MAXTASKS  = 1;
+            var CHUNKSIZE = 3,
+                MAXTASKS  = 5;
 
-            var $this = $(this);
-            var form = $(this).closest("form");
-            var $to_delete_count = form.find(".to_delete_count");
-            var $loader = form.find(".form-action-loader");
-            var canceling = false;
+            var $this = $(this);    // the submit button
+            $this.prop('disabled', true)
+                 .hide();
 
-            $this.prop('disabled', true);
-            $this.hide();
+            var $form    = $(this).closest("form"),
+                $counter = $form.find(".to_delete_count"),
+                $loader  = $form.find(".form-action-loader");
 
-            var fCancel = function() {
+            var lst = $("input[name='lst']", $form).val().split(';');
+
+            var ajaxParms = {
+                type:     $form.attr("method"),
+                url:      $form.attr("action"),
+                data:     {
+                    'lst':          "",      // set in f
+                    'del_children': $("input[name='del_children']", $form).is(':checked')
+                },
+                dataType: "json"
+            };
+
+            var runningTasks = 0,   // number of running tasks
+                canceling = false;
+
+            var fCancel = function () {
                 // since tasks are running we wait for the end
                 $closeButton.hide();
                 $cancelButton.hide();
                 $loader.show();
-                // lst = [];   // this will cause every task to end up
+
                 canceling = true;
+            };
+
+            // task fct : will loop itself while there is job to do
+            var fTask = function (iTask) {
+                if (canceling) {
+                    return;
+                }
+
+                // pop & truncate
+                ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
+
+                $.ajax(ajaxParms)
+                 .done(function (data) {     // prod feedback only if result ok
+
+                     $.each(data, function (i, n) {
+                         var $imgt    = $('#IMGT_' + n),
+                             $chim    = $('.CHIM_' + n),
+                             $stories = $('.STORY_' + n);
+
+                         $('.doc_infos', $imgt).remove();
+
+                         $imgt.unbind("click")
+                              .removeAttr("ondblclick")
+                              .removeClass("selected")
+                              .draggable("destroy")
+                              .removeClass("IMGT")
+                              .find("img")
+                              .unbind();
+
+                         $imgt.find(".thumb img")
+                              .attr("src", "/assets/common/images/icons/deleted.png")
+                              .css({
+                                  width:  '100%',
+                                  height: 'auto',
+                                  margin: '0 10px',
+                                  top:    '0'
+                              });
+
+                         $chim.parent().slideUp().remove();
+
+                         $imgt.find(".status,.title,.bottom").empty();
+
+                         p4.Results.Selection.remove(n);
+
+                         if ($stories.length > 0) {
+                             p4.WorkZone.refresh();
+                         }
+                         else {
+                             p4.WorkZone.Selection.remove(n);
+                         }
+                     });
+
+                 })
+                 .then(function () {    // go on even in case of error
+
+                     // countdown
+                     $counter.html(lst.length);
+
+                     if (lst.length === 0 || canceling) {
+                         // end of a task
+                         if (--runningTasks === 0) {
+                             $dialog.Close();
+                             viewNbSelect();
+                         }
+                     }
+                     else {
+                         // don't recurse, give a delay to running fct to end
+                         window.setTimeout(fTask, 10, iTask);
+                     }
+
+                 });
             };
 
             // cancel or close the dlg is the same : wait
@@ -97,93 +182,9 @@
             $closeButton.unbind("click").bind("click", fCancel);
             $cancelButton.unbind("click").bind("click", fCancel);
 
-            var del_children = $("input[name='del_children']", form).is(':checked');
-            var lst = $("input[name='lst']", form).val().split(';');
-            var runningTasks;
-
-            // task fct : will loop itself while there is job to do
-            var f = function (itask) {
-                console.log("batch[" + itask + "] : l=" + lst.length);
-                if(canceling) {
-                    return;
-                }
-                $.ajax(
-                    {
-                        type:     form.attr("method"),
-                        url:      form.attr("action"),
-                        data:     {
-                            'lst':          lst.splice(0, CHUNKSIZE).join(';'), // pop & truncate
-                            'del_children': del_children
-                        },
-                        dataType: "json"
-                    }
-                ).done(function (data) {     // prod feedback only if ok
-
-                    $.each(data, function (i, n) {
-                        var imgt = $('#IMGT_' + n),
-                            chim = $('.CHIM_' + n),
-                            stories = $('.STORY_' + n);
-
-                        $('.doc_infos', imgt).remove();
-
-                        imgt.unbind("click")
-                            .removeAttr("ondblclick")
-                            .removeClass("selected")
-                            .draggable("destroy")
-                            .removeClass("IMGT")
-                            .find("img")
-                            .unbind();
-
-                        imgt.find(".thumb img")
-                            .attr("src", "/assets/common/images/icons/deleted.png")
-                            .css({
-                                width:  '100%',
-                                height: 'auto',
-                                margin: '0 10px',
-                                top:    '0'
-                            });
-
-                        chim.parent().slideUp().remove();
-
-                        imgt.find(".status,.title,.bottom").empty();
-
-                        p4.Results.Selection.remove(n);
-
-                        if (stories.length > 0) {
-                            p4.WorkZone.refresh();
-                        }
-                        else {
-                            p4.WorkZone.Selection.remove(n);
-                        }
-                    });
-
-                }).then(function () {    // go on even if case of error
-
-                    // countdown
-                    $to_delete_count.html(lst.length);
-
-                    if (lst.length === 0 || canceling) {
-                        // end of a task
-                        console.log("task " + itask + " end");
-                        runningTasks--;
-
-                        if(runningTasks === 0) {
-                            console.log("closing dialog");
-                            $dialog.Close();
-                            viewNbSelect();
-                        }
-                    }
-                    else {
-                        // don't recurse, give a delay to running fct to end
-                        window.setTimeout(f, 10, itask);
-                    }
-
-                });
-            };
-
             // run a bunch of tasks in //
-            for(runningTasks=0; runningTasks<MAXTASKS; runningTasks++) {
-                f(runningTasks);    // pass the task his index to get nice console logs
+            for (runningTasks = 0; runningTasks < MAXTASKS && lst.length > 0; runningTasks++) {
+                fTask(runningTasks);    // pass the task his index to get nice console logs
             }
 
         });
