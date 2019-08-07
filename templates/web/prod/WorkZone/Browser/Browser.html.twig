@@ -1,7 +1,7 @@
 
-<div class="PNB" id="BasketBrowser">
+<div class="PNB BasketBrowser" id="BasketBrowser">
   <div class="PNB10 Browser">
-    <div class="PNB10" style="width:190px;right:auto;">
+    <div class="PNB10 leftBrowser">
       <form name="BasketBrowser" method="GET" action="{{ path('prod_workzone_search') }}">
         <input name="Query" class="Query search" placeholder="{{ 'Search baskets' | trans }}" type="text"/>
 
@@ -78,7 +78,7 @@
       </form>
 
     </div>
-    <div class="PNB results" style="left:220px;">
+    <div class="PNB results rightBrowser">
     </div>
   </div>
   <div class="PNB10 Basket">
