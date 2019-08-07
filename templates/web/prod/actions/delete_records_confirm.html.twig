@@ -19,7 +19,7 @@
         $dialogBox    = $dialog.getDomElement(),
         $closeButton  = $("button.ui-dialog-titlebar-close", $dialogBox.parent()),
         $cancelButton = $("button.cancel", $dialogBox),
-        $titleBox     = $(".ui-dialog-title", $dialogBox.parent()),
+        // $titleBox     = $(".ui-dialog-title", $dialogBox.parent()),
         $delChildren  = $("input[name='del_children']", $dialogBox);
 
     /**
@@ -171,8 +171,6 @@
              });
         };
 
-        $titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
-
         // cancel or close the dlg is the same : wait
         $dialog.setOption('closeOnEscape', false);
         $closeButton.unbind("click").bind("click", fCancel);
@@ -184,6 +182,8 @@
         }
 
     });
+
+    // $titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
 
     // by default, do not delete children of stories : uncheck
     fSetDelChildren(false);

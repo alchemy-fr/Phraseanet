@@ -1,7 +1,7 @@
 {% if records.count() > 0 %}
     {% if records.rejected().count() > 0 %}
         <div class="well-small" style="text-align:center;">
-            <span class="label label-info">{{ "You do not have rights to remove all selected documents. Are you sure ?" | trans }}</span>
+            {{ "You do not have rights to remove all selected documents. Are you sure ?" | trans }}
         </div>
     {% endif %}
 
