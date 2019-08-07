@@ -71,13 +71,13 @@
 
         /**
          *  same parameters for every delete call, except the list of (CHUNKSIZE) records
+         *  nb: do NOT ask to delete children since they're included in lst
          */
         var ajaxParms = {
             type:     $form.attr("method"),
             url:      $form.attr("action"),
             data:     {
-                'lst':          "",      // set in f
-                'del_children': $delChildren.is(':checked')
+                'lst':          ""      // set in f
             },
             dataType: "json"
         };
