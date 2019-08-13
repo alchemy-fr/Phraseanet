@@ -19,6 +19,7 @@ use appbox;
 use DateTime;
 use igorw;
 
+
 class RecordHelper
 {
     /**
@@ -90,31 +91,46 @@ class RecordHelper
     }
 
     /**
-     * @param string $date
-     * @return bool
-     */
-    public static function validateDate($date)
-    {
-        $d = DateTime::createFromFormat(FieldMapping::DATE_FORMAT_CAPTION_PHP, $date);
-
-        return $d && $d->format(FieldMapping::DATE_FORMAT_CAPTION_PHP) == $date;
-    }
-
-    /**
      * @param string $value
      * @return null|string
      */
     public static function sanitizeDate($value)
     {
-        // introduced in https://github.com/alchemy-fr/Phraseanet/commit/775ce804e0257d3a06e4e068bd17330a79eb8370#diff-bee690ed259e0cf73a31dee5295d2edcR286
-        // not sure if it's really needed
+        $v_fix = null;
         try {
-            $date = new \DateTime($value);
-
-            return $date->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
-        } catch (\Exception $e) {
-            return null;
+            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            switch (count($a)) {
+                case 1:     // yyyy
+                    $date = new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
+                    $v_fix = $date->format('Y');
+                    break;
+                case 2:     // yyyy;mm
+                    $date = new \DateTime( $a[0] . '-' . $a[1] . '-01');
+                    $v_fix = $date->format('Y-m');
+                    break;
+                case 3:     // yyyy;mm;dd
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $v_fix = $date->format('Y-m-d');
+                    break;
+                case 4:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 5:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+                case 6:
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $v_fix = $date->format('Y-m-d H:i:s');
+                    break;
+            }
         }
+        catch (\Exception $e) {
+            // no-op, v_fix = null
+        }
+
+        return $v_fix;
     }
 
     public function sanitizeValue($value, $type)
@@ -143,5 +159,4 @@ class RecordHelper
                 return $value;
         }
     }
-
 }
