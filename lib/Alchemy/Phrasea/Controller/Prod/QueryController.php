@@ -179,7 +179,6 @@ class QueryController extends Controller
                     };
 
                     $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
-
                     $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
                     if(($ft = $findFulltext($jsQuery['query'])) !== null) {
                         $userManipulator->setUserSetting($user, 'start_page_query', $ft);
