@@ -40,6 +40,6 @@
     "js-fixtures": "https://github.com/badunk/js-fixtures/archive/master.zip"
   },
   "resolutions": {
-    "jquery": "~1.11.3"
+    "jquery": "~1.11.3" 
   }
 }
