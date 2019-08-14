@@ -265,7 +265,7 @@ class LoginController extends Controller
         return $this->render('login/register-classic.html.twig', array_merge(
             $this->getDefaultTemplateVariables($request),
             [
-                'geonames_server_uri' => str_replace(sprintf('%s:', parse_url($url, PHP_URL_SCHEME)), '', $url),
+                'geonames_server_uri' => $url,
                 'form' => $form->createView()
             ]));
     }
