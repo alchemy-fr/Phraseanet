@@ -653,7 +653,7 @@ class Application extends SilexApplication
     private function setupGeonames()
     {
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
+            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'https://geonames.alchemyasp.com/');
         });
     }
 
