@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Metadata;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
+use DateTime;
 use PHPExiftool\Driver\Metadata\Metadata;
 
 class PhraseanetMetadataSetter
@@ -66,8 +67,16 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                $data['value'] = $value;
+                if ($field->get_type() == 'date') {
+                    try {
+                        $dateTime = new DateTime($value);
+                        $value = $dateTime->format('Y/m/d H:i:s');
+                    } catch (\Exception $e) {
+                        // $value unchanged
+                    }
+                }
 
+                $data['value'] = $value;
                 $metadataInRecordFormat[] = $data;
             }
         }
