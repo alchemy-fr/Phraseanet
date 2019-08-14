@@ -99,19 +99,35 @@
         </td>
         <td class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result">
-            <img src="/assets/prod/images/Basket/Browser/left.png" />
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result prev_res">
+            <
           </a>
           {% endif %}
           <span>
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result">
-            <img src="/assets/prod/images/Basket/Browser/right.png" />
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result next_res">
+            >
           </a>
           {% endif %}
         </td>
       </tr>
     </table>
   </div>
+<script>
+  //load the next result page
+    jQuery(document).ready(function(){
+        jQuery('.next_res').click(function(){
+            jQuery('.results').load($(this).attr('href'));
+            return false;
+        });
+    });
+  //load the prev result page
+    jQuery(document).ready(function(){
+        jQuery('.prev_res').click(function(){
+            jQuery('.results').load($(this).attr('href'));
+            return false;
+        });
+    });
+</script>
