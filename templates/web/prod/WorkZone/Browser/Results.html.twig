@@ -119,6 +119,7 @@
   //load the next result page
     jQuery(document).ready(function(){
         jQuery('.next_res').click(function(){
+            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
             jQuery('.results').load($(this).attr('href'));
             return false;
         });
@@ -126,6 +127,7 @@
   //load the prev result page
     jQuery(document).ready(function(){
         jQuery('.prev_res').click(function(){
+            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
             jQuery('.results').load($(this).attr('href'));
             return false;
         });
