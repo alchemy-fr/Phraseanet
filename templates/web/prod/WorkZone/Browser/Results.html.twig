@@ -69,7 +69,7 @@
 
               {% if Basket.getPusher() %}
               <p>
-                {% set user_name = '<a href="/user/' ~ Basket.getPusher().get_id() ~ '/" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).getId() }) ~ '" class="UserTips">' ~ Basket.getPusher(app).get_display_name() ~ '</a>' %}
+                {% set user_name = '<a href="/user/' ~ Basket.getPusher().getId() ~ '/" tooltipsrc="' ~ path('prod_tooltip_user', { 'usr_id' : Basket.getPusher(app).getId() }) ~ '" class="UserTips">' ~ Basket.getPusher(app).getDisplayName() ~ '</a>' %}
                 {% trans with {'%user_name%' : user_name} %}Received from %user_name%{% endtrans %}
               </p>
               {% endif %}
