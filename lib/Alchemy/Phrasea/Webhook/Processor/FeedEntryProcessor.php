@@ -75,7 +75,7 @@ class FeedEntryProcessor implements ProcessorInterface
 
         return [
             'event' => $event->getName(),
-            'users_were_notified' => isset($data['notify_email']) ?: (bool) $data['notify_email'],
+            'users_were_notified' => isset($data['notify_email']) ? (bool) $data['notify_email'] : false,
             'feed' => [
                 'id' => $feed->getId(),
                 'title' => $feed->getTitle(),
