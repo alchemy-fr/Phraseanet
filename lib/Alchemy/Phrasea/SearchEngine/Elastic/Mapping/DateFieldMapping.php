@@ -57,6 +57,9 @@ class DateFieldMapping extends ComplexFieldMapping
      */
     protected function getProperties()
     {
-        return array_merge([ 'format' => $this->format ], parent::getProperties());
+        return array_merge([
+            'format' => $this->format,
+            'ignore_malformed' => true
+            ], parent::getProperties());
     }
 }
