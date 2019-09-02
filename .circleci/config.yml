@@ -9,7 +9,7 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
+    - image: circleci/rabbitmq:3.7.7
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
@@ -18,10 +18,7 @@ jobs:
         command: nvm install v10.12.0 && nvm alias default v10.12.0
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
-        command: 'sudo service memcached status || sudo service memcached start; sudo
-          redis-cli ping >/dev/null 2>&1 || sudo service redis-server start; sudo
-          service mysql status || sudo service mysql start; sudo service rabbitmq-server
-          status || sudo service rabbitmq-server start; '
+        command: 'sudo service mysql status || sudo service mysql start;'
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
