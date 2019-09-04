@@ -100,7 +100,7 @@ class RecordHelper
         try {
             $a = [];
             array_map(
-                function ($v) { if(is_numeric($v)) { $a[]=$v; }; },
+                function ($v) use (&$a) { if(is_numeric($v)) { $a[] = $v; }; },
                 explode(';', preg_replace('/\D+/', ';', trim($value)))
             );
             switch (count($a)) {
