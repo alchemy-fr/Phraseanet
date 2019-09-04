@@ -98,7 +98,11 @@ class RecordHelper
     {
         $v_fix = null;
         try {
-            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            $a = [];
+            array_map(
+                function ($v) { if(is_numeric($v)) { $a[]=$v; }; },
+                explode(';', preg_replace('/\D+/', ';', trim($value)))
+            );
             switch (count($a)) {
                 case 1:     // yyyy
                     $date = new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
