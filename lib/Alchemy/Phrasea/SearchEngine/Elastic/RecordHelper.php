@@ -98,30 +98,34 @@ class RecordHelper
     {
         $v_fix = null;
         try {
-            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            $a = [];
+            array_map(
+                function ($v) use (&$a) { if(is_numeric($v)) { $a[] = $v; }; },
+                explode(';', preg_replace('/\D+/', ';', trim($value)))
+            );
             switch (count($a)) {
                 case 1:     // yyyy
-                    $date = new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
+                    $date = @new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
                     $v_fix = $date->format('Y');
                     break;
                 case 2:     // yyyy;mm
-                    $date = new \DateTime( $a[0] . '-' . $a[1] . '-01');
+                    $date = @new \DateTime( $a[0] . '-' . $a[1] . '-01');
                     $v_fix = $date->format('Y-m');
                     break;
                 case 3:     // yyyy;mm;dd
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $date = @new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
                     $v_fix = $date->format('Y-m-d');
                     break;
                 case 4:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
+                    $date = @new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
                 case 5:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
+                    $date = @new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
                 case 6:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $date = @new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
             }
