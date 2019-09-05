@@ -119,10 +119,16 @@
 
                      $('.doc_infos', $imgt).remove();
 
+                     try {
+                         $imgt.draggable("destroy");
+                     }
+                     catch (e) {
+                         // no-op
+                     }
+
                      $imgt.unbind("click")
                           .removeAttr("ondblclick")
                           .removeClass("selected")
-                          .draggable("destroy")
                           .removeClass("IMGT")
                           .find("img")
                           .unbind();
