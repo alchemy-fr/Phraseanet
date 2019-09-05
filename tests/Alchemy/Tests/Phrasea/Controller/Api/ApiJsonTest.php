@@ -1301,6 +1301,27 @@ class ApiJsonTest extends ApiTestCase
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
+        // test  record_status in string
+        $record_status_expected = $record_status;
+        unset($tochange);
+
+        $pos = strpos($record_status, '1');
+        $tochange[$pos] = '1';
+
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
+
+        // Get fresh record_1
+        $testRecord = new \record_adapter($app, $testRecord->getDataboxId(), $testRecord->getRecordId());
+
+        $this->evaluateResponse200($response);
+        $this->evaluateMeta200($content);
+
+        $this->evaluateRecordsStatusResponse($testRecord, $content);
+
+        $record_new_status = strrev($testRecord->getStatus());
+        $this->assertEquals($record_status_expected, $record_new_status);
+
         $record1->setStatus(str_repeat('0', 32));
     }
 
