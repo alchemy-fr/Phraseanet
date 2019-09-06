@@ -799,7 +799,7 @@ function loadFacets(facets) {
     return getFacetsTree().reload(treeSource)
         .done(function () {
             _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
-                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
 
                 var li_s = $(element).next().children('li');
                 var ul = $(element).next();
@@ -1504,7 +1504,7 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
-        
+
         var answerIcons = $('#answers .bottom_actions_holder .icon-stack');
         var answerIconsHolder = $('.bottom_actions_holder');
         if (el.outerWidth() < 180) {
@@ -1750,10 +1750,10 @@ $(document).ready(function () {
         var $record_types = $('#recordtype_sel');
 
         if ($this.hasClass('mode_type_reg')) {
-            $record_types.css("visibility", "hidden");  // better than hide because does not change layout
-            $record_types.prop("selectedIndex", 0);
+            $record_types.css("display", "none");
+            $('#recordtype_sel select').find('option').removeAttr('selected');
         } else {
-            $record_types.css("visibility", "visible");
+            $record_types.css("display", "inline-block");
         }
     });
 
@@ -1763,7 +1763,7 @@ $(document).ready(function () {
         checkFilters(true);
     });
 
-    
+
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -2461,7 +2461,7 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: '287x153',
+        size: '480x160',
         title: language.warning
     });
 
@@ -2471,10 +2471,9 @@ function deleteThis(lst) {
         dataType: 'html',
         data: {lst: lst},
         success: function (data) {
-            var response = JSON.parse(data);
             $dialog.setOption('height', 'auto');
 
-            $dialog.setContent(response.renderView);
+            $dialog.setContent(data);
 
             //reset top position of dialog
             $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
@@ -3121,9 +3120,30 @@ function downloadThis(datas) {
     });
 }
 
+function number_format (number, decimals, dec_point, thousands_sep) {
+    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+    var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+        s = '',
+        toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + Math.round(n * k) / k;
+        };
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+}
 
 function viewNbSelect() {
-    $("#nbrecsel").empty().append(p4.Results.Selection.length());
+    $("#nbrecsel").empty().append(number_format(p4.Results.Selection.length(),null,null," "));
 }
 
 function selector(el) {

@@ -61,7 +61,19 @@
                 $('#pie-chart-div').hide();
             }
         }
+        var $color = "#FFFFFF";
 
+        if ($('body').hasClass('000000')) {
+            $color = "#FFFFFF";
+        }
+
+        if ($('body').hasClass('FFFFFF')) {
+            $color = "#000000";
+        }
+
+        if ($('body').hasClass('959595')) {
+            $color = "#000000";
+        }
 
         function drawChartVisualisation() {
             var maxValue = statistics.max_views < 4 ? 4 : statistics.max_views;
@@ -73,7 +85,7 @@
 
             var options = {
                 titleTextStyle: {
-                    color: 'white',
+                    color: $color,
                     fontSize: 13
                 },
                 colors: ['#FF9900'],
@@ -82,20 +94,20 @@
                 hAxis: {
                     title: "{{ 'preview::date' | trans }}",
                     titleTextStyle: {
-                        color: 'white',
+                        color: $color,
                         fontSize: 11
                     },
-                    textStyle:{color: '#FFF'},
+                    textStyle:{color: $color},
                     format: 'd/M/yy',
                     gridlines: {color: 'none'},
                     min: new Date(statistics.from),
                     max: new Date(statistics.to),
-                    baselineColor: '#FFF'
+                    baselineColor: $color
                 },
                 vAxis: {
                     title: "{{ 'preview::visualisation' | trans }}",
                     titleTextStyle: {
-                        color: 'white',
+                        color: $color,
                         fontSize: 11
                     },
                     textStyle:{color: '#FFF'},
@@ -103,7 +115,7 @@
                     maxValue: maxValue,
                     baselineColor: '#FFF'
                 },
-                legend: {position: 'top', textStyle: {color: 'white'}},
+                legend: {position: 'top', textStyle: {color: $color}},
             };
 
             var chart = new google.visualization.ColumnChart(
@@ -123,7 +135,7 @@
 
             var options = {
                 titleTextStyle: {
-                    color: 'white',
+                    color: $color,
                     fontSize: 13
                 },
                 colors: ['#FF9900'],
@@ -132,29 +144,29 @@
                 hAxis: {
                     title: "{{ 'preview::date' | trans }}",
                     titleTextStyle: {
-                        color: 'white',
+                        color: $color,
                         fontSize: 11
                     },
-                    textStyle:{color: '#FFF'},
+                    textStyle:{color: $color },
                     format: 'd/M/yy',
                     gridlines: {color: 'none'},
                     min: new Date(statistics.from),
                     max: new Date(statistics.to),
-                    baselineColor: '#FFF'
+                    baselineColor: $color
                 },
                 vAxis: {
                     title: "{{ 'preview::downloads' | trans }}",
                     titleTextStyle: {
-                        color: 'white',
+                        color: $color,
                         fontSize: 11
                     },
-                    textStyle:{color: '#FFF'},
+                    textStyle:{color: $color },
                     minValue: 0,
                     maxValue: maxValue,
-                    baselineColor: '#FFF',
+                    baselineColor: $color,
                     format: '0'
                 },
-                legend: {position: 'top', textStyle: {color: 'white'}},
+                legend: {position: 'top', textStyle: {color: $color }},
             };
 
             var chart = new google.visualization.ColumnChart(
@@ -170,7 +182,7 @@
                 'backgroundColor': 'transparent',
                 is3D: true,
                 colors:['#FF9900','#3FDFFD', '#14CAB5', '#CAA514', '#97853C'],
-                legend: {position: 'right', textStyle: {color: 'white'}},
+                legend: {position: 'right', textStyle: {color: $color}},
                 chartArea: {width:'90%',height:'70%'}
             };
 

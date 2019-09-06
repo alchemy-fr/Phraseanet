@@ -9,7 +9,7 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     docker:
     - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-      command: /sbin/init
+    - image: circleci/rabbitmq:3.7.7
     steps:
     - checkout
     - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
@@ -18,21 +18,18 @@ jobs:
         command: nvm install v10.12.0 && nvm alias default v10.12.0
     - run:
         working_directory: ~/alchemy-fr/Phraseanet
-        command: 'sudo service memcached status || sudo service memcached start; sudo
-          redis-cli ping >/dev/null 2>&1 || sudo service redis-server start; sudo
-          service mysql status || sudo service mysql start; sudo service rabbitmq-server
-          status || sudo service rabbitmq-server start; '
+        command: 'sudo service mysql status || sudo service mysql start;'
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
     - restore_cache:
         keys:
         # This branch if available
-        - v1-dep-{{ .Branch }}-
+        - v4.0-dep-{{ .Branch }}-
         # Default branch if not
-        - v1-dep-master-
+        - v4.0-dep-master-
         # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-        - v1-dep-
+        - v4.0-dep-
     # This is based on your 1.0 configuration file or project settings
     - run: echo 127.0.0.1 redis elasticsearch db rabbitmq | sudo tee -a /etc/hosts
     - run: git clone https://github.com/alanxz/rabbitmq-c
@@ -61,7 +58,7 @@ jobs:
         background: true
     # Save dependency cache
     - save_cache:
-        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        key: v4.0-dep-{{ .Branch }}-{{ epoch }}
         paths:
         # This is a broad list of cache paths to include many possible development environments
         # You can probably delete some of these entries

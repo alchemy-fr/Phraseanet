@@ -1438,7 +1438,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM permalinks WHERE subdef_id IN (SELECT subdef_id FROM subdef WHERE record_id=:record_id)";
+        $sql = "DELETE p FROM permalinks AS p INNER JOIN subdef AS s ON (p.subdef_id=s.subdef_id) WHERE s.record_id=:record_id";
         $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
