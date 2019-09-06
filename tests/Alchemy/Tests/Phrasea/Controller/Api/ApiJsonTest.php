@@ -1305,6 +1305,7 @@ class ApiJsonTest extends ApiTestCase
         $record_status_expected = $record_status;
         unset($tochange);
 
+        $tochange = [];
         $pos = strpos($record_status, '1');
         $tochange[$pos] = '1';
 
