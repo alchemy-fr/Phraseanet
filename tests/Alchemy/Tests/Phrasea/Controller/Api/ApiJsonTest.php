@@ -1281,6 +1281,27 @@ class ApiJsonTest extends ApiTestCase
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
 
+        // test  record_status in string
+        $record_status_expected = $record_status;
+
+        $pos = strpos($record_status, '1');
+        $bitToChange[$pos] = '1';
+
+        $response = $this->request('POST', $route, $this->getParameters(['status' => $bitToChange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
+        $content = $this->unserialize($response->getContent());
+
+        // Get fresh record_1
+        $testRecord = new \record_adapter($app, $testRecord->getDataboxId(), $testRecord->getRecordId());
+
+        $this->evaluateResponse200($response);
+        $this->evaluateMeta200($content);
+
+        $this->evaluateRecordsStatusResponse($testRecord, $content);
+
+        $record_new_status = strrev($testRecord->getStatus());
+        $this->assertEquals($record_status_expected, $record_new_status);
+
+
         foreach ($tochange as $n => $value) {
             $tochange[$n] = $value == '0' ? '1' : '0';
         }
@@ -1300,28 +1321,6 @@ class ApiJsonTest extends ApiTestCase
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
-
-        // test  record_status in string
-        $record_status_expected = $record_status;
-        unset($tochange);
-
-        $tochange = [];
-        $pos = strpos($record_status, '1');
-        $tochange[$pos] = '1';
-
-        $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
-        $content = $this->unserialize($response->getContent());
-
-        // Get fresh record_1
-        $testRecord = new \record_adapter($app, $testRecord->getDataboxId(), $testRecord->getRecordId());
-
-        $this->evaluateResponse200($response);
-        $this->evaluateMeta200($content);
-
-        $this->evaluateRecordsStatusResponse($testRecord, $content);
-
-        $record_new_status = strrev($testRecord->getStatus());
-        $this->assertEquals($record_status_expected, $record_new_status);
 
         $record1->setStatus(str_repeat('0', 32));
     }
