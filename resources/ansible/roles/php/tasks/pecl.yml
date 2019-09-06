@@ -2,6 +2,9 @@
   apt: pkg="php{{ phpversion }}-dev" state=present
   when: php.pecl_packages is defined
 
+- name: Update pecl chennel
+  shell: pecl channel-update pecl.php.net
+
 - name: Install Package
   shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.package }}
   register: pecl_result
@@ -20,18 +23,7 @@
   with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
 
-- name: Enable extension for FPM
-  file:
-    src: "/etc/php/{{ phpversion }}/mods-available/{{ item.name }}.ini"
-    dest: "/etc/php/{{ phpversion }}/fpm/conf.d/20-{{ item.name }}.ini"
-    state: link
-  with_items: '{{ php.pecl_packages }}'
-  when: php.pecl_packages is defined
-
-- name: Enable extension for CLI
-  file:
-    src: "/etc/php/{{ phpversion }}/mods-available/{{ item.name }}.ini"
-    dest: "/etc/php/{{ phpversion }}/cli/conf.d/20-{{ item.name }}.ini"
-    state: link
+- name: Enable extension
+  shell: phpenmod {{ item.name }}
   with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined

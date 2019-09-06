@@ -58,6 +58,7 @@ class RangeExpressionTest extends \PHPUnit_Framework_TestCase
     {
         $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key_prophecy = $this->prophesize(Key::class);
+        $key_prophecy->getFieldType($query_context)->willReturn('text');
         $key_prophecy->getIndexField($query_context)->willReturn('foo');
         $key_prophecy->isValueCompatible('bar', $query_context)->willReturn(true);
         $key = $key_prophecy->reveal();
@@ -73,6 +74,7 @@ class RangeExpressionTest extends \PHPUnit_Framework_TestCase
     {
         $query_context = $this->prophesize(QueryContext::class)->reveal();
         $key = $this->prophesize(FieldKey::class);
+        $key->getFieldType($query_context)->willReturn('text');
         $key->getIndexField($query_context)->willReturn('baz');
         $key->isValueCompatible('bar', $query_context)->willReturn(true);
         $key->postProcessQuery(Argument::any(), $query_context)->willReturnArgument(0);

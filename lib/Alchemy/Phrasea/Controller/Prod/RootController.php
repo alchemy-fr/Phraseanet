@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Helper;
-use Alchemy\Phrasea\Model\Entities\UserSetting;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -116,7 +116,7 @@ class RootController extends Controller
 
         return $this->render('prod/index.html.twig', [
             'module_name'          => 'Production',
-            'WorkZone'             => new Helper\WorkZone($this->app, $request),
+            'WorkZone'             => new WorkzoneHelper($this->app, $request),
             'module_prod'          => $helper,
             'search_datas'         => $helper->get_search_datas(),
             'cssfile'              => $cssfile,

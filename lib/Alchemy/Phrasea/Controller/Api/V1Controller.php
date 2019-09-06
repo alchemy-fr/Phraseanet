@@ -86,9 +86,10 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-use JMS\TranslationBundle\Annotation\Ignore;
-use media_subdef;
+use Guzzle\Http\Client as Guzzle;
 use League\Fractal\Resource\Item;
+use media_subdef;
+use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -864,19 +865,6 @@ class V1Controller extends Controller
 
     public function addRecordAction(Request $request)
     {
-        if (count($request->files->get('file')) == 0) {
-            return $this->getBadRequestAction($request, 'Missing file parameter');
-        }
-
-        $file = $request->files->get('file');
-        if (!$file instanceof UploadedFile) {
-            return $this->getBadRequestAction($request, 'You can upload one file at time');
-        }
-
-        if (!$file->isValid()) {
-            return $this->getBadRequestAction($request, 'Data corrupted, please try again');
-        }
-
         if (!$request->get('base_id')) {
             return $this->getBadRequestAction($request, 'Missing base_id parameter');
         }
@@ -889,14 +877,57 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
-        if (false === rename($file->getPathname(), $newPathname)) {
-            return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+        if (count($request->files->get('file')) == 0) {
+            if(count($request->get('url')) == 0) {
+                return $this->getBadRequestAction($request, 'Missing file parameter');
+            }
+            else {
+                // upload via url
+                $url = $request->get('url');
+                $pi = pathinfo($url);   // filename, extension
+
+                /** @var TemporaryFilesystemInterface $tmpFs */
+                $tmpFs = $this->app['temporary-filesystem'];
+                $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
+
+                try {
+                    $guzzle = new Guzzle($url);
+                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                }
+                catch (\Exception $e) {
+                    return $this->getBadRequestAction($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
+                }
+
+                if($res->getStatusCode() !== 200) {
+                    return $this->getBadRequestAction($request, sprintf('Error %s downloading "%s"', $res->getStatusCode(), $url));
+                }
+
+                $originalName = $pi['filename'] . '.' . $pi['extension'];
+                $uploadedFilename = $newPathname = $tempfile;
+            }
+        }
+        else {
+            // upload via file
+            $file = $request->files->get('file');
+            if (!$file instanceof UploadedFile) {
+                return $this->getBadRequestAction($request, 'You can upload one file at time');
+            }
+            if (!$file->isValid()) {
+                return $this->getBadRequestAction($request, 'Data corrupted, please try again');
+            }
+
+            $uploadedFilename = $file->getPathname();
+            $originalName = $file->getClientOriginalName();
+            $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+
+            if (false === rename($uploadedFilename, $newPathname)) {
+                return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+            }
         }
 
         $media = $this->app->getMediaFromUri($newPathname);
 
-        $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
+        $Package = new File($this->app, $media, $collection, $originalName);
 
         if ($request->get('status')) {
             $Package->addAttribute(new Status($this->app, $request->get('status')));
@@ -941,6 +972,11 @@ class V1Controller extends Controller
         $nosubdef = $request->get('nosubdefs') === '' || \p4field::isyes($request->get('nosubdefs'));
         $this->getBorderManager()->process($session, $Package, $callback, $behavior, $nosubdef);
 
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
+        }
+
         $ret = ['entity' => null];
 
         if ($output instanceof \record_adapter) {
@@ -981,8 +1017,9 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing name parameter');
         }
 
+        $uploadedFilename = $file->getPathname();
         $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
-        if (false === rename($file->getPathname(), $newPathname)) {
+        if (false === rename($uploadedFilename, $newPathname)) {
             $this->getBadRequestAction($request, 'Error while renaming file');
         }
 
@@ -1008,6 +1045,11 @@ class V1Controller extends Controller
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
+        }
+
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -2014,7 +2056,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));

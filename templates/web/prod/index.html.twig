@@ -10,7 +10,7 @@
                 <label id="ADVSRCH_SBAS_LABEL_{{sbas_id}}" style="display: inline" class="checkbox custom_checkbox_label" for="sbasChkr_{{sbas_id}}_{{unique_id}}">
                     <input type="checkbox" checked id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}"
                        onchange="clksbas(this, {{sbas_id}});" />
-                    
+
                     <span class="base_indicator">
                         {{sbas_id|sbas_labels(app)}}
                     </span>
@@ -26,10 +26,10 @@
                     {% for collection in base["collections"] %}
                         {% set base_id = collection["base_id"] %}
                         <li class="clkbas">
-                            <label style="line-height: 18px;"
+                            <label class="white-label" style="line-height: 18px;color: #ffffff;"
                                 for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %} checkbox inline custom_checkbox_label">
-                                <input class="ck_{{base_id}} checkbas" 
-                                onchange="checkFilters(true);" 
+                                <input class="ck_{{base_id}} checkbas"
+                                onchange="checkFilters(true);"
                                 id="ck_{{base_id}}_{{unique_id}}" type="checkbox"
                                 name="bases[]" value="{{base_id}}" {% if collection["selected"] %}checked="checked"{% endif %} />
                                 <span class="custom_checkbox"></span>
@@ -200,6 +200,17 @@
         <div class="PNB" id="rightFrame" style="left:auto; width:{{ w2 ~ '%' }}">
             <div id="headBlock" class="PNB">
                 <div class="searchFormWrapper">
+                    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
+                        <div id="FIRST_QUERY_CONTAINER" style="display: none" data-format="text">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_jsonquery') | raw}}</div>
+                    {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
+                        <div id="FIRST_QUERY_CONTAINER" style="display: none" data-format="json">{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'last_jsonquery') | raw}}</div>
+                    {% endif %}
+
+                    {#container fetched by js #}
+
+                    <input type="hidden" name="advanced-search-title" id="advanced-search-title" value="{{ 'Advanced Search' | trans }}">
+
+
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
                         <input type="hidden" name="sel" value="">
@@ -212,7 +223,7 @@
                                 </a>
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
-                            <div class="control-group pull-left">
+                            <div class="control-group pull-left search-header-block">
                             {% if GV_multiAndReport %}
                                 <label for="mode_type_doc" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
@@ -349,7 +360,7 @@
                                                             </p>
                                                         </div>
                                                     </label>
-                                                    
+
                                                     <label for="multiple-terms" class="radio inline custom_checkbox_label">
                                                         <input type="radio" class="multiple_terms" name="must_match" value="ALL" checked="checked" id="multiple-terms"/>
                                                         <span class="custom_radio"></span>
@@ -362,35 +373,24 @@
                                                     </label>
 
                                                     <div class="term_select">
-                                                        <div class="term_select_wrapper">
+                                                        <div class="term_select_wrapper_template" style="display: none;">
                                                             <select class="term_select_field" style="vertical-align:middle; width:30%;">
                                                                 <option value="">{{ 'Select a field' | trans }}</option>
                                                                 {% for field_id, field in search_datas['fields'] %}
-                                                                    {% if field['type'] != 'date' %}
-                                                                        <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                                    {% endif %}
+                                                                    {# % if field['type'] != 'date' % #}
+                                                                    <option class="dbx db_{{field['sbas']|join(' db_')}}" data-fieldtype="STRING-FIELD" value="field.{{field_id}}">{{field['fieldname']}}</option>
+                                                                    {# % endif % #}
                                                                 {% endfor %}
                                                             </select>
-                                                            <select disabled style="vertical-align:middle; width: 23%;">
-                                                                <option value="contains">{{ 'Contains' | trans }}</option>
-                                                                <option value="equals">{{ 'Equals' | trans }}</option>
+                                                            <select class="term_select_op" disabled style="vertical-align:middle; width: 23%;">
+                                                                <option value=":">{{ 'Contains' | trans }}</option>
+                                                                <option value="=">{{ 'Equals' | trans }}</option>
                                                             </select>
-                                                            <input disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
+                                                            <input class="term_select_value" disabled style="vertical-align:middle; width: 32%;" placeholder="{{ 'Ex : Paris, bleu, montagne' | trans }}">
                                                             <input class="term_deleter" style="margin-bottom: 4px;">
                                                         </div>
 
                                                         <button class="add_new_term"><span>&plus;</span> Add</button>
-                                                    </div>
-
-                                                    <div style="display:none;">
-                                                        <select class="term_select_multiple" size="8" multiple name="fields[]" style="vertical-align:middle; width:99%;">
-                                                            <option value="phraseanet--all--fields">{{ 'rechercher dans tous les champs' | trans }}</option>
-                                                            {% for field_id, field in search_datas['fields'] %}
-                                                                {% if field['type'] != 'date' %}
-                                                                    <option class="dbx db_{{field['sbas']|join(' db_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -408,8 +408,9 @@
                                                     </label>
                                                     <span>
                                                         <select name="date_field" class="input-medium" onchange="checkFilters(true);" style="width: 166px;">
-                                                            <option selected="selected"
-                                                                    value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            <option selected="selected" value="">{{ 'Rechercher dans un champ date' | trans }}</option>
+                                                            <option value="updated_on">{{ 'updated_on' | trans }}</option>
+                                                            <option value="created_on">{{ 'created_on' | trans }}</option>
                                                             {% for fieldname, date in search_datas['dates'] %}
                                                                 <option
                                                                     class="dbx db_{{date['sbas']|join(' db_')}}" value="{{ fieldname }}">{{ fieldname }}</option>
@@ -444,7 +445,7 @@
                                                             <tr>
                                                                 <td colspan="2">
                                                                     <span onclick="deploy(this, '#ADVSRCH_SB_{{databox_id}}' );return false;" class="deployer_toggle deployer_closed" ></span>
-                                                                    <span>{{ databox['name'] }}</span>
+                                                                    <span class="white-label">{{ databox['name'] }}</span>
                                                                 </td>
                                                             </tr>
                                                         </thead>
@@ -452,25 +453,33 @@
                                                             {% for status_bit, status in databox.status %}
                                                             <tr>
                                                                 <td>
-                                                                    <label class="checkbox inline custom_checkbox_label">
+                                                                    <!-- see advSearchChangeStatusBit(..)
+                                                                    <input type="radio" value="0" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
+                                                                    <input type="radio" value="1" name="status[{{databox_id}}][{{status_bit}}]" style="display: none;">
+                                                                    -->
+                                                                    <label class="checkbox inline custom_checkbox_label white-label">
                                                                         {% if status['img_off'] %}
                                                                             <img src="{{status['img_off']}}" title="{{status['labels_off_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
-                                                                        type="checkbox" value="0"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]" />
+                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                               value="0"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_off_i18n'][app['locale']]}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    <label class="checkbox inline custom_checkbox_label">
+                                                                    <label class="checkbox inline custom_checkbox_label white-label">
                                                                         {% if status['img_on'] %}
                                                                             <img src="{{status['img_on']}}" title="{{status['labels_on_i18n'][app['locale']]}}" />
                                                                         {% endif %}
-                                                                        <input onchange="checkFilters(true);" class="field_switch field_{{databox_id}}"
-                                                                        type="checkbox" value="1"
-                                                                        n="{{status_bit}}" name="status[{{databox_id}}][{{status_bit}}]"/>
+                                                                        <input type="checkbox" onchange="advSearchChangeStatusBit(this);" class="field_switch field_{{databox_id}}"
+                                                                               value="1"
+                                                                               data-sbas_id="{{databox_id}}" data-sb="{{status_bit}}"
+                                                                               name="status[{{databox_id}}][{{status_bit}}]"
+                                                                        />
                                                                         <span class="custom_checkbox"></span>
                                                                         {{status['labels_on_i18n'][app['locale']]}}
                                                                     </label>
@@ -517,11 +526,7 @@
                 <div id="answers" class=" PNB10">
                     <script>
                         $(document).ready(function(){
-                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'LAST_QUERY' %}
-                                $('form[name="phrasea_query"]').addClass('triggerAfterInit');
-                            {% elseif app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
+                            {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page') == 'PUBLI' %}
                                 getHome('PUBLI');
                             {% endif %}
                         });
@@ -952,6 +957,8 @@
             });
 
             dragOnModalClosed();
+
+            $('body').addClass('{{ cssfile }}');
         });
 
 
@@ -1043,6 +1050,7 @@
                 value: color,
                 t: Math.random()
             }, function(data){
+                $('body').removeClass().addClass('PNB ' + color);
                 return;
             });
             if (( navigator.userAgent.match(/msie/i) && navigator.userAgent.match(/6/) )) {

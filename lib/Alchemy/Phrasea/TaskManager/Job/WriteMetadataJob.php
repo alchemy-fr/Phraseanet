@@ -126,14 +126,18 @@ class WriteMetadataJob extends AbstractJob
                     $fieldName = $fieldStructure->get_name();
 
                     // skip fields with no src
-                    if($tagName == '') {
+                    if($tagName == '' || $tagName == 'Phraseanet:no-source') {
                         continue;
                     }
 
                     // check exiftool known tags to skip Phraseanet:tf-*
                     try {
-                        TagFactory::getFromRDFTagname($tagName);
-                    } catch (TagUnknown $e) {
+                        $tag = TagFactory::getFromRDFTagname($tagName);
+                        if(!$tag->isWritable()) {
+                            continue;
+                        }
+                    }
+                    catch (TagUnknown $e) {
                         continue;
                     }
 
@@ -144,17 +148,31 @@ class WriteMetadataJob extends AbstractJob
                         if ($fieldStructure->is_multi()) {
                             $values = array();
                             foreach ($fieldValues as $value) {
-                                $values[] = $value->getValue();
+                                $values[] = $this->removeNulChar($value->getValue());
                             }
 
                             $value = new Value\Multi($values);
-                        } else {
-                            $fieldValue = array_pop($fieldValues);
-                            $value = $fieldValue->getValue();
-
-                            $value = new Value\Mono($value);
                         }
-                    } catch(\Exception $e) {
+                        else {
+                            $fieldValue = array_pop($fieldValues);
+                            $value = $this->removeNulChar($fieldValue->getValue());
+
+                            // fix the dates edited into phraseanet
+                            if($fieldStructure->get_type() === $fieldStructure::TYPE_DATE) {
+                                try {
+                                    $value = self::fixDate($value); // will return NULL if the date is not valid
+                                }
+                                catch (\Exception $e) {
+                                    $value = null;    // do NOT write back to iptc
+                                }
+                            }
+
+                            if($value !== null) {   // do not write invalid dates
+                                $value = new Value\Mono($value);
+                            }
+                        }
+                    }
+                    catch(\Exception $e) {
                         // the field is not set in the record, erase it
                         if ($fieldStructure->is_multi()) {
                             $value = new Value\Multi(array(''));
@@ -164,9 +182,11 @@ class WriteMetadataJob extends AbstractJob
                         }
                     }
 
-                    $metadata->add(
-                        new Metadata\Metadata($fieldStructure->get_tag(), $value)
-                    );
+                    if($value !== null) {   // do not write invalid data
+                        $metadata->add(
+                            new Metadata\Metadata($fieldStructure->get_tag(), $value)
+                        );
+                    }
                 }
 
                 $writer = $this->getMetadataWriter($jobData->getApplication());
@@ -227,4 +247,41 @@ class WriteMetadataJob extends AbstractJob
 
         return false;
     }
+
+    private function removeNulChar($value)
+    {
+        return str_replace("\0", "", $value);
+    }
+
+
+    /**
+     * re-format a phraseanet date for iptc writing
+     * return NULL if the date is not valid
+     *
+     * @param string $value
+     * @return string|null
+     */
+    private static function fixDate($value)
+    {
+        $date = null;
+        try {
+            $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
+            switch (count($a)) {
+                case 3:     // yyyy;mm;dd
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $date = $date->format('Y-m-d H:i:s');
+                    break;
+                case 6:     // yyyy;mm;dd;hh;mm;ss
+                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $date = $date->format('Y-m-d H:i:s');
+                    break;
+            }
+        }
+        catch (\Exception $e) {
+            $date = null;
+        }
+
+        return $date;
+    }
+
 }

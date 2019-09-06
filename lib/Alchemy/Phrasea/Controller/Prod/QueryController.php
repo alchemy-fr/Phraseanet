@@ -68,7 +68,6 @@ class QueryController extends Controller
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
                 // try to save the "fulltext" query which will be restored on next session
-                // todo : save the jsonQuery, to restore the whole ux
                 try {
                     // local code to find "FULLTEXT" value from jsonQuery
                     $findFulltext = function($clause) use(&$findFulltext) {
@@ -84,6 +83,8 @@ class QueryController extends Controller
                         }
                         return null;
                     };
+
+                    $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
 
                     $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
                     if(($ft = $findFulltext($jsQuery['query'])) !== null) {
@@ -174,11 +175,10 @@ class QueryController extends Controller
                         null
                 ]
             );
-
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
                 . '</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;

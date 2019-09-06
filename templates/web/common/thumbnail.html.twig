@@ -16,7 +16,7 @@
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
         </div>
-    {% elseif record_type == 'FLEXPAPER' %}
+    {% elseif record_type == 'FLEXPAPER' or record_type == 'PDF' %}
         <div class="documentTips" data-original-width="{{original_w}}" data-original-height="{{original_h}}" data-kind="document">
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"

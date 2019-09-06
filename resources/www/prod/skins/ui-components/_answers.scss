@@ -1,4 +1,3 @@
-$answersInfoDialogBg: $highlightBackgroundAltColor !default;
 $answersInfoDialogColor: $highlightTextColor !default;
 $answersDocInfoBg: $highlightBackgroundAltColor !default;
 $answersDocInfoBorder: #000 !default;
@@ -92,8 +91,8 @@ $answersInfoLabelColor: #949494 !default;
     height: 60px;
     .infoDialog {
       float: left;
-      background: $answersInfoDialogBg;
-      color: $answersInfoDialogColor;
+      background: $answersDocInfoBg;
+      color: $answersDocInfoColor;
       padding: 0 25px;
       font-size: 11px;
       padding-top: 24px;

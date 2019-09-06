@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "68e6e3881b2663691e8edeb48e9ce352",
+    "content-hash": "653a83ace128d80915f0be47814943fc",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "0.3.6",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351"
+                "reference": "8567a97cebc3b0b76c440bc1f2fb480258294c13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/dab45fb2e01b927fe7fc085f19eecc0f96674351",
-                "reference": "dab45fb2e01b927fe7fc085f19eecc0f96674351",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8567a97cebc3b0b76c440bc1f2fb480258294c13",
+                "reference": "8567a97cebc3b0b76c440bc1f2fb480258294c13",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/0.3.6",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/1.0.4",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2017-05-17T19:25:26+00:00"
+            "time": "2019-09-02T12:28:50+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -313,16 +313,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.7",
+            "version": "0.4.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "571d23cfa5ab5195803d217d22b702862c87811b"
+                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/571d23cfa5ab5195803d217d22b702862c87811b",
-                "reference": "571d23cfa5ab5195803d217d22b702862c87811b",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/1a96dc4142ff8474c11285cab9eab11df9683255",
+                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255",
                 "shasum": ""
             },
             "require": {
@@ -371,7 +371,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2018-04-27T11:15:18+00:00"
+            "time": "2019-01-22T11:23:34+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -421,16 +421,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.1",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae"
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
-                "reference": "b028e51b9be3a8ee9e77579842fb2e9adbd773ae",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +490,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2018-10-19T13:28:17+00:00"
+            "time": "2019-02-13T13:06:43+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -1748,12 +1748,12 @@
             "version": "v2.5.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "reference": "e6c434196c8ef058239aaa0724b4aadb0107940b",
                 "shasum": ""
             },
@@ -3226,61 +3226,6 @@
             "time": "2014-11-20T16:49:30+00:00"
         },
         {
-            "name": "ircmaxell/random-lib",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ircmaxell/RandomLib.git",
-                "reference": "e9e0204f40e49fa4419946c677eccd3fa25b8cf4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ircmaxell/RandomLib/zipball/e9e0204f40e49fa4419946c677eccd3fa25b8cf4",
-                "reference": "e9e0204f40e49fa4419946c677eccd3fa25b8cf4",
-                "shasum": ""
-            },
-            "require": {
-                "ircmaxell/security-lib": "^1.1",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^1.11",
-                "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": "^4.8|^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "RandomLib": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anthony Ferrara",
-                    "email": "ircmaxell@ircmaxell.com",
-                    "homepage": "http://blog.ircmaxell.com"
-                }
-            ],
-            "description": "A Library For Generating Secure Random Numbers",
-            "homepage": "https://github.com/ircmaxell/RandomLib",
-            "keywords": [
-                "cryptography",
-                "random",
-                "random-numbers",
-                "random-strings"
-            ],
-            "time": "2016-09-07T15:52:06+00:00"
-        },
-        {
             "name": "ircmaxell/security-lib",
             "version": "v1.1.0",
             "source": {
@@ -3817,16 +3762,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.1",
+            "version": "0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514"
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/b82bb891640cb1ce5d5523235047c34c64194514",
-                "reference": "b82bb891640cb1ce5d5523235047c34c64194514",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
+                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
                 "shasum": ""
             },
             "require": {
@@ -3887,7 +3832,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2016-03-16T13:11:52+00:00"
+            "time": "2019-01-25T12:09:11+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4440,6 +4385,68 @@
             "time": "2016-11-28T09:17:04+00:00"
         },
         {
+            "name": "paragonie/random-lib",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/RandomLib.git",
+                "reference": "b73a1cb8eae7a346824ccee42298046dedbf2415"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/RandomLib/zipball/b73a1cb8eae7a346824ccee42298046dedbf2415",
+                "reference": "b73a1cb8eae7a346824ccee42298046dedbf2415",
+                "shasum": ""
+            },
+            "require": {
+                "ircmaxell/security-lib": "^1.1",
+                "paragonie/random_compat": "^2",
+                "paragonie/sodium_compat": "^1.3",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^4.8 || >=5.0.0 <5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "RandomLib": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@ircmaxell.com",
+                    "homepage": "http://blog.ircmaxell.com"
+                },
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "A Library For Generating Secure Random Numbers",
+            "homepage": "https://github.com/ircmaxell/RandomLib",
+            "keywords": [
+                "cryptography",
+                "random",
+                "random-numbers",
+                "random-strings"
+            ],
+            "time": "2017-10-06T23:34:21+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v2.0.4",
             "source": {
@@ -4486,6 +4493,88 @@
                 "random"
             ],
             "time": "2016-11-07T23:38:38+00:00"
+        },
+        {
+            "name": "paragonie/sodium_compat",
+            "version": "v1.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/sodium_compat.git",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/87125d5b265f98c4d1b8d83a1f0726607c229421",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/random_compat": ">=1",
+                "php": "^5.2.4|^5.3|^5.4|^5.5|^5.6|^7|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^3|^4|^5"
+            },
+            "suggest": {
+                "ext-libsodium": "PHP < 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security.",
+                "ext-sodium": "PHP >= 7.0: Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com"
+                },
+                {
+                    "name": "Frank Denis",
+                    "email": "jedisct1@pureftpd.org"
+                }
+            ],
+            "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
+            "keywords": [
+                "Authentication",
+                "BLAKE2b",
+                "ChaCha20",
+                "ChaCha20-Poly1305",
+                "Chapoly",
+                "Curve25519",
+                "Ed25519",
+                "EdDSA",
+                "Edwards-curve Digital Signature Algorithm",
+                "Elliptic Curve Diffie-Hellman",
+                "Poly1305",
+                "Pure-PHP cryptography",
+                "RFC 7748",
+                "RFC 8032",
+                "Salpoly",
+                "Salsa20",
+                "X25519",
+                "XChaCha20-Poly1305",
+                "XSalsa20-Poly1305",
+                "Xchacha20",
+                "Xsalsa20",
+                "aead",
+                "cryptography",
+                "ecdh",
+                "elliptic curve",
+                "elliptic curve cryptography",
+                "encryption",
+                "libsodium",
+                "php",
+                "public-key cryptography",
+                "secret-key cryptography",
+                "side-channel resistant"
+            ],
+            "time": "2019-03-20T17:19:05+00:00"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
@@ -7582,6 +7671,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
