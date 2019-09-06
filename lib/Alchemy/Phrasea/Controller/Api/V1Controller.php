@@ -2056,7 +2056,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));
