@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guzzle\Common\Exception\GuzzleException;
 use Ramsey\Uuid\Uuid;
@@ -1256,13 +1257,33 @@ class ApiJsonTest extends ApiTestCase
         $record1 = $this->getRecord1();
         $route = '/api/v1/records/' . $record1->getDataboxId() . '/' . $record1->getRecordId() . '/setstatus/';
 
-        $record_status = strrev($record1->getStatus());
+        $initialRecordStatus = $record_status = strrev($record1->getStatus());
+
+        /** @var StatusStructureProviderInterface $statusProvider */
+        $statusProvider = $app['status.provider'];
+
+        // initialize status structure for test eg: 4 to 15 bit
+        foreach (range(4, 15) as $n) {
+            $properties = [
+                'searchable' => '0',
+                'printable'  => '0',
+                'name'       => 'status_test_' . $n,
+                'labelon'    => '',
+                'labeloff'   => '',
+                'labels_on'  => [],
+                'labels_off' => [],
+            ];
+
+            $statusProvider->updateStatus($record1->getStatusStructure(), $n, $properties);
+        }
+
         $statusStructure = $record1->getStatusStructure();
 
         $tochange = [];
         foreach ($statusStructure as $n => $datas) {
             $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
         }
+
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
 
         $response = $this->request('POST', $route, $this->getParameters(['status' => $tochange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
@@ -1321,6 +1342,8 @@ class ApiJsonTest extends ApiTestCase
         foreach ($statusStructure as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n), 1), $tochange[$n]);
         }
+
+        $this->assertEquals($initialRecordStatus, $record_status);
 
         $record1->setStatus(str_repeat('0', 32));
     }
