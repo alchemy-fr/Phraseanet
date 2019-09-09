@@ -944,7 +944,7 @@ class V1Controller extends Controller
                 }
 
                 $originalName = $pi['filename'] . '.' . $pi['extension'];
-                $newPathname = $tempfile;
+                $uploadedFilename = $newPathname = $tempfile;
             }
         }
         else {
@@ -956,8 +956,11 @@ class V1Controller extends Controller
             if (!$file->isValid()) {
                 return $this->getBadRequestAction($request, 'Data corrupted, please try again');
             }
+
+            $uploadedFilename = $file->getPathname();
             $originalName = $file->getClientOriginalName();
             $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+
             if (false === rename($file->getPathname(), $newPathname)) {
                 return Result::createError($request, 403, 'Error while renaming file')->createResponse();
             }
@@ -1009,6 +1012,11 @@ class V1Controller extends Controller
 
         $nosubdef = $request->get('nosubdefs') === '' || \p4field::isyes($request->get('nosubdefs'));
         $this->getBorderManager()->process($session, $Package, $callback, $behavior, $nosubdef);
+
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
+        }
 
         $ret = ['entity' => null];
 
@@ -1079,6 +1087,11 @@ class V1Controller extends Controller
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
+        }
+
+        // remove $newPathname on temporary directory
+        if ($renamedFilename !== $uploadedFilename) {
+            @rename($renamedFilename, $uploadedFilename);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -1984,7 +1997,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));
