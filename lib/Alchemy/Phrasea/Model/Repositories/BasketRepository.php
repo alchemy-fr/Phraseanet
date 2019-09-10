@@ -212,8 +212,7 @@ class BasketRepository extends EntityRepository
             case self::RECEIVED:
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
-                JOIN b.elements e
-                WHERE b.user = :usr_id AND b.pusher_id IS NOT NULL';
+                JOIN b.elements e';
                 $params = [
                     'usr_id' => $user->getId()
                 ];
