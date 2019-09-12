@@ -14,7 +14,7 @@
 <div class="PNB datas">
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
-    <div class="result {% if loop.index is odd %}odd{% endif %}">
+    <div class="result {{ Basket.getArchived ? '' : 'unarchived' }}">
       <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
       <div class="PNB10 rightBrowserInner">
         <table>
@@ -31,14 +31,10 @@
                 <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archive.png"/>
-                  </span>
+                  &nbsp;
                 </a>
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archived.png"/>
-                  </span>
+                 &nbsp;
                 </a>
                 {% endif %}
                 <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
