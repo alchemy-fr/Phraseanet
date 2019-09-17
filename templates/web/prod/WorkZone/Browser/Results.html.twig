@@ -15,18 +15,17 @@
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
     <div class="result {{ Basket.getArchived ? '' : 'unarchived' }}">
-      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
+      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close icon-baseline-close-24px" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">&nbsp;</a>
       <div class="PNB10 rightBrowserInner">
-        <table>
-          <tr>
-            <td class="thumbnail">
+        <div class="item-table">
+
+            <div class="thumbnail">
               {% set BasketElement = Basket.getElements().first() %}
               {% if BasketElement %}
                 {{thumbnail.format(BasketElement.getRecord(app).get_thumbnail(), 150, 106, '', true, false)}}
               {% endif %}
-            </td>
-            <td class="" width="12" style="font-size: 0">&nbsp;</td>
-            <td class="content">
+            </div>
+            <div class="content">
               <h1 class="title">
                 <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
@@ -38,7 +37,7 @@
                 </a>
                 {% endif %}
                 <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
-                  {{ Basket.getName() }}
+                    <span>{{ Basket.getName() }}</span>
                 <br><span class="basketCount">
                         {{ Basket.getElements().count() }} {{ ' records' }}
                   </span></a>
@@ -70,12 +69,11 @@
               </p>
               {% endif %}
 
-            </td>
+            </div>
             <td>
 
             </td>
-          </tr>
-        </table>
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -111,21 +109,4 @@
       </tr>
     </table>
   </div>
-<script>
-  //load the next result page
-    jQuery(document).ready(function(){
-        jQuery('.next_res').click(function(){
-            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
-            jQuery('.results').load($(this).attr('href'));
-            return false;
-        });
-    });
-  //load the prev result page
-    jQuery(document).ready(function(){
-        jQuery('.prev_res').click(function(){
-            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
-            jQuery('.results').load($(this).attr('href'));
-            return false;
-        });
-    });
-</script>
+
