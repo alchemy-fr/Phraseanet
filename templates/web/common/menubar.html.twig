@@ -300,6 +300,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('body').on('click', '#help-trigger', function (event) {
+            $('#mainMenu .helpcontextmenu').toggleClass('shown');
+            console.log('mety');
+        });
         // var key = 'help';
         var configurationSettingLinks = {{ configuration|json_encode|raw }};
         //seperate array based on location of link
