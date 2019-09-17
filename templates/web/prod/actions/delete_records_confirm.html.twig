@@ -65,6 +65,7 @@
 
         var $form    = $(this).closest("form"),
             $counter = $form.find(".to_delete_count"),
+            $trash_counter = $form.find(".to_trash_count"),
             $loader  = $form.find(".form-action-loader");
 
         var lst = $("input[name='lst']", $form).val().split(';');
@@ -161,6 +162,7 @@
 
                  // countdown
                  $counter.html(lst.length);
+                 $trash_counter.html(lst.length);
 
                  if (lst.length === 0 || canceling) {
                      // end of a task
