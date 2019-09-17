@@ -93,17 +93,13 @@
         </td>
         <td class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result prev_res">
-            <
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result prev_res icon-round-chevron_left-24px">&nbsp;</a>
           {% endif %}
           <span>
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result next_res">
-            >
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result next_res icon-round-chevron_right-24px">&nbsp;</a>
           {% endif %}
         </td>
       </tr>
