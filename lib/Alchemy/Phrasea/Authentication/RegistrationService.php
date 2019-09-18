@@ -341,6 +341,8 @@ class RegistrationService
                 ],
                 [$baseId]
             );
+
+            unset($granted);
         }
 
         $this->eventDispatcher->dispatch(PhraseaEvents::REGISTRATION_AUTOREGISTER, new RegistrationEvent($user, $autoReg));
