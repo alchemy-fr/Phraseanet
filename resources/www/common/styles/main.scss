@@ -88,4 +88,20 @@ $mainMenuLinkBackgroundHoverColor: transparent;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
   }
 }
+/*Help menu*/
+.contextMenu.helpcontextmenu {
+  display: none;
+  &.shown {
+    display: block;
+    position: absolute;
+    z-index: 101;
+  }
+}
+.help-trigger {
+  display:inline-block;
+  cursor:pointer;
+  padding: 0 4px;
+  border:none;
+  margin-left: -12px;
+}
 
