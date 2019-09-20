@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
 $paginationLinkColor: $linkDefaultColor !default;
 
 #tool_navigate input {
@@ -29,76 +30,81 @@ $paginationLinkColor: $linkDefaultColor !default;
 
 #paginate #tool_navigate {
   background-color: $paginateBg1;
-}
-
-#paginate #tool_navigate #NEXT_PAGE:hover,
-#paginate #tool_navigate #PREV_PAGE:hover,
-#paginate #tool_navigate #last:hover,
-#paginate #tool_navigate #first:hover {
-  background-color: $highlightBackgroundColor;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.31);
+  border-radius: 5px;
+  position: fixed;
+  bottom: 10px;
+  right: 45px;
+  z-index: 100;
 }
 
 #paginate #tool_navigate #NEXT_PAGE {
-  background: url('#{$iconsPath}sprite_paginate.png') -72px 20px no-repeat;
-  width: 49px;
-  border-left: 1px solid $paginateBorderColor;
+  background: url('#{$iconsPath}sprite_paginate.png') -158px 50% no-repeat;
+  &:hover {
+    background-color: $paginateBgHov;
+  }
 }
 
 #paginate #tool_navigate #PREV_PAGE {
-  background: url('#{$iconsPath}sprite_paginate.png') -29px 20px no-repeat;
-  width: 49px;
-  border-right: 1px solid $paginateBorderColor;
+  background: url('#{$iconsPath}sprite_paginate.png') -100px 50% no-repeat;
+  &:hover {
+    background-color: $paginateBgHov;
+  }
 }
 
 #paginate #tool_navigate #last {
-  background: url('#{$iconsPath}sprite_paginate.png') -121px 20px no-repeat;
-  width: 49px;
-  border-left: 1px solid $paginateBorderColor;
+  background: url('#{$iconsPath}sprite_paginate.png') -220px 50% no-repeat;
+  &:hover {
+    background-color: $paginateBgHov;
+  }
 }
 
 #paginate #tool_navigate #first {
-  background: url('#{$iconsPath}sprite_paginate.png') 21px 20px no-repeat;
-  width: 49px;
-  border-right: 1px solid $paginateBorderColor;
+  background: url('#{$iconsPath}sprite_paginate.png') -40px 50% no-repeat;
+  &:hover {
+    background-color: $paginateBgHov;
+  }
 }
-
-#paginate #tool_navigate #NEXT_PAGE:hover,
-#paginate #tool_navigate #PREV_PAGE:hover,
-#paginate #tool_navigate #last:hover,
-#paginate #tool_navigate #first:hover {
-  background-image: url('#{$iconsPath}sprite_paginate_hover.png');
-}
-
 
 #paginate #tool_navigate input,
 #paginate #tool_navigate a {
-  border: none;
-  border-top: 1px solid $paginateBorderColor;
-  border-bottom: 1px solid $paginateBorderColor;
+  border: 0;
+  border-left:1px solid $paginateBorder;
+  box-sizing: border-box;
   padding: 0;
   margin: 0;
-  border-radius: 0;
-  height: 50px;
-  line-height: 50px;
+  height: 40px;
+  line-height: 40px;
   vertical-align: middle;
-  width: 30px;
+  width: 40px;
   background: none;
-  font-weight: normal;
+  font-weight: bold;
+  font-size: 14px;
   text-shadow: none;
   box-shadow: none;
-  color: $paginationLinkColor;
-}
-
-#paginate #tool_navigate:first-child {
-  border-left: 1px solid $paginateBorderColor;
-}
-
-#paginate #tool_navigate:last-child {
-  border-right: 1px solid $paginateBorderColor;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
 }
 
 #paginate #tool_navigate input,
 #paginate #tool_navigate a:hover {
   color: $highlightTextColor;
-  background: $highlightBackgroundColor;
+  background-color: $paginateBgHov;
+}
+
+#paginate #tool_navigate .btn-mini {
+  border-radius: 0;
+  &.last {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    &:hover {
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+  }
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: 0;
+  }
 }
