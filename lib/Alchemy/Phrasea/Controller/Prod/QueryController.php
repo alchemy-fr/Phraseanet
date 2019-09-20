@@ -224,11 +224,11 @@ class QueryController extends Controller
                         }
                         if ($npages > 4)
                             $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini icon icon-baseline-chevron_right-24px'></a>";
-                        $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-baseline-chevron_right-24px" data-page="' . $npages . '" id="last">&#xe96c;</a>';
+                        $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-double-arrows" data-page="' . $npages . '" id="last"></a>';
                     } else {
                         $start = $npages - 4;
                         if (($start) > 0){
-                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action icon icon-baseline-chevron_left-24px" data-page="1" id="first">&#xe96b;</a>';
+                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"><span class="icon icon-double-arrows icon-inverse"></span></a>';
                             $string .= '<a id="PREV_PAGE" class="btn btn-primary btn-mini icon icon-baseline-chevron_left-24px"></a>';
                         }else
                             $start = 1;
@@ -243,7 +243,7 @@ class QueryController extends Controller
                         }
                     }
                 } else {
-                    $string .= '<a class="btn btn-primary btn-mini search-navigate-action icon-baseline-chevron_left-24px" data-page="1" id="first">&#xe96b;</a>';
+                    $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"><span class="icon icon-double-arrows icon-inverse"></span></a>';
 
                     for ($i = ($page - 2); $i <= ($page + 2); $i++) {
                         if ($i == $page)
@@ -252,7 +252,7 @@ class QueryController extends Controller
                             $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                     }
 
-                    $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-baseline-chevron_right-24px" data-page="' . $npages . '" id="last">&#xe96c;</a>';
+                    $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-double-arrows" data-page="' . $npages . '" id="last"></a>';
                 }
             }
             $string .= '<div style="display:none;"><div id="NEXT_PAGE" class="icon icon-baseline-chevron_right-24px"></div><div id="PREV_PAGE" class="icon icon-baseline-chevron_left-24px"></div></div>';
