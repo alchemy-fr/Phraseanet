@@ -31,7 +31,8 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::NEW_FEED_ENTRY,
             WebhookEvent::FEED_ENTRY_TYPE,
-            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params)
+            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params),
+            $entry->getFeed()->getBaseId() ? [$entry->getFeed()->getBaseId()] : []
         );
 
         $datas = json_encode($params);

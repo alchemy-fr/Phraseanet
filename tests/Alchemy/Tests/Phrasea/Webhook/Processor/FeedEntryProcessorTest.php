@@ -59,6 +59,6 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
             self::$DI['app']['repo.feed-entries'],
             self::$DI['app']['phraseanet.user-query']
         );
-        $this->assertEquals($processor->process($event), null);
+        $this->assertInternalType(\PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $processor->process($event));
     }
 }

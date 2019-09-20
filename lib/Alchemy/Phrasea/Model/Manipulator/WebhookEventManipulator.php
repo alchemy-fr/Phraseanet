@@ -40,13 +40,17 @@ class WebhookEventManipulator implements ManipulatorInterface
         $this->publisher = $publisher;
     }
 
-    public function create($eventName, $type, array $data)
+    public function create($eventName, $type, array $data, array $collectionBaseIds = array())
     {
         $event = new WebhookEvent();
 
         $event->setName($eventName);
         $event->setType($type);
         $event->setData($data);
+
+        if (count($collectionBaseIds) > 0) {
+            $event->setCollectionBaseIds($collectionBaseIds);
+        }
 
         $this->update($event);
 
