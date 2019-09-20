@@ -133,9 +133,9 @@ $cli->command(new QueryParseCommand());
 $cli->command(new QuerySampleCommand());
 $cli->command(new FindConceptsCommand());
 
-$cli->command($cli['alchemy_worker.commands.run_dispatcher_command']);
-$cli->command($cli['alchemy_worker.commands.run_worker_command']);
-$cli->command($cli['alchemy_worker.commands.show_configuration']);
+//$cli->command($cli['alchemy_worker.commands.run_dispatcher_command']);
+//$cli->command($cli['alchemy_worker.commands.run_worker_command']);
+//$cli->command($cli['alchemy_worker.commands.show_configuration']);
 
 $cli->loadPlugins();
 
