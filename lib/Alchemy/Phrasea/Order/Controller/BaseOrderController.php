@@ -172,7 +172,7 @@ class BaseOrderController extends Controller
                     $manager->persist($element);
                 }
 
-                $delivery = new OrderDelivery($order, $acceptor, count($basketElements));
+                $delivery = new OrderDelivery($order, $acceptor, count($basketElements), $partialOrder);
 
                 $this->dispatch(PhraseaEvents::ORDER_DELIVER, new OrderDeliveryEvent($delivery));
             }
@@ -198,11 +198,13 @@ class BaseOrderController extends Controller
         $elements = $this->findRequestedElements($order_id, $elementIds, $acceptor);
         $order = $this->findOr404($order_id);
 
+        $partialOrder = new PartialOrder($order, $elements);
+
         $this->getOrderValidator()->deny($acceptor, new PartialOrder($order, $elements));
 
         try {
             if (!empty($elements)) {
-                $delivery = new OrderDelivery($order, $acceptor, count($elements));
+                $delivery = new OrderDelivery($order, $acceptor, count($elements), $partialOrder);
 
                 $this->dispatch(PhraseaEvents::ORDER_DENY, new OrderDeliveryEvent($delivery));
             }
