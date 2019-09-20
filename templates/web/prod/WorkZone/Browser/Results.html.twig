@@ -14,35 +14,30 @@
 <div class="PNB datas">
   <div class="PNB" style="right:10px">
   {% for Basket in Baskets %}
-    <div class="result {% if loop.index is odd %}odd{% endif %}">
-      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">×</a>
+    <div class="result {{ Basket.getArchived ? '' : 'unarchived' }}">
+      <a href="{{ path('basket_delete', {basket: Basket.getId()}) }}" class="delete-basket close icon-baseline-close-24px" title="{% trans %}Delete basket{% endtrans %}" style="color:#fff;padding:2px">&nbsp;</a>
       <div class="PNB10 rightBrowserInner">
-        <table>
-          <tr>
-            <td class="thumbnail">
+        <div class="item-table">
+
+            <div class="thumbnail">
               {% set BasketElement = Basket.getElements().first() %}
               {% if BasketElement %}
                 {{thumbnail.format(BasketElement.getRecord(app).get_thumbnail(), 150, 106, '', true, false)}}
               {% endif %}
-            </td>
-            <td class="" width="12" style="font-size: 0">&nbsp;</td>
-            <td class="content">
+            </div>
+            <div class="content">
               <h1 class="title">
                 <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
                 {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archive.png"/>
-                  </span>
+                  &nbsp;
                 </a>
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 0 }) }}" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
-                  <span>
-                    <img src="/assets/prod/images/Basket/Browser/archived.png"/>
-                  </span>
+                 &nbsp;
                 </a>
                 {% endif %}
                 <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
-                  {{ Basket.getName() }}
+                    <span>{{ Basket.getName() }}</span>
                 <br><span class="basketCount">
                         {{ Basket.getElements().count() }} {{ ' records' }}
                   </span></a>
@@ -74,12 +69,11 @@
               </p>
               {% endif %}
 
-            </td>
+            </div>
             <td>
 
             </td>
-          </tr>
-        </table>
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -99,37 +93,16 @@
         </td>
         <td class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result prev_res">
-            <
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result prev_res icon-round-chevron_left-24px">&nbsp;</a>
           {% endif %}
           <span>
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result next_res">
-            >
-          </a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result next_res icon-round-chevron_right-24px">&nbsp;</a>
           {% endif %}
         </td>
       </tr>
     </table>
   </div>
-<script>
-  //load the next result page
-    jQuery(document).ready(function(){
-        jQuery('.next_res').click(function(){
-            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
-            jQuery('.results').load($(this).attr('href'));
-            return false;
-        });
-    });
-  //load the prev result page
-    jQuery(document).ready(function(){
-        jQuery('.prev_res').click(function(){
-            jQuery('.results').append('<img class="result_loader" src="/assets/common/images/icons/loading.svg">');
-            jQuery('.results').load($(this).attr('href'));
-            return false;
-        });
-    });
-</script>
+
