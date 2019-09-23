@@ -13,7 +13,7 @@
 
 - name: Install mailcatcher gem
   # gem module is flaky, this is consistent
-  command: gem install mailcatcher --conservative
+  command: gem install mailcatcher -v 0.6.4 --conservative
   ignore_errors: yes
 
 - name: Install mailcatcher supervisord conf

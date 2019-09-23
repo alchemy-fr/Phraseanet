@@ -110,7 +110,7 @@ $select-height: 26px;
             }
             .input-prepend {
               margin: 0;
-              
+
               .dmin, .dmax {
                 border: 0 none;
                 height: 16px;
@@ -203,7 +203,7 @@ $select-height: 26px;
             height: $select-height;
           }
           .select-styled {
-            position: absolute; 
+            position: absolute;
             top: 0;
             right: 0;
             bottom: 0;
@@ -232,9 +232,9 @@ $select-height: 26px;
               background-color: darken($select-background, 5);
             }
           }
-          
+
           .select-options {
-            display: none; 
+            display: none;
             position: absolute;
             top: 12px;
             right: -12px;
@@ -292,7 +292,7 @@ $select-height: 26px;
             -webkit-transform: translate(-50%, -50%);
                 -ms-transform: translate(-50%, -50%);
                     transform: translate(-50%, -50%);
-                    
+
             &:hover {
               background-color: #2c2c2c;
             }
@@ -355,4 +355,8 @@ $select-height: 26px;
   &.ui-widget-content{
     background-color: #212121;
   }
+}
+
+#mainMenu li .context-menu-item-inner a:hover {
+  color: #000;
 }

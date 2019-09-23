@@ -115,6 +115,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Process\ExecutableFinder;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -237,8 +238,19 @@ class Application extends SilexApplication
 
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
-        $this->register(new XPDFServiceProvider());
-        $this->setupXpdf();
+
+        if ($this['configuration.store']->isSetup()) {
+            $binariesConfig = $this['conf']->get(['main', 'binaries']);
+            $executableFinder = new ExecutableFinder();
+            $this->register(new XPDFServiceProvider(), [
+                'xpdf.configuration' => [
+                    'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
+                ]
+            ]);
+
+            $this->setupXpdf();
+        }
+
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
@@ -653,7 +665,7 @@ class Application extends SilexApplication
     private function setupGeonames()
     {
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
+            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'https://geonames.alchemyasp.com/');
         });
     }
 
