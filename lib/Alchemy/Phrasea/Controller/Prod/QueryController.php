@@ -179,7 +179,6 @@ class QueryController extends Controller
                     };
 
                     $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
-
                     $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
                     if(($ft = $findFulltext($jsQuery['query'])) !== null) {
                         $userManipulator->setUserSetting($user, 'start_page_query', $ft);
@@ -317,7 +316,7 @@ class QueryController extends Controller
                         </tfoot>
                     </table></div></div>'
                 . '</div><a href="#" class="search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;
