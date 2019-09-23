@@ -367,15 +367,17 @@ class UploadController extends Controller
             $postMaxSize = PHP_INT_MAX;
         }
 
+        $r = 0;
         switch (strtolower(substr($postMaxSize, -1))) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'g':
-                $postMaxSize *= 1024;
+                $r += 10;
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'm':
-                $postMaxSize *= 1024;
+                $r += 10;
             case 'k':
-                $postMaxSize *= 1024;
+                $r += 10;
+                $postMaxSize = ((int)($postMaxSize))<<$r;
         }
 
         return min(UploadedFile::getMaxFilesize(), (int) $postMaxSize);

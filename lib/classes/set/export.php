@@ -9,12 +9,15 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
+use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Filesystem\Filesystem;
+
 
 class set_export extends set_abstract
 {
@@ -60,6 +63,7 @@ class set_export extends set_abstract
         $remain_hd = [];
 
         if ($storyWZid) {
+            /** @var StoryWZRepository $repository */
             $repository = $app['repo.story-wz'];
 
             $storyWZ = $repository->findByUserAndId($this->app, $app->getAuthenticatedUser(), $storyWZid);
@@ -68,6 +72,7 @@ class set_export extends set_abstract
         }
 
         if ($sstid != "") {
+            /** @var BasketRepository $repository */
             $repository = $app['repo.baskets'];
 
             $Basket = $repository->findUserBasket($sstid, $app->getAuthenticatedUser(), false);

@@ -1115,7 +1115,6 @@ class ACL implements cache_cacheableInterface
     /**
      * @param array $base_ids
      * @return $this
-     * @throws DBALException
      * @throws Exception
      */
     public function revoke_access_from_bases(Array $base_ids)
@@ -1125,23 +1124,29 @@ class ACL implements cache_cacheableInterface
 
         $usr_id = $this->user->getId();
 
+        $errors = 0;
         foreach ($base_ids as $base_id) {
-            if (!$stmt_del->execute([':base_id' => $base_id, ':usr_id'  => $usr_id])) {
-                throw new Exception('Error while deleteing some rights');
-            }
-
-            $this->app['dispatcher']->dispatch(
-                AclEvents::ACCESS_TO_BASE_REVOKED,
-                new AccessToBaseRevokedEvent(
-                    $this,
-                    array(
-                        'base_id'=>$base_id
+            if ($stmt_del->execute([':base_id' => $base_id, ':usr_id'  => $usr_id])) {
+                $this->app['dispatcher']->dispatch(
+                    AclEvents::ACCESS_TO_BASE_REVOKED,
+                    new AccessToBaseRevokedEvent(
+                        $this,
+                        [
+                            'base_id' => $base_id
+                        ]
                     )
-                )
-            );
+                );
+            }
+            else {
+                $errors++;
+            }
         }
         $stmt_del->closeCursor();
         $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
+
+        if($errors > 0) {
+            throw new Exception('Error while deleting some rights');
+        }
 
         return $this;
     }
