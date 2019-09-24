@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionBuildEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
@@ -1035,7 +1035,7 @@ class ArchiveJob extends AbstractJob
 
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 
-        $app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($story));
+        $app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($story));
 
         unset($media);
 

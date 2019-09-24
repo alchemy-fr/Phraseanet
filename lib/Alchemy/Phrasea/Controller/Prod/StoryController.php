@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionBuildEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
@@ -72,7 +72,7 @@ class StoryController extends Controller
 
         $recordAdapter = $story->set_metadatas($metadatas);
         // tell phraseanet to rebuild subdef
-        $this->dispatch(RecordEvents::SUBDEFINITION_BUILD, new SubdefinitionBuildEvent($recordAdapter));
+        $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($recordAdapter));
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());

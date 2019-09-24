@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Event\Record;
 
 use Alchemy\Phrasea\Model\RecordInterface;
 
-class SubdefinitionBuildEvent extends RecordEvent
+class SubdefinitionCreateEvent extends RecordEvent
 {
     private $isNewRecord;
 
