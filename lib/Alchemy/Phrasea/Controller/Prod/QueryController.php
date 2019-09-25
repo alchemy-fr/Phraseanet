@@ -127,7 +127,7 @@ class QueryController extends Controller
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value))){if ('.$npages.'<= parseInt(this.value)) {gotopage('.$npages.')}else{ gotopage(parseInt(this.value))}}" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
                                 $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
