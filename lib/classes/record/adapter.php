@@ -1107,11 +1107,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->set_xml($xml);
         unset($xml);
 
-        //  if there is yet subdefs, ask to write metadata
-        if (count($this->getMediaSubdefRepository()->findByRecordIdsAndNames([$this->getRecordId()])) > 1 ) {
-            $this->write_metas();
-            $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
-        }
+        $this->write_metas();
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
     }
