@@ -660,10 +660,13 @@ function initAnswerForm() {
 
                         setTimeout(function(){
                             $("#tool_navigate").css('display', 'none');
-                        }, 3000);
+                        }, 5000);
+                        
                         $( "body" ).mousemove(function( event ) {
                             $("#tool_navigate").css('display', 'block');
-
+                                setTimeout(function(){
+                                    $("#tool_navigate").css('display', 'none');
+                                }, 5000);
                         });
                     }
                 }, 5000);
