@@ -36,6 +36,7 @@ $paginationLinkColor: $linkDefaultColor !default;
   bottom: 10px;
   right: 45px;
   z-index: 100;
+  transition: 0.3s all;
 }
 
 #paginate #tool_navigate #NEXT_PAGE {

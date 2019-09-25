@@ -657,8 +657,18 @@ function initAnswerForm() {
                 setTimeout(function(){
                     if ($( "#tool_navigate").length) {
                         $("#tool_navigate .btn-mini").last().addClass("last");
+
+                        setTimeout(function(){
+                            $("#tool_navigate").css('display', 'none');
+                        }, 3000);
+                        $( "body" ).mousemove(function( event ) {
+                            $("#tool_navigate").css('display', 'block');
+
+                        });
                     }
                 }, 5000);
+
+
             }
         });
         return false;
