@@ -46,7 +46,6 @@ http {
 
     server {
         listen       80;
-        server_name  localhost;
         error_log    on;
         access_log   on;
         root         /var/alchemy/Phraseanet/www;
