@@ -88,7 +88,6 @@ use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\QueueProvider\QueueServiceProvider;
-use Alchemy\Phrasea\Core\Event\Subscriber\WebhookSubdefEventSubscriber;
 use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
@@ -743,7 +742,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
                 $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
-                $dispatcher->addSubscriber(new WebhookSubdefEventSubscriber($app['manipulator.webhook-event']));
 
                 return $dispatcher;
             })

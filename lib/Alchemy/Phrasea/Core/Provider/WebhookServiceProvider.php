@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\WebhookSubdefEventSubscriber;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 use Alchemy\Phrasea\Webhook\EventProcessorWorker;
 use Alchemy\Phrasea\Webhook\WebhookInvoker;
@@ -10,6 +11,7 @@ use Alchemy\Worker\CallableWorkerFactory;
 use Alchemy\Worker\TypeBasedWorkerResolver;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WebhookServiceProvider implements ServiceProviderInterface
 {
@@ -69,6 +71,12 @@ class WebhookServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        // no-op
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher) use ($app) {
+                $dispatcher->addSubscriber(new WebhookSubdefEventSubscriber($app['manipulator.webhook-event']));
+
+                return $dispatcher;
+            })
+        );
     }
 }
