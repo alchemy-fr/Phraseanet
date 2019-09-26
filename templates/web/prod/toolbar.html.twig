@@ -304,3 +304,14 @@
         </span>
     {% endif %}
 {% endblock %}
+
+{% block toolbarJS %}
+    {% if plugins.actionbar is not empty %}
+        {% for pluginId, plugin in plugins.actionbar %}
+            {% set template = plugin.getActionBarTemplate() %}
+            {% if template %}
+                {% include template with {'app': app, 'plugin_id': pluginId, 'plugin': plugin} only %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
