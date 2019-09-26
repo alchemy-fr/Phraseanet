@@ -7,19 +7,16 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
-use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
+use Silex\Application;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class WebhookSubdefEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var WebhookEventManipulator
-     */
-    private $webhookManipulator;
+    private $app;
 
-    public function __construct(WebhookEventManipulator $manipulator)
+    public function __construct(Application $app)
     {
-        $this->webhookManipulator = $manipulator;
+        $this->app = $app;
     }
 
     public function onSubdefCreated(SubDefinitionCreatedEvent $event)
@@ -30,7 +27,7 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             'subdef'        => $event->getSubDefinitionName()
         ];
 
-        $this->webhookManipulator->create(
+        $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEF_CREATED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
             $eventData
@@ -45,7 +42,7 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             'subdef'        => $event->getSubDefinitionName()
         ];
 
-        $this->webhookManipulator->create(
+        $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEF_FAILED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
             $eventData
@@ -60,7 +57,7 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             'subdef_count'  => count($event->getMedia())
         ];
 
-        $this->webhookManipulator->create(
+        $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEFS_CREATED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
             $eventData

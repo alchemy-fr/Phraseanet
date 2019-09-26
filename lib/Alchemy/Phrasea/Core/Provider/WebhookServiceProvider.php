@@ -11,7 +11,7 @@ use Alchemy\Worker\CallableWorkerFactory;
 use Alchemy\Worker\TypeBasedWorkerResolver;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class WebhookServiceProvider implements ServiceProviderInterface
 {
@@ -60,6 +60,14 @@ class WebhookServiceProvider implements ServiceProviderInterface
                 return $resolver;
             }
         );
+
+        $app['dispatcher'] = $app->share(
+            $app->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
+                $dispatcher->addSubscriber(new WebhookSubdefEventSubscriber($app));
+
+                return $dispatcher;
+            })
+        );
     }
 
     private function createAlias(Application $app, $alias, $targetServiceKey)
@@ -71,12 +79,6 @@ class WebhookServiceProvider implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
-        $app['dispatcher'] = $app->share(
-            $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher) use ($app) {
-                $dispatcher->addSubscriber(new WebhookSubdefEventSubscriber($app['manipulator.webhook-event']));
 
-                return $dispatcher;
-            })
-        );
     }
 }
