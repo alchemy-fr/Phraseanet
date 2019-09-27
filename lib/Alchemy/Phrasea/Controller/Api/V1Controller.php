@@ -944,7 +944,7 @@ class V1Controller extends Controller
                 }
 
                 $originalName = $pi['filename'] . '.' . $pi['extension'];
-                $newPathname = $tempfile;
+                $uploadedFilename = $newPathname = $tempfile;
             }
         }
         else {
@@ -956,8 +956,11 @@ class V1Controller extends Controller
             if (!$file->isValid()) {
                 return $this->getBadRequestAction($request, 'Data corrupted, please try again');
             }
+
+            $uploadedFilename = $file->getPathname();
             $originalName = $file->getClientOriginalName();
             $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+
             if (false === rename($file->getPathname(), $newPathname)) {
                 return Result::createError($request, 403, 'Error while renaming file')->createResponse();
             }
@@ -1009,6 +1012,11 @@ class V1Controller extends Controller
 
         $nosubdef = $request->get('nosubdefs') === '' || \p4field::isyes($request->get('nosubdefs'));
         $this->getBorderManager()->process($session, $Package, $callback, $behavior, $nosubdef);
+
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
+        }
 
         $ret = ['entity' => null];
 
@@ -1079,6 +1087,11 @@ class V1Controller extends Controller
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
+        }
+
+        // remove $newPathname on temporary directory
+        if ($renamedFilename !== $uploadedFilename) {
+            @rename($renamedFilename, $uploadedFilename);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -1984,7 +1997,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));
@@ -2588,8 +2601,18 @@ class V1Controller extends Controller
         foreach ($recordsData as $data) {
             $records[] = $this->addOrDelStoryRecord($story, $data, $action);
             if($action === 'ADD' && !$cover_set && isset($data->{'use_as_cover'}) && $data->{'use_as_cover'} === true) {
+                $coverSource = [];
+
+                if (isset($data->{'thumbnail_cover_source'})) {
+                    $coverSource['thumbnail_cover_source'] = $data->{'thumbnail_cover_source'};
+                }
+
+                if (isset($data->{'preview_cover_source'})) {
+                    $coverSource['preview_cover_source'] = $data->{'preview_cover_source'};
+                }
+
                 // because we can try many records as cover source, we let it fail
-                $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true) !== false);
+                $cover_set = ($this->setStoryCover($story, $data->{'record_id'}, true, $coverSource) !== false);
             }
         }
 
@@ -2643,14 +2666,26 @@ class V1Controller extends Controller
 
         $story = new \record_adapter($this->app, $databox_id, $story_id);
 
+        $coverSource = [];
+
+        if (isset($data->{'thumbnail_cover_source'})) {
+            $coverSource['thumbnail_cover_source'] = $data->{'thumbnail_cover_source'};
+        }
+
+        if (isset($data->{'preview_cover_source'})) {
+            $coverSource['preview_cover_source'] = $data->{'preview_cover_source'};
+        }
+
         // we do NOT let "setStoryCover()" fail : pass false as last arg
-        $record_key = $this->setStoryCover($story, $data->{'record_id'}, false);
+        $record_key = $this->setStoryCover($story, $data->{'record_id'}, false, $coverSource);
 
         return Result::create($request, array($record_key))->createResponse();
     }
 
-    protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false)
+    protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false, $coverSource = [])
     {
+        $coverSource = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSource);
+
         try {
             $record = new \record_adapter($this->app, $story->getDataboxId(), $record_id);
         } catch (\Exception_Record_AdapterNotFound $e) {
@@ -2662,18 +2697,22 @@ class V1Controller extends Controller
             $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->getDataboxId(), $record_id));
         }
 
-        if ($record->getType() !== 'image' && $record->getType() !== 'video') {
-            // this can fail so we can loop on many records during story creation...
-            if($can_fail) {
-                return false;
-            }
-            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image nor a video', $story->getDataboxId(), $record_id));
-        }
+        // taking account all record type as a cover
+//        if ($record->getType() !== 'image' && $record->getType() !== 'video') {
+//            // this can fail so we can loop on many records during story creation...
+//            if($can_fail) {
+//                return false;
+//            }
+//            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image nor a video', $story->getDataboxId(), $record_id));
+//        }
 
         foreach ($record->get_subdefs() as $name => $value) {
-            if (!in_array($name, array('thumbnail', 'preview'))) {
+            if (!($key = array_search($name, $coverSource))) {
                 continue;
             }
+
+            $name = ($key == 'thumbnail_cover_source') ? 'thumbnail': 'preview';
+
             $media = $this->app->getMediaFromUri($value->getRealPath());
             $this->getSubdefSubstituer()->substituteSubdef($story, $name, $media);  // name = thumbnail | preview
             $this->getDataboxLogger($story->getDatabox())->log(

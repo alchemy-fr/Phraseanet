@@ -146,7 +146,7 @@
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
             prodApp.appEvents.emit('search.updateFacetData');
-
+            $('body').addClass('{{ cssfile }}');
 
         });
     </script>
@@ -277,6 +277,9 @@
                         {% endif %}
                         <div id="FIRST_QUERY_CONTAINER" class="last-query" style="display: none" data-format="json">{{ startq | raw }}</div>
                     {% endif %}
+                    {#container fetched by js #}
+                    <input type="hidden" name="advanced-search-title" id="advanced-search-title" value="{{ 'Advanced Search' | trans }}">
+
                     <form id="searchForm" method="POST" action="{{ path('prod_query') }}" name="phrasea_query" class="phrasea_query">
                         <input id="SENT_query" name="qry" type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'start_page_query')}}">
                         <input type="hidden" name="pag" id="formAnswerPage" value="">
@@ -295,7 +298,7 @@
                                 {% endif %}
                                 <button type="submit" class="btn btn-inverse" style="font-size:14px">{{ 'boutton::rechercher' | trans }}</button>
                             </div>
-                            <div class="control-group pull-left">
+                            <div class="control-group pull-left search-header-block">
                             {% if GV_multiAndReport %}
                                 <label for="mode_type_doc" class="radio inline custom_checkbox_label">
                                     <input type="radio" value="0" class="mode_type_doc" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/>
@@ -454,7 +457,7 @@
                                                     <hr />
                                                     <label class="status-section-title">
                                                         <span class="danger_indicator">{{ 'Date(s) from field(s)' | trans }}</span>
-                                                        <img id="info-box-trigger" src="/assets/common/images/icons/info-white.png" width="18" height="18">
+                                                        <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
                                                         <div id="info-box">
                                                             <p>
                                                                 {{ 'prod::advancesearch:tooltips:datefield_restriction_explanation' | trans }}

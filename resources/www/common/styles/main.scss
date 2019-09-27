@@ -14,6 +14,7 @@
 @import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
 @import './fonts/PhraseanetIcomoon/style';
 @import './roboto.scss';
+@import './colorpicker.scss';
 @import '../../_shared/styles/variables';
 @import '../../vendors/bootstrap/bootstrap';
 @import '../../vendors/bootstrap/responsive';
@@ -60,8 +61,11 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   background-image:none;
   margin-top: inherit;
 }
-.icon-picto-three-little-point {
-  font-size: 4.5px;
+.icon-round-more_horiz-24px {
+  font-size: 2em;
+}
+.icon-round-list-24px {
+  font-size: 1.5em;
 }
 .macroFileEdit {
   width: 24px;
@@ -76,6 +80,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 }
 
 .icomoon{
+  font-family: 'icomoon';
   &.with-shadow {
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   }
@@ -83,3 +88,20 @@ $mainMenuLinkBackgroundHoverColor: transparent;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
   }
 }
+/*Help menu*/
+.contextMenu.helpcontextmenu {
+  display: none;
+  &.shown {
+    display: block;
+    position: absolute;
+    z-index: 101;
+  }
+}
+.help-trigger {
+  display:inline-block;
+  cursor:pointer;
+  padding: 0 4px;
+  border:none;
+  margin-left: -12px;
+}
+

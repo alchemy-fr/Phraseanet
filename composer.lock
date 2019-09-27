@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a40bfa0aa6310530dc0c92b141b21305",
+    "content-hash": "f3b1fc0a30bf14b05e57ce673550d9c0",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.4",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "b510748686c05c0c1d59b7ad15e2c1098abafc5a"
+                "reference": "c585ccf18e53a9a6f2b696ddbbc39521732dfdde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/b510748686c05c0c1d59b7ad15e2c1098abafc5a",
-                "reference": "b510748686c05c0c1d59b7ad15e2c1098abafc5a",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/c585ccf18e53a9a6f2b696ddbbc39521732dfdde",
+                "reference": "c585ccf18e53a9a6f2b696ddbbc39521732dfdde",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.4",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.7",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-06-03T13:35:50+00:00"
+            "time": "2019-09-02T12:28:19+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -383,16 +383,16 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.0",
+            "version": "0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95"
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/7372ca4e43473328bf06bca810558fbad7bb2f95",
-                "reference": "7372ca4e43473328bf06bca810558fbad7bb2f95",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
+                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
                 "shasum": ""
             },
             "require": {
@@ -452,7 +452,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2017-05-18T19:04:04+00:00"
+            "time": "2019-02-13T13:06:43+00:00"
         },
         {
             "name": "alchemy/queue-bundle",
@@ -1155,6 +1155,48 @@
                 "slugify"
             ],
             "time": "2016-08-09T20:10:17+00:00"
+        },
+        {
+            "name": "czproject/git-php",
+            "version": "v3.17.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/czproject/git-php.git",
+                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/czproject/git-php/zipball/a7b911b81a2fe626f748a4ac8955353c5777bc6c",
+                "reference": "a7b911b81a2fe626f748a4ac8955353c5777bc6c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "nette/tester": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Pecha",
+                    "email": "janpecha@email.cz"
+                }
+            ],
+            "description": "Library for work with Git repository in PHP.",
+            "keywords": [
+                "git"
+            ],
+            "time": "2019-02-09T13:11:36+00:00"
         },
         {
             "name": "dailymotion/sdk",

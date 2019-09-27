@@ -231,17 +231,19 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        coverSubdef: previewx4
-        available-speeds:
+        cover_subdef: thumbnail
+        message_start: StartOfMessage
+        available_speeds:
             - 1
             - 1.5
             - 3
     audio:
         player: videojs
         autoplay: false
+        cover_subdef: thumbnail
     document:
         player: flexpaper
-        enable-pdfjs: true
+        enable_pdfjs: true
 geocoding-providers:
     -
         map-provider: mapboxWebGL
