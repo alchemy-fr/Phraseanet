@@ -162,9 +162,7 @@
                                         {% if action.icon %}
                                             <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                         {% endif %}
-
-                                        {% set label = action.label %}
-                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                        {{ action.label|trans({}, plugin.PluginLocale) }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -197,9 +195,7 @@
                                         {% if action.icon %}
                                             <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                         {% endif %}
-
-                                        {% set label = action.label %}
-                                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                        {{ action.label|trans({}, plugin.PluginLocale) }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -230,9 +226,7 @@
                                             {% if action.icon %}
                                                 <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                             {% endif %}
-
-                                            {% set label = action.label %}
-                                            {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                            {{ action.label|trans({}, plugin.PluginLocale) }}
                                         </a>
                                     </li>
                                 {% endfor %}
@@ -253,8 +247,7 @@
                         {% if action.icon %}
                             <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" />
                         {% endif %}
-                        {% set label = action.label %}
-                        {% trans from plugin.PluginLocale %}label{% endtrans %}
+                        {{ action.label|trans({}, plugin.PluginLocale) }}
                     </a>
                 </button>
                 {% if not (loop.last and loop.parent.loop.last) %}
@@ -268,8 +261,7 @@
                                 {% if action.icon %}
                                     <img src="{{ plugin_asset(plugin.PluginName, action.icon) }}" class="btn-image"/>
                                 {% endif %}
-                                {% set label = action.label %}
-                                {% trans from plugin.PluginLocale %}label{% endtrans %}
+                                {{ action.label|trans({}, plugin.PluginLocale) }}
                             </a>
                         </li>
                     {% else %}
@@ -302,5 +294,16 @@
                 </button>
             </div>
         </span>
+    {% endif %}
+{% endblock %}
+
+{% block toolbarJS %}
+    {% if plugins.actionbar is not empty %}
+        {% for pluginId, plugin in plugins.actionbar %}
+            {% set template = plugin.getActionBarTemplate() %}
+            {% if template %}
+                {% include template with {'app': app, 'plugin_id': pluginId, 'plugin': plugin} only %}
+            {% endif %}
+        {% endfor %}
     {% endif %}
 {% endblock %}
