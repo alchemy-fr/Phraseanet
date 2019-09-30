@@ -524,27 +524,36 @@ class AccountController extends Controller
 
         $list = array_keys($this->app['repo.collections-registry']->getBaseIdMap());
 
-        $this->app->getAclForUser($user)->revoke_access_from_bases($list);
+        try {
+            $this->app->getAclForUser($user)->revoke_access_from_bases($list);
+        }
+        catch (\Exception $e) {
+            // one or more access could not be revoked ? the user will not be phantom
+            $this->app->addFlash('error', $this->app->trans('phraseanet::error: failed to revoke some user access'));
+        }
 
         if ($this->app->getAclForUser($user)->is_phantom()) {
             // send confirmation email: the account has been deleted
 
             try {
                 $receiver = Receiver::fromUser($user);
-            } catch (InvalidArgumentException $e) {
+                $mail = MailSuccessAccountDelete::create($this->app, $receiver);
+            }
+            catch (InvalidArgumentException $e) {
                 $this->app->addFlash('error', $this->app->trans('phraseanet::erreur: echec du serveur de mail'));
+                $mail = null;
             }
 
             $mail = MailSuccessAccountDelete::create($this->app, $receiver);
 
             $this->app['manipulator.user']->delete($user, [$user->getId() => $oldGrantedBaseIds]);
+            if($mail) {
+                $this->deliver($mail);
+            }
 
-            $this->deliver($mail);
+            $this->getAuthenticator()->closeAccount();
+            $this->app->addFlash('info', $this->app->trans('phraseanet::account The account has been deleted'));
         }
-
-        $this->getAuthenticator()->closeAccount();
-        $this->app->addFlash('info', $this->app->trans('phraseanet::account The account has been deleted'));
-
     }
 
     /**
