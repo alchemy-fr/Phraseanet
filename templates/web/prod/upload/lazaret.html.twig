@@ -114,7 +114,7 @@
         $('button.empty-lazaret', scope).bind('click', function(){
 
             var that = $(this);
-            
+
             if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
                 return false;
             }
@@ -344,6 +344,36 @@
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
+
+                    <div class="update-status">
+                         {% set collection = file.getCollection(app) %}
+                            <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                                <h5>{{ 'upload:: Status :' | trans }} :</h5>
+                                <table class="status-tab">
+                                    <tbody>
+                                    {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                        <tr>
+                                            <td class="status-tab-left">
+                                                {% if status['img_off'] is not empty %}
+                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                {% endif %}
+                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                            </td>
+                                            <td class="status-tab-right">
+                                                <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                {% if status['img_on'] is not empty %}
+                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+
                     <div class="btn-group" style="text-align:center; padding:5px;">
                         <button class="btn add-lazaret" title="{{ "Add" | trans }}">
                             <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
@@ -404,5 +434,6 @@
             </ul>
         </div>
     {% endif %}
+
 {% endmacro %}
 
