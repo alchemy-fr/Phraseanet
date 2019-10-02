@@ -251,6 +251,75 @@
             });
         });
 
+        //update status list
+        $(".records-subititution", scope).bind('click', function() {
+            var that = $(this);
+            var container = $(this).closest('.wrapper-item');
+            var elements = $(".selected", container);
+
+            var recordId = elements.first().attr("data-record_id");
+            var sBas = elements.first().attr("sbas");
+            $.ajax({
+                type : 'GET',
+                url: '/prod/lazaret/'+sBas+'/'+recordId+'/status',
+                dataType: 'json',
+                beforeSend: function(){
+                    startAjax(that);
+                },
+                success: function(data){
+                    if(data.status){
+                        html='';
+
+                        for ( [key, value] of Object.entries(data.status) ) {
+                            if (value.flag == 1) {
+                                checkValOff= '';
+                                checkValOn= 'checked=checked';
+
+                            }else {
+                                checkValOff= 'checked=checked';
+                                checkValOn='';
+                            }
+                            var labelOff= value['labels_off_i18n'][ "{{ app['locale'] }}"];
+                            var labelOn= value['labels_on_i18n'][ "{{ app['locale'] }}"];
+                            if (labelOff == null || labelOff == "") {
+                                 labelOff = 'off';
+                            }
+                            if (labelOn == null || labelOn == "") {
+                                labelOn = 'on';
+                            }
+
+                            html += '<tr>';
+                            html +=  '<td class="status-tab-left">';
+                            if (value['img_off'] != null ) {
+                                html+= '   <img src="{{ value['img_off'] }}" width="16" height="16" />';
+                            };
+                            html +=  '<span>'+ labelOff +'</span>';
+                            html +=  '<input type="radio" name="status['+ sBas +']['+ value.bit + ']" value="0" '+checkValOff+' />';
+                            html +=  '</td>';
+                            html +=  '<td class="status-tab-right">';
+                            html +=  '<input type="radio" name="status['+ sBas +']['+ value.bit +']" value="1" '+checkValOn+' />';
+                            html +=  '<span>'+ labelOn +'</span>';
+                            if (value['img_on'] != null ) {
+
+                            html +=  '<img src="'+ value['img_on'] +'" width="16" height="16" />';
+                            };
+                            html +=  '</td>';
+                            html +=  '</tr>';
+
+                        };
+                        that.parent().closest('.wrapper-item').find(".status-container").html('');
+                        that.parent().closest('.wrapper-item').find(".status-container").append(html);
+
+                    }
+                },
+                complete: function(){
+                    stopAjax(that);
+                    reloadContent();
+                }
+            });
+
+        });
+
         //substitute lazaret file click action
         $("button.subtitute-lazaret", scope).bind('click', function(){
             var that = $(this);
@@ -279,7 +348,6 @@
             var recordId = elements.first().attr("data-record_id");
             var form = $(this).closest("form");
             $(".record_id").val(recordId);
-            console.log(recordId);
 
             $.ajax({
                 type : 'POST',
@@ -361,7 +429,7 @@
                             <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
                             <div class="status-wrapper hidden">
                                 <table style="margin: auto">
-                                    <tbody>
+                                    <tbody class="status-container">
                                     {% for bit, status in collection.get_databox().getStatusStructure() %}
                                         <tr>
                                             <td class="status-tab-left">

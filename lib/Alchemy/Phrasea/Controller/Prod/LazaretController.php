@@ -73,7 +73,7 @@ class LazaretController extends Controller
     public function getElement($file_id)
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
-        
+
         /* @var LazaretFile $lazaretFile */
         $lazaretFile = $this->getLazaretFileRepository()->find($file_id);
 
@@ -220,6 +220,8 @@ class LazaretController extends Controller
             return $this->app->json($ret);
         }
 
+        $postStatus = (array) $request->request->get('status');
+
         $path = $this->app['tmp.lazaret.path'] . '/';
         $lazaretFileName = $path .$lazaretFile->getFilename();
         $lazaretThumbFileName = $path .$lazaretFile->getThumbFilename();
@@ -235,6 +237,9 @@ class LazaretController extends Controller
                 'HD',
                 ''
             );
+
+            // update status
+            $this->updateRecordStatus($record, $postStatus);
 
             //Delete lazaret file
             $manager = $this->getEntityManager();
@@ -282,6 +287,43 @@ class LazaretController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param $databox_id
+     * @param $record_id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getDestinationStatus(Request $request, $databox_id, $record_id)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $this->app->abort(400);
+        }
+
+        $record = new \record_adapter($this->app, (int) $databox_id, (int) $record_id);
+
+        $databox = $this->findDataboxById($databox_id);
+
+        $statusStructure = $databox->getStatusStructure();
+
+        $recordsStatuses = [];
+
+        foreach ($statusStructure as $status) {
+            $bit = $status['bit'];
+
+            if (!isset($recordsStatuses[$bit])) {
+                $recordsStatuses[$bit] = $status;
+            }
+
+            $statusSet = \databox_status::bitIsSet($record->getStatusBitField(), $bit);
+
+            if (!isset($recordsStatuses[$bit]['flag'])) {
+                $recordsStatuses[$bit]['flag'] = (int) $statusSet;
+            }
+        }
+
+        return $this->app->json(['status' => $recordsStatuses]);
+    }
+
+    /**
      * @return LazaretFileRepository
      */
     private function getLazaretFileRepository()
@@ -296,4 +338,39 @@ class LazaretController extends Controller
     {
         return $this->app['border-manager'];
     }
+
+    /**
+     * Set new status to selected record
+     *
+     * @param  \record_adapter $record
+     * @param  array           $postStatus
+     * @return array|null
+     */
+    private function updateRecordStatus(\record_adapter $record, array $postStatus)
+    {
+        $sbasId = $record->getDataboxId();
+
+        if (isset($postStatus[$sbasId]) && is_array($postStatus[$sbasId])) {
+            $postStatus = $postStatus[$sbasId];
+            $currentStatus = strrev($record->getStatus());
+
+            $newStatus = '';
+            foreach (range(0, 31) as $i) {
+                $newStatus .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : $currentStatus[$i];
+            }
+
+            $record->setStatus(strrev($newStatus));
+
+            $this->getDataboxLogger($record->getDatabox())
+                ->log($record, \Session_Logger::EVENT_STATUS, '', '');
+
+            return [
+                'current_status' => $currentStatus,
+                'new_status'     => $newStatus,
+            ];
+        }
+
+        return null;
+    }
+
 }
