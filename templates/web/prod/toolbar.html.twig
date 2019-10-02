@@ -141,8 +141,8 @@
                 {% for action in menu %}
                     {% set m = m|merge([{
                         'class':action.classes|default(''),
-                        'icon':plugin_asset(plugin.PluginName, action.icon),
-                        'label':action.label|trans({}, plugin.PluginLocale) }])
+                        'icon':(action.icon ?? false) ? plugin_asset(plugin.PluginName, action.icon) : null,
+                        'label':(action.label ?? false) ? (action.label|trans({}, plugin.PluginLocale)) : 'undefined label' }])
                     %}
                 {% endfor %}
                 {% set menus = menus|merge({(k) : m}) %}
@@ -155,25 +155,29 @@
         {% if menu_entries|length > 0 %}
             <span class="dropdownButton">
                 <div class="btn-group">
-            {% set menu_entry = menu_entries[0] %}
+                    {% set menu_entry = menu_entries[0] %}
                     <button class="results_window btn btn-inverse {{ menu_entry.class }}">
-                        <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                        {% if menu_entry.icon %}
+                        <img src="{{ menu_entry.icon }}" class="btn-image"/>
+                        {% endif %}
                         {{ menu_entry.label }}
                     </button>
-            {% set menu_entries = menu_entries|slice(1) %}
+                    {% set menu_entries = menu_entries|slice(1) %}
                     {% if menu_entries|length > 0 %}
-                        <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
                                     class="caret"></span></button>
-                        <ul class="dropdown-menu">
-                {% for menu_entry in menu_entries %}
-                    <li>
-                        <a class="results_window {{ menu_entry.class }}">
-                            <img src="{{ menu_entry.icon }}" class="btn-image"/>
-                            {{ menu_entry.label }}
-                        </a>
-                    </li>
-                {% endfor %}
-                </ul>
+                    <ul class="dropdown-menu">
+                        {% for menu_entry in menu_entries %}
+                        <li>
+                            <a class="results_window {{ menu_entry.class }}">
+                                {% if menu_entry.icon %}
+                                <img src="{{ menu_entry.icon }}" class="btn-image"/>
+                                {% endif %}
+                                {{ menu_entry.label }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
                     {% endif %}
                 </div>
             </span>
