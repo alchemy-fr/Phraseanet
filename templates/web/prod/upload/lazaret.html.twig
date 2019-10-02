@@ -114,7 +114,7 @@
         $('button.empty-lazaret', scope).bind('click', function(){
 
             var that = $(this);
-            
+
             if(!confirm("{{ "Empty quarantine will remove all items, are you sure you want to continue ?" | trans }}")) {
                 return false;
             }
@@ -182,15 +182,14 @@
             var that = $(this);
             var lazaretId = getLazaretId(that);
             var destinationCollectionId = getDestinationId(that);
+            var form = $(this).closest("form");
 
             $.ajax({
                 type : 'POST',
                 url: '/prod/lazaret/'+lazaretId+'/force-add/',
                 dataType: 'json',
-                data : {
-                    bas_id:destinationCollectionId,
-                    keep_attributes: 1
-                },
+                data: form.serializeArray(),
+                dataType: 'json',
                 beforeSend: function(){
                     startAjax(that);
                 },
@@ -278,14 +277,15 @@
             }
 
             var recordId = elements.first().attr("data-record_id");
+            var form = $(this).closest("form");
+            $(".record_id").val(recordId);
+            console.log(recordId);
 
             $.ajax({
                 type : 'POST',
                 url: '/prod/lazaret/'+lazaretId+'/accept/',
+                data: form.serializeArray(),
                 dataType: 'json',
-                data:{
-                    record_id: recordId
-                },
                 beforeSend: function(){
                    startAjax(that);
                 },
@@ -311,7 +311,13 @@
                 }
             });
         });
-    });
+
+        /*Toggle status block*/
+        $(".toggle-status").click(function() {
+            $(this).nextAll('.status-wrapper').first().toggleClass('hidden');
+
+        });
+});
 </script>
 <style>
     .lazaret-proposals .diapo {
@@ -323,6 +329,7 @@
     {% import "common/thumbnail.html.twig" as thumb %}
     {% set records = file.getRecordsToSubstitute(app, true) %}
     <div class="lazaret-file span4">
+
         <h5>{{ "Last uploaded version" | trans }}</h5>
         <ul class="thumbnails">
             <li class="span12" >
@@ -344,6 +351,42 @@
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
+                    <form name="change-records-status" action="/" method="POST">
+                        {% set collection = file.getCollection(app) %}
+                        <input type="hidden" name="bas_id" value="{{ collection.get_base_id() }}">
+                        <input type="hidden" name="keep_attributes" value="1">
+                        <input  class="record_id" type="hidden" name="record_id">
+                        <div class="update-status">
+                        <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                            <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+                            <div class="status-wrapper hidden">
+                                <table style="margin: auto">
+                                    <tbody>
+                                    {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                        <tr>
+                                            <td class="status-tab-left">
+                                                {% if status['img_off'] is not empty %}
+                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                {% endif %}
+                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+
+                                            </td>
+                                            <td class="status-tab-right">
+                                                <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                {% if status['img_on'] is not empty %}
+                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="btn-group" style="text-align:center; padding:5px;">
                         <button class="btn add-lazaret" title="{{ "Add" | trans }}">
                             <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
@@ -357,6 +400,7 @@
                             </button>
                         {% endif %}
                     </div>
+                    </form>
                 </div>
             </li>
         </ul>
