@@ -86,6 +86,18 @@ COPY grammar /var/alchemy/grammar
 COPY templates-profiler /var/alchemy/templates-profiler
 COPY templates /var/alchemy/templates
 COPY tests /var/alchemy/tests
+RUN mkdir -p /var/alchemy/Phraseanet/logs \
+    && chmod -R 777 /var/alchemy/Phraseanet/logs \
+    && mkdir -p /var/alchemy/Phraseanet/cache \
+    && chmod -R 777 /var/alchemy/Phraseanet/cache \
+    && mkdir -p /var/alchemy/Phraseanet/datas \
+    && chmod -R 777 /var/alchemy/Phraseanet/datas \
+    && mkdir -p /var/alchemy/Phraseanet/tmp \
+    && chmod -R 777 /var/alchemy/Phraseanet/tmp \
+    && mkdir -p /var/alchemy/Phraseanet/www/custom \
+    && chmod -R 777 /var/alchemy/Phraseanet/www/custom \
+    && mkdir -p /var/alchemy/Phraseanet/config \
+    && chmod -R 777 /var/alchemy/Phraseanet/config
 
 # Phraseanet
 FROM php:7.0-fpm-stretch as phraseanet-fpm
@@ -136,18 +148,6 @@ RUN mkdir /entrypoint /var/alchemy \
 
 COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/ /
-RUN mkdir -p /var/alchemy/Phraseanet/logs \
-    && chmod -R 777 /var/alchemy/Phraseanet/logs \
-    && mkdir -p /var/alchemy/Phraseanet/cache \
-    && chmod -R 777 /var/alchemy/Phraseanet/cache \
-    && mkdir -p /var/alchemy/Phraseanet/datas \
-    && chmod -R 777 /var/alchemy/Phraseanet/datas \
-    && mkdir -p /var/alchemy/Phraseanet/tmp \
-    && chmod -R 777 /var/alchemy/Phraseanet/tmp \
-    && mkdir -p /var/alchemy/Phraseanet/www/custom \
-    && chmod -R 777 /var/alchemy/Phraseanet/www/custom \
-    && mkdir -p /var/alchemy/Phraseanet/config \
-    && chmod -R 777 /var/alchemy/Phraseanet/config
 WORKDIR /var/alchemy/Phraseanet
 ENTRYPOINT ["/phraseanet-entrypoint.sh"]
 CMD ["/boot.sh"]
