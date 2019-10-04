@@ -126,11 +126,15 @@ class LazaretController extends Controller
 
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
-        // get the new record
-        $record = \Collection::getByBaseId($this->app, $request->request->get('bas_id'))->get_databox()->get_record($ret['result']['record_id']);
-        $postStatus = (array) $request->request->get('status');
-        // update status
-        $this->updateRecordStatus($record, $postStatus);
+        try{
+            // get the new record
+            $record = \Collection::getByBaseId($this->app, $request->request->get('bas_id'))->get_databox()->get_record($ret['result']['record_id']);
+            $postStatus = (array) $request->request->get('status');
+            // update status
+            $this->updateRecordStatus($record, $postStatus);
+        }catch(\Exception $e){
+            $ret['message'] = $this->app->trans('An error occured when wanting to change status!');
+        }
 
         return $this->app->json($ret);
     }
