@@ -129,6 +129,10 @@ class LazaretController extends Controller
 
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
+        // update status
+        $postStatus = (array) $request->request->get('status');
+        $this->updateRecordStatus($record, $postStatus);
+
         return $this->app->json($ret);
     }
 
