@@ -12,9 +12,11 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Controller\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\LazaretController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -88,5 +90,41 @@ class Lazaret implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('lazaret_destination_status');
 
         return $controllers;
+    }
+
+    /**
+     * @param Application $app
+     * @return array|null
+     */
+    public function getStatus(Application $app)
+    {
+        /**@var LazaretAttribute $atribute*/
+
+        foreach ($this->attributes as $atribute) {
+            if ($atribute->getName() == AttributeInterface::NAME_STATUS) {
+                $databox = $this->getCollection($app)->get_databox();
+
+                $statusStructure = $databox->getStatusStructure();
+                $recordsStatuses = [];
+
+                foreach ($statusStructure as $status) {
+                    $bit = $status['bit'];
+
+                    if (!isset($recordsStatuses[$bit])) {
+                        $recordsStatuses[$bit] = $status;
+                    }
+
+                    $statusSet = \databox_status::bitIsSet(bindec($atribute->getValue()), $bit);
+
+                    if (!isset($recordsStatuses[$bit]['flag'])) {
+                        $recordsStatuses[$bit]['flag'] = (int) $statusSet;
+                    }
+                }
+
+                return $recordsStatuses;
+            }
+        }
+
+        return null;
     }
 }

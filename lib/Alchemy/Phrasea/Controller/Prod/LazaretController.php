@@ -307,13 +307,14 @@ class LazaretController extends Controller
         $recordsStatuses = [];
 
         foreach ($statusStructure as $status) {
-            $bit = $status['bit'];
+            //  make the key as a string for the json usage in javascript
+            $bit = "'".$status['bit']."'";
 
             if (!isset($recordsStatuses[$bit])) {
                 $recordsStatuses[$bit] = $status;
             }
 
-            $statusSet = \databox_status::bitIsSet($record->getStatusBitField(), $bit);
+            $statusSet = \databox_status::bitIsSet($record->getStatusBitField(), $status['bit']);
 
             if (!isset($recordsStatuses[$bit]['flag'])) {
                 $recordsStatuses[$bit]['flag'] = (int) $statusSet;
