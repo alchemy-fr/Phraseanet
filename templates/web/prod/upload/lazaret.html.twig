@@ -448,20 +448,20 @@
             var that = $(this);
             var diapo = that.closest('.lazaret-proposals').find('.diapo');
             var container = that.closest('.wrapper-item');
-            var elements = $(".selected", container);
-            var recordId = elements.first().attr("data-record_id");
-            var sBas = elements.first().attr("sbas");
             that.closest('.lazaret-proposals').find('.diapo').not(this).removeClass('selected');
 
             /*Set selected or not to check for sending ajax request*/
             if (that.hasClass("selected")) {
                 that.removeClass('selected');
-            }else {
+                var html= that.parent().closest('.wrapper-item').find(".status-backup").html();
+                that.parent().closest('.wrapper-item').find(".status-container").html('');
+                that.parent().closest('.wrapper-item').find(".status-container").append(html);
+            } else {
                 that.addClass('selected');
-            }
-
-
-            if (that.hasClass("selected")) {
+                var elements = $(".selected", container);
+                var recordId = elements.first().attr("data-record_id");
+                var sBas = elements.first().attr("sbas");
+                console.log('miditra ato sBAs' + sBas+ ' record ID '+ recordId);
                 $.ajax({
                     type: 'GET',
                     url: '/prod/lazaret/' + sBas + '/' + recordId + '/status',
@@ -523,10 +523,6 @@
                         reloadContent();
                     }
                 });
-            }else {
-                var html= that.parent().closest('.wrapper-item').find(".status-backup").html();
-                that.parent().closest('.wrapper-item').find(".status-container").html('');
-                that.parent().closest('.wrapper-item').find(".status-container").append(html);
             }
 
         });
