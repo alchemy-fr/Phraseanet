@@ -92,11 +92,11 @@
                                                         <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                     {% endif %}
                                                     <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                    <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
 
                                                 </td>
                                                 <td class="status-tab-right">
-                                                    <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
                                                     <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
                                                     {% if status['img_on'] is not empty %}
                                                         <img src="{{ status['img_on'] }}" width="16" height="16" />
@@ -112,11 +112,11 @@
                                                         <img src="{{ status['img_off'] }}" width="16" height="16" />
                                                     {% endif %}
                                                     <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                    <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
 
                                                 </td>
                                                 <td class="status-tab-right">
-                                                    <input type="radio" name="status[{{ collection.get_base_id() }}][{{ bit }}]" value="1" />
+                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
                                                     <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
                                                     {% if status['img_on'] is not empty %}
                                                         <img src="{{ status['img_on'] }}" width="16" height="16" />
@@ -148,7 +148,47 @@
 {# bloc to backup initial value of status list#}
                     <table class="hidden">
                         <tbody class="status-backup"
-                        &nbsp;
+                        {% if file.getStatus(app) is not null  %}
+                            {% for bit, status in file.getStatus(app) %}
+                                <tr>
+                                    <td class="status-tab-left">
+                                        {% if status['img_off'] is not empty %}
+                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                        {% endif %}
+                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+
+                                    </td>
+                                    <td class="status-tab-right">
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                        {% if status['img_on'] is not empty %}
+                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                <tr>
+                                    <td class="status-tab-left">
+                                        {% if status['img_off'] is not empty %}
+                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                        {% endif %}
+                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+
+                                    </td>
+                                    <td class="status-tab-right">
+                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                        {% if status['img_on'] is not empty %}
+                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -341,7 +381,6 @@
                 url: '/prod/lazaret/'+lazaretId+'/force-add/',
                 dataType: 'json',
                 data: form.serializeArray(),
-                dataType: 'json',
                 beforeSend: function(){
                     startAjax(that);
                 },
@@ -408,24 +447,20 @@
         $(".records-subititution .diapo", scope).bind('click', function() {
             var that = $(this);
             var diapo = that.closest('.lazaret-proposals').find('.diapo');
+            var container = that.closest('.wrapper-item');
+            var elements = $(".selected", container);
+            var recordId = elements.first().attr("data-record_id");
+            var sBas = elements.first().attr("sbas");
             that.closest('.lazaret-proposals').find('.diapo').not(this).removeClass('selected');
+
+            /*Set selected or not to check for sending ajax request*/
             if (that.hasClass("selected")) {
                 that.removeClass('selected');
             }else {
-                /*backup initial values of status list*/
-                var html_init= that.parent().closest('.wrapper-item').find(".status-container").html();
-                that.parent().closest('.wrapper-item').find(".status-backup").html('');
-                that.parent().closest('.wrapper-item').find(".status-backup").append(html_init);
-
                 that.addClass('selected');
             }
 
 
-            var container = that.closest('.wrapper-item');
-            var elements = $(".selected", container);
-
-            var recordId = elements.first().attr("data-record_id");
-            var sBas = elements.first().attr("sbas");
             if (that.hasClass("selected")) {
                 $.ajax({
                     type: 'GET',

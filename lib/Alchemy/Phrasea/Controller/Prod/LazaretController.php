@@ -16,14 +16,11 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Border;
-use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Http\DeliverDataInterface;
-use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Alchemy\Phrasea\Model\Repositories\LazaretFileRepository;
-use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,8 +126,10 @@ class LazaretController extends Controller
 
         $ret = $lazaretManipulator->add($file_id, $keepAttributes, $attributesToKeep);
 
-        // update status
+        // get the new record
+        $record = \Collection::getByBaseId($this->app, $request->request->get('bas_id'))->get_databox()->get_record($ret['result']['record_id']);
         $postStatus = (array) $request->request->get('status');
+        // update status
         $this->updateRecordStatus($record, $postStatus);
 
         return $this->app->json($ret);
