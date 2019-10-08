@@ -1017,7 +1017,9 @@ h4 {
   background-color: $mediumBackgroundColor;
   border-radius: 0;
 }
-
+.dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
+  color: $tooltipTitle;
+}
 .popover-inner .popover-content {
   background-color: $darkerBackgroundColor;
   hr {
