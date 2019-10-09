@@ -127,7 +127,7 @@ class QueryController extends Controller
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value))){if ('.$npages.'<= parseInt(this.value)) {gotopage('.$npages.')}else{ gotopage(parseInt(this.value))}}" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
                                 $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
@@ -206,7 +206,16 @@ class QueryController extends Controller
             } else {
                 $template = 'prod/results/records.html.twig';
             }
-            $json['results'] = $this->render($template, ['results'=> $result]);
+
+            /** @var \Closure $filter */
+            $filter = $this->app['plugin.filter_by_authorization'];
+
+            $plugins = [
+                'workzone' => $filter('workzone'),
+                'actionbar' => $filter('actionbar'),
+            ];
+
+            $json['results'] = $this->render($template, ['results'=> $result, 'plugins'=>$plugins]);
 
 
             // add technical fields

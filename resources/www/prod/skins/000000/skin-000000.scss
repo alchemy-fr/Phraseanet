@@ -54,7 +54,10 @@ $scrollBgColor: #3b3b3b;
 
 $paginateBorderColor: #3b3b3b;
 $paginateTextColor: #3b3b3b;
-$paginateBg1: #141414;
+$paginateBg1: #0b4654;
+$paginateBgHov: #05313c;
+$paginateBorder: #0c343d;
+
 $contextMenuBgHover: $highlightDarkerColor;
 
 
@@ -202,6 +205,7 @@ $contextMenuShadow: rgba(0,0,0,0.12);
 $storyBg: #3b3b3b;
 $tooltipBg: #535353;
 $tooltipTxt: #FFFFFF;
+$tooltipTitle: #808080;
 $editAllBg: none;
 $editFieldBg: transparent;
 

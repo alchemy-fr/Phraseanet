@@ -7,7 +7,8 @@
                 <td valign="top" style='width:{{ settings.images_size + 50 }}px'>
                     {% include 'prod/results/record.html.twig' with {
                         'record': record,
-                        'settings': settings
+                        'settings': settings,
+                        'plugins': plugins
                     } %}
                 </td>
                 <td valign="middle">

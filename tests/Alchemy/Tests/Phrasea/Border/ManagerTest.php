@@ -173,7 +173,12 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 $file->addAttribute(new Metadata(new \PHPExiftool\Driver\Metadata\Metadata($databox_field->get_tag(), $value)));
             } else {
 
-                $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
+                if($databox_field->get_type() === $databox_field::TYPE_DATE) {
+                    $data = [ '2001-02-03 04:05:06'];
+                }
+                else {
+                    $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
+                }
 
                 if (!$first) {
                     if ($odd) {
@@ -291,7 +296,12 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
                 $file->addAttribute(new Metadata(new \PHPExiftool\Driver\Metadata\Metadata($databox_field->get_tag(), $value)));
             } else {
 
-                $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
+                if($databox_field->get_type() === $databox_field::TYPE_DATE) {
+                    $data = [ '2001-02-03 04:05:06'];
+                }
+                else {
+                    $data = ['Hello Mono ' . $databox_field->get_tag()->getTagname()];
+                }
 
                 if ($odd) {
                     $value = new \PHPExiftool\Driver\Value\Mono(current($data));

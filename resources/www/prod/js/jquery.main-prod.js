@@ -653,6 +653,14 @@ function initAnswerForm() {
                 }
 
                 afterSearch();
+                /*script for pagination*/
+                setTimeout(function(){
+                    if ($( "#tool_navigate").length) {
+                        $("#tool_navigate .btn-mini").last().addClass("last");
+                    }
+                }, 5000);
+
+
             }
         });
         return false;
@@ -1438,6 +1446,9 @@ function buildQ(clause) {
             return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
 
         case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "DATE-AGGREGATE":
             return clause.field + ":\"" + clause.value + "\"";
 
         case "COLOR-AGGREGATE":
@@ -2461,7 +2472,7 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: '287x153',
+        size: '480x160',
         title: language.warning
     });
 
@@ -2471,10 +2482,9 @@ function deleteThis(lst) {
         dataType: 'html',
         data: {lst: lst},
         success: function (data) {
-            var response = JSON.parse(data);
             $dialog.setOption('height', 'auto');
 
-            $dialog.setContent(response.renderView);
+            $dialog.setContent(data);
 
             //reset top position of dialog
             $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
