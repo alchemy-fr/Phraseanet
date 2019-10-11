@@ -653,6 +653,14 @@ function initAnswerForm() {
                 }
 
                 afterSearch();
+                /*script for pagination*/
+                setTimeout(function(){
+                    if ($( "#tool_navigate").length) {
+                        $("#tool_navigate .btn-mini").last().addClass("last");
+                    }
+                }, 5000);
+
+
             }
         });
         return false;
@@ -1438,6 +1446,9 @@ function buildQ(clause) {
             return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
 
         case "STRING-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
+        case "DATE-AGGREGATE":
             return clause.field + ":\"" + clause.value + "\"";
 
         case "COLOR-AGGREGATE":
