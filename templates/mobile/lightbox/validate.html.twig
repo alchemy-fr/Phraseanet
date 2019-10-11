@@ -42,6 +42,21 @@
     {% endfor %}
     </ul>
   </div>
+
+    {% set basket_elt = basket.getElements().first() %}
+    <div class=" mobile right_column_wrapper unselectable right_column_wrapper_user PNB">
+        {% if basket_elt %}
+            {% set business =  app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(basket_elt.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
+            {{macro.caption(basket_elt.getRecord(app), business, false, true)}}
+        {% endif %}
+        {% if basket.getValidation() %}
+            <div class="right_column_wrapper unselectable right_column_wrapper_user PNB">
+                <div id="basket_infos" class="PNB ui-corner-all">
+                    {% include 'lightbox/agreement_box.html.twig' %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
     <div data-role="footer">
         {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
             <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
@@ -49,7 +64,7 @@
                 <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
             </button>
         {% endif %}
-  </div>
+    </div>
 </div>
 {% endblock %}
 
