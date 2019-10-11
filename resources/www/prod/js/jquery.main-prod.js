@@ -1448,6 +1448,9 @@ function buildQ(clause) {
         case "STRING-AGGREGATE":
             return clause.field + ":\"" + clause.value + "\"";
 
+        case "DATE-AGGREGATE":
+            return clause.field + ":\"" + clause.value + "\"";
+
         case "COLOR-AGGREGATE":
             return clause.field + ":\"" + clause.value + "\"";
 
