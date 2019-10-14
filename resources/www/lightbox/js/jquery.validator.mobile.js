@@ -149,10 +149,10 @@ $(document).ready(function () {
             load_report();
             return false;
         }).addClass('clickable');
-        $('.confirm_report', basket_options).button()
+      /*  $('.confirm_report', basket_options).button()
             .bind('click', function () {
                 set_release($(this));
-            });
+            });*/
 
         $('.basket_element', sc_wrapper).parent()
             .bind('click', function (event) {

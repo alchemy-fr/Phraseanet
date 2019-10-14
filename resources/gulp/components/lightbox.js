@@ -20,6 +20,12 @@ gulp.task('build-lightbox-mobile-js', function(){
         config.paths.src + 'lightbox/js/jquery.validator.mobile.js'
     ], 'lightbox-mobile', 'lightbox/js', debugMode);
 });
+gulp.task('build-lightbox-ui-mobile-js', function(){
+
+    return utils.buildJsGroup([
+        config.paths.src + 'lightbox/js/jquery-ui.js'
+    ], 'lightbox-ui-mobile', 'lightbox/js', debugMode);
+});
 
 gulp.task('build-lightbox-ie6-css', function(){
     return utils.buildCssGroup([
@@ -33,11 +39,10 @@ gulp.task('build-lightbox-css', ['build-lightbox-mobile-css', 'build-lightbox-ie
     ], 'lightbox', 'lightbox/css/', debugMode)
 });
 
-gulp.task('build-lightbox-js', ['build-lightbox-mobile-js'], function(){
+gulp.task('build-lightbox-js', ['build-lightbox-mobile-js','build-lightbox-ui-mobile-js'], function(){
     var lightboxGroup = [
         config.paths.src + 'lightbox/js/jquery.lightbox.js'
     ];
-
     var lightboxIE6Group = [
         config.paths.src + 'lightbox/js/jquery.lightbox.ie6.js'
     ];

@@ -7,13 +7,11 @@
     var releasable = {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     {% endif %}
   </script>
-  <link rel="stylesheet" href="/resources/demos/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <script src="/assets/lightbox/js/lightbox-ui-mobile{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
-  {#  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />#}
     <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
 {% endblock %}
 
@@ -71,7 +69,7 @@
     </div>
 </div>
     {% if basket.getValidation() %}
-        <div id="report" class="report-modal hidden" title="Summary">&nbsp;</div>
+        <div id="report" class="report-modal hidden" title="{{ 'validation::summary' | trans }}">&nbsp;</div>
     {% endif %}
 {% endblock %}
 
