@@ -2,6 +2,7 @@ $(document).ready(function () {
     if (typeof validator_loaded === 'boolean')
         return;
 
+    display_basket();
     $('body').on('touchstart click', '.confirm_report', function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -119,6 +120,61 @@ $(document).ready(function () {
         });
         return false;
     });
+    function load_report() {
+        $.ajax({
+            type: "GET",
+            url: "/lightbox/ajax/LOAD_REPORT/" + $('#navigation').val() + "/",
+            dataType: 'html',
+            success: function (data) {
+                $('#report').empty().append(data);
+
+                $('#report').dialog({
+                    width: Math.round($(window).width() * 0.8),
+                    modal: true,
+                    resizable: false,
+                    height: Math.round($(window).height() * 0.8),
+                });
+
+                return;
+            }
+        });
+
+    }
+
+    function display_basket() {
+        var sc_wrapper = $('#sc_wrapper');
+        var basket_options = $('#basket_options');
+
+        $('.report').on('click',function () {
+            load_report();
+            return false;
+        }).addClass('clickable');
+        $('.confirm_report', basket_options).button()
+            .bind('click', function () {
+                set_release($(this));
+            });
+
+        $('.basket_element', sc_wrapper).parent()
+            .bind('click', function (event) {
+                scid_click(event, this);
+                adjust_visibility(this);
+                return false;
+            });
+
+        $('.agree_button, .disagree_button', sc_wrapper).bind('click',function (event) {
+
+            var sselcont_id = $(this).closest('.basket_element').attr('id').split('_').pop();
+
+            var agreement = $(this).hasClass('agree_button') ? '1' : '-1';
+
+            set_agreement(event, $(this), sselcont_id, agreement);
+            return false;
+        }).addClass('clickable');
+
+        n = $('.basket_element', sc_wrapper).length;
+        $('#sc_container').width(n * $('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
+
+    }
 
     validator_loaded = true;
 });
