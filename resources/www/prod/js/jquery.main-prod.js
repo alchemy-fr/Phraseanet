@@ -1372,7 +1372,14 @@ function serializeJSON(data, selectedFacets, facets) {
     return json;
 }
 
-var _ALL_Clause_ = "(created_on>1900/01/01)";
+var _ALL_Clause_ = "created_on>0";
+
+function pjoin(glue, a)
+{
+    var r = a.join(glue);
+    return a.length===1 ? r : ('('+r+')');
+}
+
 function buildQ(clause) {
     if(clause.enabled == false) {
         return "";
@@ -1399,25 +1406,25 @@ function buildQ(clause) {
                     // some "yes" and and some "neg" clauses
                     if(clause.must_match=="ONE") {
                         // some "yes" and and some "neg" clauses, one is enough to match
-                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT " + pjoin(" OR ", t_neg) + ")";
                         t_pos.push(neg);
                         return "(" + t_pos.join(" OR ") + ")";
                     }
                     else {
                         // some "yes" and and some "neg" clauses, all must match
-                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                        return "(" + pjoin(" AND ", t_pos) + " EXCEPT " + pjoin(" OR ", t_neg) + ")";
                     }
                 }
                 else {
                     // only "yes" clauses
-                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                    return pjoin(clause.must_match=="ONE" ? " OR " : " AND ", t_pos);
                 }
             }
             else {
                 // no "yes" clauses
                 if(t_neg.length > 0) {
                     // only "neg" clauses
-                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match == "ALL" ? " OR " : " AND ") + "))";
+                    return "(" + _ALL_Clause_ + " EXCEPT " + pjoin(clause.must_match == "ALL" ? " OR " : " AND ", t_neg) + ")";
                 }
                 else {
                     // no clauses at all
@@ -1430,13 +1437,13 @@ function buildQ(clause) {
 
         case "DATE-FIELD":
             var t="";
-            if(clause.from ) {
+            if(clause.from) {
                 t = clause.field + ">=" + clause.from;
             }
             if(clause.to) {
                 t += (t?" AND ":"") + clause.field + "<=" + clause.to;
             }
-            return t ? ("(" + t + ")") : "";
+            return (clause.from && clause.to) ? ("(" + t + ")") : t;
 
         case "TEXT-FIELD":
         case "STRING-FIELD":
@@ -1446,13 +1453,13 @@ function buildQ(clause) {
             return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
 
         case "STRING-AGGREGATE":
-            return clause.field + ":\"" + clause.value + "\"";
+            return clause.field + "=\"" + clause.value + "\"";
 
         case "DATE-AGGREGATE":
-            return clause.field + ":\"" + clause.value + "\"";
+            return clause.field + "=\"" + clause.value + "\"";
 
         case "COLOR-AGGREGATE":
-            return clause.field + ":\"" + clause.value + "\"";
+            return clause.field + "=\"" + clause.value + "\"";
 
         case "NUMBER-AGGREGATE":
             return clause.field + "=" + clause.value;
