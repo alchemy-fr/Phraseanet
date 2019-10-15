@@ -126,14 +126,8 @@ $(document).ready(function () {
             url: "/lightbox/ajax/LOAD_REPORT/" + $('#navigation').val() + "/",
             dataType: 'html',
             success: function (data) {
+                $('#report_list_backup').empty().append($('#report').html());
                 $('#report').empty().append(data);
-
-                $('#report').dialog({
-                    width: Math.round($(window).width() * 0.8),
-                    modal: true,
-                    resizable: false,
-                    height: Math.round($(window).height() * 0.8),
-                });
 
                 return;
             }
@@ -145,14 +139,19 @@ $(document).ready(function () {
         var sc_wrapper = $('#sc_wrapper');
         var basket_options = $('#basket_options');
 
-        $('.report').on('click',function () {
+        $('#report_summary').on('click',function () {
             load_report();
+            $(this).hide();
+            $('#report_list').show();
             return false;
         }).addClass('clickable');
-      /*  $('.confirm_report', basket_options).button()
-            .bind('click', function () {
-                set_release($(this));
-            });*/
+
+        $('#report_list').on('click',function () {
+            $(this).hide();
+            $('#report_summary').show();
+            $('#report').empty().append($('#report_list_backup').html());
+            return false;
+        }).addClass('clickable');
 
         $('.basket_element', sc_wrapper).parent()
             .bind('click', function (event) {

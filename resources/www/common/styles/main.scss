@@ -21,6 +21,29 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 #mainContent {
   margin-top: $mainMenuHeight;
 }
+.chim-wrapper-block {
+  .chim-block {
+    margin: 20px;
+  }
+  .chim-inner {
+    width: 100%;
+    display: inline-block;
+    min-width: 330px;
+  }
+  .chim-left {
+    width:165px;
+    float: left;
+    margin-right: 10px;
+    .diapo {
+      div {
+        max-width: 100%;
+      }
+    }
+  }
+  .chim-right {
+    float: left;
+  }
+}
 
 
 

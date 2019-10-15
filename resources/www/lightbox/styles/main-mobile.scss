@@ -75,6 +75,7 @@ img {
   .display_id {
     top: 5px;
     margin: 0 0 0 5px;
+    background: #bebebe;
   }
 }
 
@@ -136,8 +137,9 @@ img {
 }
 
 #report .display_id {
-  top: -5px;
-  left: -5px;
+  top: 0;
+  left: 0;
+  border-radius: 0;
 }
 
 #report .CHIM.diapo {
@@ -335,13 +337,12 @@ li.userchoice {
 }
 
 .basket_report_user {
-  padding: 10px;
+  padding: 7px 10px;
 }
 
 .basket_report_user_wrapper {
-  background-color: #1F1E1B;
+  background-color: #bebebe;
   margin: 0 0 5px;
-  color: #BEBEBE;
 }
 
 .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text {
@@ -487,5 +488,69 @@ button.confirm_report.ui-button.ui-corner-all.ui-widget {
   border: 1px solid rgba(255,255,255,.3);
   text-shadow: 0 1px 0 #111;
   border-radius: 16px;
+}
+.report_wrapper {
+  position: relative;
+}
+.report_btn {
+  position: absolute;
+  top: -41px;
+  right: 0;
+  z-index: 1;
+  background: #8bc34a;
+  border: 1px solid #8bc34a;
+  box-sizing: border-box;
+  padding: 8px 13px;
+  min-width: 110px;
+  border-radius: 4px;
+  color: #fff!important;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s;
+  &:hover, &:focus {
+    background: darken(#8bc34a, 0.2);
+    border-color:  darken(#8bc34a, 0.3);
+  }
+  &.report_list {
+    background: #f44336;
+    border-color:  #f44336;
+    &:hover, &:focus {
+      background: darken(#f44336, 0.2);
+      border-color:  darken(#f44336, 0.3);
+    }
+  }
+}
+.report_list {
+  display: none;
+}
+.report_summary_backup , .report_list_backup {
+  display: none;
+}
+
+
+.chim-wrapper-block {
+  .chim-block {
+    margin: 0;
+  }
+  .chim-inner {
+    width: 100%;
+    display: inline-block;
+    min-width: 296px;
+  }
+  .chim-left {
+    float: left;
+    margin-right: 10px;
+    width:100px;
+    .diapo {
+      div {
+        max-width: 100%;
+      }
+    }
+  }
+
+  .chim-right {
+    float: left;
+    width: calc(100% - 110px);
+  }
 }
 

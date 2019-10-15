@@ -28,37 +28,38 @@
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
-    <ul class="image_set">
-    {% for basket_element in basket.getElements() %}
-      <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
-          </div>
-        {% endif %}
-        <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
-          {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
-        </a>
-        <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
-      </li>
-    {% endfor %}
-    </ul>
-  </div>
+    {% if basket.getValidation() %}
+        <div class="report_wrapper">
+            <a id="report_summary" class="report_btn report_summary" href="#">
+                {{ 'lightbox::recaptitulatif' | trans }}
+            </a>
+            <a id="report_list" class="report_btn report_list" href="#" >
+                {{ 'lightbox::list' | trans }}
+            </a>
+        </div>
 
-    {% set basket_elt = basket.getElements().first() %}
-    <div class=" mobile right_column_wrapper unselectable right_column_wrapper_user PNB">
-        {% if basket_elt %}
-            {% set business =  app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(basket_elt.getRecord(app).get_base_id(), constant('\\ACL::CANMODIFRECORD')) %}
-            {{macro.caption(basket_elt.getRecord(app), business, false, true)}}
-        {% endif %}
-        {% if basket.getValidation() %}
-            <div class="right_column_wrapper unselectable right_column_wrapper_user PNB">
-                <div id="basket_infos" class="PNB ui-corner-all">
-                    {% include 'lightbox/agreement_box.html.twig' %}
-                </div>
-            </div>
-        {% endif %}
         <input type="hidden" id="navigation" value="{{ basket.getId() }}">
-    </div>
+        <div id="report" class="summary_block">
+            <ul class="image_set">
+            {% for basket_element in basket.getElements() %}
+              <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
+                {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                  <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
+                  </div>
+                {% endif %}
+                <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
+                  {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+                </a>
+                <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
+              </li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+  </div>
+    <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
+    <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
+
     <div data-role="footer">
         {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
             <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
@@ -68,9 +69,6 @@
         {% endif %}
     </div>
 </div>
-    {% if basket.getValidation() %}
-        <div id="report" class="report-modal hidden" title="{{ 'validation::summary' | trans }}">&nbsp;</div>
-    {% endif %}
 {% endblock %}
 
 
