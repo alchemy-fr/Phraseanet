@@ -191,9 +191,11 @@
 {% block toolbarJS %}
     {% if plugins.actionbar is not empty %}
         {% for pluginId, plugin in plugins.actionbar %}
-            {% set template = plugin.getActionBarTemplate() %}
-            {% if template %}
-                {% include template with {'app': app, 'plugin_id': pluginId, 'plugin': plugin} only %}
+            {% if plugin.getActionBarTemplate is defined %}
+                {% set template = plugin.getActionBarTemplate() %}
+                {% if template %}
+                    {% include template with {'app': app, 'plugin_id': pluginId, 'plugin': plugin} only %}
+                {% endif %}
             {% endif %}
         {% endfor %}
     {% endif %}
