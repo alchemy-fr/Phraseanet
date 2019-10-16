@@ -1310,6 +1310,7 @@ function serializeJSON(data, selectedFacets, facets) {
                 'type'   : facetValue.value.type,
                 'field'  : facetValue.value.field,
                 'value'  : facetValue.value.raw_value,
+                'query'  : facetValue.value.query,
                 'negated': facetValue.negated,
                 'enabled': facetValue.enabled
             });
@@ -1451,7 +1452,7 @@ function buildQ(clause) {
 
         case "GEO-DISTANCE":
             return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
-
+        /*
         case "STRING-AGGREGATE":
             return clause.field + "=\"" + clause.value + "\"";
 
@@ -1466,6 +1467,13 @@ function buildQ(clause) {
 
         case "BOOLEAN-AGGREGATE":
             return clause.field + "=" + (clause.value ? '1' : '0');
+        */
+        case "STRING-AGGREGATE":
+        case "DATE-AGGREGATE":
+        case "COLOR-AGGREGATE":
+        case "NUMBER-AGGREGATE":
+        case "BOOLEAN-AGGREGATE":
+            return clause.query;
 
         default :
             console.error("Unknown clause type \"" + clause.type + "\"");
