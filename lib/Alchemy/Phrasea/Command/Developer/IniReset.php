@@ -171,7 +171,7 @@ class IniReset extends Command
                 $input->getOption('email'),
                 $input->getOption('password'),
                 $conf['main']['database']['user'],
-                'en',
+                'en-simple',
                 $conf['main']['database']['password'],
                 $dbName,
                 $dbs['ab'],

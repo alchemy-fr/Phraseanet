@@ -45,7 +45,7 @@
             <type>text</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -76,6 +76,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="bridge_accounts">
         <fields>
           <field>
@@ -91,7 +92,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -99,7 +100,7 @@
             <type>char(45)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -107,7 +108,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -115,7 +116,7 @@
             <type>varchar(256)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -123,7 +124,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -131,7 +132,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -183,7 +184,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -191,7 +192,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -199,7 +200,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -207,7 +208,7 @@
             <type>char(35)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -215,7 +216,7 @@
             <type>varchar(35)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -223,7 +224,7 @@
             <type>varchar(35)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -231,7 +232,7 @@
             <type>varchar(80)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -239,7 +240,7 @@
             <type>varchar(80)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -247,7 +248,7 @@
             <type>text</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -255,7 +256,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -263,7 +264,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -271,7 +272,7 @@
             <type>DATETIME</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -330,7 +331,7 @@
             <type>char(45)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -346,7 +347,7 @@
             <type>datetime</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -354,7 +355,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -362,7 +363,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -412,7 +413,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -420,7 +421,7 @@
             <type>varchar(120)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -428,7 +429,7 @@
             <type>varchar(500)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -452,6 +453,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="basusr">
         <fields>
           <field>
@@ -586,7 +588,7 @@
 
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -847,7 +849,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -856,7 +858,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -865,7 +867,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -874,7 +876,7 @@
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -883,7 +885,7 @@
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -892,7 +894,7 @@
             <type>char(32)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -901,7 +903,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -1048,6 +1050,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="dsel">
         <fields>
           <field>
@@ -1065,7 +1068,7 @@
             <type>char(50)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1084,7 +1087,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
 
             <comment></comment>
           </field>
@@ -1095,7 +1098,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -1134,7 +1137,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1142,7 +1145,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1158,7 +1161,7 @@
             <type>char(100)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1225,7 +1228,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <collation>ascii_bin</collation>
             <comment></comment>
           </field>
@@ -1266,7 +1269,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -1332,7 +1335,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1352,7 +1355,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
 
             <comment></comment>
           </field>
@@ -1363,7 +1366,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1373,7 +1376,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1381,7 +1384,7 @@
             <type>char(64)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1389,7 +1392,7 @@
             <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1406,7 +1409,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1414,7 +1417,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1422,7 +1425,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1430,7 +1433,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -1454,6 +1457,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="sbasusr">
         <fields>
           <field>
@@ -1567,7 +1571,7 @@
 
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1577,7 +1581,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1634,7 +1638,7 @@
             <type>char(20)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -1665,7 +1669,6 @@
         </defaults>
         <engine>InnoDB</engine>
       </table>
-
     </tables>
   </appbox>
   <databox>
@@ -1693,7 +1696,6 @@
         <engine>InnoDB</engine>
       </table>
 
-
       <table name="coll">
         <fields>
           <field>
@@ -1709,7 +1711,7 @@
             <type>varchar(50)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1717,7 +1719,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1725,7 +1727,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1733,7 +1735,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1741,7 +1743,7 @@
             <type>char(50)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1749,7 +1751,7 @@
             <type>text</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1757,7 +1759,7 @@
             <type>longblob</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1789,6 +1791,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="collusr">
         <fields>
           <field>
@@ -1796,7 +1799,7 @@
             <type>char(32)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1869,7 +1872,7 @@
             <type>char(128)</type>
             <null></null>
             <extra></extra>
-            <default>0</default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1877,7 +1880,7 @@
             <type>varchar(512)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1885,7 +1888,7 @@
             <type>int(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1893,7 +1896,7 @@
             <type>int(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1901,7 +1904,7 @@
             <type>int(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1917,7 +1920,7 @@
             <type>int(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1925,7 +1928,7 @@
             <type>enum('string','date','number')</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>string</default>
             <comment></comment>
           </field>
           <field>
@@ -1933,7 +1936,7 @@
             <type>varchar(512)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1941,7 +1944,7 @@
             <type>char(12)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <collation>ascii_bin</collation>
             <comment></comment>
           </field>
@@ -1950,7 +1953,7 @@
             <type>char(3)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -1958,7 +1961,7 @@
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1966,7 +1969,7 @@
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1974,7 +1977,7 @@
             <type>int(3) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -1990,7 +1993,7 @@
             <type>CHAR(16)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2006,7 +2009,7 @@
             <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2014,7 +2017,7 @@
             <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2022,7 +2025,7 @@
             <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2030,7 +2033,7 @@
             <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -2080,6 +2083,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="metadatas">
         <fields>
           <field>
@@ -2103,7 +2107,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2111,7 +2115,7 @@
             <type>longtext</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation>utf8_unicode_ci</collation>
           </field>
@@ -2120,7 +2124,7 @@
             <type>char(16)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation>utf8_unicode_ci</collation>
           </field>
@@ -2129,7 +2133,7 @@
             <type>int(11)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
             <collation></collation>
           </field>
@@ -2167,6 +2171,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="log">
         <fields>
           <field>
@@ -2190,7 +2195,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2198,7 +2203,7 @@
             <type>varchar(32)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
 
@@ -2208,7 +2213,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
 
           </field>
@@ -2218,7 +2223,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>0</default>
 
             <comment></comment>
           </field>
@@ -2229,7 +2234,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2239,7 +2244,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2249,7 +2254,7 @@
 
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2259,7 +2264,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2269,7 +2274,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2278,7 +2283,7 @@
             <type>varchar(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2286,7 +2291,7 @@
             <type>varbinary(1024)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2294,7 +2299,7 @@
             <type>varchar(64)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2302,7 +2307,7 @@
             <type>varchar(64)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2310,7 +2315,7 @@
             <type>varchar(200)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2318,7 +2323,7 @@
             <type>varchar(64)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -2421,7 +2426,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2437,7 +2442,7 @@
             <type>varchar(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2453,7 +2458,7 @@
             <type>text</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -2496,6 +2501,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="log_docs">
         <fields>
           <field>
@@ -2511,7 +2517,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2527,7 +2533,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2535,7 +2541,7 @@
             <type>enum('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','')</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation>ascii_bin</collation>
           </field>
@@ -2544,7 +2550,7 @@
             <type>varchar(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2552,7 +2558,7 @@
             <type>text</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2560,7 +2566,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2568,7 +2574,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
         </fields>
@@ -2633,9 +2639,6 @@
         <engine>InnoDB</engine>
       </table>
 
-
-
-
       <table name="log_view">
         <fields>
           <field>
@@ -2651,7 +2654,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2667,7 +2670,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2675,7 +2678,7 @@
             <type>varchar(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2683,7 +2686,7 @@
             <type>varchar(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2691,7 +2694,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
         </fields>
@@ -2749,9 +2752,6 @@
         <engine>InnoDB</engine>
       </table>
 
-
-
-
       <table name="memcached">
         <fields>
           <field>
@@ -2759,7 +2759,7 @@
             <type>CHAR(64)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2767,7 +2767,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2775,7 +2775,7 @@
             <type>CHAR(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -2829,7 +2829,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
           <field>
@@ -2837,7 +2837,7 @@
             <type>CHAR(64)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2845,7 +2845,7 @@
             <type>CHAR(64)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2906,10 +2906,6 @@
         <engine>InnoDB</engine>
       </table>
 
-
-
-
-
       <table name="pref">
         <fields>
           <field>
@@ -2927,7 +2923,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2937,7 +2933,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -2947,7 +2943,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3048,6 +3044,7 @@
         </defaults>
         <engine>InnoDB</engine>
       </table>
+
       <table name="record">
         <fields>
           <field>
@@ -3095,7 +3092,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
 
             <comment></comment>
             <collation>ascii_bin</collation>
@@ -3106,7 +3103,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
 
             <comment></comment>
             <collation>ascii_general_ci</collation>
@@ -3118,7 +3115,7 @@
             <extra></extra>
 
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3156,7 +3153,7 @@
             <type>char(255)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3184,7 +3181,7 @@
             <type>char(10)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3192,7 +3189,7 @@
             <type>varchar(255)</type>
             <null>YES</null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -3263,6 +3260,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="regroup">
         <fields>
           <field>
@@ -3339,6 +3337,7 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
+
       <table name="subdef">
 
         <fields>
@@ -3369,7 +3368,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation>ascii_bin</collation>
           </field>
@@ -3380,7 +3379,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3390,7 +3389,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
 
@@ -3421,7 +3420,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3450,7 +3449,7 @@
             <null>YES</null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
 
             <comment></comment>
           </field>
@@ -3469,14 +3468,14 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
           </field>
         </fields>
         <indexes>
@@ -3513,11 +3512,6 @@
         <engine>InnoDB</engine>
       </table>
 
-
-
-
-
-
       <table name="suggest">
         <fields>
           <field>
@@ -3533,7 +3527,7 @@
             <type>VARCHAR(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3541,7 +3535,7 @@
             <type>VARCHAR(255)</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
           <field>
@@ -3549,7 +3543,7 @@
             <type>int(11) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0</default>
             <comment></comment>
           </field>
         </fields>
@@ -3564,10 +3558,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
-
-
-
 
       <table name="technical_datas">
 
@@ -3599,7 +3589,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
             <collation>ascii_general_ci</collation>
           </field>
@@ -3610,7 +3600,7 @@
             <null></null>
             <extra></extra>
 
-            <default></default>
+            <default>' '</default>
             <comment></comment>
           </field>
         </fields>
@@ -3640,7 +3630,6 @@
         </indexes>
         <engine>InnoDB</engine>
       </table>
-
     </tables>
   </databox>
 </databases>
