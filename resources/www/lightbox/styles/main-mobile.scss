@@ -540,7 +540,7 @@ button.confirm_report.ui-button.ui-corner-all.ui-widget {
   .chim-left {
     float: left;
     margin-right: 10px;
-    width:100px;
+    width:30%;
     .diapo {
       div {
         max-width: 100%;
@@ -550,7 +550,10 @@ button.confirm_report.ui-button.ui-corner-all.ui-widget {
 
   .chim-right {
     float: left;
-    width: calc(100% - 110px);
+    width: calc(70% - 10px);
   }
 }
 
+.thumb_wrapper  img.record_image {
+  max-width: 100%;
+}

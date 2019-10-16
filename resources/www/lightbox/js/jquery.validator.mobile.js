@@ -128,7 +128,7 @@ $(document).ready(function () {
             success: function (data) {
                 $('#report_list_backup').empty().append($('#report').html());
                 $('#report').empty().append(data);
-
+                $('#report .record_image').css('height','auto');
                 return;
             }
         });
