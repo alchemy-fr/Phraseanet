@@ -146,6 +146,18 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');"
 
+# Node Installation (node + yarn)
+# Reference :
+# https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
+# https://yarnpkg.com/lang/en/docs/install/#debian-stable
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && apt install -y nodejs \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y --no-install-recommends yarn \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/
+
 RUN mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
     && mkdir -p /home/app/.composer \
