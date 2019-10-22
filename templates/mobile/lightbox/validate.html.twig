@@ -29,10 +29,24 @@
     </p>
     {% if basket.getValidation() %}
         <div class="report_wrapper">
-            <a id="report_summary" class="report_btn report_summary" href="#">
+            <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
+            type: 'GET',
+            url: '/lightbox/ajax/LOAD_REPORT/' + $('#navigation').val() + '/',
+            dataType: 'html',
+            success: function (data) {
+            $('#report_list_backup').empty().append($('#report').html());
+            $('#report').empty().append(data);
+            $('#report .record_image').css('height','auto');
+            return;
+            }
+            });
+            $(this).hide();
+            $('#report_list').show();">
                 {{ 'lightbox::recaptitulatif' | trans }}
             </a>
-            <a id="report_list" class="report_btn report_list" href="#" >
+            <a id="report_list" class="report_btn report_list" href="#" onclick=" $(this).hide();
+            $('#report_summary').show();
+            $('#report').empty().append($('#report_list_backup').html());">
                 {{ 'lightbox::list' | trans }}
             </a>
         </div>
