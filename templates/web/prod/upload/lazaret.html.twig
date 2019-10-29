@@ -176,25 +176,32 @@
             emptying = true;
             f();
         });
-
+        var data;
         //add lazaret file click action
         $("button.add-lazaret", scope).bind('click', function () {
             var that = $(this);
             var lazaretId = getLazaretId(that);
             var destinationCollectionId = getDestinationId(that);
+            var container = $(this).closest('.wrapper-item');
             var form = $(this).closest("form");
+
+            /*fix POST on firefox*/
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
 
             $.ajax({
                 type: 'POST',
                 url: '/prod/lazaret/' + lazaretId + '/force-add/',
                 dataType: 'json',
-                data: form.serializeArray(),
+                data: data,
                 beforeSend: function () {
                     startAjax(that);
                 },
                 success: function (data) {
                     if (data.success) {
-                        that.closest(".wrapper-item").remove();
+                        container.remove();
                     } else {
                         var html = _.template($("#alert_error_tpl").html(), {
                             content: data.message
@@ -219,6 +226,12 @@
         $("button.delete-lazaret", scope).bind('click', function () {
             var that = $(this);
             var lazaretId = getLazaretId(that);
+            var container = $(this).closest('.wrapper-item');
+            var form = $(this).closest("form");
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
 
             $.ajax({
                 type: 'POST',
@@ -229,7 +242,7 @@
                 },
                 success: function (data) {
                     if (data.success) {
-                        that.closest(".wrapper-item").remove();
+                        container.remove();
                     } else {
                         var html = _.template($("#alert_error_tpl").html(), {
                             content: data.message
@@ -362,17 +375,24 @@
             var form = $(this).closest("form");
             $(".record_id").val(recordId);
 
+
+            var form = $(this).closest("form");
+            data = form.serializeArray();
+            var allData = that.parent().closest('.wrapper-item').find(".change-record-wrapper").html();
+            that.closest(".form-backup ").append(allData);
+            that.parent().closest('.wrapper-item').find(".change-record ").remove();
+
             $.ajax({
                 type: 'POST',
                 url: '/prod/lazaret/' + lazaretId + '/accept/',
                 dataType: 'json',
-                data: form.serializeArray(),
+                data: data,
                 beforeSend: function () {
                     startAjax(that);
                 },
                 success: function (data) {
                     if (data.success) {
-                        that.closest(".wrapper-item").remove();
+                        container.remove();
                     } else {
                         var html = _.template($("#alert_error_tpl").html(), {
                             content: data.message
@@ -425,82 +445,85 @@
                             <p>{{ border_checker_from_fqcn(check.getCheckClassname()).getMessage(app['translator']) }}</p>
                         {% endfor %}
                     </div>
-                    <form name="change-records-status" action="/" method="POST">
+                    <form  class="change-record" name="change-records-status" action="/" method="POST">
+                        <div class="change-record-wrapper">
                         {% set collection = file.getCollection(app) %}
-                        <input type="hidden" name="bas_id" value="{{ collection.get_base_id() }}">
-                        <input type="hidden" name="keep_attributes" value="1">
-                        <input class="record_id" type="hidden" name="record_id">
-                        <div class="update-status">
-                        <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
-                            <a href="#" class="reset-status btn">Reset status</a>
-                            <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
-                            <div class="status-wrapper hidden">
-                                <table style="margin: auto">
-                                    <tbody class="status-container">
-                                    {% if file.getStatus(app) is not null  %}
-                                        {% for bit, status in file.getStatus(app) %}
-                                            <tr>
-                                                <td class="status-tab-left">
-                                                    {% if status['img_off'] is not empty %}
-                                                        <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                    {% endif %}
-                                                    <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+                            <input type="hidden" name="bas_id" value="{{ collection.get_base_id() }}">
+                            <input type="hidden" name="keep_attributes" value="1">
+                            <input class="record_id" type="hidden" name="record_id">
+                            <div class="update-status">
+                            <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                                <a href="#" class="reset-status btn">Reset status</a>
+                                <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+                                <div class="status-wrapper hidden">
+                                    <table style="margin: auto">
+                                        <tbody class="status-container">
+                                        {% if file.getStatus(app) is not null  %}
+                                            {% for bit, status in file.getStatus(app) %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
 
-                                                </td>
-                                                <td class="status-tab-right">
-                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
-                                                    <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                    {% if status['img_on'] is not empty %}
-                                                        <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        {% for bit, status in collection.get_databox().getStatusStructure() %}
-                                            <tr>
-                                                <td class="status-tab-left">
-                                                    {% if status['img_off'] is not empty %}
-                                                        <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                    {% endif %}
-                                                    <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
 
-                                                </td>
-                                                <td class="status-tab-right">
-                                                    <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
-                                                    <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                    {% if status['img_on'] is not empty %}
-                                                        <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endif %}
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="btn-group" style="text-align:center; padding:5px;">
-                        <button class="btn add-lazaret" title="{{ "Add" | trans }}">
-                            <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
-                        </button>
-                        <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
-                            <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
-                        </button>
-                        {% if records|length > 0 %}
-                            <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
-                                <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
-                            </button>
-                        {% endif %}
-                    </div>
+                            <div class="btn-group" style="text-align:center; padding:5px;">
+                                <button class="btn add-lazaret" title="{{ "Add" | trans }}">
+                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                                </button>
+                                <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                                    <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
+                                </button>
+                                {% if records|length > 0 %}
+                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                        <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
                     </form>
+                    <div class="hidden form-backup"></div>
                     {# bloc to backup initial value of status list#}
                     <table class="hidden">
-                        <tbody class="status-backup"
+                        <tbody class="status-backup">
                         {% if file.getStatus(app) is not null %}
                             {% for bit, status in file.getStatus(app) %}
                                 <tr>
