@@ -244,7 +244,6 @@ class QueryController extends Controller
                             'label' => $field->get_label($this->app['locale']),
                             'type' => $field->get_type(),
                             'field' => $field->get_name(),
-                            'query' => "field." . $field->get_name() . ":%s",
                             'trans_label' => $field->get_label($this->app['locale']),
                         ];
                         $field->get_label($this->app['locale']);
@@ -286,7 +285,6 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
-            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
@@ -295,15 +293,8 @@ class QueryController extends Controller
                     $facet['label'] = $f['trans_label'];
                     $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
                     $facets[] = $facet;
-                    // $facetClauses[] = [
-                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
-                    //    'field' => $f['field'],
-                    //    'facet' => $facet
-                    // ];
                 }
             }
-
-            // $json['jsq'] = $facetClauses;
 
             $json['facets'] = $facets;
             $json['phrasea_props'] = $proposals;
