@@ -57,7 +57,9 @@ class patch_410alpha17a implements patchInterface
     public function apply(base $databox, Application $app)
     {
         // -- done by xml schema --
-        // $sql = "ALTER TABLE `metadatas_structure` ADD `publish_cterms` INT(1)  UNSIGNED  NOT NULL  DEFAULT '0' AFTER `tbranch`";
+        // $sql = "ALTER TABLE `metadatas_structure` ADD `generate_cterms` INT(1)  UNSIGNED  NOT NULL  DEFAULT '0' AFTER `tbranch`";
+        // $databox->get_connection()->executeQuery($sql);
+        // $sql = "ALTER TABLE `metadatas_structure` ADD `gui_editable` INT(1)  UNSIGNED  NOT NULL  DEFAULT '0' AFTER `readonly`";
         // $databox->get_connection()->executeQuery($sql);
 
         return true;

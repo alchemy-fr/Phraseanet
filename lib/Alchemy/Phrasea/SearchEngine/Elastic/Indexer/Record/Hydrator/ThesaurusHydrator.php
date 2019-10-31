@@ -98,7 +98,7 @@ class ThesaurusHydrator implements HydratorInterface
                 }
             }
             else {
-                if(($fields[$name])->get_publish_cterms()) {
+                if(($fields[$name])->get_generate_cterms()) {
                     $this->candidate_terms->insert($field_names[$offset], $values[$offset]);
                 }
             }

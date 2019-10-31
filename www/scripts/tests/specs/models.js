@@ -44,8 +44,12 @@ define([
                     this.field.get('tbranch').should.equal("");
                 });
 
-                it("should default publish_cterms property to '0'", function () {
-                    this.field.get('publish_cterms').should.equal("0");
+                it("should default generate_cterms property to '1'", function () {
+                    this.field.get('generate_cterms').should.equal("1");
+                });
+
+                it("should default gui_editable property to '1'", function () {
+                    this.field.get('gui_editable').should.equal("1");
                 });
 
                 it("should default separator property to 'empty'", function () {
