@@ -314,6 +314,7 @@ class FieldsController extends Controller
             ->set_readonly($data['readonly'])
             ->set_type($data['type'])
             ->set_tbranch($data['tbranch'])
+            ->set_publish_cterms($data['publish_cterms'])
             ->set_report($data['report'])
             ->setVocabularyControl(null)
             ->setVocabularyRestricted(false);
@@ -349,7 +350,7 @@ class FieldsController extends Controller
     {
         return [
             'name', 'multi', 'thumbtitle', 'tag', 'business', 'indexable', 'aggregable',
-            'required', 'separator', 'readonly', 'type', 'tbranch', 'report',
+            'required', 'separator', 'readonly', 'type', 'tbranch', 'publish_cterms', 'report',
             'vocabulary-type', 'vocabulary-restricted', 'dces-element', 'labels'
         ];
     }

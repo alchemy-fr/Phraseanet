@@ -36,6 +36,7 @@ final class DbalDataboxFieldRepository implements DataboxFieldRepository
         'label_fr',
         'label_de',
         'label_nl',
+        'publish_cterms',
     ];
 
     /** @var DataboxFieldFactory */

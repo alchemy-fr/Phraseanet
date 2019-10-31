@@ -75,6 +75,7 @@ class EditController extends Controller
                     'format'               => '',
                     'explain'              => '',
                     'tbranch'              => $meta->get_tbranch(),
+                    'publish_cterms'       => $meta->get_publish_cterms(),
                     'maxLength'            => $meta->get_tag()
                         ->getMaxLength(),
                     'minLength'            => $meta->get_tag()

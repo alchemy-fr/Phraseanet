@@ -26,6 +26,7 @@ define([
             "type": "string",
             "thumbtitle": "0",
             "tbranch": "",
+            "publish_cterms": false,
             "separator": "",
             "required": false,
             "report": true,

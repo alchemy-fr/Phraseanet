@@ -2033,6 +2033,14 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>publish_cterms</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>

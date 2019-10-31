@@ -594,6 +594,7 @@ class V1Controller extends Controller
                 ],
                 'separator'        => $databox_field->get_separator(),
                 'thesaurus_branch' => $databox_field->get_tbranch(),
+                'publish_cterms'   => $databox_field->get_publish_cterms(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),

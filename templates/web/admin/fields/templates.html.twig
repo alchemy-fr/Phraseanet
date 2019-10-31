@@ -247,6 +247,10 @@
                     <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
                     <td><input id="tbranch" type="text" value="<%= field.tbranch %>"/></td>
                 </tr>
+                <tr>
+                    <td><label for="publish_cterms" class="checkbox">{% trans %}publish_cterms{% endtrans %}</label></td>
+                    <td><input id="publish_cterms" type="checkbox" <%= field.publish_cterms ? "checked='checked'" : "" %> /></td>
+                </tr>
             </table>
         </div>
     </div>

@@ -43,6 +43,7 @@ class databox_field implements cache_cacheableInterface
     protected $report;
     protected $type;
     protected $tbranch;
+    protected $publish_cterms;
     protected $separator;
     protected $thumbtitle;
 
@@ -166,6 +167,7 @@ class databox_field implements cache_cacheableInterface
         $this->position = (int)$row['sorter'];
         $this->type = $row['type'] ?: self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
+        $this->publish_cterms = (bool)$row['publish_cterms'];
         $this->VocabularyType = $row['VocabularyControlType'];
         $this->VocabularyRestriction = (bool)$row['RestrictToVocabularyControl'];
 
@@ -306,6 +308,7 @@ class databox_field implements cache_cacheableInterface
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
+          `publish_cterms` = :publish_cterms,
           `sorter` = :position,
           `thumbtitle` = :thumbtitle,
           `VocabularyControlType` = :VocabularyControlType,
@@ -329,6 +332,7 @@ class databox_field implements cache_cacheableInterface
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
+            ':publish_cterms'        => $this->publish_cterms ? '1' : '0',
             ':position'              => $this->position,
             ':thumbtitle'            => $this->thumbtitle,
             ':VocabularyControlType' => $this->getVocabularyControl() ? $this->getVocabularyControl()->getType() : null,
@@ -380,6 +384,7 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('aggregable', $this->aggregable);
         $meta->setAttribute('type', $this->type);
         $meta->setAttribute('tbranch', $this->tbranch);
+        $meta->setAttribute('publish_cterms', $this->publish_cterms ? '1' : '0');
         if ($this->multi) {
             $meta->setAttribute('separator', $this->separator);
         }
@@ -712,6 +717,17 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * @param  boolean       $publish_cterms
+     * @return databox_field
+     */
+    public function set_publish_cterms($publish_cterms)
+    {
+        $this->publish_cterms = $publish_cterms;
+
+        return $this;
+    }
+
+    /**
      *
      * @param  string        $separator
      * @return databox_field
@@ -793,6 +809,15 @@ class databox_field implements cache_cacheableInterface
     public function get_tbranch()
     {
         return $this->tbranch;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function get_publish_cterms()
+    {
+        return $this->publish_cterms;
     }
 
     /**
@@ -905,6 +930,7 @@ class databox_field implements cache_cacheableInterface
             'sorter'                => $this->position,
             'thumbtitle'            => $this->thumbtitle,
             'tbranch'               => $this->tbranch,
+            'publish_cterms'        => $this->publish_cterms,
             'separator'             => $this->separator,
             'required'              => $this->required,
             'report'                => $this->report,
@@ -943,10 +969,10 @@ class databox_field implements cache_cacheableInterface
         }
 
         $sql = "INSERT INTO metadatas_structure
-        (`id`, `name`, `src`, `readonly`, `required`, `indexable`, `type`, `tbranch`,
+        (`id`, `name`, `src`, `readonly`, `required`, `indexable`, `type`, `tbranch`, `publish_cterms`,
           `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`, `separator`)
-        VALUES (null, :name, '', 0, 0, 1, 'string', '',
+        VALUES (null, :name, '', 0, 0, 1, 'string', '', 1,
           null, 0, 0, 0,
            1, :sorter, '')";
 
