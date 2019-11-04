@@ -13,8 +13,10 @@ namespace Alchemy\Phrasea\Core\Event\Record;
 
 final class RecordEvents
 {
-    const CREATED = 'record.created';
-    const DELETED = 'record.deleted';
+    const CREATED   = 'record.created';
+    const DELETED   = 'record.deleted';
+    const DELETE    = 'record.delete';
+
     // Change
     const COLLECTION_CHANGED = 'record.collection_changed';
     const METADATA_CHANGED = 'record.metadata_changed';
