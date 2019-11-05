@@ -43,6 +43,8 @@ class Field implements Typed
 
     private $thesaurus_roots;
 
+    private $generate_cterms;
+
     private $used_by_collections;
 
     public static function createFromLegacyField(databox_field $field)
@@ -71,6 +73,7 @@ class Field implements Typed
             'private' => $field->isBusiness(),
             'facet' => $facet,
             'thesaurus_roots' => $roots,
+            'generate_cterms' => $field->get_generate_cterms(),
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
     }
@@ -99,6 +102,7 @@ class Field implements Typed
         $this->is_private      = \igorw\get_in($options, ['private'], false);
         $this->facet           = \igorw\get_in($options, ['facet']);
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
+        $this->generate_cterms  = \igorw\get_in($options, ['generate_cterms'], false);
         $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
 
         Assertion::boolean($this->is_searchable);
@@ -122,6 +126,7 @@ class Field implements Typed
             'private' => $this->is_private,
             'facet' => $this->facet,
             'thesaurus_roots' => $this->thesaurus_roots,
+            'generate_cterms' => $this->generate_cterms,
             'used_by_collections' => $this->used_by_collections
         ]);
     }
@@ -184,6 +189,11 @@ class Field implements Typed
     public function getThesaurusRoots()
     {
         return $this->thesaurus_roots;
+    }
+
+    public function get_generate_cterms()
+    {
+        return $this->generate_cterms;
     }
 
     /**
