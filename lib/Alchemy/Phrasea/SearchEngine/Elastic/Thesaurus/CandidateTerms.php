@@ -32,6 +32,7 @@ class CandidateTerms
 
     public function insert($field, $value)
     {
+        $value = StringUtils::substituteCtrlCharacters($value, '');
         $this->ensureVisitorSetup();
         if (!$this->visitor->hasTerm($field, $value)) {
             $this->new_candidates[$value] = $field;
