@@ -43,6 +43,8 @@ class databox_field implements cache_cacheableInterface
     protected $report;
     protected $type;
     protected $tbranch;
+    protected $generate_cterms;
+    protected $gui_editable;
     protected $separator;
     protected $thumbtitle;
 
@@ -166,6 +168,8 @@ class databox_field implements cache_cacheableInterface
         $this->position = (int)$row['sorter'];
         $this->type = $row['type'] ?: self::TYPE_STRING;
         $this->tbranch = $row['tbranch'];
+        $this->generate_cterms = (bool)$row['generate_cterms'];
+        $this->gui_editable = (bool)$row['gui_editable'];
         $this->VocabularyType = $row['VocabularyControlType'];
         $this->VocabularyRestriction = (bool)$row['RestrictToVocabularyControl'];
 
@@ -306,6 +310,8 @@ class databox_field implements cache_cacheableInterface
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
+          `generate_cterms` = :generate_cterms,
+          `gui_editable` = :gui_editable,
           `sorter` = :position,
           `thumbtitle` = :thumbtitle,
           `VocabularyControlType` = :VocabularyControlType,
@@ -329,6 +335,8 @@ class databox_field implements cache_cacheableInterface
             ':report'                => $this->report ? '1' : '0',
             ':type'                  => $this->type,
             ':tbranch'               => $this->tbranch,
+            ':generate_cterms'        => $this->generate_cterms ? '1' : '0',
+            ':gui_editable'          => $this->gui_editable ? '1' : '0',
             ':position'              => $this->position,
             ':thumbtitle'            => $this->thumbtitle,
             ':VocabularyControlType' => $this->getVocabularyControl() ? $this->getVocabularyControl()->getType() : null,
@@ -380,6 +388,8 @@ class databox_field implements cache_cacheableInterface
         $meta->setAttribute('aggregable', $this->aggregable);
         $meta->setAttribute('type', $this->type);
         $meta->setAttribute('tbranch', $this->tbranch);
+        $meta->setAttribute('generate_cterms', $this->generate_cterms ? '1' : '0');
+        $meta->setAttribute('gui_editable', $this->gui_editable ? '1' : '0');
         if ($this->multi) {
             $meta->setAttribute('separator', $this->separator);
         }
@@ -712,6 +722,28 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * @param  boolean       $generate_cterms
+     * @return databox_field
+     */
+    public function set_generate_cterms($generate_cterms)
+    {
+        $this->generate_cterms = $generate_cterms;
+
+        return $this;
+    }
+
+    /**
+     * @param  boolean       $gui_editable
+     * @return databox_field
+     */
+    public function set_gui_editable($gui_editable)
+    {
+        $this->gui_editable = $gui_editable;
+
+        return $this;
+    }
+
+    /**
      *
      * @param  string        $separator
      * @return databox_field
@@ -793,6 +825,24 @@ class databox_field implements cache_cacheableInterface
     public function get_tbranch()
     {
         return $this->tbranch;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function get_generate_cterms()
+    {
+        return $this->generate_cterms;
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function get_gui_editable()
+    {
+        return $this->gui_editable;
     }
 
     /**
@@ -905,6 +955,8 @@ class databox_field implements cache_cacheableInterface
             'sorter'                => $this->position,
             'thumbtitle'            => $this->thumbtitle,
             'tbranch'               => $this->tbranch,
+            'generate_cterms'        => $this->generate_cterms,
+            'gui_editable'          => $this->gui_editable,
             'separator'             => $this->separator,
             'required'              => $this->required,
             'report'                => $this->report,
@@ -943,10 +995,10 @@ class databox_field implements cache_cacheableInterface
         }
 
         $sql = "INSERT INTO metadatas_structure
-        (`id`, `name`, `src`, `readonly`, `required`, `indexable`, `type`, `tbranch`,
+        (`id`, `name`, `src`, `readonly`, `gui_editable`, `required`, `indexable`, `type`, `tbranch`, `generate_cterms`,
           `thumbtitle`, `multi`, `business`, `aggregable`,
           `report`, `sorter`, `separator`)
-        VALUES (null, :name, '', 0, 0, 1, 'string', '',
+        VALUES (null, :name, '', 0, 1, 0, 1, 'string', '', 1,
           null, 0, 0, 0,
            1, :sorter, '')";
 
