@@ -90,7 +90,7 @@
     {% endif %}
     {% for field in fields %}
         {% set i = field.get_id() %}
-        {% if field.is_readonly() is empty %}
+        {% if field.is_readonly() is empty and field.get_gui_editable()== 1 %}
             <div class="edit_field edit-field-action" id="EditFieldBox_{{i}}"
                  data-id="{{i}}"
                  data-name="{{field.get_name()}}">
