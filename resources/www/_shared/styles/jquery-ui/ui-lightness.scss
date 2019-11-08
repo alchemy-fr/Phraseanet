@@ -5,6 +5,7 @@ $uiLinkColor: #ffffff !default;
 $uiLinkFocusColor: #c77405 !default;
 $uiLinkActiveColor: #eb8f00 !default;
 $uiLinkBorderFocusColor: $uiLinkFocusColor !default;
+$uiLinkColor2: $uiLinkColor !default;
 @import './shared';
 
 .ui-widget-content {
@@ -18,6 +19,9 @@ $uiLinkBorderFocusColor: $uiLinkFocusColor !default;
 .ui-widget-header {
   color: $uiTextTitleColor;
   font-weight: bold;
+  .advanced_search_dialog_container & {
+    color: #ffffff;
+  }
 }
 .ui-widget-header a {
   color: $uiLinkColor;
@@ -33,11 +37,13 @@ $uiLinkBorderFocusColor: $uiLinkFocusColor !default;
   font-weight: bold;
   color: $uiTextTitleColor;
 }
-.ui-state-default a,
-.ui-state-default a:link,
-.ui-state-default a:visited {
+.ui-state-default a {
   color: $uiLinkColor;
   text-decoration: none;
+  &:visited, &:link, &.ui-state-hover {
+    color: #000000;
+    text-decoration: none;
+  }
 }
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,

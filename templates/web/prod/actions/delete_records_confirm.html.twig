@@ -1,135 +1,199 @@
-{% set nbReceived = records.received().count() %}
-{% set nbEligibleDocuments = records.count() %}
-
-{% set nbTrash = filteredRecord.trash|length %}
-{% set nbDelete = filteredRecord.delete|length %}
-
-{% if nbEligibleDocuments > 0 %}
-    {% if nbReceived != records.count() %}
-        <div class="well-small" style="text-align:center;">
-            <span class="label label-info">{{ "You do not have rights to remove all selected documents. Are you sure ?" | trans }}</span>
-        </div>
-    {% endif %}
-
-    <form id="delete-record-form" style="margin: 0;" method="POST" action="{{ path('record_delete') }}">
-        <input type="hidden" value="{{ records.serializedList() }}" name="lst" />
-        {% if nbTrash > 0 %}
-            <div class="well-small label-important"
-                 style="background-color: #ffef22;">
-                <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/icon_collection_bin.png"/>
-                </div>
-                <div class="dialog-right-section" style="margin-top: 8px;">
-                    <span>{{ nbTrash }} {{ "prod:app trash: record-move-to-trash" | trans }}</span>
-                </div>
-                {% if records.stories().count() %}
-                    <label class="checkbox story">
-                        <input type="checkbox" id="del_children" name="del_children"
-                               value="1"> {{ "prod:app trash: also-move-record" | trans }}
-                    </label>
-                {% endif %}
-            </div>
-        {% endif %}
-        {% if nbDelete > 0 %}
-            <div class="well-small label-important"
-                 style="background-color: #ed1c24;">
-                <div class="dialog-left-section">
-                    <img src="/assets/common/images/icons/icon_empty_bin.png"/>
-                </div>
-                <div class="dialog-right-section">
-                    <span>{{ nbDelete }} {{ "prod:app trash: record-delete" | trans }}</span>
-                </div>
-                {% if records.stories().count() %}
-                    <label class="checkbox story">
-                        <input type="checkbox" id="del_children" name="del_children"
-                               value="1"> {{ "Also delete records that rely on groupings." | trans }}
-                    </label>
-                {% endif %}
-            </div>
-        {% endif %}
-        <div class="form-actions" style="background-color:transparent;">
-            <button type="button" class="btn btn-danger submiter">{{ "Ok" | trans }}</button>
-            <button type="button" class="btn cancel">{{ "Cancel" | trans }}</button>
-            <span class="form-action-loader" style="display:none;">
-                        <img src="/assets/common/images/icons/loader000.gif"/>
-                    </span>
-        </div>
-    </form>
-
-    <script type="text/javascript">
-        var $dialog = p4.Dialog.get(1);
-        var $dialogBox = $dialog.getDomElement();
-        var $closeButton = $("button.ui-dialog-titlebar-close", $dialogBox.parent());
-        var $cancelButton = $("button.cancel", $dialogBox);
-        var titleBox = $(".ui-dialog-title", $dialogBox.parent());
-        titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
-
-        $cancelButton.bind("click", function(){
-            $dialog.Close();
-        });
-
-        $("button.submiter", $dialogBox).bind("click", function(){
-            var $this = $(this);
-            var form = $(this).closest("form");
-            var loader = form.find("form-action-loader");
-
-            $.ajax({
-                type: form.attr("method"),
-                url: form.attr("action"),
-                data: form.serializeArray(),
-                dataType: "json",
-                beforeSend:function(){
-                    $this.prop('disabled', true);
-                    $closeButton.prop('disabled', true);
-                    $cancelButton.prop('disabled', true);
-                    $dialog.setOption('closeOnEscape', false);
-                    loader.show();
-                },
-                success: function(data){
-                    $dialog.Close();
-                    $.each(data,function(i,n){
-                        var imgt = $('#IMGT_'+n),
-                        chim = $('.CHIM_'+n),
-                        stories = $('.STORY_'+n);
-                        $('.doc_infos', imgt).remove();
-                        imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
-                        imgt.find(".thumb img").attr("src","/assets/common/images/icons/deleted.png").css({
-                            width:'100%',
-                            height:'auto',
-                            margin: '0 10px',
-                            top: '0'
-                        });
-                        chim.parent().slideUp().remove();
-                        imgt.find(".status,.title,.bottom").empty();
-
-                        p4.Results.Selection.remove(n);
-                        if(stories.length > 0)
-                        {
-                            p4.WorkZone.refresh();
-                        }
-                        else
-                        {
-                            p4.WorkZone.Selection.remove(n);
-                        }
-                    });
-                    viewNbSelect();
-                },
-                complete: function(){
-                    $this.prop('disabled', false);
-                    $closeButton.prop('disabled', false);
-                    $cancelButton.prop('disabled', false);
-                    $dialog.setOption('closeOnEscape', true);
-                    loader.hide();
-                }
-            });
-        });
-    </script>
-{% elseif nbReceived == 0 %}
-    <div class="well-small" style="text-align:center;">
-        <span class="label label-important">{{ "No document selected" | trans }}</span>
-    </div>
-{% else %}
-    <div class="well-small" style="text-align:center;">
-        <span class="label label-info">{{ "You do not have rights to remove selected documents" | trans }}</span>
-    </div>
+{% if with_children.records.stories().count() > 0 %}
+<label class="checkbox">
+    <input type="checkbox" id="del_children" name="del_children"
+           value="1"> {{ "Also delete records that rely on groupings." | trans }}
+</label>
 {% endif %}
+
+<div id="delete_records_parent_only">
+    {{ include('prod/actions/delete_records_confirm_form.html.twig', parents_only) }}
+</div>
+
+<div id="delete_records_with_children">
+    {{ include('prod/actions/delete_records_confirm_form.html.twig', with_children) }}
+</div>
+
+
+<script type="text/javascript">
+    var $dialog       = p4.Dialog.get(1),
+        $dialogBox    = $dialog.getDomElement(),
+        $closeButton  = $("button.ui-dialog-titlebar-close", $dialogBox.parent()),
+        $cancelButton = $("button.cancel", $dialogBox),
+        // $titleBox     = $(".ui-dialog-title", $dialogBox.parent()),
+        $delChildren  = $("input[name='del_children']", $dialogBox);
+
+    /**
+     * set the dlg content according the "delete children" ckbox
+     * the counts (records will be deleted, records rejected...) will update
+     */
+    var fSetDelChildren = function(delChildren) {
+        if(delChildren) {
+            $("#delete_records_parent_only").hide();
+            $("#delete_records_with_children").show();
+        }
+        else {
+            $("#delete_records_with_children").hide();
+            $("#delete_records_parent_only").show();
+        }
+    };
+
+    /**
+     * the checkbox "delete stories children too" changes
+     */
+    $delChildren.bind("change", function () {
+        fSetDelChildren($(this).is(':checked'));
+    });
+
+    /**
+     * click cancel before ok : simply close the dlg
+     */
+    $cancelButton.bind("click", function () {
+        // while no task is running, simply close the dlg
+        $dialog.Close();
+    });
+
+    /**
+     * click ok : run delete tasks
+     */
+    $("button.submiter", $dialogBox).bind("click", function () {
+        var CHUNKSIZE = 3,
+            MAXTASKS  = 5;
+
+        var $this = $(this);    // the submit button
+        $this.prop('disabled', true)
+             .hide();
+
+        var $form    = $(this).closest("form"),
+            $counter = $form.find(".to_delete_count"),
+            $trash_counter = $form.find(".to_trash_count"),
+            $loader  = $form.find(".form-action-loader");
+
+        var lst = $("input[name='lst']", $form).val().split(';');
+
+        /**
+         *  same parameters for every delete call, except the list of (CHUNKSIZE) records
+         *  nb: do NOT ask to delete children since they're included in lst
+         */
+        var ajaxParms = {
+            type:     $form.attr("method"),
+            url:      $form.attr("action"),
+            data:     {
+                'lst':          ""      // set in f
+            },
+            dataType: "json"
+        };
+
+        var runningTasks = 0,   // number of running tasks
+            canceling = false;
+
+        /**
+         * cancel or close dlg will ask tasks to stop
+         */
+        var fCancel = function () {
+            $closeButton.hide();
+            $cancelButton.hide();
+            $loader.show();
+
+            canceling = true;
+        };
+
+        /**
+         * task fct : will loop itself while there is job to do
+         *
+         * @param iTask     (int) The task number 0...MAXTASKS-1, usefull only to debug
+         */
+        var fTask = function (iTask) {
+            if (canceling) {
+                return;
+            }
+
+            // pop & truncate
+            ajaxParms.data.lst = lst.splice(0, CHUNKSIZE).join(';');
+
+            $.ajax(ajaxParms)
+             .done(function (data) {     // prod feedback only if result ok
+
+                 $.each(data, function (i, n) {
+                     var $imgt    = $('#IMGT_' + n),
+                         $chim    = $('.CHIM_' + n),
+                         $stories = $('.STORY_' + n);
+
+                     $('.doc_infos', $imgt).remove();
+
+                     try {
+                         $imgt.draggable("destroy");
+                     }
+                     catch (e) {
+                         // no-op
+                     }
+
+                     $imgt.unbind("click")
+                          .removeAttr("ondblclick")
+                          .removeClass("selected")
+                          .removeClass("IMGT")
+                          .find("img")
+                          .unbind();
+
+                     $imgt.find(".thumb img")
+                          .attr("src", "/assets/common/images/icons/deleted.png")
+                          .css({
+                              width:  '100%',
+                              height: 'auto',
+                              margin: '0 10px',
+                              top:    '0'
+                          });
+
+                     $chim.parent().slideUp().remove();
+
+                     $imgt.find(".status,.title,.bottom").empty();
+
+                     p4.Results.Selection.remove(n);
+
+                     if ($stories.length > 0) {
+                         p4.WorkZone.refresh();
+                     }
+                     else {
+                         p4.WorkZone.Selection.remove(n);
+                     }
+                 });
+
+             })
+             .then(function () {    // go on even in case of error
+
+                 // countdown
+                 $counter.html(lst.length);
+                 $trash_counter.html(lst.length);
+
+                 if (lst.length === 0 || canceling) {
+                     // end of a task
+                     if (--runningTasks === 0) {
+                         $dialog.Close();
+                         viewNbSelect();
+                     }
+                 }
+                 else {
+                     // don't recurse, give a delay to running fct to end
+                     window.setTimeout(fTask, 10, iTask);
+                 }
+
+             });
+        };
+
+        // cancel or close the dlg is the same : wait
+        $dialog.setOption('closeOnEscape', false);
+        $closeButton.unbind("click").bind("click", fCancel);
+        $cancelButton.unbind("click").bind("click", fCancel);
+
+        // run a bunch of tasks in //
+        for (runningTasks = 0; runningTasks < MAXTASKS && lst.length > 0; runningTasks++) {
+            fTask(runningTasks);    // pass the task his index to get nice console logs
+        }
+
+    });
+
+    // $titleBox.prepend('<i class="icon-warning-sign" style="margin-right: 10px"></i>');
+
+    // by default, do not delete children of stories : uncheck
+    fSetDelChildren(false);
+
+</script>

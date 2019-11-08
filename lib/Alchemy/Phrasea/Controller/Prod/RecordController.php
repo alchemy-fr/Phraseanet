@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
@@ -18,18 +18,18 @@ use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class RecordController extends Controller
 {
     use EntityManagerAware;
     use SearchEngineAware;
+
     /**
      * Get record detailed view
      *
      * @param Request $request
-     *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
      */
     public function getRecord(Request $request)
     {
@@ -49,14 +49,15 @@ class RecordController extends Controller
             try {
                 $options = SearchEngineOptions::hydrate($this->app, $request->get('options_serial'));
                 $searchEngine = $this->getSearchEngine();
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $this->app->abort(400, 'Search-engine options are not valid or missing');
             }
         }
 
-        $pos = (int) $request->get('pos', 0);
+        $pos = (int)$request->get('pos', 0);
         $query = $request->get('query', '');
-        $reloadTrain = !! $request->get('roll', false);
+        $reloadTrain = !!$request->get('roll', false);
 
         $record = new \record_preview(
             $this->app,
@@ -118,28 +119,30 @@ class RecordController extends Controller
         $record = new \record_adapter($this->app, $sbasId, $recordId);
 
         return $this->app->json([
-                "html_preview"  => $this->render('common/preview.html.twig', [
-                    'record'        => $record
-                ]),
-                "desc"  => $this->render('common/caption.html.twig', [
-                    'record'        => $record,
-                    'view'          => 'preview'
-                ])
+            "html_preview" => $this->render('common/preview.html.twig', [
+                'record' => $record
+            ]),
+            "desc"         => $this->render('common/caption.html.twig', [
+                'record' => $record,
+                'view'   => 'preview'
+            ])
         ]);
     }
 
     /**
      *  Delete a record or a list of records
      *
-     * @param  Request $request
-     * @return Response
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Alchemy\Phrasea\Cache\Exception
      */
     public function doDeleteRecords(Request $request)
     {
         $flatten = (bool)($request->request->get('del_children')) ? RecordsRequest::FLATTEN_YES_PRESERVE_STORIES : RecordsRequest::FLATTEN_NO;
         $records = RecordsRequest::fromRequest(
             $this->app,
-            $request,$flatten,
+            $request,
+            $flatten,
             [\ACL::CANDELETERECORD]
         );
 
@@ -151,6 +154,7 @@ class RecordController extends Controller
         $trashCollectionsBySbasId = [];
 
         $manager = $this->getEntityManager();
+        /** @var \record_adapter $record */
         foreach ($records as $record) {
             try {
                 $basketElements = $basketElementsRepository->findElementsByRecord($record);
@@ -167,12 +171,12 @@ class RecordController extends Controller
                 }
 
                 $sbasId = $record->getDatabox()->get_sbas_id();
-                if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
                     $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
                 }
                 $deleted[] = $record->getId();
-                if($trashCollectionsBySbasId[$sbasId] !== null) {
-                    if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                    if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                         // record is already in trash so delete it
                         $record->delete();
                     }
@@ -180,8 +184,8 @@ class RecordController extends Controller
                         // move to trash collection
                         $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
                         // disable permalinks
-                        foreach($record->get_subdefs() as $subdef) {
-                            if( ($pl = $subdef->get_permalink()) ) {
+                        foreach ($record->get_subdefs() as $subdef) {
+                            if (($pl = $subdef->get_permalink())) {
                                 $pl->set_is_activated(false);
                             }
                         }
@@ -191,7 +195,9 @@ class RecordController extends Controller
                     // no trash collection, delete
                     $record->delete();
                 }
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
+                // no-op
             }
         }
 
@@ -219,71 +225,97 @@ class RecordController extends Controller
     /**
      *  Delete a record or a list of records
      *
-     * @param  Request $request
-     * @return Response
+     * @param Request $request
+     * @return string   html
+     * @throws \Alchemy\Phrasea\Cache\Exception
      */
     public function whatCanIDelete(Request $request)
     {
+        $viewParms = [];
+
+        // pre-count records that would be trashed/deleted when the "deleted children" will be un-checked
+        //
         $records = RecordsRequest::fromRequest(
             $this->app,
             $request,
-            !!$request->request->get('del_children'),
+            RecordsRequest::FLATTEN_NO,
             [\ACL::CANDELETERECORD]
         );
+        $filteredRecords = $this->filterRecordToDelete($records);
+        $viewParms['parents_only'] = [
+            'records'        => $records,
+            'trashableCount' => count($filteredRecords['trash']),
+            'deletableCount' => count($filteredRecords['delete'])
+        ];
 
+        // pre-count records that would be trashed/deleted when the "deleted children" will be checked
+        //
+        $records = RecordsRequest::fromRequest(
+            $this->app,
+            $request,
+            RecordsRequest::FLATTEN_YES_PRESERVE_STORIES,
+            [\ACL::CANDELETERECORD]
+        );
+        $filteredRecords = $this->filterRecordToDelete($records);
+        $viewParms['with_children'] = [
+            'records'        => $records,
+            'trashableCount' => count($filteredRecords['trash']),
+            'deletableCount' => count($filteredRecords['delete'])
+        ];
 
-        $filteredRecord = $this->filterRecordToDelete($records);
-
-//        return $this->render('prod/actions/delete_records_confirm.html.twig', [
-//            'records'   => $records,
-//            'goingToTrash' => $goingToTrash
-//        ]);
-
-        return $this->app->json([
-            'renderView'     => $this->render('prod/actions/delete_records_confirm.html.twig', [
-                'records'        => $records,
-                'filteredRecord' => $filteredRecord
-             ]),
-            'filteredRecord' => $filteredRecord
-            ]);
+        return $this->render(
+            'prod/actions/delete_records_confirm.html.twig',
+            $viewParms
+        );
     }
 
+    /**
+     * classifies records in two groups (does NOT delete anything)
+     * - 'trash'  : the record can go to trash because the db has a "_TRASH_" coll, and the record is not already into it
+     * - 'delete' : the record would be deleted because the db has no trash, or the record is already trashed
+     *
+     * @param RecordsRequest $records
+     * @return array
+     */
     private function filterRecordToDelete(RecordsRequest $records)
     {
-    $trashCollectionsBySbasId = [];
-    $goingToTrash = [];
-        $delete = [];
-    foreach($records as $record) {
-        $sbasId = $record->getDatabox()->get_sbas_id();
-        if(!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
-            $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
-        }
-        if($trashCollectionsBySbasId[$sbasId] !== null) {
-            if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
-                // record is already in trash
-                $delete[] = $record;
-            }else {
-                // will be moved to trash
-                $goingToTrash[] = $record;
+        $ret = [
+            'trash'  => [],
+            'delete' => []
+        ];
+
+        $trashCollectionsBySbasId = [];
+        foreach ($records as $record) {
+            /** @var \record_adapter $record */
+            $sbasId = $record->getDatabox()->get_sbas_id();
+            if (!array_key_exists($sbasId, $trashCollectionsBySbasId)) {
+                $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
             }
-        }else {
-            // trash does not exist
-            $delete[] = $record;
+            if ($trashCollectionsBySbasId[$sbasId] !== null) {
+                if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                    // record is already in trash
+                    $ret['delete'][] = $record;
+                }
+                else {
+                    // will be moved to trash
+                    $ret['trash'][] = $record;
+                }
+            }
+            else {
+                // trash does not exist
+                $ret['delete'][] = $record;
+            }
         }
-    }
 
-    //check if all values in array are true
-        //return (!in_array(false, $goingToTrash, true));
-        return ['trash' => $goingToTrash, 'delete' => $delete];
-
+        return $ret;
     }
 
     /**
      *  Renew url list of records
      *
      * @param Request $request
-     *
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Alchemy\Phrasea\Cache\Exception
      */
     public function renewUrl(Request $request)
     {
@@ -291,7 +323,7 @@ class RecordController extends Controller
 
         $renewed = [];
         foreach ($records as $record) {
-            $renewed[$record->getId()] = (string) $record->get_preview()->renew_url();
+            $renewed[$record->getId()] = (string)$record->get_preview()->renew_url();
         };
 
         return $this->app->json($renewed);

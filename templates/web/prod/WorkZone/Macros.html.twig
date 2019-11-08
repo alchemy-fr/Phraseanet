@@ -33,7 +33,7 @@
                             />
                       </td>
                       <td>
-                          <a class="contextMenuTrigger"></a>
+                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
                       </td>
                   </tr>
               </table>
@@ -127,7 +127,7 @@
                         {% endif %}
                       -->
                         <td>
-                            <a class="contextMenuTrigger"></a>
+                            <a class="contextMenuTrigger icon-display-grid" href="#"></a>
                         </td>
                   </tr>
             </table>
@@ -229,7 +229,7 @@
               <table>
                   <tr>
                       <td>
-                          <a class="contextMenuTrigger"></a>
+                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
                       </td>
                   </tr>
               </table>
@@ -374,7 +374,7 @@
                           {% for choice in basket_element.getValidationDatas() %}
                               {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
                               <tr>
-                                  <td style="position: relative;"> 
+                                  <td style="position: relative;">
                                     <span class="feedback_user_name">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
                                     <span class="line_separator"></span>
                                   </td>

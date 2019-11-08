@@ -653,6 +653,14 @@ function initAnswerForm() {
                 }
 
                 afterSearch();
+                /*script for pagination*/
+                setTimeout(function(){
+                    if ($( "#tool_navigate").length) {
+                        $("#tool_navigate .btn-mini").last().addClass("last");
+                    }
+                }, 5000);
+
+
             }
         });
         return false;
@@ -799,7 +807,7 @@ function loadFacets(facets) {
     return getFacetsTree().reload(treeSource)
         .done(function () {
             _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
-                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', $(element)[0].offsetHeight + 'px');
+                $(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
 
                 var li_s = $(element).next().children('li');
                 var ul = $(element).next();
@@ -1302,6 +1310,7 @@ function serializeJSON(data, selectedFacets, facets) {
                 'type'   : facetValue.value.type,
                 'field'  : facetValue.value.field,
                 'value'  : facetValue.value.raw_value,
+                'query'  : facetValue.value.query,
                 'negated': facetValue.negated,
                 'enabled': facetValue.enabled
             });
@@ -1364,7 +1373,14 @@ function serializeJSON(data, selectedFacets, facets) {
     return json;
 }
 
-var _ALL_Clause_ = "(created_on>1900/01/01)";
+var _ALL_Clause_ = "created_on>0";
+
+function pjoin(glue, a)
+{
+    var r = a.join(glue);
+    return a.length===1 ? r : ('('+r+')');
+}
+
 function buildQ(clause) {
     if(clause.enabled == false) {
         return "";
@@ -1391,25 +1407,25 @@ function buildQ(clause) {
                     // some "yes" and and some "neg" clauses
                     if(clause.must_match=="ONE") {
                         // some "yes" and and some "neg" clauses, one is enough to match
-                        var neg = "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(" OR ") + "))";
+                        var neg = "(" + _ALL_Clause_ + " EXCEPT " + pjoin(" OR ", t_neg) + ")";
                         t_pos.push(neg);
                         return "(" + t_pos.join(" OR ") + ")";
                     }
                     else {
                         // some "yes" and and some "neg" clauses, all must match
-                        return "((" + t_pos.join(" AND ") + ") EXCEPT (" + t_neg.join(" OR ") + "))";
+                        return "(" + pjoin(" AND ", t_pos) + " EXCEPT " + pjoin(" OR ", t_neg) + ")";
                     }
                 }
                 else {
                     // only "yes" clauses
-                    return "(" + t_pos.join(clause.must_match=="ONE" ? " OR " : " AND ") + ")";
+                    return pjoin(clause.must_match=="ONE" ? " OR " : " AND ", t_pos);
                 }
             }
             else {
                 // no "yes" clauses
                 if(t_neg.length > 0) {
                     // only "neg" clauses
-                    return "(" + _ALL_Clause_ + " EXCEPT (" + t_neg.join(clause.must_match == "ALL" ? " OR " : " AND ") + "))";
+                    return "(" + _ALL_Clause_ + " EXCEPT " + pjoin(clause.must_match == "ALL" ? " OR " : " AND ", t_neg) + ")";
                 }
                 else {
                     // no clauses at all
@@ -1422,13 +1438,13 @@ function buildQ(clause) {
 
         case "DATE-FIELD":
             var t="";
-            if(clause.from ) {
+            if(clause.from) {
                 t = clause.field + ">=" + clause.from;
             }
             if(clause.to) {
                 t += (t?" AND ":"") + clause.field + "<=" + clause.to;
             }
-            return t ? ("(" + t + ")") : "";
+            return (clause.from && clause.to) ? ("(" + t + ")") : t;
 
         case "TEXT-FIELD":
         case "STRING-FIELD":
@@ -1436,18 +1452,28 @@ function buildQ(clause) {
 
         case "GEO-DISTANCE":
             return clause.field + "=\"" + clause.lat + " " + clause.lon + " " + clause.distance + "\"";
-
+        /*
         case "STRING-AGGREGATE":
-            return clause.field + ":\"" + clause.value + "\"";
+            return clause.field + "=\"" + clause.value + "\"";
+
+        case "DATE-AGGREGATE":
+            return clause.field + "=\"" + clause.value + "\"";
 
         case "COLOR-AGGREGATE":
-            return clause.field + ":\"" + clause.value + "\"";
+            return clause.field + "=\"" + clause.value + "\"";
 
         case "NUMBER-AGGREGATE":
             return clause.field + "=" + clause.value;
 
         case "BOOLEAN-AGGREGATE":
             return clause.field + "=" + (clause.value ? '1' : '0');
+        */
+        case "STRING-AGGREGATE":
+        case "DATE-AGGREGATE":
+        case "COLOR-AGGREGATE":
+        case "NUMBER-AGGREGATE":
+        case "BOOLEAN-AGGREGATE":
+            return clause.query;
 
         default :
             console.error("Unknown clause type \"" + clause.type + "\"");
@@ -1504,7 +1530,7 @@ function linearize() {
         margin = margin + minMargin;
 
         $('#answers .diapo').css('margin', '5px ' + (margin) + 'px');
-        
+
         var answerIcons = $('#answers .bottom_actions_holder .icon-stack');
         var answerIconsHolder = $('.bottom_actions_holder');
         if (el.outerWidth() < 180) {
@@ -1750,10 +1776,10 @@ $(document).ready(function () {
         var $record_types = $('#recordtype_sel');
 
         if ($this.hasClass('mode_type_reg')) {
-            $record_types.css("visibility", "hidden");  // better than hide because does not change layout
-            $record_types.prop("selectedIndex", 0);
+            $record_types.css("display", "none");
+            $('#recordtype_sel select').find('option').removeAttr('selected');
         } else {
-            $record_types.css("visibility", "visible");
+            $record_types.css("display", "inline-block");
         }
     });
 
@@ -1763,7 +1789,7 @@ $(document).ready(function () {
         checkFilters(true);
     });
 
-    
+
     $(document).on('click', '.term_deleter', function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -2461,7 +2487,7 @@ function deleteThis(lst) {
     }
 
     var $dialog = p4.Dialog.Create({
-        size: '287x153',
+        size: '480x160',
         title: language.warning
     });
 
@@ -2471,10 +2497,9 @@ function deleteThis(lst) {
         dataType: 'html',
         data: {lst: lst},
         success: function (data) {
-            var response = JSON.parse(data);
             $dialog.setOption('height', 'auto');
 
-            $dialog.setContent(response.renderView);
+            $dialog.setContent(data);
 
             //reset top position of dialog
             $dialog.getDomElement().offsetParent().css('top', ($(window).height() - $dialog.getDomElement()[0].clientHeight)/2);
@@ -3121,9 +3146,30 @@ function downloadThis(datas) {
     });
 }
 
+function number_format (number, decimals, dec_point, thousands_sep) {
+    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+    var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+        s = '',
+        toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + Math.round(n * k) / k;
+        };
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+        s[1] = s[1] || '';
+        s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+}
 
 function viewNbSelect() {
-    $("#nbrecsel").empty().append(p4.Results.Selection.length());
+    $("#nbrecsel").empty().append(number_format(p4.Results.Selection.length(),null,null," "));
 }
 
 function selector(el) {

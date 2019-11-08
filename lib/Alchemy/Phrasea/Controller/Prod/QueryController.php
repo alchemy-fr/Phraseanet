@@ -127,7 +127,7 @@ class QueryController extends Controller
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value))){if ('.$npages.'<= parseInt(this.value)) {gotopage('.$npages.')}else{ gotopage(parseInt(this.value))}}" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
                                 $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
@@ -175,11 +175,10 @@ class QueryController extends Controller
                         null
                 ]
             );
-
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
                 . '</div><a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;
@@ -207,7 +206,16 @@ class QueryController extends Controller
             } else {
                 $template = 'prod/results/records.html.twig';
             }
-            $json['results'] = $this->render($template, ['results'=> $result]);
+
+            /** @var \Closure $filter */
+            $filter = $this->app['plugin.filter_by_authorization'];
+
+            $plugins = [
+                'workzone' => $filter('workzone'),
+                'actionbar' => $filter('actionbar'),
+            ];
+
+            $json['results'] = $this->render($template, ['results'=> $result, 'plugins'=>$plugins]);
 
 
             // add technical fields
@@ -236,7 +244,6 @@ class QueryController extends Controller
                             'label' => $field->get_label($this->app['locale']),
                             'type' => $field->get_type(),
                             'field' => $field->get_name(),
-                            'query' => "field." . $field->get_name() . ":%s",
                             'trans_label' => $field->get_label($this->app['locale']),
                         ];
                         $field->get_label($this->app['locale']);
@@ -278,7 +285,6 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
-            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
@@ -287,15 +293,8 @@ class QueryController extends Controller
                     $facet['label'] = $f['trans_label'];
                     $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
                     $facets[] = $facet;
-                    // $facetClauses[] = [
-                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
-                    //    'field' => $f['field'],
-                    //    'facet' => $facet
-                    // ];
                 }
             }
-
-            // $json['jsq'] = $facetClauses;
 
             $json['facets'] = $facets;
             $json['phrasea_props'] = $proposals;

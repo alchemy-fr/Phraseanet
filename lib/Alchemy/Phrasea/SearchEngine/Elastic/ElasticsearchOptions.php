@@ -156,7 +156,7 @@ class ElasticsearchOptions
                     "aggregated (2 values: fired = 0 or 1)" => -1,
                 ],
                 'output_formatter' => function($value) {
-                    static $map = ['0'=>"No flash", '1'=>"Flash"];
+                    static $map = ["false"=>"No flash", "true"=>"Flash", '0'=>"No flash", '1'=>"Flash"];
                     return array_key_exists($value, $map) ? $map[$value] : $value;
                 },
             ],

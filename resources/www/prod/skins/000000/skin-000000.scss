@@ -54,7 +54,10 @@ $scrollBgColor: #3b3b3b;
 
 $paginateBorderColor: #3b3b3b;
 $paginateTextColor: #3b3b3b;
-$paginateBg1: #141414;
+$paginateBg1: #0b4654;
+$paginateBgHov: #05313c;
+$paginateBorder: #0c343d;
+
 $contextMenuBgHover: $highlightDarkerColor;
 
 
@@ -88,6 +91,13 @@ $answersToolsBtnBorder: #515151;
 $answersToolsBtnColor: #aaaaaa;
 $answersToolsBtnHoverBg: #313131;
 $answersToolsBtnHoverColor: #aaaaaa;
+
+/*Sub nav*/
+$whiteCaret: #ffffff;
+$answersToolsBtnColorSub: $answersToolsBtnColor;
+$answersToolsBtnBgSub: $answersToolsBtnBg;
+$answersToolsBtnHoverBgSub: $answersToolsBtnHoverBg;
+$answersToolsBtnHoverColorSub: $answersToolsBtnHoverColor;
 
 $answersToolsBtnSettingsColor: darken($answersToolsBtnColor, 20); // ##949494
 $answersToolsBtnSettingsHoverBg: #393939;
@@ -165,6 +175,39 @@ $proposalsTitleColor: #A6A6A6;
 $proposalsTitleHoverColor: lighten($proposalsTitleColor, 10); // $mediumTextHoverColor
 $proposalsTitleBorder: #303030;
 $proposalsFacetHoverColor: #FFF;
+
+/******** FACETS SEE MORE BTN********/
+$see_more_btn_bg: #1b1b1b;
+$see_more_btn_color: #bbbbbb;
+$see_more_btn_border: #5f5f5f;
+$see_more_btn_shadow: rgba(0,0,0,0);
+
+$see_more_btn_bg_hov: #3c3c3c;
+$see_more_btn_color_hov: #bbbbbb;
+$see_more_btn_border_hov: #868686;
+
+$basketTips: rgba(0, 0, 0, 0.2);
+$basketTips2: rgba(0, 0, 0, 0.19);
+$dividerBg: #6c6c6c;
+
+$customCheckboxUnchecked: #ffffff;
+$lineSeparator: #484848;
+$feedback: #292929;
+$STTHover: $mediumBackgroundColor;
+$basketTitleHov: $textPrimaryActiveColor;
+$btnHovLight: $answersToolsBtnBg;
+$facetFilterBg: #545454;
+$facetText: #ffffff;
+$whiteActive: #4990e2;
+$guiVsplitter: $mediumBackgroundColor;
+$contextDivider: #7f7f7f;
+$contextMenuShadow: rgba(0,0,0,0.12);
+$storyBg: #3b3b3b;
+$tooltipBg: #535353;
+$tooltipTxt: #FFFFFF;
+$tooltipTitle: #808080;
+$editAllBg: none;
+$editFieldBg: transparent;
 
 @import '../../../_shared/styles/jquery-ui/dark-hive';
 @import '../skin-shared';

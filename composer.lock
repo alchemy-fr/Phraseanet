@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "700e5d6496ac1d797c5026c33de5393d",
+    "content-hash": "653a83ace128d80915f0be47814943fc",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "1.0.1",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934"
+                "reference": "8567a97cebc3b0b76c440bc1f2fb480258294c13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/db6ec7c18128e7c122d9b722089c790b55f61934",
-                "reference": "db6ec7c18128e7c122d9b722089c790b55f61934",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8567a97cebc3b0b76c440bc1f2fb480258294c13",
+                "reference": "8567a97cebc3b0b76c440bc1f2fb480258294c13",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/1.0.1",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/1.0.4",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-05-16T13:15:19+00:00"
+            "time": "2019-09-02T12:28:50+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -7052,12 +7052,12 @@
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bovigo/vfsStream.git",
+                "url": "https://github.com/mikey179/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },

@@ -46,6 +46,9 @@ input::-moz-selection, textarea::-moz-selection {
 
 label {
   color: $textInverseColor;
+  .phrasea_query & {
+    color: #ffffff;
+  }
 }
 
 legend {
@@ -332,17 +335,17 @@ span.ww_winTitle {
   }
   span.feedback_user_name {
     position: relative;
-    background: #292929;
+    background: $feedback;
     padding-right: 9px;
     z-index: 1;
   }
   span.line_separator {
     position: absolute;
     height: 45%;
-    width: calc(100% - 5px);
+    width: calc(100% - 10px);
     left: 0;
     top: 0;
-    border-bottom: 1px solid #343434;
+    border-bottom: 1px solid $lineSeparator;
   }
 }
 
@@ -1006,7 +1009,7 @@ h4 {
   background-color: $darkerBackgroundColor;
   border: 2px solid $darkerBorderColor;
   padding: 0px;
-  color: $darkerTextColor;
+  color: $tooltipTxt;
   border-radius: $defaultBorderRadius;
 }
 
@@ -1014,7 +1017,9 @@ h4 {
   background-color: $mediumBackgroundColor;
   border-radius: 0;
 }
-
+.dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
+  color: $tooltipTitle;
+}
 .popover-inner .popover-content {
   background-color: $darkerBackgroundColor;
   hr {
@@ -1028,9 +1033,12 @@ h4 {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
   margin-left: 15px;
   min-width: 280px !important;
+  border-radius: 6px;
+  font-size: 13px;
+  color: $tooltipTxt;
 
   .popover {
-    background-color: #535353;
+    background-color: $tooltipBg;
     width: 100% !important;
     border: 0 none;
     border-radius: 0;
@@ -1040,7 +1048,7 @@ h4 {
       border-radius: 6px;
 
       .popover-content {
-        background-color: #535353;
+        background-color: $tooltipBg;
         padding: 10px;
       }
     }

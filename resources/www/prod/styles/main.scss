@@ -63,10 +63,8 @@
 .dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
   padding-top: 6px;
   padding-bottom: 6px;
-  color: #808080;
   text-align: left;
   width: 100px ;
-  /*border-bottom: 1px solid #333;*/
 }
 
 .dl-horizontal dd, .popover-inner .popover-content .dl-horizontal dd {
@@ -112,6 +110,13 @@
   content: "\25B6";
   color: #fff;
 }
+.white-label {
+  color: #ffffff;
+  &.sbas_list label {
+    color: #ffffff;
+  }
+}
+
 .white-label {
   color: #ffffff;
   &.sbas_list label {
