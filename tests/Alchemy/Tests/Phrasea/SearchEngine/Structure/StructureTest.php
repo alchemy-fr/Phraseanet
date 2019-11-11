@@ -36,6 +36,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
         $field->getDependantCollections()->willReturn(['1']);
+        $field->get_databox_id()->willReturn('1');
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
@@ -60,6 +61,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
+        $field->get_databox_id()->willReturn('1');
 
         $other = new Field('foo', FieldMapping::TYPE_STRING);
 

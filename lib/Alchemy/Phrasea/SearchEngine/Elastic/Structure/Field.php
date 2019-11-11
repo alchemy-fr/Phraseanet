@@ -25,6 +25,11 @@ class Field implements Typed
     private $name;
 
     /**
+     * @var int
+     */
+    private $databox_id;
+
+    /**
      * @var string
      */
     private $type;
@@ -69,6 +74,7 @@ class Field implements Typed
         }
 
         return new self($field->get_name(), $type, [
+            'databox_id' => $databox->get_sbas_id(),
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
             'facet' => $facet,
@@ -98,6 +104,7 @@ class Field implements Typed
     {
         $this->name = (string) $name;
         $this->type = $type;
+        $this->databox_id      = \igorw\get_in($options, ['databox_id'], 0);
         $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
         $this->is_private      = \igorw\get_in($options, ['private'], false);
         $this->facet           = \igorw\get_in($options, ['facet']);
@@ -122,6 +129,7 @@ class Field implements Typed
     public function withOptions(array $options)
     {
         return new self($this->name, $this->type, $options + [
+            'databox_id' => $this->databox_id,
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
             'facet' => $this->facet,
@@ -149,6 +157,11 @@ class Field implements Typed
     public function getConceptPathIndexField()
     {
         return sprintf('concept_path.%s', $this->name);
+    }
+
+    public function get_databox_id()
+    {
+        return $this->databox_id;
     }
 
     public function getType()
