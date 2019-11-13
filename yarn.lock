@@ -5307,7 +5307,6 @@ jquery-simplecolorpicker@^0.3.1:
 
 "jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
   version "1.4.2"
-  uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
   resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
 
 "jquery-treeview@https://github.com/alchemy-fr/jquery-treeview.git":
