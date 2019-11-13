@@ -226,6 +226,8 @@ class LazaretManipulator
             $this->entityManager->remove($lazaretFile);
             $this->entityManager->flush();
 
+            $ret['result']['record_id'] = $record->getRecordId();
+
             $ret['success'] = true;
         } catch (\Exception $e) {
             $ret['message'] = $this->app->trans('An error occured');
