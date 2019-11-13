@@ -28,6 +28,7 @@ define([
             "tbranch": "",
             "generate_cterms": false,
             "gui_editable": true,
+            "gui_visible": true,
             "separator": "",
             "required": false,
             "report": true,
