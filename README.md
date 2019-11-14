@@ -63,9 +63,9 @@ The docker distribution come with 3 differents containers :
 
 ## How to build
 
-You can build all the images with the following command at the root directory :
+You can build all the images with the following command at the root directory, choosing an arbirary TAG name :
 
-    ./build <TAG>
+    ./build.sh <TAG>
 
 It will build and tag the following images :
 
