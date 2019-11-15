@@ -80,7 +80,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     public function destroy($sessionId)
     {
-        return 1 === $this->redis->delete($this->prefix.$sessionId);
+        return 1 === $this->redis->del($this->prefix.$sessionId);
     }
 
     /**
