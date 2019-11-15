@@ -2,6 +2,16 @@
 
 set -xe
 
+if [ $INSTALL_ACCOUNT_EMAIL = ""]; then
+    echo "INSTALL_ACCOUNT_EMAIL var is not set."
+    exit 1
+fi
+
+if [ $INSTALL_ACCOUNT_PASSWORD = ""]; then
+    echo "INSTALL_ACCOUNT_PASSWORD var is not set."
+    exit 1
+fi
+
 /var/alchemy/Phraseanet/bin/setup system:install \
     --email=$INSTALL_ACCOUNT_EMAIL \
     --password=$INSTALL_ACCOUNT_PASSWORD \

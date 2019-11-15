@@ -63,14 +63,12 @@ The docker distribution come with 3 differents containers :
 
 ## How to build
 
-The three images can be built respectively with these commands :
+You can build all the images with the following command at the root directory, choosing an arbirary TAG name :
 
-    # nginx server
-    docker build --target phraseanet-nginx -t local/phraseanet-nginx .
+    ./build.sh <TAG>
 
-    # php-fpm application
-    docker build --target phraseanet-fpm -t local/phraseanet-fpm .
+It will build and tag the following images :
 
-    # worker
-    docker build --target phraseanet-worker -t local/phraseanet-worker .
-
+    local/phraseanet-worker:<TAG>
+    local/phraseanet-fpm:<TAG>
+    local/phraseanet-nginx:<TAG>
