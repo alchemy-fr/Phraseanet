@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-11-14T09:27:44Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2019-11-15T08:03:23Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -3432,6 +3432,11 @@
         <target state="translated">Paramètres généraux</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="05db1e4e974fff47ae67bae1309fb4edd9b0a053" resname="Generate-cterms">
+        <source>Generate-cterms</source>
+        <target state="new">Generate-cterms</target>
+        <jms:reference-file line="267">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="9f1b4c9f85fcbbf355fdd3c97210173b63551aa6" resname="Generates a flexpaper flash file" approved="yes">
         <source>Generates a flexpaper flash file</source>
         <target state="translated">Générer un fichier flexpaper flash</target>
@@ -3568,6 +3573,16 @@
         <source>Guest, you must be authenticated to have the right to download.</source>
         <target state="translated">Vous devez vous authentifier pour télécharger.</target>
         <jms:reference-file line="88">web/common/dialog_export.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="771d30c668093219776b418dc5d3475682457167" resname="Gui-editable">
+        <source>Gui-editable</source>
+        <target state="new">Gui-editable</target>
+        <jms:reference-file line="196">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c3ccdd44c467c7149733d19a40e0068ddb00ab25" resname="Gui-visible">
+        <source>Gui-visible</source>
+        <target state="new">Gui-visible</target>
+        <jms:reference-file line="204">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bc9ceaf6239215199222552fbbe96c17a549705" resname="HD Download" approved="yes">
         <source>HD Download</source>
@@ -9924,21 +9939,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>forms::operation effectuee OK</source>
         <target state="translated">Modifications effectuées</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="30fd9aaccb427181468696921afdef907567a5fa" resname="generate_cterms">
-        <source>generate_cterms</source>
-        <target state="new">generate_cterms</target>
-        <jms:reference-file line="267">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable">
-        <source>gui_editable</source>
-        <target state="new">gui_editable</target>
-        <jms:reference-file line="196">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="83e4a406813db28238114f37fc57d1e055584ce5" resname="gui_visible">
-        <source>gui_visible</source>
-        <target state="new">gui_visible</target>
-        <jms:reference-file line="204">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45b162f3c09db4eb9ecea5e048393a7ccaab4f7d" resname="help::help-section-bullet: check-spelling">
         <source>help::help-section-bullet: check-spelling</source>
