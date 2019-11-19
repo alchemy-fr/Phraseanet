@@ -141,10 +141,29 @@ RUN apt-get update \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/*
 
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
+
+# Node Installation (node + yarn)
+# Reference :
+# https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
+# https://yarnpkg.com/lang/en/docs/install/#debian-stable
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
+    && apt install -y nodejs \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y --no-install-recommends yarn \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/
+
 RUN mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
+
+RUN npm install -g bower recess
 
 COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/ /
