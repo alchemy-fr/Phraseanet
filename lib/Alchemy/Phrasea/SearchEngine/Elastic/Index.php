@@ -97,7 +97,7 @@ class Index
                 ],
                 'truncation_analyzer#search' => [
                     'type'      => 'custom',
-                    'tokenizer' => 'standard',
+                    'tokenizer' => 'truncation_tokenizer',
                     'filter'    => ['lowercase', 'stop', 'kstem']
                 ],
                 // Lang specific
@@ -159,7 +159,7 @@ class Index
                     "type" => "edgeNGram",
                     "min_gram" => "2",
                     "max_gram" => "15",
-                    "token_chars" => [ "letter", "digit" ]
+                    "token_chars" => [ "letter", "digit", "punctuation", "symbol" ]
                 ],
                 'thesaurus_path' => [
                     'type' => 'path_hierarchy'
