@@ -53,7 +53,7 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
         $context = new QueryContext(null, $structure->reveal(), [], 'fr');
         $this->assertEquals([$foo_field, $bar_field], $context->getPrivateFields());
 
-        $narrowed_context = new QueryContext($structure->reveal(), [], 'fr', ['foo']);
+        $narrowed_context = new QueryContext(null, $structure->reveal(), [], 'fr', ['foo']);
         $this->assertEquals([$foo_field], $narrowed_context->getPrivateFields());
     }
 }
