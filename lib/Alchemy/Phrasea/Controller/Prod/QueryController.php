@@ -382,7 +382,6 @@ class QueryController extends Controller
                             'labels'      => $field->get_labels(),
                             'type'        => $field->get_type(),
                             'field'       => $field->get_name(),
-                            'query'       => "field." . $field->get_name() . ":%s",
                             'trans_label' => $field->get_label($this->app['locale']),
                         ];
                         $field->get_label($this->app['locale']);
