@@ -48,6 +48,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
         $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
+        $query_context->truncationField($field)->willReturn([]);
 
         $node = new TextNode('bar', new Context('baz'));
         $query = $node->buildQuery($query_context->reveal());
@@ -81,11 +82,17 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
+            ->truncationField($public_field)
+            ->willReturn([]);
+        $query_context
             ->getPrivateFields()
             ->willReturn([$private_field]);
         $query_context
             ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+        $query_context
+            ->truncationField($private_field)
+            ->willReturn([]);
 
         $node = new TextNode('baz');
         $query = $node->buildQuery($query_context->reveal());
@@ -136,6 +143,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
         $query_context->localizeField($field)->willReturn(['foo.fr', 'foo.en']);
+        $query_context->truncationField($field)->willReturn([]);
 
         $node = new TextNode('bar');
         $node->setConcepts([
@@ -181,11 +189,17 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
             ->localizeField($public_field)
             ->willReturn(['foo.fr', 'foo.en']);
         $query_context
+            ->truncationField($public_field)
+            ->willReturn([]);
+        $query_context
             ->getPrivateFields()
             ->willReturn([$private_field]);
         $query_context
             ->localizeField($private_field)
             ->willReturn(['private_caption.bar.fr', 'private_caption.bar.en']);
+        $query_context
+            ->truncationField($private_field)
+            ->willReturn([]);
 
         $node = new TextNode('baz');
         $node->setConcepts([

@@ -14,14 +14,14 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
 class ValueCheckerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider escapeRawProvider
+     * @dataProvider valueCheckerProvider
      */
     public function testValueCompatibility($subject, $value, $compatible)
     {
         $this->assertEquals($compatible, ValueChecker::isValueCompatible($subject, $value));
     }
 
-    public function escapeRawProvider()
+    public function valueCheckerProvider()
     {
         $values = [
             [FieldMapping::TYPE_FLOAT  ,  42         , true ],
