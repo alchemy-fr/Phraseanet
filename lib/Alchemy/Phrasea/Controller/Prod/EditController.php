@@ -77,6 +77,7 @@ class EditController extends Controller
                     'tbranch'              => $meta->get_tbranch(),
                     'generate_cterms'       => $meta->get_generate_cterms(),
                     'gui_editable'         => $meta->get_gui_editable(),
+                    'gui_visible'         => $meta->get_gui_visible(),
                     'maxLength'            => $meta->get_tag()
                         ->getMaxLength(),
                     'minLength'            => $meta->get_tag()
