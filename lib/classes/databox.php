@@ -142,14 +142,15 @@ class databox extends base implements ThumbnailedElement
     /**
      * @param Application $app
      * @param Connection  $databoxConnection
-     * @param SplFileInfo $data_template
+     * @param SplFileInfo $template
      * @return databox
      * @throws \Doctrine\DBAL\DBALException
      */
-    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $data_template)
+    public static function create(Application $app, Connection $databoxConnection, \SplFileInfo $template)
     {
-        if ( ! file_exists($data_template->getRealPath())) {
-            throw new \InvalidArgumentException($data_template->getRealPath() . " does not exist");
+        $rp = $template->getRealPath();
+        if (!$rp || !file_exists($rp)) {
+            throw new \InvalidArgumentException(sprintf('Databox template "%s" not found.', $template->getFilename()));
         }
 
         $host = $databoxConnection->getHost();
@@ -165,7 +166,8 @@ class databox extends base implements ThumbnailedElement
             $stmt = $databoxConnection->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
         }
 
@@ -192,7 +194,7 @@ class databox extends base implements ThumbnailedElement
 
         $databox->insert_datas();
         $databox->setNewStructure(
-            $data_template, $app['conf']->get(['main', 'storage', 'subdefs'])
+            $template, $app['conf']->get(['main', 'storage', 'subdefs'])
         );
 
         $app['dispatcher']->dispatch(DataboxEvents::CREATED, new CreatedEvent($databox));
@@ -264,9 +266,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::STRUCTURE_CHANGED,
             new StructureChangedEvent(
                 $this,
-                array(
+                [
                     'dom_before'=>$old_structure
-                )
+                ]
             )
         );
 
@@ -393,7 +395,6 @@ class databox extends base implements ThumbnailedElement
                     databox_field::TYPE_DATE
                     , databox_field::TYPE_NUMBER
                     , databox_field::TYPE_STRING
-                    , databox_field::TYPE_TEXT
                     ]
                 ) ? $type : databox_field::TYPE_STRING;
 
@@ -807,14 +808,14 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $ret = array(
+        $ret = [
             'records'             => 0,
             'records_indexed'     => 0,    // jetons = 0;0
             'records_to_index'    => 0,    // jetons = 0;1
             'records_not_indexed' => 0,    // jetons = 1;0
             'records_indexing'    => 0,    // jetons = 1;1
-            'subdefs_todo'        => array()   // by type "image", "video", ...
-        );
+            'subdefs_todo'        => []   // by type "image", "video", ...
+        ];
         foreach ($rs as $row) {
             $ret['records'] += ($n = (int)($row['n']));
             $status = $row['status'];
@@ -908,9 +909,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::UNMOUNTED,
             new UnmountedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -973,9 +974,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::DELETED,
             new DeletedEvent(
                 null,
-                array(
+                [
                     'dbname'=>$old_dbname
-                )
+                ]
             )
         );
 
@@ -1077,9 +1078,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::THESAURUS_CHANGED,
             new ThesaurusChangedEvent(
                 $this,
-                array(
+                [
                     'dom_before'=>$old_thesaurus,
-                )
+                ]
             )
         );
 
@@ -1217,7 +1218,7 @@ class databox extends base implements ThumbnailedElement
 
     public function clear_logs()
     {
-        foreach (['log', 'log_colls', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
+        foreach (['log', 'log_docs', 'log_search', 'log_view', 'log_thumb'] as $table) {
             $this->get_connection()->delete($table, []);
         }
 
@@ -1254,7 +1255,7 @@ class databox extends base implements ThumbnailedElement
             if ($domct !== false) {
                 $nodesToDel = [];
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
-                    if(!($n->getAttribute('delbranch'))){
+                    if($n->nodeType == XML_ELEMENT_NODE && !($n->getAttribute('delbranch'))){
                         $nodesToDel[] = $n;
                     }
                 }
@@ -1400,9 +1401,9 @@ class databox extends base implements ThumbnailedElement
             DataboxEvents::TOU_CHANGED,
             new TouChangedEvent(
                 $this,
-                array(
+                [
                     'tou_before'=>$old_tou,
-                )
+                ]
             )
         );
 
@@ -1436,6 +1437,7 @@ class databox extends base implements ThumbnailedElement
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $TOU = [];
         foreach ($rs as $row) {
             $TOU[$row['locale']] = ['updated_on' => $row['updated_on'], 'value' => $row['value']];
         }
@@ -1506,6 +1508,37 @@ class databox extends base implements ThumbnailedElement
         }
 
         return false;
+    }
+
+    /**
+     * matches a email against the auto-register whitelist
+     *
+     * @param string $email
+     * @return null|string  the user-model to apply if the email matches
+     */
+    public function getAutoregisterModel($email)
+    {
+        if(!$this->isRegistrationEnabled()) {
+            return null;
+        }
+
+        $ret = User::USER_AUTOREGISTER; // default if there is no whitelist defined at all
+
+        // try to match against the whitelist
+        if( ($xml = $this->get_sxml_structure()) !== false) {
+            $wl = $xml->xpath('/record/registration/auto_register/email_whitelist');
+            if($wl !== false && count($wl) === 1) {
+                $ret = null;    // there IS a whitelist, the email must match
+
+                foreach ($wl[0]->xpath('email') as $element) {
+                    if (preg_match($element['pattern'], $email) === 1) {
+                        return (string)$element['user_model'];
+                    }
+                }
+            }
+        }
+
+        return $ret;
     }
 
     /**

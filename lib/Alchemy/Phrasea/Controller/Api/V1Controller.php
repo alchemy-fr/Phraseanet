@@ -75,7 +75,9 @@ use Alchemy\Phrasea\Search\SubdefView;
 use Alchemy\Phrasea\Search\TechnicalDataTransformer;
 use Alchemy\Phrasea\Search\TechnicalDataView;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
+use Alchemy\Phrasea\Search\V1SearchRecordsResultTransformer;
 use Alchemy\Phrasea\Search\V1SearchResultTransformer;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -84,8 +86,10 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Doctrine\ORM\EntityManager;
-use JMS\TranslationBundle\Annotation\Ignore;
+use Guzzle\Http\Client as Guzzle;
 use League\Fractal\Resource\Item;
+use media_subdef;
+use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -389,7 +393,7 @@ class V1Controller extends Controller
                     'docSubsitution'     => $conf->get(['registry', 'modules', 'doc-substitution']),
                     'subdefSubstitution' => $conf->get(['registry', 'modules', 'thumb-substitution']),
                 ],
-                'email'             => [
+                'email'        => [
                     'defaultMailAddress' => $conf->get(['registry', 'email', 'emitter-email']),
                     'smtp'               => [
                         'active'   => $conf->get(['registry', 'email', 'smtp-enabled']),
@@ -401,12 +405,12 @@ class V1Controller extends Controller
                         'password' => $conf->get(['registry', 'email', 'smtp-password']),
                     ],
                 ],
-                'custom-links'      => json_encode($conf->get(['registry', 'custom-links'])),
-                'ftp'               => [
+                'custom-links' => $conf->get(['registry', 'custom-links']),
+                'ftp'          => [
                     'active'        => $conf->get(['registry', 'ftp', 'ftp-enabled']),
                     'activeForUser' => $conf->get(['registry', 'ftp', 'ftp-user-access']),
                 ],
-                'client'            => [
+                'client'       => [
                     'maxSizeDownload'         => $conf->get(['registry', 'actions', 'download-max-size']),
                     'tabSearchMode'           => $conf->get(['registry', 'classic', 'search-tab']),
                     'tabAdvSearchPosition'    => $conf->get(['registry', 'classic', 'adv-search-tab']),
@@ -861,19 +865,6 @@ class V1Controller extends Controller
 
     public function addRecordAction(Request $request)
     {
-        if (count($request->files->get('file')) == 0) {
-            return $this->getBadRequestAction($request, 'Missing file parameter');
-        }
-
-        $file = $request->files->get('file');
-        if (!$file instanceof UploadedFile) {
-            return $this->getBadRequestAction($request, 'You can upload one file at time');
-        }
-
-        if (!$file->isValid()) {
-            return $this->getBadRequestAction($request, 'Data corrupted, please try again');
-        }
-
         if (!$request->get('base_id')) {
             return $this->getBadRequestAction($request, 'Missing base_id parameter');
         }
@@ -886,14 +877,57 @@ class V1Controller extends Controller
             ))->createResponse();
         }
 
-        $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
-        if (false === rename($file->getPathname(), $newPathname)) {
-            return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+        if (count($request->files->get('file')) == 0) {
+            if(count($request->get('url')) == 0) {
+                return $this->getBadRequestAction($request, 'Missing file parameter');
+            }
+            else {
+                // upload via url
+                $url = $request->get('url');
+                $pi = pathinfo($url);   // filename, extension
+
+                /** @var TemporaryFilesystemInterface $tmpFs */
+                $tmpFs = $this->app['temporary-filesystem'];
+                $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
+
+                try {
+                    $guzzle = new Guzzle($url);
+                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                }
+                catch (\Exception $e) {
+                    return $this->getBadRequestAction($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
+                }
+
+                if($res->getStatusCode() !== 200) {
+                    return $this->getBadRequestAction($request, sprintf('Error %s downloading "%s"', $res->getStatusCode(), $url));
+                }
+
+                $originalName = $pi['filename'] . '.' . $pi['extension'];
+                $uploadedFilename = $newPathname = $tempfile;
+            }
+        }
+        else {
+            // upload via file
+            $file = $request->files->get('file');
+            if (!$file instanceof UploadedFile) {
+                return $this->getBadRequestAction($request, 'You can upload one file at time');
+            }
+            if (!$file->isValid()) {
+                return $this->getBadRequestAction($request, 'Data corrupted, please try again');
+            }
+
+            $uploadedFilename = $file->getPathname();
+            $originalName = $file->getClientOriginalName();
+            $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+
+            if (false === rename($uploadedFilename, $newPathname)) {
+                return Result::createError($request, 403, 'Error while renaming file')->createResponse();
+            }
         }
 
         $media = $this->app->getMediaFromUri($newPathname);
 
-        $Package = new File($this->app, $media, $collection, $file->getClientOriginalName());
+        $Package = new File($this->app, $media, $collection, $originalName);
 
         if ($request->get('status')) {
             $Package->addAttribute(new Status($this->app, $request->get('status')));
@@ -938,6 +972,11 @@ class V1Controller extends Controller
         $nosubdef = $request->get('nosubdefs') === '' || \p4field::isyes($request->get('nosubdefs'));
         $this->getBorderManager()->process($session, $Package, $callback, $behavior, $nosubdef);
 
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
+        }
+
         $ret = ['entity' => null];
 
         if ($output instanceof \record_adapter) {
@@ -978,8 +1017,9 @@ class V1Controller extends Controller
             return $this->getBadRequestAction($request, 'Missing name parameter');
         }
 
+        $uploadedFilename = $file->getPathname();
         $newPathname = $file->getPathname().'.'.$file->getClientOriginalExtension();
-        if (false === rename($file->getPathname(), $newPathname)) {
+        if (false === rename($uploadedFilename, $newPathname)) {
             $this->getBadRequestAction($request, 'Error while renaming file');
         }
 
@@ -995,7 +1035,7 @@ class V1Controller extends Controller
         $adapt = ($request->get('adapt')===null || !(\p4field::isno($request->get('adapt'))));
         $ret['adapt'] = $adapt;
         if($request->get('name') == 'document') {
-            $this->getSubdefSubstituer()->substituteDocument($record, $media, $adapt);
+            $this->getSubdefSubstituer()->substituteDocument($record, $media, true);    // true: force subdefs re-creation
         }
         else {
             $this->getSubdefSubstituer()->substituteSubdef($record, $request->get('name'), $media, $adapt);
@@ -1005,6 +1045,11 @@ class V1Controller extends Controller
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
+        }
+
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -1137,6 +1182,49 @@ class V1Controller extends Controller
         $result = $this->doSearch($request);
         $searchView = $this->buildSearchView(
             $result,
+            $includeResolver->resolve($fractal),
+            $this->resolveSubdefUrlTTL($request)
+        );
+
+        $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
+
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Get a Response containing the results of a records search
+     *
+     * @deprecated in favor of search
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function searchRecordsAction(Request $request)
+    {
+        $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
+        $technicalDataTransformer = new TechnicalDataTransformer();
+        $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
+        $searchTransformer = new V1SearchRecordsResultTransformer($recordTransformer);
+
+        $transformerResolver = new SearchResultTransformerResolver([
+            '' => $searchTransformer,
+            'results' => $recordTransformer,
+            'results.thumbnail' => $subdefTransformer,
+            'results.technical_informations' => $technicalDataTransformer,
+            'results.subdefs' => $subdefTransformer,
+            'results.metadata' => new CallbackTransformer(),
+            'results.status' => new CallbackTransformer(),
+            'results.caption' => new CallbackTransformer(),
+        ]);
+        $includeResolver = new IncludeResolver($transformerResolver);
+
+        $fractal = new \League\Fractal\Manager();
+        $fractal->setSerializer(new ArraySerializer());
+        $fractal->parseIncludes($this->resolveSearchRecordsIncludes($request));
+
+        $searchView = $this->buildSearchRecordsView(
+            $this->doSearch($request),
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request)
         );
@@ -1968,7 +2056,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));
@@ -2755,6 +2843,193 @@ class V1Controller extends Controller
         return (new CollectionRequestMapper($this->app, $this->app['registration.manager']))->getUserRequests($user);
     }
 
+    /**
+     * Returns all documentary fields available for user
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserStructureAction(Request $request)
+    {
+        $ret = [
+            "meta_fields" => $this->listUserAuthorizedMetadataFields($this->getAuthenticatedUser()),
+            "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields(), ['choices']),
+            "technical_fields" => $this->buildUserFieldList(media_subdef::getTechnicalFieldsList()),
+        ];
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Returns all sub-definitions available for the user
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserSubdefsAction(Request $request)
+    {
+        $ret = [
+            "subdefs" => $this->listUserAuthorizedSubdefs($this->getAuthenticatedUser()),
+        ];
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function getCurrentUserCollectionsAction(Request $request)
+    {
+        $ret = [
+            "collections" => $this->listUserAuthorizedCollections($this->getAuthenticatedUser()),
+        ];
+        return Result::create($request, $ret)->createResponse();
+    }
+
+    /**
+     * Returns list of Metadata Fields from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedMetadataFields(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $ret = [];
+        foreach ($acl->get_granted_sbas() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            foreach ($databox->get_meta_structure() as $databox_field) {
+                $data = [
+                    'name'             => $databox_field->get_name(),
+                    'id'               => $databox_field->get_id(),
+                    'databox_id'       => $databoxId,
+                    'multivalue'       => $databox_field->is_multi(),
+                    'indexable'        => $databox_field->is_indexable(),
+                    'readonly'         => $databox_field->is_readonly(),
+                    'business'         => $databox_field->isBusiness(),
+                    'source'           => $databox_field->get_tag()->getTagname(),
+                    'labels'           => [
+                        'fr' => $databox_field->get_label('fr'),
+                        'en' => $databox_field->get_label('en'),
+                        'de' => $databox_field->get_label('de'),
+                        'nl' => $databox_field->get_label('nl'),
+                    ],
+                ];
+                $ret[] = $data;
+            }
+            if ($acl->can_see_business_fields($databox) === false) {
+                $ret = array_values($this->removeBusinessFields($ret));
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Build the aggregable/technical fields array
+     * @param array $fields
+     * @param array $excludes
+     * @return array
+     */
+    private function buildUserFieldList(array $fields, array $excludes = [])
+    {
+        $ret = [];
+        foreach ($fields as $key => $field) {
+            $data['name'] = $key;
+            foreach ($field as $k => $i) {
+                if (in_array($k, $excludes)) {
+                    continue;
+                }
+
+                $data[$k] = $i;
+            }
+            $ret[] = $data;
+        }
+        return $ret;
+    }
+    
+    /**
+     * Returns list of sub-definitions from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedSubdefs(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $ret = [];
+        foreach ($acl->get_granted_sbas() as $databox) {
+            $databoxId = $databox->get_sbas_id();
+            $subdefs = $databox->get_subdef_structure();
+            foreach ($subdefs as $subGroup) {
+                foreach ($subGroup->getIterator() as $sub) {
+                    $opt = [];
+                    $data = [
+                        'name'             => $sub->get_name(),
+                        'databox_id'       => $databoxId,
+                        'class'            => $sub->get_class(),
+                        'preset'           => $sub->get_preset(),
+                        'downloadable'     => $sub->is_downloadable(),
+                        'devices'          => $sub->getDevices(),
+                        'labels'           => [
+                            'fr' => $sub->get_label('fr'),
+                            'en' => $sub->get_label('en'),
+                            'de' => $sub->get_label('de'),
+                            'nl' => $sub->get_label('nl'),
+                        ],
+                    ];
+                    $options = $sub->getOptions();
+                    foreach ($options as $option) {
+                        $opt[$option->getName()] = $option->getValue();
+                    }
+                    $data['options'] = $opt;
+                    $ret[$subGroup->getName()][$sub->get_name()] = $data;
+                }
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Returns list of collection from the databoxes on which the user has rights
+     * @param User $user
+     * @return array
+     */
+    private function listUserAuthorizedCollections(User $user)
+    {
+        $acl = $this->getAclForUser($user);
+        $rights = $acl->get_bas_rights();
+        $bases = $acl->get_granted_base();
+
+        $grants = [];
+
+        $statusMapper = new RestrictedStatusExtractor($acl, $this->getApplicationBox());
+
+        foreach ($bases as $base) {
+            $baseGrants = [];
+
+            foreach ($rights as $right) {
+                if (!$acl->has_right_on_base($base->get_base_id(), $right)) {
+                    continue;
+                }
+
+                $baseGrants[] = $right;
+            }
+
+            $grants[] = [
+                'databox_id'    => $base->get_sbas_id(),
+                'base_id'       => $base->get_base_id(),
+                'collection_id' => $base->get_coll_id(),
+                'name'          => $base->get_name(),
+                'logo'          => $base->get_binary_minilogos() ? base64_encode($base->get_binary_minilogos()) : '',
+                'labels'        => [
+                    'fr' => $base->get_label('fr'),
+                    'en' => $base->get_label('en'),
+                    'de' => $base->get_label('de'),
+                    'nl' => $base->get_label('nl'),
+                ],
+                'rights'        => $baseGrants,
+                'statuses'      => $statusMapper->getRestrictedStatuses($base->get_base_id())
+            ];
+        }
+
+        return $grants;
+    }
+
     public function deleteCurrentUserAction(Request $request)
     {
         try {
@@ -3066,4 +3341,17 @@ class V1Controller extends Controller
 
         return [];
     }
+
+    /**
+     * Remove business metadata fields
+     * @param array $fields
+     * @return array
+     */
+    private function removeBusinessFields(array $fields)
+    {
+        return array_filter($fields, function ($field) {
+                return $field['business'] !== true;
+        });
+    }
+
 }

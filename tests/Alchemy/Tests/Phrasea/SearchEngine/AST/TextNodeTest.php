@@ -131,7 +131,12 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                         },
                         "query": {
                             "multi_match": {
-                                "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                "fields": [
+                                    "private_caption.bar.fr",
+                                    "private_caption.bar.en",
+                                    "foo.fr",
+                                    "foo.en"
+                                ],
                                 "query": "baz",
                                 "type": "cross_fields",
                                 "operator": "and",
@@ -245,7 +250,12 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                             "bool": {
                                 "should": [{
                                     "multi_match": {
-                                        "fields": ["private_caption.bar.fr", "private_caption.bar.en"],
+                                        "fields": [
+                                            "private_caption.bar.fr",
+                                            "private_caption.bar.en",
+                                            "foo.fr",
+                                            "foo.en"
+                                        ],
                                         "query": "baz",
                                         "type": "cross_fields",
                                         "operator": "and",
@@ -253,7 +263,10 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
                                     }
                                 }, {
                                     "multi_match": {
-                                        "fields": ["concept_path.bar"],
+                                        "fields": [
+                                            "concept_path.bar",
+                                            "concept_path.foo"
+                                        ],
                                         "query": "/qux"
                                     }
                                 }]

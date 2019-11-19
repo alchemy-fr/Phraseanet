@@ -49,8 +49,6 @@ class RegistryFormManipulator
         $form = $this->factory->create(new MainConfigurationFormType($this->translator, $this->languages));
         $currentConf = $conf ? ($conf->get('registry') ?: []) : [];
         $data = array_replace_recursive($this->getDefaultData($currentConf), $currentConf);
-        //converting array to string array before inserting into form field
-        $data['custom-links'] = json_encode($data['custom-links']);
         $form->setData($data);
 
         return $form;
@@ -88,6 +86,7 @@ class RegistryFormManipulator
                 'force-push-authentication' => false,
                 'enable-feed-notification' => true,
                 'export-stamp-choice' => false,
+                'download-link-validity' => 24,
             ],
             'ftp' => [
                 'ftp-enabled' => false,
@@ -105,15 +104,16 @@ class RegistryFormManipulator
                 'api-enabled' => true,
                 'navigator-enabled' => true,
                 'office-enabled' => true,
+                'adobe_cc-enabled' => true,
             ],
             'webservices' => [
                 'google-charts-enabled' => true,
-                'geonames-server' => 'http://geonames.alchemyasp.com/',
+                'geonames-server' => 'https://geonames.alchemyasp.com/',
                 'captchas-enabled' => false,
                 'recaptcha-public-key' => '',
                 'recaptcha-private-key' => '',
             ],
-            'executables' => [
+            'executables'      => [
                 'h264-streaming-enabled' => false,
                 'auth-token-directory' => null,
                 'auth-token-directory-path' => null,
@@ -123,12 +123,12 @@ class RegistryFormManipulator
                 'ffmpeg-threads' => 2,
                 'pdf-max-pages' => 5,
             ],
-            'searchengine' => [
+            'searchengine'     => [
                 'min-letters-truncation' => 1,
                 'default-query' => '',
                 'default-query-type' => 0,
             ],
-            'email'        => [
+            'email'            => [
                 'emitter-email' => 'phraseanet@example.com',
                 'prefix' => null,
                 'smtp-enabled' => false,
@@ -139,7 +139,25 @@ class RegistryFormManipulator
                 'smtp-user' => null,
                 'smtp-password' => isset($config['email']['smtp-password']) ? $config['email']['smtp-password'] : null,
             ],
-            'custom-links' => []
+            'web-applications' => [
+                'email-optional-for-login' => false
+            ],
+            'custom-links'     => [
+                [
+                    'linkName'     => 'Phraseanet store',
+                    'linkLanguage' => 'fr',
+                    'linkUrl'      => 'https://alchemy.odoo.com/shop',
+                    'linkLocation' => 'help-menu',
+                    'linkOrder'    => '1',
+                ],
+                [
+                    'linkName'     => 'Phraseanet store',
+                    'linkLanguage' => 'en',
+                    'linkUrl'      => 'https://alchemy.odoo.com/en_US/shop',
+                    'linkLocation' => 'help-menu',
+                    'linkOrder'    => '1',
+                ],
+            ]
         ];
     }
 
@@ -171,12 +189,14 @@ class RegistryFormManipulator
 
     private function filterNullValues(array &$array)
     {
-        return array_filter($array, function (&$value) {
+        foreach ($array as $key => &$value) {
             if (is_array($value)) {
-                $value = $this->filterNullValues($value);
+                $this->filterNullValues($value);
             }
-
-            return null !== $value;
-        });
+            else if ($key !== 'geonames-server' && $value === null) {
+                unset($array[$key]);
+            }
+        }
+        return $array;
     }
 }

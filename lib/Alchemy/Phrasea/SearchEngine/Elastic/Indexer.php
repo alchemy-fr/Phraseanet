@@ -169,8 +169,15 @@ class Indexer
         ]);
     }
 
+    /**
+     * @param string $newIndexName
+     * @param string $newAliasName
+     * @return array
+     */
     public function replaceIndex($newIndexName, $newAliasName)
     {
+        $ret = [];
+
         $oldIndexes = $this->client->indices()->getAlias(
             [
                 'index' => $this->index->getName()
@@ -182,26 +189,47 @@ class Indexer
             foreach($data['aliases'] as $oldAliasName => $data2) {
                 $params['body']['actions'][] = [
                     'remove' => [
+                        'alias' => $oldAliasName,
                         'index' => $oldIndexName,
-                        'alias' => $oldAliasName
                     ]
+                ];
+                $ret[] = [
+                    'action' => "ALIAS_REMOVE",
+                    'msg'    => sprintf('alias "%s" -> "%s" removed', $oldAliasName, $oldIndexName),
+                    'alias'  => $oldAliasName,
+                    'index'  => $oldIndexName,
                 ];
             }
         }
-        //
-        $params['body']['actions'][] = [
-            'remove' => [
-                'index' => $newIndexName,
-                'alias' => $newAliasName
-            ]
-        ];
+
         // create new alias
         $params['body']['actions'][] = [
             'add' => [
+                'alias' => $this->index->getName(),
                 'index' => $newIndexName,
-                'alias' => $this->index->getName()
             ]
         ];
+        $ret[] = [
+            'action' => "ALIAS_ADD",
+            'msg'   => sprintf('alias "%s" -> "%s" added', $this->index->getName(), $newIndexName),
+            'alias' => $this->index->getName(),
+            'index' => $newIndexName,
+        ];
+
+        //
+        $params['body']['actions'][] = [
+            'remove' => [
+                'alias' => $newAliasName,
+                'index' => $newIndexName,
+            ]
+        ];
+        $ret[] = [
+            'action' => "ALIAS_REMOVE",
+            'msg'    => sprintf('alias "%s" -> "%s" removed', $newAliasName, $newIndexName),
+            'alias'  => $newAliasName,
+            'index'  => $newIndexName,
+        ];
+
 
         $this->client->indices()->updateAliases($params);
 
@@ -211,10 +239,17 @@ class Indexer
         ];
         foreach($oldIndexes as $oldIndexName => $data) {
             $params['index'][] = $oldIndexName;
+            $ret[] = [
+                'action' => "INDEX_DELETE",
+                'msg'    => sprintf('index "%s" deleted', $oldIndexName),
+                'index'  => $oldIndexName,
+            ];
         }
         $this->client->indices()->delete(
             $params
         );
+
+        return $ret;
     }
 
     public function populateIndex($what, \databox $databox)

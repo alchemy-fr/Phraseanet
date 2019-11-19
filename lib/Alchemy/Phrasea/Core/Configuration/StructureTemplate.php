@@ -19,31 +19,40 @@ use Alchemy\Phrasea\Application;
  */
 class StructureTemplate
 {
-
     const TEMPLATE_EXTENSION = 'xml';
+    const DEFAULT_TEMPLATE = 'en-simple';
 
+    /** @var  string */
+    private $rootPath;
+
+    /** @var  \SplFileInfo[] */
     private $templates;
+    /** @var  string[] */
+    private $names;
 
-    public function __construct(Application $app)
+    /**
+     * @param string $rootPath
+     */
+    public function __construct($rootPath)
     {
-        $this->app = $app;
+        $this->rootPath = $rootPath;
+        $this->names = $this->templates = null;    // lazy loaded, not yet set
     }
 
     /**
      * @return $this
      * @throws \Exception
      */
-    public function getAvailable()
+    private function load()
     {
-
-        $templateList = new \DirectoryIterator($this->app['root.path'] . '/lib/conf.d/data_templates');
-
-        if (empty($templateList)) {
-            throw new \Exception('No available structure template');
+        if(!is_null($this->templates)) {
+            return;     // already loaded
         }
 
-        $templates = [];
-        $abbreviationLength = 2;
+        $templateList = new \DirectoryIterator($this->rootPath . '/lib/conf.d/data_templates');
+
+        $this->templates = [];
+        $this->names     = [];
         foreach ($templateList as $template) {
             if ($template->isDot()
                 || !$template->isFile()
@@ -52,73 +61,63 @@ class StructureTemplate
                 continue;
             }
 
-            $name = $template->getFilename();
-            $abbreviation = strtolower(substr($name, 0, $abbreviationLength));
+            $name = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
+            // beware that the directoryiterator returns a reference on a static, so clone()
+            $this->templates[$name] = clone($template);
+            $this->names[]          = $name;
+        }
+    }
 
-            if (array_key_exists($abbreviation, $templates)) {
-                $abbreviation = strtolower(substr($name, 0, ++$abbreviationLength));
-            }
+    /**
+     * @param string $templateName
+     * @return \SplFileInfo | null
+     */
+    public function getByName($templateName)
+    {
+        $this->load();
 
-            $templates[$abbreviation] = $template->getBasename('.' . self::TEMPLATE_EXTENSION);
+        if (!array_key_exists($templateName, $this->templates)) {
+            return null;
         }
 
-        $this->templates = $templates;
+        return $this->templates[$templateName];
+    }
 
-        return $this;
+    /**
+     * @param $index
+     * @return null|\SplFileInfo
+     */
+    public function getNameByIndex($index)
+    {
+        $this->load();
+
+        return $this->names[$index];
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getNames()
+    {
+        $this->load();
+
+        return $this->names;
+    }
+
+    public function toString()
+    {
+        $this->load();
+
+        return implode(', ', $this->names);
     }
 
     /**
      * @return string
      */
-    public function __toString()
+    public function getDefault()
     {
-        if (!$this->templates) {
-            return '';
-        }
+        $this->load();
 
-        $templateToString = '';
-        $cpt = 1;
-        $templateLength = count($this->templates);
-        foreach ($this->templates as $key => $value) {
-
-            if (($templateLength - 1) == $cpt) {
-                $separator = ' and ';
-            }
-            elseif (end($this->templates) == $value) {
-                $separator = '';
-            }
-            else {
-                $separator = ', ';
-            }
-
-            $templateToString .= $key . ' (' . $value . ')' . $separator;
-            $cpt++;
-        }
-
-        return $templateToString;
+        return $this->getByName(self::DEFAULT_TEMPLATE) ? self::DEFAULT_TEMPLATE : $this->getNameByIndex(0);
     }
-
-    /**
-     * @param $template
-     * @return mixed
-     * @throws \Exception
-     */
-    public function getTemplateName($template = 'en')
-    {
-
-        if (!array_key_exists($template, $this->templates)) {
-            throw new \Exception('Not found template : ' . $template);
-        }
-
-        return $this->templates[$template];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTemplates()
-    {
-        return $this->templates;
-    }
-
 }

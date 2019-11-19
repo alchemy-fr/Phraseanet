@@ -8,8 +8,22 @@
 @import '../../_shared/styles/main';
 
 #ADVSRCH_SORT_ZONE {
-  margin-bottom: 10px;
-  margin-top: 15px;
+  position: absolute;
+  left: 255px;
+  margin-top: -57px;
+
+  > span {
+    margin-right: 5px;
+  }
+  select.input-medium {
+    height: 22px;
+    width: 120px;
+    color: #000;
+    font-size: 12px;
+    margin-right: 10px;
+    background-color: #f8f8f8;
+    border: 0 none;
+  }
 }
 
 #idFrameC {
@@ -49,10 +63,8 @@
 .dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
   padding-top: 6px;
   padding-bottom: 6px;
-  color: #808080;
   text-align: left;
   width: 100px ;
-  /*border-bottom: 1px solid #333;*/
 }
 
 .dl-horizontal dd, .popover-inner .popover-content .dl-horizontal dd {
@@ -91,10 +103,25 @@
 
 .deployer_opened::before {
   content: "\25BC";
+  color: #fff;
 }
 
 .deployer_closed::before {
   content: "\25B6";
+  color: #fff;
+}
+.white-label {
+  color: #ffffff;
+  &.sbas_list label {
+    color: #ffffff;
+  }
+}
+
+.white-label {
+  color: #ffffff;
+  &.sbas_list label {
+    color: #ffffff;
+  }
 }
 
 /* Vertical Tabs */
@@ -244,33 +271,58 @@ td span.text_block_bold {
 
 .dialog-left-section {
   float: left;
-  width: 28%;
+  width: 25%;
   height: 100%;
   text-align: center;
-  line-height: 110px;
+  line-height: 58px;
   img {
     display: inline-block;
     vertical-align: middle;
+    height: 55px;
+    width: auto;
   }
 }
 
 .dialog-right-section {
   float: left;
-  width: 72%;
+  width: 75%;
   height: 100%;
   span {
-    padding-top: 10px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-top: 8px;
+    padding-left: 10px;
+    padding-right: 20px;
     display: block;
     line-height: 14px;
   }
+}
+
+.story {
+  clear: both;
+  margin: 0px 15px;
+  padding-top: 10px;
+  color: #000;
+  font-size: 13px;
+}
+
+#delete-record-form {
+  padding-bottom: 20px;
+  .well-small {
+    border: 0;
+    color: #000;
+    padding: 5px;
+    display: block;
+    word-wrap: break-word;
+    font-weight: bold;
+    min-height: 58px;
+    margin-bottom: 7px;
+  }
   .form-actions {
     position: absolute;
-    bottom: 24px;
+    bottom: 4px;
+    right: 15px;
     padding: 0;
-    margin: 10px 0 0 0;
-    border: none;
+    margin: 0;
+    border: 0;
     .btn {
       font-size: 12px;
       color: #fff;

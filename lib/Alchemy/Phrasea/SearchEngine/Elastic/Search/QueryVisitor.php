@@ -11,6 +11,7 @@ use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
 use InvalidArgumentException;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 
 class QueryVisitor implements Visit
 {
@@ -163,6 +164,12 @@ class QueryVisitor implements Visit
         $key = $node->getChild(0)->accept($this);
         $boundary = $node->getChild(1)->accept($this);
 
+        if ($this->isDateKey($key)) {
+            if(($v = RecordHelper::sanitizeDate($boundary)) !== null) {
+                $boundary = $v;
+            }
+        }
+
         switch ($node->getId()) {
             case NodeTypes::LT_EXPR:
                 return AST\KeyValue\RangeExpression::lessThan($key, $boundary);
@@ -192,11 +199,16 @@ class QueryVisitor implements Visit
                 try {
                     // Try to create a range for incomplete dates
                     $range = QueryHelper::getRangeFromDateString($right);
-                    return new AST\KeyValue\RangeExpression(
-                        $left,
-                        $range['from'], true,
-                        $range['to'], false
-                    );
+                    if($range['from'] === $range['to']) {
+                        return new AST\KeyValue\EqualExpression($left, $range['from']);
+                    }
+                    else {
+                        return new AST\KeyValue\RangeExpression(
+                            $left,
+                            $range['from'], true,
+                            $range['to'], false
+                        );
+                    }
                 } catch (\InvalidArgumentException $e) {
                     // Fall back to equal expression
                 }
@@ -346,6 +358,10 @@ class QueryVisitor implements Visit
                 return AST\KeyValue\NativeKey::database();
             case NodeTypes::TOKEN_COLLECTION:
                 return AST\KeyValue\NativeKey::collection();
+            case NodeTypes::TOKEN_SHA256:
+                return AST\KeyValue\NativeKey::sha256();
+            case NodeTypes::TOKEN_UUID:
+                return AST\KeyValue\NativeKey::uuid();
             case NodeTypes::TOKEN_MEDIA_TYPE:
                 return AST\KeyValue\NativeKey::mediaType();
             case NodeTypes::TOKEN_RECORD_ID:

@@ -15,6 +15,9 @@
     left: 0;
     right: 0;
   }
+  .active {
+    color: $whiteActive !important;
+  }
 }
 
 #EDIT_TOP {
@@ -211,7 +214,6 @@
   display: none;
 }
 
-
 #idExplain {
   top: auto;
   height: 20px;
@@ -260,10 +262,12 @@
   width: 100%;
   display: none;
 }
+
 .edit-zone-title {
   height: 45px;
   bottom: auto;
 }
+
 #EDIT_EDIT {
   top: 45px;
   bottom: 60px;
@@ -296,6 +300,14 @@
   color: $textSecondaryColor;
 }
 
+#idFieldSuggestedValues {
+  padding: 2px 13px 0px 10px;
+  select {
+    width: 100%;
+    background: #C6C6C6;
+
+  }
+}
 
 #ZTextMultiValued_values {
   background-color: $editTextMultiValueBg;
@@ -308,6 +320,7 @@
   overflow-x: auto;
   overflow-y: scroll;
 }
+
 #idFrameE {
   .ui-datepicker-inline {
     background-color: $darkerBackgroundColor;
@@ -362,7 +375,7 @@
     padding-right: 6px;
     li {
       margin: 0px;
-      &.opened{
+      &.opened {
         div {
           display: block;
         }
@@ -398,7 +411,6 @@
     }
   }
 }
-
 
 /******* THESAURUS ************************************************************/
 $thesaurusBorderColor: #a9a9a9 !default;

@@ -28,6 +28,8 @@
 // Rest
 %token  database        database
 %token  collection      collection
+%token  sha256          sha256
+%token  uuid            uuid
 %token  type            type
 %token  id              id|recordid
 %token  created_on      created_(on|at)
@@ -86,6 +88,8 @@ match_key:
 
 #native_key:
     <database>
+  | <sha256>
+  | <uuid>
   | <collection>
   | <type>
   | <id>
@@ -168,6 +172,8 @@ keyword:
   | <or>
   | <database>
   | <collection>
+  | <sha256>
+  | <uuid>
   | <type>
   | <id>
   | <created_on>

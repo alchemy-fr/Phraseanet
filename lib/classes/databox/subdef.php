@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
+use Alchemy\Phrasea\Media\Subdef\Pdf;
 use Alchemy\Phrasea\Media\Subdef\Unknown;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
@@ -44,10 +45,10 @@ class databox_subdef
     protected $translator;
     protected static $mediaTypeToSubdefTypes = [
         SubdefType::TYPE_AUDIO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO],
-        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER],
+        SubdefType::TYPE_DOCUMENT => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER, SubdefSpecs::TYPE_PDF],
         SubdefType::TYPE_FLASH => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE],
-        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION],
+        SubdefType::TYPE_IMAGE => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_PDF],
+        SubdefType::TYPE_VIDEO => [SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION, SubdefSpecs::TYPE_AUDIO],
         SubdefType::TYPE_UNKNOWN => [SubdefSpecs::TYPE_IMAGE],
     ];
 
@@ -109,6 +110,9 @@ class databox_subdef
                 break;
             case SubdefSpecs::TYPE_FLEXPAPER:
                 $this->subdef_type = $this->buildFlexPaperSubdef($sd);
+                break;
+            case SubdefSpecs::TYPE_PDF:
+                $this->subdef_type = $this->buildPdfSubdef($sd);
                 break;
             case SubdefSpecs::TYPE_UNKNOWN:
                 $this->subdef_type = $this->buildImageSubdef($sd);
@@ -245,6 +249,9 @@ class databox_subdef
                         case SubdefSpecs::TYPE_VIDEO:
                             $mediatype_obj = new Video($this->translator);
                             break;
+                        case SubdefSpecs::TYPE_PDF:
+                            $mediatype_obj = new Pdf($this->translator);
+                            break;
                         case SubdefSpecs::TYPE_UNKNOWN:
                             $mediatype_obj = new Unknown($this->translator);
                             break;
@@ -354,6 +361,9 @@ class databox_subdef
         if ($sd->audiosamplerate) {
             $audio->setOptionValue(Audio::OPTION_AUDIOSAMPLERATE, (int) $sd->audiosamplerate);
         }
+        if ($sd->audiochannel) {
+            $audio->setOptionValue(Audio::OPTION_AUDIOCHANNEL, (string) $sd->audiochannel);
+        }
 
         return $audio;
     }
@@ -367,6 +377,17 @@ class databox_subdef
     protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
     {
         return new FlexPaper($this->translator);
+    }
+
+    /**
+     * Build Pdf Subdef object depending the SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $sd
+     * @return Pdf
+     */
+    protected function buildPdfSubdef(SimpleXMLElement $sd)
+    {
+        return new Pdf($this->translator);
     }
 
     /**

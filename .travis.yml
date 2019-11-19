@@ -8,9 +8,8 @@ php:
   - 5.6
 
 branches:
-  except:
-    - /^3\..*$/
-    - /^scrutinizer-.*$/
+  only:
+    - 3.8
 
 matrix:
   fast_finish: true
@@ -42,7 +41,7 @@ install:
 before_script:
   - mysql -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;'
   - "./bin/developer system:uninstall"
-  - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y --es-host=localhost --es-port=9200 --es-index=phrasea_test;"
+  - "./bin/setup system:install --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr-simple --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y --es-host=localhost --es-port=9200 --es-index=phrasea_test;"
   - |
      ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs;
       php resources/hudson/cleanupSubdefs.php;

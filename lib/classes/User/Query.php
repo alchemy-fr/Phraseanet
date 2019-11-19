@@ -51,6 +51,7 @@ class User_Query
     protected $sbas_restrictions = false;
     protected $include_templates = false;
     protected $only_templates = false;
+    protected $only_all_templates = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -200,6 +201,20 @@ class User_Query
     public function only_templates($boolean)
     {
         $this->only_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict to all templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function only_all_templates($boolean)
+    {
+        $this->only_all_templates = !!$boolean;
 
         return $this;
     }
@@ -674,7 +689,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.activity ' . $this->only_templates(false)->generate_sql_constraints(). ' ORDER BY Users.activity';
+        $sql = 'SELECT DISTINCT Users.activity ' . $this->only_all_templates(false)->generate_sql_constraints(). ' ORDER BY Users.activity';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -701,7 +716,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.job ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.job';
+        $sql = 'SELECT DISTINCT Users.job ' . $this->only_all_templates(false)->generate_sql_constraints() . ' ORDER BY Users.job';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -728,7 +743,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.country ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.country';
+        $sql = 'SELECT DISTINCT Users.country ' . $this->only_all_templates(false)->generate_sql_constraints() . ' ORDER BY Users.country';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -759,7 +774,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.company ' . $this->only_templates(false)->generate_sql_constraints() . ' ORDER BY Users.company';
+        $sql = 'SELECT DISTINCT Users.company ' . $this->only_all_templates(false)->generate_sql_constraints() . ' ORDER BY Users.company';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -786,7 +801,7 @@ class User_Query
     {
         $conn = $this->app->getApplicationBox()->get_connection();
 
-        $sql = 'SELECT DISTINCT Users.id, Users.login ' . $this->only_templates(true)->generate_sql_constraints() . ' ORDER BY Users.login';
+        $sql = 'SELECT DISTINCT Users.id, Users.login ' . $this->only_all_templates(true)->generate_sql_constraints() . ' ORDER BY Users.login';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($this->sql_params);
@@ -809,10 +824,16 @@ class User_Query
     {
         $this->sql_params = [];
 
-        $sql = '
+        if($this->only_all_templates === true){
+            $sql = '
+                FROM Users
+                WHERE 1 ';
+        }else{
+            $sql = '
                 FROM Users LEFT JOIN basusr ON (Users.id = basusr.usr_id)
                 LEFT JOIN sbasusr ON (Users.id = sbasusr.usr_id)
                 WHERE 1 ';
+        }
 
         if (! $this->include_special_users) {
             $sql .= ' AND Users.login != "autoregister" AND Users.login NOT LIKE "guest%" ';
@@ -832,7 +853,10 @@ class User_Query
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
-            $sql .= ' AND model_of IS NOT NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId();
+            $sql .= ' AND model_of = ' . $this->app->getAuthenticatedUser()->getId();
+
+        } elseif ($this->only_all_templates === true) {
+            $sql .= ' AND model_of IS NOT NULL';
         } elseif ($this->include_templates === false) {
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
@@ -861,19 +885,21 @@ class User_Query
             $sql .= $this->generate_field_constraints('last_model', $this->templates);
         }
 
-        if (count($this->base_ids) == 0) {
-            if ($this->bases_restrictions) {
-                throw new Exception('No base available for you, not enough rights');
-            }
-        } else {
-            $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
-
-            $not_base_id = array_diff($this->active_bases, $this->base_ids);
-
-            if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
-                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+        if($this->only_all_templates === false){
+            if (count($this->base_ids) == 0) {
+                if ($this->bases_restrictions) {
+                    throw new Exception('No base available for you, not enough rights');
+                }
             } else {
-                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
+
+                $not_base_id = array_diff($this->active_bases, $this->base_ids);
+
+                if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
+                    $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+                } else {
+                    $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                }
             }
         }
 

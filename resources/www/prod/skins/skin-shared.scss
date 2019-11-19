@@ -1,6 +1,6 @@
 $proposalColor: #4c5d84;
 $proposalColor_AND: #4c5d84;
-$proposalColor_EXCEPT: #AA0000;
+$proposalColor_EXCEPT: #8a3747;
 $thesaurusColor: #884c92;
 $basketsColor: #076882;
 $pluginsColor: #FFF;
@@ -46,6 +46,9 @@ input::-moz-selection, textarea::-moz-selection {
 
 label {
   color: $textInverseColor;
+  .phrasea_query & {
+    color: #ffffff;
+  }
 }
 
 legend {
@@ -316,6 +319,34 @@ span.ww_winTitle {
 .chim-wrapper {
   position: relative;
   float: left;
+  margin-bottom: 20px;
+  .note_tips_holder {
+    .image-hover {
+      display: none;
+    }
+    &:hover {
+      .image-hover {
+        display: block;
+      }
+      .image-normal {
+        display: none;
+      }
+    }
+  }
+  span.feedback_user_name {
+    position: relative;
+    background: $feedback;
+    padding-right: 9px;
+    z-index: 1;
+  }
+  span.line_separator {
+    position: absolute;
+    height: 45%;
+    width: calc(100% - 10px);
+    left: 0;
+    top: 0;
+    border-bottom: 1px solid $lineSeparator;
+  }
 }
 
 #tooltip {
@@ -341,7 +372,7 @@ span.ww_winTitle {
 
 .invisible-btn {
   position: absolute;
-  top: 50%;
+  top: 21%;
   z-index: 1;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -349,9 +380,8 @@ span.ww_winTitle {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  height: 320px;
-  width: 150px;
-  margin-top: -160px;
+  height: 50%;
+  width: 25%;
   i {
     display: none;
     font-size: 120px;
@@ -979,7 +1009,7 @@ h4 {
   background-color: $darkerBackgroundColor;
   border: 2px solid $darkerBorderColor;
   padding: 0px;
-  color: $darkerTextColor;
+  color: $tooltipTxt;
   border-radius: $defaultBorderRadius;
 }
 
@@ -987,12 +1017,41 @@ h4 {
   background-color: $mediumBackgroundColor;
   border-radius: 0;
 }
-
+.dl-horizontal dt, .popover-inner .popover-content .dl-horizontal dt {
+  color: $tooltipTitle;
+}
 .popover-inner .popover-content {
   background-color: $darkerBackgroundColor;
   hr {
     background-color: $darkerTextColor;
     border-color: $darkerBorderColor;
+  }
+}
+
+#tooltip.tooltip_flat {
+  border-radius: 5px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  margin-left: 15px;
+  min-width: 280px !important;
+  border-radius: 6px;
+  font-size: 13px;
+  color: $tooltipTxt;
+
+  .popover {
+    background-color: $tooltipBg;
+    width: 100% !important;
+    border: 0 none;
+    border-radius: 0;
+
+    .popover-inner {
+      border: 0 none;
+      border-radius: 6px;
+
+      .popover-content {
+        background-color: $tooltipBg;
+        padding: 10px;
+      }
+    }
   }
 }
 
@@ -1094,6 +1153,17 @@ h4 {
   }
 }
 
+.color-dot {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #FFFFFF;
+  vertical-align: middle;
+  margin-bottom: 4px;
+  margin-top: 3px;
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';
@@ -1123,3 +1193,4 @@ h4 {
 @import 'ui-components/modal-push';
 @import 'ui-components/diapo';
 @import 'ui-components/modal-preferences';
+@import 'ui-components/modal-advanced-search';

@@ -124,8 +124,17 @@ class MetadataHydrator implements HydratorInterface
         $position->set($tag_name, $value);
         // Try to output complete position
         if ($position->isComplete()) {
-            $records[$id]['metadata_tags']['Longitude'] = $position->getSignedLongitude();
-            $records[$id]['metadata_tags']['Latitude'] = $position->getSignedLatitude();
+            $lon = $position->getSignedLongitude();
+            $lat = $position->getSignedLatitude();
+
+            $records[$id]['metadata_tags']['Longitude'] = $lon;
+            $records[$id]['metadata_tags']['Latitude'] = $lat;
+
+            $records[$id]["location"] = [
+                "lat" => $lat,
+                "lon" => $lon
+            ];
+
             unset($this->gps_position_buffer[$id]);
         }
     }

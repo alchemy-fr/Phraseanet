@@ -3,15 +3,6 @@
 - shell: hostname
   register: current_hostname
 
-- name: Add MariaDB-Repository
-  sudo: yes
-  apt_repository: repo='deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present
-  register: mariadb_repository
-
-- name: Add Key for MariaDB Repository
-  sudo: yes
-  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
-
 - name: Update apt
   sudo: yes
   apt: update_cache=yes
@@ -19,7 +10,10 @@
 
 - name: mariadb | Install MariaDB Packages
   sudo: yes
-  apt: pkg={{ item }} state=latest
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    allow_unauthenticated: yes
   with_items:
     - mariadb-server
     - python-mysqldb
@@ -43,12 +37,10 @@
   with_items:
     - "{{ mariadb.appbox_db }}"
     - "{{ mariadb.databox_db }}"
-    - "{{ mariadb.alt_databox_db }}"
 
 - name: mariadb | Import dump
-  mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
+  mysql_db: name={{ mariadb.appbox_db }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
   when: mariadb.dump
 
 - name: mariadb | Create users
-  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
-
+  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv=*.*:ALL,GRANT state=present login_user=root login_password={{ mariadb.root_password }}

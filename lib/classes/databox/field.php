@@ -99,7 +99,6 @@ class databox_field implements cache_cacheableInterface
     protected $original_src;
     protected $aggregable;
 
-    const TYPE_TEXT = "text";
     const TYPE_DATE = "date";
     const TYPE_STRING = "string";
     const TYPE_NUMBER = "number";
@@ -923,9 +922,10 @@ class databox_field implements cache_cacheableInterface
 
         $multi = $multi ? 1 : 0;
 
-        $stmt = $databox->get_connection()->prepare($sql);
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sql);
         $stmt->execute([':name'   => $name, ':sorter' => $sorter, ':multi' => $multi]);
-        $id = $databox->get_connection()->lastInsertId();
+        $id = $connection->lastInsertId();
         $stmt->closeCursor();
 
         $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);

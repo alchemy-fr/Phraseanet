@@ -419,7 +419,7 @@ $(document).ready(function(){
         if (t.length < 60) return;
 
         $(this).html(
-                t.slice(0, 60) + '<span>... </span><a href="#" class="more">{{ 'order-manager::order-item: more' | trans }}</a>' +
+                t.slice(0, 60) + '<span>... </span><a href="#" class="more">' + "{{ 'order-manager::order-item: more' | trans }}" + '</a>' +
                 '<span style="display:none;">' + t.slice(60, t.length) + ' <a href="#" class="less">{{ 'order-manager::order-item: less' | trans }}</a></span>'
         );
 
@@ -455,7 +455,7 @@ $(document).ready(function(){
             modal: true,
             draggable: false,
             stack: false,
-            title: '{{ 'order-manager::order-item:Create-Basket' | trans }}',
+            title: "{{ 'order-manager::order-item:Create-Basket' | trans }}",
             overlay: {
                 backgroundColor: '#000',
                 opacity: 0.7
@@ -532,13 +532,13 @@ function populateBasketDialog($dialog, type) {
     $('input[name="lst"]', $dialog).prop('checked', true);
     $('.checkbox', $dialog).css("visibility","hidden");
     //set default name
-    var name = '{{ 'order-manager::order-list: order-id' | trans }} '
-        + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
-        + '{{ order.getCreatedOn()|date('d/m/Y') }}'
-        + ' {{ 'order-manager::order-item: by' |trans }} '
-        + '{{ order.getUser().getDisplayName() }}';
+    var name = "{{ 'order-manager::order-list: order-id' | trans }} "
+        + {{ order.getId() }} + " {{ 'order-manager::order-item: of' |trans }} "
+        + "{{ order.getCreatedOn()|date('d/m/Y') }}"
+        + " {{ 'order-manager::order-item: by' |trans }} "
+        + "{{ order.getUser().getDisplayName() }}";
     $('input[name="name"]', $dialog).val(name);
-    var description = '{{ order.getOrderUsage()|e('js')|raw }}';
+    var description = "{{ order.getOrderUsage()|e('js')|raw }}";
     var elements_ids = [];
     switch (type){
         case 'denied':
@@ -638,30 +638,30 @@ function createValidationTable() {
     });
 
     if(validatedArray.length > 0) {
-        var html = '';
-        html += '<h5>' + '{{ 'order-manager::order-item: you-have-validated' |trans }}' + " " + (validatedArray.length == 1 ? validatedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  validatedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
+        var html = "";
+        html += "<h5>" + "{{ 'order-manager::order-item: you-have-validated' |trans }}" + " " + (validatedArray.length == 1 ? validatedArray.length + " " + "{{ 'order-manager::order-item: item' |trans }}" :  validatedArray.length + " " + "{{ 'order-manager::order-item: items' |trans }}") + "</h5>";
         html += '<table class="validation-table">';
         _.each(validatedArray, function(elem) {
-            html += '<tr>';
+            html += "<tr>";
             html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
             html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
-            html += '</tr>';
+            html += "</tr>";
         });
-        html += '</table>';
+        html += "</table>";
         $('.validation-content').append(html);
     }
 
     if(deniedArray.length > 0) {
-        var html = '';
-        html += '<h5>' + '{{ 'order-manager::order-item: you-have-denied' |trans }}' + " " + (deniedArray.length == 1 ? deniedArray.length + " " + '{{ 'order-manager::order-item: item' |trans }}' :  deniedArray.length + " " + '{{ 'order-manager::order-item: items' |trans }}') + '</h5>';
+        var html = "";
+        html += "<h5>" + "{{ 'order-manager::order-item: you-have-denied' |trans }}" + " " + (deniedArray.length == 1 ? deniedArray.length + " " + "{{ 'order-manager::order-item: item' |trans }}" :  deniedArray.length + " " + "{{ 'order-manager::order-item: items' |trans }}") + "</h5>";
         html += '<table class="validation-table">';
         _.each(deniedArray, function(elem) {
-            html += '<tr>';
+            html += "<tr>";
             html += '<td width="25%" align="center">' + elem.elementPreview[0].outerHTML + '</td>';
             html += '<td width="75%">' + elem.elementTitle[0].outerHTML + '</td>';
-            html += '</tr>';
+            html += "</tr>";
         });
-        html += '</table>';
+        html += "</table>";
         $('.validation-content').append(html);
     }
 
@@ -868,11 +868,11 @@ function do_deny_documents(order_id, elements_ids) {
 }
 
 function sendMail() {
-    var email = '{{ order.getUser().getEmail() }}';
-    var subject = '{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} '
-            + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
-            + '{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}';
-    var body = '{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}';
+    var email = "{{ order.getUser().getEmail() }}";
+    var subject = "{{ 'order-manager::mail: your-order-of' | trans }} {{ 'order-manager::order-item: number' |trans }} "
+            + {{ order.getId() }} + " {{ 'order-manager::order-item: of' |trans }} "
+            + "{{ order.getCreatedOn()|date('d/m/Y')|e('js')|raw }}";
+    var body = "{{ 'Utilisation prevue:' | trans }} {{ order.getOrderUsage()|e('js')|raw }}";
     if(email != null) {
         var link = "mailto:" + email + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
         window.location.href = link;
@@ -919,20 +919,20 @@ function updateButtonStatusMultiple(elementArrayType) {
 
     var html = "";
     if(countObj.validated > 0) {
-        html += '<p>{{ 'order-manager::order-item: items-already-sent' | trans }}: '
-            + countObj.validated + '</p>';
+        html += "<p>{{ 'order-manager::order-item: items-already-sent' | trans }}: "
+            + countObj.validated + "</p>";
     }
 
     if(countObj.waitingForValidation > 0) {
-        html += '<p>{{ 'order-manager::order-item: items-waiting-validation' | trans }}: '
-            + countObj.waitingForValidation + '</p>';
+        html += "<p>{{ 'order-manager::order-item: items-waiting-validation' | trans }}: "
+            + countObj.waitingForValidation + "</p>";
     }
 
     //for the remaining items
     var remaining = countObj.selectable - (countObj.validated + countObj.waitingForValidation);
     if(remaining > 0) {
-        html += '<p> {{ 'order-manager::order-item: for-non-sent-items' | trans }}: '
-            + remaining + '</p>';
+        html += "<p> {{ 'order-manager::order-item: for-non-sent-items' | trans }}: "
+            + remaining + "</p>";
         $('#order-action button.deny, #order-action button.send').prop('disabled', false);
         $('#order-action button.deny, #order-action button.send').show();
     }
@@ -952,7 +952,7 @@ function updateButtonStatusMultiple(elementArrayType) {
 function updateButtonStatus(elementArrayType) {
     if(_.contains(elementArrayType, ELEMENT_TYPE.VALIDATED)) {
         $('#order-action button.deny, #order-action button.send, #order-action button.reset').hide();
-        $('#order-action span.action-text').html('{{ 'order-manager::order-item: already-validated' | trans }}' + '<i class="icon-ok"></i>');
+        $('#order-action span.action-text').html("{{ 'order-manager::order-item: already-validated' | trans }}" + '<i class="icon-ok"></i>');
         $('#order-action span.action-text').show();
     }else if (_.contains(elementArrayType, ELEMENT_TYPE.WAITINGFORVALIDATION)) {
         $('#order-action button.deny, #order-action button.send, #order-action span.action-text').hide();
@@ -961,7 +961,7 @@ function updateButtonStatus(elementArrayType) {
         //$('#order-action button.send').prop('disabled', true);
     }else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
         $('#order-action button.deny, #order-action button.reset').hide();
-        $('#order-action span.action-text').html('{{ 'order-manager::order-item: refused-previously' | trans }}');
+        $('#order-action span.action-text').html("{{ 'order-manager::order-item: refused-previously' | trans }}");
         //$('#order-action button.send').prop('disabled', false);
         $('#order-action button.send, #order-action span.action-text').show();
     }else {

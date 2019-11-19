@@ -1,0 +1,12 @@
+---
+# Watch repositories task to retrieve repository add
+- name: Install server and libraries
+  sudo: yes
+  apt: pkg={{ item }} state=latest allow_unauthenticated=yes
+  with_items:
+    - rabbitmq-server
+    - librabbitmq-dev
+
+- name: Enable management plugin
+  sudo: yes
+  shell: rabbitmq-plugins enable rabbitmq_management

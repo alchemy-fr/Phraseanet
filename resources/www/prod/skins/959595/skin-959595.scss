@@ -4,7 +4,7 @@ $defaultBorderColor: #999999;
 $defaultBorderRadius: 2px;
 
 $textPrimaryColor: #333333;
-$textPrimaryHoverColor: #1a1a1a;
+$textPrimaryHoverColor: #000000;
 $textPrimaryActiveColor: #1a1a1a;
 $textPrimaryInverseColor: #3b3b3b;
 $textSecondaryColor: #999999;
@@ -14,7 +14,7 @@ $highlightDarkerColor: #0c4554;
 $highlightBackgroundColor: #076882;
 $highlightBackgroundAltColor: #0c4554;
 $highlightBorderColor: #0c4554;
-$highlightTextColor: #FFFFFF;
+$highlightTextColor: #000000;
 
 
 $darkerBackgroundColor: #D9D9D9; // #F1F1F1 <- to try
@@ -26,20 +26,23 @@ $darkBackgroundColor: #9c9c9c; //B1B1B1;
 $darkBorderColor: darken($darkBackgroundColor, 10);
 $darkTextColor: #FFFFFF;
 
-$mediumBackgroundColor: #a6a6a6; // B2B2B2 <- to try
+$mediumBackgroundColor: #b3b3b3;
+$mediumBackgroundColor2: #b2b2b2;
 $mediumBorderColor: darken($mediumBackgroundColor, 10);
 $mediumBorderHighlightColor: #666666;
 $mediumTextColor: $textPrimaryColor;
-$mediumTextHoverColor: #EAEAEA;
-$mediumTextActiveColor: #EAEAEA;
+$mediumTextHoverColor: #000000;
+$mediumTextActiveColor: #000000;
 
-$lightBackgroundColor: #B1B1B1;
+$lightBackgroundColor: #a2a2a2;
 $lightBackgroundSelectedColor: darken($lightBackgroundColor, 10);
-$lightBackgroundActiveColor: darken($lightBackgroundColor, 10);
+$lightBackgroundActiveColor: #939393;
 $lightBorderColor: #B1B1B1;
 $lightBorderSelectedColor: darken($lightBorderColor, 10);
 $lightBorderActiveColor: darken($lightBorderColor, 10);
 $lightTextColor: #3b3b3b;
+
+$textShadow: -0.25px -0.25px 0 #000000, 0.25px 0.25px #000000;
 
 // inverse
 $textInverseColor: #000;
@@ -48,13 +51,13 @@ $bgInverseHoverColor: #FFF;
 
 /******* GLOBAL PROD **********************************************************/
 
-$scrollBgColor: $mediumBackgroundColor; //#3b3b3b;
+$scrollBgColor: #9a9a9a; //#3b3b3b;
 
 $paginateBorderColor: #999999;
 $paginateTextColor: #999999;
-// $paginateBorder2Color: #999999;
-// $paginateTextColor: #FFFFFF;
-$paginateBg1: #D9D9D9;
+$paginateBg1: #676767;
+$paginateBgHov: #505050;
+$paginateBorder: #a8a8a8;
 
 $uploadBg1: #FFFFFF;
 $uploadBg2: transparent;
@@ -79,20 +82,29 @@ $guiSplitterImg: 'vsplitter2-959595.png';
 
 
 
-
+$answersToolsBg: #7e7e7e;
+$answersToolsBgHover: #969696;
+$answersToolsBgColor: #ffffff;
 $answersToolsBtnSeparatorBorder: #999;
-$answersToolsBtnBg: #A4A4A4;
+$answersToolsBtnBg: #c1c1c1;
 $answersToolsBtnBorder: #666666;
-$answersToolsBtnColor: #EAEAEA;
-$answersToolsBtnHoverBg: #666666;
-$answersToolsBtnHoverColor: #FFFFFF;
+$answersToolsBtnColor: #161616;
+$answersToolsBtnHoverBg: #afafaf;
+$answersToolsBtnHoverColor: #505050;
+
+/*Sub nav*/
+$whiteCaret: #000000;
+$answersToolsBtnColorSub: #505050;
+$answersToolsBtnBgSub: #c1c1c1;
+$answersToolsBtnHoverBgSub: #afafaf;
+$answersToolsBtnHoverColorSub: $answersToolsBtnColorSub;
 
 $answersToolsBtnSettingsColor: lighten($answersToolsBtnColor, 10);
-$answersToolsBtnSettingsHoverBg: #393939;
+$answersToolsBtnSettingsHoverBg: #9c9c9c;
 $answersToolsBtnSettingsHoverColor: lighten($answersToolsBtnColor, 10);
 $answersToolsBtnSettingsBorder: #999;
 
-// $diapoBorderColor: $darkerBorderColor;
+$diapoBorderColor: silver;
 
 $editTextMultiValueBg: #FFFFFF;
 $editTextMultiValueBorder: #999999;
@@ -102,13 +114,13 @@ $preferencesLabelColor: #333333;
 
 $activeStateIcon: 'ui-icons_ffffff_256x240.png';
 $accordionLoaderImg: 'loader-black.gif';
-$accordionBgHeaderHover: #999;
+$accordionBgHeaderHover: #a6a6a6;
 
 $inputButtonHoverColor: #FEFEFE;
 $inputFallbackBorderColor: #b1b1b1;
 
 $dropdownDividerBg: $darkerBorderColor;
-$dropdownDividerBorder: $darkerBorderColor;
+$dropdownDividerBorder: #a6a6a6;
 
 $overlayBg: #B1B1B1;
 
@@ -143,7 +155,7 @@ $linkDefaultHover: #444444;
 $uiTextContentColor: $mediumTextColor;
 $uiTextTitleColor: $mediumTextColor;
 $uiLinkColor: $darkTextColor;
-$uiLinkFocusColor: $darkTextColor;
+$uiLinkFocusColor: #000000;
 $uiLinkActiveColor: $darkTextColor;
 
 $pushboxBadgeColor: #666666;
@@ -152,7 +164,7 @@ $pushboxBadgeColor: #666666;
 /******** MAIN MENU CONFIG ********/
 // $mainMenuRightListBorderLeft: #999;
 $mainMenuBottomBorder: none;
-$mainMenuBackgroundColor: $mediumBackgroundColor; //BFBFBF;
+$mainMenuBackgroundColor: #7b7b7b;
 $mainMenuBottomBorder: none;
 $mainMenuMarginBottom: 0;
 $mainMenuLinkColor: #FFF;
@@ -169,13 +181,63 @@ $workzoneTabTopBorder: 1px solid #999;
 $workzoneTabBorderBottom: transparent;
 $workzoneBasketAlertDataBg: #fff190;
 $workzoneBasketAlertDataColor: #1a1a1a;
-$workzoneToolsLabelColor: #FFFFFF;
+$workzoneToolsLabelColor: #ffffff;
+
+/******** ANSWERS INFOS CONFIG ********/
+$answersInfoDialogBg: $highlightBackgroundAltColor !default;
+$answersInfoDialogColor: #ffffff !default;
+$answersDocInfoBg: #676767 !default;
+$answersDocInfoBorder: #fafafa !default;
+$answersDocInfoColor: #ffffff !default;
+$answersLinkColor: #ffffff !default;
+$answersInfoLabelColor: #ffffff !default;
 
 /******** PROPOSALS CONFIG ********/
 $proposalsTitleColor: #FFFFFF;
 $proposalsTitleBorder: #666666;
 $proposalsTitleHoverColor: lighten($proposalsTitleColor, 10);
 $proposalsFacetHoverColor: #FFF;
+$facetTitleBg: #969696;
+$facetContentBg: #b9b9b9;
+
+/******** FACETS SEE MORE BTN********/
+$see_more_btn_bg: #a2a2a2;
+$see_more_btn_color: #ffffff;
+$see_more_btn_border: #c9c9c9;
+$see_more_btn_shadow: rgba(0,0,0,0.1);
+
+$see_more_btn_bg_hov: #e7e7e7;
+$see_more_btn_color_hov: #494949;
+$see_more_btn_border_hov: #c9c9c9;
+
+$white: #ffffff;
+
+$toolsPanelBg: #989898;
+$toolTitleColor: #ececec;
+$basketTips: rgba(0, 0, 0, 0.1);
+$basketTips2: rgba(0, 0, 0, 0.1);
+$dividerBg: #adadad;
+
+$customCheckboxUnchecked: #444444;
+$lineSeparator: #808080;
+$basketBg: #c9c9c9;
+$feedback: $basketBg;
+$STTHover: $mediumBackgroundColor;
+$basketTitleHov: $textPrimaryActiveColor;
+$btnHovLight: $answersToolsBtnBg;
+
+$facetFilterBg: #737373;
+$facetText: #ffffff;
+$whiteActive: #ffffff;
+$guiVsplitter: #d7d7d7;
+$contextDivider: #939393;
+$contextMenuShadow: rgba(0,0,0,0.12);
+$storyBg: #7b7b7b;
+$tooltipBg: #848484;
+$tooltipTitle: #444444;
+$tooltipTxt: #1A1A1A;
+$editAllBg: none;
+$editFieldBg: transparent;
 
 @import '../../../_shared/styles/jquery-ui/ui-lightness';
 @import '../skin-shared';

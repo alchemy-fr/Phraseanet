@@ -66,6 +66,9 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/html5-version/', 'controller.prod.upload:getHtml5UploadForm')
             ->bind('upload_html5_form');
 
+        $controllers->get('/head/', 'controller.prod.upload:getHead')
+            ->bind('upload_head');
+
         $controllers->post('/', 'controller.prod.upload:upload')
             ->bind('upload');
 

@@ -1,6 +1,9 @@
 - name: Install
-  apt: pkg="php5.6-dev" state=present
+  apt: pkg="php{{ phpversion }}-dev" state=present
   when: php.pecl_packages is defined
+
+- name: Update pecl chennel
+  shell: pecl channel-update pecl.php.net
 
 - name: Install Package
   shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.package }}
@@ -13,25 +16,14 @@
 - name: Create extension .ini file
   template: >
     src="extension.tpl"
-    dest="/etc/php/5.6/mods-available/{{ item.name }}.ini"
+    dest="/etc/php/{{ phpversion }}/mods-available/{{ item.name }}.ini"
     owner="root"
     group="root"
     mode=0644
   with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined
 
-- name: Enable extension for FPM
-  file:
-    src: "/etc/php/5.6/mods-available/{{ item.name }}.ini"
-    dest: "/etc/php/5.6/fpm/conf.d/20-{{ item.name }}.ini"
-    state: link
-  with_items: '{{ php.pecl_packages }}'
-  when: php.pecl_packages is defined
-
-- name: Enable extension for CLI
-  file:
-    src: "/etc/php/5.6/mods-available/{{ item.name }}.ini"
-    dest: "/etc/php/5.6/cli/conf.d/20-{{ item.name }}.ini"
-    state: link
+- name: Enable extension
+  shell: phpenmod {{ item.name }}
   with_items: '{{ php.pecl_packages }}'
   when: php.pecl_packages is defined

@@ -149,7 +149,7 @@ class record_preview extends record_adapter
                         $this->original_item = $element;
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = $Basket->getName();
+                        $this->name = htmlspecialchars($Basket->getName());
                         $number = $element->getOrd();
                         $first = false;
                     }
@@ -169,7 +169,7 @@ class record_preview extends record_adapter
                     if ($element->getOrd() == $pos || $first) {
                         $sbas_id = $element->getSbasId();
                         $record_id = $element->getRecordId();
-                        $this->name = $entry->getTitle();
+                        $this->name = htmlspecialchars($entry->getTitle());
                         $this->original_item = $element;
                         $number = $element->getOrd();
                         $first = false;
@@ -434,6 +434,7 @@ class record_preview extends record_adapter
             $nbDays--;      // because 0 is included
             for ($d=$nbDays; $d>=0; $d--) {
                 $datetime = new DateTime('-' . $d . ' days');
+                $datetime->modify('+1 day');
                 $date = date_format($datetime, 'Y-m-d');
                 if($d == $nbDays) {
                     $this->statistics['from'] = $date;

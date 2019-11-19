@@ -11,9 +11,12 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
+use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
+use DateTime;
 use PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 
 class PhraseanetMetadataSetter
 {
@@ -65,8 +68,19 @@ class PhraseanetMetadataSetter
                     continue;
                 }
 
-                $data['value'] = $value;
+                if ($field->get_type() === $field::TYPE_DATE) {
+                    try {
+                        $clean_value = RecordHelper::sanitizeDate($value);
+                        if( $clean_value !== null) {
+                            $dateTime = new DateTime($clean_value);
+                            $value = $dateTime->format('Y-m-d H:i:s');
+                        }
+                    } catch (\Exception $e) {
+                        // $value unchanged
+                    }
+                }
 
+                $data['value'] = $value;
                 $metadataInRecordFormat[] = $data;
             }
         }
@@ -120,7 +134,11 @@ class PhraseanetMetadataSetter
                     $metadataPerField[$fieldName] = [];
                 }
 
-                $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                if(in_array($tagName, File::$xmpTag)){
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array)File::sanitizeXmpUuid($metadata->getValue()->asString()));
+                }else{
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
+                }
             }
         }
 

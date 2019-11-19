@@ -19,11 +19,15 @@ use Alchemy\Phrasea\ControllerProvider\Datafiles;
 use Alchemy\Phrasea\ControllerProvider\MediaAccessor;
 use Alchemy\Phrasea\ControllerProvider\Minifier;
 use Alchemy\Phrasea\ControllerProvider\Permalink;
+use Alchemy\Phrasea\ControllerProvider\Root\Login;
+use Alchemy\Phrasea\Core\Event\ApiLoadEndEvent;
+use Alchemy\Phrasea\Core\Event\ApiLoadStartEvent;
 use Alchemy\Phrasea\Core\Event\ApiResultEvent;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiExceptionHandlerSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ApiOauth2ErrorsSubscriber;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Provider\JsonSchemaServiceProvider;
+use Alchemy\Phrasea\Report\ControllerProvider\ApiReportControllerProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,6 +38,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->register(new OAuth2());
         $app->register(new V1());
         $app->register(new V2());
+        $app->register(new ApiReportControllerProvider());
         $app->register(new JsonSchemaServiceProvider());
     }
 
@@ -89,6 +94,8 @@ class ApiApplicationLoader extends BaseApplicationLoader
             }
         });
 
+        $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_START, new ApiLoadStartEvent());
+
         $app->get('/api/', function (Request $request, Application $app) {
             return Result::create($request, [
                 'name'          => $app['conf']->get(['registry', 'general', 'title']),
@@ -132,6 +139,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->mount('/datafiles/', new Datafiles());
         $app->mount('/api/v1', new V1());
         $app->mount('/api/v2', new V2());
+        $app->mount('/api/report', new ApiReportControllerProvider());
         $app->mount('/permalink/', new Permalink());
         $app->mount($app['controller.media_accessor.route_prefix'], new MediaAccessor());
         $app->mount('/include/minify/', new Minifier());
@@ -140,6 +148,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
         $app->after(function (Request $request, Response $response) use ($app) {
             $app['dispatcher']->dispatch(PhraseaEvents::API_RESULT, new ApiResultEvent($request, $response));
         });
+        $app['dispatcher']->dispatch(PhraseaEvents::API_LOAD_END, new ApiLoadEndEvent());
     }
 
     protected function getDispatcherSubscribersFor(Application $app)

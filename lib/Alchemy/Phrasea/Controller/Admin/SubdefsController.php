@@ -143,6 +143,7 @@ class SubdefsController extends Controller
                         $options[Audio::OPTION_AUDIOBITRATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOBITRATE];
                         $options[Audio::OPTION_AUDIOSAMPLERATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOSAMPLERATE];
                         $options[Audio::OPTION_ACODEC] = $config["audio"]["definitions"][$preset][Audio::OPTION_ACODEC];
+                        $options[Audio::OPTION_AUDIOCHANNEL] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOCHANNEL];
                         foreach($config["audio"]["definitions"][$preset][Subdef::OPTION_DEVICE] as $devices) {
                             $options[Subdef::OPTION_DEVICE][] = $devices;
                         }
@@ -207,7 +208,7 @@ class SubdefsController extends Controller
     {
         $mapping = array(
             Type::TYPE_IMAGE => array(Subdef::TYPE_IMAGE),
-            Type::TYPE_VIDEO => array(Subdef::TYPE_IMAGE, Subdef::TYPE_VIDEO, Subdef::TYPE_ANIMATION),
+            Type::TYPE_VIDEO => array(Subdef::TYPE_IMAGE, Subdef::TYPE_VIDEO, Subdef::TYPE_ANIMATION, Subdef::TYPE_AUDIO),
             Type::TYPE_AUDIO => array(Subdef::TYPE_IMAGE, Subdef::TYPE_AUDIO),
             Type::TYPE_DOCUMENT => array(Subdef::TYPE_IMAGE, Subdef::TYPE_FLEXPAPER),
             Type::TYPE_FLASH => array(Subdef::TYPE_IMAGE)
@@ -227,7 +228,7 @@ class SubdefsController extends Controller
                     "JPG" => null,
                     "160px JPG" => array(
                         Image::OPTION_SIZE       => "160",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -236,7 +237,7 @@ class SubdefsController extends Controller
                     ),
                     "320 px JPG (thumbnail Phraseanet)" => array(
                         Image::OPTION_SIZE       => "320",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -245,7 +246,7 @@ class SubdefsController extends Controller
                     ),
                     "640px JPG" => array(
                         Image::OPTION_SIZE       => "640",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -254,7 +255,7 @@ class SubdefsController extends Controller
                     ),
                     "1280px JPG (preview Phraseanet)" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -263,7 +264,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px JPG" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -273,7 +274,7 @@ class SubdefsController extends Controller
                     "PNG" => null,
                     "160px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "160",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -282,7 +283,7 @@ class SubdefsController extends Controller
                     ),
                     "320px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "320",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -291,7 +292,7 @@ class SubdefsController extends Controller
                     ),
                     "640px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "640",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -300,7 +301,7 @@ class SubdefsController extends Controller
                     ),
                     "1280px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -309,7 +310,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px PNG 8 bits" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -319,7 +320,7 @@ class SubdefsController extends Controller
                     "TIFF" => null,
                     "1280 TIFF" => array(
                         Image::OPTION_SIZE       => "1280",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -328,7 +329,7 @@ class SubdefsController extends Controller
                     ),
                     "2560px TIFF" => array(
                         Image::OPTION_SIZE       => "2560",
-                        Image::OPTION_RESOLUTION => "75",
+                        Image::OPTION_RESOLUTION => "72",
                         Image::OPTION_STRIP      => "yes",
                         Image::OPTION_FLATTEN    => "yes",
                         Image::OPTION_QUALITY    => "75",
@@ -352,9 +353,9 @@ class SubdefsController extends Controller
                     "144P H264 128 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "256",
+                        Video::OPTION_BITRATE         => "128",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "128",
+                        Video::OPTION_SIZE            => "256",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -363,9 +364,9 @@ class SubdefsController extends Controller
                     "240P H264 256 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "426",
+                        Video::OPTION_BITRATE         => "256",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "256",
+                        Video::OPTION_SIZE            => "426",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -374,9 +375,9 @@ class SubdefsController extends Controller
                     "360P H264 576 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "480",
+                        Video::OPTION_BITRATE         => "576",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "576",
+                        Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libtheora",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -385,9 +386,9 @@ class SubdefsController extends Controller
                     "480P H264 750 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "854",
+                        Video::OPTION_BITRATE         => "750",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "750",
+                        Video::OPTION_SIZE            => "854",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -396,9 +397,9 @@ class SubdefsController extends Controller
                     "720P H264 1492 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "1280",
+                        Video::OPTION_BITRATE         => "1492",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "1492",
+                        Video::OPTION_SIZE            => "1280",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -407,9 +408,9 @@ class SubdefsController extends Controller
                     "1080P H264 2420 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "1920",
+                        Video::OPTION_BITRATE         => "2420",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "2420",
+                        Video::OPTION_SIZE            => "1920",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -419,9 +420,9 @@ class SubdefsController extends Controller
                     "144P webm 128 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "256",
+                        Video::OPTION_BITRATE         => "128",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "128",
+                        Video::OPTION_SIZE            => "256",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -430,9 +431,9 @@ class SubdefsController extends Controller
                     "240P webm 256 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "426",
+                        Video::OPTION_BITRATE         => "256",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "256",
+                        Video::OPTION_SIZE            => "426",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -441,9 +442,9 @@ class SubdefsController extends Controller
                     "360P webm 576 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "480",
+                        Video::OPTION_BITRATE         => "576",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "576",
+                        Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -452,9 +453,9 @@ class SubdefsController extends Controller
                     "480P webm 750 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "854",
+                        Video::OPTION_BITRATE         => "750",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "750",
+                        Video::OPTION_SIZE            => "854",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -463,9 +464,9 @@ class SubdefsController extends Controller
                     "720P webm 1492 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "1280",
+                        Video::OPTION_BITRATE         => "1492",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "1492",
+                        Video::OPTION_SIZE            => "1280",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -474,9 +475,9 @@ class SubdefsController extends Controller
                     "1080P webm 2420 kbps ACC 128kbps" => array(
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
-                        Video::OPTION_BITRATE         => "1920",
+                        Video::OPTION_BITRATE         => "2420",
                         Video::OPTION_GOPSIZE         => "25",
-                        Video::OPTION_SIZE            => "2420",
+                        Video::OPTION_SIZE            => "1920",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libfaac",
@@ -521,33 +522,53 @@ class SubdefsController extends Controller
             ),
             Subdef::TYPE_AUDIO => array(
                 "definitions" => array(
-                    "Low AAC 96 kbit/s" => array(
+                    "Low MP3 96 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "100",
                         Audio::OPTION_AUDIOSAMPLERATE   => "8000",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
-                    "Normal AAC 128 kbit/s" => array(
+                    "Normal MP3 128 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "180",
                         Audio::OPTION_AUDIOSAMPLERATE   => "44100",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
-                    "High AAC 320 kbit/s" => array(
+                    "High MP3 320 kbit/s" => array(
                         Audio::OPTION_AUDIOBITRATE      => "230",
                         Audio::OPTION_AUDIOSAMPLERATE   => "50000",
                         Audio::OPTION_ACODEC            => "libmp3lame",
                         Subdef::OPTION_DEVICE            => ["all"]
                     ),
+                    "Wave Mono 16 kHz"   => [
+                        Audio::OPTION_AUDIOBITRATE    => "256",
+                        Audio::OPTION_AUDIOSAMPLERATE => "16000",
+                        Audio::OPTION_ACODEC          => "pcm_s16le",
+                        Audio::OPTION_AUDIOCHANNEL    => "mono",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "Wave Mono 8 kHz"   => [
+                        Audio::OPTION_AUDIOBITRATE    => "128",
+                        Audio::OPTION_AUDIOSAMPLERATE => "8000",
+                        Audio::OPTION_ACODEC          => "pcm_s16le",
+                        Audio::OPTION_AUDIOCHANNEL    => "mono",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
                 ),
                 "form" => array(
                     Audio::OPTION_AUDIOBITRATE      => "slide",
                     Audio::OPTION_AUDIOSAMPLERATE   => "select",
                     Audio::OPTION_ACODEC            => "select",
-                    Subdef::OPTION_DEVICE            => "checkbox",
+                    Audio::OPTION_AUDIOCHANNEL      => "select",
+                    Subdef::OPTION_DEVICE           => "checkbox",
                 ),
             ),
             Subdef::TYPE_FLEXPAPER => array(
+                "definitions" => array(
+                ),
+                "form" => array(),
+            ),
+            Subdef::TYPE_PDF => array(
                 "definitions" => array(
                 ),
                 "form" => array(),

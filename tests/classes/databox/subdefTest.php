@@ -1,5 +1,7 @@
 <?php
 
+use Alchemy\Phrasea\Media\Subdef;
+
 /**
  * @group functional
  * @group legacy
@@ -57,7 +59,7 @@ class databox_subdefTest extends \PhraseanetTestCase
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
         foreach ($object->getAvailableSubdefTypes() as $type) {
-            $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Image', $type);
+            $this->assertInstanceOf(Subdef\Subdef::class, $type);
         }
 
         $this->assertTrue($object->isMetadataUpdateRequired());

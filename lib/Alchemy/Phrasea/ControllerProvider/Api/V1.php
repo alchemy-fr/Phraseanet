@@ -23,7 +23,7 @@ use Silex\ServiceProviderInterface;
 
 class V1 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '1.5.0';
+    const VERSION = '2.0.0';
 
     public static $extendedContentTypes = [
         'json' => ['application/vnd.phraseanet.record-extended+json'],
@@ -117,6 +117,8 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
         $controllers->post('/embed/substitute/', 'controller.api.v1:substituteAction');
 
         $controllers->match('/search/', 'controller.api.v1:searchAction');
+
+        $controllers->match('/records/search/', 'controller.api.v1:searchRecordsAction');
 
         $controllers->get('/records/{databox_id}/{record_id}/caption/', 'controller.api.v1:getRecordCaptionAction')
             ->before('controller.api.v1:ensureCanAccessToRecord')
@@ -261,6 +263,9 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->get('/me/', 'controller.api.v1:getCurrentUserAction');
         $controllers->delete('/me/', 'controller.api.v1:deleteCurrentUserAction');
+        $controllers->get('/me/structures/', 'controller.api.v1:getCurrentUserStructureAction');
+        $controllers->get('/me/subdefs/', 'controller.api.v1:getCurrentUserSubdefsAction');
+        $controllers->get('/me/collections/', 'controller.api.v1:getCurrentUserCollectionsAction');
 
         $controllers->post('/me/request-collections/', 'controller.api.v1:createCollectionRequests');
         $controllers->post('/me/update-account/', 'controller.api.v1:updateCurrentUserAction');

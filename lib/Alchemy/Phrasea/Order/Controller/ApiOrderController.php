@@ -47,6 +47,10 @@ class ApiOrderController extends BaseOrderController
     use FilesystemAware;
     use JsonBodyAware;
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function createAction(Request $request)
     {
         $data = $this->decodeJsonBody($request, 'orders.json#/definitions/order_request');
@@ -54,7 +58,13 @@ class ApiOrderController extends BaseOrderController
         $availableRecords = $this->toRequestedRecords($data->data->records);
         $records = $this->filterOrderableRecords($availableRecords);
 
-        $recordRequest = new RecordsRequest($records, new ArrayCollection($availableRecords), null, RecordsRequest::FLATTEN_YES);
+        $recordRequest = new RecordsRequest(
+            $records,                                   // orderable records
+            new ArrayCollection([]),                    // rejected (rights)
+            new ArrayCollection($availableRecords),     // all records from request
+            null,                                       // basket
+            RecordsRequest::FLATTEN_YES                 // orderable records is stories + children
+        );
 
         $filler = new OrderFiller($this->app['repo.collection-references'], $this->app['orm.em']);
 
@@ -62,7 +72,13 @@ class ApiOrderController extends BaseOrderController
 
         $order = new Order();
         $order->setUser($this->getAuthenticatedUser());
-        $order->setDeadline(new \DateTime($data->data->deadline, new \DateTimeZone('UTC')));
+        try {
+            $order->setDeadline(new \DateTime());   // safe value in case of data->deadline is invalid
+            $order->setDeadline(new \DateTime($data->data->deadline, new \DateTimeZone('UTC')));
+        }
+        catch (\Exception $e) {
+            // no-op, will end-up with safe value
+        }
         $order->setOrderUsage($data->data->usage);
         $order->setNotificationMethod(Order::NOTIFY_WEBHOOK);
 
@@ -139,8 +155,9 @@ class ApiOrderController extends BaseOrderController
     }
 
     /**
-     * @param int $orderId
+     * @param $orderId
      * @return Response
+     * @throws \Exception
      */
     public function getArchiveAction($orderId)
     {
@@ -162,7 +179,12 @@ class ApiOrderController extends BaseOrderController
         $user = $this->getAuthenticatedUser();
         $subdefs = $this->findDataboxSubdefNames();
 
-        $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
+        try {
+            $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
+        }
+        catch (\Exception $e) {
+            throw new NotFoundHttpException(sprintf('No archive could be downloaded for Order "%d"', $order->getId()));
+        }
 
         /** @var Token $token */
         $token = $this->app['manipulator.token']->createDownloadToken($user, serialize($exportData));
@@ -179,7 +201,15 @@ class ApiOrderController extends BaseOrderController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        $file = \set_export::build_zip($this->app, $token, $exportData, $token->getValue() . '.zip');
+
+        $tmpDownloadDir = \p4string::addEndSlash($this->app['tmp.download.path']);
+
+        if(is_null($tmpDownloadDir)){
+            $tmpDownloadDir = '';
+        }
+
+        $zipFile = $tmpDownloadDir.'order_'.$token->getValue() . '.zip';
+        $file = \set_export::build_zip($this->app, $token, $exportData, $zipFile);
 
         return $this->deliverFile($file, $exportName, DeliverDataInterface::DISPOSITION_INLINE, 'application/zip');
     }
@@ -240,8 +270,13 @@ class ApiOrderController extends BaseOrderController
         $filtered = [];
 
         foreach ($records as $index => $record) {
-            if ($acl->has_right_on_base($record->getBaseId(), \ACL::CANCMD)) {
-                $filtered[$index] = $record;
+            try {
+                if ($acl->has_right_on_base($record->getBaseId(), \ACL::CANCMD)) {
+                    $filtered[$index] = $record;
+                }
+            }
+            catch (\Exception $e) {
+                // will NOT happen since \ACL::CANCMD IS a known right
             }
         }
 

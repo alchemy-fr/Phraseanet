@@ -123,24 +123,27 @@ class Fetcher
 
     /**
      * @return \Doctrine\DBAL\Driver\Statement
+     * @throws \Doctrine\DBAL\DBALException
      */
     private function getExecutedStatement()
     {
         if (!$this->statement) {
-            $sql = "SELECT r.record_id"
-                 . ", r.coll_id AS collection_id"
-                 . ", c.asciiname AS collection_name"
-                 . ", r.uuid"
-                 . ", r.status AS flags_bitfield"
-                 . ", r.sha256" // -- TODO rename in "hash"
-                 . ", r.originalname AS original_name"
-                 . ", r.mime, r.type, r.parent_record_id, r.credate AS created_on, r.moddate AS updated_on"
-                 . ", subdef.width, subdef.height, subdef.size"
-                 . " FROM (record r INNER JOIN coll c ON (c.coll_id = r.coll_id))"
-                 . " LEFT JOIN subdef ON subdef.record_id=r.record_id AND subdef.name='document'"
-                 . " -- WHERE"
-                 . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL()
-                 . " LIMIT :offset, :limit";
+
+           $sql =  "SELECT r.*, c.asciiname AS collection_name, subdef.width, subdef.height, subdef.size\n"
+                 . " FROM ((\n"
+                 . "     SELECT r.record_id, r.coll_id AS collection_id, r.uuid, r.status AS flags_bitfield, r.sha256,\n"
+                 . "            r.originalname AS original_name, r.mime, r.type, r.parent_record_id,\n"
+                 . "            r.credate AS created_on, r.moddate AS updated_on, r.coll_id\n"
+                 . "     FROM record r\n"
+                 . "     -- WHERE\n"
+                 . "     ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "\n"
+                 . "     LIMIT :offset, :limit\n"
+                 . "   ) AS r\n"
+                 . "   INNER JOIN coll c ON (c.coll_id = r.coll_id)\n"
+                 . " )\n"
+                 . " LEFT JOIN\n"
+                 . " subdef ON subdef.record_id=r.record_id AND subdef.name='document'\n"
+                 . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "";
 
             $where = $this->delegate->buildWhereClause();
             $sql = str_replace('-- WHERE', $where, $sql);

@@ -10,6 +10,7 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use Alchemy\Phrasea\Model\RecordInterface;
 use MediaAlchemyst\Specification\SpecificationInterface;
 
@@ -64,6 +65,20 @@ class FilesystemService
         }
 
         return $pathdest . $this->generateSubdefFilename($record, $subdef);
+    }
+
+    public function generateTemporarySubdefPathname(\record_adapter $record, \databox_subdef $subdef, $tmpDir)
+    {
+        $tmpDir = \p4string::addEndSlash($tmpDir);
+        $ffmpegDir = $tmpDir."ffmpeg/";
+
+        if(!is_dir($ffmpegDir)){
+            $this->filesystem->mkdir($ffmpegDir);
+        }
+
+        $filenameSufix = $this->generateSubdefFilename($record, $subdef);
+
+        return $ffmpegDir . hash('sha256', $filenameSufix) . $filenameSufix;
     }
 
     /**
@@ -163,6 +178,8 @@ class FilesystemService
                 return $this->getExtensionFromVideoCodec($spec->getVideoCodec());
             case SpecificationInterface::TYPE_SWF:
                 return 'swf';
+            case PdfSpecification::TYPE_PDF:
+                return 'pdf';
         }
 
         return null;
@@ -184,6 +201,8 @@ class FilesystemService
                 return 'ogg';
             case 'libmp3lame':
                 return 'mp3';
+            case 'pcm_s16le':
+                return 'wav';
         }
 
         return null;

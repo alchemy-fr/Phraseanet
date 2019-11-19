@@ -35,4 +35,11 @@ class StringHelper
         return $pascalCase ? $transformStr : lcfirst($transformStr);
     }
 
+    const SQL_VALUE      = '\'';
+    const SQL_IDENTIFIER = '`';
+
+    public static function SqlQuote($s, $quote)
+    {
+        return $quote . str_replace($quote, $quote.$quote, $s) . $quote;
+    }
 }

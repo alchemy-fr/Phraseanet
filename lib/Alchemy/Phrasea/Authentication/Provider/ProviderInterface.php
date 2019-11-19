@@ -43,9 +43,11 @@ interface ProviderInterface
     /**
      * Redirects to the actual authentication provider
      *
+     * @param array $params
+     *
      * @return RedirectResponse
      */
-    public function authenticate();
+    public function authenticate(array $params);
 
     /**
      * Logout from the provider, removes the token if possible

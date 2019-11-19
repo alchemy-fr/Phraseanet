@@ -396,10 +396,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format('Y-m-d');
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format('Y-m-d');
             }
 
             foreach ($options->getDateFields() as $dateField) {
@@ -624,22 +624,22 @@ class ElasticSearchEngine implements SearchEngineInterface
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
                 case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
-                    $highlighted_fields[$index_field] = [
+                    $highlighted_fields[$index_field . ".light"] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
-                        'matched_fields' => [$index_field, $raw_index_field],
-                        'type'           => 'fvh'
+                        // 'matched_fields' => [$index_field, $raw_index_field],
+                        'type'           => 'fvh',
+                        //'type'           => 'plain',
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
-                case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_INTEGER:
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    continue;
-                case FieldMapping::TYPE_DATE:
                 default:
                     continue;
             }
@@ -648,7 +648,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return [
             'pre_tags'  => ['[[em]]'],
             'post_tags' => ['[[/em]]'],
-            'order'     => 'score',
+            // 'order'     => 'score',
             'fields'    => $highlighted_fields
         ];
     }
@@ -666,7 +666,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                 }
                 $agg = [
                     'terms' => [
-                        'field' => $f['field'],
+                        'field' => $f['esfield'],
                         'size'  => $size
                     ]
                 ];

@@ -76,7 +76,7 @@ class InstallerTest extends \PhraseanetTestCase
 
 
         $installer = new Installer($app);
-        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en');
+        $installer->install(uniqid('admin') . '@example.com', 'sdfsdsd', $abConn, 'http://local.phrasea.test.installer/', $dataPath, $dbConn, 'en-simple');
 
         $this->assertTrue($app['configuration.store']->isSetup());
         $this->assertTrue($app['phraseanet.configuration-tester']->isUpToDate());
