@@ -38,21 +38,53 @@
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
-    <ul class="image_set">
-    {% for basket_element in basket.getElements() %}
-      <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
-        {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-          <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
-          </div>
+
+
+        {% if basket.getValidation() %}
+            <div class="report_wrapper">
+                <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
+            type: 'GET',
+            url: '/lightbox/ajax/LOAD_REPORT/' + $('#navigation').val() + '/',
+            dataType: 'html',
+            success: function (data) {
+            $('#report_list_backup').empty().append($('#report').html());
+            $('#report').empty().append(data);
+            $('#report .record_image').css('height','auto');
+            return;
+            }
+            });
+            $(this).hide();
+            $('#report_list').show();">
+                    {{ 'lightbox::recaptitulatif' | trans }}
+                </a>
+                <a id="report_list" class="report_btn report_list" href="#" onclick=" $(this).hide();
+            $('#report_summary').show();
+            $('#report').empty().append($('#report_list_backup').html());">
+                    {{ 'lightbox::list' | trans }}
+                </a>
+            </div>
+
+            <input type="hidden" id="navigation" value="{{ basket.getId() }}">
+            <div id="report" class="summary_block">
+                <ul class="image_set">
+                    {% for basket_element in basket.getElements() %}
+                        <li class="image_box" id="sselcontid_{{basket_element.getId()}}">
+                            {% if basket_element.getBasket().getValidation() and basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                                <div class="valid_choice valid_choice_{{basket_element.getId()}} {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == true %}agree{% elseif basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() == false and basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getAgreement() is not null %}disagree{% endif %}">
+                                </div>
+                            {% endif %}
+                            <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
+                                {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+                            </a>
+                            <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% endif %}
-        <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
-          {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
-        </a>
-        <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
-      </li>
-    {% endfor %}
-    </ul>
-  </div>
+    </div>
+    <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
+    <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
     <div data-role="footer">
         {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
             <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
