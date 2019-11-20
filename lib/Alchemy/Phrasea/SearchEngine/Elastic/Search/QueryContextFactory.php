@@ -23,7 +23,7 @@ class QueryContextFactory
             ? $this->getLimitedStructure($options)
             : $this->structure;
 
-        $context = new QueryContext($structure, $this->locales, $this->current_locale);
+        $context = new QueryContext($options, $structure, $this->locales, $this->current_locale);
 
         if ($options) {
             $fields = $this->getSearchedFields($options);
