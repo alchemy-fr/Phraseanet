@@ -500,15 +500,13 @@ hr {
   padding: 0;
 }
 
-button.confirm_report.ui-button.ui-corner-all.ui-widget {
-  color: #fff;
+button.confirm_report {
+  background: #38c!important;
+  color: #fff!important;
   font-size: 12.5px;
   font-weight: bold;
   padding: 11px;
   display: inline-block;
-  width: auto!important;
-  background: #333;
-  background-image: linear-gradient(#444,#2d2d2d);
   border: 1px solid rgba(255,255,255,.3);
   text-shadow: 0 1px 0 #111;
   border-radius: 16px;
@@ -581,3 +579,10 @@ button.confirm_report.ui-button.ui-corner-all.ui-widget {
 .thumb_wrapper  img.record_image {
   max-width: 100%;
 }
+
+/*header lightbox*/
+.ui-footer .ui-title, .ui-header .ui-title {
+  min-height: 26px;
+  padding: 10px 0;
+}
+

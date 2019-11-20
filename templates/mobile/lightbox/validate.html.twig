@@ -38,9 +38,6 @@
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
-
-
-        {% if basket.getValidation() %}
             <div class="report_wrapper">
                 <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
             type: 'GET',
@@ -81,18 +78,17 @@
                     {% endfor %}
                 </ul>
             </div>
-        {% endif %}
+        <div class="btn-container">
+            {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+                <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
+                    {{ 'validation::envoyer mon rapport' | trans }}
+                    <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
+                </button>
+            {% endif %}
+        </div>
     </div>
     <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
     <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
-    <div data-role="footer">
-        {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-            <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
-                {{ 'validation::envoyer mon rapport' | trans }}
-                <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
-            </button>
-        {% endif %}
-  </div>
 </div>
 {% endblock %}
 
