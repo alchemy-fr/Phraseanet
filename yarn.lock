@@ -5305,10 +5305,15 @@ jquery-simplecolorpicker@^0.3.1:
   resolved "https://registry.yarnpkg.com/jquery-simplecolorpicker/-/jquery-simplecolorpicker-0.3.1.tgz#4f6befd380ab05470f585d5482e5180556e460eb"
   integrity sha1-T2vv04CrBUcPWF1UguUYBVbkYOs=
 
-"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git", "jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
+"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
   version "1.4.2"
   uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
   resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+
+"jquery-treeview@https://github.com/alchemy-fr/jquery-treeview.git":
+  version "1.4.2"
+  uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+  resolved "https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
 
 jquery-ui-datepicker-with-i18n@^1.10.4:
   version "1.10.4"
@@ -5359,15 +5364,15 @@ jquery@>=1.6, jquery@>=1.9, jquery@>=1.9.0, jquery@^3.2.1:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
   integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
 
-jquery@~1.11.3:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-1.11.3.tgz#dd8b74278b27102d29df63eae28308a8cfa1b583"
-  integrity sha1-3Yt0J4snEC0p32Pq4oMIqM+htYM=
-
 jquery@~2.1.1:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.1.4.tgz#228bde698a0c61431dc2630a6a154f15890d2317"
   integrity sha1-IoveaYoMYUMdwmMKahVPFYkNIxc=
+
+jquery@~3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.0.tgz#8de513fa0fa4b2c7d2e48a530e26f0596936efdf"
+  integrity sha512-ggRCXln9zEqv6OqAGXFEcshF5dSBvCkzj6Gm2gzuR5fWawaX8t7cxKVkkygKODrDAzKdoYw3l/e3pm3vlT4IbQ==
 
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.5.1"
