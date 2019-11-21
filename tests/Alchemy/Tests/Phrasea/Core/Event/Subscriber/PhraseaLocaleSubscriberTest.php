@@ -41,26 +41,6 @@ class PhraseaLocaleSubscriberTest extends \PhraseanetTestCase
         $this->assertEquals('de', $client->getResponse()->getContent());
     }
 
-    public function testWithHeaders()
-    {
-        $app = $this->getAppThatReturnLocale();
-
-        $client = new Client($app);
-        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr_FR,fr;q=0.9']);
-
-        $this->assertEquals('fr', $client->getResponse()->getContent());
-    }
-
-    public function testWithHeadersUsingMinus()
-    {
-        $app = $this->getAppThatReturnLocale();
-
-        $client = new Client($app);
-        $client->request('GET', '/', [], [], ['HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9']);
-
-        $this->assertEquals('fr', $client->getResponse()->getContent());
-    }
-
     public function testCookieIsSet()
     {
         $client = new Client(self::$DI['app']);
