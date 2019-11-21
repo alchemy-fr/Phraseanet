@@ -70,12 +70,13 @@ class SubdefsJob extends AbstractJob
 
         $app->getApplicationBox()->get_connection();
 
+        $allDb = count($settings->xpath('sbas[text()="0"]')) > 0;
         foreach ($app->getDataboxes() as $databox) {
             if (!$this->isStarted()) {
                 break;
             }
 
-            if(count($settings->xpath("sbas[text()=".$databox->get_sbas_id() ."]")) == 0) {
+            if(!$allDb && count($settings->xpath("sbas[text()=".$databox->get_sbas_id() ."]")) == 0) {
                 continue;
             }
 

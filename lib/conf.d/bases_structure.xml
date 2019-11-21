@@ -1278,6 +1278,27 @@
               <field>id</field>
             </fields>
           </index>
+          <index>
+            <name>usr_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>usr_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>unread</name>
+            <type>INDEX</type>
+            <fields>
+              <field>unread</field>
+            </fields>
+          </index>
+          <index>
+            <name>created_on</name>
+            <type>INDEX</type>
+            <fields>
+              <field>created_on</field>
+            </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>
@@ -2010,6 +2031,30 @@
             <null>YES</null>
             <extra></extra>
             <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>generate_cterms</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_editable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_visible</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
             <comment></comment>
           </field>
         </fields>

@@ -14,40 +14,40 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
 class ValueCheckerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider escapeRawProvider
+     * @dataProvider valueCheckerProvider
      */
     public function testValueCompatibility($subject, $value, $compatible)
     {
         $this->assertEquals($compatible, ValueChecker::isValueCompatible($subject, $value));
     }
 
-    public function escapeRawProvider()
+    public function valueCheckerProvider()
     {
         $values = [
             [FieldMapping::TYPE_FLOAT  ,  42         , true ],
             [FieldMapping::TYPE_FLOAT  , '42'        , true ],
-            [FieldMapping::TYPE_FLOAT  , '42foo'     , false],
-            [FieldMapping::TYPE_FLOAT  , 'foo'       , false],
+            [FieldMapping::TYPE_FLOAT  , '42foo'     , true],
+            [FieldMapping::TYPE_FLOAT  , 'foo'       , true],
             [FieldMapping::TYPE_DOUBLE ,  42         , true ],
             [FieldMapping::TYPE_DOUBLE , '42'        , true ],
-            [FieldMapping::TYPE_DOUBLE , '42foo'     , false],
-            [FieldMapping::TYPE_DOUBLE , 'foo'       , false],
+            [FieldMapping::TYPE_DOUBLE , '42foo'     , true],
+            [FieldMapping::TYPE_DOUBLE , 'foo'       , true],
             [FieldMapping::TYPE_INTEGER,  42         , true ],
             [FieldMapping::TYPE_INTEGER, '42'        , true ],
-            [FieldMapping::TYPE_INTEGER, '42foo'     , false],
-            [FieldMapping::TYPE_INTEGER, 'foo'       , false],
+            [FieldMapping::TYPE_INTEGER, '42foo'     , true],
+            [FieldMapping::TYPE_INTEGER, 'foo'       , true],
             [FieldMapping::TYPE_LONG   ,  42         , true ],
             [FieldMapping::TYPE_LONG   , '42'        , true ],
-            [FieldMapping::TYPE_LONG   , '42foo'     , false],
-            [FieldMapping::TYPE_LONG   , 'foo'       , false],
+            [FieldMapping::TYPE_LONG   , '42foo'     , true],
+            [FieldMapping::TYPE_LONG   , 'foo'       , true],
             [FieldMapping::TYPE_SHORT  ,  42         , true ],
             [FieldMapping::TYPE_SHORT  , '42'        , true ],
-            [FieldMapping::TYPE_SHORT  , '42foo'     , false],
-            [FieldMapping::TYPE_SHORT  , 'foo'       , false],
+            [FieldMapping::TYPE_SHORT  , '42foo'     , true],
+            [FieldMapping::TYPE_SHORT  , 'foo'       , true],
             [FieldMapping::TYPE_BYTE   ,  42         , true ],
             [FieldMapping::TYPE_BYTE   , '42'        , true ],
-            [FieldMapping::TYPE_BYTE   , '42foo'     , false],
-            [FieldMapping::TYPE_BYTE   , 'foo'       , false],
+            [FieldMapping::TYPE_BYTE   , '42foo'     , true],
+            [FieldMapping::TYPE_BYTE   , 'foo'       , true],
 
             [FieldMapping::TYPE_STRING , 'foo'       , true ],
             [FieldMapping::TYPE_STRING , '42'        , true ],
@@ -61,8 +61,8 @@ class ValueCheckerTest extends \PHPUnit_Framework_TestCase
             [FieldMapping::TYPE_BOOLEAN, 42          , true ],
 
             [FieldMapping::TYPE_DATE   , '2015/01/01'         , true ],
-            [FieldMapping::TYPE_DATE   , '2015/01/01 00:00:00', false],
-            [FieldMapping::TYPE_DATE   , 'foo'                , false],
+            [FieldMapping::TYPE_DATE   , '2015/01/01 00:00:00', true],
+            [FieldMapping::TYPE_DATE   , 'foo'                , true],
         ];
 
         foreach ($values as &$value) {

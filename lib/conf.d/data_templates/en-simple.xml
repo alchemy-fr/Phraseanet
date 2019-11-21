@@ -148,7 +148,7 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
@@ -182,27 +182,27 @@
     </subdefs>
 
     <description>
-        <Object src="IPTC:ObjectName" />
-        <Category src="IPTC:Category"/>
-        <SupplCategory src="IPTC:SupplementalCategories" multi="1"/>
-        <Keywords src="IPTC:Keywords" multi="1"/>
-        <SpecialInstruct src="IPTC:SpecialInstructions"/>
+        <Object src="IPTC:ObjectName" type="string"/>
+        <Category src="IPTC:Category" type="string"/>
+        <SupplCategory src="IPTC:SupplementalCategories" type="string" multi="1"/>
+        <Keywords src="IPTC:Keywords" type="string" multi="1"/>
+        <SpecialInstruct src="IPTC:SpecialInstructions" type="string"/>
         <Date src="IPTC:DateCreated" type="date" />
-        <Byline src="IPTC:By-line"/>
-        <BylineTitle src="IPTC:By-lineTitle"/>
-        <City src="IPTC:City" />
-        <Province src="IPTC:Province-State" />
-        <Country src="IPTC:Country-PrimaryLocationName" />
-        <OriginalRef src="IPTC:OriginalTransmissionReference" />
-        <Headline src="IPTC:Headline" report="1" thumbtitle="1" />
-        <Credit src="IPTC:Credit" report="1" />
-        <Source src="IPTC:Source" />
-        <Caption src="IPTC:Caption-Abstract" />
-        <CaptionWriter src="IPTC:Writer-Editor" />
-        <Longitude src="GPS:GPSLongitude" readonly="1"/>
-        <Latitude src="GPS:GPSLatitude" readonly="1"/>
-        <CameraModel src="IFD0:Model" readonly="1"/>
-        <FileName src="Phraseanet:tf-basename" readonly="1" type="string" />
+        <Byline src="IPTC:By-line" type="string"/>
+        <BylineTitle src="IPTC:By-lineTitle" type="string"/>
+        <City src="IPTC:City" type="string"/>
+        <Province src="IPTC:Province-State" type="string"/>
+        <Country src="IPTC:Country-PrimaryLocationName" type="string"/>
+        <OriginalRef src="IPTC:OriginalTransmissionReference" type="string"/>
+        <Headline src="IPTC:Headline" type="string" report="1" thumbtitle="1"/>
+        <Credit src="IPTC:Credit" type="string" report="1"/>
+        <Source src="IPTC:Source" type="string"/>
+        <Caption src="IPTC:Caption-Abstract" type="string"/>
+        <CaptionWriter src="IPTC:Writer-Editor" type="string"/>
+        <Longitude src="GPS:GPSLongitude" type="number" readonly="1"/>
+        <Latitude src="GPS:GPSLatitude" type="number" readonly="1"/>
+        <CameraModel src="IFD0:Model" type="string" readonly="1"/>
+        <FileName src="Phraseanet:tf-basename" type="string" readonly="1"/>
     </description>
 
     <statbits>

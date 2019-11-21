@@ -462,6 +462,9 @@ class databox extends base implements ThumbnailedElement
                 ->set_aggregable((isset($field['aggregable']) ? (string) $field['aggregable'] : 0))
                 ->set_type($type)
                 ->set_tbranch(isset($field['tbranch']) ? (string) $field['tbranch'] : '')
+                ->set_generate_cterms((isset($field['generate_cterms']) && (string) $field['generate_cterms'] == 1))
+                ->set_gui_editable((isset($field['gui_editable']) && (string) $field['gui_editable'] == 1))
+                ->set_gui_visible((isset($field['gui_editable']) && (string) $field['gui_visible'] == 1))
                 ->set_thumbtitle(isset($field['thumbtitle']) ? (string) $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
                 ->set_report(isset($field['report']) ? (string) $field['report'] : '1')
                 ->save();
@@ -1214,21 +1217,40 @@ class databox extends base implements ThumbnailedElement
             $domct = $this->get_dom_cterms();
 
             if ($domct !== false) {
+                $changed = false;
                 $nodesToDel = [];
+                // loop on first level : "fields"
                 for($n = $domct->documentElement->firstChild; $n; $n = $n->nextSibling) {
                     if($n->nodeType == XML_ELEMENT_NODE && !($n->getAttribute('delbranch'))){
-                        $nodesToDel[] = $n;
+                        $nodesToDel2 = [];
+                        // loop on 2nd level : "terms"
+                        for($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling) {
+                            // do not remove "rejected" candidates
+                            if(substr($n2->getAttribute('id'), 0, 1) != 'R') {
+                                $nodesToDel2[] = $n2;
+                            }
+                        }
+                        foreach($nodesToDel2 as $n2) {
+                            $n->removeChild($n2);
+                            $changed = true;
+                        }
+                        // if a field has no more candidates, we can remove it
+                        if(!($n->firstChild)) {
+                            $nodesToDel[] = $n;
+                        }
                     }
                 }
                 foreach($nodesToDel as $n) {
                     $n->parentNode->removeChild($n);
+                    $changed = true;
                 }
-                if(!empty($nodesToDel)) {
+                if($changed) {
                     $this->saveCterms($domct);
                 }
             }
-        } catch (\Exception $e) {
-
+        }
+        catch (\Exception $e) {
+            // no-op
         }
     }
 

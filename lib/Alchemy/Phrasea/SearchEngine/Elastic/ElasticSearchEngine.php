@@ -396,10 +396,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format('Y-m-d');
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format('Y-m-d');
             }
 
             foreach ($options->getDateFields() as $dateField) {
@@ -619,6 +619,8 @@ class ElasticSearchEngine implements SearchEngineInterface
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
                 case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_DOUBLE:
+                case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
                     $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field . ".light"] = [
@@ -628,13 +630,10 @@ class ElasticSearchEngine implements SearchEngineInterface
                     ];
                     break;
                 case FieldMapping::TYPE_FLOAT:
-                case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_INTEGER:
                 case FieldMapping::TYPE_LONG:
                 case FieldMapping::TYPE_SHORT:
                 case FieldMapping::TYPE_BYTE:
-                    continue;
-                case FieldMapping::TYPE_DATE:
                 default:
                     continue;
             }
