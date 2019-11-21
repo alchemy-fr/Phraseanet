@@ -25,6 +25,9 @@ li.image_box{
   margin:0px 15px 15px 0px;
   padding:0px;
   text-align:center;
+  .thumb_wrapper {
+    background: #ededed;
+  }
 }
 a.no.active_choice{
   background-color:red;
@@ -45,10 +48,13 @@ a.active_choice{
 }
 
 .valid_choice.agree{
-  background-image: url('#{$iconsPath}ok.png');
+  background: #7ed321;
+  border-top-left-radius: 100px;
 }
 .valid_choice.disagree{
-  background-image: url('#{$iconsPath}delete.png');
+  background: #d0021b;
+  border-top-left-radius: 100px;
+}
 }
 
 .thumb_wrapper {

@@ -8,7 +8,7 @@
       {{ validationDatas.getParticipant().getUser().getDisplayName() }}
     </h3>
     {% if validationDatas.getNote() != '' %}
-    <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }}</p>
+    <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }} </p>
     {% endif %}
   </li>
 {% endfor %}

@@ -585,4 +585,9 @@ button.confirm_report {
   min-height: 26px;
   padding: 10px 0;
 }
+.ui-listview >.ui-li-static {
+  padding: .7em 1em;
+  text-overflow: inherit;
+  white-space: inherit;
+}
 

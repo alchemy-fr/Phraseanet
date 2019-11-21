@@ -38,6 +38,7 @@
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
+        {% if basket.getValidation() %}
             <div class="report_wrapper">
                 <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
             type: 'GET',
@@ -60,7 +61,7 @@
                     {{ 'lightbox::list' | trans }}
                 </a>
             </div>
-
+        {% endif %}
             <input type="hidden" id="navigation" value="{{ basket.getId() }}">
             <div id="report" class="summary_block">
                 <ul class="image_set">
@@ -78,6 +79,8 @@
                     {% endfor %}
                 </ul>
             </div>
+    </div>
+
         <div class="btn-container">
             {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
                 <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
@@ -89,6 +92,7 @@
     </div>
     <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
     <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
+
 </div>
 {% endblock %}
 

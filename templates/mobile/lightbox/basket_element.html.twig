@@ -50,7 +50,6 @@
          class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>
   <div id="content" data-role="content">
-    {{ thumbnail.format100percent(record.get_preview()) }}
       <div class="nav_button">
           {% if prevId != NULL %}
               <a data-ajax="false" id="left-btn"
@@ -64,6 +63,7 @@
           {% endif %}
           <div style="clear: both;"></div>
       </div>
+      {{ thumbnail.format100percent(record.get_preview()) }}
     {% if basket_element.getBasket().getValidation() %}
       {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
@@ -81,7 +81,7 @@
         </a>
       </div>
       <div>
-        <ul data-role="listview" id="notes_{{basket_element.getId()}}">
+        <ul data-role="listview" class="lightbox-list-view" id="notes_{{basket_element.getId()}}">
           {% include 'lightbox/sc_note.html.twig' %}
         </ul>
       </div>
