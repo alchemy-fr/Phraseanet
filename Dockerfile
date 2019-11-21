@@ -68,7 +68,6 @@ COPY Makefile /var/alchemy/
 COPY package.json /var/alchemy/
 COPY phpunit.xml.dist /var/alchemy/
 COPY yarn.lock /var/alchemy/
-COPY bin /var/alchemy/bin
 COPY composer.json /var/alchemy/
 COPY composer.lock /var/alchemy/
 RUN make install_composer
@@ -78,6 +77,7 @@ RUN make clean_assets
 RUN make install_asset_dependencies
 RUN make install_assets
 
+COPY bin /var/alchemy/bin
 ADD ./docker/phraseanet/ /
 COPY lib /var/alchemy/lib
 COPY tmp /var/alchemy/tmp
@@ -179,3 +179,19 @@ RUN useradd -u 1000 app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
 CMD ["/boot.sh"]
+
+FROM phraseanet-fpm as phraseanet-fpm-xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+#ENV HOST_IP=$(docker-get-host-ip);
+ENV XDEBUG_CONFIG="remote_enable=1 remote_host=localhost idekey=PHPSTORM";
+ENV XDEBUG_REMOTE_HOST="localhost"
+#COPY ./docker/phraseanet/xdebug.ini /usr/local/etc/php-fpm.d/xdebug.ini
+
+FROM phraseanet-worker as phraseanet-worker-xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+RUN export XDEBUG_CONFIG="remote_enable=1 remote_host=${HOST_IP} idekey=PHPSTORM";
+RUN export XDEBUG_REMOTE_HOST="${HOST_IP}";

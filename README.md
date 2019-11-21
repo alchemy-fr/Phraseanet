@@ -72,3 +72,5 @@ It will build and tag the following images :
     local/phraseanet-worker:<TAG>
     local/phraseanet-fpm:<TAG>
     local/phraseanet-nginx:<TAG>
+    local/phraseanet-fpm-xdebug:<TAG>
+    local/phraseanet-worker-xdebug:<TAG>
