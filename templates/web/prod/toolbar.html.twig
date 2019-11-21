@@ -141,15 +141,17 @@
     {% if plugins.actionbar is not empty %}
         {% for plugin in plugins.actionbar %}
             {% for k, menu in plugin.getActionBar() %}
-                {% set m = menus[k]|default([]) %}
-                {% for action in menu %}
-                    {% set m = m|merge([{
-                        'class':action.classes|default(''),
-                        'icon':plugin_asset(plugin.PluginName, action.icon),
-                        'label':action.label|trans({}, plugin.PluginLocale) }])
-                    %}
-                {% endfor %}
-                {% set menus = menus|merge({(k) : m}) %}
+                {% if k != '_context_' %}
+                    {% set m = menus[k]|default([]) %}
+                    {% for action in menu %}
+                        {% set m = m|merge([{
+                            'class':action.classes|default(''),
+                            'icon':plugin_asset(plugin.PluginName, action.icon),
+                            'label':action.label|trans({}, plugin.PluginLocale) }])
+                        %}
+                    {% endfor %}
+                    {% set menus = menus|merge({(k) : m}) %}
+                {% endif %}
             {% endfor %}
         {% endfor %}
     {% endif %}
