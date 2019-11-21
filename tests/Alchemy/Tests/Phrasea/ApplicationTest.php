@@ -152,6 +152,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $sessionId = null;
         $app->post('/prod/upload/', function (Application $app) use (&$sessionId) {
             $sessionId = $app['session']->getId();
+            return "";
         });
 
         $client = new Client($app);

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\TaskManager;
 
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Model\Entities\Task;
+use Alchemy\Phrasea\Model\Entities\Task as liveTask;
 
 class LiveInformation
 {
@@ -43,10 +43,11 @@ class LiveInformation
 
     /**
      * Returns live informations about the given task.
-     *
+     * @param liveTask  $task
+     * @param boolean $throwException
      * @return array
      */
-    public function getTask(Task $task, $throwException = false)
+    public function getTask(liveTask $task, $throwException = false)
     {
         $data = $this->query($throwException);
 
@@ -56,7 +57,7 @@ class LiveInformation
     /**
      * Returns live informations about some tasks.
      *
-     * @param Task[]  $tasks
+     * @param liveTask[]  $tasks
      * @param boolean $throwException
      *
      * @return array
@@ -73,13 +74,13 @@ class LiveInformation
         return $ret;
     }
 
-    private function formatTask(Task $task, $data)
+    private function formatTask(liveTask $task, $data)
     {
         $taskData = (isset($data['jobs']) && isset($data['jobs'][$task->getId()])) ? $data['jobs'][$task->getId()] : [];
 
         return [
             'configuration' => $task->getStatus(),
-            'actual'        => isset($taskData['status']) ? $taskData['status'] : Task::STATUS_STOPPED,
+            'actual'        => isset($taskData['status']) ? $taskData['status'] : liveTask::STATUS_STOPPED,
             'process-id'    => isset($taskData['process-id']) ? $taskData['process-id'] : null,
         ];
     }

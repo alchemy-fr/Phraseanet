@@ -1,14 +1,140 @@
 # CHANGELOG
 
+## 4.0.9
 
-## 4.0.0 (xxxx-xx-xx)
+### Adds
 
-  - Convert Orders custom adapter to Doctrine entity.
-  - Convert Feeds custom adapter to Doctrine entity.
-  - Convert Users custom adapter to Doctrine entity.
-  - Convert Ftp Export custom adapter to Doctrine entity.
-  - Convert Ftp Export custom adapter to Doctrine entity.
-  - Session management is now part of Phraseanet configuration.
+  - PHRAS-2535 - Back / Front - Unsubscription: It's now possible to request a validation by email to delete a Phraseanet user account.
+  - PHRAS-2480 - Back / Front - It's now possible to add a user model as order manager on a collection:All users with this model applied can manage orders on this collection. This features fixes an issue when users is provided by SAML and the orders manager is lost when user logs in. 
+  - PHRAS-2474 - Back / front. - Searched terms are now found even if the searched terms are split in Business Field and regular Field.
+  - PHRAS-2462 - Front - Share media on LinkedIn as you can do on Facebook, Twitter.
+  - PHRAS-2417 - Front - Skin: grey and white, graphic enhancements.
+  - PHRAS-2067 - Front - Introducing thumbnail & preview generic images for Fonts
+
+### Fixes
+
+* PHRAS-2491 - Front - Click on facets title (expand/collapse) launched a bad query, due to jquery error.
+* PHRAS-2510 - Front - Facets values appear Truncated after 15th character.
+* PHRAS-2153 - Front - No user search possible with the field "Company" and field "Country".
+* PHRAS-2154 - Front - Bug on Chrome only - selected 1 document instead of all for the feedback.
+* PHRAS-2538 - Back - Some MP4 files were not correctly detected by Phraseanet.
+
+## 4.0.8
+
+### Adds:
+
+  - Upload: Distant files can be added via their URL in GUI and by API. Phraseanet downloads the file before archiving it.
+  - Search optimisation when searching in full text, there was a problem when the query mixed different types of fields.
+  - Search optimisation, it’s now possible to search a partial date in full text.
+  - Populate optimisation, now populating time: 3 times faster.
+  - It is now possible to migrate from 3.1 3.0 version to 4.X, without an intermediate step in 3.8.Fix:
+
+### Fixes
+ 
+  - Search filter were not taken into account due to a bug in JS.
+  - Overlay title: In this field, text was repeated twice if : one or several words were highlighted in the field, and if the title contained more than 102 characters.
+  - List Manager: it was impossible to add users in the list manager after page 3.
+  - List of fields was not refreshed in the exported fields section.
+  - Push and Feedback fix error when adding a user when Geonames was not set (null value in Geonames).
+
+## 4.0.7
+
+### Adds:
+
+  - Advanced search refacto
+  - Thesaurus search is now in strict mode
+  - Refactoring of report module
+  - Refactoring query storage and changing strategy for field search restriction
+  - It is now possible to search for terms in thesaurus and candidates in all languages, not only on the login language
+  - Enhancements on archive task
+  - Graphic enhancements for menu and icons
+  - Video file enhancement, support of MXF container
+  - Extraction of a video soundtrack (MP3, MP4, WAVE, etc.)
+  - For Office Documents, all generated subviews will be PDF assets by default. The flexpaper preview still exists but will be optional.
+  - In Prod Gui, there will be 5 facets but the possibility to view more.
+
+### Fixes:
+
+  - Quarantine: Fix for the “Substitute” action: alert when selection is empty
+  - Quarantine: File name with a special character can’t be added
+  - Fix for the Adobe CC default token
+  - XSS vulnerabilities in Prod, Admin & Lightbox. Many thanks to Kris (@HV_hat_)
+  - PDF containing (XMP-xmp:PageImage) fails generating subview
+  - MIME types are trucated
+  -Vagrant dev environment fix
+  - Feedback: Sort assets “Order by best choice” has no effect
+
+## 4.0.3
+
+### Adds:
+
+  - Prod: For a record, show the current day in the statistics section of the detailed view.
+  - Prod: Store state (open or closed) of facet answer. eg: Database or collection, store in session.
+  - Admin: Access to scheduler and task local menu when parameter is set to false in .yml configuration.
+  - Prod: Database, collection and document type facets are fixed on top
+  - Prod: Better rendering for values of exposure, shutter speed and flash status in facets. eg for shutter speed: 1/30 instead of 0,0333333.
+  - Versions 4 are now compliant with the Phraseanet plugins for Adobe CC Suite.
+  - White list mode: extending autoregistration and adding wildcard access condition by mail domain. Automatically grant access to a user according to the email entered in the request.
+  - Find your documents from the colors in the facets (AI plugin)
+  - Generate a PDF from a Word document or a picture, it’s now possible to define a pdf subview type
+  - Specify a temporary work repository for building video subdefs, to accelerate video generation.
+
+### Fixes:
+
+  - Prod: In Upload, correct status are not loaded
+  - Prod:Arrow keys navigation adds last selected facet as filter
+  - Admin:Subdef presets, sizes and bitrates (bits/s) not OK
+  - Admin: App error on loading in French due to a simple quote
+  - Prod: Deletion message is not fully readable when deleting a story
+  - Fixing highlight with Elasticsearch for full text only, not for the thesaurus
+  - 500 error at the first authentication for a user with the SAML Phraseanet pluginDev
+  - Dev: Fix API version returned in answer
+  - Dev: Fix vagrant provisioning for Windows
+
+## 4.0.2
+
+### Adds:
+
+  - Prod: Message Improv, when selected records are in Trash and another one.
+  - Prod: alt-click on active facets (filter) to invert it.
+  - Prod: do not erase facets in filter when returning 0 answers.
+  - Core: Add preference to authorize user connection without an email
+  - Core: Add preference to set default validity period of download link
+
+### Fixes:
+
+  - Thesaurus: 0 character terms are blocked
+  - Admin: fix action create and drop index from elasticsearch
+  - Prod: Fix advanced sarch: no filters possible on fields using IE
+  - Prod: 500 error in publication reader when record is missing (deleted from db)Unit test: fix error in Json serialization for custom link
+  - Prod: fix field list in advanced search with Edge browser
+  - Upload: fix 500 error when missing collection
+  - Install wizard: fix error in graphical installer
+ 
+## 4.0.0
+
+### Adds:
+
+#### Phraseanet gets a new search engine: Elasticsearch
+  - Faceted navigation enables to create a “mapping” of the response. Browse in a very intuitive way by creating several associations of filters. Facets can be used on the databases, collections, documentary fields and technical data.
+  - Speed of processing search and results display has been improved
+  - Possibility to use Kibana (open source visualization plugin for Elasticsearch)
+
+#### API enhancement
+  - New API routes are available (orders, facets, quarantine)
+  - Enhancement of new, faster routes
+
+ #### Redesign of the Prod interface
+  - Enhanced, redesigned ergonomics:  the detailed view windows; redesign of the workzone (baskets and stories, facets, webgalleries)  
+  - New white and grey skins are now available
+  - New order manager
+
+ #### Other
+  - Permalinks sharing: activate/deactivate sharing links for the document and sub resolutions
+  - New: the applicative trash: you can now define a collection named _TRASH_. Then, all deleted records from collections (except from Trash) go to the Trash collection. Permalinks on subdefs are deactivated. When you delete a record from the Trash collection, it is permanently deleted. When you move a record from the Trash collection to another, the permalinks are reactivated.
+  - Rewriting of the task scheduler based on the web sockets
+  - Quarantine enhancement
+  - Drag and drop upload
 
 ## 3.8.8 (2015-12-02)
 

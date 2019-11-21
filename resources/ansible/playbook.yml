@@ -17,5 +17,5 @@
     - mailcatcher
     - node
     - yarn
-    - app
     - ffmpeg
+    - app

@@ -5,20 +5,18 @@ install:
 	make install_assets
 
 install_composer:
-	composer install
+	composer install --ignore-platform-reqs
 
 install_asset_dependencies:
-	yarn upgrade 
+	yarn install
 	./node_modules/.bin/gulp build
 
 install_assets:
 	./node_modules/.bin/gulp install-assets
 
 clean_assets:
-	rm -rf ./node_modules
 	rm -rf ./www/assets
-	mkdir ./node_modules
-	touch ./node_modules/.gitkeep
+	rm -Rf ./cache/*
 
 config:
 	@php bin/console compile:configuration

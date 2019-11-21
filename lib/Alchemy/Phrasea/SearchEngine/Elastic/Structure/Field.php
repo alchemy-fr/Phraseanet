@@ -25,6 +25,11 @@ class Field implements Typed
     private $name;
 
     /**
+     * @var int
+     */
+    private $databox_id;
+
+    /**
      * @var string
      */
     private $type;
@@ -42,6 +47,8 @@ class Field implements Typed
     private $facet; // facet values limit or NULL (zero means no limit)
 
     private $thesaurus_roots;
+
+    private $generate_cterms;
 
     private $used_by_collections;
 
@@ -71,10 +78,12 @@ class Field implements Typed
         }
 
         return new self($field->get_name(), $type, [
+            'databox_id' => $databox->get_sbas_id(),
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
             'facet' => $facet,
             'thesaurus_roots' => $roots,
+            'generate_cterms' => $field->get_generate_cterms(),
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
     }
@@ -89,7 +98,6 @@ class Field implements Typed
             case databox_field::TYPE_NUMBER:
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
-            case databox_field::TYPE_TEXT:
                 return FieldMapping::TYPE_STRING;
         }
 
@@ -100,10 +108,12 @@ class Field implements Typed
     {
         $this->name = (string) $name;
         $this->type = $type;
+        $this->databox_id      = \igorw\get_in($options, ['databox_id'], 0);
         $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
         $this->is_private      = \igorw\get_in($options, ['private'], false);
         $this->facet           = \igorw\get_in($options, ['facet']);
         $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
+        $this->generate_cterms  = \igorw\get_in($options, ['generate_cterms'], false);
         $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
 
         Assertion::boolean($this->is_searchable);
@@ -123,10 +133,12 @@ class Field implements Typed
     public function withOptions(array $options)
     {
         return new self($this->name, $this->type, $options + [
+            'databox_id' => $this->databox_id,
             'searchable' => $this->is_searchable,
             'private' => $this->is_private,
             'facet' => $this->facet,
             'thesaurus_roots' => $this->thesaurus_roots,
+            'generate_cterms' => $this->generate_cterms,
             'used_by_collections' => $this->used_by_collections
         ]);
     }
@@ -149,6 +161,11 @@ class Field implements Typed
     public function getConceptPathIndexField()
     {
         return sprintf('concept_path.%s', $this->name);
+    }
+
+    public function get_databox_id()
+    {
+        return $this->databox_id;
     }
 
     public function getType()
@@ -189,6 +206,11 @@ class Field implements Typed
     public function getThesaurusRoots()
     {
         return $this->thesaurus_roots;
+    }
+
+    public function get_generate_cterms()
+    {
+        return $this->generate_cterms;
     }
 
     /**

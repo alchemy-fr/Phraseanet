@@ -148,6 +148,9 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 }
 #FNDR a {
   text-decoration: none;
+  img {
+    width: 16px;
+  }
 }
 #FNDR a:hover {
   text-decoration: none;
@@ -367,9 +370,6 @@ div.switch_right.unchecked {
 /******* BOARD ****************************************************************/
 .board_section {
   margin: 0 0 30px;
-}
-.board_section ul {
-  margin: 0 0 20px 15px;
 }
 .board_section div[class="section"] {
   height: auto;

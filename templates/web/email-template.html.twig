@@ -49,7 +49,13 @@
                                 <!-- End of header table -->
                                 <!-- Subject table -->
                                 <table width="90%" cellpadding="0" cellspacing="0" border="0" align="center" style="width:90% !important;">
-                                    <tr style="background-color:#a6aab0">
+                                    <tr style=
+                                        {% if mailSkin == constant('Alchemy\\Phrasea\\Notification\\Mail\\MailRequestAccountDelete::MAIL_SKIN') %}
+                                            "background: linear-gradient(to bottom, #ee5f5b, #bd362f)"
+                                        {% elseif mailSkin == constant('Alchemy\\Phrasea\\Notification\\Mail\\AbstractMail::MAIL_SKIN') %}
+                                            "background-color:#a6aab0"
+                                        {% endif %}
+                                    >
                                         <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:16px;  line-height:19px; font-weight:bold; color:#ffffff;">
                                             {{ subject }}
                                         </td>
@@ -72,7 +78,7 @@
                                                             <span style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">{{ senderMail }}</span></a><br/>
                                                         {% endif %}
                                                         <br/>
-                                                        {{ messageText | nl2br }}
+                                                        {{ messageText | raw | nl2br }}
                                                         <br/>
                                                     </td>
                                                 </tr>

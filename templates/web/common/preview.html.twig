@@ -15,7 +15,7 @@
 
 {% set previewHtml5 = null %}
 
-{% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') %}
+{% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_subdef(record, 'preview') and record.has_preview == true %}
     {% set preview_obj = record.get_preview() %}
 {% else %}
     {% set preview_obj = record.get_thumbnail() %}

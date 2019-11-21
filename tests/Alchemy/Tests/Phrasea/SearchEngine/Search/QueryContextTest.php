@@ -18,7 +18,7 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
     {
         $structure = $this->prophesize(Structure::class)->reveal();
         $available_locales = ['ab', 'cd', 'ef'];
-        $context = new QueryContext($structure, $available_locales, 'fr');
+        $context = new QueryContext(null, $structure, $available_locales, 'fr');
         $narrowed = $context->narrowToFields(['some_field']);
         $this->assertEquals(['some_field'], $narrowed->getFields());
     }
@@ -33,10 +33,10 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
             'bar' => $bar_field
         ]);
 
-        $context = new QueryContext($structure->reveal(), [], 'fr');
+        $context = new QueryContext(null, $structure->reveal(), [], 'fr');
         $this->assertEquals([$foo_field, $bar_field], $context->getUnrestrictedFields());
 
-        $narrowed_context = new QueryContext($structure->reveal(), [], 'fr', ['foo']);
+        $narrowed_context = new QueryContext(null, $structure->reveal(), [], 'fr', ['foo']);
         $this->assertEquals([$foo_field], $narrowed_context->getUnrestrictedFields());
     }
 
@@ -50,10 +50,10 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
             'bar' => $bar_field
         ]);
 
-        $context = new QueryContext($structure->reveal(), [], 'fr');
+        $context = new QueryContext(null, $structure->reveal(), [], 'fr');
         $this->assertEquals([$foo_field, $bar_field], $context->getPrivateFields());
 
-        $narrowed_context = new QueryContext($structure->reveal(), [], 'fr', ['foo']);
+        $narrowed_context = new QueryContext(null, $structure->reveal(), [], 'fr', ['foo']);
         $this->assertEquals([$foo_field], $narrowed_context->getPrivateFields());
     }
 }

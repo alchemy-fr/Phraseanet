@@ -128,7 +128,7 @@ key:
   | quoted_string()
 
 group:
-    ::space::? ::parenthese_:: primary() ::_parenthese:: ::space::?
+    ::space::? ::parenthese_:: ::space::? primary() ::space::? ::_parenthese:: ::space::?
 
 
 // Thesaurus terms

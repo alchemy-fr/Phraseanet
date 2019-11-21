@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Doctrine\Common\Cache\WincacheCache as DoctrineWinCache;
+use Doctrine\Common\Cache\WinCacheCache as DoctrineWinCache;
 
 class WinCacheCache extends DoctrineWinCache implements Cache
 {
