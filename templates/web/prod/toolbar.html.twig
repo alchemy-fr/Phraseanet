@@ -156,18 +156,18 @@
             <span class="dropdownButton">
                 <div class="btn-group">
             {% set menu_entry = menu_entries[0] %}
-                    <button class="results_window btn btn-inverse {{ menu_entry.class }}">
+                    <button class="results_window btn btn-inverse {{ menu_entry.class }}" data-selection-source="search-result">
                         <img src="{{ menu_entry.icon }}"  class="btn-image"/>
                         {{ menu_entry.label }}
                     </button>
             {% set menu_entries = menu_entries|slice(1) %}
                     {% if menu_entries|length > 0 %}
-                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown"><span
+                    <button class="trigger btn btn-inverse dropdown-toggle" data-toggle="dropdown" data-selection-source="search-result"><span
                                     class="caret"></span></button>
                     <ul class="dropdown-menu">
                         {% for menu_entry in menu_entries %}
                         <li>
-                            <a class="results_window {{ menu_entry.class }}">
+                            <a class="results_window {{ menu_entry.class }}" data-selection-source="search-result">
                                 <img src="{{ menu_entry.icon }}" class="btn-image"/>
                                 {{ menu_entry.label }}
                             </a>
