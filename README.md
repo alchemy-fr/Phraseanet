@@ -74,3 +74,9 @@ It will build and tag the following images :
     local/phraseanet-nginx:<TAG>
     local/phraseanet-fpm-xdebug:<TAG>
     local/phraseanet-worker-xdebug:<TAG>
+
+
+# Deploy the application
+
+Once the images are built, you can deploy the entire phraseanet stack using the repository : https://github.com/alchemy-fr/phraseanet-docker and follow the instruction inside its `README.md` file.
+
