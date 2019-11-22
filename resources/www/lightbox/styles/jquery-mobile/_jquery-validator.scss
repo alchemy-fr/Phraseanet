@@ -1,4 +1,5 @@
 $iconsPath: '../../../assets/common/images/icons/';
+
 ul.image_set{
   padding:0;
   margin:0;
@@ -55,7 +56,6 @@ a.active_choice{
   background: #d0021b;
   border-top-left-radius: 100px;
 }
-}
 
 .thumb_wrapper {
   text-align:center;
@@ -75,4 +75,8 @@ a.active_choice{
     width: 100%;
   }
 
+}
+
+.ui-footer .ui-title, .ui-header .ui-title {
+  font-size: 18px;
 }

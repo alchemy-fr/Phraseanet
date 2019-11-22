@@ -18,20 +18,28 @@
                 <div class="chim-right">
                     {% for validationDatas in basket_element.getValidationDatas()%}
                         <div class="basket_report_user_wrapper ui-corner-all">
-                            <div class="basket_report_user">
                                 {% if validationDatas.getAgreement() == true %}
-                                    {% set imguser = '<img src="/assets/lightbox/images/agree.png" />' %}
+                                    {% set imguser = '<span class="icomoon icon-agree">&#xe95f;</span>' %}
                                     {% set styleuser = '' %}
                                 {% elseif validationDatas.getAgreement() is null %}
-                                    {% set imguser = '' %}
+                                    {% set imguser = '&nbsp;' %}
                                     {% set styleuser = 'margin-left:18px;' %}
                                 {% else %}
-                                    {% set imguser = '<img src="/assets/lightbox/images/disagree.png" />' %}
+                                    {% set imguser = '<span class="icomoon icon-disagree">&#xe971;</span>' %}
                                     {% set styleuser = '' %}
                                 {% endif %}
-                                <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().getDisplayName()}}</b>
+
+                             <div class="validate-icon">
+                                 {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationDatas.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                                     {{imguser|raw}}
+                                 {% endif %}
+                            </div>
+                            <div class="validate-info">
+                                <h3> {{validationDatas.getParticipant().getUser().getDisplayName()}}</h3>
                                 {% if validationDatas.getNote() != '' %}
-                                     : {{validationDatas.getNote()|nl2br}}
+                                    {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationDatas.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                                        <p> {{validationDatas.getNote()|nl2br}}</p>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -40,7 +48,6 @@
             </div>
         </div>
     </div>
-    <div><hr/></div>
     {% endfor %}
 </div>
 

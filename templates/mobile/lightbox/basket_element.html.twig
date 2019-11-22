@@ -63,7 +63,7 @@
           {% endif %}
           <div style="clear: both;"></div>
       </div>
-      {{ thumbnail.format100percent(record.get_preview()) }}
+      <div class="center-image">{{ thumbnail.format100percent(record.get_preview()) }}</div>
     {% if basket_element.getBasket().getValidation() %}
       {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
         <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">

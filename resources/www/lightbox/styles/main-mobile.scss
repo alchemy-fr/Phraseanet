@@ -1,5 +1,28 @@
 @import './jquery-mobile/jquery-validator';
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("../../common/fonts/PhraseanetIcomoon/fonts/icomoon.eot?xt8hfo");
+  src: url("../../common/fonts/PhraseanetIcomoon/fonts/icomoon.eot?xt8hfo#iefix") format("embedded-opentype"), url("../../common/fonts/PhraseanetIcomoon/fonts/icomoon.ttf?xt8hfo") format("truetype"), url("../../common/fonts/PhraseanetIcomoon/fonts/icomoon.woff?xt8hfo") format("woff"), url("../../common/fonts/PhraseanetIcomoon/fonts/icomoon.svg?xt8hfo#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .nav_button {
   width: 90%;
   margin: 0px auto;
@@ -27,12 +50,13 @@
 }
 
 .report-modal, .ui-dialog .ui-dialog-content {
-  background: linear-gradient(#3c3c3c,#111);
+  background: linear-gradient(#3c3c3c, #111);
 }
 
 .ui-bar-c, .ui-body-c, .ui-btn-down-c, .ui-btn-hover-c, .ui-btn-up-c, .ui-overlay-c {
   text-shadow: none;
 }
+
 @import '../../_shared/styles/variables';
 $lightboxPath: '../images/';
 $imagesPath: '/assets/vendors/jquery-ui/images/dark-hive/';
@@ -164,6 +188,14 @@ img {
   top: 0;
   left: 0;
   border-radius: 0;
+  background-color: rgba(216, 216, 216, 0.7);
+  font-weight: 700;
+  z-index: 99;
+  color: #333333;
+  position: absolute;
+  width: 22px;
+  padding: 2px 0;
+  font-size: 12px;
 }
 
 #report .CHIM.diapo {
@@ -365,8 +397,16 @@ li.userchoice {
 }
 
 .basket_report_user_wrapper {
-  background-color: #bebebe;
-  margin: 0 0 5px;
+  margin: 0;
+  border-bottom: 1px solid #b2b2b2;
+  border-radius: 0;
+  display: inline-block;
+  padding: 10px 15px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #e5e5e5;
+  text-shadow: none;
+  float: left;
 }
 
 .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text {
@@ -481,11 +521,11 @@ hr {
     padding: 1em 1em;
   }
 }
+
 .videoTips {
   width: 100%;
   height: 100%;
 }
-
 
 #basket_infos {
   margin-bottom: 20px;
@@ -496,24 +536,33 @@ hr {
 
 .ui-button-icon.ui-icon.ui-icon-closethick {
   background-position: -73px 0px;
-  background-color: rgba(0,0,0,.9);
+  background-color: rgba(0, 0, 0, .9);
   padding: 0;
 }
 
+.btn-container {
+  padding: 0 20px;
+}
+
 button.confirm_report {
-  background: #38c!important;
-  color: #fff!important;
-  font-size: 12.5px;
+  background: #38c !important;
+  color: #fff !important;
+  font-size: 16px;
   font-weight: bold;
-  padding: 11px;
+  padding: 6px;
   display: inline-block;
-  border: 1px solid rgba(255,255,255,.3);
+  border: 1px solid #38c;
   text-shadow: 0 1px 0 #111;
   border-radius: 16px;
+  font-family: Roboto, sans-serif;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
 }
+
 .report_wrapper {
   position: relative;
+  margin-bottom: 20px;
 }
+
 .report_btn {
   position: absolute;
   top: -41px;
@@ -525,32 +574,34 @@ button.confirm_report {
   padding: 8px 13px;
   min-width: 110px;
   border-radius: 4px;
-  color: #fff!important;
+  color: #fff !important;
   text-decoration: none;
   text-align: center;
   transition: all 0.3s;
   &:hover, &:focus {
     background: darken(#8bc34a, 0.2);
-    border-color:  darken(#8bc34a, 0.3);
+    border-color: darken(#8bc34a, 0.3);
   }
   &.report_list {
     background: #f44336;
-    border-color:  #f44336;
+    border-color: #f44336;
     &:hover, &:focus {
       background: darken(#f44336, 0.2);
-      border-color:  darken(#f44336, 0.3);
+      border-color: darken(#f44336, 0.3);
     }
   }
 }
+
 .report_list {
   display: none;
 }
-.report_summary_backup , .report_list_backup {
+
+.report_summary_backup, .report_list_backup {
   display: none;
 }
 
-
 .chim-wrapper-block {
+  margin-bottom: 15px;
   .chim-block {
     margin: 0;
   }
@@ -560,10 +611,13 @@ button.confirm_report {
     min-width: 296px;
   }
   .chim-left {
-    float: left;
-    margin-right: 10px;
-    width:30%;
+    display: inline-block;
+    width: 100%;
+    background: #ededed;
+    text-align: center;
+    position: relative;
     .diapo {
+      display: inline-block;
       div {
         max-width: 100%;
       }
@@ -571,12 +625,24 @@ button.confirm_report {
   }
 
   .chim-right {
-    float: left;
-    width: calc(70% - 10px);
+    width: 100%;
+    .validate-icon {
+      float: left;
+      height: 25px;
+      vertical-align: middle;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    h3 {
+      font-size: 16px;
+      margin: 0;
+      padding-top: 3px;
+    }
   }
 }
 
-.thumb_wrapper  img.record_image {
+.thumb_wrapper img.record_image {
   max-width: 100%;
 }
 
@@ -585,9 +651,66 @@ button.confirm_report {
   min-height: 26px;
   padding: 10px 0;
 }
-.ui-listview >.ui-li-static {
-  padding: .7em 1em;
-  text-overflow: inherit;
-  white-space: inherit;
+
+.ui-listview.lightbox-list-view {
+  & > .ui-li-static {
+    padding: .7em 1em;
+    text-overflow: inherit;
+    white-space: inherit;
+  }
+  & > li {
+    border-color: #b2b2b2;
+    background: none;
+    p {
+      text-overflow: inherit;
+      white-space: inherit;
+      line-height: 15px;
+      font-size: 13px;
+      color: #141414;
+    }
+  }
+  h3 {
+    font-family: Roboto, sans-serif;;
+    font-size: 16px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 0.94;
+    letter-spacing: normal;
+    color: #141414;
+  }
+
+}
+
+.ui-footer.ui-bar-inherit {
+  border: 0;
+}
+
+.center-image {
+  text-align: center;
+}
+
+/*validate page*/
+.validate-icon {
+  float: left;
+  position: absolute;
+  .icomoon {
+    color: #fff;
+    font-size: 17px;
+    padding: 3px;
+    border-radius: 50px;
+    display: inline-block;
+  }
+  .icon-disagree {
+    background: #cd2f2f;
+  }
+  .icon-agree {
+    background: #8bc34a;
+  }
+
+}
+.validate-info {
+  float: left;
+  padding-left: 36px;
 }
 

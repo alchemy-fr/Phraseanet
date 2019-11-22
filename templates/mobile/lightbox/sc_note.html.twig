@@ -1,14 +1,21 @@
 {% for validationDatas in basket_element.getValidationDatas() %}
   <li>
-    <h3 style="text-align:left;">
-      {% if validationDatas.getAgreement() is not null %}
-      <img style="vertical-align:middle;"
-           src="/assets/lightbox/images/{% if validationDatas.getAgreement() == true %}agree.png{% else %}disagree.png{% endif %}" />
+    <div class="validate-icon">
+        {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationDatas.getParticipant().getUser() == app.getAuthenticatedUser() %}
+           {% if validationDatas.getAgreement() == true %}<span class="icomoon icon-agree">&#xe95f;</span>{% else %}<span class="icomoon icon-disagree">&#xe971;</span>{% endif %}
+        {% endif %}
+    </div>
+    <div class="validate-info">
+      <h3>
+        {{ validationDatas.getParticipant().getUser().getDisplayName() }}
+      </h3>
+        {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationDatas.getParticipant().getUser() == app.getAuthenticatedUser() %}
+
+          {% if validationDatas.getNote() != '' and validationDatas.getAgreement() == true %}
+        <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }} </p>
+        {% endif %}
       {% endif %}
-      {{ validationDatas.getParticipant().getUser().getDisplayName() }}
-    </h3>
-    {% if validationDatas.getNote() != '' %}
-    <p style="text-align:left;">{{ 'validation:: note' | trans }} : {{ validationDatas.getNote()|nl2br }} </p>
-    {% endif %}
+
+    </div>
   </li>
 {% endfor %}
