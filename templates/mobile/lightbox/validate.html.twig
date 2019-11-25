@@ -61,6 +61,8 @@
                     {{ 'lightbox::list' | trans }}
                 </a>
             </div>
+            <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
+            <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
         {% endif %}
             <input type="hidden" id="navigation" value="{{ basket.getId() }}">
             <div id="report" class="summary_block">
@@ -76,7 +78,7 @@
                                     </div>
                             {% endif %}
                             <a href="{{ path('lightbox_ajax_load_basketelement', { 'sselcont_id' : basket_element.getId() }) }}">
-                                {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 80, 80, '', true, false)}}
+                                {{thumbnail.format(basket_element.getRecord(app).get_thumbnail(), 300, 300, '', true, false)}}
                             </a>
                             <input type="hidden" class="display_id" name="display_id" value="{{basket_element.getOrd()}}" />
                         </li>
@@ -94,8 +96,6 @@
             {% endif %}
         </div>
     </div>
-    <div class="report_list_backup" id="report_list_backup">&nbsp;</div>
-    <div class="report_summary_backup " id="report_summary_backup">&nbsp;</div>
 
 </div>
 {% endblock %}
