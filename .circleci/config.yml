@@ -123,8 +123,8 @@ workflows:
                 dockerfile: Dockerfile
                 extra-build-args: "--target phraseanet-fpm"
                 region: AWS_DEFAULT_REGION
-                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet"
-                tag: "alpha-0.1"
+                repo: "phraseanet-fpm"
+                tag: "${CIRCLE_BRANCH}"
             - aws-ecr/build_and_push_image:
                 account-url: AWS_ACCOUNT_URL
                 aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -134,8 +134,8 @@ workflows:
                 dockerfile: Dockerfile
                 extra-build-args: "--target phraseanet-nginx"
                 region: AWS_DEFAULT_REGION
-                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet-nginx"
-                tag: "alpha-0.1"
+                repo: "phraseanet-nginx"
+                tag: "${CIRCLE_BRANCH}"
             - aws-ecr/build_and_push_image:
                 account-url: AWS_ACCOUNT_URL
                 aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -145,5 +145,5 @@ workflows:
                 dockerfile: Dockerfile
                 extra-build-args: "--target phraseanet-worker"
                 region: AWS_DEFAULT_REGION
-                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet"
-                tag: "alpha-0.1"
+                repo: "phraseanet-worker"
+                tag: "${CIRCLE_BRANCH}"
