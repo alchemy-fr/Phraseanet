@@ -79,7 +79,7 @@
                 <size>748</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <acodec>libfaac</acodec>
+                <acodec>libmp3lame</acodec>
                 <vcodec>libx264</vcodec>
                 <devices>screen</devices>
                 <bitrate>1000</bitrate>
