@@ -155,6 +155,29 @@
                                                 </div>
                                             {% endif %}
                                         {% endif %}
+
+                                        {# add plugins entries #}
+                                        {% for plugin in plugins.actionbar|default([]) %}
+                                            {% set menu = plugin.ActionBar['_context_']|default([]) %}
+                                            {% for k, action in menu %}
+                                                {% if plugin.isContextMenuOptionAvailable(k, record) %}
+                                                    <div title="" class="context-menu-item"
+                                                         onclick="{{ plugin.getContextMenuJS(k) }}('{{ k }}', '{{record.baseId}}', '{{record.recordId}}', '{{ record.id }}');">
+                                                        <div class="context-menu-item-inner">
+                                                            {% set icon  = (action.icon ?? false) ? plugin_asset(plugin.PluginName, action.icon) : null %}
+                                                            {% set label = (action.label ?? false) ? (action.label|trans({}, plugin.PluginLocale)) : 'undefined label' %}
+                                                            <a title="{{ label }}" href="#">
+                                                                {% if icon %}
+                                                                <img style="cursor:pointer;" src="{{ icon }}" alt="{{ label }}">
+                                                                {% endif %}
+                                                                <span>{{ label }}</span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endfor %}
+
                                     </div>
                                 </td>
                             </tr>
