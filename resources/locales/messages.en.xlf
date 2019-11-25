@@ -3435,6 +3435,11 @@
         <target state="translated">General settings</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="05db1e4e974fff47ae67bae1309fb4edd9b0a053" resname="Generate-cterms">
+        <source>Generate-cterms</source>
+        <target state="new">Generate-cterms</target>
+        <jms:reference-file line="267">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="9f1b4c9f85fcbbf355fdd3c97210173b63551aa6" resname="Generates a flexpaper flash file" approved="yes">
         <source>Generates a flexpaper flash file</source>
         <target state="translated">Creates a flexpaper flash file</target>
@@ -3571,6 +3576,16 @@
         <source>Guest, you must be authenticated to have the right to download.</source>
         <target state="translated">You must be authenticated to have the right to download.</target>
         <jms:reference-file line="88">web/common/dialog_export.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="771d30c668093219776b418dc5d3475682457167" resname="Gui-editable">
+        <source>Gui-editable</source>
+        <target state="new">Gui-editable</target>
+        <jms:reference-file line="196">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c3ccdd44c467c7149733d19a40e0068ddb00ab25" resname="Gui-visible">
+        <source>Gui-visible</source>
+        <target state="new">Gui-visible</target>
+        <jms:reference-file line="204">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bc9ceaf6239215199222552fbbe96c17a549705" resname="HD Download" approved="yes">
         <source>HD Download</source>
