@@ -183,7 +183,7 @@ class User
     private $lastAppliedTemplate;
 
     /**
-     * @ORM\Column(type="string", length=255, name="push_list", options={"default" = ""})
+     * @ORM\Column(type="text", name="push_list", options={"default" = ""})
      */
     private $pushList = '';
 
