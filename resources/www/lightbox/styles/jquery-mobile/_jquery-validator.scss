@@ -26,15 +26,15 @@ li.image_box a{
   width: 100%;
 }
 li.image_box{
-  width: 32%;
+  width: 18%;
   position: relative;
-  margin: 0 2% 15px 0;
+  margin: 0 2.5% 15px 0;
   padding: 0;
   display: flex;
   align-items: center;
   text-align: center;
   background: #ededed;
-  &:nth-child(3n) {
+  &:nth-child(5n) {
     margin-right: 0;
   }
   .thumb_wrapper {
@@ -43,6 +43,19 @@ li.image_box{
     height: 100%!important;
   }
 }
+@media screen and (max-width: 767px) {
+  li.image_box{
+    width: 32%;
+    margin: 0 2% 15px 0;
+    &:nth-child(5n) {
+      margin-right: 2% ;
+    }
+    &:nth-child(3n) {
+      margin-right: 0;
+    }
+  }
+}
+
 a.no.active_choice{
   background-color:red;
   color: #fff;
