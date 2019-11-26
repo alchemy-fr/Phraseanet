@@ -1,4 +1,5 @@
 $iconsPath: '../../../assets/common/images/icons/';
+
 ul.image_set{
   padding:0;
   margin:0;
@@ -6,26 +7,57 @@ ul.image_set{
   width:100%;
   border:none;
   list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
 }
 li.image_box a img{
   position:relative;
-  vertical-align:middle;
   border:none;
+  width: auto!important;
+  height: 100%  !important;
+  top: 0 !important;
+  object-fit: contain;
 }
 li.image_box a{
   padding:0;
   text-shadow:0;
   margin:0;
+  width: 100%;
 }
 li.image_box{
-  width:80px;
-  height:80px;
-  position:relative;
-  float:left;
-  margin:0px 15px 15px 0px;
-  padding:0px;
-  text-align:center;
+  width: 18%;
+  position: relative;
+  margin: 0 2.5% 15px 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background: #ededed;
+  &:nth-child(5n) {
+    margin-right: 0;
+  }
+  .thumb_wrapper {
+    background: #ededed;
+    width: 100%!important;
+    height: 160px!important;
+    @media screen and (max-width: 767px) {
+      height: 130px  !important;
+    }
+  }
 }
+@media screen and (max-width: 767px) {
+  li.image_box{
+    width: 32%;
+    margin: 0 2% 15px 0;
+    &:nth-child(5n) {
+      margin-right: 2% ;
+    }
+    &:nth-child(3n) {
+      margin-right: 0;
+    }
+  }
+}
+
 a.no.active_choice{
   background-color:red;
   color: #fff;
@@ -45,10 +77,12 @@ a.active_choice{
 }
 
 .valid_choice.agree{
-  background-image: url('#{$iconsPath}ok.png');
+  background: #7ed321;
+  border-top-left-radius: 100px;
 }
 .valid_choice.disagree{
-  background-image: url('#{$iconsPath}delete.png');
+  background: #d0021b;
+  border-top-left-radius: 100px;
 }
 
 .thumb_wrapper {
@@ -69,4 +103,8 @@ a.active_choice{
     width: 100%;
   }
 
+}
+
+.ui-footer .ui-title, .ui-header .ui-title {
+  font-size: 18px;
 }
