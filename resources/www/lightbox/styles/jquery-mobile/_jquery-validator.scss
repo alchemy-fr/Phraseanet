@@ -13,11 +13,10 @@ ul.image_set{
 li.image_box a img{
   position:relative;
   border:none;
-  width: 100%!important;
-  height: auto!important;
+  width: auto!important;
+  height: 100%  !important;
   top: 0 !important;
-  object-fit: cover;
-
+  object-fit: contain;
 }
 li.image_box a{
   padding:0;
@@ -40,7 +39,10 @@ li.image_box{
   .thumb_wrapper {
     background: #ededed;
     width: 100%!important;
-    height: 100%!important;
+    height: 160px!important;
+    @media screen and (max-width: 767px) {
+      height: 130px  !important;
+    }
   }
 }
 @media screen and (max-width: 767px) {
