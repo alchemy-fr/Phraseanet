@@ -21,7 +21,7 @@
 !/config/configuration.sample.yml
 
 # Exclude generated proxies from doctrine2
-/resources/proxies
+# /resources/proxies
 
 # Exclude temporaries resources (zip files, quarantine documents etc ..) folder
 /tmp
