@@ -230,6 +230,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
             'vocabulary-type' => 'User',
             'vocabulary-restricted' => true,
             'gui_editable' => true,
+            'gui_visible' => true,
             'generate_cterms' => true,
         ]);
 

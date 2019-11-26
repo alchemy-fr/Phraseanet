@@ -50,7 +50,9 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   }
 }
 
-
+[class*=" icon-"].fa, [class^=icon-].fa, .fa {
+  font-family: Fontawesome!important;
+}
 [class^="icon-"], [class*=" icon-"].icomoon {
   display: inline-block;
   width: inherit;
