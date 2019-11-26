@@ -17,9 +17,10 @@
             <span>
               {% if not basket.isRead() %}
                 <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+              {% else %}
+                <img src='/assets/common/images/icons/basket.png' title=''/>
               {% endif %}
-              <img src='/assets/common/images/icons/basket.png' title=''/>
-              {{basket.getName()|e}}
+            {{basket.getName()|e}}
             </span>
           </a>
           <div class="menu">
