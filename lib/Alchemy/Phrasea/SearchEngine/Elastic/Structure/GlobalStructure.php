@@ -15,6 +15,11 @@ final class GlobalStructure implements Structure
     private $fields = array();
 
     /**
+     * @var Field[][]
+     */
+    private $fieldsByDatabox = [];
+
+    /**
      * @var Field[]
      * */
     private $date_fields = array();
@@ -113,6 +118,10 @@ final class GlobalStructure implements Structure
 
     public function add(Field $field)
     {
+        // store info for each field, not still merged by databox
+        $this->fieldsByDatabox[$field->get_databox_id()][$field->getName()] = $field;
+
+        // store merged infos (same field name)
         $name = $field->getName();
 
         if (isset($this->fields[$name])) {
@@ -144,6 +153,11 @@ final class GlobalStructure implements Structure
     public function getAllFields()
     {
         return $this->fields;
+    }
+
+    public function getAllFieldsByDatabox($databox_id)
+    {
+        return $this->fieldsByDatabox[$databox_id];
     }
 
     /**
