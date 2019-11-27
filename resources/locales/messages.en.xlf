@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2019-11-15T08:02:57Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2019-11-19T08:49:17Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9940,6 +9940,21 @@
         <target state="translated">Modifications done</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="30fd9aaccb427181468696921afdef907567a5fa" resname="generate_cterms">
+        <source>generate_cterms</source>
+        <target state="new">generate_cterms</target>
+        <jms:reference-file line="267">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable">
+        <source>gui_editable</source>
+        <target state="new">gui_editable</target>
+        <jms:reference-file line="196">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="83e4a406813db28238114f37fc57d1e055584ce5" resname="gui_visible">
+        <source>gui_visible</source>
+        <target state="new">gui_visible</target>
+        <jms:reference-file line="204">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="45b162f3c09db4eb9ecea5e048393a7ccaab4f7d" resname="help::help-section-bullet: check-spelling" approved="yes">
         <source>help::help-section-bullet: check-spelling</source>
         <target state="translated">Check that there are no misspellings or typing errors.</target>
@@ -10083,9 +10098,15 @@ See documentation for more examples https://docs.phraseanet.com</target>
         <target state="translated">Service will be available again in a few minutes</target>
         <jms:reference-file line="8">actions/Bridge/deactivated.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="08dffae30f5e0bfb179632f591a0ffb3daaffe6d" resname="lightbox::list">
+        <source>lightbox::list</source>
+        <target state="new">lightbox::list</target>
+        <jms:reference-file line="63">mobile/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="49956c0a16703da1e642ef7ea5f5d56ddb026c9b" resname="lightbox::recaptitulatif" approved="yes">
         <source>lightbox::recaptitulatif</source>
         <target state="translated">Summary</target>
+        <jms:reference-file line="58">mobile/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="9">web/lightbox/agreement_box.html.twig</jms:reference-file>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
@@ -13135,7 +13156,7 @@ It is possible to place several search areas</target>
       <trans-unit id="8deb6b7dccd9c71fb22c18e3c53dcf609494cfb4" resname="validation:: note" approved="yes">
         <source>validation:: note</source>
         <target state="translated">Comments</target>
-        <jms:reference-file line="13">mobile/lightbox/sc_note.html.twig</jms:reference-file>
+        <jms:reference-file line="11">mobile/lightbox/sc_note.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5f4a6635a3e9ae6101f5d281d0e002535ee504e" resname="validation:: votre note" approved="yes">
         <source>validation:: votre note</source>
@@ -13145,8 +13166,8 @@ It is possible to place several search areas</target>
       <trans-unit id="276c62d9460692fb7b96721bea12a028339dd99c" resname="validation::envoyer mon rapport" approved="yes">
         <source>validation::envoyer mon rapport</source>
         <target state="translated">Send my feedback</target>
-        <jms:reference-file line="58">mobile/lightbox/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="59">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="90">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="91">mobile/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="2">web/lightbox/basket_options.html.twig</jms:reference-file>
         <jms:reference-file line="4">web/lightbox/basket_options.html.twig</jms:reference-file>
       </trans-unit>
