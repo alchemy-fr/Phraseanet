@@ -108,3 +108,22 @@ a.active_choice{
 .ui-footer .ui-title, .ui-header .ui-title {
   font-size: 18px;
 }
+
+
+.ui-listview .ui-li-has-thumb .ui-li-thumb, .ui-listview .ui-li-has-thumb>.ui-btn>img:first-child, .ui-listview .ui-li-has-thumb>img:first-child {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/*user status*/
+.menu-bar-item {
+  background: #000;
+  padding: 12px;
+  text-align: center;
+  a {
+    color: #fff!important;
+    text-decoration: none!important;
+    font-weight: normal;
+  }
+}
+

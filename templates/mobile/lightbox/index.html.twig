@@ -40,6 +40,9 @@
     <h1>{{module_name}}</h1>
     <a href="#about" class="ui-btn-right">{{ 'a propos' | trans }}</a>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <ul data-role="listview" style="width:100%;margin: 0;">
       <li>
@@ -65,6 +68,9 @@
         <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
     <h1>{{ 'a propos' | trans }}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <p>Phraseanet Version {{ app['phraseanet.version'].getName() }} - {{ app['phraseanet.version'].getNumber() }}</p>
     <p>
@@ -85,12 +91,15 @@
         <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
      <h1>{{ 'Validations' | trans }}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <p>
       {{ 'Voici vos validations en cours' | trans }}
     </p>
     <ul data-role="listview"  style="width:100%;margin: 0;">
-            {% for basket in baskets_collection %}
+            {% for basket in baskets_collection | sort | reverse%}
               {% if basket.getValidation() %}
                 {% set basket_length = basket.getElements().count() %}
                 <li>
@@ -115,6 +124,9 @@
         <a rel="external" href="#home" data-icon="arrow-l">{{ 'Back' | trans }}</a>
      <h1>{{ 'Paniers' | trans }}</h1>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <p>
       {{ 'Voici vos paniers' | trans }}
