@@ -47,7 +47,7 @@ interface RecordRepository
      * @param null|int $max_items
      * @return \set_selection[]
      */
-    public function findChildren(array $storyIds, $user = null, $offset = 0, $max_items = null);
+    public function findChildren(array $storyIds, $user = null, $offset = 1, $max_items = null);
 
 
     /**
