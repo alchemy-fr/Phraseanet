@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -xe
+
 # nginx server
 docker build --target phraseanet-nginx -t local/phraseanet-nginx:$1 .
 
