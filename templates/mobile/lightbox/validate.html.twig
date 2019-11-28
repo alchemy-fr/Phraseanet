@@ -32,6 +32,9 @@
     <h1>{{basket.getName()}}</h1>
     <a rel="external" href="{{ path('lightbox') }}" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">{{ 'Home' | trans }}</a>
   </div>
+    <div class="lightbox-user-info">
+        {% include 'common/menubar.html.twig' %}
+    </div>
     <div data-role="content">
     <input type="hidden" id="basket_validation_id" value="{{ basket.getId() }}">
     <p>
