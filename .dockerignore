@@ -1,0 +1,5 @@
+.circleci
+.git
+.settings
+nodes_modules
+vendor
