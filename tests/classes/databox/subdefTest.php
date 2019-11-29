@@ -83,7 +83,7 @@ class databox_subdefTest extends \PHPUnit_Framework_TestCase
                     <fps>10</fps>
                     <threads>1</threads>
                     <bitrate>192</bitrate>
-                    <acodec>libfaac</acodec>
+                    <acodec>libmp3lame</acodec>
                     <vcodec>libx264</vcodec>
                 </subdef>';
 
