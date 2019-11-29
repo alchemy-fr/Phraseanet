@@ -362,7 +362,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "256",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "240P H264 256 kbps ACC 128kbps"   => [
@@ -373,7 +373,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "426",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "360P H264 576 kbps ACC 128kbps"   => [
@@ -384,7 +384,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libtheora",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "480P H264 750 kbps ACC 128kbps"   => [
@@ -395,7 +395,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "854",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "720P H264 1492 kbps ACC 128kbps"  => [
@@ -406,7 +406,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "1280",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "1080P H264 2420 kbps ACC 128kbps" => [
@@ -417,7 +417,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "1920",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "video codec libvpx"               => null,
@@ -429,7 +429,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "256",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "240P webm 256 kbps ACC 128kbps"   => [
@@ -440,7 +440,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "426",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "360P webm 576 kbps ACC 128kbps"   => [
@@ -451,7 +451,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "480P webm 750 kbps ACC 128kbps"   => [
@@ -462,7 +462,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "854",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "720P webm 1492 kbps ACC 128kbps"  => [
@@ -473,7 +473,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "1280",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                     "1080P webm 2420 kbps ACC 128kbps" => [
@@ -484,7 +484,7 @@ class SubdefsController extends Controller
                         Video::OPTION_SIZE            => "1920",
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
-                        Video::OPTION_ACODEC          => "libmp3lame",
+                        Video::OPTION_ACODEC          => "libfaac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
                 ],
