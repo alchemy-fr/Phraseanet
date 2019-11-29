@@ -23,6 +23,11 @@ class MetadataKey implements Key
         return $this->getTag($context)->getIndexField($raw);
     }
 
+    public function getFieldType(QueryContext $context)
+    {
+        return $this->getTag($context)->getType();
+    }
+
     public function isValueCompatible($value, QueryContext $context)
     {
         return ValueChecker::isValueCompatible($this->getTag($context), $value);

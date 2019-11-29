@@ -25,103 +25,103 @@
                     <div id="nav_menu_container" class="desktopmenu">
                         <div class="arrow-up"></div>
                         <ol class="nav_menu">
-                                <li class="menu-bar-item">
-                                    <a target="_blank" href="{{ path('prod') }}">
-                                        <img src="/assets/common/images/icons/menu-prod.png" class="mobilemenu"/>
-                                        <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
+                            <li class="menu-bar-item">
+                                <a target="_blank" href="{{ path('prod') }}">
+                                    <img src="/assets/common/images/icons/menu-prod.png" class="mobilemenu"/>
+                                    <span class="{% if module is defined and module == "prod" %}selected{% endif %}">
                                   {{ 'admin::monitor: production' | trans }}
                                 </span>
-                                    </a>
-                                </li>
+                                </a>
+                            </li>
 
-                                {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
-                                    <li class="menu-bar-item">
-                                        <a target="_blank" href="{{ path('thesaurus') }}">
-                                            <img src="/assets/common/images/icons/menu-thesaurus.png" class="mobilemenu"/>
-                                            <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
+                            {% if app['browser'].isNewGeneration and app['conf'].get(['registry', 'modules', 'thesaurus']) == true and app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('thesaurus') }}">
+                                        <img src="/assets/common/images/icons/menu-thesaurus.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "thesaurus" %}selected{% endif %}">
                                           {{ 'admin::monitor: module thesaurus' | trans }}
                                           </span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-
-                                {# MODULE #}
-                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
-                                    <li class="menu-bar-item">
-                                        <a target="_blank" href="{{ path('admin') }}">
-                                            <img src="/assets/common/images/icons/menu-admin.png" class="mobilemenu"/>
-                                            <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
-                                            {{ 'admin::monitor: module admin' | trans }}
-                                          </span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                {# MODULE #}
-                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
-                                    <li class="menu-bar-item">
-                                        <a target="_blank" href="{{ path('report_dashboard') }}">
-                                            <img src="/assets/common/images/icons/menu-report.png" class="mobilemenu"/>
-                                            <span class="{% if module is defined and module == "report" %}selected{% endif %}">
-                                            {{ 'admin::monitor: module report' | trans }}
-                                          </span>
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                {# MODULE #}
-                                <li class="menu-bar-item">
-                                    <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
-                                        <img src="/assets/common/images/icons/menu-lightbox.png" class="mobilemenu"/>
-                                        <span>
-                                      {{ 'admin::monitor: module validation' | trans }}
-                                      </span>
                                     </a>
                                 </li>
+                            {% endif %}
 
-                                {# MODULE #}
-                                {% if module is defined and module == "prod" %}
-                                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
-                                        <li class="menu-bar-item">
-                                            {% set link = path('upload_html5_form') %}
 
-                                            {% if not app['browser'].supportFileAPI() %}
-                                                {% set link = path('upload_flash_form') %}
-                                            {% endif %}
+                            {# MODULE #}
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('admin') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('admin') }}">
+                                        <img src="/assets/common/images/icons/menu-admin.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "admin" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module admin' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
 
-                                            <a href="{{ link }}" class="uploader-open-action"
-                                               title="{{ 'Upload' | trans }}">
-                                                <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
-                                                <span>
+                            {# MODULE #}
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('report') %}
+                                <li class="menu-bar-item">
+                                    <a target="_blank" href="{{ path('report_dashboard') }}">
+                                        <img src="/assets/common/images/icons/menu-report.png" class="mobilemenu"/>
+                                        <span class="{% if module is defined and module == "report" %}selected{% endif %}">
+                                            {{ 'admin::monitor: module report' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {# MODULE #}
+                            <li class="menu-bar-item">
+                                <a id="validation_link" target="_blank" href="{{ path('lightbox') }}">
+                                    <img src="/assets/common/images/icons/menu-lightbox.png" class="mobilemenu"/>
+                                    <span>
+                                      {{ 'admin::monitor: module validation' | trans }}
+                                      </span>
+                                </a>
+                            </li>
+
+                            {# MODULE #}
+                            {% if module is defined and module == "prod" %}
+                                {% if app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('upload') %}
+                                    <li class="menu-bar-item">
+                                        {% set link = path('upload_html5_form') %}
+
+                                        {% if not app['browser'].supportFileAPI() %}
+                                            {% set link = path('upload_flash_form') %}
+                                        {% endif %}
+
+                                        <a href="{{ link }}" class="uploader-open-action"
+                                           title="{{ 'Upload' | trans }}">
+                                            <img src="/assets/common/images/icons/menu-upload.png" class="mobilemenu"/>
+                                            <span>
                                                 {{ 'admin::monitor: module upload' | trans }}
                                             </span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endif %}
-
-                                {# MODULE #}
-                                {% if module == "prod" %}
-                                    <li class="menu-bar-item">
-                                        <a href="#" class="state-navigation" data-state="publication">
-                                            <img src="/assets/common/images/icons/menu-publication.png" class="mobilemenu"/>
-                                            <span>
-                                            {{ 'Publications' | trans }}
-                                          </span>
                                         </a>
                                     </li>
                                 {% endif %}
+                            {% endif %}
 
-                                {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
-                                    <li class="menu-bar-item">
-                                        <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
+                            {# MODULE #}
+                            {% if module == "prod" %}
+                                <li class="menu-bar-item">
+                                    <a href="#" class="state-navigation" data-state="publication">
+                                        <img src="/assets/common/images/icons/menu-publication.png" class="mobilemenu"/>
+                                        <span>
+                                            {{ 'Publications' | trans }}
+                                          </span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if module is defined and module == "prod" and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::ORDER_MASTER')) %}
+                                <li class="menu-bar-item">
+                                    <a href="#" class="order-open-action" title="{{ 'Orders manager' | trans }}">
                                       <span>
                                         {{ 'Commandes' | trans }}
                                       </span>
-                                        </a>
-                                    </li>
-                                {% endif %}
+                                    </a>
+                                </li>
+                            {% endif %}
 
                         </ol>
                     </div>
@@ -235,11 +235,10 @@
                 <a target="_blank" href="https://docs.phraseanet.com/4.0/">
             <span>
               {{ 'phraseanet:: aide' | trans }}
-                <span style="display:inline-block;cursor:pointer;padding:0;border:none;padding-right:4px;padding-left:4px;"
-                      id="help-trigger"> <i class="fa fa-caret-down" aria-hidden="true"></i></span>
             </span>
                 </a>
-                <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu helpcontextmenu">
+                <span id="help-trigger" class="help-trigger"> <i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                <table cellspacing="0" cellpadding="0" class="contextMenu helpcontextmenu context-menu-theme-vistamenu-bar">
                     <tbody>
                     <tr>
                         <td>
@@ -301,6 +300,20 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('body').on('click', '#help-trigger', function (event) {
+            $('#mainMenu .helpcontextmenu').toggleClass('shown');
+
+        });
+
+        $(document).on('click', function (e) {
+            if($('#mainMenu .helpcontextmenu').hasClass('shown')) {
+                var $this = $(e.target);
+                if ($this.closest('#mainMenu .helpcontextmenu.shown, .help-trigger').length == 0 && $this[0].id != "toggle") {
+                    $('#mainMenu .helpcontextmenu').removeClass('shown');
+                }
+            }
+        });
+
         // var key = 'help';
         var configurationSettingLinks = {{ configuration|json_encode|raw }};
         //seperate array based on location of link

@@ -48,6 +48,7 @@ class PhraseanetExtension extends \Twig_Extension
             new \Twig_SimpleFunction('border_checker_from_fqcn', array($this, 'getCheckerFromFQCN')),
             new \Twig_SimpleFunction('caption_field', array($this, 'getCaptionField')),
             new \Twig_SimpleFunction('caption_field_label', array($this, 'getCaptionFieldLabel')),
+            new \Twig_SimpleFunction('caption_field_gui_visible', array($this, 'getCaptionFieldGuiVisible')),
             new \Twig_SimpleFunction('caption_field_order', array($this, 'getCaptionFieldOrder')),
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
@@ -70,6 +71,29 @@ class PhraseanetExtension extends \Twig_Extension
                 /** @var \databox_field $meta */
                 if ($meta->get_name() === $fieldName) {
                     return $meta->get_label($this->app['locale']);
+                }
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * get localized field's gui_visible
+     * @param RecordInterface $record
+     * @param $fieldName
+     * @return string - the name gui_visible
+     */
+    public function getCaptionFieldGuiVisible(RecordInterface $record, $fieldName)
+    {
+        if ($record) {
+            /** @var \appbox $appbox */
+            $appbox = $this->app['phraseanet.appbox'];
+            $databox = $appbox->get_databox($record->getDataboxId());
+            foreach ($databox->get_meta_structure() as $meta) {
+                /** @var \databox_field $meta */
+                if ($meta->get_name() === $fieldName) {
+                    return $meta->get_gui_visible($this->app['locale']);
                 }
             }
         }

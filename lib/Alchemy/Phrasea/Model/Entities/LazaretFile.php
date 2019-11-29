@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use \record_adapter;
@@ -472,6 +473,34 @@ class LazaretFile
         }
 
         return $merged;
+    }
+
+    /**
+     * @param Application $app
+     * @return array|null
+     */
+    public function getStatus(Application $app)
+    {
+        /**@var LazaretAttribute $atribute*/
+        foreach ($this->attributes as $atribute) {
+            if ($atribute->getName() == AttributeInterface::NAME_STATUS) {
+                $databox = $this->getCollection($app)->get_databox();
+                $statusStructure = $databox->getStatusStructure();
+                $recordsStatuses = [];
+                foreach ($statusStructure as $status) {
+                    $bit = $status['bit'];
+                    if (!isset($recordsStatuses[$bit])) {
+                        $recordsStatuses[$bit] = $status;
+                    }
+                    $statusSet = \databox_status::bitIsSet(bindec($atribute->getValue()), $bit);
+                    if (!isset($recordsStatuses[$bit]['flag'])) {
+                        $recordsStatuses[$bit]['flag'] = (int) $statusSet;
+                    }
+                }
+                return $recordsStatuses;
+            }
+        }
+        return null;
     }
 
 }
