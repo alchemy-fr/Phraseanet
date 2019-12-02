@@ -241,7 +241,7 @@ embed_bundle:
 geocoding-providers:
     -
         map-provider: 'mapboxWebGL'
-        enabled: true
+        enabled: false
         public-key: ''
         map-layers:
             -
