@@ -65,7 +65,11 @@
     "normalize-css": "^2.1.0",
     "npm": "^6.0.0",
     "npm-modernizr": "^2.8.3",
+<<<<<<< Updated upstream
     "phraseanet-production-client": "0.34.80-d",
+=======
+    "phraseanet-production-client": "0.34.83-d",
+>>>>>>> Stashed changes
     "requirejs": "^2.3.5",
     "tinymce": "^4.0.28",
     "underscore": "^1.8.3",
