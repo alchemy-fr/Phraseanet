@@ -1217,18 +1217,12 @@ class V1Controller extends Controller
         $fractal->setSerializer(new TraceableArraySerializer($this->app['dispatcher']));
         $fractal->parseIncludes($this->resolveSearchIncludes($request));
 
-        $story_max_items = null;
-        // if the header accept story paginate, take account story_max_items parameter
-        if (in_array(V1::HEADER_ACCEPT_STORY_PAGINATE, $request->getAcceptableContentTypes())) {
-            $story_max_items = (int)$request->get('story_max_items') ?: 10;
-        }
-
         $result = $this->doSearch($request);
         $searchView = $this->buildSearchView(
             $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request),
-            $story_max_items
+            (int)$request->get('story_max_items') ?: 10
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1682,13 +1676,9 @@ class V1Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
-        $offset = 1;
-        $max_items = null;
-        if (in_array(V1::HEADER_ACCEPT_STORY_PAGINATE, $request->getAcceptableContentTypes())) {
-            $max_items = (int)$request->get('max_items')?:10;
-            $page = (int)$request->get('page')?:1;
-            $offset = ($max_items * ($page - 1)) + 1;
-        }
+        $max_items = (int)$request->get('max_items')?:10;
+        $page = (int)$request->get('page')?:1;
+        $offset = ($max_items * ($page - 1)) + 1;
 
         $caption = $story->get_caption();
 

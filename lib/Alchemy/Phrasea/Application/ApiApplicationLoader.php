@@ -51,8 +51,7 @@ class ApiApplicationLoader extends BaseApplicationLoader
             ['application/json', 'application/yaml', 'text/yaml', 'text/javascript', 'application/javascript'],
             V1::$extendedContentTypes['json'],
             V1::$extendedContentTypes['jsonp'],
-            V1::$extendedContentTypes['yaml'],
-            [V1::HEADER_ACCEPT_STORY_PAGINATE]
+            V1::$extendedContentTypes['yaml']
         );
 
         $app['phraseanet.content-negotiation.custom_formats'] = [

@@ -25,8 +25,6 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
 {
     const VERSION = '2.0.0';
 
-    const HEADER_ACCEPT_STORY_PAGINATE = 'application/vnd.phraseanet.story-paginate';
-
     public static $extendedContentTypes = [
         'json' => ['application/vnd.phraseanet.record-extended+json'],
         'yaml' => ['application/vnd.phraseanet.record-extended+yaml'],
