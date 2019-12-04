@@ -104,7 +104,7 @@ class databox_subdefTest extends \PhraseanetTestCase
                     <fps>10</fps>
                     <threads>1</threads>
                     <bitrate>192</bitrate>
-                    <acodec>libmp3lame</acodec>
+                    <acodec>libfaac</acodec>
                     <vcodec>libx264</vcodec>
                 </subdef>';
 
