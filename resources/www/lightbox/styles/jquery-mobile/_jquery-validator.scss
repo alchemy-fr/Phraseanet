@@ -217,7 +217,7 @@ a.active_choice {
     font-size: 15px;
   }
 }
-#validation, #basket {
+#validation, #baskets {
   .ui-content {
     padding-left: 0;
     padding-right: 0;
@@ -231,5 +231,85 @@ a.active_choice {
   text-shadow: none;
   color: #fff;
   font-weight: 700;
+  #baskets & {
+    background: $basketColor;
+  }
+  span {
+    float: right;
+  }
 }
 
+.feed-list {
+  li {
+    height: 71px;
+    padding-left: 109px!important;
+    padding-right: 80px!important;
+    border-color: #d4d4d4!important;
+  }
+  .lightbox-img {
+    width: 90px;
+    height: 90px;
+    background-color: #ededed;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-wrap: wrap;
+    img {
+      display: flex;
+      align-items: center;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
+  h3 {
+    display: flex!important;
+    align-items: center;
+    height: 71px;
+    margin: 0!important;
+    font-size: 15px;
+    font-weight: bold!important;
+    a {
+      position: relative;
+      color: #313131!important;
+      width: 100%;
+      &:after {
+        content: "\e96c";
+        font-family: icomoon;
+        position: absolute;
+        right: 0;
+        font-size: 20px;
+        line-height: 1;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
+  }
+  span {
+    font-size: 17px;
+    color: #fff!important;
+    display: inline-block;
+    text-shadow: none!important;
+    top: 0;
+    width: 52px;
+    right: 0;
+    line-height: 25px;
+    padding: 31px 0px;
+    margin: 0;
+    border-radius: 0;
+    &.validation {
+      background: $feedbackColor!important;
+    }
+    &.baskets {
+      background: $basketColor!important;
+    }
+  }
+
+}
+.lightbox-msg {
+  font-size: 14px;
+  color: #313131;
+  padding: 6px 0 6px 30px;
+}
