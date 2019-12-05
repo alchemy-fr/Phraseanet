@@ -145,7 +145,7 @@
     </p>
         <div class="feed-list">
             <ul data-role="listview"  style="width:100%;margin: 0;">
-                    {% for basket in baskets_collection %}
+                    {% for basket in baskets_collection | sort | reverse %}
                       {% if basket.getValidation() is empty %}
                         {% set basket_length = basket.getElements().count() %}
                         <li>

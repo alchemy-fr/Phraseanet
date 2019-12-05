@@ -245,6 +245,8 @@ a.active_choice {
     padding-left: 109px!important;
     padding-right: 80px!important;
     border-color: #d4d4d4!important;
+    text-overflow: inherit!important;
+    white-space: inherit!important;
   }
   .lightbox-img {
     width: 90px;
@@ -258,6 +260,7 @@ a.active_choice {
     img {
       display: flex;
       align-items: center;
+      width: 90px;
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
@@ -270,10 +273,13 @@ a.active_choice {
     margin: 0!important;
     font-size: 15px;
     font-weight: bold!important;
+    text-overflow: inherit!important;
+    white-space: inherit!important;
     a {
       position: relative;
       color: #313131!important;
       width: 100%;
+      padding-right: 18px;
       &:after {
         content: "\e96c";
         font-family: icomoon;
