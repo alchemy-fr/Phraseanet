@@ -29,7 +29,6 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -1276,7 +1275,6 @@ class V1Controller extends Controller
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
-     * @param int|null $story_max_items
      * @return SearchResultView
      */
     private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL)
