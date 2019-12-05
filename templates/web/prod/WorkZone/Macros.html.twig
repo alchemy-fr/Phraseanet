@@ -16,9 +16,10 @@
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               {% if not basket.isRead() %}
-                <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                <img src='/assets/common/images/icons/basket_feedback_unread.png' title=''/>
+              {%  else %}
+                <img src='/assets/common/images/icons/basket_feedback_read.png' title=''/>
               {% endif %}
-              <img src='/assets/common/images/icons/basket.png' title=''/>
               {{basket.getName()|e}}
             </span>
           </a>
@@ -26,11 +27,9 @@
               <table>
                   <tr>
                       <td>
-                          <img
-                              title="{{ basket.getDescription() }}"
-                              class="basketTips basket_title"
-                              src="/assets/common/images/icons/valid.png"
-                            />
+                          <img title="{{ basket.getDescription()|e }}"
+                               class="basket_title"
+                               src="/assets/common/images/icons/valid.png" />
                       </td>
                       <td>
                           <a class="contextMenuTrigger icon-display-grid" href="#"></a>
