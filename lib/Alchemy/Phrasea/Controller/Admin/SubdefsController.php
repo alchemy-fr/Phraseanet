@@ -350,7 +350,7 @@ class SubdefsController extends Controller
             Subdef::TYPE_VIDEO => array(
                 "definitions" => array(
                     "video codec H264" => null,
-                    "144P H264 128 kbps ACC 128kbps" => array(
+                    "144P H264 128 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "128",
@@ -359,9 +359,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "240P H264 256 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "240P H264 256 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "256",
@@ -370,9 +370,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "360P H264 576 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "360P H264 576 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "576",
@@ -381,9 +381,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libtheora",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "480P H264 750 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "480P H264 750 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "750",
@@ -392,9 +392,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "720P H264 1492 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "720P H264 1492 kbps MP3 128kbps"  => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "1492",
@@ -403,9 +403,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "1080P H264 2420 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "1080P H264 2420 kbps MP3 128kbps" => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "2420",
@@ -414,10 +414,76 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "144P H264 128 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "128",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "256",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libx264",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "240P H264 256 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "256",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "426",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libx264",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "360P H264 576 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "576",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "480",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libtheora",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "480P H264 750 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "750",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "854",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libx264",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "720P H264 1492 kbps AAC 128kbps"  => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "1492",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "1280",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libx264",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "1080P H264 2420 kbps AAC 128kbps" => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "2420",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "1920",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libx264",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
                     "video codec libvpx" => null,
-                    "144P webm 128 kbps ACC 128kbps" => array(
+                    "144P webm 128 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "128",
@@ -426,9 +492,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "240P webm 256 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "240P webm 256 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "256",
@@ -437,9 +503,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "360P webm 576 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "360P webm 576 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "576",
@@ -448,9 +514,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "480P webm 750 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "480P webm 750 kbps MP3 128kbps"   => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "750",
@@ -459,9 +525,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "720P webm 1492 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "720P webm 1492 kbps MP3 128kbps"  => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "1492",
@@ -470,9 +536,9 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
-                    "1080P webm 2420 kbps ACC 128kbps" => array(
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "1080P webm 2420 kbps MP3 128kbps" => [
                         Video::OPTION_AUDIOBITRATE    => "128",
                         Video::OPTION_AUDIOSAMPLERATE => "44100",
                         Video::OPTION_BITRATE         => "2420",
@@ -481,8 +547,74 @@ class SubdefsController extends Controller
                         Video::OPTION_FRAMERATE       => "25",
                         Video::OPTION_VCODEC          => "libvpx",
                         Video::OPTION_ACODEC          => "libmp3lame",
-                        Subdef::OPTION_DEVICE          => ["all"]
-                    ),
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "144P webm 128 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "128",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "256",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "240P webm 256 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "256",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "426",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "360P webm 576 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "576",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "480",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "480P webm 750 kbps AAC 128kbps"   => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "750",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "854",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "720P webm 1492 kbps AAC 128kbps"  => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "1492",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "1280",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
+                    "1080P webm 2420 kbps AAC 128kbps" => [
+                        Video::OPTION_AUDIOBITRATE    => "128",
+                        Video::OPTION_AUDIOSAMPLERATE => "44100",
+                        Video::OPTION_BITRATE         => "2420",
+                        Video::OPTION_GOPSIZE         => "25",
+                        Video::OPTION_SIZE            => "1920",
+                        Video::OPTION_FRAMERATE       => "25",
+                        Video::OPTION_VCODEC          => "libvpx",
+                        Video::OPTION_ACODEC          => "libfdk_aac",
+                        Subdef::OPTION_DEVICE         => ["all"]
+                    ],
                 ),
                 "form" => array(
                     Video::OPTION_AUDIOBITRATE    => "slide",
