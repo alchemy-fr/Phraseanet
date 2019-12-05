@@ -1305,7 +1305,7 @@ class V1Controller extends Controller
 
                 $selections = $this->findDataboxById($databoxId)
                     ->getRecordRepository()
-                    ->findChildren($storyIds, $user,1, $story_max_items);
+                    ->findChildren($storyIds, $user);
                 $children[$databoxId] = array_combine($storyIds, $selections);
             }
 
