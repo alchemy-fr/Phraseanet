@@ -193,7 +193,7 @@ class PushController extends Controller
                 'Validation from %user%', [
                 '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
             ]));
-            $validation_description = $request->request->get('validation_description');
+            $validation_description = $request->request->get('message');
 
             $participants = $request->request->get('participants');
 
