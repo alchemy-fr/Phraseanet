@@ -1221,8 +1221,7 @@ class V1Controller extends Controller
         $searchView = $this->buildSearchView(
             $result,
             $includeResolver->resolve($fractal),
-            $this->resolveSubdefUrlTTL($request),
-            (int)$request->get('story_max_items') ?: 10
+            $this->resolveSubdefUrlTTL($request)
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -1280,7 +1279,7 @@ class V1Controller extends Controller
      * @param int|null $story_max_items
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $story_max_items = null)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
@@ -1676,10 +1675,6 @@ class V1Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
-        $max_items = (int)$request->get('max_items')?:10;
-        $page = (int)$request->get('page')?:1;
-        $offset = ($max_items * ($page - 1)) + 1;
-
         $caption = $story->get_caption();
 
         $format = function (\caption_record $caption, $dcField) {
@@ -1721,7 +1716,7 @@ class V1Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren($offset, $max_items)->get_elements())),
+            'records'       => $this->listRecords($request, array_values($story->getChildren()->get_elements())),
         ];
     }
 

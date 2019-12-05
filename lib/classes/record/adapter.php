@@ -1692,7 +1692,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function getChildren($offset = 0, $max_items = null)
+    public function getChildren($offset = 1, $max_items = null)
     {
         if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
