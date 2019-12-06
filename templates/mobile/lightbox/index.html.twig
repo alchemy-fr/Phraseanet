@@ -114,7 +114,7 @@
                               </div>
                                   {% endif %}
                           <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{basket.getName()}}</a></h3>
-                          <p>{{ basket.getDescription() }}</p>
+                          {#<p>{{ basket.getDescription() }}</p>#}
                           <span class="ui-li-count validation">{{ basket_length }}</span>
                         </li>
                       {% endif %}
@@ -155,7 +155,7 @@
                             </div>
                           {% endif %}
                           <h3><a href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">{{ basket.getName() }}</a></h3>
-                          <p>{{ basket.getDescription() }}</p>
+                          {#<p>{{ basket.getDescription() }}</p>#}
                           <span class="ui-li-count baskets">{{basket_length}}</span>
                         </li>
                       {% endif %}
