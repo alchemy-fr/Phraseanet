@@ -12,7 +12,7 @@ use Silex\ServiceProviderInterface;
 
 class V3 extends Api implements ControllerProviderInterface, ServiceProviderInterface
 {
-    const VERSION = '2.0.0';
+    const VERSION = '3.0.0';
 
     public function register(Application $app)
     {

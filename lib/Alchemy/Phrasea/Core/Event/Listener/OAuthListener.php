@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Authentication\Context;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
+use Alchemy\Phrasea\ControllerProvider\Api\V3;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2EndEvent;
 use Alchemy\Phrasea\Core\Event\ApiOAuth2StartEvent;
@@ -76,11 +77,13 @@ class OAuthListener
         // Sets the Api Version
         
         $CalledController = $request->attributes->get('_controller');
-        if(mb_strpos($CalledController, 'controller.api.v1') !== FALSE){
+        if (mb_strpos($CalledController, 'controller.api.v1') !== FALSE) {
             $request->attributes->set('api_version', V1::VERSION);
-        }elseif(mb_strpos($CalledController, 'controller.api.v2') !== FALSE){
+        } elseif(mb_strpos($CalledController, 'controller.api.v2') !== FALSE) {
             $request->attributes->set('api_version', V2::VERSION);
-        }else{
+        } elseif(mb_strpos($CalledController, 'controller.api.v3') !== FALSE) {
+            $request->attributes->set('api_version', V3::VERSION);
+        } else {
             $request->attributes->set('api_version', $oAuth2Account->getApiVersion());
         }
 
