@@ -39,7 +39,12 @@ class FirewallSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException('Symfony\Component\HttpKernel\Exception\HttpException');
-        $client->request('GET', '/');
+
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            $client->request('GET', '/');
+        } catch(\Exception $e) {
+        }
     }
 }

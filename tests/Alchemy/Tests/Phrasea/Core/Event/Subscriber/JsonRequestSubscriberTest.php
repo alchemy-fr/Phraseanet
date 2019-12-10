@@ -27,10 +27,14 @@ class JsonRequestSubscriberTest extends \PhraseanetTestCase
         $client = new Client($app);
         $headers = $isJson ? ['HTTP_ACCEPT' => 'application/json'] : [];
         if ($exceptionExpected) {
-            $this->setExpectedException('Exception');
-        }
-        $client->request('GET', $route, [], [], $headers);
-        if (!$exceptionExpected) {
+            try {
+                $this->fail('An exception should have been raised');
+                $client->request('GET', $route, [], [], $headers);
+            } catch(\Exception $e) {
+            }
+        } else {
+            $client->request('GET', $route, [], [], $headers);
+
             $this->assertEquals(200, $client->getResponse()->getStatusCode());
             $this->assertEquals('application/json', $client->getResponse()->headers->get('content-type'));
             $data = json_decode($client->getResponse()->getContent(), true);

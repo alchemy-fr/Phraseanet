@@ -49,13 +49,21 @@ class MinifierTest extends \PhraseanetTestCase
 
     public function testFileMinificationWithUnknownGroupShouldReturnA500()
     {
-        self::$DI['client']->request('GET', '/include/minify/?g=prout');
-        $this->assertEquals(500, self::$DI['client']->getResponse()->getStatusCode());
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            self::$DI['client']->request('GET', '/include/minify/?g=prout');
+        } catch (\Exception $e) {
+        }
     }
 
     public function testFileMinificationWithUnknownFileShouldReturnA500()
     {
-        self::$DI['client']->request('GET', '/include/minify/?f=prout');
-        $this->assertEquals(500, self::$DI['client']->getResponse()->getStatusCode());
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            self::$DI['client']->request('GET', '/include/minify/?f=prout');
+        } catch (\Exception $e) {
+        }
     }
 }

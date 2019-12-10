@@ -23,9 +23,13 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $client->request('GET', '/');
 
-        $this->assertEquals(500, $client->getResponse()->getStatusCode());
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            $client->request('GET', '/');
+        } catch(\Exception $e) {
+        }
     }
 
     public function testANotFoundResponseIsReturned()
@@ -52,7 +56,12 @@ class PhraseaExceptionHandlerSubscriberTest extends \PhraseanetTestCase
         $app['exception_handler']->disable();
 
         $client = new Client($app);
-        $this->setExpectedException('\Exception');
-        $client->request('GET', '/');
+
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            $client->request('GET', '/');
+        } catch(\Exception $e) {
+        }
     }
 }

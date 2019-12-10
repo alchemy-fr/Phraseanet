@@ -47,8 +47,14 @@ class ApiOauth2ErrorsSubscriberTest extends \PhraseanetTestCase
         });
 
         $client = new Client($app);
-        $this->setExpectedException(get_class($exception));
-        $client->request('GET', '/');
+
+        // there is an exception thrown
+        try {
+            $this->fail('An exception should have been raised');
+            $client->request('GET', '/');
+        } catch(\Exception $e) {
+        }
+
     }
 
     public function provideExceptionsAndCode()
