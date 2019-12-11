@@ -86,26 +86,26 @@ class LegacyRecordRepository implements RecordRepository
     {
         static $sql;
 
-        $params = [];
-        $types  = [];
-
         if (!$sql) {
             $qb = $this->createSelectBuilder()
                 ->where('sha256 = :sha256');
 
-            $params['sha256'] = $sha256;
-
             if (!empty($excludedCollIds)) {
                 $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
-
-                $params['coll_id'] = $excludedCollIds;
-                $types[':coll_id']  = Connection::PARAM_INT_ARRAY;
             }
 
             $sql = $qb->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql, $params, $types);
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'sha256'  => $sha256,
+                'coll_id' => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
 
         return $this->mapRecordsFromResultSet($result);
     }
@@ -136,26 +136,26 @@ class LegacyRecordRepository implements RecordRepository
     {
         static $sql;
 
-        $params = ['uuid' => $uuid];
-        $types  = [];
-
         if (!$sql) {
             $qb = $this->createSelectBuilder()
                 ->where('uuid = :uuid');
 
-            $params['uuid'] = $uuid;
-
             if (!empty($excludedCollIds)) {
                 $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
-
-                $params['coll_id'] = $excludedCollIds;
-                $types[':coll_id']  = Connection::PARAM_INT_ARRAY;
             }
 
             $sql = $qb->getSQL();
         }
 
-        $result = $this->databox->get_connection()->fetchAll($sql, $params, $types);
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'uuid' => $uuid,
+                'coll_id' => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
 
         return $this->mapRecordsFromResultSet($result);
     }
