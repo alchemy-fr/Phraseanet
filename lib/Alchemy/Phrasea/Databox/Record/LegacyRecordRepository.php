@@ -82,6 +82,34 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
+    public function findBySha256WithExcludedCollIds($sha256, $excludedCollIds = [])
+    {
+        static $sql;
+
+        $params = [];
+        $types  = [];
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('sha256 = :sha256');
+
+            $params['sha256'] = $sha256;
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+
+                $params['coll_id'] = $excludedCollIds;
+                $types[':coll_id']  = Connection::PARAM_INT_ARRAY;
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql, $params, $types);
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
     /**
      * @param string $uuid
      * @return \record_adapter[]
@@ -95,6 +123,39 @@ class LegacyRecordRepository implements RecordRepository
         }
 
         $result = $this->databox->get_connection()->fetchAll($sql, ['uuid' => $uuid]);
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
+    /**
+     * @param string $uuid
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findByUuidWithExcludedCollIds($uuid, $excludedCollIds = [])
+    {
+        static $sql;
+
+        $params = ['uuid' => $uuid];
+        $types  = [];
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('uuid = :uuid');
+
+            $params['uuid'] = $uuid;
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+
+                $params['coll_id'] = $excludedCollIds;
+                $types[':coll_id']  = Connection::PARAM_INT_ARRAY;
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql, $params, $types);
 
         return $this->mapRecordsFromResultSet($result);
     }
