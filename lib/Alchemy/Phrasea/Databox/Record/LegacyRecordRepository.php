@@ -83,6 +83,40 @@ class LegacyRecordRepository implements RecordRepository
     }
 
     /**
+     * @param $sha256
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findBySha256WithExcludedCollIds($sha256, $excludedCollIds = [])
+    {
+        static $sql;
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('sha256 = :sha256')
+            ;
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'sha256'  => $sha256,
+                'coll_id' => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
+    /**
      * @param string $uuid
      * @return \record_adapter[]
      */
@@ -95,6 +129,40 @@ class LegacyRecordRepository implements RecordRepository
         }
 
         $result = $this->databox->get_connection()->fetchAll($sql, ['uuid' => $uuid]);
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
+    /**
+     * @param string $uuid
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findByUuidWithExcludedCollIds($uuid, $excludedCollIds = [])
+    {
+        static $sql;
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('uuid = :uuid')
+            ;
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'uuid'      => $uuid,
+                'coll_id'   => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
 
         return $this->mapRecordsFromResultSet($result);
     }
