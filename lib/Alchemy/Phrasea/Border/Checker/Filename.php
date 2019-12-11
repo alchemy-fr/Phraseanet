@@ -46,8 +46,8 @@ class Filename extends AbstractChecker
     public function check(EntityManager $em, File $file)
     {
         $excludedCollIds = [];
-        if (!empty($this->ignoreCollections)) {
-            foreach ($this->ignoreCollections as $collection) {
+        if (!empty($this->compareIgnoreCollections)) {
+            foreach ($this->compareIgnoreCollections as $collection) {
                 // use only collection in the same databox and retrieve the coll_id
                 if ($collection->get_sbas_id() === $file->getCollection()->get_sbas_id()) {
                     $excludedCollIds[] = $collection->get_coll_id();

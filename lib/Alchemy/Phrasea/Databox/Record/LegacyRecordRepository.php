@@ -138,7 +138,8 @@ class LegacyRecordRepository implements RecordRepository
 
         if (!$sql) {
             $qb = $this->createSelectBuilder()
-                ->where('uuid = :uuid');
+                ->where('uuid = :uuid')
+            ;
 
             if (!empty($excludedCollIds)) {
                 $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
@@ -149,8 +150,8 @@ class LegacyRecordRepository implements RecordRepository
 
         $result = $this->databox->get_connection()->fetchAll($sql,
             [
-                'uuid' => $uuid,
-                'coll_id' => $excludedCollIds
+                'uuid'      => $uuid,
+                'coll_id'   => $excludedCollIds
             ],
             [
                 ':coll_id' => Connection::PARAM_INT_ARRAY

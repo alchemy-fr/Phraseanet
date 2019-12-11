@@ -89,7 +89,7 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
                             }
                         }
 
-                        $checkerObj->setIgnoreCollections($collections);
+                        $checkerObj->setCompareIgnoreCollections($collections);
                     }
 
                     $registeredCheckers[] = $checkerObj;

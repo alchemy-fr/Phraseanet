@@ -37,7 +37,7 @@ abstract class AbstractChecker implements CheckerInterface
     /**
      * @var \collection[]
      */
-    protected $ignoreCollections = [];
+    protected $compareIgnoreCollections = [];
 
     public function __construct(Application $app)
     {
@@ -100,9 +100,9 @@ abstract class AbstractChecker implements CheckerInterface
         return $this->collections;
     }
 
-    public function setIgnoreCollections($collections)
+    public function setCompareIgnoreCollections($collections)
     {
-        $this->ignoreCollections = $collections;
+        $this->compareIgnoreCollections = $collections;
     }
 
     /**

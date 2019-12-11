@@ -1692,7 +1692,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
 
             $params['coll_id'] = $excludedCollIds;
-            $types[':coll_id']  = Connection::PARAM_INT_ARRAY;
+            $types[':coll_id'] = Connection::PARAM_INT_ARRAY;
         }
 
         $sql = $qb->setFirstResult($offset_start)
