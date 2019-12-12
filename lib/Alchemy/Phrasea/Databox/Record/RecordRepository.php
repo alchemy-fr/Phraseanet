@@ -27,10 +27,24 @@ interface RecordRepository
     public function findBySha256($sha256);
 
     /**
+     * @param string $sha256
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findBySha256WithExcludedCollIds($sha256, $excludedCollIds = []);
+
+    /**
      * @param string $uuid
      * @return \record_adapter[]
      */
     public function findByUuid($uuid);
+
+    /**
+     * @param string $uuid
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findByUuidWithExcludedCollIds($uuid, $excludedCollIds = []);
 
     /**
      * @param array $recordIds
