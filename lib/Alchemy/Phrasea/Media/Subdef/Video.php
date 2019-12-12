@@ -33,7 +33,7 @@ class Video extends Audio
         $this->registerOption(new OptionType\Range($this->translator->trans('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
         $this->registerOption(new OptionType\Enum($this->translator->trans('Video Codec'), self::OPTION_VCODEC, ['libx264', 'libvpx', 'libtheora'], 'libx264'));
         $this->unregisterOption(self::OPTION_ACODEC);
-        $this->registerOption(new OptionType\Enum($this->translator->trans('Audio Codec'), self::OPTION_ACODEC, ['libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'], 'libfaac'));
+        $this->registerOption(new OptionType\Enum($this->translator->trans('Audio Codec'), self::OPTION_ACODEC, ['libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis', 'libfdk_aac'], 'libmp3lame'));
     }
 
     public function getType()
