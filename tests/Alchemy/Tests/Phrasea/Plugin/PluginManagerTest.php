@@ -11,6 +11,26 @@ use Alchemy\Phrasea\Plugin\Schema\PluginValidator;
  */
 class PluginManagerTest extends PluginTestCase
 {
+    private $bkp;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('plugins');
+    }
+
+    public function tearDown()
+    {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('plugins');
+        }
+        else {
+            self::$DI['app']['conf']->set('plugins', $this->bkp);
+        }
+        parent::tearDown();
+    }
+
+
     public function testListGoodPlugins()
     {
         $prevPlugins = self::$DI['cli']['conf']->get('plugins');

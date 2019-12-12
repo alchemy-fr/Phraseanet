@@ -35,6 +35,8 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
 
+        $bkp = $app['conf']->get('debugger');
+
         $app['conf']->set(['debugger', 'allowed-ips'], $authorized);
         $app['dispatcher']->addSubscriber(new DebuggerSubscriber($app));
 
@@ -48,7 +50,14 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
             $this->setExpectedException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
         }
 
-        $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
+        try {
+            $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
+        }
+        catch (\Exception $e) {
+            // no-op
+        }
+
+        $app['conf']->set('debugger', $bkp);
     }
 
     public function provideIpsAndEnvironments()
