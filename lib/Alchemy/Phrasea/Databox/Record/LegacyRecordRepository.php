@@ -130,7 +130,7 @@ class LegacyRecordRepository implements RecordRepository
 
         $selects = $this->getRecordSelects();
 
-        if($max_items){
+        if ($max_items) {
             array_unshift($selects, 'sr.rid_parent as story_id');
 
             $subBuilder = $connection->createQueryBuilder();
@@ -172,7 +172,7 @@ class LegacyRecordRepository implements RecordRepository
                 array_merge($subBuilder->getParameterTypes(), $builder->getParameterTypes())
             );
 
-        }else{
+        } else {
             array_unshift($selects, 's.rid_parent as story_id');
 
             $builder = $connection->createQueryBuilder();
@@ -185,6 +185,7 @@ class LegacyRecordRepository implements RecordRepository
                     's.rid_parent IN (:storyIds)',
                     'r.parent_record_id = 0'
                 )
+                ->orderBy('s.ord', 'ASC')
                 ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
             ;
 
