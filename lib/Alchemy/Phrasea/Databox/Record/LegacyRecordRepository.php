@@ -140,6 +140,7 @@ class LegacyRecordRepository implements RecordRepository
                 's.rid_parent IN (:storyIds)',
                 'r.parent_record_id = 0'
             )
+            ->orderBy('s.ord', 'ASC')
             ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
         ;
 
