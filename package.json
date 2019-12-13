@@ -63,7 +63,7 @@
     "jquery.cookie": "^1.4.1",
     "jquery.fancytree": "^2.27.0",
     "normalize-css": "^2.1.0",
-    "npm": "^6.0.0",
+    "npm": "^6.13.4",
     "npm-modernizr": "^2.8.3",
     "phraseanet-production-client": "^0.34.86-d",
     "requirejs": "^2.3.5",
