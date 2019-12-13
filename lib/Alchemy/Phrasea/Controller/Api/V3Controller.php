@@ -107,17 +107,17 @@ class V3Controller extends Controller
 
         $result = $this->doSearch($request);
 
-        $story_max_items = null;
+        $story_max_records = null;
         // if search on story
         if ($request->get('search_type') == 1) {
-            $story_max_items = (int)$request->get('story_max_items') ?: 10;
+            $story_max_records = (int)$request->get('story_max_records') ?: 10;
         }
 
         $searchView = $this->buildSearchView(
             $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request),
-            $story_max_items
+            $story_max_records
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -139,9 +139,9 @@ class V3Controller extends Controller
             return Result::createError($request, 404, 'Story not found')->createResponse();
         }
 
-        $max_items = (int)$request->get('max_items')?:10;
+        $per_page = (int)$request->get('per_page')?:10;
         $page = (int)$request->get('page')?:1;
-        $offset = ($max_items * ($page - 1)) + 1;
+        $offset = ($per_page * ($page - 1)) + 1;
 
         $caption = $story->get_caption();
 
@@ -184,7 +184,7 @@ class V3Controller extends Controller
                 'dc:title'       => $format($caption, \databox_Field_DCESAbstract::Title),
                 'dc:type'        => $format($caption, \databox_Field_DCESAbstract::Type),
             ],
-            'records'       => $this->listRecords($request, array_values($story->getChildren($offset, $max_items)->get_elements())),
+            'records'       => $this->listRecords($request, array_values($story->getChildren($offset, $per_page)->get_elements())),
         ];
     }
 
@@ -472,10 +472,10 @@ class V3Controller extends Controller
      * @param SearchEngineResult $result
      * @param string[] $includes
      * @param int $urlTTL
-     * @param int|null $story_max_items
+     * @param int|null $story_max_records
      * @return SearchResultView
      */
-    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $story_max_items = null)
+    private function buildSearchView(SearchEngineResult $result, array $includes, $urlTTL, $story_max_records = null)
     {
         $references = new RecordReferenceCollection($result->getResults());
 
@@ -501,7 +501,7 @@ class V3Controller extends Controller
 
                 $selections = $this->findDataboxById($databoxId)
                     ->getRecordRepository()
-                    ->findChildren($storyIds, $user,1, $story_max_items);
+                    ->findChildren($storyIds, $user,1, $story_max_records);
                 $children[$databoxId] = array_combine($storyIds, $selections);
             }
 
