@@ -157,15 +157,16 @@ class V3Controller extends Controller
         };
 
         return [
-            '@entity@'      => V1Controller::OBJECT_TYPE_STORY,
-            'databox_id'    => $story->getDataboxId(),
-            'story_id'      => $story->getRecordId(),
-            'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
-            'created_on'    => $story->getCreated()->format(DATE_ATOM),
-            'collection_id' => $story->getCollectionId(),
-            'base_id'       => $story->getBaseId(),
-            'thumbnail'     => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
-            'uuid'          => $story->getUuid(),
+            '@entity@'              => V1Controller::OBJECT_TYPE_STORY,
+            'databox_id'            => $story->getDataboxId(),
+            'story_id'              => $story->getRecordId(),
+            'story_total_records'   => $story->getStoryTotalRecords($story->getRecordId()),
+            'updated_on'            => $story->getUpdated()->format(DATE_ATOM),
+            'created_on'            => $story->getCreated()->format(DATE_ATOM),
+            'collection_id'         => $story->getCollectionId(),
+            'base_id'               => $story->getBaseId(),
+            'thumbnail'             => $this->listEmbeddableMedia($request, $story, $story->get_thumbnail()),
+            'uuid'                  => $story->getUuid(),
             'metadatas'     => [
                 '@entity@'       => V1Controller::OBJECT_TYPE_STORY_METADATA_BAG,
                 'dc:contributor' => $format($caption, \databox_Field_DCESAbstract::Contributor),
