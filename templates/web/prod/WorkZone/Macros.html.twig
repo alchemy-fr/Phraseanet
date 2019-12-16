@@ -5,290 +5,327 @@
     </a>
   </div>
   <div class="bloc">
+      <div id="basket-filter" class="basket-filter">
+          <span class="filter-title">{{ 'Sort by' | trans }}</span>
+          <span class="filter-item">
+              <label id="basket-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="basket" checked>
+                  {{ 'Basket' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="feedback-list"  class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="feedback" checked>
+                  {{ 'Feedback' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="push-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="push" checked >
+                  {{ 'Push' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="story-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="story" checked>
+                  {{ 'Stories' | trans }}
+              </label>
+          </span>
+      </div>
   <div class="insidebloc">
     {% set content = WorkZone.getContent(srt) %}
-    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
-             id="SSTT_{{basket.getId()}}"
-             class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
-            <span>
-              {% if not basket.isRead() %}
-                <img src='/assets/common/images/icons/basket_feedback_unread.png' title=''/>
-              {%  else %}
-                <img src='/assets/common/images/icons/basket_feedback_read.png' title=''/>
-              {% endif %}
-              {{basket.getName()|e}}
-            </span>
-          </a>
-          <div class="menu">
-              <table>
-                  <tr>
-                      <td>
-                          <img title="{{ basket.getDescription()|e }}"
-                               class="basket_title"
-                               src="/assets/common/images/icons/valid.png" />
-                      </td>
-                      <td>
-                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
-                      </td>
-                  </tr>
-              </table>
+      <div id="validations-block" class="validations-block">
+        {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+            <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+                 id="SSTT_{{basket.getId()}}"
+                 class="basketTips ui-accordion-header ui-state-default
+                        ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                        {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+              <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
+                <span>
+                  {% if not basket.isRead() %}
+                    <img src='/assets/common/images/icons/basket_feedback_unread.png' title=''/>
+                  {%  else %}
+                    <img src='/assets/common/images/icons/basket_feedback_read.png' title=''/>
+                  {% endif %}
+                  {{basket.getName()|e}}
+                </span>
+              </a>
+              <div class="menu">
+                  <table>
+                      <tr>
+                          <td>
+                              <img title="{{ basket.getDescription()|e }}"
+                                   class="basket_title"
+                                   src="/assets/common/images/icons/valid.png" />
+                          </td>
+                          <td>
+                              <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                          </td>
+                      </tr>
+                  </table>
 
-            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="context-menu context-menu-theme-vista">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
-                        </div>
-                      </div>
-                        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-                          <div title="" class="context-menu-item menu3-custom-item">
-                            <div  data-kind="basket" data-id="{{basket.getId()}}"
-                                 class="context-menu-item-inner edit-record-action">{{ 'edit' | trans }}
+                <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="context-menu context-menu-theme-vista">
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner export-record-action"
+                                 data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
                             </div>
                           </div>
-                        {% endif %}
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
-                        </div>
-                      </div>
-
-                      {% if basket.getValidation() %}
-                        <div title="" class="context-menu-item">
-                          <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                              <div title="" class="context-menu-item menu3-custom-item">
+                                <div  data-kind="basket" data-id="{{basket.getId()}}"
+                                     class="context-menu-item-inner edit-record-action">{{ 'edit' | trans }}
+                                </div>
+                              </div>
+                            {% endif %}
+                          <div title="" class="context-menu-item">
                             <div class="context-menu-item-inner">
-                              {{ 'action::Valider' | trans }}
+                              <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">Lightbox</a>
                             </div>
-                          </a>
-                        </div>
-                      {% endif %}
-                      </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"></div>
-    {% endfor %}
-
-    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
-        <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
-             id="SSTT_{{basket.getId()}}"
-             class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
-            <span>
-              {% if basket.getValidation() %}
-                <img src='/assets/common/images/icons/basket_validation.png' title=''/>
-              {% elseif basket.getPusher() %}
-                {% if not basket.isRead() %}
-                  <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
-                {% else %}
-                  <img src='/assets/common/images/icons/basket_push.png' title=''/>
-                {% endif %}
-              {% else %}
-                <img src='/assets/common/images/icons/basket.png' title=''/>
-              {% endif %}
-              {{basket.getName()|e}}
-            </span>
-          </a>
-          <div class="menu">
-            <table>
-                  <tr>
-                    <!--
-                       {% if basket.getValidation() %}
-                            <td>
-                                <img
-                                    style="display:inline;padding:0;margin:0;"
-                                    title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"
-                                    class="basketTips"
-                                    src="/assets/common/images/icons/myvalid.png"
-                                />
-                            </td>
-                        {% endif %}
-                        {% if basket.getPusher() %}
-                            <td>
-                                {% set pusher = basket.getPusher().getDisplayName() %}
-                                <img
-                                    class="basketTips"
-                                    title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
-                                    src="/assets/common/images/icons/push16.png"/>
-                            </td>
-                        {% endif %}
-                      -->
-                        <td>
-                            <a class="contextMenuTrigger icon-display-grid" href="#"></a>
-                        </td>
-                  </tr>
-            </table>
-
-            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">
-                            <a href="#">
-                              <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner">
-                          <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
-                            <img src="/assets/lightbox/images/lightbox-icon.png" style="width: 20px; box-shadow: 0 2px 2px rgba(0,0,0,.2);" alt="{{ 'Lightbox' | trans }}">
-                            <span>{{ 'Lightbox' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner">
-                          <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
-                            <img src="/assets/common/images/icons/rename.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'action::renommer' | trans }}">
-                            <span>{{ 'action::renommer' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-
-                      {% if basket.getValidation() %}
-                        <div title="" class="context-menu-item">
-                          <div class="context-menu-item-inner">
-                            <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
-                              <img src="/assets/common/images/icons/basket_validation.png" style="width: 22px;" alt="{{ 'action::Valider' | trans }}">
-                              <span>{{ 'action::Valider' | trans }}</span>
-                            </a>
                           </div>
-                        </div>
-                      {% endif %}
 
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
-                          <a href="#">
-                            <img src="/assets/common/images/icons/archive.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Archive' | trans }}">
-                            <span>{{ 'Archive' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner">
-                          <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
-                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
-                            <span>{{ 'Re-ordonner' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
-                          <a href="#">
-                            <img src="/assets/common/images/icons/delete.png" style="width: 22px;" alt="{{ 'action : supprimer' | trans }}">
-                            <span>{{ 'action : supprimer' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"> </div>
-    {% endfor %}
-
-
-
-    {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
-        <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
-             id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
-             class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT grouping
-                    {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
-          <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
-            <span>
-            {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
-            <img src='/assets/common/images/icons/story.png' title=''/>
-            {{ story.getRecord(app).get_title() }}
-            </span>
-          </a>
-          <div class="menu">
-              <table>
-                  <tr>
-                      <td>
-                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                          {% if basket.getValidation() %}
+                            <div title="" class="context-menu-item">
+                              <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                                <div class="context-menu-item-inner">
+                                  {{ 'action::Valider' | trans }}
+                                </div>
+                              </a>
+                            </div>
+                          {% endif %}
+                          </div>
                       </td>
-                  </tr>
-              </table>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"></div>
+        {% endfor %}
+      </div>
+      <div id="all_baskets-block" class="all_baskets-block">
+        {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+            <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+                 id="SSTT_{{basket.getId()}}"
+                 class="basketTips ui-accordion-header ui-state-default
+                        ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                        {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
+{% if basket.getValidation() %}feedbacks-block
+                  {% elseif basket.getPusher() %}
+                    pushes-block
+                  {% else %}
+                   baskets-block
+                  {% endif %}">
+              <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
+                <span>
+                  {% if basket.getValidation() %}
+                    <img src='/assets/common/images/icons/basket_validation.png' title=''/>
+                  {% elseif basket.getPusher() %}
+                    {% if not basket.isRead() %}
+                      <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                    {% else %}
+                      <img src='/assets/common/images/icons/basket_push.png' title=''/>
+                    {% endif %}
+                  {% else %}
+                    <img src='/assets/common/images/icons/basket.png' title=''/>
+                  {% endif %}
+                  {{basket.getName()|e}}
+                </span>
+              </a>
+              <div class="menu">
+                <table>
+                      <tr>
+                        <!--
+                           {% if basket.getValidation() %}
+                                <td>
+                                    <img
+                                        style="display:inline;padding:0;margin:0;"
+                                        title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"
+                                        class="basketTips"
+                                        src="/assets/common/images/icons/myvalid.png"
+                                    />
+                                </td>
+                            {% endif %}
+                            {% if basket.getPusher() %}
+                                <td>
+                                    {% set pusher = basket.getPusher().getDisplayName() %}
+                                    <img
+                                        class="basketTips"
+                                        title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
+                                        src="/assets/common/images/icons/push16.png"/>
+                                </td>
+                            {% endif %}
+                          -->
+                            <td>
+                                <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                            </td>
+                      </tr>
+                </table>
 
-            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                          data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">
-                          <a href="#">
-                            <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-                      {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div class="context-menu-item-inner edit-record-action"
-                             data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"
-                             >
-                            <a href="#">
-                              <img src="/assets/common/images/icons/edit-pen.png" style="width: 22px;" alt="{{ 'action::editer' | trans }}">
-                              <span>{{ 'action::editer' | trans }}</span>
-                            </a>
-                        </div>
-                      </div>
-                      {% endif %}
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div class="context-menu-item-inner">
-                          <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
-                            <img src="/assets/common/images/icons/detach.png" style="width: 26px; margin-left: -2px; margin-right: 2px;" alt="{{ 'action::detacher' | trans }}">
-                            <span style="margin-left: 4px;">{{ 'action::detacher' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div class="context-menu-item-inner">
-                          <a class="story-reorder-content-action" title="{{ 'Re-ordonner' | trans }}"
-                             data-db-id="{{ story.getRecord(app).get_sbas_id }}"
-                             data-record-id="{{ story.getRecord(app).get_record_id() }}"
-                             href="#">
-                            <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
-                            <span>{{ 'Re-ordonner' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
+                <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="context-menu context-menu-theme-flat">
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner export-record-action"
+                                 data-kind="basket" data-id="{{basket.getId()}}">
+                                <a href="#">
+                                  <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                                <span>{{ 'action::exporter' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner">
+                              <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
+                                <img src="/assets/lightbox/images/lightbox-icon.png" style="width: 20px; box-shadow: 0 2px 2px rgba(0,0,0,.2);" alt="{{ 'Lightbox' | trans }}">
+                                <span>{{ 'Lightbox' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner">
+                              <a class="basket-update-action" data-basket-id="{{ basket.getId() }}" title="{{ 'action::renommer' | trans }}" href="#">
+                                <img src="/assets/common/images/icons/rename.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'action::renommer' | trans }}">
+                                <span>{{ 'action::renommer' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
 
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;"></div>
-    {% endfor %}
+                          {% if basket.getValidation() %}
+                            <div title="" class="context-menu-item">
+                              <div class="context-menu-item-inner">
+                                <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
+                                  <img src="/assets/common/images/icons/basket_validation.png" style="width: 22px;" alt="{{ 'action::Valider' | trans }}">
+                                  <span>{{ 'action::Valider' | trans }}</span>
+                                </a>
+                              </div>
+                            </div>
+                          {% endif %}
+
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner basket-archive-action" data-basket-id="{{ basket.getId() }}" >
+                              <a href="#">
+                                <img src="/assets/common/images/icons/archive.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Archive' | trans }}">
+                                <span>{{ 'Archive' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner">
+                              <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
+                                <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                                <span>{{ 'Re-ordonner' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner basket-delete-action" id="SSTTREMOVER_{{basket.getId()}}" data-context="SSTT">
+                              <a href="#">
+                                <img src="/assets/common/images/icons/delete.png" style="width: 22px;" alt="{{ 'action : supprimer' | trans }}">
+                                <span>{{ 'action : supprimer' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"> </div>
+        {% endfor %}
+      </div>
+
+
+      <div id="stories-block" class="stories-block">
+        {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
+            <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
+                 id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
+                 class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
+                        ui-corner-all header SSTT grouping
+                        {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
+              <a class="workzone-menu-title" href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                <span>
+                {#{ story.getRecord(app).get_base_id()|get_collection_logo(app)|raw }#}
+                <img src='/assets/common/images/icons/story.png' title=''/>
+                {{ story.getRecord(app).get_title() }}
+                </span>
+              </a>
+              <div class="menu">
+                  <table>
+                      <tr>
+                          <td>
+                              <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                          </td>
+                      </tr>
+                  </table>
+
+                <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="context-menu context-menu-theme-flat">
+                          <div title="" class="context-menu-item">
+                            <div class="context-menu-item-inner export-record-action"
+                              data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">
+                              <a href="#">
+                                <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
+                                <span>{{ 'action::exporter' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+                          {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
+                          <div title="" class="context-menu-item menu3-custom-item">
+                            <div class="context-menu-item-inner edit-record-action"
+                                 data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}"
+                                 >
+                                <a href="#">
+                                  <img src="/assets/common/images/icons/edit-pen.png" style="width: 22px;" alt="{{ 'action::editer' | trans }}">
+                                  <span>{{ 'action::editer' | trans }}</span>
+                                </a>
+                            </div>
+                          </div>
+                          {% endif %}
+                          <div title="" class="context-menu-item menu3-custom-item">
+                            <div class="context-menu-item-inner">
+                              <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id()}) }}">
+                                <img src="/assets/common/images/icons/detach.png" style="width: 26px; margin-left: -2px; margin-right: 2px;" alt="{{ 'action::detacher' | trans }}">
+                                <span style="margin-left: 4px;">{{ 'action::detacher' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+                          <div title="" class="context-menu-item menu3-custom-item">
+                            <div class="context-menu-item-inner">
+                              <a class="story-reorder-content-action" title="{{ 'Re-ordonner' | trans }}"
+                                 data-db-id="{{ story.getRecord(app).get_sbas_id }}"
+                                 data-record-id="{{ story.getRecord(app).get_record_id() }}"
+                                 href="#">
+                                <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
+                                <span>{{ 'Re-ordonner' | trans }}</span>
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;"></div>
+        {% endfor %}
+      </div>
   </div>
 </div>
 {% endmacro %}
@@ -411,5 +448,4 @@
           </table>
       </span>
   {% endfor %}
-
 {% endmacro %}
