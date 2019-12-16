@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "653a83ace128d80915f0be47814943fc",
+    "content-hash": "fd0d5a53e23ab5c2f0167055bd0fd8b6",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -3762,16 +3762,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.2",
+            "version": "0.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140"
+                "reference": "3bd3204b69882f495adfb617383a077face92ed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
-                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/3bd3204b69882f495adfb617383a077face92ed0",
+                "reference": "3bd3204b69882f495adfb617383a077face92ed0",
                 "shasum": ""
             },
             "require": {
@@ -3783,7 +3783,7 @@
                 "php": ">=5.3.3",
                 "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
                 "php-mp4box/php-mp4box": "~0.3.0",
-                "php-unoconv/php-unoconv": "~0.3.0",
+                "php-unoconv/php-unoconv": "~0.3.1",
                 "pimple/pimple": "~1.0",
                 "swftools/swftools": "~0.3.0",
                 "symfony/console": "^2.1|^3.0",
@@ -3832,7 +3832,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2019-01-25T12:09:11+00:00"
+            "time": "2019-12-11T07:20:45+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4698,16 +4698,16 @@
         },
         {
             "name": "php-unoconv/php-unoconv",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-Unoconv.git",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355"
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/6d1e14a7467b5d637741396549529dc4d5f9f355",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/8fa666972f6c13fe9703dfe894cd311a61f89f33",
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33",
                 "shasum": ""
             },
             "require": {
@@ -4744,7 +4744,7 @@
             "keywords": [
                 "unoconv"
             ],
-            "time": "2013-06-25T10:09:59+00:00"
+            "time": "2019-09-16T09:54:30+00:00"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -7052,12 +7052,12 @@
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },
