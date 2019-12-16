@@ -4,6 +4,9 @@ namespace Alchemy\Tests\Phrasea\Command\Plugin;
 
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 
+
+// this line is to force a diff to allow pr
+
 /**
  * @group functional
  * @group legacy
