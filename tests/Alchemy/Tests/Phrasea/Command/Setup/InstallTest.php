@@ -78,9 +78,12 @@ class InstallTest extends \PhraseanetTestCase
                     case 'db-password':
                         return $infoDb['database']['password'];
                         break;
-                    case 'yes':
-                        return true;
-                        break;
+                    case 'es-host':
+                        return 'localhost';
+                    case 'es-port':
+                        return 9200;
+                    case 'es-index':
+                        return 'phrasea_test';
                     default:
                         return '';
                 }
