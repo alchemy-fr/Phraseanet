@@ -11,33 +11,33 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class DisplaySettingServiceTest extends \PhraseanetTestCase
 {
-    private static $userSettings;
-    private static $appSettings;
+    private  $userSettings = false;
+    private  $appSettings = false;
 
     public function setUp()
     {
         parent::setUp();
 
-        if (null === self::$userSettings) {
-            self::$userSettings = self::$DI['app']['conf']->get(['user-settings'], []);
-        }
-
-        if (null === self::$appSettings) {
-            self::$appSettings = self::$DI['app']['conf']->get(['registry'], []);
-        }
+        $this->userSettings = self::$DI['app']['conf']->get(['user-settings']);
+        $this->appSettings = self::$DI['app']['conf']->get(['registry']);
     }
 
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
-        if (null !== self::$userSettings) {
-            self::$DI['app']['conf']->set('user-settings', self::$userSettings);
+        if (is_null($this->userSettings)) {
+            self::$DI['app']['conf']->remove('user-settings');
+        }
+        else {
+            self::$DI['app']['conf']->set('user-settings', $this->userSettings);
         }
 
-        if (null !== self::$appSettings) {
-            self::$DI['app']['conf']->set('registry', self::$appSettings);
+        if (is_null($this->appSettings)) {
+            self::$DI['app']['conf']->remove('registry');
+        }
+        else {
+            self::$DI['app']['conf']->set('registry', $this->appSettings);
         }
 
-        self::$userSettings = self::$appSettings = null;
         parent::tearDownAfterClass();
     }
 
