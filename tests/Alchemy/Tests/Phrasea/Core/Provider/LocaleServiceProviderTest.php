@@ -27,6 +27,9 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
+
+        $bkp = $app['conf']->get('languages');
+
         $app['conf']->set(['languages', 'available'], ['fr', 'zh', 'de']);
 
         $original = Application::getAvailableLanguages();
@@ -34,6 +37,8 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
         unset($original['nl']);
 
         $this->assertEquals($original, $app['locales.available']);
+
+        $app['conf']->set('languages', $bkp);
     }
 
     public function testLocalesCustomizedWithError()
@@ -42,6 +47,8 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
         $app->register(new LocaleServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
+
+        $bkp = $app['conf']->get('languages');
 
         $app['conf']->set(['languages', 'available'], ['en_US']);
 
@@ -52,6 +59,8 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
         $original = Application::getAvailableLanguages();
 
         $this->assertEquals($original, $app['locales.available']);
+
+        $app['conf']->set('languages', $bkp);
     }
 
     public function testLocaleBeforeBoot()
