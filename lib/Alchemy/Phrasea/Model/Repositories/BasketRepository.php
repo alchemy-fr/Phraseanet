@@ -232,7 +232,7 @@ class BasketRepository extends EntityRepository
                 $dql = "SELECT b\n"
                     . "FROM Phraseanet:Basket b\n"
                     . "  JOIN b.elements e\n"
-                    . "WHERE b.user = :usr_id AND b.pusher_id IS NOT NULL";
+                    . "WHERE b.user = :usr_id AND b.pusher IS NOT NULL";
                 $params = [
                     'usr_id' => $user->getId()
                 ];
