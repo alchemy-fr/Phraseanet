@@ -84,9 +84,14 @@ class patch_410alpha20a implements patchInterface
             $app['conf']->set(['geocoding-providers', 0, 'map-provider'], $geocodingName);
         }
 
-        // remove registry classic section
+        // remove registry classic section if exist
         if ($app['conf']->has(['registry', 'classic'])) {
             $app['conf']->remove(['registry', 'classic']);
+        }
+
+        // remove bridge section if exist
+        if ($app['conf']->has(['main', 'bridge'])) {
+            $app['conf']->remove(['main', 'bridge']);
         }
 
         //  insert RGPD bloc if not exist

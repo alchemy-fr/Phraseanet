@@ -94,6 +94,7 @@ main:
         download: null
         lazaret: null
         caption: null
+        tmp_files: null
 
 trusted-proxies: []
 debugger:

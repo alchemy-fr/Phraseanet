@@ -62,12 +62,6 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
-    task-manager:
-        status: started
-        listener:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 6700
     storage:
         subdefs: null
         cache: null
@@ -75,20 +69,7 @@ main:
         download: null
         lazaret: null
         caption: null
-    bridge:
-        youtube:
-            enabled: false
-            client_id: null
-            client_secret: null
-            developer_key: null
-        flickr:
-            enabled: false
-            client_id: null
-            client_secret: null
-        dailymotion:
-            enabled: false
-            client_id: null
-            client_secret: null
+        tmp_files: null
 border-manager:
     enabled: true
     extension-mapping:
