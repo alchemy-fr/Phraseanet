@@ -3,13 +3,13 @@
 {% if app.getAuthenticator().isAuthenticated() %}
     <div class="menu-bar-item">
         {% if app.getAuthenticatedUser().isGuest %}
-            <span class="icomoon icon-agree">&#xe957;</span>
-            <span>{{ 'Guest' | trans }}</span>
+            <span class="icomoon icon-agree">&#xe950;</span>
+            <span class="text">{{ 'Guest' | trans }}</span>
         {% else %}
             <a target="_blank" href="{{ path('account') }}"
                title="{{ 'login:: Mon compte' | trans }}">
-                <span class="icomoon icon-agree">&#xe957;</span>
-                <span>{{ app.getAuthenticatedUser().getDisplayName() }}</span>
+                <span class="icomoon icon-agree">&#xe950;</span>
+                <span class="text">{{ app.getAuthenticatedUser().getDisplayName() }}</span>
             </a>
         {% endif %}
     </div>
