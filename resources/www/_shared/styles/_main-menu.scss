@@ -38,13 +38,13 @@ $mainMenuBottomBorder: none !default;
     display: inline-block !important;
   }
   .show-menu {
-    display: none;
     i {
       font-size: 26px;
       vertical-align: middle;
       color: $mainMenuLinkActiveColor;
     }
     img {
+      display: none;
       margin-top: 5px;
     }
   }
@@ -62,6 +62,10 @@ $mainMenuBottomBorder: none !default;
   }
   #mainLogo {
     margin:0 5px;
+    vertical-align: middle;
+    @media screen and (max-width: 1064px) {
+      max-width: 100px;
+    }
   }
   li {
     display: inline-block;
@@ -148,8 +152,10 @@ $mainMenuBottomBorder: none !default;
   }
   #mainMenu {
     .show-menu {
-      display: inline-block;
       cursor: pointer;
+      img {
+        display: inline-block;
+      }
     }
     .mobilemenu {
       display: block;
@@ -159,7 +165,6 @@ $mainMenuBottomBorder: none !default;
     }
     #nav_menu_container, #nav_customlink_container, #nav_account_container {
       position: absolute;
-      top: 35px;
       z-index: 1000;
       .nav_menu {
         z-index: 1000;
@@ -208,13 +213,13 @@ $mainMenuBottomBorder: none !default;
       }
     }
     #nav_menu_container {
-      left: 10px;
+      left: 5px;
       width: 172px;
       .nav_menu {
         top: 9px;
       }
       .arrow-up {
-        left: 52px;
+        left: 5px;
         display: block;
         position: absolute;
       }
@@ -222,7 +227,7 @@ $mainMenuBottomBorder: none !default;
     #nav_customlink_container {
       display: none;
       position: relative;
-      left: 10px;
+      left: 4px;
       width: auto;
       .nav-wrapper-box {
         position: absolute;
@@ -234,19 +239,21 @@ $mainMenuBottomBorder: none !default;
         .nav_menu {
           position: relative;
           li.menu-bar-item {
-            width: 100%;
-            left: 0;
+           /* width: 100%;
+            left: 0;*/
           }
           li.menu-bar-item a {
             > span {
               padding: 0;
               display: inline-block;
+              max-width: 140px;
+              overflow: hidden;
             }
           }
         }
       }
       .arrow-up {
-        left: 82px;
+        left: 5px;
         display: block;
         position: absolute;
       }
@@ -258,12 +265,13 @@ $mainMenuBottomBorder: none !default;
       width: auto;
       .nav-wrapper-box {
         position: absolute;
-        right: 10px;
+        right: -4px;
         background: #d8d8d8;
         border-radius: 5px;
         padding-right: 10px;
         padding-left: 10px;
         top: 9px;
+        width: 200px;
         .nav_menu {
           position: relative;
           li.menu-bar-item {
@@ -274,12 +282,14 @@ $mainMenuBottomBorder: none !default;
             > span {
               padding: 0;
               display: inline-block;
+              max-width: 170px;
+              overflow: hidden;
             }
           }
         }
       }
       .arrow-up {
-        right: 23px;
+        right: 6px;
         display: block;
         position: absolute;
       }

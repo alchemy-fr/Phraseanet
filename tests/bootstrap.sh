@@ -34,7 +34,7 @@ then
     mv config/configuration.yml{,.backup}
     rm -f config/configuration-compiled.php
 fi
-./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=en --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y $VERBOSITY
+./bin/setup system:install --email=test@phraseanet.com --password=test --db-user=root --db-template=en-simple --db-password=toor --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 --es-host=localhost --es-port=9200 --es-index=phrasea_test -y $VERBOSITY
 case "$INSTALL_MODE" in
     update)
         ./bin/developer ini:reset --email=test@phraseanet.com --password=test --run-patches --no-setup-dbs $VERBOSITY
@@ -44,5 +44,6 @@ case "$INSTALL_MODE" in
         ;;
 esac
 ./bin/developer ini:setup-tests-dbs $VERBOSITY
-./bin/console searchengine:index:create $VERBOSITY
+./bin/console searchengine:index -ndcp --force $VERBOSITY
 ./bin/developer phraseanet:regenerate-sqlite $VERBOSITY
+./bin/developer phraseanet:generate-js-fixtures $VERBOSITY

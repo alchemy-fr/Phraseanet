@@ -233,6 +233,7 @@ class UserController extends Controller
             ->who_have_right($have_right)
             ->who_have_not_right($have_not_right)
             ->on_base_ids($on_base)
+            ->include_templates(true)
             ->execute()
             ->get_results();
 

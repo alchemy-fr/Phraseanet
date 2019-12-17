@@ -94,10 +94,9 @@ class SessionController extends Controller
     }
 
     /**
-     * Check session state
-     *
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
+     * @throws \Exception       in case "new \DateTime()" fails ?
      */
     public function updateSession(Request $request)
     {
@@ -120,7 +119,8 @@ class SessionController extends Controller
 
                 return $this->app->json($ret);
             }
-        } else {
+        }
+        else {
             $ret['status'] = 'disconnected';
 
             return $this->app->json($ret);
@@ -128,7 +128,8 @@ class SessionController extends Controller
 
         try {
             $this->getApplicationBox()->get_connection();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return $this->app->json($ret);
         }
 
@@ -148,8 +149,9 @@ class SessionController extends Controller
             $module->setModuleId($moduleId);
             $module->setSession($session);
             $manager->persist($module);
-        } else {
-            $manager->persist($session->getModuleById($moduleId)->setUpdated(new \DateTime()));
+        }
+        else {
+            $manager->persist($session->getModuleById($moduleId)->setUpdated($now));
         }
 
         $manager->persist($session);
@@ -231,7 +233,10 @@ class SessionController extends Controller
      */
     private function getBasketRepository()
     {
-        return $this->getEntityManager()->getRepository('Phraseanet:Basket');
+        /** @var BasketRepository $ret */
+        $ret = $this->getEntityManager()->getRepository('Phraseanet:Basket');
+
+        return $ret;
     }
 
     /**

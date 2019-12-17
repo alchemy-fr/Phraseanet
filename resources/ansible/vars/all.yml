@@ -21,18 +21,27 @@ server:
         - xpdf
         - libav-tools
         - gpac
+        - python
+        - python-urllib3
+        - python3-openssl
+        - python-pyasn1
+        - python-pyasn1-modules
+        - python3-pyasn1
+        - python-pip
     timezone: UTC
     locales:
         - en_GB.UTF-8
         - fr_FR.UTF-8
         - de_DE.UTF-8
         - nl_NL.UTF-8
+
 repositories:
     php: 'ppa:ondrej/php'
-    mariadb: 'deb http://mirror6.layerjet.com/mariadb/repo/10.1/ubuntu'
+    mariadb: 'deb [arch=amd64,arm64,i386,ppc64el] http://mirror.nodesdirect.com/mariadb/repo/10.3/ubuntu'
     elasticsearch: 'ppa:webupd8team/java'
     rabbitmq: 'deb http://www.rabbitmq.com/debian/ testing main'
     yarn: 'https://dl.yarnpkg.com/debian/'
+
 vagrant_local:
     install: '1'
     vm:
@@ -41,6 +50,8 @@ vagrant_local:
         sharedfolder: ./
         useVagrantCloud: '1'
         syncType: nfs
+        hostname: ''
+        docker_hosts_container: 'db elasticsearch redis rabbitmq'
 nginx:
     install: '1'
     docroot: /vagrant

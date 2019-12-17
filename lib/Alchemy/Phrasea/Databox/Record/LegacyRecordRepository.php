@@ -82,6 +82,34 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
+    public function findBySha256WithExcludedCollIds($sha256, $excludedCollIds = [])
+    {
+        static $sql;
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('sha256 = :sha256');
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'sha256'  => $sha256,
+                'coll_id' => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
     /**
      * @param string $uuid
      * @return \record_adapter[]
@@ -95,6 +123,40 @@ class LegacyRecordRepository implements RecordRepository
         }
 
         $result = $this->databox->get_connection()->fetchAll($sql, ['uuid' => $uuid]);
+
+        return $this->mapRecordsFromResultSet($result);
+    }
+
+    /**
+     * @param string $uuid
+     * @param array $excludedCollIds
+     * @return \record_adapter[]
+     */
+    public function findByUuidWithExcludedCollIds($uuid, $excludedCollIds = [])
+    {
+        static $sql;
+
+        if (!$sql) {
+            $qb = $this->createSelectBuilder()
+                ->where('uuid = :uuid')
+            ;
+
+            if (!empty($excludedCollIds)) {
+                $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+            }
+
+            $sql = $qb->getSQL();
+        }
+
+        $result = $this->databox->get_connection()->fetchAll($sql,
+            [
+                'uuid'      => $uuid,
+                'coll_id'   => $excludedCollIds
+            ],
+            [
+                ':coll_id' => Connection::PARAM_INT_ARRAY
+            ]
+        );
 
         return $this->mapRecordsFromResultSet($result);
     }
@@ -120,7 +182,7 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
-    public function findChildren(array $storyIds, $user = null)
+    public function findChildren(array $storyIds, $user = null, $offset = 1, $max_items = null)
     {
         if (!$storyIds) {
             return [];
@@ -129,25 +191,73 @@ class LegacyRecordRepository implements RecordRepository
         $connection = $this->databox->get_connection();
 
         $selects = $this->getRecordSelects();
-        array_unshift($selects, 's.rid_parent as story_id');
 
-        $builder = $connection->createQueryBuilder();
-        $builder
-            ->select($selects)
-            ->from('regroup', 's')
-            ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
-            ->where(
-                's.rid_parent IN (:storyIds)',
-                'r.parent_record_id = 0'
-            )
-            ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
-        ;
+        if ($max_items) {
+            array_unshift($selects, 'sr.rid_parent as story_id');
 
-        if (null !== $user) {
-            $this->addUserFilter($builder, $user);
+            $subBuilder = $connection->createQueryBuilder();
+
+            $subBuilder
+                ->select('s.*,
+                    IF(@old_rid_parent != s.rid_parent, @cpt := 1, @cpt := @cpt+1) AS CPT')
+                ->addSelect("IF(@old_rid_parent != s.rid_parent, IF(@old_rid_parent:=s.rid_parent,'NEW PARENT',0), '----------') AS Y")
+                ->from('regroup', 's')
+                ->where('s.rid_parent IN (:storyIds)')
+                ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
+                ->orderBy('s.rid_parent, s.ord')
+            ;
+
+            $builder = $subBuilder->getConnection()->createQueryBuilder();
+
+            $builder->select($selects)
+                ->from(sprintf('( %s )', $subBuilder->getSQL()), 'sr')
+                ->innerJoin('sr', 'record', 'r', 'r.record_id = sr.rid_child')
+                ->where('sr.CPT BETWEEN :offset AND :maxresult')
+                ->andWhere('r.parent_record_id = 0')
+                ->setParameter('offset', $offset)
+                ->setParameter('maxresult', ($offset + $max_items -1))
+                ->orderBy('story_id, sr.CPT')
+            ;
+
+            if (null !== $user) {
+                $this->addUserFilter($builder, $user);
+            }
+
+            $connection->executeQuery('SET @cpt = 1');
+
+            $connection->executeQuery('SET @old_rid_parent = -1');
+
+
+            $data = $connection->fetchAll(
+                $builder->getSQL(),
+                array_merge($subBuilder->getParameters(), $builder->getParameters()),
+                array_merge($subBuilder->getParameterTypes(), $builder->getParameterTypes())
+            );
+
+        } else {
+            array_unshift($selects, 's.rid_parent as story_id');
+
+            $builder = $connection->createQueryBuilder();
+
+            $builder
+                ->select($selects)
+                ->from('regroup', 's')
+                ->innerJoin('s', 'record', 'r', 'r.record_id = s.rid_child')
+                ->where(
+                    's.rid_parent IN (:storyIds)',
+                    'r.parent_record_id = 0'
+                )
+                ->orderBy('s.ord', 'ASC')
+                ->setParameter('storyIds', $storyIds, Connection::PARAM_INT_ARRAY)
+            ;
+
+            if (null !== $user) {
+                $this->addUserFilter($builder, $user);
+            }
+
+            $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
         }
 
-        $data = $connection->fetchAll($builder->getSQL(), $builder->getParameters(), $builder->getParameterTypes());
         $records = $this->mapRecordsFromResultSet($data);
 
         $selections = array_map(

@@ -92,9 +92,12 @@ use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Neutron\ReCaptcha\ReCaptchaServiceProvider;
+use Psr\Log\LoggerInterface;
 use Silex\Application as SilexApplication;
 use Silex\Application\TranslationTrait;
 use Silex\Application\UrlGeneratorTrait;
@@ -112,6 +115,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Process\ExecutableFinder;
 use Unoconv\UnoconvServiceProvider;
 use XPDF\PdfToText;
 use XPDF\XPDFServiceProvider;
@@ -234,8 +238,19 @@ class Application extends SilexApplication
 
         $this->register(new UnicodeServiceProvider());
         $this->register(new ValidatorServiceProvider());
-        $this->register(new XPDFServiceProvider());
-        $this->setupXpdf();
+
+        if ($this['configuration.store']->isSetup()) {
+            $binariesConfig = $this['conf']->get(['main', 'binaries']);
+            $executableFinder = new ExecutableFinder();
+            $this->register(new XPDFServiceProvider(), [
+                'xpdf.configuration' => [
+                    'pdftotext.binaries' => isset($binariesConfig['pdftotext_binary']) ? $binariesConfig['pdftotext_binary'] : $executableFinder->find('pdftotext'),
+                ]
+            ]);
+
+            $this->setupXpdf();
+        }
+
         $this->register(new FileServeServiceProvider());
         $this->register(new ManipulatorServiceProvider());
         $this->register(new PluginServiceProvider());
@@ -252,6 +267,23 @@ class Application extends SilexApplication
 
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
+
+        $this['monolog'] = $this->share(
+            $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
+
+                $logger->pushHandler(new ErrorLogHandler(
+                    ErrorLogHandler::SAPI,
+                    Logger::ERROR
+                ));
+
+                $logger->pushHandler(new StreamHandler(
+                    fopen('php://stderr', 'w'),
+                    Logger::ERROR
+                ));
+
+                return $logger;
+            })
+        );
 
         $this['phraseanet.exception_handler'] = $this->share(function ($app) {
             /** @var PhraseaExceptionHandler $handler */
@@ -633,7 +665,7 @@ class Application extends SilexApplication
     private function setupGeonames()
     {
         $this['geonames.server-uri'] = $this->share(function (Application $app) {
-            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'http://geonames.alchemyasp.com/');
+            return $app['conf']->get(['registry', 'webservices', 'geonames-server'], 'https://geonames.alchemyasp.com/');
         });
     }
 

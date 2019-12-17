@@ -63,4 +63,26 @@ class StringUtils
 
         return self::$transliterator->transliterate($string);
     }
+
+    /**
+     * replace bad chars (ascii 0...31 except 9,10,13)
+     *
+     * @param $s
+     * @param string $replace
+     * @return mixed
+     */
+    public static function substituteCtrlCharacters($s, $replace = '_')
+    {
+        static $bad_chars = null;
+        if($bad_chars === null) {
+            $bad_chars = [];
+            for($i=0; $i<32; $i++) {
+                if($i != 9 && $i != 10 && $i != 13) {
+                    $bad_chars[] = chr($i);
+                }
+            }
+        }
+
+        return str_replace($bad_chars, $replace, $s);
+    }
 }

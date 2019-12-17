@@ -806,7 +806,7 @@ class ThesaurusController extends Controller
                         if (!$t) {
                             $t = "...";
                         }
-                        $fullBranch = " / " . $t . $fullBranch;
+                        $fullBranch = " / " . htmlspecialchars($t) . $fullBranch;
                     }
                 }
                 $nodes = $xpathstruct->query("/record/description/*");
@@ -1159,7 +1159,7 @@ class ThesaurusController extends Controller
             '1',
             null
         );
-        $fullpath = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
+        $fullpathHtml = $dom->getElementsByTagName("fullpath_html")->item(0)->firstChild->nodeValue;
         $hits = $dom->getElementsByTagName("allhits")->item(0)->firstChild->nodeValue;
 
         $languages = $synonyms = [];
@@ -1180,6 +1180,16 @@ class ThesaurusController extends Controller
             $languages[$lng_code[0]] = $language;
         }
 
+        //  Escape path  between span tag in fullpath_html
+        preg_match_all("'(<[^><]*>)(.*?)(<[^><]*>)'", $fullpathHtml, $matches, PREG_SET_ORDER);
+
+        $safeFullpath = '';
+        foreach($matches as $match) {
+            unset($match[0]);  // full match result not used
+            $match[2] = htmlspecialchars($match[2]);
+            $safeFullpath .= implode('', $match);
+        }
+
         return $this->render('thesaurus/properties.html.twig', [
             'typ' => $request->get('typ'),
             'bid' => $request->get('bid'),
@@ -1187,7 +1197,7 @@ class ThesaurusController extends Controller
             'id' => $request->get('id'),
             'dlg' => $request->get('dlg'),
             'languages' => $languages,
-            'fullpath' => $fullpath,
+            'fullpath' => $safeFullpath,
             'hits' => $hits,
             'synonyms' => $synonyms,
         ]);

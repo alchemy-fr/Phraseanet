@@ -79,7 +79,7 @@
                 <size>748</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <acodec>libfaac</acodec>
+                <acodec>libmp3lame</acodec>
                 <vcodec>libx264</vcodec>
                 <devices>screen</devices>
                 <bitrate>1000</bitrate>
@@ -148,7 +148,7 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
@@ -182,27 +182,27 @@
     </subdefs>
 
     <description>
-        <Objet src="IPTC:ObjectName" />
-        <Categorie src="IPTC:Category"/>
-        <AutresCategories src="IPTC:SupplementalCategories" multi="1"/>
-        <MotsCles src="IPTC:Keywords" multi="1"/>
-        <Observations src="IPTC:SpecialInstructions"/>
-        <Date src="IPTC:DateCreated" type="date" />
-        <Signature src="IPTC:By-line"/>
-        <TitreCredits src="IPTC:By-lineTitle"/>
-        <Ville src="IPTC:City" />
-        <Province src="IPTC:Province-State" />
-        <Pays src="IPTC:Country-PrimaryLocationName" />
-        <ReferencesOriginales src="IPTC:OriginalTransmissionReference" />
-        <Titre src="IPTC:Headline" report="1" thumbtitle="1" />
-        <Credit src="IPTC:Credit" report="1" />
-        <Source src="IPTC:Source" />
-        <Legende src="IPTC:Caption-Abstract" />
-        <Redacteur src="IPTC:Writer-Editor" />
-        <Longitude src="GPS:GPSLongitude" readonly="1"/>
-        <Latitude src="GPS:GPSLatitude" readonly="1"/>
-        <AppareilPhoto src="IFD0:Model" readonly="1"/>
-        <NomDeFichier src="Phraseanet:tf-basename" readonly="1" type="text" />
+        <Objet src="IPTC:ObjectName" type="string"/>
+        <Categorie src="IPTC:Category" type="string"/>
+        <AutresCategories src="IPTC:SupplementalCategories" type="string" multi="1"/>
+        <MotsCles src="IPTC:Keywords" type="string" multi="1"/>
+        <Observations src="IPTC:SpecialInstructions" type="string"/>
+        <Date src="IPTC:DateCreated" type="date"/>
+        <Signature src="IPTC:By-line" type="string"/>
+        <TitreCredits src="IPTC:By-lineTitle" type="string"/>
+        <Ville src="IPTC:City" type="string" />
+        <Province src="IPTC:Province-State" type="string"/>
+        <Pays src="IPTC:Country-PrimaryLocationName" type="string"/>
+        <ReferencesOriginales src="IPTC:OriginalTransmissionReference" type="string"/>
+        <Titre src="IPTC:Headline" type="string" report="1" thumbtitle="1" />
+        <Credit src="IPTC:Credit" type="string" report="1" />
+        <Source src="IPTC:Source" type="string"/>
+        <Legende src="IPTC:Caption-Abstract" type="string"/>
+        <Redacteur src="IPTC:Writer-Editor" type="string"/>
+        <Longitude src="GPS:GPSLongitude" type="number" readonly="1"/>
+        <Latitude src="GPS:GPSLatitude" type="number" readonly="1"/>
+        <AppareilPhoto src="IFD0:Model" type="string" readonly="1"/>
+        <NomDeFichier src="Phraseanet:tf-basename" type="string" readonly="1"/>
     </description>
 
     <statbits>

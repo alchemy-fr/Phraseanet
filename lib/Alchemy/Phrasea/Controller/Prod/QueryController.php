@@ -161,7 +161,32 @@ class QueryController extends Controller
             $result = $engine->query($query, $options);
 
             if ($this->getSettings()->getUserSetting($user, 'start_page') === 'LAST_QUERY') {
-                $userManipulator->setUserSetting($user, 'start_page_query', $query);
+                // try to save the "fulltext" query which will be restored on next session
+                try {
+                    // local code to find "FULLTEXT" value from jsonQuery
+                    $findFulltext = function($clause) use(&$findFulltext) {
+                        if(array_key_exists('_ux_zone', $clause) && $clause['_ux_zone']=='FULLTEXT') {
+                            return $clause['value'];
+                        }
+                        if($clause['type']=='CLAUSES') {
+                            foreach($clause['clauses'] as $c) {
+                                if(($r = $findFulltext($c)) !== null) {
+                                    return $r;
+                                }
+                            }
+                        }
+                        return null;
+                    };
+
+                    $userManipulator->setUserSetting($user, 'last_jsonquery', (string)$request->request->get('jsQuery'));
+                    $jsQuery = @json_decode((string)$request->request->get('jsQuery'), true);
+                    if(($ft = $findFulltext($jsQuery['query'])) !== null) {
+                        $userManipulator->setUserSetting($user, 'start_page_query', $ft);
+                    }
+                }
+                catch(\Exception $e) {
+                    // no-op
+                }
             }
 
             // log array of collectionIds (from $options) for each databox
@@ -189,7 +214,7 @@ class QueryController extends Controller
                 if (min($d2top, $d2bottom) < 4) {
                     if ($d2bottom < 4) {
                         if($page != 1){
-                            $string .= "<a id='PREV_PAGE' class='btn btn-primary btn-mini'></a>";
+                            $string .= "<a id='PREV_PAGE' class='btn btn-primary btn-mini icon-baseline-chevron_left-24px'></a>";
                         }
                         for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++) {
                             if ($i == $page)
@@ -198,13 +223,13 @@ class QueryController extends Controller
                                 $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                         }
                         if ($npages > 4)
-                            $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
-                        $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action" data-page="' . $npages . '" id="last"></a>';
+                            $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini icon icon-baseline-chevron_right-24px'></a>";
+                        $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-double-arrows" data-page="' . $npages . '" id="last"></a>';
                     } else {
                         $start = $npages - 4;
                         if (($start) > 0){
-                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"></a>';
-                            $string .= '<a id="PREV_PAGE" class="btn btn-primary btn-mini"></a>';
+                            $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"><span class="icon icon-double-arrows icon-inverse"></span></a>';
+                            $string .= '<a id="PREV_PAGE" class="btn btn-primary btn-mini icon icon-baseline-chevron_left-24px"></a>';
                         }else
                             $start = 1;
                         for ($i = ($start); $i <= $npages; $i++) {
@@ -214,11 +239,11 @@ class QueryController extends Controller
                                 $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                         }
                         if($page < $npages){
-                            $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini'></a>";
+                            $string .= "<a id='NEXT_PAGE' class='btn btn-primary btn-mini icon icon-baseline-chevron_right-24px'></a>";
                         }
                     }
                 } else {
-                    $string .= '<a class="btn btn-primary btn-mini btn-mini search-navigate-action" data-page="1" id="first"></a>';
+                    $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="1" id="first"><span class="icon icon-double-arrows icon-inverse"></span></a>';
 
                     for ($i = ($page - 2); $i <= ($page + 2); $i++) {
                         if ($i == $page)
@@ -227,10 +252,10 @@ class QueryController extends Controller
                             $string .= '<a class="btn btn-primary btn-mini search-navigate-action" data-page="'.$i.'">' . $i . '</a>';
                     }
 
-                    $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action" data-page="' . $npages . '" id="last"></a>';
+                    $string .= '<a href="#" class="btn btn-primary btn-mini search-navigate-action icon icon-double-arrows" data-page="' . $npages . '" id="last"></a>';
                 }
             }
-            $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
+            $string .= '<div style="display:none;"><div id="NEXT_PAGE" class="icon icon-baseline-chevron_right-24px"></div><div id="PREV_PAGE" class="icon icon-baseline-chevron_left-24px"></div></div>';
 
             $explain = $this->render(
                 "prod/results/infos.html.twig",
@@ -291,7 +316,7 @@ class QueryController extends Controller
                         </tfoot>
                     </table></div></div>'
                 . '</div><a href="#" class="search-display-info" data-infos="' . str_replace('"', '&quot;', $explain) . '">'
-                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.$result->getTotal().'</span>']) . '</a>';
+                . $this->app->trans('%total% reponses', ['%total%' => '<span>'.number_format($result->getTotal(),null, null, ' ').'</span>']) . '</a>';
 
             $json['infos'] = $infoResult;
             $json['navigationTpl'] = $string;
@@ -316,16 +341,31 @@ class QueryController extends Controller
 
             if ($result->getTotal() === 0) {
                 $template = 'prod/results/help.html.twig';
-            } else {
+            }
+            else {
                 $template = 'prod/results/records.html.twig';
             }
-            $json['results'] = $this->render($template, ['results'=> $result]);
+
+            /** @var \Closure $filter */
+            $filter = $this->app['plugin.filter_by_authorization'];
+
+            $plugins = [
+                'workzone' => $filter('workzone'),
+                'actionbar' => $filter('actionbar'),
+            ];
+
+            $json['results'] = $this->render($template, ['results'=> $result, 'plugins'=>$plugins]);
 
 
             // add technical fields
-            $fieldLabels = [];
+            $fieldsInfosByName = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-                $fieldLabels[$k] = $this->app->trans($f['label']);
+                $fieldsInfosByName[$k] = $f;
+                $fieldsInfosByName[$k]['trans_label'] = $this->app->trans($f['label']);
+                $fieldsInfosByName[$k]['labels'] = [];
+                foreach($this->app->getAvailableLanguages() as $locale => $lng) {
+                    $fieldsInfosByName[$k]['labels'][$locale] = $this->app->trans($f['label'], [], "messages", $locale);
+                }
             }
 
             // add databox fields
@@ -337,13 +377,24 @@ class QueryController extends Controller
                 foreach ($databox->get_meta_structure() as $field) {
                     $name = $field->get_name();
                     $fieldsInfos[$sbasId][$name] = [
-                      'label' => $field->get_label($this->app['locale']),
-                      'type' => $field->get_type(),
+                      'label'    => $field->get_label($this->app['locale']),
+                      'labels'   => $field->get_labels(),
+                      'type'     => $field->get_type(),
                       'business' => $field->isBusiness(),
-                      'multi' => $field->is_multi(),
+                      'multi'    => $field->is_multi(),
                     ];
-                    if (!isset($fieldLabels[$name])) {
-                        $fieldLabels[$name] = $field->get_label($this->app['locale']);
+
+                    // infos on the "same" field (by name) on multiple databoxes !!!
+                    // label(s) can be inconsistants : the first databox wins
+                    if (!isset($fieldsInfosByName[$name])) {
+                        $fieldsInfosByName[$name] = [
+                            'label'       => $field->get_label($this->app['locale']),
+                            'labels'      => $field->get_labels(),
+                            'type'        => $field->get_type(),
+                            'field'       => $field->get_name(),
+                            'trans_label' => $field->get_label($this->app['locale']),
+                        ];
+                        $field->get_label($this->app['locale']);
                     }
                 }
             }
@@ -382,13 +433,28 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
+            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
-                $facet['label'] = isset($fieldLabels[$facetName]) ? $fieldLabels[$facetName] : $facetName;
+                if(array_key_exists($facetName, $fieldsInfosByName)) {
 
-                $facets[] = $facet;
+                    $f = $fieldsInfosByName[$facetName];
+
+                    $facet['label'] = $f['trans_label'];
+                    $facet['labels'] = $f['labels'];
+                    $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
+                    $facets[] = $facet;
+
+                    // $facetClauses[] = [
+                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
+                    //    'field' => $f['field'],
+                    //    'facet' => $facet
+                    // ];
+                }
             }
+
+            // $json['jsq'] = $facetClauses;
 
             $json['facets'] = $facets;
             $json['phrasea_props'] = $proposals;
@@ -412,7 +478,6 @@ class QueryController extends Controller
             ];
             $json['results'] = $this->render($template, ['results'=> $result]);
         }
-
 
         return $this->app->json($json);
     }

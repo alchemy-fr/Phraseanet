@@ -114,6 +114,7 @@ class MoveCollectionController extends Controller
             $trashCollectionsBySbasId = [];
 
             foreach ($records as $record) {
+                $oldCollectionId = $record->getCollection()->get_coll_id();
                 $record->move_to_collection($collection, $this->getApplicationBox());
 
                 if ($request->request->get("chg_coll_son") == "1") {
@@ -130,7 +131,7 @@ class MoveCollectionController extends Controller
                     $trashCollectionsBySbasId[$sbasId] = $record->getDatabox()->getTrashCollection();
                 }
                 if ($trashCollectionsBySbasId[$sbasId] !== null) {
-                    if ($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id() && $collection->get_coll_id() !== $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
+                    if ($oldCollectionId == $trashCollectionsBySbasId[$sbasId]->get_coll_id() && $collection->get_coll_id() !== $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                         // record is already in trash so active it
                         foreach ($record->get_subdefs() as $subdef) {
                             if (($pl = $subdef->get_permalink())) {

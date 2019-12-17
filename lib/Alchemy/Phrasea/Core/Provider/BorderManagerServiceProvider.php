@@ -78,6 +78,20 @@ class BorderManagerServiceProvider implements ServiceProviderInterface
 
                         $checkerObj->restrictToCollections($collections);
                     }
+
+                    if (isset($checker['compare-ignore-collections'])) {
+                        $collections = [];
+                        foreach ($checker['compare-ignore-collections'] as $base_id) {
+                            try {
+                                $collections[] = \collection::getByBaseId($app, $base_id);
+                            } catch (\Exception $e) {
+                                throw new \InvalidArgumentException('Invalid collection option');
+                            }
+                        }
+
+                        $checkerObj->setCompareIgnoreCollections($collections);
+                    }
+
                     $registeredCheckers[] = $checkerObj;
                 } catch (\InvalidArgumentException $e) {
                     $app['monolog']->error(

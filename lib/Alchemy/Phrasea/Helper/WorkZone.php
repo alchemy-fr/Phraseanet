@@ -11,28 +11,29 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\Basket as BasketEntity;
+use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class WorkZone extends Helper
 {
-    const BASKETS = 'baskets';
-    const STORIES = 'stories';
+    const BASKETS     = 'baskets';
+    const STORIES     = 'stories';
     const VALIDATIONS = 'validations';
 
     /**
-     *
      * Returns an ArrayCollection containing three keys :
-     *    - self::BASKETS : an ArrayCollection of the actives baskets
-     *     (Non Archived)
+     *    - self::BASKETS : an ArrayCollection of the actives baskets (Non Archived)
      *    - self::STORIES : an ArrayCollection of working stories
      *    - self::VALIDATIONS : the validation people are waiting from me
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @param  null|string $sort     "date"|"name"
+     * @return ArrayCollection
      */
-    public function getContent($sort)
+    public function getContent($sort = null)
     {
-        /* @var $repo_baskets Alchemy\Phrasea\Model\Repositories\BasketRepository */
+        /* @var $repo_baskets BasketRepository */
         $repo_baskets = $this->app['repo.baskets'];
 
         $sort = in_array($sort, ['date', 'name']) ? $sort : 'name';
@@ -42,7 +43,7 @@ class WorkZone extends Helper
         $baskets = $repo_baskets->findActiveByUser($this->app->getAuthenticatedUser(), $sort);
 
         // force creation of a default basket
-        if (0 === count($baskets)) {
+        if (count($baskets) === 0) {
             $basket = new BasketEntity();
 
             $basket->setName($this->app->trans('Default basket'));
@@ -55,7 +56,7 @@ class WorkZone extends Helper
 
         $validations = $repo_baskets->findActiveValidationByUser($this->app->getAuthenticatedUser(), $sort);
 
-        /* @var $repo_stories Alchemy\Phrasea\Model\Repositories\StoryWZRepository */
+        /* @var $repo_stories StoryWZRepository */
         $repo_stories = $this->app['repo.story-wz'];
 
         $stories = $repo_stories->findByUser($this->app, $this->app->getAuthenticatedUser(), $sort);

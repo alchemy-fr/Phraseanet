@@ -16,7 +16,7 @@
 
 - name: Add Key for MariaDB Repository
   sudo: yes
-  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF1656F24C74CD1D8
 
 # RabbitMQ
 - name: Add rabbitmq package repository
