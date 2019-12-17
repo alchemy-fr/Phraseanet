@@ -1570,18 +1570,7 @@ class V1Controller extends Controller
     private function doSearch(Request $request)
     {
         $options = SearchEngineOptions::fromRequest($this->app, $request);
-
-        if($request->get('page')){
-            $page = (int)$request->get('page');
-            $per_page = (int)$request->get('per_page') ?: 10;
-
-            $offset = ($page - 1) * $per_page;
-
-            $options->setFirstResult($offset);
-        }else{
-            $options->setFirstResult((int)($request->get('offset_start') ?: 0));
-        }
-
+        $options->setFirstResult((int)($request->get('offset_start') ?: 0));
         $options->setMaxResults((int)$request->get('per_page') ?: 10);
 
         $this->getSearchEngine()->resetCache();
