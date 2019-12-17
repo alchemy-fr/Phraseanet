@@ -12,8 +12,22 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DebuggerSubscriberTest extends \PhraseanetTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('debugger');
+    }
+
     public function tearDown()
     {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('debugger');
+        }
+        else {
+            self::$DI['app']['conf']->set('debugger', $this->bkp);
+        }
         if (is_file(__DIR__ . '/Fixtures/configuration-debugger.php')) {
             unlink(__DIR__ . '/Fixtures/configuration-debugger.php');
         }
@@ -35,8 +49,6 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
             unlink($app['phraseanet.configuration.config-compiled-path']);
         }
 
-        $bkp = $app['conf']->get('debugger');
-
         $app['conf']->set(['debugger', 'allowed-ips'], $authorized);
         $app['dispatcher']->addSubscriber(new DebuggerSubscriber($app));
 
@@ -50,14 +62,7 @@ class DebuggerSubscriberTest extends \PhraseanetTestCase
             $this->setExpectedException('Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException');
         }
 
-        try {
-            $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
-        }
-        catch (\Exception $e) {
-            // no-op
-        }
-
-        $app['conf']->set('debugger', $bkp);
+        $app->handle(new Request([], [], [], [], [], ['REMOTE_ADDR' => $incomingIp]));
     }
 
     public function provideIpsAndEnvironments()
