@@ -38,10 +38,20 @@ class BorderManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new PhraseanetServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
+
+        $bkp = $app['conf']->get('border-manager');
+
         $app['conf']->set(['border-manager', 'enabled'], false);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertNull($app['phraseanet.metadata-reader']->getPdfToText());
+
+        if(is_null($bkp)) {
+            $app['conf']->remove('border-manager');
+        }
+        else {
+            $app['conf']->set('border-manager', $bkp);
+        }
     }
 
     public function testItLoadsWithXPDF()
@@ -63,9 +73,19 @@ class BorderManagerServiceProviderTest extends ServiceProviderTestCase
         $app->register(new BorderManagerServiceProvider());
         $app['root.path'] = __DIR__ . '/../../../../../..';
         $app->register(new ConfigurationServiceProvider());
+
+        $bkp = $app['conf']->get('border-manager');
+
         $app['conf']->set(['border-manager', 'enabled'], false);
 
         $this->assertInstanceOf('Alchemy\Phrasea\Border\Manager', $app['border-manager']);
         $this->assertInstanceOf('XPDF\PdfToText', $app['phraseanet.metadata-reader']->getPdfToText());
+
+        if(is_null($bkp)) {
+            $app['conf']->remove('border-manager');
+        }
+        else {
+            $app['conf']->set('border-manager', $bkp);
+        }
     }
 }
