@@ -1281,7 +1281,7 @@ class ApiJsonTest extends ApiTestCase
 
         $tochange = [];
         foreach ($statusStructure as $n => $datas) {
-            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+            $tochange[$n] = substr($record_status, $n, 1) == '0' ? '1' : '0';
         }
 
         $this->evaluateMethodNotAllowedRoute($route, ['GET', 'PUT', 'DELETE']);
@@ -1305,7 +1305,8 @@ class ApiJsonTest extends ApiTestCase
         // test  record_status in string
         $record_status_expected = $record_status;
 
-        $pos = strpos($record_status, '1');
+        $bitToChange = [];
+        $pos = strpos($record_status, '1', 4);
         $bitToChange[$pos] = '1';
 
         $response = $this->request('POST', $route, $this->getParameters(['status' => $bitToChange]), ['HTTP_Accept' => $this->getAcceptMimeType()]);
