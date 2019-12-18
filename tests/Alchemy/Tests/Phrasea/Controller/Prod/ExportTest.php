@@ -132,9 +132,11 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
 
+        $bkp = $app['conf']->get('registry');
+
         if (!$app['conf']->get(['registry', 'ftp', 'ftp-enabled'])) {
             $app['conf']->set(['registry', 'ftp', 'ftp-enabled'], true);
-           self::$GV_activeFTP = true;
+            self::$GV_activeFTP = true;
         }
 
         /** @var User $user */
@@ -158,6 +160,8 @@ class ExportTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertArrayHasKey('message', $datas);
         $this->assertTrue($datas['success']);
         unset($response, $datas);
+
+        $app['conf']->set('registry', $bkp);
     }
 
     /**

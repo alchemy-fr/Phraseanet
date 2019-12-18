@@ -1724,17 +1724,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @param int $offset
+     * @param null|int $max_items
+     *
      * @return set_selection|record_adapter[]
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function getChildren()
+    public function getChildren($offset = 1, $max_items = null)
     {
         if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
         }
 
-        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()]);
+        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], null, $offset, $max_items);
 
         return reset($selections);
     }
