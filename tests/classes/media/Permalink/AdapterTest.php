@@ -44,7 +44,8 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
 
     public function testGet_url()
     {
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $this->object->get_url()->getScheme() . '://'
+            . rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/' . $this->object->get_label()
@@ -60,19 +61,21 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $subdef = self::$DI['record_1']->get_subdef('preview');
         $previewPermalink = media_Permalink_Adapter::getPermalink(self::$DI['app'], $databox, $subdef);
 
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $previewPermalink->get_url()->getScheme() . '://'
+            . rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/preview/' . $previewPermalink->get_label()
             . '.' . pathinfo(self::$DI['record_1']->get_subdef('preview')->get_file(), PATHINFO_EXTENSION)
             . '?token=' . urlencode($previewPermalink->get_token());
 
-        $this->assertEquals($url, $previewPermalink->get_url());
+        $this->assertEquals($url, (string)($previewPermalink->get_url()));
     }
 
     public function testGet_page()
     {
-        $url = rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
+        $url = $this->object->get_url()->getScheme() . '://'
+            . rtrim(self::$DI['app']['conf']->get('servername'), '/') . '/permalink/v1/'
             . self::$DI['record_1']->get_sbas_id() . '/'
             . self::$DI['record_1']->get_record_id()
             . '/document/'
