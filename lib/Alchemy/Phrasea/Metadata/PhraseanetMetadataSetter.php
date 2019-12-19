@@ -34,7 +34,7 @@ class PhraseanetMetadataSetter
      * @param \record_adapter $record
      * @throws \Exception_InvalidArgument
      */
-    public function replaceMetadata($metadataCollection, \record_adapter $record)
+    public function replaceMetadata($metadataCollection, \record_adapter $record, $isNewRecord = false, $nosubdef = false)
     {
         $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure()->get_elements();
 
@@ -82,7 +82,7 @@ class PhraseanetMetadataSetter
         }
 
         if (! empty($metadataInRecordFormat)) {
-            $record->set_metadatas($metadataInRecordFormat, true);
+            $record->set_metadatas($metadataInRecordFormat, true, $isNewRecord, $nosubdef);
         }
     }
 

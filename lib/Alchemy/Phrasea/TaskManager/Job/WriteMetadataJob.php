@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
@@ -69,7 +71,7 @@ class WriteMetadataJob extends AbstractJob
         foreach ($jobData->getApplication()->getDataboxes() as $databox) {
             $connection = $databox->get_connection();
 
-            $statement = $connection->prepare('SELECT record_id, coll_id, jeton FROM record WHERE (jeton & :token > 0)');
+            $statement = $connection->prepare('SELECT record_id, coll_id, work, jeton FROM record WHERE (jeton & :token > 0)');
             $statement->execute(['token' => PhraseaTokens::WRITE_META]);
             $rs = $statement->fetchAll(\PDO::FETCH_ASSOC);
             $statement->closeCursor();
@@ -203,6 +205,13 @@ class WriteMetadataJob extends AbstractJob
                     'record_id' => $record_id,
                     'token' => PhraseaTokens::WRITE_META,
                 ]);
+
+                // write meta for the document is finished
+                // if it's a new record, order to create subdef
+                if (count($record->get_subdefs()) == 3 && count($subdefs) == 1 && isset($subdefs['document']) && $row['work'] != 1) {
+                    $this->getDispatcher($jobData->getApplication())->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record, true));
+                }
+
                 $statement->closeCursor();
             }
         }
@@ -215,6 +224,11 @@ class WriteMetadataJob extends AbstractJob
     private function getMetadataWriter(Application $app)
     {
         return $app['exiftool.writer'];
+    }
+
+    private function getDispatcher(Application $app)
+    {
+        return $app['dispatcher'];
     }
 
     /**
