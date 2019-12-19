@@ -10,6 +10,26 @@ use Alchemy\Phrasea\Command\Plugin\AddPlugin;
  */
 class AddPluginTest extends PluginCommandTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('plugins');
+    }
+
+    public function tearDown()
+    {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('plugins');
+        }
+        else {
+            self::$DI['app']['conf']->set('plugins', $this->bkp);
+        }
+        parent::tearDown();
+    }
+
+
     public function testExecute()
     {
         $source = 'TestPlugin';

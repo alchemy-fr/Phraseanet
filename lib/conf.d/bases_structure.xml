@@ -2033,6 +2033,30 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>generate_cterms</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_editable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>gui_visible</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
