@@ -68,9 +68,12 @@
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen></iframe>
+    {% elseif record_type == 'PDF' %}
+        <iframe src="{{ url('alchemy_embed_view', {url: url|trim }) }}" width="100%" scrolling="no" marginheight="0" frameborder="0" allowfullscreen="" height="0" class="pdf-iframe"></iframe>
     {% else %}
         <img style="max-height: 100%;max-width:100%" class="record record_image imgTips zoomable thumb"
              oncontextMenu="return(false);"
              src="{{ thumbnail.get_url()|trim }}" ondragstart="return false;"/>
+        {{ record_type }}
     {% endif %}
 {% endmacro %}
