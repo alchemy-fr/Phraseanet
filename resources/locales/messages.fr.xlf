@@ -11205,7 +11205,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation" approved="no">
         <source>prod::advancesearch:tooltips:field_restriction_explanation</source>
-        <target state="needs-translation">Effectuer une recherche sur le contenus d'un champ documentaire de type texte</target>
+        <target state="needs-translation">Effectuer une recherche sur le contenu d'un champ documentaire de type texte</target>
         <jms:reference-file line="408">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b8698f202f815bbde691f54c7d51b691bef0263" resname="prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)" approved="yes">
@@ -11501,7 +11501,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="e3f9c15df842b1cafaa7a08b3b2d3b1ff1173559" resname="prod:edit: only a media of type video can be edited" approved="no">
         <source>prod:edit: only a media of type video can be edited</source>
-        <target state="needs-translation">Seul les enregistrement de type video peuvent être éditer</target>
+        <target state="needs-translation">Seuls les enregistrements de type vidéo peuvent être édités</target>
         <jms:reference-file line="149">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d2e761bd6f1cd95c2ea787f5eb206f6457c20d4b" resname="prod:edit: suggested_values" approved="no">
@@ -11511,14 +11511,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="253244f8f2642b58bb079abe2088b2461a3dd7b1" resname="prod:edit: video-editor" approved="no">
         <source>prod:edit: video-editor</source>
-        <target state="needs-translation">Outils video</target>
+        <target state="needs-translation">Outils vidéo</target>
         <jms:reference-file line="113">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="no">
         <source>prod:mapboxgl: description notice</source>
-        <target state="needs-translation">- Click droits pour ajouter une zone de recherche, il est possible de cumuler plusieurs zones de recherche.
+        <target state="needs-translation">- Faire un clic droit pour ajouter une zone de recherche, il est possible de cumuler plusieurs zones.
 
-- Click sur la zone pour supprimer une zone de recherche.
+- Un simple clic sur une zone de recherche permet de la supprimer.
 
 - Utiliser les poignées sur le périmètre de la zone pour agrandir ou diminuer la zone de recherche.
 
