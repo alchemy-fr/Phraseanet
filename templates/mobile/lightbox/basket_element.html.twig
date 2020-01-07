@@ -97,9 +97,8 @@
         /*resize of PDF */
         $(window).on("load resize ",function(e){
             if($('.pdf-iframe').length > 0) {
-
-            var pdfHeight =  $('.pdf-iframe').width() / 0.707;
-            $('.pdf-iframe').css('height', pdfHeight);
+                var pdfHeight =  $('.pdf-iframe').width() / 0.707;
+                $('.pdf-iframe').css('height', pdfHeight);
             }
         });
     </script>
