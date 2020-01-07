@@ -2017,6 +2017,9 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
     {
         $app = $this->getApplication();
         $this->logout($app);
+
+        $bkp = $app['phraseanet.configuration']['session'];
+
         $app['phraseanet.configuration']['session'] = [
             'idle' => 10,
             'lifetime' => 60475,
@@ -2027,12 +2030,17 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('hidden', $crawler->filter('input[name="remember-me"]')->attr('type'));
+
+        $app['phraseanet.configuration']['session'] = $bkp;
     }
 
     public function testLoginPageWithNoIdleSessionTime()
     {
         $app = $this->getApplication();
         $this->logout($app);
+
+        $bkp = $app['phraseanet.configuration']['session'];
+
         $app['phraseanet.configuration']['session'] = [
             'idle' => 0,
             'lifetime' => 60475,
@@ -2043,6 +2051,8 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertSame(200, $client->getResponse()->getStatusCode());
         $this->assertEquals('checkbox', $crawler->filter('input[name="remember-me"]')->attr('type'));
+
+        $app['phraseanet.configuration']['session'] = $bkp;
     }
 
     private function addUsrAuthDoctrineEntitySupport($id, $out, $participants = false)
