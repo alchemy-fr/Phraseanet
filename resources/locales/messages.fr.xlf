@@ -11516,13 +11516,13 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="no">
         <source>prod:mapboxgl: description notice</source>
-        <target state="needs-translation">- Faire un clic droit pour ajouter une zone de recherche, il est possible de cumuler plusieurs zones.
+        <target state="needs-translation">— Faire un clic droit pour ajouter une zone de recherche, il est possible de cumuler plusieurs zones.
 
-- Un simple clic sur une zone de recherche permet de la supprimer.
+— Un simple clic sur une zone de recherche permet de la supprimer.
 
-- Utiliser les poignées sur le périmètre de la zone pour agrandir ou diminuer la zone de recherche.
+— Utiliser les poignées sur le périmètre de la zone pour agrandir ou réduire la zone de recherche.
 
-- Utiliser la poignée centrale pour déplacer la zone de recherche sur la carte.</target>
+— Utiliser la poignée centrale pour déplacer la zone de recherche sur la carte.</target>
         <jms:reference-file line="154">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog" approved="no">
