@@ -13191,9 +13191,9 @@ It is possible to place several search areas</target>
         <target state="translated">Video Chapter Editing</target>
         <jms:reference-file line="29">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool" approved="yes">
+      <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool" approved="no">
         <source>video tool</source>
-        <target state="translated">Video Tools</target>
+        <target state="needs-translation">Thumbnail definition</target>
         <jms:reference-file line="24">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
