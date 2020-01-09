@@ -9962,7 +9962,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a1635ba73964dd21d9d5907401d77a11cd474611" resname="help::help-section-bullet: quotation-marks-allow">
         <source>help::help-section-bullet: quotation-marks-allow</source>
-        <target state="needs-translation">Ajouter des guillemets pour chercher une expression exacte permet aussi d'exclure un opérateur de la recherche, exemple : « Pile Ou face » , «Sain et sauf»</target>
+        <target state="needs-translation">Ajouter des guillemets pour chercher une expression exacte, permet aussi d'exclure un opérateur de la recherche, exemple : « Pile Ou face » , «Sain et sauf»</target>
         <jms:reference-file line="29">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c7c99c6e44d0f6117f812b18739f8990ebb8052" resname="help::help-section-bullet: remove-advance-search" approved="yes">
