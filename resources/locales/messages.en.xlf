@@ -3435,9 +3435,9 @@
         <target state="translated">General settings</target>
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="05db1e4e974fff47ae67bae1309fb4edd9b0a053" resname="Generate-cterms" approved="no">
+      <trans-unit id="05db1e4e974fff47ae67bae1309fb4edd9b0a053" resname="Generate-cterms" approved="yes">
         <source>Generate-cterms</source>
-        <target state="needs-translation">Generate candidat terms</target>
+        <target state="translated">Generate candidate terms</target>
         <jms:reference-file line="267">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f1b4c9f85fcbbf355fdd3c97210173b63551aa6" resname="Generates a flexpaper flash file" approved="yes">
@@ -9960,9 +9960,9 @@
         <target state="translated">Check that there are no misspellings or typing errors.</target>
         <jms:reference-file line="17">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9be1244ce3eb4b1de4abe01d696f2ab14effa5ca" resname="help::help-section-bullet: default-operator-between-terms" approved="no">
+      <trans-unit id="9be1244ce3eb4b1de4abe01d696f2ab14effa5ca" resname="help::help-section-bullet: default-operator-between-terms" approved="yes">
         <source>help::help-section-bullet: default-operator-between-terms</source>
-        <target state="needs-translation">Default operator between terms is an AND, example : typing words “red“ “dog”, search "red AND dog" in same record</target>
+        <target state="translated">Default operator between terms is AND, example : typing words “red“ “dog”, search "red AND dog" in same record</target>
         <jms:reference-file line="26">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a939bc9799c52952fd10a0a4c27520ffb080abf8" resname="help::help-section-bullet: expand search" approved="yes">
@@ -9980,9 +9980,9 @@
         <target state="translated">Remove advanced search filters.</target>
         <jms:reference-file line="19">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76544223abc0670157f5a270138a638283071678" resname="help::help-section-bullet: search-in-a-specific-field" approved="no">
+      <trans-unit id="76544223abc0670157f5a270138a638283071678" resname="help::help-section-bullet: search-in-a-specific-field" approved="yes">
         <source>help::help-section-bullet: search-in-a-specific-field</source>
-        <target state="needs-translation">To search in a specific field, use syntax "name of field: value", for example: city:"Paris". You can also use the advance search and read documentation for more examples: https://docs.phraseanet.com</target>
+        <target state="translated">To search in a specific field, use syntax "name of field: value", for example: city:"Paris". You can also use the advanced search and read documentation for more examples: https://docs.phraseanet.com</target>
         <jms:reference-file line="30">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac8d5acf555e427edbdcb05033256148d4bf9204" resname="help::help-section-bullet: search-in-document" approved="yes">
@@ -10928,9 +10928,9 @@
         <jms:reference-file line="344">Controller/Root/AccountController.php</jms:reference-file>
         <jms:reference-file line="541">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="60ae97c7ab0fb3923682a785ff0348958e308d4a" resname="phraseanet::error: failed to revoke some user access" approved="no">
+      <trans-unit id="60ae97c7ab0fb3923682a785ff0348958e308d4a" resname="phraseanet::error: failed to revoke some user access" approved="yes">
         <source>phraseanet::error: failed to revoke some user access</source>
-        <target state="needs-translation">Failed to revoke some users access</target>
+        <target state="translated">Failed to revoke some user access</target>
         <jms:reference-file line="530">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a5db6bf8928d23c54b13277fa7d5289a1f52744" resname="phraseanet::jours:: dimanche" approved="yes">
@@ -12278,7 +12278,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="2de3bc78c6fb26b56dd934a81dc76afdba8c79ab" resname="setup::custom-link:location" approved="no">
         <source>setup::custom-link:location</source>
-        <target state="needs-translation">Select a placement</target>
+        <target state="needs-translation">Select a position</target>
         <jms:reference-file line="57">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4db79dfecabb4b9acb44a4b49e9b6b433b28d04" resname="setup::custom-link:location-link" approved="yes">
