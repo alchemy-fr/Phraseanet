@@ -12,7 +12,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
-use Alchemy\Phrasea\Out\Module\PDF as PDFExport;
+use Alchemy\Phrasea\Out\Module\PDFRecords;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,19 +24,27 @@ class PrinterController extends Controller
     {
         $printer = new RecordHelper\Printer($this->app, $request);
 
-        return $this->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '']);
+        $basketFeedbackId = null;
+        if($printer->is_basket() && ($basket = $printer->get_original_basket()) && ($validation = $basket->getValidation())) {
+            if($validation->getInitiator()->getId() === $this->app->getAuthenticatedUser()->getId()) {
+                $basketFeedbackId = $basket->getId();
+            }
+        }
+
+        return $this->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '', 'basketFeedbackId' => $basketFeedbackId]);
     }
 
     public function printAction(Request $request)
     {
         $printer = new RecordHelper\Printer($this->app, $request);
+        $b = $printer->get_original_basket();
 
         $layout = $request->request->get('lay');
 
         foreach ($printer->get_elements() as $record) {
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
-        $PDF = new PDFExport($this->app, $printer->get_elements(), $layout);
+        $PDF = new PDFRecords($this->app, $printer, $layout);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);
@@ -44,4 +52,5 @@ class PrinterController extends Controller
 
         return $response;
     }
+
 }
