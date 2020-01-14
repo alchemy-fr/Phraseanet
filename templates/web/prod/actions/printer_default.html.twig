@@ -2,6 +2,17 @@
 <form target="_blank" name="formprintpage" method="POST" action="{{ path('prod_printer_print') }}">
     <div id="printBox">
         <div style="padding:10px;">
+            {% if basketFeedbackId %}
+                <h4>{{ 'phraseanet:: basket feedback' | trans }}</h4>
+                <input type="hidden" name="SSTTID" value="{{ basketFeedbackId }}" />
+                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                    <label for="RADI_PRE_BF" class="radio">
+                        <input type="radio" name="lay" value="feedback" id="RADI_PRE_BF" />
+                        {{ 'print:: basket feedback' | trans }}
+                    </label>
+                </div>
+            {% endif %}
+
             {% if printer.get_count_actionable() > 0 %}
                 {% if printer.get_count_preview() > 0 %}
                 <h4>{{ 'phraseanet:: preview' | trans }}</h4>
