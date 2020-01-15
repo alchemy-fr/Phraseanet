@@ -36,6 +36,7 @@ class PDFRecords extends PDF
                     throw new \Exception('Unknown layout');
                     break;
                 case self::LAYOUT_FEEDBACK:
+                case self::LAYOUT_FEEDBACKONLY:
                 case self::LAYOUT_PREVIEW:
                 case self::LAYOUT_PREVIEWCAPTION:
                 case self::LAYOUT_PREVIEWCAPTIONTDM:
@@ -86,6 +87,9 @@ class PDFRecords extends PDF
         switch ($layout) {
             case self::LAYOUT_FEEDBACK:
                 $this->print_preview(false, true, true);
+                break;
+            case self::LAYOUT_FEEDBACKONLY:
+                $this->print_preview(false, false, true);
                 break;
             case self::LAYOUT_PREVIEW:
                 $this->print_preview(false, false, false);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-01-15T09:13:07Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-01-15T15:10:20Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4540,7 +4540,7 @@
       <trans-unit id="665a328fd4112e6d1d5600a541f322438eae5605" resname="None of the selected records can be printed" approved="yes">
         <source>None of the selected records can be printed</source>
         <target state="translated">Geen enkele van de geselecteerde records kunnen geprint worden</target>
-        <jms:reference-file line="55">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="60">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7c12e38fb384f87d975fd0ebf1070b400504663f" resname="None of the selected records can be pushed." approved="yes">
         <source>None of the selected records can be pushed.</source>
@@ -9120,7 +9120,7 @@
       <trans-unit id="b93e2160edf563e86eb2e7ef4d92dce4856759ee" resname="boutton::imprimer" approved="yes">
         <source>boutton::imprimer</source>
         <target state="translated">Print</target>
-        <jms:reference-file line="51">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="56">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e4c65d295605a0e884818b5c06d32a63fd692d5" resname="boutton::modifier" approved="yes">
         <source>boutton::modifier</source>
@@ -9635,7 +9635,7 @@
       <trans-unit id="d67a3a7adb767f230b62fd72ec7f3d8624ca8e33" resname="export:: erreur : aucun document selectionne" approved="yes">
         <source>export:: erreur : aucun document selectionne</source>
         <target state="translated">Erreur : geen enkel document geslecteerd</target>
-        <jms:reference-file line="57">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="62">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="87ebe3542857dc472902c8fa173b6147a8ed6f86" resname="export:: telechargement" approved="yes">
         <source>export:: telechargement</source>
@@ -10568,7 +10568,7 @@
         <source>phraseanet:: preview</source>
         <target state="translated">Voorvertoning</target>
         <jms:reference-file line="256">prod/actions/edit_default.html.twig</jms:reference-file>
-        <jms:reference-file line="18">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="23">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2baca947f8536e2ff6bab1c45c1876c04706a6a0" resname="phraseanet:: propositions" approved="yes">
         <source>phraseanet:: propositions</source>
@@ -10925,85 +10925,90 @@
         <target state="new">print:: basket feedback</target>
         <jms:reference-file line="11">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only">
+        <source>print:: basket feedback only</source>
+        <target state="new">print:: basket feedback only</target>
+        <jms:reference-file line="15">prod/actions/printer_default.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
         <source>print:: image de choix et description</source>
         <target state="translated">Het gekozen beeld en de beschrijving</target>
-        <jms:reference-file line="26">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="31">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ed44939b592221e0287a12c4bd83cea4d62b5ee3" resname="print:: image de choix et description avec planche contact" approved="yes">
         <source>print:: image de choix et description avec planche contact</source>
         <target state="translated">Het gekozen beeld en de beschrijving met de contact fiche</target>
-        <jms:reference-file line="30">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="35">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="564995e2b08aa43131fc90cd342b5abd9a995559" resname="print:: image de choix seulement" approved="yes">
         <source>print:: image de choix seulement</source>
         <target state="translated">Enkel het gekozen beeld</target>
-        <jms:reference-file line="22">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="27">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="36f3ca7be80558bac003359763567e8a23be4c0a" resname="print:: imagette" approved="yes">
         <source>print:: imagette</source>
         <target state="translated">Thumbnail</target>
-        <jms:reference-file line="35">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="40">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="04bf007de37e21c5f9c47f069856c4146eef1f4a" resname="print:: liste d'imagettes" approved="yes">
         <source>print:: liste d'imagettes</source>
         <target state="translated">Thumbnail lijst</target>
-        <jms:reference-file line="39">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="44">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9a447b4210f0a24a385031830ab4848abb61793" resname="print:: planche contact (mosaique)" approved="yes">
         <source>print:: planche contact (mosaique)</source>
         <target state="translated">Contact fiche (mosaic)</target>
-        <jms:reference-file line="43">prod/actions/printer_default.html.twig</jms:reference-file>
+        <jms:reference-file line="48">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : ">
         <source>print_feedback:: Document generated on : </source>
         <target state="new">print_feedback:: Document generated on : </target>
-        <jms:reference-file line="392">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="396">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : ">
         <source>print_feedback:: Feedback expiring on : </source>
         <target state="new">print_feedback:: Feedback expiring on : </target>
-        <jms:reference-file line="410">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="414">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : ">
         <source>print_feedback:: Feedback initiated by : </source>
         <target state="new">print_feedback:: Feedback initiated by : </target>
-        <jms:reference-file line="398">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="402">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
         <source>print_feedback:: Feedback initiated on : </source>
         <target state="new">print_feedback:: Feedback initiated on : </target>
-        <jms:reference-file line="404">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="408">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%">
         <source>print_feedback:: Feedback on basket %name%</source>
         <target state="new">print_feedback:: Feedback on basket %name%</target>
-        <jms:reference-file line="386">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="390">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non">
         <source>print_feedback:: Non</source>
         <target state="new">print_feedback:: Non</target>
-        <jms:reference-file line="648">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="652">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui">
         <source>print_feedback:: Oui</source>
         <target state="new">print_feedback:: Oui</target>
-        <jms:reference-file line="644">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="648">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : ">
         <source>print_feedback:: Participants : </source>
         <target state="new">print_feedback:: Participants : </target>
-        <jms:reference-file line="420">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="424">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :">
         <source>print_feedback:: Votes :</source>
         <target state="new">print_feedback:: Votes :</target>
-        <jms:reference-file line="621">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="625">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté">
         <source>print_feedback:: non voté</source>
         <target state="new">print_feedback:: non voté</target>
-        <jms:reference-file line="639">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="643">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive">
         <source>prive</source>
