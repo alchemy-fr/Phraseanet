@@ -329,6 +329,12 @@
           </div>
     {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
       <div class="bottom">
+          {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
+              <span class="icon-stack captionRolloverTips captionTips"
+                    tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
+                   <i class="icomoon icon-round-list-24px white" style="background: #777;border-radius: 2px;padding: 0px 1px;line-height: 1;margin: 0 4px 4px 4px;"></i>
+              </span>
+          {% endif %}
           <a
             {% if wz_scope == 'groupings' %}
               id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
@@ -342,12 +348,7 @@
             class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
               <i class="fa fa-times" aria-hidden="true"></i>
           </a>
-          {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-              <span class="icon-stack captionRolloverTips captionTips"
-                    tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
-                   <i class="icomoon icon-round-list-24px white" style="background: #777;border-radius: 2px;padding: 0px 1px;line-height: 1;margin: 0 4px 4px 4px;"></i>
-              </span>
-          {% endif %}
+
       </div>
   </div>
 {% endmacro %}
