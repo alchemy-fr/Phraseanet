@@ -126,7 +126,8 @@
                         {% endif %}
                       -->
                         <td>
-                            <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                            <a class="contextMenuTrigger" href="#">   <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                                <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i></a>
                         </td>
                   </tr>
             </table>
@@ -327,12 +328,12 @@
           <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
               {{record.getNumber()}}
           </div>
-    {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
+    {{thumbnail.format(record.get_thumbnail,140,140, '', true, false)}}
       <div class="bottom">
           {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
               <span class="icon-stack captionRolloverTips captionTips"
                     tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
-                   <i class="icomoon icon-round-list-24px white" style="background: #777;border-radius: 2px;padding: 0px 1px;line-height: 1;margin: 0 4px 4px 4px;"></i>
+                   <i class="icomoon icon-round-list-24px white" ></i>
               </span>
           {% endif %}
           <a
@@ -346,7 +347,8 @@
               href="#"
             {% endif %}
             class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
-              <i class="fa fa-times" aria-hidden="true"></i>
+              <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+              <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
           </a>
 
       </div>
