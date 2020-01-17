@@ -7577,10 +7577,10 @@ phraseanet-common@^0.4.5-d:
     js-cookie "^2.1.0"
     pym.js "^1.3.1"
 
-phraseanet-production-client@0.34.99-d:
-  version "0.34.99-d"
-  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.99-d.tgz#fc06941163f698dc77ebca8a4c16663aa3ac458a"
-  integrity sha512-016LZam+eNQqAYyduiGinT79YkGeUDWZ9uk7r01BHmgsYjWc+UoCvUvExhCCHcoyMm+qd29VfHhQAWoyCCkG6g==
+phraseanet-production-client@0.34.102-d:
+  version "0.34.102-d"
+  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.102-d.tgz#ee2772fd712a5fb2acc87eae5c7d4a2a46f5a28a"
+  integrity sha512-3KtY3n9uI42o6mDUDDXX6KgP3Os2FlQE3nkzEJc3eVbstG9V6rNlk8J/ujXaMKy1hibBT+9f7TTSYy0Z9ARPBA==
   dependencies:
     "@mapbox/mapbox-gl-language" "^0.9.2"
     "@turf/turf" "^5.1.6"
