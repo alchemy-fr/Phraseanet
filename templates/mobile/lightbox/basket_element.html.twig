@@ -93,21 +93,4 @@
 
   </div>
 </div>
-    <script type="text/javascript">
-        /*resize of PDF */
-        $(window).on("load resize ",function(e){
-            if($('.pdf-iframe').length > 0) {
-                var pdfHeight =  $('.pdf-iframe').width() / 0.707;
-                $('.pdf-iframe').css('height', pdfHeight);
-            }
-        });
-        /*resize of VIDEO */
-        $(window).on("load resize ",function(e){
-            if($('.video-iframe').length > 0) {
-                var ratio = $('[name=videoRatio]').val();
-                var videoHeight =  $('.video-iframe').width() / ratio;
-                $('.video-iframe').css('height', videoHeight).css('min-height',0);
-            }
-        });
-    </script>
 {% endblock %}

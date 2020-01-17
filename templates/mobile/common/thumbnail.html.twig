@@ -59,7 +59,8 @@
     {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
         {% set thumbnail_height = thumbnail.get_height() > 0 ? thumbnail.get_height() : 120 %}
         {% set thumbnail_width = thumbnail.get_width() > 0 ? thumbnail.get_width() : 120 %}
-        <input type="hidden" class="hidden" id="videoRatio" name="videoRatio" value="{{  thumbnail_width / thumbnail_height }}"/>
+        <input type="hidden" class="hidden" id="videoHeight" name="videoHeight" value="{{  thumbnail_height }}"/>
+        <input type="hidden" class="hidden" id="videoWidth" name="videoWidth" value="{{  thumbnail_width }}"/>
         <iframe width="100%" height="100%"
                 src="{{ url('alchemy_embed_view', {url: url|trim, autoplay: autoplay|default('false') }) }}"
                 frameborder="0" allowfullscreen class="video-iframe"></iframe>
