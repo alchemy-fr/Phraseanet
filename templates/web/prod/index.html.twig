@@ -926,7 +926,7 @@
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input
-                    name="basket_status_display" type="checkbox preferences-options-basket-status" class="checkbox" value="1"
+                    name="basket_status_display" type="checkbox" class="checkbox preferences-options-basket-status" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
                 </label>
