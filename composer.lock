@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd0d5a53e23ab5c2f0167055bd0fd8b6",
+    "content-hash": "38f4d2ff1ee1f71db266e360cdaf222d",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -421,29 +421,26 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.2",
+            "version": "0.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
-                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
                 "shasum": ""
             },
             "require": {
                 "doctrine/cache": "^1.0",
                 "doctrine/collections": "^1.0",
+                "exiftool/exiftool": "^11",
                 "monolog/monolog": "^1.3",
                 "php": ">=5.5.9",
-                "phpexiftool/exiftool": "10.10",
                 "symfony/console": "^2.1|^3.0",
                 "symfony/process": "^2.1|^3.0"
-            },
-            "replace": {
-                "phpexiftool/phpexiftool": "<0.5.0"
             },
             "require-dev": {
                 "jms/serializer": "~0.10|^1.0",
@@ -490,7 +487,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2019-02-13T13:06:43+00:00"
+            "time": "2020-01-17T14:28:33+00:00"
         },
         {
             "name": "alchemy/rest-bundle",
@@ -1912,6 +1909,16 @@
                 "event-dispatcher"
             ],
             "time": "2012-05-30T15:01:08+00:00"
+        },
+        {
+            "name": "exiftool/exiftool",
+            "version": "11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/exiftool/exiftool.git",
+                "reference": "11.84"
+            },
+            "type": "library"
         },
         {
             "name": "facebook/graph-sdk",
@@ -4847,39 +4854,6 @@
             "time": "2015-05-17T12:39:23+00:00"
         },
         {
-            "name": "phpexiftool/exiftool",
-            "version": "10.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "0833cab894c890353192a83011428525a318bedf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
-                "reference": "0833cab894c890353192a83011428525a318bedf",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Perl Licensing"
-            ],
-            "authors": [
-                {
-                    "name": "Phil Harvey",
-                    "email": "phil@owl.phy.queensu.ca",
-                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
-                }
-            ],
-            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
-            "keywords": [
-                "exiftool",
-                "metadatas"
-            ],
-            "time": "2016-01-25T11:10:14+00:00"
-        },
-        {
             "name": "phpoption/phpoption",
             "version": "1.5.0",
             "source": {
@@ -6989,6 +6963,7 @@
                 "code",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-code",
             "time": "2016-04-20T17:26:42+00:00"
         },
         {
@@ -7043,6 +7018,7 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2016-02-18T20:53:00+00:00"
         }
     ],
@@ -7238,6 +7214,39 @@
                 }
             ],
             "time": "2016-11-25T06:54:22+00:00"
+        },
+        {
+            "name": "phpexiftool/exiftool",
+            "version": "10.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/exiftool.git",
+                "reference": "0833cab894c890353192a83011428525a318bedf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
+                "reference": "0833cab894c890353192a83011428525a318bedf",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Perl Licensing"
+            ],
+            "authors": [
+                {
+                    "name": "Phil Harvey",
+                    "email": "phil@owl.phy.queensu.ca",
+                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
+                }
+            ],
+            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
+            "keywords": [
+                "exiftool",
+                "metadatas"
+            ],
+            "time": "2016-01-25T11:10:14+00:00"
         },
         {
             "name": "phpspec/prophecy",
