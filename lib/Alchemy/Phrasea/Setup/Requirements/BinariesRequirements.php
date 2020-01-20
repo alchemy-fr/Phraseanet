@@ -60,7 +60,7 @@ class BinariesRequirements extends RequirementCollection implements RequirementI
             );
         }
 
-        $exiftool = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
+        $exiftool = __DIR__ . '/../../../../../vendor/exiftool/exiftool/exiftool' . (defined('PHP_WINDOWS_VERSION_BUILD') ? '.exe' : '');
 
         $this->addRequirement(
             is_file($exiftool) && is_executable($exiftool),
