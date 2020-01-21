@@ -11130,9 +11130,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="61">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="77">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="no">
+      <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
         <source>print:: basket feedback</source>
-        <target state="needs-translation">Impression du rapport de validation avec description</target>
+        <target state="translated">Rapport de validation avec description</target>
         <jms:reference-file line="11">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description" approved="yes">
@@ -11212,12 +11212,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :" approved="no">
         <source>print_feedback:: Votes :</source>
-        <target state="needs-translation">Votes :</target>
+        <target state="needs-translation">Approbations :</target>
         <jms:reference-file line="621">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="no">
         <source>print_feedback:: non voté</source>
-        <target state="needs-translation">Sans avis</target>
+        <target state="needs-translation">Non exprimé</target>
         <jms:reference-file line="639">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
