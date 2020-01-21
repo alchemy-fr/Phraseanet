@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-01-15T15:08:27Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -956,9 +956,9 @@
         <jms:reference-file line="19">admin/databox/databox.html.twig</jms:reference-file>
         <jms:reference-file line="15">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a16a3255c311eccbe2471bfc5b5cd92f3b907654" resname="An error occured when wanting to change status!">
+      <trans-unit id="a16a3255c311eccbe2471bfc5b5cd92f3b907654" resname="An error occured when wanting to change status!" approved="yes">
         <source>An error occured when wanting to change status!</source>
-        <target state="new">An error occured when wanting to change status!</target>
+        <target state="translated">An error occured when wanting to change status!</target>
         <jms:reference-file line="136">Controller/Prod/LazaretController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a518072a2c5c91cdd2591c1b8d79777664df1ea4" resname="An error occured while denying, please retry  or contact an admin if problem persists" approved="yes">
@@ -1939,7 +1939,7 @@
       </trans-unit>
       <trans-unit id="eab0e95276dfd8825c77e34b62590878e85818e5" resname="Contributor" approved="yes">
         <source>Contributor</source>
-        <target state="translated">Contributor</target>
+        <target state="translated">Contribute</target>
         <jms:reference-file line="32">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9a1757945390259d3dbb7c551d01c23638463d39" resname="Copiez le code ci-dessous, retournez dans votre application et collez-le a l'endroit requis :" approved="yes">
@@ -10485,9 +10485,9 @@
         <target state="translated">Help</target>
         <jms:reference-file line="140">web/common/menubar.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="674a843ed98ba8a423f7bbdbee30c9ca1a4aab96" resname="phraseanet:: basket feedback">
+      <trans-unit id="674a843ed98ba8a423f7bbdbee30c9ca1a4aab96" resname="phraseanet:: basket feedback" approved="no">
         <source>phraseanet:: basket feedback</source>
-        <target state="new">phraseanet:: basket feedback</target>
+        <target state="needs-translation">Feedback report with description</target>
         <jms:reference-file line="6">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="82f1c4ecdd310877886e675b4a6ccf848f77e34d" resname="phraseanet:: choisir" approved="yes">
@@ -10913,9 +10913,9 @@
         <jms:reference-file line="53">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="66">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback">
+      <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="no">
         <source>print:: basket feedback</source>
-        <target state="new">print:: basket feedback</target>
+        <target state="needs-translation">Feedback report with description</target>
         <jms:reference-file line="11">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only">
@@ -10953,54 +10953,54 @@
         <target state="translated">Thumbnails</target>
         <jms:reference-file line="48">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : ">
+      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="no">
         <source>print_feedback:: Document generated on : </source>
-        <target state="new">print_feedback:: Document generated on : </target>
+        <target state="needs-translation">Generated on :</target>
         <jms:reference-file line="396">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : ">
+      <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : " approved="yes">
         <source>print_feedback:: Feedback expiring on : </source>
-        <target state="new">print_feedback:: Feedback expiring on : </target>
+        <target state="translated">Feedback expiring on :</target>
         <jms:reference-file line="414">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : ">
+      <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : " approved="yes">
         <source>print_feedback:: Feedback initiated by : </source>
-        <target state="new">print_feedback:: Feedback initiated by : </target>
+        <target state="translated">Feedback initiated by :</target>
         <jms:reference-file line="402">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
+      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="yes">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="new">print_feedback:: Feedback initiated on : </target>
+        <target state="translated">Feedback initiated on :</target>
         <jms:reference-file line="408">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%">
+      <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
         <source>print_feedback:: Feedback on basket %name%</source>
-        <target state="new">print_feedback:: Feedback on basket %name%</target>
+        <target state="translated">Feedback report on basket %name%</target>
         <jms:reference-file line="390">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non">
+      <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non" approved="yes">
         <source>print_feedback:: Non</source>
-        <target state="new">print_feedback:: Non</target>
+        <target state="translated">No</target>
         <jms:reference-file line="652">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui">
+      <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui" approved="no">
         <source>print_feedback:: Oui</source>
-        <target state="new">print_feedback:: Oui</target>
+        <target state="needs-translation">Yes</target>
         <jms:reference-file line="648">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : ">
+      <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : " approved="yes">
         <source>print_feedback:: Participants : </source>
-        <target state="new">print_feedback:: Participants : </target>
+        <target state="translated">Participants list :</target>
         <jms:reference-file line="424">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :">
+      <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :" approved="no">
         <source>print_feedback:: Votes :</source>
-        <target state="new">print_feedback:: Votes :</target>
+        <target state="needs-translation">Approvals :</target>
         <jms:reference-file line="625">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté">
+      <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="yes">
         <source>print_feedback:: non voté</source>
-        <target state="new">print_feedback:: non voté</target>
+        <target state="translated">Unexpressed</target>
         <jms:reference-file line="643">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
@@ -11288,9 +11288,9 @@
         <target state="new">prod:app trash: record-to-delete</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
+      <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="no">
         <source>prod:app trash: title-trash</source>
-        <target state="translated">Move record(s) to Trash</target>
+        <target state="needs-translation">prod:app trash: title-trash</target>
         <jms:reference-file line="44">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
