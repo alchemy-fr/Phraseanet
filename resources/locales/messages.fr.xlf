@@ -11187,7 +11187,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="no">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="needs-translation">Début de validation le</target>
+        <target state="needs-translation">Début de validation le :</target>
         <jms:reference-file line="404">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="no">
