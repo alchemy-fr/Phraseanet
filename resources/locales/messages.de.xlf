@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-01-15T15:07:53Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="48">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -734,9 +734,9 @@
         <target state="translated">erweiterte Felder Parameter</target>
         <jms:reference-file line="132">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings" approved="yes">
+      <trans-unit id="2e8bbf396d28ec55f8a6987f31422f44b693a08c" resname="Advanced settings" approved="no">
         <source>Advanced settings</source>
-        <target state="translated">Erweiterte Einstellungen</target>
+        <target state="needs-translation">Erweiterte Einstellungen</target>
         <jms:reference-file line="469">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8f3ed663adc3f670da96cfd59f14ca2d063439" resname="Affichage" approved="yes">
@@ -900,16 +900,16 @@
         <target state="translated">Push wird erlaubt</target>
         <jms:reference-file line="417">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc" approved="yes">
+      <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc" approved="no">
         <source>Alphabetic asc</source>
-        <target state="translated">aufsteigend alphabetisch Ordnung</target>
+        <target state="needs-translation">aufsteigender alphabetischer Reihenfolge</target>
         <jms:reference-file line="789">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="805">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="817">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc" approved="yes">
+      <trans-unit id="e7029550f725d4758c662974089acb89c467d221" resname="Alphabetic desc" approved="no">
         <source>Alphabetic desc</source>
-        <target state="translated">absteigend alphabetisch Ordnung</target>
+        <target state="needs-translation">absteigender alphabetischer Reihenfolge</target>
         <jms:reference-file line="790">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebd447ea09611b090d7b8a12835ffaf79ea17e47" resname="Also delete records that rely on groupings." approved="yes">
@@ -956,9 +956,9 @@
         <jms:reference-file line="19">admin/databox/databox.html.twig</jms:reference-file>
         <jms:reference-file line="15">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a16a3255c311eccbe2471bfc5b5cd92f3b907654" resname="An error occured when wanting to change status!">
+      <trans-unit id="a16a3255c311eccbe2471bfc5b5cd92f3b907654" resname="An error occured when wanting to change status!" approved="no">
         <source>An error occured when wanting to change status!</source>
-        <target state="new">An error occured when wanting to change status!</target>
+        <target state="needs-translation">Beim Ändern des Status ist ein Fehler aufgetreten!</target>
         <jms:reference-file line="136">Controller/Prod/LazaretController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a518072a2c5c91cdd2591c1b8d79777664df1ea4" resname="An error occured while denying, please retry  or contact an admin if problem persists" approved="yes">
@@ -1795,9 +1795,9 @@
         <target state="translated">Die Leerung der Kollektion wurde erfolgreich abgeschlossen</target>
         <jms:reference-file line="132">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order" approved="yes">
+      <trans-unit id="898b7e63805ba2e4277ee0f4523c6376dcd0e579" resname="Collection order" approved="no">
         <source>Collection order</source>
-        <target state="translated">Kollektionen Ordnung</target>
+        <target state="needs-translation">Kollektionen Ordnung</target>
         <jms:reference-file line="783">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f704cc39c26f37922029d5ff58c61b607d384521" resname="Color Depth" approved="yes">
@@ -2117,9 +2117,9 @@
         <target state="translated">DU</target>
         <jms:reference-file line="42">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !" approved="yes">
+      <trans-unit id="5e2dc4518235e7567a3d68c45cb6165ec116fa3c" resname="Danger zone !" approved="no">
         <source>Danger zone !</source>
-        <target state="translated">Gefahrenzone!</target>
+        <target state="needs-translation">Gefahrenzone !</target>
         <jms:reference-file line="5">admin/fields/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61074f1c958d6cdd32dad889b3d58a2d0704cbe3" resname="Database" approved="yes">
@@ -2189,9 +2189,9 @@
         <target state="translated">Erstellungsdatum</target>
         <jms:reference-file line="55">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ae5ac088b6ef50c2a9e1ccf96d6f3c6d65cc4c05" resname="Date Updated" approved="yes">
+      <trans-unit id="ae5ac088b6ef50c2a9e1ccf96d6f3c6d65cc4c05" resname="Date Updated" approved="no">
         <source>Date Updated</source>
-        <target state="translated">Aktualisierungsdatum</target>
+        <target state="needs-translation">Aktualisierungsdatum</target>
         <jms:reference-file line="303">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="910c2f8e114bda3eef68b7f17eee5e864be52dc4" resname="Date de connexion" approved="yes">
@@ -2294,9 +2294,9 @@
         <target state="translated">Eine Webhook URL festlegen</target>
         <jms:reference-file line="73">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="93603718ec74d5e4b9bc11e64f36a5d90f03f48e" resname="Defined by admin" approved="yes">
+      <trans-unit id="93603718ec74d5e4b9bc11e64f36a5d90f03f48e" resname="Defined by admin" approved="no">
         <source>Defined by admin</source>
-        <target state="translated">von Administrator festgelegt</target>
+        <target state="needs-translation">Von Administrator festgelegt</target>
         <jms:reference-file line="788">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b6bf506a535e9bf22431eace58b8f2f704dbd2a" resname="Defined in Apache configuration" approved="yes">
@@ -2824,9 +2824,9 @@
         <target state="translated">HD Ersetzung aktivieren</target>
         <jms:reference-file line="28">Form/Configuration/ModulesFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="344fc3edd6987653de543b2ecd2d31aec2f3cca0" resname="Enable Phraseanet Web API" approved="yes">
+      <trans-unit id="344fc3edd6987653de543b2ecd2d31aec2f3cca0" resname="Enable Phraseanet Web API" approved="no">
         <source>Enable Phraseanet Web API</source>
-        <target state="translated">Phraseanet Web API aktivieren</target>
+        <target state="needs-translation">Phraseanet Web API aktivieren</target>
         <jms:reference-file line="22">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ee98e71194d6f532c3c777fa20a957c3ba490089" resname="Enable SMTP authentication" approved="yes">
@@ -5782,9 +5782,9 @@
         <target state="translated">Sehen</target>
         <jms:reference-file line="8">WorkZone/Browser/Browser.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a377f0dd2a261c8e46358dc8d0e8d9868bc6094f" resname="See documentation about structure manipulation." approved="yes">
+      <trans-unit id="a377f0dd2a261c8e46358dc8d0e8d9868bc6094f" resname="See documentation about structure manipulation." approved="no">
         <source>See documentation about structure manipulation.</source>
-        <target state="translated">Dokumentation über Struktur Bearbeitung lesen (braucht oft einer Neuerstellung des ElasticSearch Indexs).</target>
+        <target state="needs-translation">Für Struktur Veränderungen, Dokumentation sehen</target>
         <jms:reference-file line="6">admin/fields/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b5c208620e2d74920057e4d500f77788b86f41db" resname="See documentation at %url%" approved="yes">
@@ -6407,9 +6407,9 @@
         <jms:reference-file line="6">web/login/cgus.html.twig</jms:reference-file>
         <jms:reference-file line="107">login/layout/base-layout.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance" approved="yes">
+      <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance" approved="no">
         <source>The Phraseanet Web API allows other web application to rely on this instance</source>
-        <target state="translated">Die Phraseanet Web API ermöglicht andere Web Anwendungen, auf diese Instanz zu vertrauen</target>
+        <target state="needs-translation">Die Phraseanet Web API ermöglicht, andere Web Anwendungen, auf diese Instanz zu vertrauen</target>
         <jms:reference-file line="23">Form/Configuration/APIClientsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2558cc2c887bbe4e2444ec6ef83b4982386e871a" resname="The URL you used is out of date, please login" approved="yes">
@@ -6999,9 +6999,9 @@
         <target state="translated">Benutzen Sie einen SMTP Server</target>
         <jms:reference-file line="28">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="337f9aa5d63611e88aedd8cc09ee1488fb9fe3a4" resname="Use an existing index" approved="yes">
+      <trans-unit id="337f9aa5d63611e88aedd8cc09ee1488fb9fe3a4" resname="Use an existing index" approved="no">
         <source>Use an existing index</source>
-        <target state="translated">Benutzen Sie einen bestehenden Index</target>
+        <target state="needs-translation">Benutzen Sie einen bestehenden Index</target>
         <jms:reference-file line="659">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d029e308808256c5e3868e24ea33f14866ab2e36" resname="Use latest search settings on Production loading" approved="yes">
@@ -7104,9 +7104,9 @@
         <target state="translated">Benutzer Vorschlag</target>
         <jms:reference-file line="134">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="yes">
+      <trans-unit id="a56fad2f92979e0171b42bbc51ff5657d17ceb91" resname="Utilisation prevue:" approved="no">
         <source>Utilisation prevue:</source>
-        <target state="translated">Verwendungszweck:</target>
+        <target state="needs-translation">Verwendungszweck:</target>
         <jms:reference-file line="875">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3b3e9155f69edf73caab337bf5f64231188b1e48" resname="VALIDATION" approved="yes">
@@ -9500,9 +9500,9 @@
         <target state="translated">hinzugefügtes Datum</target>
         <jms:reference-file line="136">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="yes">
+      <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="no">
         <source>date de modification</source>
-        <target state="translated">Änderungsdatum</target>
+        <target state="needs-translation">Änderungsdatum</target>
         <jms:reference-file line="137">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
@@ -10953,14 +10953,14 @@
         <target state="translated">Mosaikansicht</target>
         <jms:reference-file line="48">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : ">
+      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="no">
         <source>print_feedback:: Document generated on : </source>
-        <target state="new">print_feedback:: Document generated on : </target>
+        <target state="needs-translation">Erstellt am :</target>
         <jms:reference-file line="396">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : ">
+      <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : " approved="no">
         <source>print_feedback:: Feedback expiring on : </source>
-        <target state="new">print_feedback:: Feedback expiring on : </target>
+        <target state="needs-translation">Feedback läuft am : ab</target>
         <jms:reference-file line="414">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : ">
@@ -10978,29 +10978,29 @@
         <target state="new">print_feedback:: Feedback on basket %name%</target>
         <jms:reference-file line="390">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non">
+      <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non" approved="no">
         <source>print_feedback:: Non</source>
-        <target state="new">print_feedback:: Non</target>
+        <target state="needs-translation">Nein</target>
         <jms:reference-file line="652">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui">
+      <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui" approved="no">
         <source>print_feedback:: Oui</source>
-        <target state="new">print_feedback:: Oui</target>
+        <target state="needs-translation">Ja</target>
         <jms:reference-file line="648">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : ">
+      <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : " approved="no">
         <source>print_feedback:: Participants : </source>
-        <target state="new">print_feedback:: Participants : </target>
+        <target state="needs-translation">Teilnehmer :</target>
         <jms:reference-file line="424">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :">
+      <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :" approved="no">
         <source>print_feedback:: Votes :</source>
-        <target state="new">print_feedback:: Votes :</target>
+        <target state="needs-translation">Zustimmung :</target>
         <jms:reference-file line="625">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté">
+      <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="no">
         <source>print_feedback:: non voté</source>
-        <target state="new">print_feedback:: non voté</target>
+        <target state="needs-translation">unausgedrückt</target>
         <jms:reference-file line="643">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
