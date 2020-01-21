@@ -81,7 +81,7 @@
 
     </div>
 </div>
-<div style="margin:0 7px;overflow:hidden;position: relative">
+<div class="basket-content">
     {% set story_length = Story.get_children().get_elements()|length %}
     <div class="alert_datas_changed ui-corner-all">
         {{ 'Certaines donnees du reportage ont change' | trans }}
@@ -97,7 +97,7 @@
     {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 
     {% for record in Story.get_children().get_elements() %}
-        <span class="wrapCHIM_{{ record.get_serialize_key() }}">
+        <span class="chim-wrapper wrapCHIM_{{ record.get_serialize_key() }}">
         {{ Macros.element('groupings', Story, record, record, record.getNumber()) }}
         </span>
     {% endfor %}

@@ -312,54 +312,56 @@
   {% endif %}
 
   {% import 'common/thumbnail.html.twig' as thumbnail %}
-    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
-        <div class="title">
-                {{ record.get_title() | truncate(20, true, "...") }}
-        </div>
-    {% endif %}
-    {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
-        <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
-            {% for flag in record_flags(record) %}
-                <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
-            {% endfor %}
-        </div>
-    {% endif %}
-  <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
-       data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
-       data-position="{{ ord }}"
-       data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
-       style="height:{{box_height}}px;"
-       id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
-       <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
+    <div class="chim-content">
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
+            <div class="title">
+                    {{ record.get_title()|truncate(20, "...") }}
+            </div>
+        {% endif %}
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
+            <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+                {% for flag in record_flags(record) %}
+                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
+           data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
+           data-position="{{ ord }}"
+           data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
+           style="height:{{box_height}}px;"
+           id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
+           <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
 
-          <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
-              {{record.getNumber()}}
-          </div>
-    {{thumbnail.format(record.get_thumbnail,140,140, '', true, false)}}
-      <div class="bottom">
-          {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-              <span class="icon-stack captionRolloverTips captionTips"
-                    tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
-                   <i class="icomoon icon-round-list-24px white" ></i>
-              </span>
-          {% endif %}
-          <a
-            {% if wz_scope == 'groupings' %}
-              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
-            {% elseif wz_scope == 'basket' %}
-              id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
-            {% elseif wz_scope == 'basket' %}
-              href="#"
-            {% endif %}
-            class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
-              <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
-              <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
-          </a>
+            <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
+                  {{record.getNumber()}}
+            </div>
+            {{thumbnail.format(record.get_thumbnail,140,140, '', true, false)}}
+            <div class="bottom">
+              {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
+                  <span class="icon-stack captionRolloverTips captionTips"
+                        tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
+                       <i class="icomoon icon-round-list-24px white" ></i>
+                  </span>
+              {% endif %}
+              <a
+                {% if wz_scope == 'groupings' %}
+                  id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                  href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
+                {% elseif wz_scope == 'basket' %}
+                  id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                  href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+                {% elseif wz_scope == 'basket' %}
+                  href="#"
+                {% endif %}
+                class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
+                  <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+                  <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
+              </a>
 
-      </div>
-  </div>
+            </div>
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro display_basket(app, basket) %}
