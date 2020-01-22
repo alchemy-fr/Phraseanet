@@ -74,7 +74,7 @@ class ElasticsearchOptions
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
         $self->setActiveTab($options['activeTab']);
-        foreach($options['aggregates'] as $fieldname=>$attributes) {
+        foreach($options['facets'] as $fieldname=>$attributes) {
             $self->setAggregableField($fieldname, $attributes);
         }
 
@@ -97,10 +97,10 @@ class ElasticsearchOptions
             'populate_order'     => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
             'activeTab' => $this->activeTab,
-            'aggregates' => []
+            'facets' => []
         ];
-        foreach($this->_customValues['aggregates'] as $fieldname=>$attributes) {
-            $ret['aggregates'][$fieldname] = $attributes;
+        foreach($this->_customValues['facets'] as $fieldname=>$attributes) {
+            $ret['facets'][$fieldname] = $attributes;
         }
 
         return $ret;
@@ -220,17 +220,17 @@ class ElasticsearchOptions
 
     public function setAggregableField($key, $attributes)
     {
-        $this->_customValues['aggregates'][$key] = $attributes;
+        $this->_customValues['facets'][$key] = $attributes;
     }
 
     public function getAggregableField($key)
     {
-        return $this->_customValues['aggregates'][$key];
+        return $this->_customValues['facets'][$key];
     }
 
     public function getAggregableFields()
     {
-        return $this->_customValues['aggregates'];
+        return $this->_customValues['facets'];
     }
 
     public function getActiveTab()
