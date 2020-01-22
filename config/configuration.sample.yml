@@ -28,7 +28,8 @@ main:
             port: 11211
     search-engine:
         type: phrasea
-        options: []
+        options:
+            facets: []
     task-manager:
         status: started
         enabled: true

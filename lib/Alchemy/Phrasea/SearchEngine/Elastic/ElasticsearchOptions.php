@@ -60,6 +60,7 @@ class ElasticsearchOptions
             'populate_order'     => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
             'activeTab' => null,
+            'facets' => []
         ];
         $options = array_replace($defaultOptions, $options);
 
