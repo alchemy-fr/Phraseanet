@@ -100,8 +100,8 @@ class ElasticsearchOptions
             'activeTab' => $this->activeTab,
             'aggregates' => []
         ];
-        foreach($this->_customValues['aggregates'] as $fieldname=>$attributes) {
-            $ret['aggregates'][$fieldname] = $attributes;
+        foreach($this->getAggregableFields() as $fieldname=>$attributes) {
+            $ret['facets'][$fieldname] = $attributes;
         }
 
         return $ret;
@@ -221,17 +221,22 @@ class ElasticsearchOptions
 
     public function setAggregableField($key, $attributes)
     {
-        $this->_customValues['aggregates'][$key] = $attributes;
+        $facets = $this->getAggregableFields();
+        $facets[$key] = $attributes;
     }
 
     public function getAggregableField($key)
     {
-        return $this->_customValues['aggregates'][$key];
+        $facets = $this->getAggregableFields();
+        return array_key_exists($key, $facets) ? $facets[$key] : null;
     }
 
-    public function getAggregableFields()
+    public function &getAggregableFields()
     {
-        return $this->_customValues['aggregates'];
+        if(!array_key_exists('facets', $this->_customValues) || !is_array($this->_customValues['facets'])) {
+            $this->_customValues['facets'] = [];
+        }
+        return $this->_customValues['facets'];
     }
 
     public function getActiveTab()
