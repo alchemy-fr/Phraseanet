@@ -112,7 +112,7 @@
     {% endfor %}
       </div>
       <div id="all_baskets-block" class="all_baskets-block">
-    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | sort | reverse %}
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
