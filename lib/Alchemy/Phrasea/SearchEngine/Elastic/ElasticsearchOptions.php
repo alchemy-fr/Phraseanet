@@ -9,6 +9,9 @@
  */
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use igorw;
+
+
 class ElasticsearchOptions
 {
     const POPULATE_ORDER_RID = "RECORD_ID";
@@ -58,12 +61,7 @@ class ElasticsearchOptions
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
             'activeTab' => null,
         ];
-
-        foreach(self::getAggregableTechnicalFields() as $k => $f) {
-            $defaultOptions[$k.'_limit'] = 0;
-        }
         $options = array_replace($defaultOptions, $options);
-
 
         $self = new self();
         $self->setHost($options['host']);
@@ -76,10 +74,9 @@ class ElasticsearchOptions
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
         $self->setActiveTab($options['activeTab']);
-        foreach(self::getAggregableTechnicalFields() as $k => $f) {
-            $self->setAggregableFieldLimit($k, $options[$k.'_limit']);
+        foreach($options['aggregates'] as $fieldname=>$attributes) {
+            $self->setAggregableField($fieldname, $attributes);
         }
-
 
         return $self;
     }
@@ -99,10 +96,11 @@ class ElasticsearchOptions
             'highlight' => $this->highlight,
             'populate_order'     => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
-            'activeTab' => $this->activeTab
+            'activeTab' => $this->activeTab,
+            'aggregates' => []
         ];
-        foreach(self::getAggregableTechnicalFields() as $k => $f) {
-            $ret[$k.'_limit'] = $this->getAggregableFieldLimit($k);
+        foreach($this->_customValues['aggregates'] as $fieldname=>$attributes) {
+            $ret['aggregates'][$fieldname] = $attributes;
         }
 
         return $ret;
@@ -220,14 +218,19 @@ class ElasticsearchOptions
         $this->highlight = $highlight;
     }
 
-    public function setAggregableFieldLimit($key, $value)
+    public function setAggregableField($key, $attributes)
     {
-        $this->_customValues[$key.'_limit'] = $value;
+        $this->_customValues['aggregates'][$key] = $attributes;
     }
 
-    public function getAggregableFieldLimit($key)
+    public function getAggregableField($key)
     {
-        return $this->_customValues[$key.'_limit'];
+        return $this->_customValues['aggregates'][$key];
+    }
+
+    public function getAggregableFields()
+    {
+        return $this->_customValues['aggregates'];
     }
 
     public function getActiveTab()
@@ -241,56 +244,56 @@ class ElasticsearchOptions
 
     public function __get($key)
     {
-        if(!array_key_exists($key, $this->_customValues)) {
-            $this->_customValues[$key] = 0;
-        }
-        return $this->_customValues[$key];
+        $keys = explode(':', $key);
+
+        return igorw\get_in($this->_customValues, $keys);
     }
 
     public function __set($key, $value)
     {
-        $this->_customValues[$key] = $value;
+        $keys = explode(':', $key);
+        $this->_customValues = igorw\assoc_in($this->_customValues, $keys, $value);
     }
 
     public static function getAggregableTechnicalFields()
     {
         return [
-            'base_aggregate' => [
+            'base' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:base_label',
                 'field'   => "database",
                 'esfield' => 'databox_name',
                 'query'   => 'database:%s',
             ],
-            'collection_aggregate' => [
+            'collection' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:collection_label',
                 'field'   => "collection",
                 'esfield' => 'collection_name',
                 'query'   => 'collection:%s',
             ],
-            'doctype_aggregate' => [
+            'doctype' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:doctype_label',
                 'field'   => "type",
                 'esfield' => 'type',
                 'query'   => 'type:%s',
             ],
-            'camera_model_aggregate' => [
+            'camera_model' => [
                 'type'    => 'string',
                 'label'   => 'Camera Model',
                 'field'   => "meta.CameraModel",
                 'esfield' => 'metadata_tags.CameraModel',
                 'query'   => 'meta.CameraModel:%s',
             ],
-            'iso_aggregate' => [
+            'iso' => [
                 'type'    => 'number',
                 'label'   => 'ISO',
                 'field'   => "meta.ISO",
                 'esfield' => 'metadata_tags.ISO',
                 'query'   => 'meta.ISO=%s',
             ],
-            'aperture_aggregate' => [
+            'aperture' => [
                 'type'    => 'number',
                 'label'   => 'Aperture',
                 'field'   => "meta.Aperture",
@@ -300,7 +303,7 @@ class ElasticsearchOptions
                     return round($value, 1);
                 },
             ],
-            'shutterspeed_aggregate' => [
+            'shutterspeed' => [
                 'type'    => 'number',
                 'label'   => 'Shutter speed',
                 'field'   => "meta.ShutterSpeed",
@@ -313,7 +316,7 @@ class ElasticsearchOptions
                     return $value . ' s.';
                 },
             ],
-            'flashfired_aggregate' => [
+            'flashfired' => [
                 'type'    => 'boolean',
                 'label'   => 'FlashFired',
                 'field'   => "meta.FlashFired",
@@ -327,49 +330,49 @@ class ElasticsearchOptions
                     return array_key_exists($value, $map) ? $map[$value] : $value;
                 },
             ],
-            'framerate_aggregate' => [
+            'framerate' => [
                 'type'    => 'number',
                 'label'   => 'FrameRate',
                 'field'   => "meta.FrameRate",
                 'esfield' => 'metadata_tags.FrameRate',
                 'query'   => 'meta.FrameRate=%s',
             ],
-            'audiosamplerate_aggregate' => [
+            'audiosamplerate' => [
                 'type'    => 'number',
                 'label'   => 'Audio Samplerate',
                 'field'   => "meta.AudioSamplerate",
                 'esfield' => 'metadata_tags.AudioSamplerate',
                 'query'   => 'meta.AudioSamplerate=%s',
             ],
-            'videocodec_aggregate' => [
+            'videocodec' => [
                 'type'    => 'string',
                 'label'   => 'Video codec',
                 'field'   => "meta.VideoCodec",
                 'esfield' => 'metadata_tags.VideoCodec',
                 'query'   => 'meta.VideoCodec:%s',
             ],
-            'audiocodec_aggregate' => [
+            'audiocodec' => [
                 'type'    => 'string',
                 'label'   => 'Audio codec',
                 'field'   => "meta.AudioCodec",
                 'esfield' => 'metadata_tags.AudioCodec',
                 'query'   => 'meta.AudioCodec:%s',
             ],
-            'orientation_aggregate' => [
+            'orientation' => [
                 'type'    => 'string',
                 'label'   => 'Orientation',
                 'field'   => "meta.Orientation",
                 'esfield' => 'metadata_tags.Orientation',
                 'query'   => 'meta.Orientation=%s',
             ],
-            'colorspace_aggregate' => [
+            'colorspace' => [
                 'type'    => 'string',
                 'label'   => 'Colorspace',
                 'field'   => "meta.ColorSpace",
                 'esfield' => 'metadata_tags.ColorSpace',
                 'query'   => 'meta.ColorSpace:%s',
             ],
-            'mimetype_aggregate' => [
+            'mimetype' => [
                 'type'    => 'string',
                 'label'   => 'MimeType',
                 'field'   => "meta.MimeType",
