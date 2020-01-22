@@ -63,3 +63,15 @@
             </div>
         </div>
     </form>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var $form = $("form[name=formprintpage]");
+
+        $form.bind('submit', function(){ 
+            $("#DIALOG").dialog('destroy');
+        });
+
+    });
+</script>

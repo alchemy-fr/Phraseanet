@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 use Alchemy\Phrasea\Helper\Record\Printer;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use \IntlDateFormatter as DateFormatter;
 
 class PDFRecords extends PDF
 {
@@ -393,38 +394,39 @@ class PDFRecords extends PDF
                 $this->pdf->SetY($this->pdf->GetY()+10);
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Document generated on : "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Document generated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->app['date-formatter']->getDate(new \DateTime('now')));
+                $this->pdf->Write(5, $this->formatDate(new \DateTime('now')));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $validation->getInitiator()->getLogin());
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->app['date-formatter']->getDate($validation->getCreated()));
+                $this->pdf->Write(5, $this->formatDate($validation->getCreated()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->app['date-formatter']->getDate($validation->getExpires()));
+                $this->pdf->Write(5, $this->formatDate($validation->getExpires()));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback " . ($validation->isFinished() ? "expired" : "active")));
+
+                $validation->isFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Participants : "));
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 foreach ($validation->getParticipants() as $participant) {
-                    $this->pdf->Write(5, "\n - " . $participant->getUser()->getLogin());
+                    $this->pdf->Write(5, "\n - " . $this->getDisplayName($participant));
                 }
             }
         }
@@ -492,7 +494,7 @@ class PDFRecords extends PDF
                 $ord = $basket->getElementByRecord($this->app, $rec)->getOrd();
                 $this->pdf->SetY($y);
                 $this->pdf->SetX(10);
-                $this->pdf->Cell(190, $h, '#' . $ord, "", 1, "C", 0);
+                $this->pdf->Cell(190, $h, $ord, "", 1, "C", 0);
             }
 
             if ($LEFT__TEXT == "" && is_file($LEFT__IMG)) {
@@ -590,8 +592,87 @@ class PDFRecords extends PDF
             }
             $this->pdf->SetXY($lmargin, $y += ( $finalHeight + 5));
 
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+            $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->Write(5, $rec->get_title());
+            $this->pdf->Write(6, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+            $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->Write(5, $rec->getRecordId());
+            $this->pdf->Write(6, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+            $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->Write(5, $rec->get_original_name());
+            $this->pdf->Write(6, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+            $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->Write(5, $rec->getUUID());
+            $this->pdf->Write(6, "\n");
+
             $nf = 0;
+            if($basket && $validation) {
+                /** @var ValidationParticipant $participant */
+
+                if ($nf > 0) {
+                    $this->pdf->Write(6, "\n");
+                }
+                $this->pdf->Write(12, "\n");
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Votes :"));
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+
+                $basketElement = $basket->getElementByRecord($this->app, $rec);
+
+                $iparticipant = 0;
+                foreach ($validation->getParticipants() as $participant) {
+                    $this->pdf->Write(6, "\n");
+                    if($iparticipant++ > 0) {
+                        // $this->pdf->SetY($this->pdf->GetY()+1);
+                    }
+                    $validationData = $basketElement->getUserValidationDatas($participant->getUser());
+
+                    $this->pdf->Write(5, '- ' . $this->getDisplayName($participant) . " : ");
+
+                    $r = $validationData->getAgreement();
+                    $this->pdf->SetX(100);
+                    if ($r === null) {
+                        $this->pdf->Write(0, $this->app->trans("print_feedback:: non voté"));
+                    }
+                    else {
+                        if($r) {
+                            $this->pdf->SetTextColor(0, 127, 0);
+                            $this->pdf->Write(0, $this->app->trans("print_feedback:: Oui"));
+                        }
+                        else {
+                            $this->pdf->SetTextColor(200, 0, 0);
+                            $this->pdf->Write(0, $this->app->trans("print_feedback:: Non"));
+                        }
+                        $this->pdf->SetTextColor(0);
+                        $this->pdf->Write(0, "  (" . $this->formatDate($validationData->getUpdated()) . ")");
+                    }
+
+                    if (($note = (string)($validationData->getNote())) !== '') {
+                        $this->pdf->SetFont(PhraseaPDF::FONT, 'I', 11);
+                        $this->pdf->Write(5,"\n");
+                        $this->pdf->SetX(100);
+                        $this->pdf->MultiCell(95, 0, $note, '', "L", false);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                    }
+
+                    $nf++;
+                }
+            }
+
+
             if ($write_caption) {
+                $this->pdf->Write(12, "\n");
                 foreach ($rec->get_caption()->get_fields() as $field) {
                     /* @var $field caption_field */
                     if ($nf > 0) {
@@ -614,66 +695,83 @@ class PDFRecords extends PDF
                     $nf++;
                 }
             }
-
-            if($basket && $validation) {
-                /** @var ValidationParticipant $participant */
-
-                if ($nf > 0) {
-                    $this->pdf->Write(6, "\n");
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Votes :"));
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-
-                $basketElement = $basket->getElementByRecord($this->app, $rec);
-
-                $iparticipant = 0;
-                foreach ($validation->getParticipants() as $participant) {
-                    $this->pdf->Write(6, "\n");
-                    if($iparticipant++ > 0) {
-                        // $this->pdf->SetY($this->pdf->GetY()+1);
-                    }
-                    $validationData = $basketElement->getUserValidationDatas($participant->getUser());
-
-                    $this->pdf->Write(5, '- ' . $participant->getUser()->getLogin() . " : ");
-
-                    $r = $validationData->getAgreement();
-                    $this->pdf->SetX(100);
-                    if ($r === null) {
-                        $this->pdf->Write(0, $this->app->trans("print_feedback:: non voté"));
-                    }
-                    else {
-                        if($r) {
-                            $this->pdf->SetTextColor(0, 127, 0);
-                            $this->pdf->Write(0, $this->app->trans("print_feedback:: Oui"));
-                        }
-                        else {
-                            $this->pdf->SetTextColor(200, 0, 0);
-                            $this->pdf->Write(0, $this->app->trans("print_feedback:: Non"));
-                        }
-                        $this->pdf->SetTextColor(0);
-                        $this->pdf->Write(0, "  (" . $this->app['date-formatter']->getDate($validationData->getUpdated()) . ")");
-                    }
-
-                    if (($note = (string)($validationData->getNote())) !== '') {
-                        $this->pdf->SetFont(PhraseaPDF::FONT, 'I', 11);
-                        $this->pdf->Write(5,"\n");
-                        $this->pdf->SetX(100);
-                        $this->pdf->MultiCell(95, 0, $note, '', "L", false);
-                        $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                    }
-
-                    $nf++;
-                }
-            }
         }
 
         return;
     }
 
-    private function formatDate(DateTime $d)
+    private function formatDate(\DateTime $date)
     {
-        // todo
+        $locale = $this->app['locale'];
+
+        switch ($locale) {
+            case 'fr':
+                $fmt = new DateFormatter(
+                    'fr_FR',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE                    
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            case 'en':
+                $fmt = new DateFormatter(
+                    'en_EN',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE                    
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            case 'de':
+               $fmt = new DateFormatter(
+                    'de_DE',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE                    
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            default:
+                $fmt = new DateFormatter(
+                    'en_EN',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE ,
+                    null,
+                    null,
+                    'yyyy/mm/dd'                  
+                );
+
+                $date_formated = $fmt->format($date);
+                break;                
+        }
+
+        return $date_formated;
+    }
+
+    private function getDisplayName(ValidationParticipant $participant)
+    {
+        $user = $participant->getUser();
+        $displayName = '';
+
+        if (trim($user->getLastName()) !== '' || trim($user->getFirstName()) !== '') {
+            $displayName = $user->getFirstName() . ('' !== $user->getFirstName() && '' !== $user->getLastName() ? ' ' : '') . $user->getLastName() ;
+        }
+
+        $email = trim($user->getEmail());
+
+        if ($email === '') {
+            $email = $user->getLogin();
+        }
+
+        if ($displayName !== '') {
+            return $displayName . " " . $email;
+        } else {
+            return $email;
+        }
     }
 
 }
