@@ -402,7 +402,7 @@ class PDFRecords extends PDF
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $validation->getInitiator()->getLogin());
+                $this->pdf->Write(5, $this->getDisplayName($validation->getInitiator()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
@@ -426,7 +426,7 @@ class PDFRecords extends PDF
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Participants : "));
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 foreach ($validation->getParticipants() as $participant) {
-                    $this->pdf->Write(5, "\n - " . $this->getDisplayName($participant));
+                    $this->pdf->Write(5, "\n - " . $this->getDisplayName($participant->getUser()));
                 }
             }
         }
@@ -638,7 +638,7 @@ class PDFRecords extends PDF
                     }
                     $validationData = $basketElement->getUserValidationDatas($participant->getUser());
 
-                    $this->pdf->Write(5, '- ' . $this->getDisplayName($participant) . " : ");
+                    $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true) . " : ");
 
                     $r = $validationData->getAgreement();
                     $this->pdf->SetX(100);
@@ -752,13 +752,16 @@ class PDFRecords extends PDF
         return $date_formated;
     }
 
-    private function getDisplayName(ValidationParticipant $participant)
+    private function getDisplayName($user, $short = false)
     {
-        $user = $participant->getUser();
         $displayName = '';
 
         if (trim($user->getLastName()) !== '' || trim($user->getFirstName()) !== '') {
             $displayName = $user->getFirstName() . ('' !== $user->getFirstName() && '' !== $user->getLastName() ? ' ' : '') . $user->getLastName() ;
+
+            if ($short) {
+                return $displayName;
+            }
         }
 
         $email = trim($user->getEmail());
