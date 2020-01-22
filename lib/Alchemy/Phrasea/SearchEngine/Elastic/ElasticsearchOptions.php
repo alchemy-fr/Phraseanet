@@ -38,7 +38,7 @@ class ElasticsearchOptions
     private $populateDirection;
 
     /** @var  int[] */
-    private $_customValues;
+    private $_customValues = [];
     private $activeTab;
 
     /**
