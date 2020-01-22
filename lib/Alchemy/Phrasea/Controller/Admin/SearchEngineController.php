@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchSettingsFormType;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,7 +86,10 @@ class SearchEngineController extends Controller
      */
     private function getConfigurationForm(ElasticsearchOptions $options)
     {
-        return $this->app->form(new ElasticsearchSettingsFormType(), $options, [
+        /** @var GlobalStructure $g */
+        $g = $this->app['search_engine.structure'];
+
+        return $this->app->form(new ElasticsearchSettingsFormType($g, $options), $options, [
             'action' => $this->app->url('admin_searchengine_form'),
         ]);
     }
