@@ -605,6 +605,12 @@ class PDFRecords extends PDF
             $this->pdf->Write(6, "\n");
 
             $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+            $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
+            $this->pdf->Write(6, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
             $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
             $this->pdf->Write(5, $rec->get_original_name());
