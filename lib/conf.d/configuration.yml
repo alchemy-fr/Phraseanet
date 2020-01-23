@@ -285,7 +285,7 @@ geocoding-providers:
         provincefields: Province
         countryfields: 'Country, Pays'
 video-editor:
-    vttFieldName: VideoTextTrackChapters
+    ChapterVttFieldName: VideoTextTrackChapters
     seekBackwardStep: 500 # in ms
     seekForwardStep: 500  # in ms
     playbackRates:

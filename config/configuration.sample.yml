@@ -225,6 +225,14 @@ embed_bundle:
     document:
         player: flexpaper
         enable_pdfjs: true
+video-editor:
+    ChapterVttFieldName: VideoTextTrackChapters
+    seekBackwardStep: 500 # in ms
+    seekForwardStep: 500  # in ms
+    playbackRates:
+        - 1
+        - '1.5'
+        - 3       
 geocoding-providers:
     -
         map-provider: mapboxWebGL

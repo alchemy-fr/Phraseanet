@@ -84,6 +84,13 @@ class patch_410alpha20a implements patchInterface
             $app['conf']->set(['geocoding-providers', 0, 'map-provider'], $geocodingName);
         }
 
+        //  video-editor section change, replace 'vttFieldName' to 'ChapterVttFieldName'
+        if ($app['conf']->has(['video-editor', 'vttFieldName'])) {
+            $chapterVttFieldName = $app['conf']->get(['video-editor', 'vttFieldName']);
+            $app['conf']->remove(['video-editor', 'vttFieldName']);
+            $app['conf']->set(['video-editor', 'ChapterVttFieldName'], $chapterVttFieldName);
+        }
+
         // remove registry classic section if exist
         if ($app['conf']->has(['registry', 'classic'])) {
             $app['conf']->remove(['registry', 'classic']);
