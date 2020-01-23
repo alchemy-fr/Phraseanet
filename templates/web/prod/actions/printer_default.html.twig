@@ -10,6 +10,10 @@
                         <input type="radio" name="lay" value="feedback" id="RADI_PRE_BF" />
                         {{ 'print:: basket feedback' | trans }}
                     </label>
+                    <label for="RADI_PRE_FBO" class="radio">
+                        <input type="radio" name="lay" checked value="feedbackOnly" id="RADI_PRE_FBO" />
+                        {{ 'print:: basket feedback only' | trans }}
+                    </label>
                 </div>
             {% endif %}
 
@@ -43,7 +47,7 @@
                             {{ 'print:: liste d\'imagettes' | trans }}
                     </label>
                     <label for="RADI_PRE_THUMGRI" class="radio">
-                        <input type="radio" name="lay" checked value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
+                        <input type="radio" name="lay" {% if not basketFeedbackId %} checked {% endif %} value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
                             {{ 'print:: planche contact (mosaique)' | trans }}
                     </label>
                 </div>
@@ -63,3 +67,12 @@
             </div>
         </div>
     </form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var $form = $("form[name=formprintpage]");
+        $form.bind('submit', function(){ 
+            $("#DIALOG").dialog('destroy');
+        });
+    });
+</script>
