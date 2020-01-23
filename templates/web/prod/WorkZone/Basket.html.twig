@@ -89,7 +89,7 @@
         {% endif %}
     </div>
 </div>
-<div style="margin:0 7px;overflow:hidden;position:relative">
+<div class="basket-content">
     {% set basket_length = basket.getElements()|length %}
     <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
 {% if basket_length == 0 %}
