@@ -104,7 +104,7 @@
                         {%  if settings.show_context_menu %}
                             <span class="fa-stack contextMenuTrigger" id="contextTrigger_{{ record.id }}"
                                   tooltipsrc="{{ path('prod_tooltip_technical_data', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
-                              <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+                              <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
                               <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i>
                         </span>
                         <table cellspacing="0" cellpadding="0" style="display:none;" id="answerContext_{{record.id}}" class="contextMenu answercontextmenu">
