@@ -771,7 +771,7 @@ class PDFRecords extends PDF
         }
 
         if ($displayName !== '') {
-            return $displayName . " " . $email;
+            return $displayName . ", " . $email;
         } else {
             return $email;
         }
