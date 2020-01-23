@@ -21,6 +21,7 @@ class PDF
     protected $pdf;
 
     const LAYOUT_FEEDBACK = 'feedback';
+    const LAYOUT_FEEDBACKONLY = 'feedbackOnly';
     const LAYOUT_PREVIEW = 'preview';
     const LAYOUT_PREVIEWCAPTION = 'previewCaption';
     const LAYOUT_PREVIEWCAPTIONTDM = 'previewCaptionTdm';
