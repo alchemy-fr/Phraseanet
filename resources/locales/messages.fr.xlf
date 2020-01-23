@@ -11211,7 +11211,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="no">
         <source>print_feedback:: document Uuid: </source>
-        <target state="needs-translation">Id unique de document:</target>
+        <target state="needs-translation">Id unique de document :</target>
         <jms:reference-file line="613">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="yes">
