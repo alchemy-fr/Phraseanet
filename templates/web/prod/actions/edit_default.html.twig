@@ -41,7 +41,7 @@
         <div style='position:absolute; top:0px; left:0px; height:20px'>
             <img class="require_alert" src="/assets/common/images/icons/alert.png" style="display:none;cursor:help;" title="{{ 'edit::Certains champs doivent etre remplis pour valider cet editing' | trans }}">
         </div>
-        <div style='position:absolute; bottom:0px; left:0px; height:20px' class="bottom actions">
+        <div style='position:absolute; bottom:7px; left:8px; height:20px' class="bottom actions">
 
             <span class="fa-stack previewTips"
                   tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id() }) }}">
@@ -73,9 +73,9 @@
                 </tbody>
             </table>
         </div>
-        <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
-            <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/plus11.png"/>
-            <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/assets/common/images/icons/minus11.png"/>
+        <div class="editDiaButtons" style="position:absolute; bottom:8px; right:3px; width:30px; display:none">
+            <span  id="idEditDiaButtonsP_{{i}}" style="cursor:pointer"><i class="fa fa-plus editIcon">&nbsp;</i></span>
+            <span  id="idEditDiaButtonsM_{{i}}" style="cursor:pointer"><i class="fa fa-minus editIcon">&nbsp;</i></span>
         </div>
     </div>
 {% endmacro %}
@@ -198,7 +198,7 @@
                             </div>
                             <div style="position:absolute; top:4px; width:60px; right:6px; height:24px;">
                                 <button type="submit" class="submit-multivalued">
-                                    <img id="EditButAddMultiValued" style="cursor:pointer" src="/assets/common/images/icons/plus16.png" />
+                                    <i id="EditButAddMultiValued"  class="icon-round-add_box-24px icomoon" style="font-size: 24px;color: grey;">&nbsp;</i>
                                 </button>
                             </div>
                         </form>
@@ -477,4 +477,5 @@
             {% endfor %}
         ]
     };
+
 </script>
