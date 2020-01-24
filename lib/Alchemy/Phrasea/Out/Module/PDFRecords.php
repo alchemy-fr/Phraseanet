@@ -354,18 +354,20 @@ class PDFRecords extends PDF
             $this->pdf->SetY($y + 2);
 
             foreach ($rec->get_caption()->get_fields() as $field) {
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $field->get_name() . " : ");
+                if ($field->get_databox_field()->get_gui_visible()) {
+                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                    $this->pdf->Write(5, $field->get_name() . " : ");
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $t = str_replace(
-                    ["&lt;", "&gt;", "&amp;"]
-                    , ["<", ">", "&"]
-                    , strip_tags($field->get_serialized_values())
-                );
-                $this->pdf->Write(5, $t);
+                    $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                    $t = str_replace(
+                        ["&lt;", "&gt;", "&amp;"]
+                        , ["<", ">", "&"]
+                        , strip_tags($field->get_serialized_values())
+                    );
+                    $this->pdf->Write(5, $t);
 
-                $this->pdf->Write(6, "\n");
+                    $this->pdf->Write(6, "\n");
+                }                
             }
             $this->pdf->SetY($this->pdf->GetY() + 10);
         }
@@ -679,24 +681,27 @@ class PDFRecords extends PDF
                 $this->pdf->Write(12, "\n");
                 foreach ($rec->get_caption()->get_fields() as $field) {
                     /* @var $field caption_field */
-                    if ($nf > 0) {
-                        $this->pdf->Write(6, "\n");
-                    }
 
-                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                    $this->pdf->Write(5, $field->get_name() . " : ");
+                    if ($field->get_databox_field()->get_gui_visible()) {
+                        if ($nf > 0) {
+                            $this->pdf->Write(6, "\n");
+                        }
 
-                    $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                        $this->pdf->Write(5, $field->get_name() . " : ");
 
-                    $t = str_replace(
-                        ["&lt;", "&gt;", "&amp;"]
-                        , ["<", ">", "&"]
-                        , strip_tags($field->get_serialized_values())
-                    );
+                        $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
-                    $this->pdf->Write(5, $t);
+                        $t = str_replace(
+                            ["&lt;", "&gt;", "&amp;"]
+                            , ["<", ">", "&"]
+                            , strip_tags($field->get_serialized_values())
+                        );
 
-                    $nf++;
+                        $this->pdf->Write(5, $t);
+
+                        $nf++;
+                    }                   
                 }
             }
         }
