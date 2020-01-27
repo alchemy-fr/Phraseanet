@@ -62,7 +62,7 @@ class FacetsResponse
                         'value'     => $key,
                         'raw_value' => $key,
                         'count'     => $bucket['doc_count'],
-                        'query'     => sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($key))
+                        'query'     => sprintf('field.%s=%s', $this->escaper->escapeWord($name), $this->escaper->quoteWord($key))
                     ];
                 }
 

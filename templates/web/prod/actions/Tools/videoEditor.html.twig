@@ -115,7 +115,9 @@
                                 <div class="frame_canva">
                                     <div id="thumb_delete_button"/>
                                     <div id="thumb_download_button"/>
-                                    <canvas id="thumb_canvas"></canvas>
+                                    <div class="canvas-wrap">
+                                        <canvas id="thumb_canvas"></canvas>
+                                    </div>
                                     <div id="alt_canvas_container"
                                          style="position:absolute;overflow:hidden;top:-1200px;visibility: hidden; width:0!important;height:0!important">
                                         {% for subdef in outputFormats %}

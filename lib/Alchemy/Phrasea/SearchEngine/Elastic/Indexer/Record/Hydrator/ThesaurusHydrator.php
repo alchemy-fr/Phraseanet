@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
@@ -27,7 +28,7 @@ class ThesaurusHydrator implements HydratorInterface
     private $thesaurus;
     private $candidate_terms;
 
-    public function __construct(Structure $structure, Thesaurus $thesaurus, CandidateTerms $candidate_terms)
+    public function __construct(GlobalStructure $structure, Thesaurus $thesaurus, CandidateTerms $candidate_terms)
     {
         $this->structure = $structure;
         $this->thesaurus = $thesaurus;
@@ -67,7 +68,13 @@ class ThesaurusHydrator implements HydratorInterface
         $terms = array();
         $filters = array();
         $field_names = array();
+        /** @var Field[] $dbFields */
+        $dbFields = $this->structure->getAllFieldsByDatabox($record['databox_id']);
         foreach ($fields as $name => $field) {
+            if(!array_key_exists($name, $dbFields) || !$dbFields[$name]->get_generate_cterms()) {
+                continue;
+            }
+
             $root_concepts = $field->getThesaurusRoots();
             // Loop through all values to prepare bulk query
             $field_values = \igorw\get_in($record, explode('.', $index_fields[$name]));
@@ -98,10 +105,7 @@ class ThesaurusHydrator implements HydratorInterface
                 }
             }
             else {
-                $field = $fields[$name];
-                if($field->get_generate_cterms()) {
-                    $this->candidate_terms->insert($field_names[$offset], $values[$offset]);
-                }
+                $this->candidate_terms->insert($field_names[$offset], $values[$offset]);
             }
         }
     }
