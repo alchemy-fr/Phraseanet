@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use databox_field;
 use igorw;
 
 
@@ -219,10 +220,24 @@ class ElasticsearchOptions
         $this->highlight = $highlight;
     }
 
+    public function setAggregableFieldLimit($key, $value)
+    {
+        if(is_null($this->getAggregableField($key))) {
+            $this->_customValues['facets'][$key] = [];
+        }
+        $this->_customValues['facets'][$key]['limit'] = $value;
+    }
+
     public function setAggregableField($key, $attributes)
     {
-        $facets = $this->getAggregableFields();
-        $facets[$key] = $attributes;
+        $this->getAggregableFields();    // ensure facets exists
+        $this->_customValues['facets'][$key] = $attributes;
+    }
+
+    public function getAggregableFieldLimit($key)
+    {
+        $facet = $this->getAggregableField($key);
+        return (is_array($facet) && array_key_exists('limit', $facet)) ? $facet['limit'] : databox_field::FACET_DISABLED;
     }
 
     public function getAggregableField($key)
@@ -231,7 +246,10 @@ class ElasticsearchOptions
         return array_key_exists($key, $facets) ? $facets[$key] : null;
     }
 
-    public function &getAggregableFields()
+    /**
+     * @return array
+     */
+    public function getAggregableFields()
     {
         if(!array_key_exists('facets', $this->_customValues) || !is_array($this->_customValues['facets'])) {
             $this->_customValues['facets'] = [];
