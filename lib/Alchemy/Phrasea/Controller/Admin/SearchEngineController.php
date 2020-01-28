@@ -17,6 +17,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use databox_descriptionStructure;
 
 class SearchEngineController extends Controller
 {
@@ -77,6 +78,16 @@ class SearchEngineController extends Controller
      */
     private function saveElasticSearchOptions(ElasticsearchOptions $configuration)
     {
+        // save to databoxes fields for backward compatibility (useless ?)
+        foreach($configuration->getAggregableFields() as $fname=>$aggregableField) {
+            foreach ($this->app->getDataboxes() as $databox) {
+                if(!is_null($f = $databox->get_meta_structure()->get_element_by_name($fname, databox_descriptionStructure::STRICT_COMPARE))) {
+                    $f->set_aggregable($aggregableField['limit'])->save();
+                }
+            }
+        }
+
+        // save to conf
         $this->getConf()->set(['main', 'search-engine', 'options'], $configuration->toArray());
     }
 
