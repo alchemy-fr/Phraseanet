@@ -414,6 +414,7 @@
     {% if multipleDataboxes == 1 %}
     $(function() {
         $('#EDITWINDOW').hide();
+        // a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
         $( "#dialog-edit-many-sbas:ui-dialog" ).dialog( "destroy" );
         $( "#dialog-edit-many-sbas" ).dialog({
             modal: true,
