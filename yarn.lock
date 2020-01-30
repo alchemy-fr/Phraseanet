@@ -5305,10 +5305,15 @@ jquery-simplecolorpicker@^0.3.1:
   resolved "https://registry.yarnpkg.com/jquery-simplecolorpicker/-/jquery-simplecolorpicker-0.3.1.tgz#4f6befd380ab05470f585d5482e5180556e460eb"
   integrity sha1-T2vv04CrBUcPWF1UguUYBVbkYOs=
 
-"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git", "jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
+"jquery-treeview@git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e":
   version "1.4.2"
   uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
   resolved "git+https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+
+"jquery-treeview@https://github.com/alchemy-fr/jquery-treeview.git":
+  version "1.4.2"
+  uid "1e9e5a49d2875b878801e904cd08c2d25e85af1e"
+  resolved "https://github.com/alchemy-fr/jquery-treeview.git#1e9e5a49d2875b878801e904cd08c2d25e85af1e"
 
 jquery-ui-datepicker-with-i18n@^1.10.4:
   version "1.10.4"
@@ -9377,10 +9382,10 @@ tiny-relative-date@^1.3.0:
   resolved "https://registry.yarnpkg.com/tiny-relative-date/-/tiny-relative-date-1.3.0.tgz#fa08aad501ed730f31cc043181d995c39a935e07"
   integrity sha512-MOQHpzllWxDCHHaDno30hhLfbouoYlOI8YlMNtvKe1zXbjEVhbcEovQxvZrPvtiYW630GQDoMMarCnjfyfHA+A==
 
-tinymce@^4.0.28:
-  version "4.9.4"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-4.9.4.tgz#67c03d0c5a305b32f677e0680ed7909f3cfd457a"
-  integrity sha512-pht+jAPbVVEVaxGBAGqTwsVsdkI2+c/opuJ44KuD6pBJApMOQbfpGFt+XdxunyPLcxJsa7i28FIWe37W9zqeRA==
+tinymce@^4.9.7:
+  version "4.9.7"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-4.9.7.tgz#74ce54f07cfc0268a5ac5e34f610044658c92f47"
+  integrity sha512-cj0HvUuniTuIjOAJdRt5BUfeQqM5yHjbA2NOub9HUHXlCrT9OwD9WBPU6tGlaPC2l2I4eGoOnT8llosZRdQU5Q==
 
 tinyqueue@^1.1.0:
   version "1.2.3"
