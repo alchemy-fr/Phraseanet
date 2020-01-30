@@ -652,7 +652,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $aggs = [];
         // technical aggregates (enable + optional limit)
         foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-            $size = $this->options->getAggregableFieldLimit('_'.$k);
+            $size = $this->options->getAggregableFieldLimit($k);
             if ($size !== databox_field::FACET_DISABLED) {
                 if ($size === databox_field::FACET_NO_LIMIT) {
                     $size = ESField::FACET_NO_LIMIT;
@@ -663,7 +663,7 @@ class ElasticSearchEngine implements SearchEngineInterface
                         'size'  => $size
                     ]
                 ];
-                $aggs['_'.$k] = $agg;
+                $aggs[$k] = $agg;
             }
         }
         // fields aggregates

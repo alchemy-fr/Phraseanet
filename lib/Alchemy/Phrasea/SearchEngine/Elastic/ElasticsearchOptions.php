@@ -282,42 +282,42 @@ class ElasticsearchOptions
     public static function getAggregableTechnicalFields()
     {
         return [
-            'base' => [
+            '_base' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:base_label',
                 'field'   => "database",
                 'esfield' => 'databox_name',
                 'query'   => 'database:%s',
             ],
-            'collection' => [
+            '_collection' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:collection_label',
                 'field'   => "collection",
                 'esfield' => 'collection_name',
                 'query'   => 'collection:%s',
             ],
-            'doctype' => [
+            '_doctype' => [
                 'type'    => 'string',
                 'label'   => 'prod::facet:doctype_label',
                 'field'   => "type",
                 'esfield' => 'type',
                 'query'   => 'type:%s',
             ],
-            'camera_model' => [
+            '_camera_model' => [
                 'type'    => 'string',
                 'label'   => 'Camera Model',
                 'field'   => "meta.CameraModel",
                 'esfield' => 'metadata_tags.CameraModel',
                 'query'   => 'meta.CameraModel:%s',
             ],
-            'iso' => [
+            '_iso' => [
                 'type'    => 'number',
                 'label'   => 'ISO',
                 'field'   => "meta.ISO",
                 'esfield' => 'metadata_tags.ISO',
                 'query'   => 'meta.ISO=%s',
             ],
-            'aperture' => [
+            '_aperture' => [
                 'type'    => 'number',
                 'label'   => 'Aperture',
                 'field'   => "meta.Aperture",
@@ -327,7 +327,7 @@ class ElasticsearchOptions
                     return round($value, 1);
                 },
             ],
-            'shutterspeed' => [
+            '_shutterspeed' => [
                 'type'    => 'number',
                 'label'   => 'Shutter speed',
                 'field'   => "meta.ShutterSpeed",
@@ -340,7 +340,7 @@ class ElasticsearchOptions
                     return $value . ' s.';
                 },
             ],
-            'flashfired' => [
+            '_flashfired' => [
                 'type'    => 'boolean',
                 'label'   => 'FlashFired',
                 'field'   => "meta.FlashFired",
@@ -354,49 +354,49 @@ class ElasticsearchOptions
                     return array_key_exists($value, $map) ? $map[$value] : $value;
                 },
             ],
-            'framerate' => [
+            '_framerate' => [
                 'type'    => 'number',
                 'label'   => 'FrameRate',
                 'field'   => "meta.FrameRate",
                 'esfield' => 'metadata_tags.FrameRate',
                 'query'   => 'meta.FrameRate=%s',
             ],
-            'audiosamplerate' => [
+            '_audiosamplerate' => [
                 'type'    => 'number',
                 'label'   => 'Audio Samplerate',
                 'field'   => "meta.AudioSamplerate",
                 'esfield' => 'metadata_tags.AudioSamplerate',
                 'query'   => 'meta.AudioSamplerate=%s',
             ],
-            'videocodec' => [
+            '_videocodec' => [
                 'type'    => 'string',
                 'label'   => 'Video codec',
                 'field'   => "meta.VideoCodec",
                 'esfield' => 'metadata_tags.VideoCodec',
                 'query'   => 'meta.VideoCodec:%s',
             ],
-            'audiocodec' => [
+            '_audiocodec' => [
                 'type'    => 'string',
                 'label'   => 'Audio codec',
                 'field'   => "meta.AudioCodec",
                 'esfield' => 'metadata_tags.AudioCodec',
                 'query'   => 'meta.AudioCodec:%s',
             ],
-            'orientation' => [
+            '_orientation' => [
                 'type'    => 'string',
                 'label'   => 'Orientation',
                 'field'   => "meta.Orientation",
                 'esfield' => 'metadata_tags.Orientation',
                 'query'   => 'meta.Orientation=%s',
             ],
-            'colorspace' => [
+            '_colorspace' => [
                 'type'    => 'string',
                 'label'   => 'Colorspace',
                 'field'   => "meta.ColorSpace",
                 'esfield' => 'metadata_tags.ColorSpace',
                 'query'   => 'meta.ColorSpace:%s',
             ],
-            'mimetype' => [
+            '_mimetype' => [
                 'type'    => 'string',
                 'label'   => 'MimeType',
                 'field'   => "meta.MimeType",
