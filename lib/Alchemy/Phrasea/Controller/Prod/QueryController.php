@@ -360,7 +360,6 @@ class QueryController extends Controller
             // add technical fields
             $fieldsInfosByName = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-                $k = '_'.$k;
                 $fieldsInfosByName[$k] = $f;
                 $fieldsInfosByName[$k]['trans_label'] = $this->app->trans($f['label']);
                 $fieldsInfosByName[$k]['labels'] = [];
