@@ -35,7 +35,7 @@
             <ul class="unstyled">
                 {% for file in lazaretFiles %}
                     <li class="row-fluid wrapper-item well">
-                        {{ _self.lazaretElement(app, file) }}
+                       {{ _self.lazaretElement(app, file) }}
                     </li>
                 {% endfor %}
             </ul>
@@ -80,76 +80,76 @@
                             <input type="hidden" name="keep_attributes" value="1">
                             <input  class="record_id" type="hidden" name="record_id">
                             <div class="update-status">
-                                <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
-                                    <a href="#" class="reset-status btn">Reset status</a>
-                                    <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
-                                    <div class="status-wrapper hidden">
-                                        <table style="margin: auto">
-                                            <tbody class="status-container">
-                                            {% if file.getStatus(app) is not null  %}
-                                                {% for bit, status in file.getStatus(app) %}
-                                                    <tr>
-                                                        <td class="status-tab-left">
-                                                            {% if status['img_off'] is not empty %}
-                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                            <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+                            <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                                <a href="#" class="reset-status btn">Reset status</a>
+                                <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+                                <div class="status-wrapper hidden">
+                                    <table style="margin: auto">
+                                        <tbody class="status-container">
+                                        {% if file.getStatus(app) is not null  %}
+                                            {% for bit, status in file.getStatus(app) %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
 
-                                                        </td>
-                                                        <td class="status-tab-right">
-                                                            <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
-                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                            {% if status['img_on'] is not empty %}
-                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% else %}
-                                                {% for bit, status in collection.get_databox().getStatusStructure() %}
-                                                    <tr>
-                                                        <td class="status-tab-left">
-                                                            {% if status['img_off'] is not empty %}
-                                                                <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                            <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                            <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                                <tr>
+                                                    <td class="status-tab-left">
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
 
-                                                        </td>
-                                                        <td class="status-tab-right">
-                                                            <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
-                                                            <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                            {% if status['img_on'] is not empty %}
-                                                                <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% endif %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                    </td>
+                                                    <td class="status-tab-right">
+                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-
-                            <div class="btn-group" style="text-align:center; padding:5px;">
-                                <button class="btn add-lazaret" title="{{ "Add" | trans }}">
-                                    <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
-                                </button>
-                                <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
-                                    <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
-                                </button>
-                                {% if records|length > 0 %}
-                                    <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
-                                        <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
-                                    </button>
-                                {% endif %}
-                            </div>
                         </div>
+
+                        <div class="btn-group" style="text-align:center; padding:5px;">
+                            <button class="btn add-lazaret" title="{{ "Add" | trans }}">
+                                <img src="/assets/common/images/icons/add.png" width="16" height="16" class="btn-image">{{ "Add" | trans }}
+                            </button>
+                            <button class="btn delete-lazaret" title="{{ "Delete" | trans }}">
+                                <img src="/assets/common/images/icons/delete.png" width="16" height="16" class="btn-image">{{ "Delete" | trans }}
+                            </button>
+                            {% if records|length > 0 %}
+                                <button class="btn subtitute-lazaret" title="{{ "Substitute" | trans }}">
+                                    <img src="/assets/common/images/icons/reload.png" width="16" height="16" class="btn-image">{{ "Substitute" | trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
                     </form>
                     <div class="hidden form-backup"></div>
-                    {# bloc to backup initial value of status list#}
+{# bloc to backup initial value of status list#}
                     <table class="hidden">
                         <tbody class="status-backup">
                         {% if file.getStatus(app) is not null  %}
@@ -207,11 +207,11 @@
     {% if record_count  > 0 %}
         <div class="lazaret-proposals span8">
             <h5>
-                {% if record_count <= 1 %}
-                    {% trans %}A record matches the unique identifier :{% endtrans %}
-                {% else %}
-                    {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
-                {% endif %}
+            {% if record_count <= 1 %}
+                {% trans %}A record matches the unique identifier :{% endtrans %}
+            {% else %}
+                {% trans with {'%record_count%' : record_count} %}%record_count% records match the unique identifier :{% endtrans %}
+            {% endif %}
             </h5>
             <ul class="thumbnails">
                 {% for record in records %}
@@ -221,15 +221,15 @@
                         and app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(record.get_base_id(), constant('\\ACL::CANDELETERECORD')) %}
                         <li class="records-subititution span3" style="width:210px">
                             {% include 'prod/results/record.html.twig' with {
-                                'record': record,
-                                'settings': {
-                                    'images_size': 169,
-                                    'technical_display': '1',
-                                    'rollover_thumbnail': 'caption',
-                                    'doctype_display': '1',
-                                    'handle_dblclick' : false,
-                                    'show_context_menu': false
-                                }
+                            'record': record,
+                            'settings': {
+                            'images_size': 169,
+                            'technical_display': '1',
+                            'rollover_thumbnail': 'caption',
+                            'doctype_display': '1',
+                            'handle_dblclick' : false,
+                            'show_context_menu': false
+                            }
                             } %}
                             <div class="caption">
                                 {% for reason in reasons %}
@@ -569,7 +569,7 @@
             var elements = [];
             var nbElement = 0;
 
-            if(nbProposals > 1){
+            if (nbProposals > 1) {
                 elements = $(".selected", container);
                 nbElement = elements.length;
             } else if (nbProposals == 1) {
