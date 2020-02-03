@@ -1,12 +1,14 @@
 <div class="general-aggregation-layout">
-    <ul class="unstyled aggregation-collection">
+    <ul class="unstyled aggregation-collection" id="sortable-aggregation-collection">
         {% for formdata in form %}
             {% set attr = formdata.vars['attr']|join(',') %}
             {% if attr == 'aggregate' %}
-                <li>
+                <li class="field-row">
                     <table>
                         <tbody>
-                        <tr>
+                        <tr><td class="handle">
+                                <i class="fa fa-arrows" aria-hidden="true"></i>
+                            </td>
                             <td>
                                 {{ form_label(formdata, null, {
                                     'label_attr': {'class': 'label-aggregation'}
@@ -25,3 +27,8 @@
     <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
             class="btn btn-primary">{{ 'Save' | trans }}</button>
 </div>
+<script type="text/javascript">
+    $('#sortable-aggregation-collection').sortable({
+        handle: ".handle"
+    });
+</script>
