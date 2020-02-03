@@ -129,11 +129,11 @@ class ElasticsearchSettingsFormType extends AbstractType
             $choices = array_key_exists('choices', $f) ? $f['choices'] : null;   // a tech-field can publish it's own choices
             $help = null;
             $label = '#' . $k;
-            if(!array_key_exists('_'.$k, $aggs)) {
+            if(!array_key_exists($k, $aggs)) {
                 $label = "/!\\ " . $label;
                 $help = "New field, please confirm setting.";
             }
-            $addAgg('_'.$k, $label, $help, false, $choices);
+            $addAgg($k, $label, $help, false, $choices);
         }
 
         // add or replace all databoxes fields (nb: new db field - unknown in conf - will be a the end)
