@@ -96,6 +96,7 @@ class ElasticsearchSettingsFormType extends AbstractType
         $aggs = [];
 
         // helper fct to add aggregate to a tmp list
+      //  $attr = null;
         $addAgg = function($k, $label, $help, $disabled=false, $choices=null) use (&$aggs) {
             if(!$choices) {
                 $choices = [
@@ -104,15 +105,17 @@ class ElasticsearchSettingsFormType extends AbstractType
                     "100 values"     => 100,
                     "all values"     => -1
                 ];
+                /*To do : This is just a test but  the filter should depends on selected choice and not that*/
+               $attr = [  'class' => 'aggregate' ];
+            }else {
+                $attr = [  'class' => 'not-aggregate'];
             }
             $choices = array_merge(["not aggregated" => 0], $choices);  //  add this option always as first choice
             $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
                 'label'              => $label,
                 'choices_as_values'  => true,
                 'choices' => $choices,
-                'attr'               => [
-                    'class' => 'aggregate'
-                ],
+                'attr'               => $attr,
                 'disabled'           => $disabled,
                 'help_message'       => $help     // todo : not displayed ?
             ];

@@ -1,27 +1,72 @@
-<div class="general-aggregation-layout">
-    <ul class="unstyled aggregation-collection">
-        {% for formdata in form %}
-            {% set attr = formdata.vars['attr']|join(',') %}
-            {% if attr == 'aggregate' %}
-                <li>
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td>
-                                {{ form_label(formdata, null, {
-                                    'label_attr': {'class': 'label-aggregation'}
-                                }) }}
-                            </td>
-                            <td>
-                                {{ form_widget(formdata) }}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+<div class="general-aggregation-layout-">
     <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
             class="btn btn-primary">{{ 'Save' | trans }}</button>
+    <div class="row-fluid">
+    <div class="left-block span6">
+        <ul class="unstyled aggregation-collection" id="not-aggregated-collection">
+            {% for formdata in form %}
+                {% set attr = formdata.vars['attr']|join(',') %}
+                {% set label = formdata.vars['label']|join(',') %}
+                {% set disabled = formdata.vars['disabled']|join(',') %}
+                {% if attr == 'not-aggregate' %}
+                    <li class="field-row" {% if label starts with '#_' %}style="background: lightblue" {% endif %}>
+                        <table>
+                            <tbody>
+                            <tr><td class="handle">
+                                    <i class="fa fa-arrows" aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    {{ form_label(formdata, null, {
+                                        'label_attr': {'class': 'label-aggregation'}
+                                    }) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(formdata) }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="right-block span6">
+        <ul class="unstyled aggregation-collection" id="aggregated-collection">
+            {% for formdata2 in form %}
+                {% set attr2 = formdata2.vars['attr']|join(',') %}
+                {% set label2 = formdata2.vars['label']|join(',') %}
+                {% if attr2 == 'aggregate' %}
+
+                    <li class="field-row" {% if label2 starts with '#_' %}style="background: lightblue" {% endif %}>
+                        <table>
+                            <tbody>
+                            <tr><td class="handle">
+                                    <i class="fa fa-arrows" aria-hidden="true"></i>
+                                </td>
+                                <td>
+                                    {{ form_label(formdata2, null, {
+                                        'label_attr': {'class': 'label-aggregation'}
+                                    }) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(formdata2) }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
 </div>
+<script type="text/javascript">
+    $('#aggregated-collection').sortable({
+        handle: ".handle"
+    }); $('#not-aggregated-collection').sortable({
+        handle: ".handle"
+    });
+    $()
+</script>
