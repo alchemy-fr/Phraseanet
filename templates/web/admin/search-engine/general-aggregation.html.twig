@@ -48,9 +48,6 @@
 
 </div>
 <script type="text/javascript">
-    $('.aggregation-collection').sortable({
-        handle: ".handle"
-    });
 
     function filterFacet() {
         $.each($(".aggregate option:selected"), function(){
@@ -70,6 +67,9 @@
         });
     }
     $(document).ready(function() {
+        $('.aggregation-collection').sortable({
+            handle: ".handle"
+        });
         filterFacet();
     });
 </script>
