@@ -396,25 +396,25 @@ class PDFRecords extends PDF
                 $this->pdf->SetY($this->pdf->GetY()+10);
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Document generated on : " . " "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Document generated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $this->formatDate(new \DateTime('now')));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : " . " "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $this->getDisplayName($validation->getInitiator()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : " . " "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $this->formatDate($validation->getCreated()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : " . " "));
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $this->formatDate($validation->getExpires()));
                 $this->pdf->Write(12, "\n");
