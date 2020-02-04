@@ -1,12 +1,35 @@
 <div class="general-aggregation-layout">
+    <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
+            class="btn btn-primary">{{ 'Save' | trans }}</button>
+    <div id="basket-filter" class="facet-filter unstyled" style="float: right; padding-top: 27px;">
+        {#<span class="filter-title">{{ 'See' | trans }} : </span>#}
+        <span class="filter-item">
+              <label id="aggregated-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="facetFilter" value="aggregated" checked style="margin-top: 1px">
+                  {{ 'Aggregated' | trans }}
+              </label>
+          </span>
+        <span class="filter-item" style="margin-left: 10px">
+              <label id="not-aggregated-list"  class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="facetFilter" value="not-aggregated" checked style="margin-top: 1px">
+                  {{ 'Not aggregated' | trans }}
+              </label>
+          </span>
+
+    </div>
     <ul class="unstyled aggregation-collection">
         {% for formdata in form %}
             {% set attr = formdata.vars['attr']|join(',') %}
+            {% set label = formdata.vars['label']|join(',') %}
             {% if attr == 'aggregate' %}
-                <li>
+                <li class="field-row" {% if label starts with '#_' %}style="background: lightblue" {% endif %}>
+
                     <table>
                         <tbody>
                         <tr>
+                            <td class="handle">
+                                <i class="fa fa-arrows" aria-hidden="true"></i>
+                            </td>
                             <td>
                                 {{ form_label(formdata, null, {
                                     'label_attr': {'class': 'label-aggregation'}
@@ -22,6 +45,31 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <button type="submit" id="elasticsearch_settings_save" name="elasticsearch_settings[save]"
-            class="btn btn-primary">{{ 'Save' | trans }}</button>
+
 </div>
+<script type="text/javascript">
+    $('.aggregation-collection').sortable({
+        handle: ".handle"
+    });
+
+    function filterFacet() {
+        $.each($(".aggregate option:selected"), function(){
+            console.log($(this).val());
+            if ($(this).val() == 0) {
+                $(this).closest('.field-row').addClass('not-aggregated')
+            }
+            else {
+                $(this).closest('.field-row').addClass('aggregated')
+            }
+        });
+        $('#aggregated-list input').click(function () {
+            $('.aggregated').toggleClass('hidden');
+        });
+        $('#not-aggregated-list input').click(function () {
+            $('.not-aggregated').toggleClass('hidden');
+        });
+    }
+    $(document).ready(function() {
+        filterFacet();
+    });
+</script>
