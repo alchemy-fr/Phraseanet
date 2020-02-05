@@ -263,7 +263,7 @@
                     <td><label for="tbranch">{% trans %}Thesaurus branch{% endtrans %}</label></td>
                     <td>
                         <input id="tbranch" type="text" value="<%= field.tbranch %>"/>
-                        <div style="display: inline-block;" <%= (field.tbranch == "") ? "class='generate-cterms hidden'" : "generate-cterms" %>>
+                        <div style="display: inline-block;">
                             <label for="generate_cterms" class="checkbox">
                                 <input id="generate_cterms" type="checkbox" <%= field.generate_cterms ? "checked='checked'" : "" %> />
                                 {% trans %}Generate-cterms{% endtrans %}</label>
