@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.8",
+            "version": "2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "cbaa5e34b7b6ccbe128f8c804649c8a3ecd1e621"
+                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/cbaa5e34b7b6ccbe128f8c804649c8a3ecd1e621",
-                "reference": "cbaa5e34b7b6ccbe128f8c804649c8a3ecd1e621",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8cdb9612a9e3edd998b68f0803eacca8e0f50775",
+                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775",
                 "shasum": ""
             },
             "require-dev": {
@@ -177,7 +177,11 @@
                 }
             ],
             "description": "Embed resources bundle",
-            "time": "2019-10-09T14:34:23+00:00"
+            "support": {
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.9",
+                "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
+            },
+            "time": "2020-02-04T14:53:00+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -2856,6 +2860,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "abandoned": true,
             "time": "2015-05-20T03:37:09+00:00"
         },
         {
@@ -2906,6 +2911,7 @@
                 "Guzzle",
                 "stream"
             ],
+            "abandoned": true,
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
@@ -6412,6 +6418,7 @@
                 "profiler",
                 "silex"
             ],
+            "abandoned": true,
             "time": "2016-10-26T11:08:02+00:00"
         },
         {
@@ -6454,6 +6461,7 @@
                 "plugin",
                 "silex"
             ],
+            "abandoned": true,
             "time": "2015-11-11T07:16:28+00:00"
         },
         {
