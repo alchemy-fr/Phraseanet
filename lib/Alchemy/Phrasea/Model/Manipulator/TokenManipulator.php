@@ -62,29 +62,45 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function create(User $user = null, $type, \DateTime $expiration = null, $data = null)
+    public function create(User $user, $type, \DateTime $expiration = null, $data = null)
     {
-        $this->removeExpiredTokens();
+        static $stmt = null;
 
-        $n = 0;
-        do {
-            if ($n++ > 1024) {
-                throw new \RuntimeException('Unable to create a token.');
+        // $this->removeExpiredTokens();
+
+        if($stmt === null) {
+            $conn = $this->repository->getEntityManager()->getConnection();
+            $sql = "INSERT INTO Tokens (value, user_id, type, data, created, updated, expiration)\n"
+                . " VALUES(:value, :user_id, :type, :data, :created, :updated, :expiration)";
+            $stmt = $conn->prepare($sql);
+        }
+
+        $token = null;
+        $now = (new \DateTime())->format('Y-m-d H:i:s');
+        $stmtParms = [
+            ':value' => null,
+            ':user_id' => $user->getId(),
+            ':type' => $type,
+            ':data' => $data,
+            ':created' => $now,
+            ':updated' => $now,
+            ':expiration' => $expiration
+        ];
+        for($try=0; $try<1024; $try++) {
+            $stmtParms['value'] = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
+            if($stmt->execute($stmtParms) === true) {
+                $token = new Token();
+                $token->setUser($user)
+                    ->setType($type)
+                    ->setValue($stmtParms['value'])
+                    ->setExpiration($expiration)
+                    ->setData($data);
+                break;
             }
-            $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
-            $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
-        } while ($found);
-
-        $token = new Token();
-
-        $token->setUser($user)
-            ->setType($type)
-            ->setValue($value)
-            ->setExpiration($expiration)
-            ->setData($data);
-
-        $this->om->persist($token);
-        $this->om->flush();
+        }
+        if ($token === null) {
+            throw new \RuntimeException('Unable to create a token.');
+        }
 
         return $token;
     }
@@ -124,6 +140,57 @@ class TokenManipulator implements ManipulatorInterface
     public function createFeedEntryToken(User $user, FeedEntry $entry)
     {
         return $this->create($user, self::TYPE_FEED_ENTRY, null, $entry->getId());
+    }
+
+    /**
+     * Create feedEntryTokens for many users in one shot
+     *
+     * @param User[] $users
+     * @param FeedEntry $entry
+     * @return Token[]
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function createFeedEntryTokens($users, FeedEntry $entry)
+    {
+        // $this->removeExpiredTokens();
+
+        $conn = $this->repository->getEntityManager()->getConnection();
+
+        // use an optimized tmp table we can fill fast (only 2 values changes by row, others are default)
+        $now = $conn->quote((new \DateTime())->format('Y-m-d H:i:s'));
+        $conn->executeQuery("CREATE TEMPORARY TABLE `tmpTokens` (\n"
+            . " `value` char(128),\n"
+            . " `user_id` int(11),\n"
+            . " `type` char(32) DEFAULT " . $conn->quote(self::TYPE_FEED_ENTRY) . ",\n"
+            . " `data` int(11) DEFAULT " . $conn->quote($entry->getId()) . ",\n"
+            . " `created` datetime DEFAULT " . $now . ",\n"
+            . " `updated` datetime DEFAULT " . $now . ",\n"
+            . " `expiration` datetime DEFAULT NULL\n"
+            . ") ENGINE=MEMORY;"
+        );
+
+        $tokens = [];
+        $sql = "";
+        foreach ($users as $user) {
+            $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS) . $user->getId();
+            // todo: don't build a too long sql, we should flush/run into temp table if l>limit.
+            // But for now we trust that 100 (see FeedEntrySsuscriber) tokens is ok
+            $sql .= ($sql?',':'') . ('(' . $conn->quote($value) . ',' . $conn->quote($user->getId()) . ')');
+
+            $token = new Token();
+            $token->setUser($user)
+                ->setType(self::TYPE_FEED_ENTRY)
+                ->setValue($value)
+                ->setExpiration(null)
+                ->setData($entry->getId());
+            $tokens[] = $token;
+        }
+
+        $conn->executeQuery("INSERT INTO tmpTokens (`value`, `user_id`) VALUES " . $sql);
+        $conn->executeQuery("INSERT INTO Tokens SELECT * FROM tmpTokens");
+        $conn->executeQuery("DROP TABLE tmpTokens");
+
+        return $tokens;
     }
 
     /**
