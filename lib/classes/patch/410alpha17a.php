@@ -62,6 +62,16 @@ class patch_410alpha17a implements patchInterface
         // $sql = "ALTER TABLE `metadatas_structure` ADD `gui_editable` INT(1)  UNSIGNED  NOT NULL  DEFAULT '0' AFTER `readonly`";
         // $databox->get_connection()->executeQuery($sql);
 
+        foreach ($databox->get_meta_structure() as $databox_field) {
+            if ($databox_field->get_tbranch() != '') {
+                $databox_field->set_generate_cterms(true);
+            } else {
+                $databox_field->set_generate_cterms(false);
+            }
+
+            $databox_field->save();
+        }
+        
         return true;
     }
 }
