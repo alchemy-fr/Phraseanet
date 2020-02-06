@@ -11174,9 +11174,9 @@
         <target state="translated">Thumbnails</target>
         <jms:reference-file line="51">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : ">
+      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
         <source>print_feedback:: Document generated on : </source>
-        <target state="new">print_feedback:: Document generated on : </target>
+        <target state="translated">Generated on :</target>
         <jms:reference-file line="399">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc26097dfc5a781b1ed04e28740f7e404ff3465a" resname="print_feedback:: Feedback active" approved="yes">
@@ -11194,14 +11194,14 @@
         <target state="translated">Feedback expiring on :</target>
         <jms:reference-file line="417">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : ">
+      <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : " approved="yes">
         <source>print_feedback:: Feedback initiated by : </source>
-        <target state="new">print_feedback:: Feedback initiated by : </target>
+        <target state="translated">Feedback initiated by :</target>
         <jms:reference-file line="405">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
+      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="no">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="new">print_feedback:: Feedback initiated on : </target>
+        <target state="needs-translation">Feedback initiated on :</target>
         <jms:reference-file line="411">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
