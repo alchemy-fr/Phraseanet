@@ -5,13 +5,15 @@
         {#<span class="filter-title">{{ 'See' | trans }} : </span>#}
         <span class="filter-item">
               <label id="aggregated-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="facetFilter" value="aggregated" checked style="margin-top: 1px">
+                  <input type="checkbox" class="checkbox " name="facetFilter" value="aggregated" checked
+                         style="margin-top: 1px">
                   {{ 'Aggregated' | trans }}
               </label>
           </span>
         <span class="filter-item" style="margin-left: 10px">
-              <label id="not-aggregated-list"  class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="facetFilter" value="not-aggregated" checked style="margin-top: 1px">
+              <label id="not-aggregated-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="facetFilter" value="not-aggregated" checked
+                         style="margin-top: 1px">
                   {{ 'Not aggregated' | trans }}
               </label>
           </span>
@@ -22,7 +24,7 @@
             {% set attr = formdata.vars['attr']|join(',') %}
             {% set label = formdata.vars['label']|join(',') %}
             {% if attr == 'aggregate' %}
-                <li class="field-row" {% if label starts with '#_' %}style="background: lightblue" {% endif %}>
+                <li id="{{ label }}" class="field-row  {% if label starts with '#_' %}lightblue{% endif %}">
 
                     <table>
                         <tbody>
@@ -45,13 +47,13 @@
             {% endif %}
         {% endfor %}
     </ul>
+    <input type="hidden" id="listValues" />
 
 </div>
 <script type="text/javascript">
-
+    /*Add a sort for the  list*/
     function filterFacet() {
-        $.each($(".aggregate option:selected"), function(){
-            console.log($(this).val());
+        $.each($(".aggregate option:selected"), function () {
             if ($(this).val() == 0) {
                 $(this).closest('.field-row').addClass('not-aggregated')
             }
@@ -66,10 +68,29 @@
             $('.not-aggregated').toggleClass('hidden');
         });
     }
-    $(document).ready(function() {
+
+    /*Get the order of new list*/
+
+    var $sortableList = $(".aggregation-collection");
+
+    var sortEventHandler = function (event, ui) {
+        var sortedIDs = $(".aggregation-collection").sortable("toArray");
+        var listValues = [];
+        for (var i = 0; i < sortedIDs.length; i++) {
+            listValues.push(sortedIDs[i]);
+        }
+
+        $('#listValues').val(JSON.stringify(listValues));
+    };
+
+
+    $(document).ready(function () {
+        $('.lightblue .label-aggregation').css('color','mediumblue');
         $('.aggregation-collection').sortable({
-            handle: ".handle"
+            handle: ".handle",
+            stop: sortEventHandler
         });
         filterFacet();
+        $sortableList.on("sortchange", sortEventHandler);
     });
 </script>

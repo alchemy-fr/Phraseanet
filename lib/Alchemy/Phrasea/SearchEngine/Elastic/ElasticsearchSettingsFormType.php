@@ -129,6 +129,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             $choices = array_key_exists('choices', $f) ? $f['choices'] : null;   // a tech-field can publish it's own choices
             $help = null;
             $label = '#' . $k;
+
             if(!array_key_exists($k, $aggs)) {
                 $label = "/!\\ " . $label;
                 $help = "New field, please confirm setting.";
