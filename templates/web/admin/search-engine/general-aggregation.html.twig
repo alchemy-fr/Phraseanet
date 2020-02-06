@@ -47,7 +47,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <input type="hidden" id="listValues" />
+    <input type="hidden" id="listValues" name="facetListValues"/>
 
 </div>
 <script type="text/javascript">
@@ -81,6 +81,7 @@
         }
 
         $('#listValues').val(JSON.stringify(listValues));
+
     };
 
 
