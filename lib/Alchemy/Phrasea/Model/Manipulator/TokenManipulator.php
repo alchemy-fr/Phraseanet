@@ -84,7 +84,7 @@ class TokenManipulator implements ManipulatorInterface
             ':data' => $data,
             ':created' => $now,
             ':updated' => $now,
-            ':expiration' => $expiration
+            ':expiration' => ($expiration === null ? null : $expiration->format('Y-m-d H:i:s'))
         ];
         for($try=0; $try<1024; $try++) {
             $stmtParms['value'] = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
