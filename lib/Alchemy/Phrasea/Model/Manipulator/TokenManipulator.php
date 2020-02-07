@@ -61,7 +61,7 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function create(User $user, $type, \DateTime $expiration = null, $data = null)
+    public function create($user, $type, \DateTime $expiration = null, $data = null)
     {
         static $stmt = null;
 
