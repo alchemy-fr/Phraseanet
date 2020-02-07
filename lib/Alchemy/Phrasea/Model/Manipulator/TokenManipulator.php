@@ -22,7 +22,6 @@ use RandomLib\Generator;
 class TokenManipulator implements ManipulatorInterface
 {
     const LETTERS_AND_NUMBERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     const TYPE_FEED_ENTRY = 'FEED_ENTRY';
     const TYPE_PASSWORD = 'password';
     const TYPE_ACCOUNT_UNLOCK = 'account-unlock';
