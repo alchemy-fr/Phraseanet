@@ -5,14 +5,14 @@
         {#<span class="filter-title">{{ 'See' | trans }} : </span>#}
         <span class="filter-item">
               <label id="aggregated-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="facetFilter" value="aggregated" checked
+                  <input type="checkbox" class="checkbox " value="aggregated" checked
                          style="margin-top: 1px">
                   {{ 'Aggregated' | trans }}
               </label>
           </span>
         <span class="filter-item" style="margin-left: 10px">
               <label id="not-aggregated-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="facetFilter" value="not-aggregated" checked
+                  <input type="checkbox" class="checkbox " value="not-aggregated" checked
                          style="margin-top: 1px">
                   {{ 'Not aggregated' | trans }}
               </label>
@@ -47,7 +47,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <input type="hidden" id="listValues" name="facetListValues"/>
+    <input type="hidden" id="listValues" name="facet_list_values"/>
 
 </div>
 <script type="text/javascript">
@@ -70,18 +70,8 @@
     }
 
     /*Get the order of new list*/
-
-    var $sortableList = $(".aggregation-collection");
-
     var sortEventHandler = function (event, ui) {
-        var sortedIDs = $(".aggregation-collection").sortable("toArray");
-        var listValues = [];
-        for (var i = 0; i < sortedIDs.length; i++) {
-            listValues.push(sortedIDs[i]);
-        }
-
-        $('#listValues').val(JSON.stringify(listValues));
-
+        $('#listValues').val(JSON.stringify($('form').serializeArray()));
     };
 
 
@@ -92,6 +82,5 @@
             stop: sortEventHandler
         });
         filterFacet();
-        $sortableList.on("sortchange", sortEventHandler);
     });
 </script>
