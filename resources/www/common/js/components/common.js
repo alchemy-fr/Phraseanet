@@ -94,7 +94,7 @@ var commonModule = (function ($, p4) {
             .empty()
             .append(el.attr('infos'))
             .dialog({
-
+                title: 'About',
                 autoOpen: false,
                 closeOnEscape: true,
                 resizable: false,
@@ -106,7 +106,7 @@ var commonModule = (function ($, p4) {
                     backgroundColor: '#000',
                     opacity: 0.7
                 }
-            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'auto'});
+            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
 
