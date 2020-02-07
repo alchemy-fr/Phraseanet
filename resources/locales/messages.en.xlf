@@ -7827,9 +7827,9 @@
         <jms:reference-file line="39">mobile/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="63">mobile/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1780e6a21b5aba925d2b59163508fbd565b384bb" resname="action : Actions">
+      <trans-unit id="1780e6a21b5aba925d2b59163508fbd565b384bb" resname="action : Actions" approved="yes">
         <source>action : Actions</source>
-        <target state="new">action : Actions</target>
+        <target state="translated">Actions</target>
         <jms:reference-file line="5">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93741c74decbac407e8f237c41d0235dd78a8eac" resname="action : ajouter au panier" approved="yes">
@@ -9761,12 +9761,12 @@
       </trans-unit>
       <trans-unit id="30fd9aaccb427181468696921afdef907567a5fa" resname="generate_cterms" approved="no">
         <source>generate_cterms</source>
-        <target state="needs-translation">generate_cterms</target>
+        <target state="needs-translation">Generate candidats terms</target>
         <jms:reference-file line="141">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable">
+      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable" approved="yes">
         <source>gui_editable</source>
-        <target state="new">gui_editable</target>
+        <target state="translated">Editable in Gui</target>
         <jms:reference-file line="235">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45b162f3c09db4eb9ecea5e048393a7ccaab4f7d" resname="help::help-section-bullet: check-spelling" approved="yes">
@@ -10706,9 +10706,9 @@
         <jms:reference-file line="349">Controller/Root/AccountController.php</jms:reference-file>
         <jms:reference-file line="549">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="60ae97c7ab0fb3923682a785ff0348958e308d4a" resname="phraseanet::error: failed to revoke some user access">
+      <trans-unit id="60ae97c7ab0fb3923682a785ff0348958e308d4a" resname="phraseanet::error: failed to revoke some user access" approved="no">
         <source>phraseanet::error: failed to revoke some user access</source>
-        <target state="new">phraseanet::error: failed to revoke some user access</target>
+        <target state="needs-translation">Failed to revoke some user(s) access</target>
         <jms:reference-file line="539">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a5db6bf8928d23c54b13277fa7d5289a1f52744" resname="phraseanet::jours:: dimanche" approved="yes">
@@ -10953,9 +10953,9 @@
         <target state="translated">Thumbnails</target>
         <jms:reference-file line="47">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : ">
+      <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
         <source>print_feedback:: Document generated on : </source>
-        <target state="needs-translation">Generated on :</target>
+        <target state="translated">Generated on :</target>
         <jms:reference-file line="397">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc26097dfc5a781b1ed04e28740f7e404ff3465a" resname="print_feedback:: Feedback active" approved="yes">

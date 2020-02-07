@@ -7829,9 +7829,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="39">mobile/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="63">mobile/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1780e6a21b5aba925d2b59163508fbd565b384bb" resname="action : Actions">
+      <trans-unit id="1780e6a21b5aba925d2b59163508fbd565b384bb" resname="action : Actions" approved="yes">
         <source>action : Actions</source>
-        <target state="new">action : Actions</target>
+        <target state="translated">Actions</target>
         <jms:reference-file line="5">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93741c74decbac407e8f237c41d0235dd78a8eac" resname="action : ajouter au panier" approved="yes">
@@ -9762,14 +9762,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Modifications effectuées</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="30fd9aaccb427181468696921afdef907567a5fa" resname="generate_cterms">
+      <trans-unit id="30fd9aaccb427181468696921afdef907567a5fa" resname="generate_cterms" approved="yes">
         <source>generate_cterms</source>
-        <target state="new">generate_cterms</target>
+        <target state="translated">Générer les termes candidats</target>
         <jms:reference-file line="141">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable">
+      <trans-unit id="aef8d82707701b3e01b408fb013669040af1bdf1" resname="gui_editable" approved="no">
         <source>gui_editable</source>
-        <target state="new">gui_editable</target>
+        <target state="needs-translation">Editable dans l'interface d'editing</target>
         <jms:reference-file line="235">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="45b162f3c09db4eb9ecea5e048393a7ccaab4f7d" resname="help::help-section-bullet: check-spelling" approved="yes">
@@ -10921,9 +10921,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rapport de validation avec description</target>
         <jms:reference-file line="11">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only">
+      <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only" approved="yes">
         <source>print:: basket feedback only</source>
-        <target state="needs-translation">Rapport de validation</target>
+        <target state="translated">Rapport de validation</target>
         <jms:reference-file line="15">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
@@ -10973,7 +10973,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : " approved="yes">
         <source>print_feedback:: Feedback expiring on : </source>
-        <target state="translated">Clôturée le :</target>
+        <target state="translated">Expire le :</target>
         <jms:reference-file line="415">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : " approved="yes">
@@ -10981,9 +10981,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Validation envoyée par :</target>
         <jms:reference-file line="403">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
+      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="yes">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="needs-translation">Début de validation le :</target>
+        <target state="translated">Début de validation le :</target>
         <jms:reference-file line="409">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
