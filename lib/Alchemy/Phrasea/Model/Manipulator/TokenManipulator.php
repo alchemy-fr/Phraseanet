@@ -61,45 +61,29 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function create($user, $type, \DateTime $expiration = null, $data = null)
+    public function create(User $user = null, $type, \DateTime $expiration = null, $data = null)
     {
-        static $stmt = null;
+        $this->removeExpiredTokens();
 
-        // $this->removeExpiredTokens();
-
-        if($stmt === null) {
-            $conn = $this->repository->getEntityManager()->getConnection();
-            $sql = "INSERT INTO Tokens (value, user_id, type, data, created, updated, expiration)\n"
-                . " VALUES(:value, :user_id, :type, :data, :created, :updated, :expiration)";
-            $stmt = $conn->prepare($sql);
-        }
-
-        $token = null;
-        $now = (new \DateTime())->format('Y-m-d H:i:s');
-        $stmtParms = [
-            ':value' => null,
-            ':user_id' => $user ? $user->getId() : null,
-            ':type' => $type,
-            ':data' => $data,
-            ':created' => $now,
-            ':updated' => $now,
-            ':expiration' => $expiration  ? $expiration->format('Y-m-d H:i:s') : null
-        ];
-        for($try=0; $try<1024; $try++) {
-            $stmtParms['value'] = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
-            if($stmt->execute($stmtParms) === true) {
-                $token = new Token();
-                $token->setUser($user)
-                    ->setType($type)
-                    ->setValue($stmtParms['value'])
-                    ->setExpiration($expiration)
-                    ->setData($data);
-                break;
+        $n = 0;
+        do {
+            if ($n++ > 1024) {
+                throw new \RuntimeException('Unable to create a token.');
             }
-        }
-        if ($token === null) {
-            throw new \RuntimeException('Unable to create a token.');
-        }
+            $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
+            $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
+        } while ($found);
+
+        $token = new Token();
+
+        $token->setUser($user)
+            ->setType($type)
+            ->setValue($value)
+            ->setExpiration($expiration)
+            ->setData($data);
+
+        $this->om->persist($token);
+        $this->om->flush();
 
         return $token;
     }
