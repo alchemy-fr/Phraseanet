@@ -78,12 +78,12 @@ class TokenManipulator implements ManipulatorInterface
         $now = (new \DateTime())->format('Y-m-d H:i:s');
         $stmtParms = [
             ':value' => null,
-            ':user_id' => $user->getId(),
+            ':user_id' => $user ? $user->getId() : null,
             ':type' => $type,
             ':data' => $data,
             ':created' => $now,
             ':updated' => $now,
-            ':expiration' => ($expiration === null ? null : $expiration->format('Y-m-d H:i:s'))
+            ':expiration' => $expiration  ? $expiration->format('Y-m-d H:i:s') : null
         ];
         for($try=0; $try<1024; $try++) {
             $stmtParms['value'] = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
