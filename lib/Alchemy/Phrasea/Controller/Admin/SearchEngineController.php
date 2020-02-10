@@ -33,7 +33,19 @@ class SearchEngineController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $this->saveElasticSearchOptions($form->getData());
+            /** @var ElasticsearchOptions $data */
+            $data = $form->getData();
+            // $q = $request->request->get('elasticsearch_settings');
+            $facetNames = [];   // rebuild the data "_customValues/facets" list following the form order
+            foreach($request->request->get('elasticsearch_settings') as $name=>$value) {
+                $matches = null;
+                if(preg_match('/^facets:(.+):limit$/', $name, $matches) === 1) {
+                    $facetNames[] = $matches[1];
+                }
+            }
+            $data->reorderAggregableFields($facetNames);
+
+            $this->saveElasticSearchOptions($data);
 
             return $this->app->redirectPath('admin_searchengine_form');
         }

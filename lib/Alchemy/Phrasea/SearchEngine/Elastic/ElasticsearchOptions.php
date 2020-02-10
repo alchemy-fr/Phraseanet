@@ -257,6 +257,18 @@ class ElasticsearchOptions
         return $this->_customValues['facets'];
     }
 
+    // set to change the facets order during admin/form save
+    public function reorderAggregableFields($facetNames)
+    {
+        $newFacets = [];
+        foreach ($facetNames as $name) {
+            if(($facet = $this->getAggregableField($name)) !== null) {
+                $newFacets[$name] = $facet;
+            }
+        }
+        $this->_customValues['facets'] = $newFacets;
+    }
+
     public function getActiveTab()
     {
         return $this->activeTab;
