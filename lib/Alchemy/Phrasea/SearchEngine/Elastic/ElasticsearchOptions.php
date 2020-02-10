@@ -76,7 +76,7 @@ class ElasticsearchOptions
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
         $self->setActiveTab($options['activeTab']);
-        foreach($options['aggregates'] as $fieldname=>$attributes) {
+        foreach($options['facets'] as $fieldname=>$attributes) {
             $self->setAggregableField($fieldname, $attributes);
         }
 
@@ -99,7 +99,7 @@ class ElasticsearchOptions
             'populate_order'     => $this->populateOrder,
             'populate_direction' => $this->populateDirection,
             'activeTab' => $this->activeTab,
-            'aggregates' => []
+            'facets' => []
         ];
         foreach($this->getAggregableFields() as $fieldname=>$attributes) {
             $ret['facets'][$fieldname] = $attributes;
