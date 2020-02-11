@@ -29,7 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for basket in baskets_collection %}
+                {% for basket in baskets_collection | sort | reverse%}
                   {% if basket.getValidation() %}
                       {% set basket_length = basket.getElements().count() %}
       <tr>
@@ -94,7 +94,7 @@
                         <i>{{ 'Voici vos paniers' | trans }}</i>
                     </th>
                 </tr>
-                {% for basket in baskets_collection %}
+                {% for basket in baskets_collection | sort | reverse%}
                   {% if basket.getValidation is null %}
                       {% set basket_length = basket.getElements().count() %}
       <tr>
