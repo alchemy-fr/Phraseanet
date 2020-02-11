@@ -137,28 +137,9 @@ class TokenManipulator implements ManipulatorInterface
     {
         // $this->removeExpiredTokens();
 
-        $conn = $this->repository->getEntityManager()->getConnection();
-
-        // use an optimized tmp table we can fill fast (only 2 values changes by row, others are default)
-        $now = $conn->quote((new \DateTime())->format('Y-m-d H:i:s'));
-        $conn->executeQuery("CREATE TEMPORARY TABLE `tmpTokens` (\n"
-            . " `value` char(128),\n"
-            . " `user_id` int(11),\n"
-            . " `type` char(32) DEFAULT " . $conn->quote(self::TYPE_FEED_ENTRY) . ",\n"
-            . " `data` int(11) DEFAULT " . $conn->quote($entry->getId()) . ",\n"
-            . " `created` datetime DEFAULT " . $now . ",\n"
-            . " `updated` datetime DEFAULT " . $now . ",\n"
-            . " `expiration` datetime DEFAULT NULL\n"
-            . ") ENGINE=MEMORY;"
-        );
-
         $tokens = [];
-        $sql = "";
         foreach ($users as $user) {
             $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS) . $user->getId();
-            // todo: don't build a too long sql, we should flush/run into temp table if l>limit.
-            // But for now we trust that 100 (see FeedEntrySsuscriber) tokens is ok
-            $sql .= ($sql?',':'') . ('(' . $conn->quote($value) . ',' . $conn->quote($user->getId()) . ')');
 
             $token = new Token();
             $token->setUser($user)
@@ -167,11 +148,11 @@ class TokenManipulator implements ManipulatorInterface
                 ->setExpiration(null)
                 ->setData($entry->getId());
             $tokens[] = $token;
-        }
 
-        $conn->executeQuery("INSERT INTO tmpTokens (`value`, `user_id`) VALUES " . $sql);
-        $conn->executeQuery("INSERT INTO Tokens SELECT * FROM tmpTokens");
-        $conn->executeQuery("DROP TABLE tmpTokens");
+            $this->om->persist($token);
+        }
+        $this->om->flush();
+        $this->om->clear();
 
         return $tokens;
     }
