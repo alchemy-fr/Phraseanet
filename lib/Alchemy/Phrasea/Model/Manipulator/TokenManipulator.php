@@ -23,7 +23,6 @@ use RandomLib\Generator;
 class TokenManipulator implements ManipulatorInterface
 {
     const LETTERS_AND_NUMBERS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     const TYPE_FEED_ENTRY = 'FEED_ENTRY';
     const TYPE_PASSWORD = 'password';
     const TYPE_ACCOUNT_UNLOCK = 'account-unlock';
@@ -128,6 +127,38 @@ class TokenManipulator implements ManipulatorInterface
     public function createFeedEntryToken(User $user, FeedEntry $entry)
     {
         return $this->create($user, self::TYPE_FEED_ENTRY, null, $entry->getId());
+    }
+
+    /**
+     * Create feedEntryTokens for many users in one shot
+     *
+     * @param User[] $users
+     * @param FeedEntry $entry
+     * @return Token[]
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function createFeedEntryTokens($users, FeedEntry $entry)
+    {
+        // $this->removeExpiredTokens();
+
+        $tokens = [];
+        foreach ($users as $user) {
+            $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS) . $user->getId();
+
+            $token = new Token();
+            $token->setUser($user)
+                ->setType(self::TYPE_FEED_ENTRY)
+                ->setValue($value)
+                ->setExpiration(null)
+                ->setData($entry->getId());
+            $tokens[] = $token;
+
+            $this->om->persist($token);
+        }
+        $this->om->flush();
+        $this->om->clear();
+
+        return $tokens;
     }
 
     /**
