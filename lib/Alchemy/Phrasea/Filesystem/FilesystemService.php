@@ -224,6 +224,8 @@ class FilesystemService
                 return 'jpg';
             case 'png':
                 return 'png';
+            case 'webp':
+                return 'webp';
         }
 
         return null;
