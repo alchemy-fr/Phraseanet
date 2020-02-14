@@ -123,7 +123,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -131,7 +131,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -255,7 +255,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -263,7 +263,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -354,7 +354,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
           <field>
@@ -362,7 +362,7 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
             <comment></comment>
           </field>
         </fields>
@@ -1925,7 +1925,7 @@
             <type>enum('string','date','number')</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>string</default>
             <comment></comment>
           </field>
           <field>
@@ -3493,14 +3493,14 @@
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
             <null></null>
             <extra></extra>
-            <default></default>
+            <default>0000-00-00 00:00:00</default>
           </field>
         </fields>
         <indexes>
