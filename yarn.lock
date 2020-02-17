@@ -7577,6 +7577,7 @@ phraseanet-common@^0.4.5-d:
     js-cookie "^2.1.0"
     pym.js "^1.3.1"
 
+
 phraseanet-production-client@0.34.133-d:
   version "0.34.133-d"
   resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.133-d.tgz#41e10c29d839607364c52a0a824eaebc39f0c1a9"
