@@ -118,8 +118,8 @@
         <source>%basket_length% documents</source>
         <target state="translated">%basket_length% documents</target>
         <jms:reference-file line="42">mobile/lightbox/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="65">web/lightbox/index.html.twig</jms:reference-file>
-        <jms:reference-file line="123">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="67">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="131">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b444b30c762b94c468daf384f731e5ffc3ae998d" resname="%countable% documents can not be modified." approved="yes">
         <source>%countable% documents can not be modified.</source>
@@ -383,17 +383,17 @@
       <trans-unit id="f9b99b03af6b1d53ea7034c84c55dabc0154b216" resname="(validation) a envoyer" approved="yes">
         <source>(validation) a envoyer</source>
         <target state="translated">Rapport de validation à envoyer</target>
-        <jms:reference-file line="61">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="63">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4917c899b027967555ba3f1c755a1aeae2775ee1" resname="(validation) envoyee" approved="yes">
         <source>(validation) envoyee</source>
         <target state="translated">Rapport de validation envoyé</target>
-        <jms:reference-file line="59">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="61">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e41adb316d2c64579c0c85a614f4a4830054520" resname="(validation) session terminee" approved="yes">
         <source>(validation) session terminee</source>
         <target state="translated">Session terminée</target>
-        <jms:reference-file line="57">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="59">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4412a659c3e1ca169796ab2f540a932ea7cbe2a4" resname="*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance" approved="yes">
         <source>*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance</source>
@@ -7409,7 +7409,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Voici vos paniers</source>
         <target state="translated">Paniers disponibles</target>
         <jms:reference-file line="144">mobile/lightbox/index.html.twig</jms:reference-file>
-        <jms:reference-file line="94">web/lightbox/index.html.twig</jms:reference-file>
+        <jms:reference-file line="99">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c6dacfdd161fc809b7996f80fccf5c7515f82e1c" resname="Voici vos validations en cours" approved="yes">
         <source>Voici vos validations en cours</source>
@@ -10092,6 +10092,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Le service sera de nouveau disponible dans quelques minutes.</target>
         <jms:reference-file line="8">actions/Bridge/deactivated.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="ca846d01ab220fae7680e8e5c1e48ba48edfbe9e" resname="lightbox::See_less_feedback">
+        <source>lightbox::See_less_feedback</source>
+        <target state="new">lightbox::See_less_feedback</target>
+        <jms:reference-file line="93">web/lightbox/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2274b310e1d129edb33026fcf5d22d5d88791553" resname="lightbox::See_more_feedback">
+        <source>lightbox::See_more_feedback</source>
+        <target state="new">lightbox::See_more_feedback</target>
+        <jms:reference-file line="89">web/lightbox/index.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="08dffae30f5e0bfb179632f591a0ffb3daaffe6d" resname="lightbox::list" approved="yes">
         <source>lightbox::list</source>
         <target state="translated">Vignette</target>
@@ -10103,6 +10113,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="59">mobile/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="9">web/lightbox/agreement_box.html.twig</jms:reference-file>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket">
+        <source>lightbox::see_less_basket</source>
+        <target state="new">lightbox::see_less_basket</target>
+        <jms:reference-file line="157">web/lightbox/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4363b0cf436b76acce776ec9cc230ec197603f88" resname="lightbox::see_more_basket">
+        <source>lightbox::see_more_basket</source>
+        <target state="new">lightbox::see_more_basket</target>
+        <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1487f97b5c5fadc7f37e1ac8923433753179d2" resname="login:: Changer mon adresse email" approved="yes">
         <source>login:: Changer mon adresse email</source>
