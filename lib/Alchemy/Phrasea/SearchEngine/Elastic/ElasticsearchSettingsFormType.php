@@ -149,7 +149,7 @@ class ElasticsearchSettingsFormType extends AbstractType
 
         // populate aggs to form
         foreach($aggs as $k=>$agg) {
-            $builder->add('aggregates:' . $k . ':limit', ChoiceType::class, $agg);
+            $builder->add('facets:' . $k . ':limit', ChoiceType::class, $agg);
         }
 
     }
