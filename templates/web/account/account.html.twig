@@ -137,7 +137,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_function"><strong>{{ "admin::compte-utilisateur poste" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().getActivity() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_function" id="form_function" value="{{ app["authentication"].getUser().getJob() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
                             <div class="control-group">
                                 <label class="form_label control-label" for="form_activity"><strong>{{ "admin::compte-utilisateur activite" | trans }}</strong></label>
                                 <div class="controls">
-                                    <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().getJob() }}" />
+                                    <input class="input_element input-xlarge" type="text" name="form_activity" id="form_activity" value="{{ app["authentication"].getUser().getActivity() }}" />
                                     <p class="form_alert help-block"></p>
                                 </div>
                             </div>
