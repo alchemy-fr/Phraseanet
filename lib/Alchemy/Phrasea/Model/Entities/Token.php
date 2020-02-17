@@ -14,8 +14,16 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+
 /**
- * @ORM\Table(name="Tokens")
+ * @ORM\Table(name="Tokens",
+ *      indexes={
+ *          @ORM\index(name="type", columns={"type"}),
+ *          @ORM\index(name="created", columns={"created"}),
+ *          @ORM\index(name="updated", columns={"updated"}),
+ *          @ORM\index(name="expiration", columns={"expiration"})
+ *      }
+ * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\TokenRepository")
  */
 class Token
