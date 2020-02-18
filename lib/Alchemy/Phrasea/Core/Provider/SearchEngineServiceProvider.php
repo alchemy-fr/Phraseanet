@@ -97,7 +97,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            return new FacetsResponse(new Escaper(), $response, $app['search_engine.structure']);
+            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure']);
         });
 
         return $app;
@@ -228,7 +228,8 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.options'] = $app->share(function ($app) {
-            $options = ElasticsearchOptions::fromArray($app['conf']->get(['main', 'search-engine', 'options'], []));
+            $conf = $app['conf']->get(['main', 'search-engine', 'options'], []);
+            $options = ElasticsearchOptions::fromArray($conf);
 
             if (empty($options->getIndexName())) {
                 $options->setIndexName(strtolower(sprintf('phraseanet_%s', str_replace(

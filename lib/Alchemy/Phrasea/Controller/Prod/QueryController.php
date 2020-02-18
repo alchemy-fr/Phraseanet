@@ -433,24 +433,15 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
-            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
                 if(array_key_exists($facetName, $fieldsInfosByName)) {
-
                     $f = $fieldsInfosByName[$facetName];
-
                     $facet['label'] = $f['trans_label'];
                     $facet['labels'] = $f['labels'];
                     $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
                     $facets[] = $facet;
-
-                    // $facetClauses[] = [
-                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
-                    //    'field' => $f['field'],
-                    //    'facet' => $facet
-                    // ];
                 }
             }
 
