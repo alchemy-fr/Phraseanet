@@ -36,11 +36,6 @@ interface Structure
     /**
      * @return Field[]
      */
-    public function getFacetFields();
-
-    /**
-     * @return Field[]
-     */
     public function getThesaurusEnabledFields();
 
     /**
