@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-02-18T16:22:02Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -809,9 +809,9 @@
         <target state="translated">After captions</target>
         <jms:reference-file line="735">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8309825c7302ca269da1af87d2a9a5ea9e295426" resname="Aggregated">
+      <trans-unit id="8309825c7302ca269da1af87d2a9a5ea9e295426" resname="Aggregated" approved="yes">
         <source>Aggregated</source>
-        <target state="new">Aggregated</target>
+        <target state="translated">Aggregated</target>
         <jms:reference-file line="10">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9ba037c0e4c06d192c83e08070b15787f07daaa" resname="Aggregation" approved="yes">
@@ -9945,14 +9945,14 @@
         <target state="translated">Modifications done</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR">
+      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR" approved="no">
         <source>help::help-search: OR</source>
-        <target state="new">help::help-search: OR</target>
+        <target state="needs-translation">OR</target>
         <jms:reference-file line="34">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter">
+      <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter" approved="yes">
         <source>help::help-search: relaunch search without filter</source>
-        <target state="new">help::help-search: relaunch search without filter</target>
+        <target state="translated">Remove all filters and relaunch search</target>
         <jms:reference-file line="37">prod/results/help.html.twig</jms:reference-file>
         <jms:reference-file line="330">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
@@ -10098,14 +10098,14 @@
         <target state="translated">Service will be available again in a few minutes</target>
         <jms:reference-file line="8">actions/Bridge/deactivated.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca846d01ab220fae7680e8e5c1e48ba48edfbe9e" resname="lightbox::See_less_feedback">
+      <trans-unit id="ca846d01ab220fae7680e8e5c1e48ba48edfbe9e" resname="lightbox::See_less_feedback" approved="yes">
         <source>lightbox::See_less_feedback</source>
-        <target state="new">lightbox::See_less_feedback</target>
+        <target state="translated">See less feedback</target>
         <jms:reference-file line="93">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2274b310e1d129edb33026fcf5d22d5d88791553" resname="lightbox::See_more_feedback">
+      <trans-unit id="2274b310e1d129edb33026fcf5d22d5d88791553" resname="lightbox::See_more_feedback" approved="yes">
         <source>lightbox::See_more_feedback</source>
-        <target state="new">lightbox::See_more_feedback</target>
+        <target state="translated">See more feedback</target>
         <jms:reference-file line="89">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="08dffae30f5e0bfb179632f591a0ffb3daaffe6d" resname="lightbox::list" approved="yes">
@@ -10120,14 +10120,14 @@
         <jms:reference-file line="9">web/lightbox/agreement_box.html.twig</jms:reference-file>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket">
+      <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket" approved="yes">
         <source>lightbox::see_less_basket</source>
-        <target state="new">lightbox::see_less_basket</target>
+        <target state="translated">See less baskets</target>
         <jms:reference-file line="157">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4363b0cf436b76acce776ec9cc230ec197603f88" resname="lightbox::see_more_basket">
+      <trans-unit id="4363b0cf436b76acce776ec9cc230ec197603f88" resname="lightbox::see_more_basket" approved="yes">
         <source>lightbox::see_more_basket</source>
-        <target state="new">lightbox::see_more_basket</target>
+        <target state="translated">See more baskets</target>
         <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1487f97b5c5fadc7f37e1ac8923433753179d2" resname="login:: Changer mon adresse email" approved="yes">
@@ -11231,9 +11231,9 @@
         <target state="translated">Feedback initiated by :</target>
         <jms:reference-file line="405">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
+      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="yes">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="needs-translation">Feedback initiated on :</target>
+        <target state="translated">Feedback initiated on :</target>
         <jms:reference-file line="411">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
@@ -11460,9 +11460,9 @@
         <target state="translated">Document type</target>
         <jms:reference-file line="313">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a146a90e6a97ac82ffa4ab5d4dc7cf4955a1e305" resname="prod::feedback:feedback_set_title">
+      <trans-unit id="a146a90e6a97ac82ffa4ab5d4dc7cf4955a1e305" resname="prod::feedback:feedback_set_title" approved="yes">
         <source>prod::feedback:feedback_set_title</source>
-        <target state="needs-translation">Feedback Title</target>
+        <target state="translated">Feedback Title :</target>
         <jms:reference-file line="153">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dee7c522bf9e0eea45e003fb4d0f736bc251a954" resname="prod::push:push_set_title" approved="yes">
