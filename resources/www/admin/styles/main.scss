@@ -325,6 +325,7 @@ div.switch_right.unchecked {
   .ui-dialog-titlebar-close {
     border: none;
     margin-right: 4px;
+    text-indent: -9999999px;
   }
   .ui-icon.ui-icon-closethick {
     background-image: url("/assets/common/images/icons/cross-white.png");
@@ -841,6 +842,76 @@ span.simplecolorpicker.picker {
   }
 }
 
+.help-trigger {
+  display:inline-block;
+  cursor:pointer;
+  padding: 0 4px;
+  border:none;
+  margin-left: -12px;
+}
+
+.phraseanet_logo {
+  background: url(../../common/images/logo_phraseanet.png) no-repeat center center /contain;
+  height: 75px;
+  width: 230px;
+  display: inline-block;
+}
+
+.phraseanet_version {
+  font-size: 15px;
+  font-family: Roboto;
+  font-weight: 500;
+  color: #b7b7b7;
+  padding-left: 58px;
+  a {
+    color: #b7b7b7;
+    &:hover {
+      color: #FFFFFF;
+    }
+  }
+}
+
+.phraseanet_about_top {
+  background: #4e4e4e;
+  padding: 30px 20px;
+}
+.phraseanet_about_bottom {
+  padding: 25px 20px;
+  min-height: 150px;
+  background: #c8c8c8;
+  a {
+    font-family: Roboto;
+    line-height: 1.2;
+    font-size: 15px!important;
+    font-weight: 500;
+    color: #000000!important;
+    text-decoration: underline;
+  }
+
+}
+.phraseanet_gpl {
+  img {
+    position: absolute;
+    width: 84px;
+  }
+  span {
+    padding-top: 26px;
+    display: inline-block;
+    padding-left: 100px;
+    padding-bottom: 20px;
+    text-decoration: underline;
+  }
+  a {
+    text-decoration: underline;
+  }
+
+}
+.ui-icon, .ui-widget-content .ui-icon {
+  background-image: url(/assets/vendors/jquery-ui/images/ui-lightness/ui-icons_222222_256x240.png)!important;
+}
+.ui-dialog-titlebar-close {
+  text-indent: -9999999px;
+}
 @import './databases';
 @import './fields';
 @import './tables';

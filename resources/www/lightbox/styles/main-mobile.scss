@@ -694,6 +694,9 @@ button.confirm_report {
   iframe {
     min-height: 240px;
     width: auto;
+    .ui-mobile & {
+      width: 100%;
+    }
   }
 }
 

@@ -458,9 +458,9 @@ class AccountController extends Controller
                 ->setZipCode($request->request->get("form_zip"))
                 ->setPhone($request->request->get("form_phone"))
                 ->setFax($request->request->get("form_fax"))
-                ->setJob($request->request->get("form_activity"))
+                ->setJob($request->request->get("form_function"))
                 ->setCompany($request->request->get("form_company"))
-                ->setPosition($request->request->get("form_function"))
+                ->setPosition($request->request->get("form_activity"))
                 ->setNotifications((Boolean) $request->request->get("mail_notifications"));
 
             $service->updateAccount($command);
