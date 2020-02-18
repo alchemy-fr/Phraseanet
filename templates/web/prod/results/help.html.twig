@@ -30,7 +30,11 @@
                 <li><p>{{ 'help::help-section-bullet: search-in-a-specific-field' | trans }}</p></li>
             </ul>
         </div>
-        <p>
-          <span class="btn btn-info btn-lg trigger-reload-search" onclick="jQuery('.reload-search').trigger('click');">{{ 'help::help-search: relaunch search without filter' | trans }}</span></p>
+        <br>
+        <p class="text-center">{{ 'help::help-search: OR' | trans }}</p>
+        <br>
+        <p class="text-center">
+          <span class="btn btn-info btn-lg trigger-reload-search" onclick="jQuery('.reload-search').trigger('click');">{{ 'help::help-search: relaunch search without filter' | trans }}</span>
+        </p>
     </div>
 {% endblock %}
