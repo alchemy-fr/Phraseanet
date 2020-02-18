@@ -7576,10 +7576,12 @@ phraseanet-common@^0.4.5-d:
     jquery "^3.2.1"
     js-cookie "^2.1.0"
     pym.js "^1.3.1"
-phraseanet-production-client@0.34.128-d:
-  version "0.34.128-d"
-  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.128-d.tgz#c24bebe16d99f67f45b22c7e62b783be135bf569"
-  integrity sha512-AZ6Mdx26yfjQ53Y2MSBtOoopsQ3+eHA5qiRLnoUgqm6CmDdYatUyFt7lzGRk1axmVYf+2yH7jNaoHKCxb/n9UA==
+
+
+phraseanet-production-client@0.34.135-d:
+  version "0.34.135-d"
+  resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.135-d.tgz#fafbeecc0bd7aac7271742596576d5601b35d93e"
+  integrity sha512-mIORoFSZ4ZQgT0/1PhXsbwExrpTtNskdq/37/tuTrh5s/6SasFgvutSkUCvqr7EDyE2LNHZDAfcTCFLqo9T7DQ==
   dependencies:
     "@mapbox/mapbox-gl-language" "^0.9.2"
     "@turf/turf" "^5.1.6"
