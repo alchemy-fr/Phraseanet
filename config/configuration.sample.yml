@@ -80,9 +80,11 @@ border-manager:
         -
             type: Checker\Sha256
             enabled: true
+            compare-ignore-collections: []
         -
             type: Checker\UUID
             enabled: true
+            compare-ignore-collections: []
         -
             type: Checker\Colorspace
             enabled: false
@@ -105,6 +107,7 @@ border-manager:
             enabled: false
             options:
                 sensitive: true
+            compare-ignore-collections: []
         -
             type: Checker\MediaType
             enabled: false
