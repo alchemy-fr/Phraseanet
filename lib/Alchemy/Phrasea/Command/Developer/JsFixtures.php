@@ -130,14 +130,12 @@ class JsFixtures extends Command
         $output->writeln(sprintf("Generating %s", $target));
 
         if ($authenticateUser) {
-            // $this->loginUser($app, $user);
-            $app->getAuthenticator()->openAccount($user);
+            $this->loginUser($app, $user);
         }
         $client->request($method, $path);
         $response = $client->getResponse();
         if ($authenticateUser) {
-            // $this->logoutUser($app);
-            $app->getAuthenticator()->closeAccount();
+            $this->logoutUser($app);
         }
         if (false === $response->isOk()) {
             $this->deleteUser($user);
