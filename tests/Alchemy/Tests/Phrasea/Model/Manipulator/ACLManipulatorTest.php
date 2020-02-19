@@ -42,7 +42,7 @@ class ACLManipulatorTest extends \PhraseanetTestCase
                 $acl->update_rights_to_base(
                     $baseId,
                     [
-                        'creationdate'      => '0',         // todo: wtf
+                        //'creationdate'      => '0',         // todo: wtf
                         \ACL::CANPUTINALBUM      => false,
                         \ACL::CANDWNLDHD         => false,
                         \ACL::NOWATERMARK        => false,

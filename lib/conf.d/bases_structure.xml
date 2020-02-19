@@ -586,7 +586,7 @@
 
             <extra></extra>
 
-            <default></default>
+            <default>'\'\''</default>
             <comment></comment>
           </field>
           <field>
@@ -3138,7 +3138,7 @@
           <field>
             <name>xml</name>
             <type>longblob</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 

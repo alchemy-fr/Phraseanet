@@ -137,7 +137,7 @@ class cache_databox
      * @param string        $type
      * @param mixed content $value
      */
-    public static function update(Application $app, $sbas_id, $type, $value = '')
+    public static function update(Application $app, $sbas_id, $type, $value = 0)
     {
         $databox = $app->findDataboxById($sbas_id);
         $connbas = $databox->get_connection();

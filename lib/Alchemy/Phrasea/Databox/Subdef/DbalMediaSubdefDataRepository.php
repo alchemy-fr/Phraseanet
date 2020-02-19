@@ -184,7 +184,7 @@ SQL;
             'height' => $data['height'],
             'mime' => $data['mime'],
             'size' => $data['size'],
-            'substit' => $data['is_substituted'],
+            'substit' => $data['is_substituted'] ? 1 : 0,
             'etag' => $data['etag'],
         ];
     }
