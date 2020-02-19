@@ -9945,9 +9945,9 @@
         <target state="translated">Modifications done</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR" approved="no">
+      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR" approved="yes">
         <source>help::help-search: OR</source>
-        <target state="needs-translation">OR</target>
+        <target state="translated">Or</target>
         <jms:reference-file line="34">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter" approved="yes">
@@ -11325,9 +11325,9 @@
         <target state="translated">Narrow the search results to dates</target>
         <jms:reference-file line="466">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation">
+      <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation" approved="yes">
         <source>prod::advancesearch:tooltips:field_restriction_explanation</source>
-        <target state="new">prod::advancesearch:tooltips:field_restriction_explanation</target>
+        <target state="translated">Search content on a specific field</target>
         <jms:reference-file line="411">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b8698f202f815bbde691f54c7d51b691bef0263" resname="prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)" approved="yes">
