@@ -80,14 +80,17 @@ border-manager:
         -
             type: Checker\Sha256
             enabled: true
+            collections: []
             compare-ignore-collections: []
         -
             type: Checker\UUID
             enabled: true
+            collections: []
             compare-ignore-collections: []
         -
             type: Checker\Colorspace
             enabled: false
+            collections: []
             options:
                 colorspaces: [cmyk, grayscale, rgb]
                 media_types: [Image]
@@ -107,6 +110,7 @@ border-manager:
             enabled: false
             options:
                 sensitive: true
+            collections: []
             compare-ignore-collections: []
         -
             type: Checker\MediaType
