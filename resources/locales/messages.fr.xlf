@@ -808,9 +808,9 @@
         <target state="translated">Dans l'infobulle de description, après les métadonnées</target>
         <jms:reference-file line="735">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8309825c7302ca269da1af87d2a9a5ea9e295426" resname="Aggregated">
+      <trans-unit id="8309825c7302ca269da1af87d2a9a5ea9e295426" resname="Aggregated" approved="yes">
         <source>Aggregated</source>
-        <target state="new">Aggregated</target>
+        <target state="translated">Agrégé</target>
         <jms:reference-file line="10">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9ba037c0e4c06d192c83e08070b15787f07daaa" resname="Aggregation" approved="yes">
@@ -9952,7 +9952,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter" approved="yes">
         <source>help::help-search: relaunch search without filter</source>
-        <target state="translated">Supprimer tout les filtres et relancer la recherche</target>
+        <target state="translated">Supprimer tous les filtres et relancer la recherche</target>
         <jms:reference-file line="37">prod/results/help.html.twig</jms:reference-file>
         <jms:reference-file line="330">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
