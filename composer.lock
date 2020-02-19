@@ -275,16 +275,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.9",
+            "version": "0.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255"
+                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/1a96dc4142ff8474c11285cab9eab11df9683255",
-                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/3e235eb1efb528aea2973c946f4bf47630b98985",
+                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985",
                 "shasum": ""
             },
             "require": {
@@ -300,6 +300,7 @@
             },
             "require-dev": {
                 "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "^4.0|^5.0",
                 "silex/silex": "~1.0",
                 "symfony/yaml": "~2.0"
             },
@@ -333,7 +334,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2019-01-22T11:23:34+00:00"
+            "time": "2020-02-18T13:37:45+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -6168,7 +6169,7 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
-            "abandoned": true,
+            "abandoned": "symfony/web-profiler-bundle",
             "time": "2016-01-10T11:39:13+00:00"
         },
         {

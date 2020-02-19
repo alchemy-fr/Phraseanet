@@ -30,7 +30,7 @@ class WebhookEventPayload
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="WebhookEventDelivery")
+     * @ORM\OneToOne(targetEntity="WebhookEventDelivery", inversedBy="payload")
      * @ORM\JoinColumn(name="delivery_id", referencedColumnName="id")
      */
     private $delivery;

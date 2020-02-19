@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +18,18 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class ElasticsearchSettingsFormType extends AbstractType
 {
+    /** @var GlobalStructure  */
+    private $globalStructure;
+
+    /** @var ElasticsearchOptions  */
+    private $esSettings;
+
+    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings)
+    {
+        $this->globalStructure = $g;
+        $this->esSettings = $settings;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -56,59 +69,89 @@ class ElasticsearchSettingsFormType extends AbstractType
             ->add('minScore', 'integer', [
                 'label' => 'Thesaurus Min score',
                 'constraints' => new Range(['min' => 0]),
-            ]);
+            ])
+            ->add('highlight', 'checkbox', [
+                'label' => 'Activate highlight',
+                'required' => false
+            ])
+            //                ->add('save', 'submit', [
+            //                    'attr' => ['class' => 'btn btn-primary']
+            //                ])
+            ->add('esSettingFromIndex', 'button', [
+                'label' => 'Get setting form index',
+                'attr' => [
+                    'onClick' => 'esSettingFromIndex()',
+                    'class' => 'btn'
+                ]
+            ])
+            ->add('dumpField', 'textarea', [
+                'label' => false,
+                'required' => false,
+                'mapped' => false,
+                'attr' => ['class' => 'dumpfield hide']
+            ])
+            ->add('activeTab', 'hidden');
 
-            foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
-                if(array_key_exists('choices', $f)) {
-                    // choices[] : choice_key => choice_value
-                    $choices = $f['choices'];
-                }
-                else {
-                    $choices = [
-                        "10 values" => 10,
-                        "20 values" => 20,
-                        "50 values" => 50,
-                        "100 values" => 100,
-                        "all values" => -1
-                    ];
-                }
-                // array_unshift($choices, "not aggregated");  //  always as first choice
-                $choices = array_merge(["not aggregated" => 0], $choices);
-                $builder
-                    ->add($k.'_limit', ChoiceType::class, [
-                        // 'label' => $f['label'],// . ' ' . 'aggregate limit',
-                        'choices_as_values' => true,
-                        'choices'           => $choices,
-                        'attr'              => [
-                            'class' => 'aggregate'
-                        ]
-                    ]);
+        // keep aggregates in configuration order with this intermediate array
+        $aggs = [];
+
+        // helper fct to add aggregate to a tmp list
+        $addAgg = function($k, $label, $help, $disabled=false, $choices=null) use (&$aggs) {
+            if(!$choices) {
+                $choices = [
+                    "10 values"      => 10,
+                    "50 values"      => 50,
+                    "100 values"     => 100,
+                    "all values"     => -1
+                ];
             }
+            $choices = array_merge(["not aggregated" => 0], $choices);  //  add this option always as first choice
+            $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
+                'label'              => $label,
+                'choices_as_values'  => true,
+                'choices' => $choices,
+                'attr'               => [
+                    'class' => 'aggregate'
+                ],
+                'disabled'           => $disabled,
+                'help_message'       => $help     // todo : not displayed ?
+            ];
+        };
 
-            $builder
-                ->add('highlight', 'checkbox', [
-                    'label' => 'Activate highlight',
-                    'required' => false
-                ])
-//                ->add('save', 'submit', [
-//                    'attr' => ['class' => 'btn btn-primary']
-//                ])
-                ->add('esSettingFromIndex', 'button', [
-                    'label' => 'Get setting form index',
-                    'attr' => [
-                        'onClick' => 'esSettingFromIndex()',
-                        'class' => 'btn'
-                    ]
-                ])
-                ->add('dumpField', 'textarea', [
-                    'label' => false,
-                    'required' => false,
-                    'mapped' => false,
-                    'attr' => ['class' => 'dumpfield hide']
-                ])
-                ->add('activeTab', 'hidden');
+        // all fields fron conf
+        foreach($this->esSettings->getAggregableFields() as $k=>$f) {
+            // default value will be replaced by hardcoded tech fields & all databoxes fields
+            $addAgg($k, "/?\\ " . $k, "This field does not exists in current databoxes.", true);
+        }
 
-            ;
+        // add or replace hardcoded tech fields
+        foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+            $choices = array_key_exists('choices', $f) ? $f['choices'] : null;   // a tech-field can publish it's own choices
+            $help = null;
+            $label = '#' . $k;
+            if(!array_key_exists($k, $aggs)) {
+                $label = "/!\\ " . $label;
+                $help = "New field, please confirm setting.";
+            }
+            $addAgg($k, $label, $help, false, $choices);
+        }
+
+        // add or replace all databoxes fields (nb: new db field - unknown in conf - will be a the end)
+        foreach($this->globalStructure->getAllFields() as $field) {
+            $k = $label = $field->getName();
+            $help = null;
+            if(!array_key_exists($field->getName(), $aggs)) {
+                $label = "/!\\ " . $label;
+                $help = "New field, please confirm setting.";
+            }
+            $addAgg($k, $label, $help);     // default choices
+        }
+
+        // populate aggs to form
+        foreach($aggs as $k=>$agg) {
+            $builder->add('facets:' . $k . ':limit', ChoiceType::class, $agg);
+        }
+
     }
 
     public function getName()

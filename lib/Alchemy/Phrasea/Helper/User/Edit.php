@@ -657,8 +657,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ->setEmail($parm['email'])
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])
-            ->setActivity($parm['function'])
-            ->setJob($parm['activite'])
+            ->setActivity($parm['activite'])
+            ->setJob($parm['function'])
             ->setCompany($parm['company'])
             ->setPhone($parm['telephone'])
             ->setFax($parm['fax']);
