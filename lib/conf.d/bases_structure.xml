@@ -586,7 +586,7 @@
 
             <extra></extra>
 
-            <default>'\'\''</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
