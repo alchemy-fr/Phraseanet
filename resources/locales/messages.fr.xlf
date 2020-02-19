@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-02-18T16:22:14Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -9945,14 +9945,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Modifications effectuées</target>
         <jms:reference-file line="14">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR">
+      <trans-unit id="0bf89031fb0b79dd308305fa96c6e804bd701c06" resname="help::help-search: OR" approved="yes">
         <source>help::help-search: OR</source>
-        <target state="new">help::help-search: OR</target>
+        <target state="translated">Ou</target>
         <jms:reference-file line="34">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter">
+      <trans-unit id="afca2d3b5d8e63be2c3ad162f99cba5f67299d07" resname="help::help-search: relaunch search without filter" approved="yes">
         <source>help::help-search: relaunch search without filter</source>
-        <target state="new">help::help-search: relaunch search without filter</target>
+        <target state="translated">Supprimer tout les filtres et relancer la recherche</target>
         <jms:reference-file line="37">prod/results/help.html.twig</jms:reference-file>
         <jms:reference-file line="330">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
@@ -10098,14 +10098,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Le service sera de nouveau disponible dans quelques minutes.</target>
         <jms:reference-file line="8">actions/Bridge/deactivated.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca846d01ab220fae7680e8e5c1e48ba48edfbe9e" resname="lightbox::See_less_feedback">
+      <trans-unit id="ca846d01ab220fae7680e8e5c1e48ba48edfbe9e" resname="lightbox::See_less_feedback" approved="yes">
         <source>lightbox::See_less_feedback</source>
-        <target state="new">lightbox::See_less_feedback</target>
+        <target state="translated">Voir moins de validations</target>
         <jms:reference-file line="93">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2274b310e1d129edb33026fcf5d22d5d88791553" resname="lightbox::See_more_feedback">
+      <trans-unit id="2274b310e1d129edb33026fcf5d22d5d88791553" resname="lightbox::See_more_feedback" approved="yes">
         <source>lightbox::See_more_feedback</source>
-        <target state="new">lightbox::See_more_feedback</target>
+        <target state="translated">Voir plus de Validations</target>
         <jms:reference-file line="89">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="08dffae30f5e0bfb179632f591a0ffb3daaffe6d" resname="lightbox::list" approved="yes">
@@ -10120,14 +10120,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="9">web/lightbox/agreement_box.html.twig</jms:reference-file>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket">
+      <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket" approved="yes">
         <source>lightbox::see_less_basket</source>
-        <target state="new">lightbox::see_less_basket</target>
+        <target state="translated">Voir moins de Paniers</target>
         <jms:reference-file line="157">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4363b0cf436b76acce776ec9cc230ec197603f88" resname="lightbox::see_more_basket">
+      <trans-unit id="4363b0cf436b76acce776ec9cc230ec197603f88" resname="lightbox::see_more_basket" approved="yes">
         <source>lightbox::see_more_basket</source>
-        <target state="new">lightbox::see_more_basket</target>
+        <target state="translated">Voir plus de paniers</target>
         <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1487f97b5c5fadc7f37e1ac8923433753179d2" resname="login:: Changer mon adresse email" approved="yes">
@@ -10327,9 +10327,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Votre commande du :</target>
         <jms:reference-file line="247">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item">
+      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item" approved="no">
         <source>order-manager::order-item: accepted-item</source>
-        <target state="new">order-manager::order-item: accepted-item</target>
+        <target state="needs-translation">Media délivré</target>
         <jms:reference-file line="254">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address" approved="yes">
@@ -10419,9 +10419,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="181">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="266">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item">
+      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item" approved="no">
         <source>order-manager::order-item: rejected-item</source>
-        <target state="new">order-manager::order-item: rejected-item</target>
+        <target state="needs-translation">Media Non délivré</target>
         <jms:reference-file line="253">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="yes">
@@ -10436,9 +10436,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tout sélectionner</target>
         <jms:reference-file line="113">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item">
+      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item" approved="no">
         <source>order-manager::order-item: selected-item</source>
-        <target state="new">order-manager::order-item: selected-item</target>
+        <target state="needs-translation">Media sélectionnés</target>
         <jms:reference-file line="255">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records" approved="yes">
@@ -11166,14 +11166,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Rapport de validation avec description</target>
         <jms:reference-file line="15">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only">
+      <trans-unit id="caf52ea38dea74643f03f40f3e9bae808f90d1f7" resname="print:: basket feedback only" approved="yes">
         <source>print:: basket feedback only</source>
-        <target state="needs-translation">Rapport de validation</target>
+        <target state="translated">Rapport de validation</target>
         <jms:reference-file line="11">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description">
+      <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description" approved="yes">
         <source>print:: description</source>
-        <target state="needs-translation">Notice</target>
+        <target state="translated">Notice seule</target>
         <jms:reference-file line="38">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
@@ -11231,9 +11231,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Validation envoyée par :</target>
         <jms:reference-file line="405">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : ">
+      <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="yes">
         <source>print_feedback:: Feedback initiated on : </source>
-        <target state="needs-translation">Début de validation le :</target>
+        <target state="translated">Début de validation le :</target>
         <jms:reference-file line="411">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
