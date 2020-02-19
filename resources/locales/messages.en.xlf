@@ -10090,7 +10090,7 @@
       </trans-unit>
       <trans-unit id="e11523c5ff23fc1600aca2d8ee5adb542c5ce4b3" resname="language" approved="yes">
         <source>language</source>
-        <target state="translated">Language</target>
+        <target state="translated">Current language</target>
         <jms:reference-file line="17">login/include/language-block.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15daeb7ec47bb61b62c6b2af177ef7bcc1094ba9" resname="le service sera de nouveau disponible dans quelques minutes" approved="yes">
