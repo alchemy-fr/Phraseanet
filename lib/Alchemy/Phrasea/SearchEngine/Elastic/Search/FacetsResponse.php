@@ -15,7 +15,7 @@ class FacetsResponse
     private $escaper;
     private $facets = array();
 
-    public function __construct(Escaper $escaper, array $response, GlobalStructure $structure)
+    public function __construct(ElasticsearchOptions $options, Escaper $escaper, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
 
@@ -25,7 +25,13 @@ class FacetsResponse
 
         $atf = ElasticsearchOptions::getAggregableTechnicalFields();
 
-        foreach ($response['aggregations'] as $name => $aggregation) {
+        // sort facets respecting the order defined in options
+        foreach($options->getAggregableFields() as $name=>$foptions) {
+            if(!array_key_exists($name, $response['aggregations'])) {
+                continue;
+            }
+            $aggregation = $response['aggregations'][$name];
+
             $tf = null;
             $valueFormatter = function($v){ return $v; };    // default equality formatter
 
@@ -78,6 +84,7 @@ class FacetsResponse
                 ];
             }
         }
+
     }
 
 
