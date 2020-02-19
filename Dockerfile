@@ -36,7 +36,11 @@ RUN apt-get update \
         xpdf \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-source extract \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
     && pecl install redis amqp-1.9.3 zmq-beta imagick-beta \
@@ -45,10 +49,7 @@ RUN apt-get update \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/*
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'baf1608c33254d00611ac1705c1d9958c817a1a33bce370c0595974b342601bd80b92a3f46067da89e3b06bff421f182') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && php -r "unlink('composer-setup.php');"
+COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
 
 # Node Installation (node + yarn)
 # Reference :
@@ -128,6 +129,12 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
 #########################################################################
 
 FROM phraseanet-system as phraseanet-fpm
+
+RUN docker-php-source extract \
+    && pecl install xdebug-2.9.0 \
+    && docker-php-ext-enable xdebug \
+    #&& pecl clear-cache \
+    && docker-php-source delete
 
 COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/ /

@@ -66,5 +66,5 @@
 
 - name: Make exiftool executable
   file:
-    path: /vagrant/vendor/phpexiftool/exiftool/exiftool
+    path: /vagrant/vendor/exiftool/exiftool/exiftool
     mode: 0755

@@ -72,4 +72,9 @@ class TokenRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function getEntityManager()
+    {
+        return parent::getEntityManager();
+    }
 }

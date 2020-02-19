@@ -150,6 +150,8 @@
     <div class="control-group">
         <input id="PushSendFormName" placeholder="{% trans %}Name{% endtrans %}" type="text" name="name"
                class="input-block-level"/>
+        <input id="feedbackTitle" type="hidden" value="{% trans %}prod::feedback:feedback_set_title{% endtrans %}" />
+        <input id="pushTitle" type="hidden" value="{% trans %}prod::push:push_set_title{% endtrans %}" />
     </div>
     <div class="control-group">
         <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"

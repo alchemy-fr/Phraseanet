@@ -36,11 +36,6 @@ final class GlobalStructure implements Structure
     private $private = array();
 
     /**
-     * @var Field[]
-     */
-    private $facets = array();
-
-    /**
      * @var Flag[]
      */
     private $flags = array();
@@ -145,9 +140,11 @@ final class GlobalStructure implements Structure
             $this->private[$name] = $field;
         }
 
+        /*
         if ($field->isFacet() && $field->isSearchable()) {
             $this->facets[$name] = $field;
         }
+        */
 
         if ($field->hasConceptInference()) {
             $this->thesaurus_fields[$name] = $field;
@@ -181,14 +178,6 @@ final class GlobalStructure implements Structure
     public function getPrivateFields()
     {
         return $this->private;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function getFacetFields()
-    {
-        return $this->facets;
     }
 
     /**
