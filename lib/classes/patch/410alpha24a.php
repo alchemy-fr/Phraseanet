@@ -66,7 +66,7 @@ class patch_410alpha24a implements patchInterface
         $stmt->closeCursor();
 
 
-        $sql = "ALTER TABLE `basusr` CHANGE `basusr_infousr` `basusr_infousr` TEXT NOT NULL DEFAULT '\'\''";
+        $sql = "ALTER TABLE `basusr` CHANGE `basusr_infousr` `basusr_infousr` TEXT NOT NULL DEFAULT ''";
   
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
