@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
@@ -105,19 +106,34 @@ class Manager
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null, $nosubdef = false)
     {
+        // here exiftool:reader has already been called once by mediavorus:guess(), so $file contains a $media which contains meta
+        // ...
+
+        // if SHA256 checker is activated, getVisa() will do a exiftool:write to a tmp file
+        // (to get the sha on a "image only file" without meta from original file)
+        // nb : the uuid checker will NOT generate an uuid if there is no one on file
         $visa = $this->getVisa($file);
 
         // Generate UUID
-        $file->getUUID(true, false);
+        // the uuid can be found in meta (no need to call exiftool). If not found, one is generated AND WRITTEN
+        $file->getUUID(true, true);
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
             $this->addMediaAttributes($file);
 
+            // BAD : createRecord() calls createRecordFromFile(), which
+            // - calls file->media->getHash(...) which calls exiftool:write(tmp) again !
+            // todo : the sha may be already known : find it !
+            // - calls mediavorus:guess() which calls exiftools:read
+            // - calls record->insertTechnicalDatas() which calls mediavorus:guess() AGAIN !
+            //
+            // ... all BADS have been fixed ?
             $element = $this->createRecord($file, $nosubdef);
 
             $code = self::RECORD_CREATED;
-        } else {
+        }
+        else {
 
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
@@ -125,7 +141,9 @@ class Manager
         }
 
         // Write UUID
-        $file->getUUID(false, true);
+        // will call exiftool:write() to write the uuid
+        // NO : the uuid is written when read
+        // $file->getUUID(false, true);
 
         if (is_callable($callable)) {
             $callable($element, $visa, $code);
@@ -418,12 +436,20 @@ class Manager
      */
     protected function addMediaAttributes(File $file)
     {
-        $metadataCollection = $this->app['phraseanet.metadata-reader']->read($file->getMedia());
+        $metadataCollection = $this->getMetadataReader()->read($file->getMedia());
 
         array_walk($metadataCollection, function (Metadata $metadata) use ($file) {
             $file->addAttribute(new MetadataAttr($metadata));
         });
 
         return $this;
+    }
+
+    /**
+     * @return PhraseanetMetadataReader
+     */
+    private function getMetadataReader()
+    {
+        return $this->app['phraseanet.metadata-reader'];
     }
 }

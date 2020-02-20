@@ -9,7 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\File as BorderFile;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
@@ -37,6 +37,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
@@ -1234,12 +1235,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param File        $file
+     * @param BorderFile        $file
      * @param Application $app
      *
      * @return \record_adapter
      */
-    public static function createFromFile(File $file, Application $app)
+    public static function createFromFile(BorderFile $file, Application $app)
     {
         $databox = $file->getCollection()->get_databox();
 
@@ -1254,7 +1255,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ':coll_id'          => $file->getCollection()->get_coll_id(),
             ':parent_record_id' => 0,
             ':type'             => $file->getType() ? $file->getType()->getType() : 'unknown',
-            ':sha256'           => $file->getMedia()->getHash('sha256'),
+            // DON'T getHash() from media as it will call mediavorus which will call exiftool:write
+            // ':sha256'           => $file->getMedia()->getHash('sha256'),
+            // the value is already known cached by file
+            ':sha256'           => $file->getSha256(),
             ':uuid'             => $file->getUUID(true),
             ':originalname'     => $file->getOriginalName(),
             ':mime'             => $file->getFile()->getMimeType(),
@@ -1279,7 +1283,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 ':final'     => $file->getCollection()->get_coll_id(),
             ]);
             $stmt->closeCursor();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             unset($e);
         }
 
@@ -1290,32 +1295,48 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
-        $media = $app->getMediaFromUri($pathhd . $newname);
-        media_subdef::create($app, $record, 'document', $media);
+        // DON'T call getMediaFromUri() which calls exiftool:read
+        // $media = $app->getMediaFromUri($pathhd . $newname);
+
+        // the already known media is good enough to get size, mime, etc...
+        $org_media = $file->getMedia();
+        // for path and filename, a symfony file is perfect
+        $new_file = new SymfoFile($pathhd . $newname);
+
+        //@SuppressWarnings("Duplicates")
+        $data = [
+            'path'   => $new_file->getPath(),
+            'file'   => $new_file->getFilename(),
+            'mime'   => $org_media->getFile()->getMimeType(),
+            'size'   => $org_media->getFile()->getSize(),
+            'width'  => 0,
+            'height' => 0
+        ];
+        if (method_exists($org_media, 'getWidth') && null !== $org_media->getWidth()) {
+            $data['width'] = $org_media->getWidth();
+        }
+        if (method_exists($org_media, 'getHeight') && null !== $org_media->getHeight()) {
+            $data['height'] = $org_media->getHeight();
+        }
+
+        media_subdef::createFromData($app, $record, 'document', $data);
 
         $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
 
-        $record->insertTechnicalDatas($app['mediavorus']);
+        // DON'T call mediavorus that will call (again) exiftool:read
+        //$record->insertTechnicalDatas($app['mediavorus']);
+
+        // better : get infos from the already known media
+        $data = media_subdef::readTechnicalDatasFromMedia($org_media);
+        $record->insertTechnicalDatasFromData($data);
 
         $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
 
         return $record;
     }
 
-    /**
-     * Read technical datas an insert them
-     * This method can be long to perform
-     *
-     * @return record_adapter
-     */
-    public function insertTechnicalDatas(MediaVorus $mediavorus)
+   public function insertTechnicalDatasFromData(Array $data)
     {
-        try {
-            $document = $this->get_subdef('document');
-        } catch (\Exception_Media_SubdefNotFound $e) {
-            return $this;
-        }
-
         $connection = $this->getDataboxConnection();
         $connection->executeUpdate('DELETE FROM technical_datas WHERE record_id = :record_id', [
             ':record_id' => $this->getRecordId(),
@@ -1323,7 +1344,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $sqlValues = [];
 
-        foreach ($document->readTechnicalDatas($mediavorus) as $name => $value) {
+        foreach ($data as $name => $value) {
             if (is_null($value)) {
                 continue;
             } elseif (is_bool($value)) {
@@ -1344,6 +1365,27 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $this->delete_data_from_cache(self::CACHE_TECHNICAL_DATA);
+
+        return $this;
+    }
+
+    /**
+     * Read technical datas an insert them
+     * This method can be long to perform
+     *
+     * @return record_adapter
+     */
+    public function insertTechnicalDatas(MediaVorus $mediavorus)
+    {
+        try {
+            $document = $this->get_subdef('document');
+        }
+        catch (\Exception_Media_SubdefNotFound $e) {
+            return $this;
+        }
+
+        $data = $document->readTechnicalDatas($mediavorus);
+        $this->insertTechnicalDatasFromData($data);
 
         return $this;
     }

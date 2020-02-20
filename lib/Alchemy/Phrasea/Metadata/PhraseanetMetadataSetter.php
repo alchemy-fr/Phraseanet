@@ -118,6 +118,7 @@ class PhraseanetMetadataSetter
 
         $metadataPerField = [];
 
+        $UUidFields = File::getUUIDFields();
         foreach ($metadataCollection as $metadata) {
             $tagName = $this->extractTagNameFromTag($metadata->getTag());
 
@@ -129,9 +130,12 @@ class PhraseanetMetadataSetter
                 if (!isset($metadataPerField[$fieldName])) {
                     $metadataPerField[$fieldName] = [];
                 }
-                if(in_array($tagName, File::$xmpTag)){
-                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array) File::sanitizeXmpUuid($metadata->getValue()->asString()));
-                }else{
+                if(array_key_exists($tagName, $UUidFields)) {
+                    // the uuid fields have converters
+                    $v = $UUidFields[$tagName]['toUUid']($metadata->getValue()->asString());
+                    $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], (array) $v);
+                }
+                else{
                     $metadataPerField[$fieldName] = array_merge($metadataPerField[$fieldName], $metadata->getValue()->asArray());
                 }
             }

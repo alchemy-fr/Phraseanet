@@ -51,6 +51,58 @@ class File
     protected $attributes;
     public static $xmpTag = ['XMP-xmpMM:DocumentID'];
 
+    static public function getUUIDFields()
+    {
+        static $fid = null;
+        static $fnul = null;
+        static $v = null;
+
+        if(!$v) {
+            $fid = function($v){return $v;};
+            $fnul = function($v){return null;};
+            $v = [
+                'XMP-exif:ImageUniqueID' => [   // ok ?
+                    'toUUid'   => $fid,
+                    'fromUUid' => $fid
+                ],
+                'SigmaRaw:ImageUniqueID' => [
+                    'toUUid'   => $fid,
+                    'fromUUid' => $fnul         // this tag is read only
+                ],
+                'IPTC:UniqueDocumentID'  => [   // ok ?
+                    'toUUid'   => $fid,
+                    'fromUUid' => $fid
+                ],
+                'ExifIFD:ImageUniqueID'  => [   // ok ?
+                    'toUUid'   => $fid,
+                    'fromUUid' => $fid
+                ],
+                /* this tag seems not written (no err msg), the format is int8u ?
+                'Canon:ImageUniqueID'    => [
+                    'toUUid'   => $fid,
+                    'fromUUid' => $fnul         // this tags seems not written (no err msg), the format is int8u ?
+                ],
+                */
+                'XMP-xmpMM:DocumentID'   => [   // ok ?
+                    'toUUid'   => function ($v) {
+                        // skip 'xmp.did:' at the begining and add some '-'
+                        $v = substr($v, 8, 8) . '-'
+                            . substr($v, 16, 4) . '-'
+                            . substr($v, 20, 4) . '-'
+                            . substr($v, 24, 4) . '-'
+                            . substr($v, 28, 12);
+                        return $v;
+                    },
+                    'fromUUid' => function($u) {
+                        return 'xmp.did:' . str_replace('-', '', $u);
+                    }
+                ],
+            ];
+        }
+
+        return $v;
+    }
+
     /**
      * Constructor
      *
@@ -83,13 +135,10 @@ class File
     /**
      * Checks for UUID in metadatas
      *
-     * @todo Check if a file exists with the same checksum
-     * @todo Check if an UUID is contained in the attributes, replace It if
-     *              necessary
-     *
      * @param  boolean $generate if true, if no uuid found, a valid one is generated
      * @param  boolean $write    if true, writes uuid in all available metadatas
-     * @return File
+     * @return \Ramsey\Uuid\UuidInterface|null
+     * @throws \PHPExiftool\Exception\TagUnknown
      */
     public function getUUID($generate = false, $write = false)
     {
@@ -97,26 +146,14 @@ class File
             return $this->uuid;
         }
 
-        $availableUUIDs = [
-            'XMP-exif:ImageUniqueID',
-            'SigmaRaw:ImageUniqueID',
-            'IPTC:UniqueDocumentID',
-            'ExifIFD:ImageUniqueID',
-            'Canon:ImageUniqueID',
-            'XMP-xmpMM:DocumentID',
-        ];
-
         if (!$this->uuid) {
             $metadatas = $this->media->getMetadatas();
 
             $uuid = null;
 
-            foreach ($availableUUIDs as $meta) {
-                if ($metadatas->containsKey($meta)) {
-                    $candidate = $metadatas->get($meta)->getValue()->asString();
-                    if(in_array($meta, self::$xmpTag)){
-                        $candidate = self::sanitizeXmpUuid($candidate);
-                    }
+            foreach (self::getUUIDFields() as $tagname=>$translators) {
+                if ($metadatas->containsKey($tagname)) {
+                    $candidate = $translators['toUUid']($metadatas->get($tagname)->getValue()->asString());
                     if (Uuid::isValid($candidate)) {
                         $uuid = $candidate;
                         break;
@@ -132,18 +169,20 @@ class File
         }
 
         if ($write) {
-            $value = new MonoValue($this->uuid);
             $metadatas = new ExiftoolMetadataBag();
 
-            foreach ($availableUUIDs as $tagname) {
-                $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
+            foreach (self::getUUIDFields() as $tagname=>$translators) {
+                if(!is_null($v = $translators['fromUUid']($this->uuid))) {
+                    $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), new MonoValue($v)));
+                }
             }
 
             try {
                 $writer = $this->app['exiftool.writer'];
                 $writer->reset();
                 $writer->write($this->getFile()->getRealPath(), $metadatas);
-            } catch (PHPExiftoolException $e) {
+            }
+            catch (PHPExiftoolException $e) {
                 // PHPExiftool throws exception on some files not supported
             }
         }
@@ -293,12 +332,4 @@ class File
         return new File($app, $media, $collection, $originalName);
     }
 
-    /**
-     * Sanitize XMP UUID
-     * @param $uuid
-     * @return mixed
-     */
-    public static function sanitizeXmpUuid($uuid){
-        return str_replace('xmp.did:', '', $uuid);
-    }
 }

@@ -576,20 +576,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $this->save();
     }
 
-    /**
-     * Read the technical datas of the file.
-     * Returns an empty array for non physical present files
-     *
-     * @return array An array of technical datas Key/values
-     */
-    public function readTechnicalDatas(MediaVorus $mediavorus)
+    static public function readTechnicalDatasFromMedia(MediaInterface $media)
     {
-        if (!$this->is_physically_present()) {
-            return [];
-        }
-
-        $media = $mediavorus->guess($this->getRealPath());
-
         $datas = [];
 
         $techDatas = self::getTechnicalFieldsList();
@@ -609,35 +597,63 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $datas[self::TC_DATA_MIMETYPE] = $media->getFile()->getMimeType();
         $datas[self::TC_DATA_FILESIZE] = $media->getFile()->getSize();
 
+        return $datas;
+    }
+
+    /**
+     * Read the technical datas of the file.
+     * Returns an empty array for non physical present files
+     *
+     * @return array An array of technical datas Key/values
+     */
+    public function readTechnicalDatas(MediaVorus $mediavorus)
+    {
+        if (!$this->is_physically_present()) {
+            return [];
+        }
+
+        $media = $mediavorus->guess($this->getRealPath());
+        $ret = self::readTechnicalDatasFromMedia($media);
         unset($media);
 
-        return $datas;
+        return $ret;
     }
 
     public static function create(Application $app, RecordReferenceInterface $record, $name, MediaInterface $media)
     {
-        $path = $media->getFile()->getPath();
-        $newname = $media->getFile()->getFilename();
+        //@SuppressWarnings("Duplicates")
+        $data = [
+            'path'   => $media->getFile()->getPath(),
+            'file'   => $media->getFile()->getFilename(),
+            'mime'   => $media->getFile()->getMimeType(),
+            'size'   => $media->getFile()->getSize(),
+            'width'  => 0,
+            'height' => 0
+        ];
+        if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
+            $data['width'] = $media->getWidth();
+        }
+        if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
+            $data['height'] = $media->getHeight();
+        }
 
+        return self::createFromData($app, $record, $name, $data);
+    }
+
+    public static function createFromData(Application $app, RecordReferenceInterface $record, $name, Array $data)
+    {
         $params = [
             'record_id' => $record->getRecordId(),
-            'name' => $name,
-            'path' => $path,
-            'file' => $newname,
-            'width' => 0,
-            'height' => 0,
-            'mime' => $media->getFile()->getMimeType(),
-            'size' => $media->getFile()->getSize(),
+            'name'   => $name,
+            'path'   => $data['path'],
+            'file'   => $data['file'],
+            'width'  => $data['width'],
+            'height' => $data['height'],
+            'mime'   => $data['mime'],
+            'size'   => $data['size'],
             'physically_present' => true,
             'is_substituted' => false,
         ];
-
-        if (method_exists($media, 'getWidth') && null !== $media->getWidth()) {
-            $params['width'] = $media->getWidth();
-        }
-        if (method_exists($media, 'getHeight') && null !== $media->getHeight()) {
-            $params['height'] = $media->getHeight();
-        }
 
         /** @var callable $factoryProvider */
         $factoryProvider = $app['provider.factory.media_subdef'];
