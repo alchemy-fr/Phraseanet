@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-02-19T15:23:58Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-02-20T14:38:19Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10051,11 +10051,6 @@
         <target state="new">index::advance_search: facet-order</target>
         <jms:reference-file line="199">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b0c3911e31670658434213edaacc021301fafb9d" resname="index::advance_search: facet-order-setting">
-        <source>index::advance_search: facet-order-setting</source>
-        <target state="new">index::advance_search: facet-order-setting</target>
-        <jms:reference-file line="192">web/prod/index.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="5a25478cdd7fe21258071c4f3a5d9920225f9356" resname="index::advance_search: facet-tech-order">
         <source>index::advance_search: facet-tech-order</source>
         <target state="new">index::advance_search: facet-tech-order</target>
@@ -11688,6 +11683,11 @@
         <source>prod:push: delete selection</source>
         <target state="new">prod:push: delete selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
+        <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
+        <target state="new">prod:workzone:facetstab:search_and_facets_sort_options</target>
+        <jms:reference-file line="192">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
         <source>public</source>
