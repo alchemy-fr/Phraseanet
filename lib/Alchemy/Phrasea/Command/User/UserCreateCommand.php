@@ -39,7 +39,7 @@ class UserCreateCommand extends Command
             ->addOption('user_mail', null, InputOption::VALUE_OPTIONAL, 'The desired mail for created user.')
             ->addOption('user_password', null, InputOption::VALUE_OPTIONAL, 'The desired password')
             ->addOption('send_mail_confirm', null, InputOption::VALUE_NONE, 'Send an email to user, for validate email.')
-            ->addOption('send_mail_password', null, InputOption::VALUE_NONE, 'Send an email to user, for define password')
+            ->addOption('send_mail_password', null, InputOption::VALUE_NONE, 'Send an email to user, for password definition, work only if user_password is not define' ')
             ->addOption('model_number', null, InputOption::VALUE_OPTIONAL, 'Id of model')
             ->addOption('user_gender', null, InputOption::VALUE_OPTIONAL, 'The gender for created user.')
             ->addOption('user_firstname', null, InputOption::VALUE_OPTIONAL, 'The first name for created user.')
