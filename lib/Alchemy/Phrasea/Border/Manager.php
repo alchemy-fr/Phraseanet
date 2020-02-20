@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
@@ -110,9 +112,6 @@ class Manager
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
-            // Write UUID
-            $file->getUUID(false, true);
-
             $this->addMediaAttributes($file);
 
             $element = $this->createRecord($file, $nosubdef);
@@ -120,13 +119,13 @@ class Manager
             $code = self::RECORD_CREATED;
         } else {
 
-            // Write UUID
-            $file->getUUID(false, true);
-
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
             $code = self::LAZARET_CREATED;
         }
+
+        // Write UUID
+        $file->getUUID(false, true);
 
         if (is_callable($callable)) {
             $callable($element, $visa, $code);
@@ -333,11 +332,11 @@ class Manager
             }
         }
 
-        if ($nosubdef) {
-            $element->setNoSubdef();
-        }
+        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 
-        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element, true, $nosubdef);// true for $isNewRecord
+        if(!$nosubdef) {
+            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
+        }
 
         return $element;
     }

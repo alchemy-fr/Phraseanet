@@ -1083,7 +1083,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return record_adapter
      */
-    public function set_metadatas(array $metadatas, $force_readonly = false, $isNewRecord = false, $nosubdef = false)
+    public function set_metadatas(array $metadatas, $force_readonly = false)
     {
         $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
 
@@ -1108,7 +1108,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         unset($xml);
 
         $this->write_metas();
-        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this, $isNewRecord, $nosubdef));
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
     }
@@ -1170,16 +1170,6 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET jeton = jeton | :tokenMask WHERE record_id= :record_id',
             ['tokenMask' => $tokenMask, 'record_id' => $this->getRecordId()]
-        );
-
-        return $this;
-    }
-
-    public function setNoSubdef()
-    {
-        $this->getDataboxConnection()->executeUpdate(
-            'UPDATE record SET work = 1 WHERE record_id= :record_id',
-            ['record_id' => $this->getRecordId()]
         );
 
         return $this;
