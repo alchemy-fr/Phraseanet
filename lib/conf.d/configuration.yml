@@ -94,6 +94,7 @@ main:
         download: null
         lazaret: null
         caption: null
+        tmp_files: null
 
 trusted-proxies: []
 debugger:
@@ -241,7 +242,7 @@ embed_bundle:
 geocoding-providers:
     -
         map-provider: 'mapboxWebGL'
-        enabled: true
+        enabled: false
         public-key: ''
         map-layers:
             -
@@ -284,7 +285,7 @@ geocoding-providers:
         provincefields: Province
         countryfields: 'Country, Pays'
 video-editor:
-    vttFieldName: VideoTextTrackChapters
+    ChapterVttFieldName: VideoTextTrackChapters
     seekBackwardStep: 500 # in ms
     seekForwardStep: 500  # in ms
     playbackRates:
