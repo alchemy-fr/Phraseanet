@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
 use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\Command\Collection\UnPublishCollectionCommand;
 use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
 use Alchemy\Phrasea\Command\MailTest;
 use Alchemy\Phrasea\Command\Compile\Configuration;
@@ -108,6 +109,7 @@ $cli->command(new \module_console_fieldsRename('fields:rename'));
 $cli->command(new \module_console_fieldsMerge('fields:merge'));
 
 $cli->command(new CreateCollection('collection:create'));
+$cli->command(new UnPublishCollectionCommand('collection:unpublish'));
 $cli->command(new CreateDataboxCommand('databox:create'));
 
 $cli->command(new RecordAdd('records:add'));
