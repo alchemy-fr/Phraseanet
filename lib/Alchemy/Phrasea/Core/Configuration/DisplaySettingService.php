@@ -20,6 +20,7 @@ class DisplaySettingService
     const ORDER_BY_ADMIN = "ORDER_BY_ADMIN";
     const ORDER_BY_BCT = "ORDER_BY_BCT";
     const ORDER_BY_HITS = "ORDER_BY_HITS";
+    const ORDER_BY_HITS_ASC = "ORDER_BY_HITS_ASC";
 
     /**
      * The default user settings.
