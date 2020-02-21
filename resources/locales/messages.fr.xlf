@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-02-20T14:38:04Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -10059,14 +10059,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Facettes masquées</target>
         <jms:reference-file line="871">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="yes">
+      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="no">
         <source>index::advance_search: order-by-hits</source>
-        <target state="translated">Trier les facettes par hits</target>
+        <target state="needs-translation">Par occurrences</target>
         <jms:reference-file line="221">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f4d2da6c513e72ef9e2daec0b695116a26e7912" resname="index::advance_search: order-by-hits-asc">
+      <trans-unit id="6f4d2da6c513e72ef9e2daec0b695116a26e7912" resname="index::advance_search: order-by-hits-asc" approved="no">
         <source>index::advance_search: order-by-hits-asc</source>
-        <target state="new">index::advance_search: order-by-hits-asc</target>
+        <target state="needs-translation">Par occurrences asc</target>
         <jms:reference-file line="223">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
@@ -10094,9 +10094,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">juin</target>
         <jms:reference-file line="719">classes/module/report.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e11523c5ff23fc1600aca2d8ee5adb542c5ce4b3" resname="language" approved="yes">
+      <trans-unit id="e11523c5ff23fc1600aca2d8ee5adb542c5ce4b3" resname="language" approved="no">
         <source>language</source>
-        <target state="translated">Langue actuelle</target>
+        <target state="needs-translation">Langue actuelle</target>
         <jms:reference-file line="17">login/include/language-block.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15daeb7ec47bb61b62c6b2af177ef7bcc1094ba9" resname="le service sera de nouveau disponible dans quelques minutes" approved="yes">
@@ -11683,9 +11683,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Supprimer la selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
+      <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
-        <target state="new">prod:workzone:facetstab:search_and_facets_sort_options</target>
+        <target state="translated">Options</target>
         <jms:reference-file line="192">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
