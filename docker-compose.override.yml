@@ -1,0 +1,96 @@
+version: "3.4"
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: on-failure
+    ports:
+    - ${PHPMYADMIN_PORT}:80
+    depends_on:
+    - db
+
+  gateway:
+    volumes:
+    - .:/var/alchemy
+
+  builder:
+    build:
+      context: .
+      target: builder
+    command: exit 0
+
+  phraseanet:
+    environment:
+    - XDEBUG_ENABLED
+    - XDEBUG_CONFIG=remote_host=${PHRASEANET_GATEWAY_IP} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
+    - PHP_IDE_CONFIG
+    volumes:
+    - .:/var/alchemy
+
+  worker:
+    volumes:
+    - .:/var/alchemy
+
+  rabbitmq:
+    ports:
+    - ${RABBITMQ_MANAGEMENT_PORT}:15672
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+    - 1025:1025
+    - 8025:8025
+
+  elasticsearch:
+    ports:
+    - 9200:9200
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: $PHRASEANET_SUBNET_IPS
+
+volumes:
+  data_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/data
+      o: bind
+  db_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/db
+      o: bind
+  elasticsearch_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/elasticsearch
+      o: bind
+  config_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/config
+      o: bind
+  custom_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/custom
+      o: bind
+  thumbnails_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/thumbnails
+      o: bind
+  # to be replacer by stdout/stderr
+  logs_vol:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PHRASEANET_VOLUMES_DIR/logs
+      o: bind

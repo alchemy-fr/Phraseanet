@@ -1,0 +1,128 @@
+version: "3.4"
+
+services:
+  gateway:
+    build:
+      context: .
+      target: phraseanet-nginx
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    restart: on-failure
+    volumes:
+    - data_vol:/var/alchemy/Phraseanet/datas:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    depends_on:
+    - phraseanet
+    environment:
+    - MAX_BODY_SIZE
+
+    ports:
+      - ${PHRASEANET_APP_PORT}:80
+
+  phraseanet:
+    build:
+      context: .
+      target: phraseanet-fpm
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+    restart: on-failure
+    depends_on:
+    - db
+    - redis
+    - rabbitmq
+    - elasticsearch
+    environment:
+    - MAX_BODY_SIZE
+    - MAX_INPUT_VARS
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - INSTALL_ACCOUNT_EMAIL
+    - INSTALL_ACCOUNT_PASSWORD
+    - INSTALL_DB_HOST
+    - INSTALL_DB_PORT
+    - INSTALL_DB_USER
+    - INSTALL_DB_PASSWORD
+    - INSTALL_DB_TEMPLATE
+    - INSTALL_APPBOX
+    - INSTALL_DATABOX
+    - INSTALL_SERVER_NAME
+    - INSTALL_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
+    - INSTALL_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
+    volumes:
+    - data_vol:/var/alchemy/Phraseanet/datas:rw
+    - config_vol:/var/alchemy/Phraseanet/config:rw
+    - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
+    - logs_vol:/var/alchemy/Phraseanet/logs:rw
+    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+
+  worker:
+    build:
+      context: .
+      target: phraseanet-worker
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    restart: on-failure
+    depends_on:
+    - db
+    - redis
+    - rabbitmq
+    - elasticsearch
+    environment:
+    - MAX_BODY_SIZE
+    - MAX_INPUT_VARS
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    volumes:
+    - data_vol:/var/alchemy/Phraseanet/datas:rw
+    - config_vol:/var/alchemy/Phraseanet/config:rw
+    - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
+    - logs_vol:/var/alchemy/Phraseanet/logs:rw
+    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+
+  db:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
+    build: ./docker/db
+    restart: on-failure
+    environment:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_MAX_ALLOWED_PACKET
+    volumes:
+    - db_vol:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: on-failure
+    environment:
+    - RABBITMQ_DEFAULT_USER
+    - RABBITMQ_DEFAULT_PASS
+
+  redis:
+    image: redis
+    restart: on-failure
+
+  elasticsearch:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    build: ./docker/elasticsearch
+    restart: on-failure
+    volumes:
+    - elasticsearch_vol:/usr/share/elasticsearch/data
+
+volumes:
+  data_vol:
+    driver: local
+  tmp_vol:
+    driver: local
+  db_vol:
+    driver: local
+  elasticsearch_vol:
+    driver: local
+  config_vol:
+    driver: local
+  custom_vol:
+    driver: local
+  thumbnails_vol:
+    driver: local
+  # to be replacer by stdout/stderr
+  logs_vol:
+    driver: local
