@@ -118,12 +118,12 @@ $cli->command(new ListCollectionCommand('collection:list'));
 $cli->command(new ListDataboxCommand('databox:list'));
 $cli->command(new CreateDataboxCommand('databox:create'));
 
-
 $cli->command(new UserCreateCommand('user:create'));
 
-
 $cli->command(new UserSetPasswordCommand('user:set-password'));
+
 $cli->command(new UserListCommand('user:list'));
+
 
 $cli->command(new RecordAdd('records:add'));
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
