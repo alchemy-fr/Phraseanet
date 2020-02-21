@@ -121,7 +121,7 @@ CMD ["/worker-boot.sh"]
 #########################################################################
 
 FROM nginx:1.17.8-alpine as phraseanet-nginx
-RUN useradd -u 1000 app
+RUN adduser --uid 1000 --disabled-password app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 CMD ["/boot.sh"]
