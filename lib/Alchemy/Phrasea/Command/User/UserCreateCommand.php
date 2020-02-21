@@ -46,12 +46,10 @@ class UserCreateCommand extends Command
             ->addOption('user_lastname', null, InputOption::VALUE_OPTIONAL, 'The last name for created user.')
             ->addOption('user_adress', null, InputOption::VALUE_OPTIONAL, 'The adress name for created user.')
             ->addOption('user_zipcode', null, InputOption::VALUE_OPTIONAL, 'The zip code for created user.')
-            ->addOption('user_city', null, InputOption::VALUE_OPTIONAL, 'The city for created user.')
             ->addOption('user_compagny', null, InputOption::VALUE_OPTIONAL, 'The compagny for created user.')
             ->addOption('user_job', null, InputOption::VALUE_OPTIONAL, 'The job for created user.')
             ->addOption('user_activitie', null, InputOption::VALUE_OPTIONAL, 'The activitie for created user.')
             ->addOption('user_phone', null, InputOption::VALUE_OPTIONAL, 'The phone number for created user.')
-            ->addOption('user_fax', null, InputOption::VALUE_OPTIONAL, 'The fax number for created user.')
             ->setHelp('');
 
         return $this;
@@ -71,13 +69,11 @@ class UserCreateCommand extends Command
         $userLastName    = $input->getOption('user_lastname');
         $userAdress      = $input->getOption('user_adress');
         $userZipCode     = $input->getOption('user_zipcode');
-        $userCity        = $input->getOption('user_city');
         $userCompagny    = $input->getOption('user_compagny');
         $userJob         = $input->getOption('user_job');
         $userActivity    = $input->getOption('user_activitie');
         $userPhone       = $input->getOption('user_phone');
-        $userFax         = $input->getOption('user_fax');
-
+        
         $userRepository = $this->container['repo.users'];
 
         if ($userMail) {
@@ -108,13 +104,11 @@ class UserCreateCommand extends Command
         if($userLastName) $user->setLastName($userLastName);
         if($userAdress) $user->setAddress($userAdress);
         if($userZipCode) $user->setZipCode($userZipCode);
-        if($userCity) $user->setCity($userCity);
         if($userCompagny) $user->setCompany($userCompagny);
         if($userJob) $user->setJob($userJob);
         if($userActivity) $user->setActivity($userActivity);
         if($userPhone) $user->setPhone($userPhone);
-        if($userFax) $user->setFax($userFax);
-
+        
         if ($sendMailPassword and $userMail and is_null($userPassword)) {
             $this->sendPasswordSetupMail($user);
         }
