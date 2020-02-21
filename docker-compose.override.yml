@@ -11,6 +11,8 @@ services:
   gateway:
     volumes:
     - .:/var/alchemy/Phraseanet
+    - ./datas:/var/alchemy/Phraseanet/datas:rw
+    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   builder:
     build:
@@ -27,10 +29,16 @@ services:
     - PHP_IDE_CONFIG
     volumes:
     - .:/var/alchemy/Phraseanet
+    - ./logs:/var/alchemy/Phraseanet/logs:rw
+    - ./datas:/var/alchemy/Phraseanet/datas:rw
+    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   worker:
     volumes:
     - .:/var/alchemy/Phraseanet
+    - ./logs:/var/alchemy/Phraseanet/logs:rw
+    - ./datas:/var/alchemy/Phraseanet/datas:rw
+    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   rabbitmq:
     ports:
@@ -51,3 +59,4 @@ networks:
     ipam:
       config:
         - subnet: $PHRASEANET_SUBNET_IPS
+
