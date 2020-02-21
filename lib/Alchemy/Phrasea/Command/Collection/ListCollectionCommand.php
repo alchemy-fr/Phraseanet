@@ -24,20 +24,30 @@ class ListCollectionCommand extends Command
         parent::__construct('collection:list');
         $this->setDescription('List all collection in Phraseanet')
             ->addOption('databox_id', 'd', InputOption::VALUE_REQUIRED, 'The id of the databox to list collection')
+            ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
             ->setHelp('');
         return $this;
     }
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $databox = $this->container->findDataboxById($input->getOption('databox_id'));
-            $collections = $this->listDataboxCollections($databox);
+            $jsonformat     = $input->getOption('jsonformat');
+            $databox        = $this->container->findDataboxById($input->getOption('databox_id'));
+            $collections    = $this->listDataboxCollections($databox);
 
-            $table = $this->getHelperSet()->get('table');
-            $table
-                ->setHeaders(['id local for API', 'id distant', 'name','label','status','total records'])
-                ->setRows($collections)
-                ->render($output);
+            if ($jsonformat) {
+                foreach ($collections as $collection) {
+                    $collectionList[] = array_combine(['id local for API', 'id distant', 'name','label','status','total records'], $collection);
+                }
+                echo json_encode($collectionList); 
+            } else {
+                $table = $this->getHelperSet()->get('table');
+                $table
+                    ->setHeaders(['id local for API', 'id distant', 'name','label','status','total records'])
+                    ->setRows($collections)
+                    ->render($output);
+            }
+
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
         }

@@ -48,6 +48,7 @@ use Alchemy\Phrasea\Command\Task\TaskRun;
 use Alchemy\Phrasea\Command\Task\TaskStart;
 use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\Command\Task\TaskStop;
+use Alchemy\Phrasea\Command\User\UserCreateCommand;
 use Alchemy\Phrasea\Command\User\UserSetPasswordCommand;
 use Alchemy\Phrasea\Command\User\UserListCommand;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
@@ -117,9 +118,12 @@ $cli->command(new ListCollectionCommand('collection:list'));
 $cli->command(new ListDataboxCommand('databox:list'));
 $cli->command(new CreateDataboxCommand('databox:create'));
 
+$cli->command(new UserCreateCommand('user:create'));
 
 $cli->command(new UserSetPasswordCommand('user:set-password'));
+
 $cli->command(new UserListCommand('user:list'));
+
 
 $cli->command(new RecordAdd('records:add'));
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
