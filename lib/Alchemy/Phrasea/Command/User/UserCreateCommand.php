@@ -44,8 +44,6 @@ class UserCreateCommand extends Command
             ->addOption('user_gender', null, InputOption::VALUE_OPTIONAL, 'The gender for created user.')
             ->addOption('user_firstname', null, InputOption::VALUE_OPTIONAL, 'The first name for created user.')
             ->addOption('user_lastname', null, InputOption::VALUE_OPTIONAL, 'The last name for created user.')
-            ->addOption('user_adress', null, InputOption::VALUE_OPTIONAL, 'The adress name for created user.')
-            ->addOption('user_zipcode', null, InputOption::VALUE_OPTIONAL, 'The zip code for created user.')
             ->addOption('user_compagny', null, InputOption::VALUE_OPTIONAL, 'The compagny for created user.')
             ->addOption('user_job', null, InputOption::VALUE_OPTIONAL, 'The job for created user.')
             ->addOption('user_activitie', null, InputOption::VALUE_OPTIONAL, 'The activitie for created user.')
@@ -67,8 +65,6 @@ class UserCreateCommand extends Command
         $userGender      = $input->getOption('user_gender');
         $userFirstName   = $input->getOption('user_firstname');
         $userLastName    = $input->getOption('user_lastname');
-        $userAdress      = $input->getOption('user_adress');
-        $userZipCode     = $input->getOption('user_zipcode');
         $userCompagny    = $input->getOption('user_compagny');
         $userJob         = $input->getOption('user_job');
         $userActivity    = $input->getOption('user_activitie');
@@ -102,8 +98,6 @@ class UserCreateCommand extends Command
 
         if($userFirstName) $user->setFirstName($userFirstName);
         if($userLastName) $user->setLastName($userLastName);
-        if($userAdress) $user->setAddress($userAdress);
-        if($userZipCode) $user->setZipCode($userZipCode);
         if($userCompagny) $user->setCompany($userCompagny);
         if($userJob) $user->setJob($userJob);
         if($userActivity) $user->setActivity($userActivity);
