@@ -3,7 +3,6 @@
 .settings
 /nodes_modules
 /vendor
-/volumes
 /docker-compose.*
 /Dockerfile
 /.env

@@ -10,13 +10,15 @@ services:
 
   gateway:
     volumes:
-    - .:/var/alchemy
+    - .:/var/alchemy/Phraseanet
 
   builder:
     build:
       context: .
       target: builder
     command: exit 0
+    volumes:
+      - .:/var/alchemy/Phraseanet
 
   phraseanet:
     environment:
@@ -24,11 +26,11 @@ services:
     - XDEBUG_CONFIG=remote_host=${PHRASEANET_GATEWAY_IP} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
     - PHP_IDE_CONFIG
     volumes:
-    - .:/var/alchemy
+    - .:/var/alchemy/Phraseanet
 
   worker:
     volumes:
-    - .:/var/alchemy
+    - .:/var/alchemy/Phraseanet
 
   rabbitmq:
     ports:
@@ -49,48 +51,3 @@ networks:
     ipam:
       config:
         - subnet: $PHRASEANET_SUBNET_IPS
-
-volumes:
-  data_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/data
-      o: bind
-  db_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/db
-      o: bind
-  elasticsearch_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/elasticsearch
-      o: bind
-  config_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/config
-      o: bind
-  custom_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/custom
-      o: bind
-  thumbnails_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/thumbnails
-      o: bind
-  # to be replacer by stdout/stderr
-  logs_vol:
-    driver: local
-    driver_opts:
-      type: none
-      device: $PHRASEANET_VOLUMES_DIR/logs
-      o: bind

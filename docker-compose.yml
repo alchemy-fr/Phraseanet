@@ -9,7 +9,6 @@ services:
     restart: on-failure
     volumes:
     - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
     depends_on:
     - phraseanet
@@ -50,11 +49,9 @@ services:
     - INSTALL_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
     volumes:
     - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - config_vol:/var/alchemy/Phraseanet/config:rw
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
 
   worker:
     build:
@@ -75,7 +72,6 @@ services:
     - PHP_LOG_LEVEL
     volumes:
     - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - config_vol:/var/alchemy/Phraseanet/config:rw
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
@@ -116,10 +112,6 @@ volumes:
   db_vol:
     driver: local
   elasticsearch_vol:
-    driver: local
-  config_vol:
-    driver: local
-  custom_vol:
     driver: local
   thumbnails_vol:
     driver: local

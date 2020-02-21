@@ -77,9 +77,13 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
         nodejs \
         yarn \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists
+    && rm -rf /var/lib/apt/lists \
+    && mkdir -p /var/alchemy/Phraseanet \
+    && chown -R app:app /var/alchemy
 
 WORKDIR /var/alchemy/Phraseanet
+
+USER app
 
 # Warm up composer cache for faster builds
 COPY docker/caching/composer.* ./
@@ -87,13 +91,10 @@ RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classma
     && rm -rf vendor composer.*
 # End warm up
 
-COPY . .
+COPY --chown=app  . .
 
 RUN rm -rf docker \
-    && make install_composer \
-    && make clean_assets \
-    && make install_asset_dependencies \
-    && make install_assets
+    && make install
 
 ADD docker/phraseanet/ /
 

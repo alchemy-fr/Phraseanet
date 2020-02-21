@@ -32,26 +32,6 @@ You can also download a testing pre installed Virtual Machine in OVA format here
 
 https://www.phraseanet.com/download/
 
-# Development :
-
-For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
-You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
-
-    git clone
-    vagrant up --provision
-
-then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
-
-Ex:
-- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
-- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
-- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
-- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
-
-
-For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
-
-
 # With Docker
 
 ## Prerequisites
@@ -67,7 +47,6 @@ Use `export` to override these values.
 i.e:
 ```bash
 export PHRASEANET_DOCKER_TAG=latest
-export PHRASEANET_VOLUMES_DIR=/path/to/my/custom/dir
 export INSTALL_ACCOUNT_EMAIL=foo@bar.com
 export INSTALL_ACCOUNT_PASSWORD=$3cr3t!
 export PHRASEANET_APP_PORT=8082
@@ -100,7 +79,7 @@ The environment is not ready yet: you have to fetch all dependencies.
 
 This can be made easily from the builder container:
 
-    docker-compose exec -u app builder make
+    docker-compose run --rm -u app builder make install install_composer_dev
 
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allow the final image to be slim.
 > If you need to use dev tools, ensure you are running the `builder` image!
@@ -131,3 +110,25 @@ Before moving all the files, or to use a different location, you have to remove 
     docker-compose down --volumes
 
 Then move the files and set the `VOLUMES_DIR` to the new location.
+
+
+# With Vagrant (deprecated)
+
+## Development :
+
+For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
+You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
+
+    git clone
+    vagrant up --provision
+
+then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
+
+Ex:
+- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
+- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
+- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
+- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
+
+
+For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
