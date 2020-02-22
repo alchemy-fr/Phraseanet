@@ -48,6 +48,7 @@ services:
     - INSTALL_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
     - INSTALL_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
     volumes:
+    - config_vol:/var/alchemy/Phraseanet/config:rw
     - data_vol:/var/alchemy/Phraseanet/datas:rw
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
@@ -71,6 +72,7 @@ services:
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
     volumes:
+    - config_vol:/var/alchemy/Phraseanet/config:rw
     - data_vol:/var/alchemy/Phraseanet/datas:rw
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
@@ -105,6 +107,8 @@ services:
     - elasticsearch_vol:/usr/share/elasticsearch/data
 
 volumes:
+  config_vol:
+    driver: local
   data_vol:
     driver: local
   tmp_vol:
