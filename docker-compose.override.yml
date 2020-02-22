@@ -29,6 +29,7 @@ services:
     - PHP_IDE_CONFIG
     volumes:
     - .:/var/alchemy/Phraseanet
+    - ./config:/var/alchemy/Phraseanet/config:rw
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
@@ -36,6 +37,7 @@ services:
   worker:
     volumes:
     - .:/var/alchemy/Phraseanet
+    - ./config:/var/alchemy/Phraseanet/config:rw
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
