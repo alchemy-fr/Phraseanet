@@ -36,6 +36,9 @@ class UserCreateApplicationCommand extends Command
             ->addOption('description', 'd', InputOption::VALUE_REQUIRED, 'The desired description for application user.')
             ->addOption('website', 'w', InputOption::VALUE_OPTIONAL, 'The desired url for application user.')
             ->addOption('callback', 'c', InputOption::VALUE_OPTIONAL, 'The desired url for application user.')
+            ->addOption('create_token', null, InputOption::VALUE_NONE, 'Generate an access token when app is created')
+            ->addOption('activate_password', null, InputOption::VALUE_NONE, 'Activate password OAuth2 grant type')
+            ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
 
             ->setHelp('');
 
@@ -50,6 +53,9 @@ class UserCreateApplicationCommand extends Command
         $description = $input->getOption('description');
         $website     = $input->getOption('website');
         $urlCallback = $input->getOption('callback');
+        $createToken        = $input->getOption('create_token');
+        $activatePassword   = $input->getOption('activate_password');
+        $jsonformat         = $input->getOption('jsonformat');
 
         $userRepository = $this->container['repo.users'];
         if (null === $user = $userRepository->find($userId)) {
@@ -81,7 +87,48 @@ class UserCreateApplicationCommand extends Command
 
             $apiAccountManipulator = $this->container['manipulator.api-account'];
             $apiAccountManipulator->create($application, $user, V2::VERSION);
-            $output->writeln('<info>Application user created successful !</info>');
+            $apiOauthTokenManipulator = $this->container['manipulator.api-oauth-token'];
+
+            $accountRepository = $this->container['repo.api-accounts'];
+            $apiOauthRepository = $this->container['repo.api-oauth-tokens'];
+            $account =  $accountRepository->findByUserAndApplication($user, $application);
+
+            if ($createToken) {
+                $apiOauthTokenManipulator->create($account);
+            }
+
+            if ($activatePassword) {
+                $application->setGrantPassword(true);
+                $applicationManipulator->update($application);
+            }
+
+
+            $token = $account ? $apiOauthRepository->findDeveloperToken($account) : null;
+
+            $applicationCreated = [
+                $application->getClientSecret(),
+                $application->getClientId(),
+                $this->container["conf"]->get("servername") . "api/oauthv2/authorize",
+                $this->container["conf"]->get("servername") . "api/oauthv2/token",
+                ($token) ? $token->getOauthToken() : '-',
+                $application->isPasswordGranted() ? "true":  "false" 
+            ];
+
+            $headers = ['client secret', 'client ID', 'Authorize endpoint url', 'Access endpoint', 'generated token', 'activate_password status'];
+            if ($jsonformat ) {
+                $createdAppInfo = array_combine($headers, $applicationCreated);
+                echo json_encode($createdAppInfo);
+            } else {
+                $table = $this->getHelperSet()->get('table');
+                $table
+                    ->setHeaders($headers)
+                    ->setRows([$applicationCreated])
+                    ->render($output)
+                ;   
+
+                 $output->writeln('<info>Application user created successful !</info>');
+            }       
+           
         } catch (\Exception $e) {
             $output->writeln('<error>Create an application for user failed : '.$e->getMessage().'</error>');
         }
