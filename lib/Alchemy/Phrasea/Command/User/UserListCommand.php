@@ -42,6 +42,7 @@ class UserListCommand extends Command
             ->addOption('application', null, InputOption::VALUE_NONE, 'List application of user work only if --user_id is set')
             ->addOption('right', null, InputOption::VALUE_NONE, 'Show right information')
             ->addOption('adress', null, InputOption::VALUE_NONE, 'Show adress information')
+            ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
             ->setHelp('');
 
         return $this;
@@ -61,6 +62,7 @@ class UserListCommand extends Command
         $created       = $input->getOption('created');
         $updated       = $input->getOption('updated');
         $withRight     = $input->getOption('right');
+        $jsonformat    = $input->getOption('jsonformat');
 
         $query         = $this->container['phraseanet.user-query'];
 
@@ -87,24 +89,33 @@ class UserListCommand extends Command
             if ($userId and $application) {
                 $showApplication = true;
             }
-            $userList[] = $this->listUser($user,$withAdress,$withRight);
+            $userList[] = $this->listUser($user, $withAdress, $withRight);
+
+            $userListRaw[] = array_combine($this->headerTable($withAdress, $withRight), $this->listUser($user, $withAdress, $withRight));
         }
 
-        $table = $this->getHelperSet()->get('table');
-        $table
-            ->setHeaders($this->headerTable($withAdress,$withRight))
-            ->setRows($userList)
-            ->render($output);
-        ;
+        if ($jsonformat) {         
+            echo json_encode($userListRaw);            
+        } else {
+                $table = $this->getHelperSet()->get('table');
+            $table
+                ->setHeaders($this->headerTable($withAdress, $withRight))
+                ->setRows($userList)
+                ->render($output);
+            ;
+            
 
-        if ($showApplication) {
-            $applicationTable = $this->getHelperSet()->get('table');
-            $applicationTable->setHeaders(array(
-                array(new TableCell('Applications', array('colspan' => 5))),
-                ['name','callback','client_secret','client_id','token'],
-            ))->setRows($this->getApplicationOfUser($users[0]))->render($output);
+            if ($showApplication) {
+                $applicationTable = $this->getHelperSet()->get('table');
+                $applicationTable->setHeaders(array(
+                    array(new TableCell('Applications', array('colspan' => 5))),
+                    ['name','callback','client_secret','client_id','token'],
+                ))->setRows($this->getApplicationOfUser($users[0]))->render($output);
+            }
+
         }
 
+        
         return 0;
     }
 

@@ -39,21 +39,37 @@ main:
             populate_order: RECORD_ID
             populate_direction: DESC
             activeTab: '#elastic-search'
-            base_aggregate_limit: 10
-            collection_aggregate_limit: 10
-            doctype_aggregate_limit: 0
-            camera_model_aggregate_limit: 0
-            iso_aggregate_limit: 0
-            aperture_aggregate_limit: 0
-            shutterspeed_aggregate_limit: 0
-            flashfired_aggregate_limit: 0
-            framerate_aggregate_limit: 0
-            audiosamplerate_aggregate_limit: 0
-            videocodec_aggregate_limit: 0
-            audiocodec_aggregate_limit: 0
-            orientation_aggregate_limit: 0
-            colorspace_aggregate_limit: 0
-            mimetype_aggregate_limit: 0
+            facets:
+                _base:
+                    limit: 10
+                _collection:
+                    limit: 10
+                _doctype:
+                    limit: 10
+                _camera_model:
+                    limit: 0
+                _iso:
+                    limit: 0
+                _aperture:
+                    limit: 0
+                _shutterspeed:
+                    limit: 0
+                _flashfired:
+                    limit: 0
+                _framerate:
+                    limit: 0
+                _audiosamplerate:
+                    limit: 0
+                _videocodec:
+                    limit: 0
+                _audiocodec:
+                    limit: 0
+                _orientation:
+                    limit: 0
+                _colorspace:
+                    limit: 0
+                _mimetype:
+                    limit: 0
     task-manager:
         status: started
         enabled: true
