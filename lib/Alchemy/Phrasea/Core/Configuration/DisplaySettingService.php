@@ -32,7 +32,7 @@ class DisplaySettingService
         'images_per_page'         => '20',
         'images_size'             => '120',
         'editing_images_size'     => '134',
-        'editing_top_box'         => '180px',
+        'editing_top_box'         => '120px',
         'editing_right_box'       => '400px',
         'editing_left_box'        => '710px',
         'basket_sort_field'       => 'name',
