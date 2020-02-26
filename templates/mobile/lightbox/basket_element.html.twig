@@ -77,8 +77,8 @@
                        for="radio-view-no_{{ basket_element.getId() }}">{{ 'validation:: NON' | trans }}</label>
             </fieldset>
           {% endif %}
-          <div style="text-align:center;margin:0 0 1em 0">
-            <a href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
+          <div style="text-align:center;margin:20px 0">
+            <a style="margin: 0"  href="{{ path('lightbox_ajax_note_form', { 'sselcont_id' : basket_element.getId() }) }}" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
               {{ 'validation:: editer ma note' | trans }}
             </a>
           </div>
@@ -93,5 +93,4 @@
 
   </div>
 </div>
-
 {% endblock %}

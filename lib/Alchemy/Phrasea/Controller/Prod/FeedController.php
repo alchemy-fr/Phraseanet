@@ -19,8 +19,10 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Feed\Aggregate;
 use Alchemy\Phrasea\Feed\Link\AggregateLinkGenerator;
 use Alchemy\Phrasea\Feed\Link\FeedLinkGenerator;
+use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Repositories\FeedEntryRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
@@ -46,6 +48,7 @@ class FeedController extends Controller
     }
 
     public function createFeedEntryAction(Request $request) {
+        /** @var Feed $feed */
         $feed = $this->getFeedRepository()->find($request->request->get('feed_id'));
 
         if (null === $feed) {
@@ -53,6 +56,8 @@ class FeedController extends Controller
         }
 
         $user = $this->getAuthenticatedUser();
+
+        /** @var FeedPublisher $publisher */
         $publisher = $this->getFeedPublisherRepository()->findOneBy([
             'feed' => $feed,
             'user' => $user,

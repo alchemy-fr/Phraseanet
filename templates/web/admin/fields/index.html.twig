@@ -27,3 +27,17 @@
 
 {# bootstrap admin field backbone application #}
 <script type="text/javascript" src="{{ path('minifier', { 'f' : '/scripts/apps/admin/fields/main.js' }) }}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#admin-field-app').on('change', '#tbranch', function () {
+            if ($(this).val() === '') {
+                $('#generate_cterms').prop('checked', false);
+                $('.generate-cterms').addClass('hidden');
+            } else {
+                $('.generate-cterms').removeClass('hidden');
+            }
+            return false;
+        });
+    });
+</script>
