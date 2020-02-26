@@ -650,8 +650,12 @@ button.confirm_report {
   min-height: 26px;
   padding: 10px 0;
 }
-
+.ui-controlgroup, fieldset.ui-controlgroup {
+  margin: 10px 0!important;
+}
 .ui-listview.lightbox-list-view {
+  margin-top: 0;
+  margin-bottom: 0;
   & > .ui-li-static {
     padding: .7em 1em;
     text-overflow: inherit;
@@ -687,6 +691,13 @@ button.confirm_report {
 
 .center-image {
   text-align: center;
+  iframe {
+    min-height: 240px;
+    width: auto;
+    .ui-mobile & {
+      width: 100%;
+    }
+  }
 }
 
 /*validate page*/

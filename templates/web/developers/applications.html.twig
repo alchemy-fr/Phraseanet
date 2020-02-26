@@ -66,4 +66,25 @@
             </div>
         </div>
     </div>
+    <script>
+     $('a.delete-app').bind('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var li = $this.closest('li');
+
+            $.ajax({
+                type: 'DELETE',
+                url: $this.attr('href'),
+                dataType: 'json',
+                data: {},
+                success: function success(data) {
+                    if (data.success) {
+                        li.find('.modal').modal('hide');
+                        li.remove();
+                    }
+                }
+            });
+        });
+    </script>
+
 {% endblock %}
