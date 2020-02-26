@@ -30,7 +30,7 @@ class UserListCommand extends Command
     {
         parent::__construct('user:list');
 
-        $this->setDescription('List of all user')
+        $this->setDescription('List of all user (experimental)')
             ->addOption('user_id', null, InputOption::VALUE_OPTIONAL, ' The id of user export only info this user ')
             ->addOption('user_email', null, InputOption::VALUE_OPTIONAL, 'The mail of user export only info this user .')
             ->addOption('database_id', null, InputOption::VALUE_OPTIONAL, 'Id of database.')
@@ -42,7 +42,7 @@ class UserListCommand extends Command
             ->addOption('application', null, InputOption::VALUE_NONE, 'List application of user work only if --user_id is set')
             ->addOption('right', null, InputOption::VALUE_NONE, 'Show right information')
             ->addOption('adress', null, InputOption::VALUE_NONE, 'Show adress information')
-            ->addOption('model', null, InputOption::VALUE_NONE, "Show only defined model, if --user_id is set with --model it's the template owner")
+            ->addOption('models', null, InputOption::VALUE_NONE, "Show only defined models, if --user_id is set with --models it's the template owner")
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
             ->setHelp('');
 
@@ -63,7 +63,7 @@ class UserListCommand extends Command
         $created       = $input->getOption('created');
         $updated       = $input->getOption('updated');
         $withRight     = $input->getOption('right');
-        $model         = $input->getOption('model');
+        $models        = $input->getOption('models');
         $jsonformat    = $input->getOption('jsonformat');
 
         $query         = $this->container['phraseanet.user-query'];
@@ -72,10 +72,10 @@ class UserListCommand extends Command
         if($collectionId) $query->on_sbas_ids([$collectionId]);
         if($created) $this->addFilterDate($created,'created',$query);
         if($updated) $this->addFilterDate($updated,'updated',$query);
-        if($userId && !$model) $query->addSqlFilter('Users.id = ?' ,[$userId]);
-        if($userEmail && !$model) $query->addSqlFilter('Users.email = ?' ,[$userEmail]);
-        if($lockStatus && !$model) $query->addSqlFilter('Users.mail_locked = 1');
-        if($guest && !$model) $query->include_invite(true)->addSqlFilter('Users.guest = 1');
+        if($userId && !$models) $query->addSqlFilter('Users.id = ?' ,[$userId]);
+        if($userEmail && !$models) $query->addSqlFilter('Users.email = ?' ,[$userEmail]);
+        if($lockStatus && !$models) $query->addSqlFilter('Users.mail_locked = 1');
+        if($guest && !$models) $query->include_invite(true)->addSqlFilter('Users.guest = 1');
 
         if ($application and !$userId) {
             $output->writeln('<error>You must provide --user_id when using --application option</error>');
@@ -85,9 +85,9 @@ class UserListCommand extends Command
         /** @var UserRepository $userRepository */
         $userRepository = $this->container['repo.users'];
 
-        if ($model && $userId) {
+        if ($models && $userId) {
             $users = $userRepository->findBy(['templateOwner' => $userId]);            
-        } elseif ($model) {
+        } elseif ($models) {
             $users = $userRepository->findTemplate();
         } else {
             $users = $query->execute()->get_results();
