@@ -42,6 +42,7 @@ class UserListCommand extends Command
             ->addOption('application', null, InputOption::VALUE_NONE, 'List application of user work only if --user_id is set')
             ->addOption('right', null, InputOption::VALUE_NONE, 'Show right information')
             ->addOption('adress', null, InputOption::VALUE_NONE, 'Show adress information')
+            ->addOption('model', null, InputOption::VALUE_NONE, "Show only defined model, if --user_id is set with --model it's the template owner")
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
             ->setHelp('');
 
@@ -62,6 +63,7 @@ class UserListCommand extends Command
         $created       = $input->getOption('created');
         $updated       = $input->getOption('updated');
         $withRight     = $input->getOption('right');
+        $model         = $input->getOption('model');
         $jsonformat    = $input->getOption('jsonformat');
 
         $query         = $this->container['phraseanet.user-query'];
@@ -70,18 +72,26 @@ class UserListCommand extends Command
         if($collectionId) $query->on_sbas_ids([$collectionId]);
         if($created) $this->addFilterDate($created,'created',$query);
         if($updated) $this->addFilterDate($updated,'updated',$query);
-        if($userId) $query->addSqlFilter('Users.id = ?' ,[$userId]);
-        if($userEmail) $query->addSqlFilter('Users.email = ?' ,[$userEmail]);
-        if($lockStatus) $query->addSqlFilter('Users.mail_locked = 1');
-        if($guest) $query->include_invite(true)->addSqlFilter('Users.guest = 1');
+        if($userId && !$model) $query->addSqlFilter('Users.id = ?' ,[$userId]);
+        if($userEmail && !$model) $query->addSqlFilter('Users.email = ?' ,[$userEmail]);
+        if($lockStatus && !$model) $query->addSqlFilter('Users.mail_locked = 1');
+        if($guest && !$model) $query->include_invite(true)->addSqlFilter('Users.guest = 1');
 
         if ($application and !$userId) {
             $output->writeln('<error>You must provide --user_id when using --application option</error>');
             return 0;
         }
 
-        $users = $query
-            ->execute()->get_results();
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->container['repo.users'];
+
+        if ($model && $userId) {
+            $users = $userRepository->findBy(['templateOwner' => $userId]);            
+        } elseif ($model) {
+            $users = $userRepository->findTemplate();
+        } else {
+            $users = $query->execute()->get_results();
+        }
 
         $userList = [];
         $showApplication = false;
