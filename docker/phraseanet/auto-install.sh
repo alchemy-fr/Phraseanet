@@ -27,9 +27,10 @@ fi
 
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.base_aggregate_limit 10
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.collection_aggregate_limit 10
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.doctype_aggregate_limit 10
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._collection.limit 10
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit 10
 
 ## Redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis

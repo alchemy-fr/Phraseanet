@@ -186,8 +186,8 @@
                             <li class="menu-bar-item">
                                 <a href="#">
                                     <img src="/assets/common/images/icons/menu-help.png"/>
-                                    <span style="" class="infoDialog"
-                                          infos="<div><span style='font-size:18px;'>PHRASEANET</span> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }})</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a><p style='margin-top: 10px' ><a href='../../gitlog.txt' target='_blank'>gitlog</a></p></div>">{{ 'phraseanet:: a propos' | trans }}</span>
+                                    <span class="context-menu-item-inner infoDialog"
+                                         infos="<div class='phraseanet_about'><div class='phraseanet_about_top'><span class='phraseanet_logo'></span><div class='phraseanet_version'> {{ app['phraseanet.version'].getName() }} (V{{ app['phraseanet.version'].getNumber() }}) &nbsp; <a href='../../gitlog.txt' target='_blank'>gitlog</a></div></div><div class='phraseanet_about_bottom'><div class='phraseanet_gpl'><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='/assets/common/images/GPLv3_Logo.png' width='380' /><span>License GNU GPL v3</span></a></div><p class='phraseanet_copyright'><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-{{ "now"|date("Y") }}</a></p></div></div>">{{ 'phraseanet:: a propos' | trans }}</span>
                                 </a>
                             </li>
                         </ol>

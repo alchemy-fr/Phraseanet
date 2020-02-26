@@ -122,4 +122,15 @@ class UserRepository extends EntityRepository
     {
         return $this->findBy(['templateOwner' => $user->getId()]);
     }
+
+    /**
+     * Finds all templates
+     */
+    public function findTemplate()
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->where('u.templateOwner is NOT NULL');
+            
+        return $qb->getQuery()->getResult();
+    }
 }
