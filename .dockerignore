@@ -6,6 +6,7 @@
 /docker-compose.*
 /Dockerfile
 /.env
+/.env.*
 /*.md
 /.travis.yml
 /CONTRIBUTORS
@@ -13,3 +14,5 @@
 /www/thumbnails
 /www/assets
 /www/custom
+/config/configuration.yml
+/config/configuration-compiled.php

@@ -107,15 +107,16 @@ FROM phraseanet-system as phraseanet-fpm
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/ /
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["/phraseanet-entrypoint.sh"]
-CMD ["/boot.sh"]
+ENTRYPOINT ["/phraseanet/entrypoint.sh"]
+CMD ["php-fpm", "-F"]
 
 #########################################################################
 # Phraseanet worker application image
 #########################################################################
 
 FROM phraseanet-fpm as phraseanet-worker
-CMD ["/worker-boot.sh"]
+ENTRYPOINT ["/phraseanet/worker/entrypoint.sh"]
+CMD ["/phraseanet/worker/scheduler-run.sh"]
 
 #########################################################################
 # phraseanet-nginx
@@ -125,4 +126,7 @@ FROM nginx:1.17.8-alpine as phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
 ADD ./docker/nginx/ /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
-CMD ["/boot.sh"]
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

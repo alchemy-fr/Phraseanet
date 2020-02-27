@@ -14,7 +14,6 @@ services:
     - phraseanet
     environment:
     - MAX_BODY_SIZE
-
     ports:
       - ${PHRASEANET_APP_PORT}:80
 

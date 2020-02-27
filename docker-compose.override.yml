@@ -13,6 +13,7 @@ services:
     - .:/var/alchemy/Phraseanet
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ./docker/nginx/entrypoint.sh:/entrypoint.sh
 
   builder:
     build:
@@ -33,6 +34,8 @@ services:
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ./docker/phraseanet/phraseanet/entrypoint.sh:/phraseanet/entrypoint.sh
+    - ./docker/phraseanet/phraseanet/auto-install.sh:/phraseanet/auto-install.sh
 
   worker:
     volumes:
@@ -41,6 +44,9 @@ services:
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ./docker/phraseanet/phraseanet/entrypoint.sh:/phraseanet/entrypoint.sh
+    - ./docker/phraseanet/phraseanet/worker/entrypoint.sh:/phraseanet/worker/entrypoint.sh
+    - ./docker/phraseanet/phraseanet/worker/scheduler-run.sh:/phraseanet/worker/scheduler-run.sh
 
   rabbitmq:
     ports:

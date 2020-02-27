@@ -52,6 +52,16 @@ export INSTALL_ACCOUNT_PASSWORD=$3cr3t!
 export PHRASEANET_APP_PORT=8082
 ```
 
+### Using a .env.local
+
+It may be easier to deal with a local file to manage our env variables.
+
+You can add your `.env.local` at the root of this project and define a command alias in your `~/.bashrc`:
+
+```bash
+alias dc="env $(cat .env.local | grep -v '#' | tr '\n' ' ') docker-compose"
+```
+
 ### Running the application
 
 If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
@@ -101,15 +111,6 @@ For PhpStorm, you can follow this example:
 ![PhpStorm mapping](https://i.ibb.co/GMb43Cv/image.png)
 
 > Configure the `Absolute path on the server` to `/var/alchemy/Phraseanet` at the project root path (i.e. `~/projects/Phraseanet`).
-
-
-### How to change volumes location
-
-Before moving all the files, or to use a different location, you have to remove all containers and volume definitions with the following command :
-
-    docker-compose down --volumes
-
-Then move the files and set the `VOLUMES_DIR` to the new location.
 
 
 # With Vagrant (deprecated)
