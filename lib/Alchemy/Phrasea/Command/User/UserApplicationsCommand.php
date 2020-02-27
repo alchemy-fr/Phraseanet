@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Command\Application;
+namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\LazyLocator;
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 
-class ApplicationAppCommand extends Command
+class UserApplicationsCommand extends Command
 {
 
     /**
@@ -32,7 +32,7 @@ class ApplicationAppCommand extends Command
      */
     public function __construct($name = null)
     {
-        parent::__construct('application:app');
+        parent::__construct('user:applications');
 
         $this->setDescription('List, Create, Edit, Delete application in Phraseanet <comment>(experimental)</>')
             ->addOption('user_id', 'u', InputOption::VALUE_REQUIRED, 'The id of user.')
@@ -127,6 +127,11 @@ class ApplicationAppCommand extends Command
                 
                         return 0;
                     }
+                }
+
+                if ($webhookUrl) {
+                    $applicationManipulator->setWebhookUrl($application, $webhookUrl);
+                    $applicationManipulator->update($application);
                 }
 
                 $this->showApllicationInformation($apiOauthRepository, $account, $application, $jsonformat, $output);                
