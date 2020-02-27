@@ -183,6 +183,9 @@
                         </div>
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
+                                <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
+                                <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
+                                <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
                                 <div class="filter-facet-setting look_box_settings">
                                     <div id="accordion">
                                         <div class="card">
