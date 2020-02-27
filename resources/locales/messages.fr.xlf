@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-02-26T14:52:25Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-02-27T15:10:07Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -3948,11 +3948,6 @@
         <target state="translated">Libellés</target>
         <jms:reference-file line="38">admin/statusbit/edit.html.twig</jms:reference-file>
         <jms:reference-file line="103">admin/statusbit/edit.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="89b86ab0e66f527166d98df92ddbcf5416ed58f6" resname="Language" approved="yes">
-        <source>Language</source>
-        <target state="translated">Langue</target>
-        <jms:reference-file line="739">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="863cb39fbe7d70597076af1960b7ae4618d9e1bc" resname="Last Name" approved="yes">
         <source>Last Name</source>
@@ -11682,6 +11677,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>prod:push: delete selection</source>
         <target state="translated">Supprimer la selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9186ed50a193dca16dc667b09c5b260480f85800" resname="prod:user:prefpanel:selected-language">
+        <source>prod:user:prefpanel:selected-language</source>
+        <target state="new">prod:user:prefpanel:selected-language</target>
+        <jms:reference-file line="739">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
