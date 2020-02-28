@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\Console\Helper\DialogHelper;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -277,6 +278,19 @@ class UserApplicationsCommand extends Command
             }
 
             $application = $apiApllicationConverter->convert($appId);
+
+            if (is_null($application->getCreator())) {
+                /** @var DialogHelper $dialog */
+                $dialog = $this->getHelperSet()->get('dialog');
+
+                $continue = $dialog->askConfirmation($output, "<question>It's a special phraseanet application, do you want really to delete it? (N/y)</>", false);
+
+                if (!$continue) {
+                    $output->writeln("<info>See you later !</>");
+
+                    return 0;
+                }
+            }
 
             $applicationManipulator->delete($application);
 
