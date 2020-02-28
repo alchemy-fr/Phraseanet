@@ -25,6 +25,7 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\CreateCollection;
 use Alchemy\Phrasea\Command\Collection\ListCollectionCommand;
 use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
+use Alchemy\Phrasea\Command\Databox\MountDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\ListDataboxCommand;
 use Alchemy\Phrasea\Command\MailTest;
 use Alchemy\Phrasea\Command\Compile\Configuration;
@@ -117,6 +118,7 @@ $cli->command(new ListCollectionCommand('collection:list'));
 
 $cli->command(new ListDataboxCommand('databox:list'));
 $cli->command(new CreateDataboxCommand('databox:create'));
+$cli->command(new MountDataboxCommand('databox:mount'));
 
 $cli->command(new UserCreateCommand('user:create'));
 
