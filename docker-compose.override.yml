@@ -30,7 +30,7 @@ services:
   phraseanet:
     environment:
     - XDEBUG_ENABLED
-    - XDEBUG_CONFIG=remote_host=${PHRASEANET_GATEWAY_IP} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
+    - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
     - PHP_IDE_CONFIG
     volumes:
     - .:/var/alchemy/Phraseanet

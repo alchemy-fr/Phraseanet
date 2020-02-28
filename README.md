@@ -112,6 +112,14 @@ For PhpStorm, you can follow this example:
 
 > Configure the `Absolute path on the server` to `/var/alchemy/Phraseanet` at the project root path (i.e. `~/projects/Phraseanet`).
 
+#### Xdebug on MacOS
+
+You have to set the following env:
+```bash
+XDEBUG_REMOTE_HOST=host.docker.internal
+```
+
+> Don't forget to recreate your container (`docker-compose up -d phraseanet`)
 
 # With Vagrant (deprecated)
 

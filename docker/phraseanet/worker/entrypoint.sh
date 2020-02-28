@@ -15,4 +15,4 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
     docker-php-ext-enable xdebug
 fi
 
-bash -e docker-php-entrypoint $@
+runuser -u app "$@"
