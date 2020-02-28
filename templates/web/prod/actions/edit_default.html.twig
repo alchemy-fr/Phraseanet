@@ -126,6 +126,7 @@
 
 {% set actionable = recordsRequest|length %}
 {% set not_actionable = recordsRequest.received|length - actionable %}
+{% set editing_top_box_height = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_top_box')  %}
 
 <div id="EDIT_ALL">
 
@@ -135,8 +136,7 @@
             <input style="font-size:2px; width:5px;" type="text" id="editFakefocus" />
         </form>
     </div>
-    <div id="EDIT_TOP" style="height:{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_top_box')
-    }}%;">
+    <div id="EDIT_TOP" style="height:{{editing_top_box_height}}%; min-height: {{ editing_top_box_height }}">
         <div id="EDIT_MENU">
             <div id="EDIT_ZOOMSLIDER" >
             </div>
