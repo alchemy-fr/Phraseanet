@@ -31,7 +31,7 @@ class MountDataboxCommand extends Command
 
         $this->setDescription('Mount databox')
             ->addArgument('databox', InputArgument::REQUIRED, 'Database name in Mysql', null)
-            ->addArgument('owner', InputArgument::REQUIRED, 'The Phraseanet login of the Phraseanet owner (this account became full admin on this databox)', null)
+            ->addArgument('user_id', InputArgument::REQUIRED, 'The Id of user owner (this account became full admin on this databox)', null)
             ->addOption('db-host', null, InputOption::VALUE_OPTIONAL, 'MySQL server host')
             ->addOption('db-port', null, InputOption::VALUE_OPTIONAL, 'MySQL server port')
             ->addOption('db-user', null, InputOption::VALUE_OPTIONAL, 'MySQL server user')
@@ -48,7 +48,7 @@ class MountDataboxCommand extends Command
             /** @var UserRepository $userRepository */
             $userRepository = $this->container['repo.users'];
 
-            $owner = $userRepository->findByLogin($input->getArgument('owner'));
+            $owner = $userRepository->find($input->getArgument('user_id'));
 
             if (empty($owner)) {
                 $output->writeln('<error>User not found ! </error>');
