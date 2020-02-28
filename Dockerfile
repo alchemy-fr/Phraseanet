@@ -36,7 +36,11 @@ RUN apt-get update \
         xpdf \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-source extract \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
     && pecl install redis amqp-1.9.3 zmq-beta imagick-beta \
@@ -125,6 +129,12 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
 #########################################################################
 
 FROM phraseanet-system as phraseanet-fpm
+
+RUN docker-php-source extract \
+    && pecl install xdebug-2.9.0 \
+    && docker-php-ext-enable xdebug \
+    #&& pecl clear-cache \
+    && docker-php-source delete
 
 COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/ /

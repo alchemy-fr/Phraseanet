@@ -14,4 +14,4 @@ else
     runuser app -c '/auto-install.sh'
 fi
 
-php-fpm
+php-fpm -F
