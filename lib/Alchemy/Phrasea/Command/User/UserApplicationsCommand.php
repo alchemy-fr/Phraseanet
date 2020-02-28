@@ -48,8 +48,8 @@ class UserApplicationsCommand extends Command
             ->addOption('website', 'w', InputOption::VALUE_OPTIONAL, 'The desired url, eg: -w "https://www.alchemy.fr".')
             ->addOption('callback', 'c', InputOption::VALUE_OPTIONAL, 'The desired endpoint for callback, required for web kind eg: -c "https://www.alchemy.fr/callback"')
             ->addOption('webhook_url', null, InputOption::VALUE_REQUIRED, 'The webhook url')
-            ->addOption('active', null, InputOption::VALUE_OPTIONAL, 'Activate or unactive  the app, values true or false', 'true')
-            ->addOption('generate_token', null, InputOption::VALUE_NONE, 'Generate or regenerate an access token')
+            ->addOption('active', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate  the app, values true or false', 'true')
+            ->addOption('generate_token', null, InputOption::VALUE_NONE, 'Generate or regenerate the access token')
             ->addOption('password_oauth2_gt', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')           
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
 
