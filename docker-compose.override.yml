@@ -4,7 +4,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: on-failure
     ports:
-    - ${PHPMYADMIN_PORT}:80
+    - ${PHRASEANET_PHPMYADMIN_PORT}:80
     depends_on:
     - db
 
@@ -13,7 +13,7 @@ services:
     - .:/var/alchemy/Phraseanet
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ./docker/nginx/entrypoint.sh:/entrypoint.sh
+    - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
 
   builder:
     build:
@@ -22,6 +22,10 @@ services:
     command: exit 0
     volumes:
       - .:/var/alchemy/Phraseanet
+      - ./config:/var/alchemy/Phraseanet/config:rw
+      - ./logs:/var/alchemy/Phraseanet/logs:rw
+      - ./datas:/var/alchemy/Phraseanet/datas:rw
+      - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   phraseanet:
     environment:
@@ -34,8 +38,6 @@ services:
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ./docker/phraseanet/phraseanet/entrypoint.sh:/phraseanet/entrypoint.sh
-    - ./docker/phraseanet/phraseanet/auto-install.sh:/phraseanet/auto-install.sh
 
   worker:
     volumes:
@@ -44,9 +46,6 @@ services:
     - ./logs:/var/alchemy/Phraseanet/logs:rw
     - ./datas:/var/alchemy/Phraseanet/datas:rw
     - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ./docker/phraseanet/phraseanet/entrypoint.sh:/phraseanet/entrypoint.sh
-    - ./docker/phraseanet/phraseanet/worker/entrypoint.sh:/phraseanet/worker/entrypoint.sh
-    - ./docker/phraseanet/phraseanet/worker/scheduler-run.sh:/phraseanet/worker/scheduler-run.sh
 
   rabbitmq:
     ports:
@@ -67,4 +66,3 @@ networks:
     ipam:
       config:
         - subnet: $PHRASEANET_SUBNET_IPS
-

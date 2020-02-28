@@ -93,7 +93,7 @@ RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classma
 
 COPY --chown=app  . .
 
-RUN rm -rf docker \
+RUN rm -rf docker/phraseanet/root \
     && make install
 
 ADD docker/phraseanet/ /
@@ -105,9 +105,9 @@ ADD docker/phraseanet/ /
 FROM phraseanet-system as phraseanet-fpm
 
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
-ADD ./docker/phraseanet/ /
+ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["/phraseanet/entrypoint.sh"]
+ENTRYPOINT ["docker/phraseanet/entrypoint.sh"]
 CMD ["php-fpm", "-F"]
 
 #########################################################################
@@ -115,8 +115,8 @@ CMD ["php-fpm", "-F"]
 #########################################################################
 
 FROM phraseanet-fpm as phraseanet-worker
-ENTRYPOINT ["/phraseanet/worker/entrypoint.sh"]
-CMD ["/phraseanet/worker/scheduler-run.sh"]
+ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
+CMD ["docker/phraseanet/worker/scheduler-run.sh"]
 
 #########################################################################
 # phraseanet-nginx
@@ -124,7 +124,7 @@ CMD ["/phraseanet/worker/scheduler-run.sh"]
 
 FROM nginx:1.17.8-alpine as phraseanet-nginx
 RUN adduser --uid 1000 --disabled-password app
-ADD ./docker/nginx/ /
+ADD ./docker/nginx/root /
 COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 
 ENTRYPOINT ["/entrypoint.sh"]
