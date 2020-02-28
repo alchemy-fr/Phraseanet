@@ -22,14 +22,54 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: MemcacheCache
+        type: redis
         options:
             host: localhost
-            port: 11211
+            port: 6379
     search-engine:
-        type: phrasea
+        type: elasticsearch
         options:
-            facets: []
+            host: elasticsearch
+            port: 9200
+            index: ''
+            shards: 3
+            replicas: 0
+            minScore: 2
+            highlight: true
+            populate_order: RECORD_ID
+            populate_direction: DESC
+            activeTab: ''
+            facets:
+                _base:
+                    limit: 10
+                _collection:
+                    limit: 10
+                _doctype:
+                    limit: 10
+                _camera_model:
+                    limit: 0
+                _iso:
+                    limit: 0
+                _aperture:
+                    limit: 0
+                _shutterspeed:
+                    limit: 0
+                _flashfired:
+                    limit: 0
+                _framerate:
+                    limit: 0
+                _audiosamplerate:
+                    limit: 0
+                _videocodec:
+                    limit: 0
+                _audiocodec:
+                    limit: 0
+                _orientation:
+                    limit: 0
+                _colorspace:
+                    limit: 0
+                _mimetype:
+                    limit: 0
     task-manager:
         status: started
         enabled: true
@@ -63,6 +103,7 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
+        exiftool_timeout: 60
     storage:
         subdefs: null
         cache: null
