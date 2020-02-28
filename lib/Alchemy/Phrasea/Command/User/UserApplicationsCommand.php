@@ -25,7 +25,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-
 class UserApplicationsCommand extends Command
 {
 
@@ -51,7 +50,7 @@ class UserApplicationsCommand extends Command
             ->addOption('webhook_url', null, InputOption::VALUE_REQUIRED, 'The webhook url')
             ->addOption('active', null, InputOption::VALUE_OPTIONAL, 'Activate or unactive  the app, values true or false', 'true')
             ->addOption('generate_token', null, InputOption::VALUE_NONE, 'Generate or regenerate an access token')
-            ->addOption('activate_password', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')           
+            ->addOption('password_oauth2_gt', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')           
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
 
             ->setHelp('');
@@ -71,7 +70,7 @@ class UserApplicationsCommand extends Command
         $webhookUrl         = $input->getOption('webhook_url');
         $active             = $input->getOption('active');
         $generateToken      = $input->getOption('generate_token');
-        $activatePassword   = $input->getOption('activate_password');
+        $passwordOauth2Gt   = $input->getOption('password_oauth2_gt');
         $create             = $input->getOption('create');
         $edit               = $input->getOption('edit');
         $delete             = $input->getOption('delete');
@@ -122,12 +121,12 @@ class UserApplicationsCommand extends Command
                     $apiOauthTokenManipulator->create($account);
                 }
 
-                if ($activatePassword) {
-                    if (in_array($activatePassword, ['true', 'false'])) {
-                        $application->setGrantPassword(($activatePassword == 'true') ? true : false);
+                if ($passwordOauth2Gt) {
+                    if (in_array($passwordOauth2Gt, ['true', 'false'])) {
+                        $application->setGrantPassword(($passwordOauth2Gt == 'true') ? true : false);
                         $applicationManipulator->update($application);
                     } else {
-                        $output->writeln('<error> Value of option --activate_password should be "true" or "false"</error>');
+                        $output->writeln('<error> Value of option --password_oauth2_gt should be "true" or "false"</error>');
                 
                         return 0;
                     }
@@ -197,11 +196,11 @@ class UserApplicationsCommand extends Command
                     $apiOauthTokenManipulator->create($account);
                 }
             }
-            if ($activatePassword) {
-                if (in_array($activatePassword, ['true', 'false'])) { 
-                    $application->setGrantPassword(($activatePassword == 'true') ? true : false);
+            if ($passwordOauth2Gt) {
+                if (in_array($passwordOauth2Gt, ['true', 'false'])) { 
+                    $application->setGrantPassword(($passwordOauth2Gt == 'true') ? true : false);
                 } else {
-                    $output->writeln('<error> Value of option --activate_password should be "true" or "false"</error>');
+                    $output->writeln('<error> Value of option --password_oauth2_gt should be "true" or "false"</error>');
             
                     return 0;
                 }
@@ -254,7 +253,7 @@ class UserApplicationsCommand extends Command
             }
 
             $applicationTable = $this->getHelperSet()->get('table');
-            $headers = ['app_id', 'user_id', 'name', 'client_id', 'callback_url', 'generated token', 'activate_password status'];
+            $headers = ['app_id', 'user_id', 'name', 'client_id', 'callback_url', 'generated token', 'grant_password status'];
 
             if ($jsonformat ) {
                 foreach ($applicationList as $appList) {
@@ -313,7 +312,7 @@ class UserApplicationsCommand extends Command
             $application->isPasswordGranted() ? "true":  "false" 
         ];
 
-        $headers = ['client secret', 'client ID', 'Authorize endpoint url', 'Access endpoint', 'generated token', 'activate_password status'];
+        $headers = ['client secret', 'client ID', 'Authorize endpoint url', 'Access endpoint', 'generated token', 'grant_password status'];
         if ($jsonformat ) {
             $createdAppInfo = array_combine($headers, $applicationCreated);
             echo json_encode($createdAppInfo);
