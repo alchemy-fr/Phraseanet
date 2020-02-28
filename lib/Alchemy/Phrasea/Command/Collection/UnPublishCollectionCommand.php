@@ -40,11 +40,11 @@ class UnPublishCollectionCommand extends Command
             $dialog = $this->getHelperSet()->get('dialog');
 
             do {
-                $continue = mb_strtolower($dialog->ask($output, '<question> Do you want really unpublish this collection? (y/N)</question>', 'N'));
+                $continue = mb_strtolower($dialog->ask($output, sprintf("<question> Do you want really unpublish the collection %s? (y/N)</question>", $collection->get_name()), 'N'));
             } while ( ! in_array($continue, ['y', 'n']));
 
             if ($continue !== 'y') {
-                $output->writeln('Aborting !');
+                $output->writeln('<info>Aborting !</>');
 
                 return;
             }
