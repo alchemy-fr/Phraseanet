@@ -74,6 +74,17 @@ If you don't work on phraseanet development, avoiding this `-f docker-compose.ym
 
 > You can also delete the `docker-compose.override.yml` to get free from this behavior.
 
+#### Running workers
+
+```bash
+docker-compose -f docker-compose.yml run --rm worker <command>
+```
+
+Where `<command>` can be:
+- `bin/console task-manager:scheduler:run` (default)
+- `bin/console bin/console worker:execute -m 2`
+- ...
+
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
 
