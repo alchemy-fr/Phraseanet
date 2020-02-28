@@ -73,3 +73,5 @@ npm-debug.log
 /Phrasea_datas
 
 .env.*
+env.local
+/volumes

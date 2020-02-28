@@ -26,6 +26,7 @@
 /plugins
 /tmp
 /vendor
+/volumes
 /www/assets
 /www/custom
 /www/plugins

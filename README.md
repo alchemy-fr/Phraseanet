@@ -52,14 +52,14 @@ export INSTALL_ACCOUNT_PASSWORD=$3cr3t!
 export PHRASEANET_APP_PORT=8082
 ```
 
-### Using a .env.local
+### Using a env.local (custom .env)
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `.env.local` at the root of this project and define a command alias in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command alias in your `~/.bashrc`:
 
 ```bash
-alias dc="env $(cat .env.local | grep -v '#' | tr '\n' ' ') docker-compose"
+alias dc="env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose"
 ```
 
 ### Running the application

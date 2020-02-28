@@ -11,9 +11,9 @@ services:
   gateway:
     volumes:
     - .:/var/alchemy/Phraseanet
-    - ./datas:/var/alchemy/Phraseanet/datas:rw
-    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   builder:
     build:
@@ -22,10 +22,10 @@ services:
     command: exit 0
     volumes:
       - .:/var/alchemy/Phraseanet
-      - ./config:/var/alchemy/Phraseanet/config:rw
-      - ./logs:/var/alchemy/Phraseanet/logs:rw
-      - ./datas:/var/alchemy/Phraseanet/datas:rw
-      - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   phraseanet:
     environment:
@@ -34,22 +34,26 @@ services:
     - PHP_IDE_CONFIG
     volumes:
     - .:/var/alchemy/Phraseanet
-    - ./config:/var/alchemy/Phraseanet/config:rw
-    - ./logs:/var/alchemy/Phraseanet/logs:rw
-    - ./datas:/var/alchemy/Phraseanet/datas:rw
-    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   worker:
     volumes:
     - .:/var/alchemy/Phraseanet
-    - ./config:/var/alchemy/Phraseanet/config:rw
-    - ./logs:/var/alchemy/Phraseanet/logs:rw
-    - ./datas:/var/alchemy/Phraseanet/datas:rw
-    - ./www/thumbnails:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
 
   rabbitmq:
     ports:
     - ${RABBITMQ_MANAGEMENT_PORT}:15672
+
+  db:
+    volumes:
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
 
   mailhog:
     image: mailhog/mailhog
@@ -60,6 +64,8 @@ services:
   elasticsearch:
     ports:
     - 9200:9200
+    volumes:
+    - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data:rw
 
 networks:
   default:
