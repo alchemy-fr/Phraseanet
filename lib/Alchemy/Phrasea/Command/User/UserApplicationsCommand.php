@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
@@ -35,6 +36,10 @@ class UserApplicationsCommand extends Command
         parent::__construct('user:applications');
 
         $this->setDescription('List, Create, Edit, Delete application in Phraseanet <comment>(experimental)</>')
+            ->addOption('list', null, InputOption::VALUE_NONE, 'List all applications or user applications if --user_id is set')
+            ->addOption('create', null, InputOption::VALUE_NONE, 'Create application for user in Phraseanet')
+            ->addOption('edit', null, InputOption::VALUE_NONE, 'Edit application in Phraseanet work only if app_id is set')
+            ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete application in Phraseanet, require an app_id')
             ->addOption('user_id', 'u', InputOption::VALUE_REQUIRED, 'The owner id (user id), required for Create Edit and Delete.')
             ->addOption('app_id', 'a', InputOption::VALUE_REQUIRED, 'The application ID, required for Edit and Delete')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'The desired name for application, required for Create and Edit.')
@@ -43,12 +48,9 @@ class UserApplicationsCommand extends Command
             ->addOption('website', 'w', InputOption::VALUE_OPTIONAL, 'The desired url.')
             ->addOption('callback', 'c', InputOption::VALUE_OPTIONAL, 'The desired endpoint for callback, required for web kind')
             ->addOption('webhook_url', null, InputOption::VALUE_REQUIRED, 'The webhook url')
-            ->addOption('create_token', null, InputOption::VALUE_NONE, 'Generate or regenerate an access token')
-            ->addOption('activate_password', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')
-            ->addOption('create', null, InputOption::VALUE_NONE, 'Create application for user in Phraseanet')
-            ->addOption('edit', null, InputOption::VALUE_NONE, 'Edit application in Phraseanet work only if app_id and user_id are set')
-            ->addOption('delete', null, InputOption::VALUE_NONE, 'Delete application in Phraseanet, require an app_id')
-            ->addOption('list', null, InputOption::VALUE_NONE, 'List all applications or user applications if --user_id is set')
+            ->addOption('active', null, InputOption::VALUE_OPTIONAL, 'Activate or unactive  the app, values true or false', 'true')
+            ->addOption('generate_token', null, InputOption::VALUE_NONE, 'Generate or regenerate an access token')
+            ->addOption('activate_password', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')           
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
 
             ->setHelp('');
@@ -58,15 +60,16 @@ class UserApplicationsCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $userId      = $input->getOption('user_id');
-        $appId       = $input->getOption('app_id');
-        $name        = $input->getOption('name');
-        $type        = $input->getOption('type');
-        $description = $input->getOption('description');
-        $website     = $input->getOption('website');
-        $urlCallback = $input->getOption('callback');
-        $webhookUrl  = $input->getOption('webhook_url');
-        $createToken        = $input->getOption('create_token');
+        $userId             = $input->getOption('user_id');
+        $appId              = $input->getOption('app_id');
+        $name               = $input->getOption('name');
+        $type               = $input->getOption('type');
+        $description        = $input->getOption('description');
+        $website            = $input->getOption('website');
+        $urlCallback        = $input->getOption('callback');
+        $webhookUrl         = $input->getOption('webhook_url');
+        $active             = $input->getOption('active');
+        $generateToken      = $input->getOption('generate_token');
         $activatePassword   = $input->getOption('activate_password');
         $create             = $input->getOption('create');
         $edit               = $input->getOption('edit');
@@ -114,7 +117,7 @@ class UserApplicationsCommand extends Command
 
                 $account =  $accountRepository->findByUserAndApplication($user, $application);
 
-                if ($createToken) {
+                if ($generateToken) {
                     $apiOauthTokenManipulator->create($account);
                 }
 
@@ -134,6 +137,20 @@ class UserApplicationsCommand extends Command
                     $applicationManipulator->update($application);
                 }
 
+                if ($active) {
+                    if (in_array($active, ['true', 'false'])) {
+                        $application->setActivated(($active == 'true') ? true : false);
+                        $applicationManipulator->update($application);
+                    } else {
+                        $output->writeln('<error>Value of option --active should be "true" or "false"</error>');
+                
+                        return 0;
+                    }
+                } else {
+                    $application->setActivated(true);
+                    $applicationManipulator->update($application);
+                }
+
                 $this->showApllicationInformation($apiOauthRepository, $account, $application, $jsonformat, $output);                
             } catch (\Exception $e) {
                 $output->writeln('<error>Create an application for user failed : '.$e->getMessage().'</error>');
@@ -145,16 +162,11 @@ class UserApplicationsCommand extends Command
                 return 0;
             }
 
-            if (null === $user = $userRepository->find($userId)) {
-                $output->writeln('<error>User not found</error>');
-                return 0;
-            }
-
             $application = $apiApllicationConverter->convert($appId);
-            $account =  $accountRepository->findByUserAndApplication($user, $application);
+            $account =  $accountRepository->findByUserAndApplication($application->getCreator(), $application);
 
             if (!$account) {
-                $output->writeln('<error>ApiAccount not found!Check the given user_id and app_id!</error>');
+                $output->writeln('<error>ApiAccount not found!</error>');
 
                 return 0;
             }
@@ -164,6 +176,9 @@ class UserApplicationsCommand extends Command
             }
             if ($type) {
                 $applicationManipulator->setType($application, $type);
+                if ($type == ApiApplication::DESKTOP_TYPE) {
+                    $applicationManipulator->setRedirectUri($application, ApiApplication::NATIVE_APP_REDIRECT_URI);
+                }
             }
             if ($description) {
                 $application->setDescription($description);
@@ -174,8 +189,12 @@ class UserApplicationsCommand extends Command
             if ($urlCallback) {
                 $applicationManipulator->setRedirectUri($application, $urlCallback);
             }
-            if ($createToken) {
-                $apiOauthTokenManipulator->create($account);
+            if ($generateToken) {
+                if (null !== $devToken = $apiOauthRepository->findDeveloperToken($account)) {
+                    $apiOauthTokenManipulator->renew($devToken);
+                } else {
+                    $apiOauthTokenManipulator->create($account);
+                }
             }
             if ($activatePassword) {
                 if (in_array($activatePassword, ['true', 'false'])) { 
@@ -188,6 +207,16 @@ class UserApplicationsCommand extends Command
             }
             if ($webhookUrl) {
                 $applicationManipulator->setWebhookUrl($application, $webhookUrl);
+            }
+
+            if ($active) {
+                if (in_array($active, ['true', 'false'])) {
+                    $application->setActivated(($active == 'true') ? true : false);
+                } else {
+                    $output->writeln('<error>Value of option --active should be "true" or "false"</error>');
+            
+                    return 0;
+                }
             }
 
             $applicationManipulator->update($application);
@@ -224,7 +253,7 @@ class UserApplicationsCommand extends Command
             }
 
             $applicationTable = $this->getHelperSet()->get('table');
-            $headers = ['ID', 'user ID', 'Name', 'client ID', 'Callback Url', 'generated token', 'activate_password status'];
+            $headers = ['app_id', 'user_id', 'name', 'client_id', 'callback_url', 'generated token', 'activate_password status'];
 
             if ($jsonformat ) {
                 foreach ($applicationList as $appList) {
