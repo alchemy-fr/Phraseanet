@@ -34,12 +34,12 @@ class UserPasswordCommand extends Command
 
         $this->setDescription('Set user password in Phraseanet')
             ->addOption('user_id', null, InputOption::VALUE_REQUIRED, 'The id of user.')
-            ->addOption('generate', null, InputOption::VALUE_NONE, 'Generate the password')
-            ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'The password')
-            ->addOption('send_mail_password', null, InputOption::VALUE_NONE, 'Send email link to user for password renewing, work only if password and generate are not define')
+            ->addOption('generate', null, InputOption::VALUE_NONE, 'Generate and set with a random value')
+            ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Set the user password to the input value')
+            ->addOption('send_mail_password', null, InputOption::VALUE_NONE, 'Send email link to user for password renewing, work only if --password or --generate are not define')
             ->addOption('password_hash', null, InputOption::VALUE_OPTIONAL, 'Define a password hashed, work only with password_nonce')
             ->addOption('password_nonce', null, InputOption::VALUE_OPTIONAL, 'Define a password nonce, work only with password_hash')
-            ->addOption('get_hash', null, InputOption::VALUE_NONE, 'return the password hashed')
+            ->addOption('get_hash', null, InputOption::VALUE_NONE, 'Return the password hashed and nonce')
 
             ->setHelp('');
 
