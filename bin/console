@@ -23,8 +23,11 @@ use Alchemy\Phrasea\Command\SearchEngine\IndexPopulateCommand;
 use Alchemy\Phrasea\Command\Thesaurus\FindConceptsCommand;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\Command\Collection\PublishCollectionCommand;
 use Alchemy\Phrasea\Command\Collection\ListCollectionCommand;
 use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
+use Alchemy\Phrasea\Command\Databox\UnMountDataboxCommand;
+use Alchemy\Phrasea\Command\Databox\MountDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\ListDataboxCommand;
 use Alchemy\Phrasea\Command\MailTest;
 use Alchemy\Phrasea\Command\Compile\Configuration;
@@ -113,10 +116,18 @@ $cli->command(new \module_console_fieldsRename('fields:rename'));
 $cli->command(new \module_console_fieldsMerge('fields:merge'));
 
 $cli->command(new CreateCollection('collection:create'));
+
+$cli->command(new PublishCollectionCommand('collection:publish'));
+
+
 $cli->command(new ListCollectionCommand('collection:list'));
 
 $cli->command(new ListDataboxCommand('databox:list'));
 $cli->command(new CreateDataboxCommand('databox:create'));
+
+$cli->command(new UnMountDataboxCommand('databox:unmount'));
+$cli->command(new MountDataboxCommand('databox:mount'));
+
 
 $cli->command(new UserCreateCommand('user:create'));
 
