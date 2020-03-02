@@ -82,7 +82,7 @@ docker-compose -f docker-compose.yml run --rm worker <command>
 
 Where `<command>` can be:
 - `bin/console task-manager:scheduler:run` (default)
-- `bin/console bin/console worker:execute -m 2`
+- `bin/console worker:execute -m 2`
 - ...
 
 
