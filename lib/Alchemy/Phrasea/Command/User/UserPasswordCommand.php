@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Notification\Receiver;
-use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
+use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordUpdate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,7 +32,7 @@ class UserPasswordCommand extends Command
     {
         parent::__construct('user:password');
 
-        $this->setDescription('Set user password in Phraseanet')
+        $this->setDescription('Set user password in Phraseanet <comment>(experimental)</>')
             ->addOption('user_id', null, InputOption::VALUE_REQUIRED, 'The id of user.')
             ->addOption('generate', null, InputOption::VALUE_NONE, 'Generate and set with a random value')
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Set the user password to the input value')
@@ -40,6 +40,8 @@ class UserPasswordCommand extends Command
             ->addOption('password_hash', null, InputOption::VALUE_OPTIONAL, 'Define a password hashed, work only with password_nonce')
             ->addOption('password_nonce', null, InputOption::VALUE_OPTIONAL, 'Define a password nonce, work only with password_hash')
             ->addOption('get_hash', null, InputOption::VALUE_NONE, 'Return the password hashed and nonce')
+            ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
 
             ->setHelp('');
 
@@ -59,6 +61,8 @@ class UserPasswordCommand extends Command
         $getHash            = $input->getOption('get_hash');
         $passwordHash       = $input->getOption('password_hash');
         $passwordNonce      = $input->getOption('password_nonce');
+        $jsonformat         = $input->getOption('jsonformat');
+        $yes                = $input->getOption('yes');
 
 
         if ($user === null) {
@@ -81,7 +85,8 @@ class UserPasswordCommand extends Command
         } else {
             if (!$password && $sendMailPassword) {
                 $this->sendPasswordSetupMail($user);
-            
+                $output->writeln('<info>email link sended for password renewing!</info>');
+
                 return 0;
             } elseif (!$password && !$sendMailPassword && ! $getHash) {
                 $output->writeln('<error>choose one option to set a password!</error>');
@@ -91,26 +96,40 @@ class UserPasswordCommand extends Command
         }
 
         if ($password) {
-            do {
-                $continue = mb_strtolower($dialog->ask($output, '<question>Do you want really set password to this user? (y/N)</question>', 'N'));
-            } while (!in_array($continue, ['y', 'n']));
+            if (!$yes) {
+                do {
+                    $continue = mb_strtolower($dialog->ask($output, '<question>Do you want really set password to this user? (y/N)</question>', 'N'));
+                } while (!in_array($continue, ['y', 'n']));
 
-            if ($continue !== 'y') {
-                $output->writeln('Aborting !');
+                if ($continue !== 'y') {
+                    $output->writeln('Aborting !');
 
-                return;
+                    return;
+                }
             }
 
              $userManipulator->setPassword($user,$password);
         } 
 
         if (($password || $generate || $getHash) && $user->getPassword()) {
-            $hash = [
-                'password'  => $user->getPassword(),
-                'nonce'     => $user->getNonce()
-            ];
 
-            echo json_encode($hash);
+            if ($jsonformat) {
+                    if ($password) {
+                        $hash['password'] = $password;
+                    }
+
+                    $hash['password_hash']  = $user->getPassword();
+                    $hash['nonce']          = $user->getNonce();
+
+                echo json_encode($hash);
+            } else {
+                if ($password) {
+                    $output->writeln('<info>password :</info>' .$password);
+                }
+                $output->writeln('<info>password_hash :</info>' .$user->getPassword());
+                $output->writeln('<info>nonce :</info>' .$user->getNonce());
+            }
+            
         } elseif (is_null($password)) {
             $output->writeln('<info>password undefined</info>');
         }
@@ -129,7 +148,7 @@ class UserPasswordCommand extends Command
 
         $token = $this->container['manipulator.token']->createResetPasswordToken($user);
 
-        $mail = MailRequestPasswordSetup::create($this->container, $receiver);
+        $mail = MailRequestPasswordUpdate::create($this->container, $receiver);
         $servername = $this->container['conf']->get('servername');
         $mail->setButtonUrl('http://'.$servername.'/login/renew-password/?token='.$token->getValue());
         $mail->setLogin($user->getLogin());
