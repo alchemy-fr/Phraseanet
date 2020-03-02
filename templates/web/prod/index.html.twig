@@ -183,6 +183,9 @@
                         </div>
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
+                                <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
+                                <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
+                                <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
                                 <div class="filter-facet-setting look_box_settings">
                                     <div id="accordion">
                                         <div class="card">
@@ -733,11 +736,15 @@
                     </div>
                 </div>
                 <div class="box">
-                    <h1>{{  'Language' | trans }} : {{ app['locale'] }}</h1>
+                    <h1>{{  'Language selection' | trans }}</h1>
                     <label class="inline" for="language">
                         <select onchange="window.location = $(this).val();" id="language">
-                            {% for code, language in app.getAvailableLanguages() if code != app['locale'] %}
+                            {% for code, language in app.getAvailableLanguages() %}
+                                {% if code == app['locale'] %}
+                                <option selected="selected" disabled="disabled">{{ language }}</option>
+                            {% else %}
                                 <option value="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </label>
