@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
@@ -26,6 +26,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 
@@ -1003,7 +1004,7 @@ class ArchiveJob extends AbstractJob
     {
         // quick fix to reconnect if mysql is lost
         $app->getApplicationBox()->get_connection();
-        $collection->get_connection();
+        $collection->get_connection();   // refresh
 
         $status = \databox_status::operation_or($stat0, $stat1);
 
@@ -1027,15 +1028,17 @@ class ArchiveJob extends AbstractJob
         $story = \record_adapter::createStory($app, $collection);
         $app['subdef.substituer']->substituteDocument($story, $media);
 
-        $story->set_metadatas($metadatas->toMetadataArray($metadatasStructure), true);
-
+        $metas = $metadatas->toMetadataArray($metadatasStructure);
         if ($metaFields) {
-            $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
+            $metas = array_merge($metas, $metaFields->toMetadataArray($metadatasStructure));
         }
+
+        $story->set_metadatas($metas, true);
 
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 
-        $app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($story));
+        //$story->rebuild_subdefs();
+        $app['dispatcher']->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
 
         unset($media);
 
@@ -1501,4 +1504,10 @@ class ArchiveJob extends AbstractJob
 
         return $list;
     }
+
+    private function dispatch($eventName, Event $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+
 }

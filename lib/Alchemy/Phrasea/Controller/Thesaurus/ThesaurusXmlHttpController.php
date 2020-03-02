@@ -10,12 +10,15 @@
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
 use caption_field;
 use caption_Field_Value;
 use databox;
 use DOMElement;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -1395,10 +1398,15 @@ class ThesaurusXmlHttpController extends Controller
                         if (count($metadatasd) > 0) {
                             if (!$request->get('debug')) {
                                 $record->set_metadatas($metadatasd, true);
+                                $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+                                    new DoWriteExifEvent($record, ['document',DoWriteExifEvent::ALL_SUBDEFS])
+                                );
+
                                 $ret['nRecsUpdated']++;
                             }
                         }
-                    } catch (\Exception $e) {
+                    }
+                    catch (\Exception $e) {
                         continue;
                     }
                 }
@@ -1640,4 +1648,10 @@ class ThesaurusXmlHttpController extends Controller
 
         return $label;
     }
+
+    private function dispatch($eventName, Event $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+
 }

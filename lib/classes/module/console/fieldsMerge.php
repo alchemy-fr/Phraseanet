@@ -9,11 +9,15 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Alchemy\Phrasea\Command\Command;
+use Symfony\Component\EventDispatcher\Event;
+
 
 class module_console_fieldsMerge extends Command
 {
@@ -46,7 +50,8 @@ class module_console_fieldsMerge extends Command
         try {
             /** @var databox $databox */
             $databox = $this->getService('phraseanet.appbox')->get_databox((int) $input->getArgument('sbas_id'));
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
 
             return 1;
@@ -109,7 +114,8 @@ class module_console_fieldsMerge extends Command
                     )
                 );
                 $this->displayHelpConcatenation($output);
-            } elseif ($multis[0] === true && ! $destination->is_multi()) {
+            }
+            elseif ($multis[0] === true && ! $destination->is_multi()) {
                 $output->writeln(
                     sprintf(
                         "You are going to merge <info>multi valued</info> fields in a "
@@ -119,14 +125,16 @@ class module_console_fieldsMerge extends Command
                     )
                 );
                 $this->displayHelpConcatenation($output);
-            } elseif ($multis[0] === false && $destination->is_multi()) {
+            }
+            elseif ($multis[0] === false && $destination->is_multi()) {
                 $output->writeln(
                     sprintf(
                         "You are going to merge <info>mono valued fields</info> in a "
                         . "<info>multivalued field</info>"
                     )
                 );
-            } elseif ($multis[0] === true && $destination->is_multi()) {
+            }
+            elseif ($multis[0] === true && $destination->is_multi()) {
                 $output->writeln(
                     sprintf(
                         "You are going to merge <info>multi valued fields</info> in a "
@@ -134,14 +142,16 @@ class module_console_fieldsMerge extends Command
                     )
                 );
             }
-        } elseif ($destination->is_multi()) {
+        }
+        elseif ($destination->is_multi()) {
             $output->writeln(
                 sprintf(
                     "You are going to merge <info>mixed valued</info> fields in a "
                     . "<info>multivalued</info> field"
                 )
             );
-        } else {
+        }
+        else {
             $output->writeln(
                 sprintf(
                     "You are going to merge <info>mixed valued</info> fields in a "
@@ -194,19 +204,26 @@ class module_console_fieldsMerge extends Command
                     $datas = implode($separator, $datas);
                 }
 
+                $metas = [];
                 foreach ((array) $datas as $data) {
-                    $record->set_metadatas([[
+                    $metas[] = [
                             'meta_struct_id' => $destination->get_id(),
                             'meta_id'        => null,
                             'value'          => $data,
-                        ]], true);
+                        ];
                 }
+                $record->set_metadatas($metas, true);
 
-                unset($record);
+                $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+                    new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])
+                );
+
+                unset($metas, $record);
             }
 
             $start += $quantity;
-        } while (count($results) > 0);
+        }
+        while (count($results) > 0);
 
         return 0;
     }
@@ -220,4 +237,11 @@ class module_console_fieldsMerge extends Command
 
         return $this;
     }
+
+    private function dispatch($eventName, Event $event)
+    {
+        $app = $this->getContainer();
+        $app['dispatcher']->dispatch($eventName, $event);
+    }
+
 }

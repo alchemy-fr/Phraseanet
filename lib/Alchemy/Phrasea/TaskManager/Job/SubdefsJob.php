@@ -107,7 +107,8 @@ class SubdefsJob extends AbstractJob
                 try {
                     $record = $databox->get_record($row['record_id']);
                     $this->getSubdefGenerator($app)->generateSubdefs($record);
-                } catch (\Exception $e) {
+                }
+                catch (\Exception $e) {
                     $this->log('warning', sprintf("Generate subdefs failed for : sbasid=%s / databox=%s / recordid=%s : %s", $databox->get_sbas_id(), $databox->get_dbname() , $row['record_id'], $e->getMessage()));
                 }
 

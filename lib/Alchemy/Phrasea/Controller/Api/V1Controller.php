@@ -29,6 +29,9 @@ use Alchemy\Phrasea\Border\Visa;
 use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
@@ -1964,6 +1967,9 @@ class V1Controller extends Controller
         }
 
         $record->set_metadatas($metadata);
+        $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+            new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])
+        );
 
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
@@ -2005,7 +2011,6 @@ class V1Controller extends Controller
 
         $record->setStatus(strrev($datas));
 
-        // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = ["status" => $this->listRecordStatus($record)];
@@ -2573,6 +2578,7 @@ class V1Controller extends Controller
 
         if(count($metadatas) > 0) {
             $story->set_metadatas($metadatas);
+            // a story has no doc/subdefs, no need exif
         }
 
         if (isset($data->{'story_records'})) {
@@ -2691,7 +2697,8 @@ class V1Controller extends Controller
 
         try {
             $record = new \record_adapter($this->app, $story->getDataboxId(), $record_id);
-        } catch (\Exception_Record_AdapterNotFound $e) {
+        }
+        catch (\Exception_Record_AdapterNotFound $e) {
             $record = null;
             $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->getDataboxId(), $record_id));
         }
@@ -2726,6 +2733,8 @@ class V1Controller extends Controller
             );
         }
 
+        $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($story, $record));
+        // say that the story record has been edited, to change his edit-date
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
 
         return $record->getId();

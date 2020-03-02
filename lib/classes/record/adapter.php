@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
@@ -32,15 +33,12 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
@@ -286,7 +284,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
-            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            // $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
         }
 
         $this->type = $type;
@@ -343,7 +342,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            // $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
 
             $this->delete_data_from_cache();
         }
@@ -851,7 +851,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
             if ($data_field->get_tag() instanceof TfFilename) {
                 $original_name = pathinfo($original_name, PATHINFO_FILENAME);
-            } elseif (!$data_field->get_tag() instanceof TfBasename) {
+            }
+            elseif (!$data_field->get_tag() instanceof TfBasename) {
                 continue;
             }
 
@@ -865,12 +866,21 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $values = $field->get_values();
                 $value = end($values);
 
-                $this->set_metadatas([[
-                    'meta_struct_id' => $field->get_meta_struct_id(),
-                    'meta_id' => $value->getId(),
-                    'value' => $original_name,
-                ]], true);
-            } catch (\Exception $e) {
+                $this->set_metadatas([
+                    [
+                        'meta_struct_id' => $field->get_meta_struct_id(),
+                        'meta_id'        => $value->getId(),
+                        'value'          => $original_name,
+                    ]
+                ],true);
+                // since we fixed only tech fields, no need to write exif
+                /*
+                $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+                    new DoWriteExifEvent($this, ['document', DoWriteExifEvent::ALL_SUBDEFS])
+                );
+                */
+            }
+            catch (\Exception $e) {
                 // Caption is not setup, ignore error
             }
         }
@@ -1018,26 +1028,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @todo move this function to caption_record
-     * @param  Array  $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
+     * @param  array  $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
      * @param databox $databox
      * @return record_adapter
-     * @throws Exception
-     * @throws Exception_InvalidArgument
+     * @throws \Doctrine\DBAL\DBALException
      */
     protected function set_metadata(Array $params, databox $databox)
     {
-        $mandatoryParams = ['meta_struct_id', 'meta_id', 'value'];
-
-        foreach ($mandatoryParams as $param) {
-            if (!array_key_exists($param, $params)) {
-                throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
-            }
-        }
-
-        if (!is_scalar($params['value'])) {
-            throw new Exception('Metadata value should be scalar');
-        }
-
         $databox_field = $databox->get_meta_structure()->get_element($params['meta_struct_id']);
 
         $caption_field = new caption_field($this->app, $databox_field, $this);
@@ -1050,7 +1047,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 $vocab = $databox_field->getVocabularyControl();
                 $vocab_id = $params['vocabularyId'];
                 $vocab->validate($vocab_id);
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $vocab = $vocab_id = null;
             }
         }
@@ -1063,13 +1061,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             if ($tmp_val === '') {
                 $caption_field_value->delete();
                 unset($caption_field_value);
-            } else {
+            }
+            else {
                 $caption_field_value->set_value($params['value']);
                 if ($vocab && $vocab_id) {
                     $caption_field_value->setVocab($vocab, $vocab_id);
                 }
             }
-        } else {
+        }
+        else {
             $caption_field_value = caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
         }
 
@@ -1081,18 +1081,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @param array   $metadatas
      * @param boolean $force_readonly
-     *
      * @return record_adapter
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function set_metadatas(array $metadatas, $force_readonly = false)
     {
         $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
 
         foreach ($metadatas as $param) {
-            if (!is_array($param)) {
-                throw new Exception_InvalidArgument('Invalid metadatas argument');
-            }
-
             $db_field = $databox_descriptionStructure->get_element($param['meta_struct_id']);
 
             if ($db_field->is_readonly() === true && !$force_readonly) {
@@ -1102,23 +1098,41 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->set_metadata($param, $this->getDatabox());
         }
 
+        /*
         $xml = new DOMDocument();
         $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
 
         $this->set_xml($xml);
         unset($xml);
+        */
+        $this->rebuildXML();
 
-        $this->write_metas();
+        // $this->write_metas();    // this must be done by the caller
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
         return $this;
     }
 
+    public function rebuildXML()
+    {
+        $xml = new DOMDocument();
+        $xml->loadXML($this->app['serializer.caption']->serialize($this->get_caption(), CaptionSerializer::SERIALIZE_XML, true));
+
+        $this->set_xml($xml);
+
+        return $this;
+    }
+
     /**
+     * @deprecated
+     *
      * @return record_adapter
      */
     public function rebuild_subdefs()
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "into deprecated recordadpater::rebuild_subdefs()"), FILE_APPEND);
+
+        /*
         $sql = 'UPDATE record SET jeton=(jeton | :make_subdef_mask) WHERE record_id = :record_id';
         $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute([
@@ -1126,6 +1140,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             'make_subdef_mask' => PhraseaTokens::MAKE_SUBDEF,
         ]);
         $stmt->closeCursor();
+        */
+
+        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
 
         return $this;
     }
@@ -1163,16 +1180,20 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @deprecated
+     *
      * @return record_adapter
      */
     public function write_metas()
     {
+        file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, sprintf("setting jetons WRITE_META_DOC | WRITE_META_SUBDEF")), FILE_APPEND);
+        /*
         $tokenMask = PhraseaTokens::WRITE_META_DOC | PhraseaTokens::WRITE_META_SUBDEF;
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET jeton = jeton | :tokenMask WHERE record_id= :record_id',
             ['tokenMask' => $tokenMask, 'record_id' => $this->getRecordId()]
         );
-
+        */
         return $this;
     }
 

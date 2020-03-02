@@ -12,8 +12,11 @@
 namespace Alchemy\Phrasea\Command\Upgrade;
 
 use Alchemy\Phrasea\Application;
+// use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+// use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+// use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Upgrade datas for version 3.1 : move metadatas from XML to relationnal tables
@@ -21,6 +24,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Step35 implements DatasUpgraderInterface
 {
     const AVERAGE_PER_SECOND = 100;
+
+    /** @var Application $app */
+    private $app;
 
     /**
      * Constructor
@@ -109,8 +115,7 @@ class Step35 implements DatasUpgraderInterface
         $time = 0;
 
         foreach ($this->app->getDataboxes() as $databox) {
-            $sql = 'select record_id
-                            FROM record';
+            $sql = 'select record_id FROM record';
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
@@ -179,14 +184,17 @@ class Step35 implements DatasUpgraderInterface
                 }
             } else {
                 $metadatas[] = [
-                    'meta_struct_id' => $meta_struct_id
-                    , 'meta_id'        => null
-                    , 'value'          => $values
+                    'meta_struct_id' => $meta_struct_id,
+                    'meta_id'        => null,
+                    'value'          => $values
                 ];
             }
         }
 
         $record->set_metadatas($metadatas, true);
+        // we will NOT rewrite exif (too long), we expect it already up-to-date
+        // $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS]));
+
     }
 
     /**
@@ -291,4 +299,11 @@ class Step35 implements DatasUpgraderInterface
 
         }
     }
+
+    /*
+    private function dispatch($eventName, Event $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+    */
 }

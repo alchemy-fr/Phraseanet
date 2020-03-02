@@ -11,6 +11,8 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
@@ -21,11 +23,14 @@ use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+
 class SubdefSubstituer
 {
+    private $app;
     private $alchemyst;
     private $fs;
     private $mediavorus;
+    private $dispatcher;
 
     public function __construct(Application $app, FilesystemService $fs, Alchemyst $alchemyst, MediaVorus $mediavorus, EventDispatcherInterface $dispatcher)
     {
@@ -77,10 +82,14 @@ class SubdefSubstituer
         $record->setMimeType($media->getFile()->getMimeType());
         $record->setType($media->getType());
 
-        $record->write_metas();
+        // $record->write_metas();
+        $this->dispatcher->dispatch(RecordEvents::DO_WRITE_EXIF,
+            new DoWriteExifEvent($record, ['document'])
+        );
 
         if ($shouldSubdefsBeRebuilt) {
-            $this->dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
+            // $record->rebuild_subdefs();
+            $this->dispatcher->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($record));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));
@@ -129,7 +138,8 @@ class SubdefSubstituer
         $this->createMediaSubdef($record, $name, $media);
 
         if ($databox_subdef->isMetadataUpdateRequired()) {
-            $record->write_metas();
+            // $record->write_metas();
+            $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, [$name]));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));

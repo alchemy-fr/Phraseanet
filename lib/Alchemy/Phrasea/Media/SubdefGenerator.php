@@ -140,6 +140,8 @@ class SubdefGenerator
             if ($this->filesystem->exists($pathdest)) {
                 $media = $this->mediavorus->guess($pathdest);
 
+                file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, sprintf("media_subdef:create:\n%s", $pathdest)), FILE_APPEND);
+
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
 
                 $this->dispatch(

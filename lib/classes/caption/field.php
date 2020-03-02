@@ -305,7 +305,7 @@ class caption_field implements cache_cacheableInterface
             foreach ($rs as $row) {
                 try {
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
-                    $record->set_metadatas([]);
+                    $record->rebuildXML();
 
                     unset($record);
                 } catch (\Exception $e) {
@@ -353,7 +353,7 @@ class caption_field implements cache_cacheableInterface
                     $record = $databox_field->get_databox()->get_record($row['record_id']);
                     $caption_field = new caption_field($app, $databox_field, $record);
                     $caption_field->delete();
-                    $record->set_metadatas([]);
+                    $record->rebuildXML();
 
                     unset($caption_field, $record);
                 } catch (\Exception $e) {

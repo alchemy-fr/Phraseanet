@@ -13,10 +13,13 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPExiftool\Driver\Metadata\Metadata;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -189,7 +192,8 @@ class LazaretManipulator
 
                     try {
                         $attribute = Border\Attribute\Factory::getFileAttribute($this->app, $attr->getName(), $attr->getValue());
-                    } catch (\InvalidArgumentException $e) {
+                    }
+                    catch (\InvalidArgumentException $e) {
                         continue;
                     }
 
@@ -215,11 +219,16 @@ class LazaretManipulator
                     }
                 }
 
-                $data = $metadataBag->toMetadataArray($record->getDatabox()->get_meta_structure());
-                $record->set_metadatas($data);
+                $metas = array_merge(
+                    $metadataBag->toMetadataArray($record->getDatabox()->get_meta_structure()),
+                    $metaFields->toMetadataArray($record->getDatabox()->get_meta_structure())
+                );
 
-                $fields = $metaFields->toMetadataArray($record->getDatabox()->get_meta_structure());
-                $record->set_metadatas($fields);
+                $record->set_metadatas($metas);
+
+                $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+                    new DoWriteExifEvent($record, ['document'])
+                );
             }
 
             //Delete lazaret file
@@ -229,13 +238,15 @@ class LazaretManipulator
             $ret['result']['record_id'] = $record->getRecordId();
 
             $ret['success'] = true;
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             $ret['message'] = $this->app->trans('An error occured');
         }
 
         try {
             $this->fileSystem->remove([$lazaretFileName, $lazaretThumbFileName]);
-        } catch (IOException $e) {
+        }
+        catch (IOException $e) {
             // no-op
         }
 
@@ -268,5 +279,8 @@ class LazaretManipulator
         return $this;
     }
 
-
+    private function dispatch($eventName, Event $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
 }

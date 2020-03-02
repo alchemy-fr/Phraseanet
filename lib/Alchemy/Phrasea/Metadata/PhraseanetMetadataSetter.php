@@ -1,4 +1,5 @@
 <?php
+// todo : move all this sh... (only one public method !!!) into recordadapter
 
 /*
  * This file is part of Phraseanet
@@ -15,7 +16,11 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use DateTime;
+use Doctrine\DBAL\DBALException;
+use Exception;
 use PHPExiftool\Driver\Metadata\Metadata;
+use record_adapter;
+
 
 class PhraseanetMetadataSetter
 {
@@ -30,11 +35,11 @@ class PhraseanetMetadataSetter
     }
 
     /**
-     * @param Metadata[] $metadataCollection
-     * @param \record_adapter $record
-     * @throws \Exception_InvalidArgument
+     * @param $metadataCollection
+     * @param record_adapter $record
+     * @throws DBALException
      */
-    public function replaceMetadata($metadataCollection, \record_adapter $record)
+    public function replaceMetadata($metadataCollection, record_adapter $record)
     {
         $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure()->get_elements();
 
@@ -71,7 +76,8 @@ class PhraseanetMetadataSetter
                     try {
                         $dateTime = new DateTime($value);
                         $value = $dateTime->format('Y/m/d H:i:s');
-                    } catch (\Exception $e) {
+                    }
+                    catch (Exception $e) {
                         // $value unchanged
                     }
                 }
@@ -83,6 +89,7 @@ class PhraseanetMetadataSetter
 
         if (! empty($metadataInRecordFormat)) {
             $record->set_metadatas($metadataInRecordFormat, true);
+            // todo : check that every call to replaceMetadata is followed by RecordEvents::DO_WRITE_EXIF since we will NOT do it here
         }
     }
 
@@ -145,12 +152,12 @@ class PhraseanetMetadataSetter
     }
 
     /**
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @param string $fieldName
      * @return void
      * @throws \Exception
      */
-    private function deleteCaptionValues(\record_adapter $record, $fieldName)
+    private function deleteCaptionValues(record_adapter $record, $fieldName)
     {
         $recordCaption = $record->get_caption();
 

@@ -12,28 +12,37 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
-use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
-use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
-use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
-use Alchemy\Phrasea\Metadata\Tag\TfBasename;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
-use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Alchemy\Phrasea\Border\Attribute\MetaField as MetafieldAttr;
 use Alchemy\Phrasea\Border\Attribute\Status as StatusAttr;
 use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
+use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use DateTime;
+use Doctrine\DBAL\DBALException;
+use LogicException;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
+use PHPExiftool\Exception\TagUnknown;
+use record_adapter;
+use Symfony\Component\EventDispatcher\Event;
+
 
 /**
  * Phraseanet Border Manager
@@ -120,6 +129,7 @@ class Manager
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
+            // addMediaAttributes() add attributes (~10 for jpg) from file->media, eg. tfWidth, tfSize, tfFilename, ...
             $this->addMediaAttributes($file);
 
             // BAD : createRecord() calls createRecordFromFile(), which
@@ -229,7 +239,7 @@ class Manager
     public function unregisterChecker(CheckerInterface $checker)
     {
         if (false === $this->hasChecker($checker)) {
-            throw new \LogicException('Trying to unregister unregistered checker');
+            throw new LogicException('Trying to unregister unregistered checker');
         }
 
         foreach ($this->checkers as $key => $registeredChecker) {
@@ -280,14 +290,19 @@ class Manager
     /**
      * Adds a record to Phraseanet
      *
-     * @param  File           $file The package file
-     * @return \record_adapter
+     * @param File $file
+     * @param bool $nosubdef
+     * @return record_adapter
+     * @throws DBALException
      */
     protected function createRecord(File $file, $nosubdef=false)
     {
-        $element = \record_adapter::createFromFile($file, $this->app);
-        $date = new \DateTime();
+        $element = record_adapter::createFromFile($file, $this->app);
+        $date = new DateTime();
 
+        // here $file already have attributes (~10 for a jpg) : status, tfWidth, tfExtension...
+
+        // we now add some tech attributes
         $file->addAttribute(
             new MetadataAttr(
                 new Metadata(
@@ -317,43 +332,49 @@ class Manager
             )
         );
 
+        // get exif (as a array of tag+value, with key=tagname)
         $newMetadata = $file->getMedia()->getMetadatas()->toArray();
+
+        // add the file attributes (~14 for a jpg) to the (exif) array
         foreach ($file->getAttributes() as $attribute) {
             switch ($attribute->getName()) {
                 case AttributeInterface::NAME_METAFIELD:
                     /** @var MetafieldAttr $attribute */
                     $values = $attribute->getValue();
                     $value = $attribute->getField()->is_multi() ? new Multi($values) : new MonoValue(array_pop($values));
-
-                    $newMetadata[] = new Metadata($attribute->getField()->get_tag(), $value);
+                    $k = AttributeInterface::NAME_METAFIELD.':'.$attribute->getField()->get_name();
+                    $newMetadata[$k] = new Metadata($attribute->getField()->get_tag(), $value);
                     break;
 
                 case AttributeInterface::NAME_METADATA:
                     /** @var MetadataAttr $attribute */
-                    $newMetadata[] = $attribute->getValue();
+                    $k = $attribute->getValue()->getTag()->getTagname();
+                    $newMetadata[$k] = $attribute->getValue();
                     break;
+
                 case AttributeInterface::NAME_STATUS:
                     /** @var StatusAttr $attribute */
                     $element->setStatus(decbin(bindec($element->getStatus()) | bindec($attribute->getValue())));
-
                     break;
-                case AttributeInterface::NAME_STORY:
 
+                case AttributeInterface::NAME_STORY:
                     /** @var StoryAttr $attribute */
                     $story = $attribute->getValue();
 
                     if ( ! $story->hasChild($element)) {
                         $story->appendChild($element);
                     }
-
                     break;
             }
         }
 
-        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
+        // this will call write_metas() which will raise jetons to write_meta
+        $this->getMetadataSetter()->replaceMetadata($newMetadata, $element);
+        $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($element, ['document']));
 
         if(!$nosubdef) {
-            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
+            // $element->rebuild_subdefs();
+            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($element));
         }
 
         return $element;
@@ -366,8 +387,8 @@ class Manager
      * @param Visa           $visa    The visa related to the package file
      * @param LazaretSession $session The current LazaretSession
      * @param Boolean        $forced  True if the file has been forced to quarantine
-     *
      * @return LazaretFile
+     * @throws TagUnknown
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
@@ -439,7 +460,10 @@ class Manager
         $metadataCollection = $this->getMetadataReader()->read($file->getMedia());
 
         array_walk($metadataCollection, function (Metadata $metadata) use ($file) {
-            $file->addAttribute(new MetadataAttr($metadata));
+            $nam = $metadata->getTag()->getName();
+            if($nam !== 'tf-basename' && $nam !== 'tf-filename') {  // those are from the tmp file (wrong), they will be set ok later
+                $file->addAttribute(new MetadataAttr($metadata));
+            }
         });
 
         return $this;
@@ -452,4 +476,18 @@ class Manager
     {
         return $this->app['phraseanet.metadata-reader'];
     }
+
+    /**
+     * @return PhraseanetMetadataSetter
+     */
+    private function getMetadataSetter()
+    {
+        return $this->app['phraseanet.metadata-setter'];
+    }
+
+    private function dispatch($eventName, Event $event)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+
 }

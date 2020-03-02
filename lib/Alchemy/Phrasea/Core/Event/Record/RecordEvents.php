@@ -36,4 +36,9 @@ final class RecordEvents
     const MEDIA_SUBSTITUTED = 'record.media_substituted';
 
     const STORY_COVER_CHANGED = 'record.story_cover_changed';
+
+    // ask a worker to write metadata into the document and/or subdefs
+    const DO_WRITE_EXIF = 'record.do_write_exif';
+    // ask a worker to create subdefs of a record
+    const DO_CREATE_SUBDEFINITIONS = 'record.do_create_subdefinitions';
 }

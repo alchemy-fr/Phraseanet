@@ -20,6 +20,9 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
+use \databox;
+use \InvalidArgumentException;
+use \LogicException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -37,7 +40,7 @@ class IndexerSubscriber implements EventSubscriberInterface
     public function __construct($indexer)
     {
         if (!$indexer instanceof Indexer && !is_callable($indexer)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Expects $indexer to be a callable or %s, got %s.',
                 Indexer::class,
                 is_object($indexer) ? get_class($indexer) : gettype($indexer)
@@ -56,10 +59,10 @@ class IndexerSubscriber implements EventSubscriberInterface
             return $this->indexer;
         }
 
-        $indexer = call_user_func($this->indexer);
+        $indexer = ($this->indexer)();  // locator to object
 
         if (!$indexer instanceof Indexer) {
-            throw new \LogicException(sprintf(
+            throw new LogicException(sprintf(
                 'Expects locator to return instance of %s, got %s.',
                 Indexer::class,
                 is_object($indexer) ? get_class($indexer) : gettype($indexer)
@@ -74,31 +77,42 @@ class IndexerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RecordStructureEvents::FIELD_UPDATED => 'onStructureChange',
-            RecordStructureEvents::FIELD_DELETED => 'onStructureChange',
+            /** @uses onStructureChange */
+            RecordStructureEvents::FIELD_UPDATED      => 'onStructureChange',
+            RecordStructureEvents::FIELD_DELETED      => 'onStructureChange',
             RecordStructureEvents::STATUS_BIT_UPDATED => 'onStructureChange',
             RecordStructureEvents::STATUS_BIT_DELETED => 'onStructureChange',
+
+            /** @uses onCollectionChange */
             CollectionEvents::NAME_CHANGED => 'onCollectionChange',
-            RecordEvents::CREATED => 'onRecordChange',
+
+            /** @uses onRecordDelete */
             RecordEvents::DELETED => 'onRecordDelete',
-            RecordEvents::COLLECTION_CHANGED => 'onRecordChange',
-            RecordEvents::METADATA_CHANGED => 'onRecordChange',
-            RecordEvents::ORIGINAL_NAME_CHANGED => 'onRecordChange',
-            RecordEvents::STATUS_CHANGED => 'onRecordChange',
+
+            /** @uses onRecordChange */
+            RecordEvents::CREATED                 => 'onRecordChange',
+            RecordEvents::COLLECTION_CHANGED      => 'onRecordChange',
+            RecordEvents::METADATA_CHANGED        => 'onRecordChange',
+            RecordEvents::ORIGINAL_NAME_CHANGED   => 'onRecordChange',
+            RecordEvents::STATUS_CHANGED          => 'onRecordChange',
             RecordEvents::SUB_DEFINITIONS_CREATED => 'onRecordChange',
-            RecordEvents::MEDIA_SUBSTITUTED => 'onRecordChange',
-            RecordEvents::ROTATE => 'onRecordChange',
-            ThesaurusEvents::IMPORTED => 'onThesaurusChange',
-            ThesaurusEvents::FIELD_LINKED => 'onThesaurusChange',
+            RecordEvents::MEDIA_SUBSTITUTED       => 'onRecordChange',
+            RecordEvents::ROTATE                  => 'onRecordChange',
+
+            /** @uses onThesaurusChange */
+            ThesaurusEvents::IMPORTED                      => 'onThesaurusChange',
+            ThesaurusEvents::FIELD_LINKED                  => 'onThesaurusChange',
             ThesaurusEvents::CANDIDATE_ACCEPTED_AS_CONCEPT => 'onThesaurusChange',
             ThesaurusEvents::CANDIDATE_ACCEPTED_AS_SYNONYM => 'onThesaurusChange',
-            ThesaurusEvents::SYNONYM_LNG_CHANGED => 'onThesaurusChange',
-            ThesaurusEvents::SYNONYM_POSITION_CHANGED => 'onThesaurusChange',
-            ThesaurusEvents::SYNONYM_TRASHED => 'onThesaurusChange',
-            ThesaurusEvents::CONCEPT_TRASHED => 'onThesaurusChange',
-            ThesaurusEvents::CONCEPT_DELETED => 'onThesaurusChange',
-            ThesaurusEvents::SYNONYM_ADDED => 'onThesaurusChange',
-            ThesaurusEvents::CONCEPT_ADDED => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_LNG_CHANGED           => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_POSITION_CHANGED      => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_TRASHED               => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_TRASHED               => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_DELETED               => 'onThesaurusChange',
+            ThesaurusEvents::SYNONYM_ADDED                 => 'onThesaurusChange',
+            ThesaurusEvents::CONCEPT_ADDED                 => 'onThesaurusChange',
+
+            /** @uses onReindexRequired */
             ThesaurusEvents::REINDEX_REQUIRED => 'onReindexRequired'
         ];
     }
@@ -112,7 +126,7 @@ class IndexerSubscriber implements EventSubscriberInterface
     public function onThesaurusChange(ThesaurusEvent $event)
     {
         $databox = $event->getDatabox();
-        $databox->delete_data_from_cache(\databox::CACHE_THESAURUS);
+        $databox->delete_data_from_cache(databox::CACHE_THESAURUS);
     }
 
     public function onCollectionChange(CollectionEvent $event)

@@ -102,7 +102,7 @@ class module_console_fieldsRename extends Command
 
             foreach ($results as $row) {
                 $record = $databox->get_record($row['record_id']);
-                $record->set_metadatas([]);
+                $record->rebuildXML();
                 unset($record);
             }
 

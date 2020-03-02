@@ -19,12 +19,17 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
 use Alchemy\Phrasea\Model\RecordInterface;
-use caption_Field_Value;
 use Assert\Assertion;
+use caption_Field_Value;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 
 class RecordEditSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @uses onEdit, onRecordChange, onCollectionChanged
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -150,6 +155,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $metas = [];
         foreach($editFields as $editField) {
             $metaId = null;
             try {
@@ -160,17 +166,19 @@ class RecordEditSubscriber implements EventSubscriberInterface
                     $value = array_slice($values, -1)[0];   // if multivalued, only the last value will be updated
                     $metaId = $value->getId();
                 }
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 // field not found, $metaId==null -> value will be created
             }
 
-            $record->set_metadatas(array(
-                array(
-                    'meta_struct_id' => $editField->get_id(),
-                    'meta_id' => $metaId,
-                    'value' => $date->format('Y-m-d H:i:s'),
-                )
-            ), true);
+            $metas[] = [
+                'meta_struct_id' => $editField->get_id(),
+                'meta_id'        => $metaId,
+                'value'          => $date->format('Y-m-d H:i:s'),
+            ];
+        }
+        if(!isEmpty($metas)) {
+            $record->set_metadatas($metas, true);
         }
 
         $record->clearStampCache();
@@ -203,4 +211,5 @@ class RecordEditSubscriber implements EventSubscriberInterface
 
         $record->touch();
     }
+
 }

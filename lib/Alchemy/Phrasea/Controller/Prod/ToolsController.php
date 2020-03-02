@@ -15,6 +15,8 @@ use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -157,7 +159,8 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
+                // $record->rebuild_subdefs();
+                $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($record));
             }
         }
 
@@ -439,15 +442,20 @@ class ToolsController extends Controller
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id"));
 
-        $metadatas[0] = [
-            'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
-            'meta_id'        => '',
-            'value'          => $request->request->get("value")
+        $metadatas = [
+            [
+                'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
+                'meta_id'        => null,
+                'value'          => $request->request->get("value")
+            ]
         ];
         try {
             $record->set_metadatas($metadatas);
+            $this->dispatch(RecordEvents::DO_WRITE_EXIF,
+                new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])
+            );
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);
         }
 

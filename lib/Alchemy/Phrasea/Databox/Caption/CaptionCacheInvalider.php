@@ -14,13 +14,19 @@ use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Databox\DataboxBoundRepositoryProvider;
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CaptionCacheInvalider implements EventSubscriberInterface
 {
+    /**
+     *
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
+            /** @uses onMetadataChange */
             RecordEvents::METADATA_CHANGED => 'onMetadataChange',
         ];
     }
@@ -38,6 +44,10 @@ class CaptionCacheInvalider implements EventSubscriberInterface
         $this->locator = $locator;
     }
 
+    /**
+     * @param MetadataChangedEvent $event
+     * @throws AssertionFailedException
+     */
     public function onMetadataChange(MetadataChangedEvent $event)
     {
         $record = $event->getRecord();
@@ -47,8 +57,9 @@ class CaptionCacheInvalider implements EventSubscriberInterface
     }
 
     /**
-     * @param int $databoxId
-     * @return CachedCaptionDataRepository
+     * @param $databoxId
+     * @return object
+     * @throws AssertionFailedException
      */
     private function getCaptionRepository($databoxId)
     {
