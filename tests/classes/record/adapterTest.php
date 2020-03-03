@@ -423,45 +423,6 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
         }
     }
 
-    public function testRebuild_subdefs()
-    {
-        $record_1 = $this->getRecord1();
-        $record_1->rebuild_subdefs();
-        $sql = 'SELECT record_id
-              FROM record
-              WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
-              AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ( ! $row)
-            $this->fail();
-        if ($row['record_id'] != $record_1->getRecordId())
-            $this->fail();
-    }
-
-    public function testWrite_metas()
-    {
-        $record_1 = $this->getRecord1();
-        $record_1->write_metas();
-        $sql = 'SELECT record_id, coll_id, jeton
-            FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
-            AND record_id = :record_id';
-        $stmt = $record_1->getDatabox()->get_connection()->prepare($sql);
-
-        $stmt->execute([':record_id' => $record_1->getRecordId()]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        if ( ! $row)
-            $this->fail();
-        if ($row['record_id'] != $record_1->getRecordId())
-            $this->fail();
-    }
-
     /**
      * @todo Implement testSet_binary_status().
      */

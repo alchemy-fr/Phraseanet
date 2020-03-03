@@ -139,7 +139,7 @@ class SubdefSubstituer
 
         if ($databox_subdef->isMetadataUpdateRequired()) {
             // $record->write_metas();
-            $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, [$name]));
+            $this->dispatcher->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, [$name]));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));

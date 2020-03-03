@@ -440,9 +440,9 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             'Phraseanet:tf-channels',
             'Phraseanet:tf-duration',
             'Phraseanet:tf-mimetype',
-            'Phraseanet:tf-filename',
+            // 'Phraseanet:tf-filename',
             'Phraseanet:pdf-text',
-            'Phraseanet:tf-basename',
+            // 'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
         ];
@@ -488,8 +488,8 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             'Phraseanet:tf-channels',
             'Phraseanet:tf-duration',
             'Phraseanet:tf-mimetype',
-            'Phraseanet:tf-filename',
-            'Phraseanet:tf-basename',
+            // 'Phraseanet:tf-filename',
+            // 'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
         ];
@@ -535,8 +535,8 @@ class ManagerTest extends \PhraseanetAuthenticatedWebTestCase
             'Phraseanet:tf-channels',
             'Phraseanet:tf-duration',
             'Phraseanet:tf-mimetype',
-            'Phraseanet:tf-filename',
-            'Phraseanet:tf-basename',
+            // 'Phraseanet:tf-filename',
+            // 'Phraseanet:tf-basename',
             'Phraseanet:tf-extension',
             'Phraseanet:tf-size',
         ];
