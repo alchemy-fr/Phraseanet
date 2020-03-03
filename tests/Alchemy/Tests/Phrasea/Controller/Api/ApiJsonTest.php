@@ -426,7 +426,7 @@ class ApiJsonTest extends ApiTestCase
         $this->assertInternalType('string', $task['title']);
 
         if (!is_null($task['last_exec_time'])) {
-            $this->assertDateAtom($task['last_exec_time']);
+            $this->assertDateMysqlFormat($task['last_exec_time']);
         }
     }
 
