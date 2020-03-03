@@ -582,7 +582,7 @@
           <field>
             <name>basusr_infousr</name>
             <type>text</type>
-            <null></null>
+            <null>yes</null>
 
             <extra></extra>
 
@@ -871,20 +871,26 @@
           </field>
           <field>
             <name>document</name>
+
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+
+            <default>0</default>
             <comment></comment>
+
             <collation></collation>
           </field>
           <field>
             <name>preview</name>
+
             <type>tinyint(1) unsigned</type>
             <null></null>
             <extra></extra>
-            <default></default>
+
+            <default>0</default>
             <comment></comment>
+
             <collation></collation>
           </field>
           <field>
