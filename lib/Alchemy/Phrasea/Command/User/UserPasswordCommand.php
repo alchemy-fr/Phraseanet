@@ -123,11 +123,17 @@ class UserPasswordCommand extends Command
 
         if (($password || $generate || $getHash) && $oldHash) {
             if ($jsonformat) {
-                    $hash['password_hash']  = $oldHash;
-                    $hash['nonce']          = $oldNonce;
+                if ($password) {
+                    $hash['new_password'] = $password;
+                }
+                $hash['password_hash']  = $oldHash;
+                $hash['nonce']          = $oldNonce;
 
                 echo json_encode($hash);
             } else {
+                if ($password) {
+                    $output->writeln('<info>new_password :</info>' . $password);
+                }
                 $output->writeln('<info>password_hash :</info>' . $oldHash);
                 $output->writeln('<info>nonce :</info>' . $oldNonce);
             }
