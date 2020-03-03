@@ -59,7 +59,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             return $this->indexer;
         }
 
-        $indexer = ($this->indexer)();  // locator to object
+        $indexer = call_user_func($this->indexer);
 
         if (!$indexer instanceof Indexer) {
             throw new LogicException(sprintf(
