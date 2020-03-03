@@ -36,7 +36,7 @@ class UserPasswordCommand extends Command
             ->addOption('user_id', null, InputOption::VALUE_REQUIRED, 'The id of user.')
             ->addOption('generate', null, InputOption::VALUE_NONE, 'Generate and set with a random value')
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Set the user password to the input value')
-            ->addOption('send_mail_password', null, InputOption::VALUE_NONE, 'Send email link to user for password renewing, work only if --password or --generate are not define')
+            ->addOption('send_renewal_email', null, InputOption::VALUE_NONE, 'Send email link to user for password renewing, work only if --password or --generate are not define')
             ->addOption('password_hash', null, InputOption::VALUE_OPTIONAL, 'Define a password hashed, work only with password_nonce')
             ->addOption('password_nonce', null, InputOption::VALUE_OPTIONAL, 'Define a password nonce, work only with password_hash')
             ->addOption('get_hash', null, InputOption::VALUE_NONE, 'Return the password hashed and nonce')
@@ -57,7 +57,7 @@ class UserPasswordCommand extends Command
         $user               = $userRepository->find($input->getOption('user_id'));
         $password           = $input->getOption('password');
         $generate           = $input->getOption('generate');
-        $sendMailPassword   = $input->getOption('send_mail_password');
+        $sendRenewalEmail   = $input->getOption('send_renewal_email');
         $getHash            = $input->getOption('get_hash');
         $passwordHash       = $input->getOption('password_hash');
         $passwordNonce      = $input->getOption('password_nonce');
@@ -80,15 +80,23 @@ class UserPasswordCommand extends Command
             return 0;
         }
 
+        if ($getHash) {
+            $oldHash  = $user->getPassword();
+            $oldNonce = $user->getNonce();
+        }
+
         if ($generate) {
+            $oldHash  = $user->getPassword();
+            $oldNonce = $user->getNonce();
+
             $password = $this->container['random.medium']->generateString(64);
         } else {
-            if (!$password && $sendMailPassword) {
+            if (!$password && $sendRenewalEmail) {
                 $this->sendPasswordSetupMail($user);
                 $output->writeln('<info>email link sended for password renewing!</info>');
 
                 return 0;
-            } elseif (!$password && !$sendMailPassword && ! $getHash) {
+            } elseif (!$password && !$sendRenewalEmail && ! $getHash) {
                 $output->writeln('<error>choose one option to set a password!</error>');
 
                 return 0;
@@ -107,27 +115,21 @@ class UserPasswordCommand extends Command
                     return;
                 }
             }
+            $oldHash  = $user->getPassword();
+            $oldNonce = $user->getNonce();
 
-             $userManipulator->setPassword($user,$password);
+            $userManipulator->setPassword($user,$password);
         } 
 
-        if (($password || $generate || $getHash) && $user->getPassword()) {
-
+        if (($password || $generate || $getHash) && $oldHash) {
             if ($jsonformat) {
-                    if ($password) {
-                        $hash['password'] = $password;
-                    }
-
-                    $hash['password_hash']  = $user->getPassword();
-                    $hash['nonce']          = $user->getNonce();
+                    $hash['password_hash']  = $oldHash;
+                    $hash['nonce']          = $oldNonce;
 
                 echo json_encode($hash);
             } else {
-                if ($password) {
-                    $output->writeln('<info>password :</info>' .$password);
-                }
-                $output->writeln('<info>password_hash :</info>' .$user->getPassword());
-                $output->writeln('<info>nonce :</info>' .$user->getNonce());
+                $output->writeln('<info>password_hash :</info>' . $oldHash);
+                $output->writeln('<info>nonce :</info>' . $oldNonce);
             }
             
         } elseif (is_null($password)) {
@@ -147,11 +149,13 @@ class UserPasswordCommand extends Command
         $receiver = Receiver::fromUser($user);
 
         $token = $this->container['manipulator.token']->createResetPasswordToken($user);
-
+                 
+        $url = $this->container['url_generator']->generate('login_renew_password', [ 'token' => $token->getValue() ], true);
         $mail = MailRequestPasswordUpdate::create($this->container, $receiver);
         $servername = $this->container['conf']->get('servername');
-        $mail->setButtonUrl('http://'.$servername.'/login/renew-password/?token='.$token->getValue());
+        $mail->setButtonUrl($url);
         $mail->setLogin($user->getLogin());
+        $mail->setExpiration(new \DateTime('+1 day'));
 
         $this->deliver($mail);
     }
