@@ -30,8 +30,8 @@ class UserListCommand extends Command
     {
         parent::__construct('user:list');
 
-        $this->setDescription('List of all user (experimental)')
-            ->addOption('user_id', null, InputOption::VALUE_OPTIONAL, ' The id of user export only info this user ')
+        $this->setDescription('List of all user <comment>(experimental)</>')
+            ->addOption('user_id', null, InputOption::VALUE_OPTIONAL, 'The id of user export only info this user ')
             ->addOption('user_email', null, InputOption::VALUE_OPTIONAL, 'The mail of user export only info this user .')
             ->addOption('database_id', null, InputOption::VALUE_OPTIONAL, 'Id of database.')
             ->addOption('collection_id', null, InputOption::VALUE_OPTIONAL, 'Id of the collection.')
@@ -39,7 +39,6 @@ class UserListCommand extends Command
             ->addOption('guest', null, InputOption::VALUE_NONE, 'Only guest user')
             ->addOption('created', null, InputOption::VALUE_OPTIONAL, 'Created at with operator,aaaa-mm-jj hh:mm:ss.')
             ->addOption('updated', null, InputOption::VALUE_OPTIONAL, 'Update at with operator,aaaa-mm-jj hh:mm:ss.')
-            ->addOption('application', null, InputOption::VALUE_NONE, 'List application of user work only if --user_id is set')
             ->addOption('right', null, InputOption::VALUE_NONE, 'Show right information')
             ->addOption('adress', null, InputOption::VALUE_NONE, 'Show adress information')
             ->addOption('models', null, InputOption::VALUE_NONE, "Show only defined models, if --user_id is set with --models it's the template owner")
@@ -58,7 +57,6 @@ class UserListCommand extends Command
         $collectionId  = $input->getOption('collection_id');
         $lockStatus    = $input->getOption('mail_lock_status');
         $guest         = $input->getOption('guest');
-        $application   = $input->getOption('application');
         $withAdress    = $input->getOption('adress');
         $created       = $input->getOption('created');
         $updated       = $input->getOption('updated');
@@ -77,11 +75,6 @@ class UserListCommand extends Command
         if($lockStatus && !$models) $query->addSqlFilter('Users.mail_locked = 1');
         if($guest && !$models) $query->include_invite(true)->addSqlFilter('Users.guest = 1');
 
-        if ($application and !$userId) {
-            $output->writeln('<error>You must provide --user_id when using --application option</error>');
-            return 0;
-        }
-
         /** @var UserRepository $userRepository */
         $userRepository = $this->container['repo.users'];
 
@@ -94,11 +87,7 @@ class UserListCommand extends Command
         }
 
         $userList = [];
-        $showApplication = false;
         foreach ($users as $key => $user) {
-            if ($userId and $application) {
-                $showApplication = true;
-            }
             $userList[] = $this->listUser($user, $withAdress, $withRight);
 
             $userListRaw[] = array_combine($this->headerTable($withAdress, $withRight), $this->listUser($user, $withAdress, $withRight));
@@ -113,15 +102,6 @@ class UserListCommand extends Command
                 ->setRows($userList)
                 ->render($output);
             ;
-            
-
-            if ($showApplication) {
-                $applicationTable = $this->getHelperSet()->get('table');
-                $applicationTable->setHeaders(array(
-                    array(new TableCell('Applications', array('colspan' => 5))),
-                    ['name','callback','client_secret','client_id','token'],
-                ))->setRows($this->getApplicationOfUser($users[0]))->render($output);
-            }
 
         }
 
@@ -213,37 +193,6 @@ class UserListCommand extends Command
             $user->hasLdapCreated() ?: false,
             $user->isMailLocked() ?: false,
         ];
-    }
-
-    /**
-     * @param User $user
-     * @return array
-     */
-    private function getApplicationOfUser(User $user)
-    {
-        $apiRepository = $this->container['repo.api-applications'];
-        $applications = $apiRepository->findByUser($user);
-
-        if (empty($applications)) {
-            return [];
-        }
-
-        $accountRepository = $this->container['repo.api-accounts'];
-        $apiOauthRepository = $this->container['repo.api-oauth-tokens'];
-        $usersApplication = [];
-        foreach ($applications as $application) {
-            $account =  $accountRepository->findByUserAndApplication($user, $application);
-            $token = $account ? $apiOauthRepository->findDeveloperToken($account) : null;
-            $usersApplication[] = [
-                $application->getName(),
-                $application->getRedirectUri(),
-                $application->getClientSecret(),
-                $application->getClientId(),
-                ($token) ? $token->getOauthToken() : '-'
-            ];
-        }
-
-        return $usersApplication;
     }
 
     /**
