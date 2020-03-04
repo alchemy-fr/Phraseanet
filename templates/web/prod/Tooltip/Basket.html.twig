@@ -11,11 +11,19 @@
     <div style="margin:5px 0;max-height:160px;overflow:hidden;text-overflow:ellipsis;">
         {{ basket.getDescription()|nl2br }}
     </div>
-    <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
+    <div style="margin:5px 0;font-style:italic;position:relative;width: 100%">
         {% set nb_records = basket.getElements()|length %}
         {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
-        {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
-        - {{ date }}
+        <span class="expiredDate" style="width: 40%; display: inline-block">
+        {% if basket.getValidation() %}
+        {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
+                {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}
+        {% endif %}
+              </span>
+        <div style="text-align:right;width: 50%;display: inline-block">
+            {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
+            - {{ date }}
+        </div>
         <hr/>
         <div style="position:relative;float:left;width:470px;">
         {% for element in basket.getElements() %}
