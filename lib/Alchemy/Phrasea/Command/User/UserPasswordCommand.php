@@ -39,7 +39,7 @@ class UserPasswordCommand extends Command
             ->addOption('send_renewal_email', null, InputOption::VALUE_NONE, 'Send email link to user for password renewing, work only if --password or --generate are not define')
             ->addOption('password_hash', null, InputOption::VALUE_OPTIONAL, 'Define a password hashed, work only with password_nonce')
             ->addOption('password_nonce', null, InputOption::VALUE_OPTIONAL, 'Define a password nonce, work only with password_hash')
-            ->addOption('get_hash', null, InputOption::VALUE_NONE, 'Return the password hashed and nonce')
+            ->addOption('dump', null, InputOption::VALUE_NONE, 'Return the password hashed and nonce')
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
 
@@ -58,7 +58,7 @@ class UserPasswordCommand extends Command
         $password           = $input->getOption('password');
         $generate           = $input->getOption('generate');
         $sendRenewalEmail   = $input->getOption('send_renewal_email');
-        $getHash            = $input->getOption('get_hash');
+        $dump               = $input->getOption('dump');
         $passwordHash       = $input->getOption('password_hash');
         $passwordNonce      = $input->getOption('password_nonce');
         $jsonformat         = $input->getOption('jsonformat');
@@ -80,7 +80,7 @@ class UserPasswordCommand extends Command
             return 0;
         }
 
-        if ($getHash) {
+        if ($dump) {
             $oldHash  = $user->getPassword();
             $oldNonce = $user->getNonce();
         }
@@ -96,7 +96,7 @@ class UserPasswordCommand extends Command
                 $output->writeln('<info>email link sended for password renewing!</info>');
 
                 return 0;
-            } elseif (!$password && !$sendRenewalEmail && ! $getHash) {
+            } elseif (!$password && !$sendRenewalEmail && ! $dump) {
                 $output->writeln('<error>choose one option to set a password!</error>');
 
                 return 0;
@@ -121,25 +121,34 @@ class UserPasswordCommand extends Command
             $userManipulator->setPassword($user,$password);
         } 
 
-        if (($password || $generate || $getHash) && $oldHash) {
+        if ($dump) {
             if ($jsonformat) {
-                if ($password) {
-                    $hash['new_password'] = $password;
-                }
                 $hash['password_hash']  = $oldHash;
                 $hash['nonce']          = $oldNonce;
 
                 echo json_encode($hash);
+
+                return 0;
             } else {
-                if ($password) {
-                    $output->writeln('<info>new_password :</info>' . $password);
-                }
                 $output->writeln('<info>password_hash :</info>' . $oldHash);
                 $output->writeln('<info>nonce :</info>' . $oldNonce);
+
+                return 0;
             }
-            
-        } elseif (is_null($password)) {
-            $output->writeln('<info>password undefined</info>');
+        }
+
+        if (($password || $generate)) {
+            if ($jsonformat) {
+                $hash['new_password']           = $password;
+                $hash['previous_password_hash'] = $oldHash;
+                $hash['previous_nonce']         = $oldNonce;
+
+                echo json_encode($hash);
+            } else {
+                $output->writeln('<info>new_password :</info>' . $password);
+                $output->writeln('<info>previous_password_hash :</info>' . $oldHash);
+                $output->writeln('<info>previous_nonce :</info>' . $oldNonce);
+            }
         }
 
         return 0;
