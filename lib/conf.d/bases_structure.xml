@@ -2872,7 +2872,7 @@
           </field>
           <field>
             <name>label</name>
-            <type>CHAR(64)</type>
+            <type>CHAR(255)</type>
             <null></null>
             <extra></extra>
             <default></default>
