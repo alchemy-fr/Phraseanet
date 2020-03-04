@@ -12,8 +12,13 @@ namespace Alchemy\Phrasea\Utilities;
 
 final class NullableDateTime
 {
-    public static function format(\DateTime $dateTime = null, $format = 'Y-m-d H:i:s', $default = '0000-00-00 00:00:00')
+    public static function format(\DateTime $dateTime = null, $format = DATE_ATOM, $default = null)
     {
+    	//  default value when mysql format
+    	if (is_null($dateTime) && $format == 'Y-m-d H:i:s') {
+    		$default = '0000-00-00 00:00:00';
+    	}
+
         return $dateTime ? $dateTime->format($format) : $default;
     }
 }

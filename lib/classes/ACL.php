@@ -1691,8 +1691,8 @@ class ACL implements cache_cacheableInterface
             ':time_limited' => $limit ? 1 : 0,
             ':usr_id' => $this->user->getId(),
             ':base_id' => $base_id,
-            ':limited_from' => NullableDateTime::format($limit_from, DATE_ISO8601),
-            ':limited_to' => NullableDateTime::format($limit_to, DATE_ISO8601),
+            ':limited_from' => NullableDateTime::format($limit_from, 'Y-m-d H:i:s'),
+            ':limited_to' => NullableDateTime::format($limit_to, 'Y-m-d H:i:s'),
         ]);
         $stmt->closeCursor();
 

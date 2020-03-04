@@ -1562,7 +1562,7 @@ class databox extends base implements ThumbnailedElement
         $TOU = array_intersect_key($TOU, $avLanguages);
 
         $date_obj = new DateTime();
-        $date = $this->app['date-formatter']->format_mysql($date_obj);
+        $date = $date_obj->format('Y-m-d H:i:s');
         $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);

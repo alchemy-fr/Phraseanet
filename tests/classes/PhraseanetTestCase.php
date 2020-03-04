@@ -501,11 +501,6 @@ abstract class PhraseanetTestCase extends WebTestCase
         return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
     }
 
-    protected function assertDateMysqlFormat($date)
-    {
-        return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[ ]\d{2}[:]\d{2}[:]\d{2}/', $date);
-    }
-
     protected function set_user_agent($user_agent, Application $app)
     {
         $app['browser']->setUserAgent($user_agent);
