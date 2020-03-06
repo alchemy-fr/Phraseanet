@@ -18,6 +18,8 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
+For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
+
 # Installation :
 
 You **must** not download the source from GitHub, but download a packaged version here :
@@ -26,13 +28,7 @@ https://www.phraseanet.com/download/
 
 And follow the install steps described at https://docs.phraseanet.com/4.0/en/Admin/Install.html
 
-# Try Phraseanet :
-
-You can also download a testing pre installed Virtual Machine in OVA format here :
-
-https://www.phraseanet.com/download/
-
-# With Docker
+# Phraseanet with Docker:
 
 ## Prerequisites
 
@@ -85,8 +81,24 @@ Where `<command>` can be:
 - `bin/console worker:execute -m 2`
 - ...
 
-
 The default parameters allow you to reach the app with : `http://localhost:8082`
+
+## Using Phraseanet images from docker hub
+
+Retrieve on Docker hub prebuilde images for Phraseanet.
+
+https://hub.docker.com/r/alchemyfr/phraseanet-fpm
+https://hub.docker.com/r/alchemyfr/phraseanet-worker
+https://hub.docker.com/r/alchemyfr/phraseanet-nginx
+
+To use them and not build the images locally, we advise to override the properties in file: env.local
+
+```bash
+# Registry from where you pull Docker images
+PHRASEANET_DOCKER_REGISTRY=alchemyfr
+# Tag of the Docker images
+PHRASEANET_DOCKER_TAG=
+```
 
 ## Development mode
 
@@ -132,7 +144,14 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 
 > Don't forget to recreate your container (`docker-compose up -d phraseanet`)
 
-# With Vagrant (deprecated)
+# Try Phraseanet with Pre installed VM (deprecated)
+
+You can also download a testing pre installed Virtual Machine in OVA format here :
+
+https://www.phraseanet.com/download/
+
+
+# Phraseanet With Vagrant, for developement only (deprecated)
 
 ## Development :
 
@@ -151,4 +170,3 @@ Ex:
 - vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
-For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
