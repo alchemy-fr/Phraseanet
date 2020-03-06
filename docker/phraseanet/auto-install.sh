@@ -24,7 +24,7 @@ set -xe
 ## Redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.domain $INSTALL_SERVER_NAME
+/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $INSTALL_SERVER_NAME
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
 
 # RabbitMQ
