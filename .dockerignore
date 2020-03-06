@@ -5,6 +5,7 @@
 /.dockerignore
 /.env
 /.env.*
+/env.*
 /.git
 /.travis.yml
 /AUTHORS
