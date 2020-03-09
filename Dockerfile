@@ -34,6 +34,12 @@ RUN apt-get update \
         unoconv \
         unzip \
         xpdf \
+        libreoffice-base-core \
+        libreoffice-impress \
+        libreoffice-calc \
+        libreoffice-math \
+        libreoffice-writer \                                                                 
+        libreoffice-pdfimport \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
