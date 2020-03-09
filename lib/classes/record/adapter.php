@@ -316,7 +316,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 'value'          => $datetime->format('Y-m-d H:i:s'),
             ];
         }
-        if(!isEmpty($metas)) {
+        if(!empty($metas)) {
             $this->set_metadatas($metas, true);
             //$this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
         }
