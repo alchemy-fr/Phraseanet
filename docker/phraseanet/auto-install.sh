@@ -2,12 +2,12 @@
 
 set -xe
 
-if [ $INSTALL_ACCOUNT_EMAIL = ""]; then
+if [ -z "$INSTALL_ACCOUNT_EMAIL" ]; then
     echo "INSTALL_ACCOUNT_EMAIL var is not set."
     exit 1
 fi
 
-if [ $INSTALL_ACCOUNT_PASSWORD = ""]; then
+if [ -z "$INSTALL_ACCOUNT_PASSWORD" ]; then
     echo "INSTALL_ACCOUNT_PASSWORD var is not set."
     exit 1
 fi
@@ -35,11 +35,10 @@ fi
 ## Redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.domain $INSTALL_SERVER_NAME
+/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $INSTALL_SERVER_NAME
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
 
 # RabbitMQ
-
 bin/setup system:config set rabbitmq.server.host rabbitmq
 bin/setup system:config set rabbitmq.server.port 5672
 bin/setup system:config set rabbitmq.server.user $INSTALL_RABBITMQ_USER

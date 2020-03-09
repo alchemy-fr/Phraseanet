@@ -477,6 +477,17 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function getElementByRecord(\Alchemy\Phrasea\Application $app, \record_adapter $record)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getElementByRecord', [$app, $record]);
+
+        return parent::getElementByRecord($app, $record);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getSize(\Alchemy\Phrasea\Application $app)
     {
 

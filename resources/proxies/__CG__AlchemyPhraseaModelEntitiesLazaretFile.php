@@ -518,4 +518,15 @@ class LazaretFile extends \Alchemy\Phrasea\Model\Entities\LazaretFile implements
         return parent::getRecordsToSubstitute($app, $includeReason);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getStatus(\Alchemy\Phrasea\Application $app)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStatus', [$app]);
+
+        return parent::getStatus($app);
+    }
+
 }

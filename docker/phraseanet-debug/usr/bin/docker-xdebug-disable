@@ -1,5 +1,0 @@
-#!/bin/sh
-
-unset HOST_IP
-unset XDEBUG_CONFIG
-unset XDEBUG_REMOTE_HOST

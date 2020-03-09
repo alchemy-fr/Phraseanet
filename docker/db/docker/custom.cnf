@@ -1,0 +1,3 @@
+[mysqld]
+
+max_allowed_packet=$MYSQL_MAX_ALLOWED_PACKET
