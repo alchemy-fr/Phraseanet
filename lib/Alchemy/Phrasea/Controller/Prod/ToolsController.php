@@ -217,6 +217,8 @@ class ToolsController extends Controller
                     $record->insertTechnicalDatas($this->getMediaVorus());
                     $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader()->read($media), $record);
 
+                    $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
                     unlink($tempoFile);
                     rmdir($tempoDir);
 

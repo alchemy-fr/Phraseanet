@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
@@ -370,6 +371,9 @@ class Manager
 
         // this will call write_metas() which will set jetons to write_meta
         $this->getMetadataSetter()->replaceMetadata($newMetadata, $element);
+
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($element));
+
         $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($element, ['document']));
 
         if(!$nosubdef) {
