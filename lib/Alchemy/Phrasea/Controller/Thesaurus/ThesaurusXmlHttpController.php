@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Thesaurus;
 
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
@@ -25,6 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ThesaurusXmlHttpController extends Controller
 {
+    use DispatcherAware;
+
     const SEARCH_REPLACE_MAXREC = 25;
 
     public function acceptCandidatesJson(Request $request)
@@ -1651,11 +1654,6 @@ class ThesaurusXmlHttpController extends Controller
         }
 
         return $label;
-    }
-
-    private function dispatch($eventName, Event $event)
-    {
-        $this->app['dispatcher']->dispatch($eventName, $event);
     }
 
 }

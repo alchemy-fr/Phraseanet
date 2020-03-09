@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PropertyController extends Controller
 {
     use DataboxLoggerAware;
+    use DispatcherAware;
 
     /**
      *  Display Status property

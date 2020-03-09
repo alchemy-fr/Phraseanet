@@ -24,7 +24,9 @@ class Xmlhttp implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.thesaurus.xmlhttp'] = $app->share(function (PhraseaApplication $app) {
-            return (new ThesaurusXmlHttpController($app));
+            return (new ThesaurusXmlHttpController($app))
+                ->setDispatcher($app['dispatcher'])
+            ;
         });
     }
 
