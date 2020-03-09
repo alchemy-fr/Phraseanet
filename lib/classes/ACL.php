@@ -495,7 +495,6 @@ class ACL implements cache_cacheableInterface
      * @param $base_id
      * @param $right
      * @return bool
-     * @throws Exception
      */
     public function has_right_on_base($base_id, $right)
     {
@@ -510,7 +509,7 @@ class ACL implements cache_cacheableInterface
         }
 
         if (!isset($this->_rights_bas[$base_id][$right])) {
-            throw new Exception('right ' . $right . ' does not exists');
+            return false;
         }
 
         return ($this->_rights_bas[$base_id][$right] === true);
@@ -634,14 +633,13 @@ class ACL implements cache_cacheableInterface
      *
      * @param  string $right
      * @return bool
-     * @throws Exception
      */
     public function has_right($right)
     {
         $this->load_global_rights();
 
         if (!isset($this->_global_rights[$right])) {
-            throw new Exception('This right does not exists');
+            return false;
         }
 
         return $this->_global_rights[$right];

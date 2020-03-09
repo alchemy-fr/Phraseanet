@@ -13,6 +13,8 @@
 namespace Alchemy\Phrasea\Metadata;
 
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
 use DateTime;
@@ -89,6 +91,9 @@ class PhraseanetMetadataSetter
 
         if (! empty($metadataInRecordFormat)) {
             $record->set_metadatas($metadataInRecordFormat, true);
+
+            $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
             // todo : check that every call to replaceMetadata is followed by RecordEvents::DO_WRITE_EXIF since we will NOT do it here
         }
     }

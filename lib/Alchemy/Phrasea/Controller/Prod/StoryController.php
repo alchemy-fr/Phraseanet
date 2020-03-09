@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
@@ -72,6 +73,9 @@ class StoryController extends Controller
         }
 
         $story->set_metadatas($metadatas);  // update the title, don't need to write exif since it's a story
+
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($story));
+
         // $story->rebuild_subdefs();
         $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
 

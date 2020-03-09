@@ -12,19 +12,20 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
-use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
-use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
-use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
+use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
 use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -1035,10 +1036,12 @@ class ArchiveJob extends AbstractJob
 
         $story->set_metadatas($metas, true);
 
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($story));
+
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 
         //$story->rebuild_subdefs();
-        $app['dispatcher']->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
+        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
 
         unset($media);
 

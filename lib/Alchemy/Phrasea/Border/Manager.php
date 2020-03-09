@@ -368,7 +368,7 @@ class Manager
             }
         }
 
-        // this will call write_metas() which will raise jetons to write_meta
+        // this will call write_metas() which will set jetons to write_meta
         $this->getMetadataSetter()->replaceMetadata($newMetadata, $element);
         $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($element, ['document']));
 

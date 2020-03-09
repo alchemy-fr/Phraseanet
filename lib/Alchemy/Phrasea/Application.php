@@ -163,7 +163,6 @@ class Application extends SilexApplication
 
         $this->setupCharset();
         $this->setupApplicationPaths();
-        $this->setupConstants();
 
         if ('allowed' == getenv('APP_CONTAINER_DUMP')) {
             $this->register(new PimpleDumpProvider());
@@ -746,25 +745,6 @@ class Application extends SilexApplication
                 return $dispatcher;
             })
         );
-    }
-
-    private function setupConstants()
-    {
-        if (!defined('JETON_MAKE_SUBDEF')) {
-            define('JETON_MAKE_SUBDEF', 0x01);
-        }
-
-        if (!defined('JETON_WRITE_META_DOC')) {
-            define('JETON_WRITE_META_DOC', 0x02);
-        }
-
-        if (!defined('JETON_WRITE_META_SUBDEF')) {
-            define('JETON_WRITE_META_SUBDEF', 0x04);
-        }
-
-        if (!defined('JETON_WRITE_META')) {
-            define('JETON_WRITE_META', 0x06);
-        }
     }
 
     private function setupCharset()

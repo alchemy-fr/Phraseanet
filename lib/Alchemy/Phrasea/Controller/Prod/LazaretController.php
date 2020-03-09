@@ -132,7 +132,8 @@ class LazaretController extends Controller
             $postStatus = (array) $request->request->get('status');
             // update status
             $this->updateRecordStatus($record, $postStatus);
-        }catch(\Exception $e){
+        }
+        catch(\Exception $e){
             $ret['message'] = $this->app->trans('An error occured when wanting to change status!');
         }
 

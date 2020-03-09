@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Doctrine\ORM\EntityManager;
@@ -74,7 +75,7 @@ class LazaretManipulator
      *
      * @param int     $maxTodo
      *
-     * @return Array
+     * @return array
      */
     public function clear($maxTodo = -1)
     {
@@ -225,6 +226,8 @@ class LazaretManipulator
                 );
 
                 $record->set_metadatas($metas);
+
+                $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
 
                 $this->dispatch(RecordEvents::DO_WRITE_EXIF,
                     new DoWriteExifEvent($record, ['document'])

@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\Controller\Thesaurus;
 
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -1398,6 +1399,9 @@ class ThesaurusXmlHttpController extends Controller
                         if (count($metadatasd) > 0) {
                             if (!$request->get('debug')) {
                                 $record->set_metadatas($metadatasd, true);
+
+                                $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
                                 $this->dispatch(RecordEvents::DO_WRITE_EXIF,
                                     new DoWriteExifEvent($record, ['document',DoWriteExifEvent::ALL_SUBDEFS])
                                 );

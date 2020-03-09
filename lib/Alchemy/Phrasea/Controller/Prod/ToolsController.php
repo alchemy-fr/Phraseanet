@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use ACL;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
@@ -17,16 +18,24 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Record\RecordWasRotated;
+use databox_field;
+use DataURI\Exception\InvalidDataException;
 use DataURI\Parser;
+use Exception;
+use media_subdef;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Reader;
+use phrasea;
+use record_adapter;
+use Session_Logger;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
@@ -36,6 +45,12 @@ class ToolsController extends Controller
     use FilesystemAware;
     use SubDefinitionSubstituerAware;
 
+    /**
+     * route /prod/tools/
+     *
+     * @param Request $request
+     * @return string
+     */
     public function indexAction(Request $request)
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
@@ -45,18 +60,17 @@ class ToolsController extends Controller
         $recordAccessibleSubdefs = array();
 
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
-            $databox = $record->getDatabox();
 
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
 
             $acl = $this->getAclForUser();
 
-            if ($acl->has_right(\ACL::BAS_CHUPUB)
-                && $acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
-                && $acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
+            if ($acl->has_right(ACL::BAS_CHUPUB)
+                && $acl->has_right_on_base($record->getBaseId(), ACL::CANMODIFRECORD)
+                && $acl->has_right_on_base($record->getBaseId(), ACL::IMGTOOLS)
             ) {
                 $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
@@ -67,11 +81,12 @@ class ToolsController extends Controller
                     }
 
                     if ('document' == $subdefName) {
-                        if (!$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD)) {
+                        if (!$acl->has_right_on_base($record->getBaseId(), ACL::CANDWNLDHD)) {
                             continue;
                         }
                         $label = $this->app->trans('prod::tools: document');
-                    } elseif ($databoxSubdefs->hasSubdef($subdefName)) {
+                    }
+                    elseif ($databoxSubdefs->hasSubdef($subdefName)) {
                         if (!$acl->has_access_to_subdef($record, $subdefName)) {
                             continue;
                         }
@@ -89,7 +104,6 @@ class ToolsController extends Controller
                 $metadatas = true;
             }
         }
-        $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'           => $records,
@@ -119,13 +133,14 @@ class ToolsController extends Controller
 
         foreach ($records as $record) {
             foreach ($record->get_subdefs() as $subdef) {
-                if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+                if ($subdef->get_type() !== media_subdef::TYPE_IMAGE) {
                     continue;
                 }
 
                 try {
                     $subdef->rotate($rotation, $this->getMediaAlchemyst(), $this->getMediaVorus());
-                } catch (\Exception $e) {
+                }
+                catch (Exception $e) {
                     // ignore exception
                 }
             }
@@ -142,7 +157,7 @@ class ToolsController extends Controller
 
         $force = $request->request->get('force_substitution') == '1';
 
-        $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
+        $selection = RecordsRequest::fromRequest($this->app, $request, false, [ACL::CANMODIFRECORD]);
 
         foreach ($selection as $record) {
             $substituted = false;
@@ -164,10 +179,16 @@ class ToolsController extends Controller
             }
         }
 
-
         return $this->app->json($return);
     }
 
+    /**
+     *
+     * @param Request $request
+     * @return string
+     *
+     * @noinspection Duplicates
+     */
     public function hddocAction(Request $request)
     {
         $success = false;
@@ -177,46 +198,48 @@ class ToolsController extends Controller
 
             if ($file->isValid()) {
 
-                $fileName = $file->getClientOriginalName();
-
                 try {
-
+                    $fileName = $file->getClientOriginalName();
                     $tempoDir = tempnam(sys_get_temp_dir(), 'substit');
-
                     unlink($tempoDir);
                     mkdir($tempoDir);
-
                     $tempoFile = $tempoDir . DIRECTORY_SEPARATOR . $fileName;
 
                     if (false === rename($file->getPathname(), $tempoFile)) {
                         throw new RuntimeException('Error while renaming file');
                     }
 
-                    $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+                    $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
                     $media = $this->app->getMediaFromUri($tempoFile);
 
                     $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
                     $record->insertTechnicalDatas($this->getMediaVorus());
-                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader() ->read($media), $record);
+                    $this->getMetadataSetter()->replaceMetadata($this->getMetadataReader()->read($media), $record);
 
-                    $this->getDataboxLogger($record->getDatabox())
-                        ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
+                    unlink($tempoFile);
+                    rmdir($tempoDir);
 
                     if ((int) $request->request->get('ccfilename') === 1) {
                         $record->set_original_name($fileName);
                     }
-                    unlink($tempoFile);
-                    rmdir($tempoDir);
                     $success = true;
                     $message = $this->app->trans('Document has been successfully substitued');
-                } catch (\Exception $e) {
+
+                    $this->getDataboxLogger($record->getDatabox())
+                        ->log($record, Session_Logger::EVENT_SUBSTITUTE, 'HD', '' );
+
+                    $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, ['document']));
+                }
+                catch (Exception $e) {
                     $message = $this->app->trans('file is not valid');
                 }
-            } else {
+            }
+            else {
                 $message = $this->app->trans('file is not valid');
             }
-        } else {
+        }
+        else {
             $this->app->abort(400, 'Missing file parameter');
         }
 
@@ -226,6 +249,13 @@ class ToolsController extends Controller
         ]);
     }
 
+    /**
+     *
+     * @param Request $request
+     * @return string
+     *
+     * @noinspection Duplicates
+     */
     public function changeThumbnailAction(Request $request)
     {
         $file = $request->files->get('newThumb');
@@ -252,19 +282,24 @@ class ToolsController extends Controller
                 throw new RuntimeException('Error while renaming file');
             }
 
-            $record = new \record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
+            $record = new record_adapter($this->app, $request->get('sbas_id'), $request->get('record_id'));
 
             $media = $this->app->getMediaFromUri($tempoFile);
 
             $this->getSubDefinitionSubstituer()->substituteSubdef($record, 'thumbnail', $media);
-            $this->getDataboxLogger($record->getDatabox())
-                ->log($record, \Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
 
             unlink($tempoFile);
             rmdir($tempoDir);
+
             $success = true;
             $message = $this->app->trans('Thumbnail has been successfully substitued');
-        } catch (\Exception $e) {
+
+            $this->getDataboxLogger($record->getDatabox())
+                ->log($record, Session_Logger::EVENT_SUBSTITUTE, 'thumbnail', '');
+
+            $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, ['thumbnail']));
+        }
+        catch (Exception $e) {
             $success = false;
             $message = $this->app->trans('file is not valid');
         }
@@ -280,7 +315,7 @@ class ToolsController extends Controller
         $template = 'prod/actions/Tools/confirm.html.twig';
 
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
             $var = [
                 'video_title' => $record->get_title(),
                 'image'       => $request->request->get('image', ''),
@@ -289,7 +324,8 @@ class ToolsController extends Controller
                 'error' => false,
                 'datas' => $this->render($template, $var),
             ];
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $return = [
                 'error' => true,
                 'datas' => $this->app->trans('an error occured'),
@@ -302,7 +338,7 @@ class ToolsController extends Controller
     public function applyThumbnailExtractionAction(Request $request)
     {
         try {
-            $record = new \record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
+            $record = new record_adapter($this->app, $request->request->get('sbas_id'), $request->request->get('record_id'));
 
             $subDef = $request->request->get('sub_def');
 
@@ -316,7 +352,8 @@ class ToolsController extends Controller
             }
 
             $return = ['success' => true, 'message' => ''];
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $return = ['success' => false, 'message' => $e->getMessage()];
         }
 
@@ -328,20 +365,19 @@ class ToolsController extends Controller
      * @param Request $request
      * @param $base_id
      * @param $record_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function editRecordSharing(Request $request, $base_id, $record_id)
     {
-
-        $record = new \record_adapter($this->app, \phrasea::sbasFromBas($this->app, $base_id), $record_id);
+        $record = new record_adapter($this->app, phrasea::sbasFromBas($this->app, $base_id), $record_id);
         $subdefName = (string)$request->request->get('name');
         $state = $request->request->get('state') == 'true' ? true : false;
 
         $acl = $this->getAclForUser();
-        if (!$acl->has_right(\ACL::BAS_CHUPUB)
-            || !$acl->has_right_on_base($record->getBaseId(), \ACL::CANMODIFRECORD)
-            || !$acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
-            || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
+        if (!$acl->has_right(ACL::BAS_CHUPUB)
+            || !$acl->has_right_on_base($record->getBaseId(), ACL::CANMODIFRECORD)
+            || !$acl->has_right_on_base($record->getBaseId(), ACL::IMGTOOLS)
+            || ('document' == $subdefName && !$acl->has_right_on_base($record->getBaseId(), ACL::CANDWNLDHD))
             || ('document' != $subdefName && !$acl->has_access_to_subdef($record, $subdefName))
         ) {
             $this->app->abort(403);
@@ -356,19 +392,12 @@ class ToolsController extends Controller
         try {
             $permalink->set_is_activated($state);
             $return = ['success' => true, 'state' => $permalink->get_is_activated()];
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $return = ['success' => false, 'state' => $permalink->get_is_activated()];
         }
 
         return $this->app->json($return);
-    }
-
-    /**
-     * @return Reader
-     */
-    private function getExifToolReader()
-    {
-        return $this->app['exiftool.reader'];
     }
 
     /**
@@ -404,12 +433,12 @@ class ToolsController extends Controller
     }
 
     /**
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @param string $subDefName
      * @param string $subDefDataUri
-     * @throws \DataURI\Exception\InvalidDataException
+     * @throws InvalidDataException
      */
-    private function substituteMedia(\record_adapter $record, $subDefName, $subDefDataUri)
+    private function substituteMedia(record_adapter $record, $subDefName, $subDefDataUri)
     {
         $dataUri = Parser::parse($subDefDataUri);
 
@@ -422,23 +451,27 @@ class ToolsController extends Controller
 
         if($subDefName == 'document') {
             $this->getSubDefinitionSubstituer()->substituteDocument($record, $media);
-        } else {
+        }
+        else {
             $this->getSubDefinitionSubstituer()->substituteSubdef($record, $subDefName, $media);
         }
         $this->getDataboxLogger($record->getDatabox())
-          ->log($record, \Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
+          ->log($record, Session_Logger::EVENT_SUBSTITUTE, $subDefName, '');
 
         unset($media);
         $this->getFilesystem()->remove($fileName);
     }
 
     /**
+     * nb : this route seems ONLY used by the video editor to save the ranges
+     * so we will NOT write exif for that !
+     *
      * @param $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function saveMetasAction(Request $request)
     {
-        $record = new \record_adapter($this->app,
+        $record = new record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id"));
 
@@ -451,11 +484,12 @@ class ToolsController extends Controller
         ];
         try {
             $record->set_metadatas($metadatas);
-            $this->dispatch(RecordEvents::DO_WRITE_EXIF,
-                new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])
-            );
+
+            $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
+            // do NOT dispatch DO_WRITE_EXIF !
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);
         }
 
@@ -471,13 +505,12 @@ class ToolsController extends Controller
         $JSFields = [];
 
         if (count($records) == 1) {
-            /** @var \record_adapter $record */
+            /** @var record_adapter $record */
             $record = $records->first();
             $databox = $record->getDatabox();
 
-
             foreach ($databox->get_meta_structure() as $meta) {
-                /** @var \databox_field $meta */
+                /** @var databox_field $meta */
                 $fields[] = $meta;
 
                 /** @Ignore */

@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -193,7 +194,8 @@ class module_console_fieldsMerge extends Command
                             $datas[] = $captionValue->getValue();
                             $captionValue->delete();
                         }
-                    } catch (\Exception $e) {
+                    }
+                    catch (\Exception $e) {
 
                     }
                 }
@@ -213,6 +215,8 @@ class module_console_fieldsMerge extends Command
                         ];
                 }
                 $record->set_metadatas($metas, true);
+
+                $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
 
                 $this->dispatch(RecordEvents::DO_WRITE_EXIF,
                     new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])

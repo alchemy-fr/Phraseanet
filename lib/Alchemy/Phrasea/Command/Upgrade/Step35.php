@@ -14,9 +14,11 @@ namespace Alchemy\Phrasea\Command\Upgrade;
 use Alchemy\Phrasea\Application;
 // use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 // use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-// use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Upgrade datas for version 3.1 : move metadatas from XML to relationnal tables
@@ -192,9 +194,11 @@ class Step35 implements DatasUpgraderInterface
         }
 
         $record->set_metadatas($metadatas, true);
+
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
         // we will NOT rewrite exif (too long), we expect it already up-to-date
         // $this->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS]));
-
     }
 
     /**
@@ -300,10 +304,8 @@ class Step35 implements DatasUpgraderInterface
         }
     }
 
-    /*
     private function dispatch($eventName, Event $event)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
     }
-    */
 }

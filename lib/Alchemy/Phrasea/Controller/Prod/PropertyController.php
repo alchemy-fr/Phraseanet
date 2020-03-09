@@ -12,6 +12,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -171,8 +173,11 @@ class PropertyController extends Controller
                     $record->setMimeType($mimeType);
                     $updated[$record->getId()]['mime_type'] = $mimeType;
                 }
-            } catch (\Exception $e) {
 
+                $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($record));
+            }
+            catch (\Exception $e) {
+                // no-op
             }
         }
 

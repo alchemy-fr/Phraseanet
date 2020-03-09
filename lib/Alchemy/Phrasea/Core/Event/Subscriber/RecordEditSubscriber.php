@@ -83,6 +83,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
 
         $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
 
+        // find all fields with src=TfEditDate for the databox
         $databox = $recordAdapter->getDatabox();
         $sbas_id = $databox->get_sbas_id();
         if (!array_key_exists($sbas_id, $editDateFields)) {
@@ -179,6 +180,8 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
         if(!isEmpty($metas)) {
             $record->set_metadatas($metas, true);
+
+            //$this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
         }
 
         $record->clearStampCache();

@@ -27,6 +27,7 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
@@ -34,6 +35,7 @@ use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
@@ -256,7 +258,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param  string $type
      * @return $this
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @deprecated use {@link self::setType} instead.
      */
     public function set_type($type)
@@ -265,10 +267,89 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * update every src=TfEditDate fields of the record
+     * used by all fcts that modify the record
+     *
+     * @param DateTime $datetime
+     * @param Bool $updateSqlModdate    // the caller can set to false if it runs sql himself (this can prevent double sql)
+     * @throws DBALException
+     */
+    private function updateTfEditdateFields(\DateTime $datetime, $updateSqlModdate)
+    {
+        static $editDateFields = [];    // TfEditDate fields, grouped by dbox
+
+        // find all fields with src=TfEditDate for the databox
+        $databox = $this->getDatabox();
+        $sbas_id = $databox->get_sbas_id();
+        if (!array_key_exists($sbas_id, $editDateFields)) {
+            $editDateFields[$sbas_id] = [];
+
+            $metaStructure = $databox->get_meta_structure();
+            foreach ($metaStructure->get_elements() as $structField) {
+                if ($structField->get_tag() instanceof TfEditdate) {
+                    $editDateFields[$sbas_id][] = $structField;
+                }
+            }
+        }
+
+        // update every TfEditdate fields of record
+        $now = new \DateTime();
+        $metas = [];
+        foreach($editDateFields[$sbas_id] as $structField) {
+            $metaId = null;
+            try {
+                if ( ($recordField = $this->get_caption()->get_field($structField->get_name())) ) {
+                    // the field exists in record, get it's value-id
+                    $values = $recordField->get_values();
+                    /** @var caption_Field_Value $value */
+                    $value = array_slice($values, -1)[0];   // if multivalued, only the last value will be updated
+                    $metaId = $value->getId();
+                }
+            }
+            catch (\Exception $e) {
+                // field not found, $metaId==null -> value will be created
+            }
+
+            $metas[] = [
+                'meta_struct_id' => $structField->get_id(),
+                'meta_id'        => $metaId,
+                'value'          => $datetime->format('Y-m-d H:i:s'),
+            ];
+        }
+        if(!isEmpty($metas)) {
+            $this->set_metadatas($metas, true);
+            //$this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+        }
+
+        if($updateSqlModdate) {
+            // update also the sql
+            $databox->get_connection()->executeUpdate(
+                'UPDATE record SET moddate = :now WHERE record_id = :record_id',
+                ['now' => $now->format('Y-m-d H:i:s'), 'record_id' => $this->getRecordId()]
+            );
+        }
+
+        $this->delete_data_from_cache();
+    }
+
+    /**
+     * update moddate and every src=TfEditDate fields of the record to now
+     *
+     * @return $this
+     * @throws DBALException
+     */
+    public function touch()
+    {
+        $this->updateTfEditdateFields(new \DateTime(), true);
+
+        return $this;
+    }
+
+    /**
      * @param string $type
      * @return $this
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function setType($type)
     {
@@ -280,29 +361,21 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('unrecognized document type');
         }
 
-        $sql = 'UPDATE record SET moddate = NOW(), type = :type WHERE record_id = :record_id';
+        $sql = 'UPDATE record SET type = :type WHERE record_id = :record_id';
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
             // $this->rebuild_subdefs();
-            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
+            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
         }
 
         $this->type = $type;
-        $this->delete_data_from_cache();
+
+        $this->touch();
 
         return $this;
     }
 
-    public function touch()
-    {
-        $this->getDataboxConnection()->executeUpdate(
-            'UPDATE record SET moddate = NOW() WHERE record_id = :record_id',
-            ['record_id' => $this->getRecordId()]
-        );
-
-        $this->delete_data_from_cache();
-    }
 
     /**
      * Returns the type of the document
@@ -338,17 +411,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         if ($this->getDataboxConnection()->executeUpdate(
-            'UPDATE record SET moddate = NOW(), mime = :mime WHERE record_id = :record_id',
+            'UPDATE record SET mime = :mime WHERE record_id = :record_id',
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
             // $this->rebuild_subdefs();
-            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
+            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
 
             $this->delete_data_from_cache();
         }
 
         $this->mime = $mime;
+
+        $this->touch();
 
         return $this;
     }
@@ -535,7 +610,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $coll_id_from = $this->getCollectionId();
         $coll_id_to = $collection->get_coll_id();
 
-        $sql = "UPDATE record SET moddate = NOW(), coll_id = :coll_id WHERE record_id =:record_id";
+        $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
 
         $params = [
             ':coll_id'   => $coll_id_to,
@@ -549,7 +624,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->base_id = $collection->get_base_id();
         $this->collection_id = $coll_id_to;
 
-        $this->delete_data_from_cache();
+        $this->touch();
 
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
@@ -873,6 +948,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                         'value'          => $original_name,
                     ]
                 ],true);
+
+                $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
+
                 // since we fixed only tech fields, no need to write exif
                 /*
                 $this->dispatch(RecordEvents::DO_WRITE_EXIF,
@@ -886,11 +964,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $this->getDataboxConnection()->executeUpdate(
-            'UPDATE record SET moddate = NOW(), originalname = :originalname WHERE record_id = :record_id',
+            'UPDATE record SET originalname = :originalname WHERE record_id = :record_id',
             ['originalname' => $original_name, 'record_id' => $this->getRecordId()]
         );
 
-        $this->delete_data_from_cache();
+        $this->touch();
 
         $this->dispatch(RecordEvents::ORIGINAL_NAME_CHANGED, new OriginalNameChangedEvent($this));
 
@@ -958,7 +1036,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param Array $options
+     * @param array $options
      *
      * @return string
      */
@@ -1013,7 +1091,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     protected function set_xml(DOMDocument $dom_doc)
     {
-        $sql = 'UPDATE record SET moddate = NOW(), xml = :xml WHERE record_id= :record_id';
+        $sql = 'UPDATE record SET xml = :xml WHERE record_id= :record_id';
         $stmt = $this->getDataboxConnection()->prepare($sql);
         $stmt->execute(
             [
@@ -1023,6 +1101,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         );
         $stmt->closeCursor();
 
+        $this->touch();
+
         return $this;
     }
 
@@ -1031,7 +1111,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param  array  $params An array containing three keys : meta_struct_id (int) , meta_id (int or null) and value (Array)
      * @param databox $databox
      * @return record_adapter
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     protected function set_metadata(Array $params, databox $databox)
     {
@@ -1082,7 +1162,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param array   $metadatas
      * @param boolean $force_readonly
      * @return record_adapter
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function set_metadatas(array $metadatas, $force_readonly = false)
     {
@@ -1108,7 +1188,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->rebuildXML();
 
         // $this->write_metas();    // this must be done by the caller
-        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
+        // $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
+
+        $this->touch();
 
         return $this;
     }
@@ -1246,9 +1328,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 ':final'     => $collection->get_coll_id(),
             ]);
             $stmt->closeCursor();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             unset($e);
         }
+
+        $story->touch();
 
         $story->dispatch(RecordEvents::CREATED, new CreatedEvent($story));
 
@@ -1351,12 +1436,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $data = media_subdef::readTechnicalDatasFromMedia($org_media);
         $record->insertTechnicalDatasFromData($data);
 
+        $record->touch();
+
         $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
 
         return $record;
     }
 
-   public function insertTechnicalDatasFromData(Array $data)
+    public function insertTechnicalDatasFromData(Array $data)
     {
         $connection = $this->getDataboxConnection();
         $connection->executeUpdate('DELETE FROM technical_datas WHERE record_id = :record_id', [
@@ -1778,7 +1865,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @deprecated use {@link self::getChildren} instead.
      */
     public function get_children()
@@ -1792,7 +1879,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getChildren($offset = 1, $max_items = null)
     {
@@ -1832,7 +1919,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $ord = 0;
 
-        $sql = "SELECT (max(ord)+1) as ord FROM regroup WHERE rid_parent = :parent_record_id";
+        $sql = "SELECT (MAX(ord)+1) AS ord FROM regroup WHERE rid_parent = :parent_record_id";
 
         $connection = $this->getDataboxConnection();
 
@@ -1852,9 +1939,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             . " VALUES (null, :parent_record_id, :record_id, NOW(), :ord)";
 
         $params = [
-            ':parent_record_id' => $this->getRecordId()
-            , ':record_id'        => $record->getRecordId()
-            , ':ord'              => $ord,
+            ':parent_record_id' => $this->getRecordId(),
+            ':record_id'        => $record->getRecordId(),
+            ':ord'              => $ord
         ];
 
         $stmt = $connection->prepare($sql);
@@ -1876,8 +1963,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $sql = "DELETE FROM regroup WHERE rid_parent = :parent_record_id AND rid_child = :record_id";
 
         $params = [
-            ':parent_record_id' => $this->getRecordId()
-            , ':record_id'        => $record->getRecordId(),
+            ':parent_record_id' => $this->getRecordId(),
+            ':record_id'        => $record->getRecordId()
         ];
 
         $stmt = $this->getDataboxConnection()->prepare($sql);
@@ -1920,13 +2007,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setStatus($status)
     {
         $this->getDataboxConnection()->executeUpdate(
-            'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
+            'UPDATE record SET status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
         );
 
+        $this->touch();
+
         $this->status = str_pad($status, 32, '0', STR_PAD_LEFT);
-        // modification date is now unknown, delete from cache to reload on another record
-        $this->delete_data_from_cache();
 
         $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
     }

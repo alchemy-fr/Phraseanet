@@ -83,9 +83,7 @@ class SubdefSubstituer
         $record->setType($media->getType());
 
         // $record->write_metas();
-        $this->dispatcher->dispatch(RecordEvents::DO_WRITE_EXIF,
-            new DoWriteExifEvent($record, ['document'])
-        );
+        $this->dispatcher->dispatch(RecordEvents::DO_WRITE_EXIF, new DoWriteExifEvent($record, ['document']));
 
         if ($shouldSubdefsBeRebuilt) {
             // $record->rebuild_subdefs();

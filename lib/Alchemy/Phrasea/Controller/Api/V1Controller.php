@@ -30,6 +30,7 @@ use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -1967,6 +1968,9 @@ class V1Controller extends Controller
         }
 
         $record->set_metadatas($metadata);
+
+        $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
         $this->dispatch(RecordEvents::DO_WRITE_EXIF,
             new DoWriteExifEvent($record, ['document', DoWriteExifEvent::ALL_SUBDEFS])
         );
@@ -2578,6 +2582,9 @@ class V1Controller extends Controller
 
         if(count($metadatas) > 0) {
             $story->set_metadatas($metadatas);
+
+            $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($story));
+
             // a story has no doc/subdefs, no need exif
         }
 

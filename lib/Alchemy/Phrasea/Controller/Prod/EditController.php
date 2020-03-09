@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
+use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -366,6 +367,9 @@ class EditController extends Controller
             }
             if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
                 $record->set_metadatas($rec['metadatas']);
+
+                $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($record));
+
                 $metachanged = true;
             }
 

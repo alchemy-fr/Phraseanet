@@ -19,7 +19,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\MaintenanceSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaLocaleSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RecordEditSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\SessionManagerSubscriber;
-use Alchemy\Phrasea\Record\RecordUpdateSubscriber;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
