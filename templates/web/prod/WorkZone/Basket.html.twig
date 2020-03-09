@@ -88,8 +88,12 @@
             {% endfor %}
         {% endif %}
     </div>
+    {% if basket.getValidation() %}
+    {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
+    <span class="expiredDate" style="float: right; padding: 8px;margin-top: -39px;">
+        {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}</span>
+    {% endif %}
 </div>
-<div class="basket-content">
     {% set basket_length = basket.getElements()|length %}
     <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
 {% if basket_length == 0 %}
@@ -102,6 +106,7 @@
 
     {% if basket.getValidation() %}
         {{ Macros.display_validation(app, basket, ordre) }}
+
 {% else %}
     {{ Macros.display_basket(app, basket) }}
 {% endif %}
