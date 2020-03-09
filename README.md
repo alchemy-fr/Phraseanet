@@ -83,7 +83,7 @@ Where `<command>` can be:
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
 
-## Using Phraseanet images from docker hub
+### Use Phraseanet images from docker hub
 
 Retrieve on Docker hub prebuilde images for Phraseanet.
 
