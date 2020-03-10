@@ -80,10 +80,10 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
         yarn \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
-    && npm install -g bower recess \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
 
+RUN npm install -g bower recess
 
 WORKDIR /var/alchemy/Phraseanet
 
