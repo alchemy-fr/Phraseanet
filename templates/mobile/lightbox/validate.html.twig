@@ -4,6 +4,7 @@
 {% block javascript %}
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script type="text/javascript">
 
     {% if basket.getValidation() %}
@@ -14,13 +15,15 @@
         releasable: {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
     });
 
-    //var releasable = {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).isReleasable() %}"{{ 'Do you want to send your report ?' | trans }}"{% else %}false{% endif %}
+
     {% endif %}
+
   </script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 {% endblock %}
 
 {% block content %}
@@ -41,7 +44,40 @@
       {% set basket_length = basket.getElements().count() %}
       {% trans with {'%basket_length%' : basket_length} %}%basket_length% documents{% endtrans %}
     </p>
+
+
         {% if basket.getValidation() %}
+            <div id="FeedbackRelease" class="modal fade" role="dialog" style="display: none">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                &times;</button>
+                            <h4 class="modal-title">{{ 'lightbox:feedback:sendreport:warnwindows:title' | trans }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{'lightbox:feedback:sendreport:warnwindows:message ' | trans}}</p>
+
+                            <p>{{ 'lightbox:feedback:sendreport:warnwindows:record_approved'| trans }} : <span class="record_accepted"></span>
+
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_rejected'| trans }} : <span class="record_refused"></span>
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_unexpressed'| trans }} : <span class="record_null"></span>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="width:auto">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
+                            <button type="button" class="btn btn-primary" id="validate-release" style="width:auto">{{ 'lightbox:feedback:sendreport:warnwindows:validate'| trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="report_wrapper">
                 <a id="report_summary" class="report_btn report_summary" href="#" onclick="$.ajax({
             type: 'GET',
@@ -92,7 +128,11 @@
 
         <div class="btn-container">
             {% if basket.getValidation() and basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
-                <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}">
+                <button class="confirm_report" style="width:100%;" title="{{ 'validation::envoyer mon rapport' | trans }}" onclick="
+
+
+
+">
                     {{ 'validation::envoyer mon rapport' | trans }}
                     <img src="/assets/common/images/icons/loader1F1E1B.gif" style="visibility:hidden;" class="loader"/>
                 </button>
@@ -100,7 +140,6 @@
         </div>
     </div>
 
-</div>
 {% endblock %}
 
 

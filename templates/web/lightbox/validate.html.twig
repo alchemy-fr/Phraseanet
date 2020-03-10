@@ -127,20 +127,22 @@
                         <h4 class="modal-title">{{ 'lightbox:feedback:sendreport:warnwindows:title' | trans }}</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="modal-content">
-                            {{ 'lightbox:feedback:sendreport:warnwindows:record_accepted'| trans }} : <span class="record_accepted"></span>
-                        </div>
-                        <hr>
-                        <div class="modal-">
-                            {{ ' lightbox:feedback:sendreport:warnwindows:record_refused'| trans }} : <span class="record_refused"></span>
-                        </div>
-                        <hr>
-                        <div class="modal-">
-                            {{ ' lightbox:feedback:sendreport:warnwindows:record_null'| trans }} : <span class="record_null"></span>
-                        </div>
+                            <p>{{'lightbox:feedback:sendreport:warnwindows:message ' | trans}}</p>
+
+                            <p>{{ 'lightbox:feedback:sendreport:warnwindows:record_approved'| trans }} : <span class="record_accepted"></span>
+
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_rejected'| trans }} : <span class="record_refused"></span>
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_unexpressed'| trans }} : <span class="record_null"></span>
+                            </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
                         <button type="button" class="btn btn-primary" id="validate-release">{{ 'lightbox:feedback:sendreport:warnwindows:validate'| trans }}</button>
                     </div>
                 </div>
