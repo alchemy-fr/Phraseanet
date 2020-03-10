@@ -11729,7 +11729,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter" approved="no">
         <source>prod:workzone:facetstab:tooltips:facet_and_filter</source>
-        <target state="needs-translation">Filter results with</target>
+        <target state="needs-translation">Include into results</target>
         <jms:reference-file line="187">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter" approved="no">
