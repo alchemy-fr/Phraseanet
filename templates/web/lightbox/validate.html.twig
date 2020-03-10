@@ -116,6 +116,39 @@
                 {% endif %}
             </div>
         </div>
+
+        <div id="FeedbackRelease" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            &times;</button>
+                        <h4 class="modal-title">{{ 'lightbox:feedback:sendreport:warnwindows:title' | trans }}</h4>
+                    </div>
+                    <div class="modal-body">
+                            <p>{{'lightbox:feedback:sendreport:warnwindows:message ' | trans}}</p>
+
+                            <p>{{ 'lightbox:feedback:sendreport:warnwindows:record_approved'| trans }} : <span class="record_accepted"></span>
+
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_rejected'| trans }} : <span class="record_refused"></span>
+                            </p>
+                            <hr>
+                            <p>
+                                {{'lightbox:feedback:sendreport:warnwindows:record_unexpressed'| trans }} : <span class="record_null"></span>
+                            </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'lightbox:feedback:sendreport:warnwindows:cancel'| trans }}</button>
+                        <button type="button" class="btn btn-primary" id="validate-release">{{ 'lightbox:feedback:sendreport:warnwindows:validate'| trans }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="PNB" id="bottom_container">
             <div class="PNB" style="height:30px;bottom:auto;">
                 <table border="0" cellspacing="0" cellpadding="0" style="width:100%;">

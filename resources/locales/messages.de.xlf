@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-03-04T14:02:22Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-03-09T12:35:39Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4905,7 +4905,7 @@
         <jms:reference-file line="257">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="96">web/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="127">lightbox/IE6/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="140">web/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="175">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="379c70ed96868079feece6d5c6a2b91545c2515b" resname="Par %author%" approved="yes">
         <source>Par %author%</source>
@@ -6602,7 +6602,7 @@
       <trans-unit id="2558cc2c887bbe4e2444ec6ef83b4982386e871a" resname="The URL you used is out of date, please login" approved="yes">
         <source>The URL you used is out of date, please login</source>
         <target state="translated">Die URL, die Sie benutzt haben, ist nicht mehr gültig. Bitte loggen Sie sich ein</target>
-        <jms:reference-file line="127">Phrasea/ControllerProvider/Lightbox.php</jms:reference-file>
+        <jms:reference-file line="132">Phrasea/ControllerProvider/Lightbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45a947887469ff8c2aec684433450dad352130ed" resname="The Youtube servers have received too many calls from the same caller in a short amount of time." approved="yes">
         <source>The Youtube servers have received too many calls from the same caller in a short amount of time.</source>
@@ -7337,7 +7337,7 @@
         <jms:reference-file line="99">mobile/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="24">web/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="119">lightbox/IE6/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="132">web/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="167">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="264cc8414ca311d9fa99c7ed66a90171dcf22dc6" resname="Validations received" approved="yes">
         <source>Validations received</source>
@@ -7841,7 +7841,7 @@
       <trans-unit id="2c12289df53f45e732321cf08c7fb1af6bb82b6a" resname="You have to give your feedback at least on one document to send a report" approved="yes">
         <source>You have to give your feedback at least on one document to send a report</source>
         <target state="translated">Sie müssen Ihr Feedback mindestens an einem Dokument geben, um einen Bericht zu senden</target>
-        <jms:reference-file line="465">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="510">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ff6b60e650f5a3ebd1b908717edee4452693eef0" resname="You have to wait for an administrator approval for your access request" approved="yes">
         <source>You have to wait for an administrator approval for your access request</source>
@@ -8023,7 +8023,7 @@
         <jms:reference-file line="121">web/lightbox/feed.html.twig</jms:reference-file>
         <jms:reference-file line="123">lightbox/IE6/feed.html.twig</jms:reference-file>
         <jms:reference-file line="155">lightbox/IE6/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="178">web/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="213">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b0c9b7eb3d21f5a48ac5ecb0a0d969b8d3818e41" resname="action : outils" approved="yes">
         <source>action : outils</source>
@@ -9431,7 +9431,7 @@
         <jms:reference-file line="98">web/lightbox/feed.html.twig</jms:reference-file>
         <jms:reference-file line="101">lightbox/IE6/feed.html.twig</jms:reference-file>
         <jms:reference-file line="136">lightbox/IE6/validate.html.twig</jms:reference-file>
-        <jms:reference-file line="151">web/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="186">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a14c32cf4cd3784ed567e115f3ef016ad2ee2265" resname="boutton::tester" approved="yes">
         <source>boutton::tester</source>
@@ -10121,7 +10121,7 @@
         <target state="translated">Übersicht</target>
         <jms:reference-file line="59">mobile/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="9">web/lightbox/agreement_box.html.twig</jms:reference-file>
-        <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="162">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e96c3b316d4e505d764d209e1074dcd059e396c3" resname="lightbox::see_less_basket">
         <source>lightbox::see_less_basket</source>
@@ -10132,6 +10132,48 @@
         <source>lightbox::see_more_basket</source>
         <target state="new">lightbox::see_more_basket</target>
         <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0fdc878c6f632ac8db541cac4f540d28a4dcca71" resname="lightbox:feedback:sendreport:warnwindows:cancel">
+        <source>lightbox:feedback:sendreport:warnwindows:cancel</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:cancel</target>
+        <jms:reference-file line="130">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="147">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d24d2b672572d0334c91150e835660546afcc869" resname="lightbox:feedback:sendreport:warnwindows:message ">
+        <source>lightbox:feedback:sendreport:warnwindows:message </source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:message </target>
+        <jms:reference-file line="114">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="131">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d6cbf32344e626a7904809cd27de9cede6d4a391" resname="lightbox:feedback:sendreport:warnwindows:record_approved">
+        <source>lightbox:feedback:sendreport:warnwindows:record_approved</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:record_approved</target>
+        <jms:reference-file line="116">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="133">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b530e356d0f777808863b90cb6afa25187df0fae" resname="lightbox:feedback:sendreport:warnwindows:record_rejected">
+        <source>lightbox:feedback:sendreport:warnwindows:record_rejected</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:record_rejected</target>
+        <jms:reference-file line="121">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="138">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="537d5a3523467083d817fc524ac9caba92b423fa" resname="lightbox:feedback:sendreport:warnwindows:record_unexpressed">
+        <source>lightbox:feedback:sendreport:warnwindows:record_unexpressed</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:record_unexpressed</target>
+        <jms:reference-file line="125">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="376ab5b0c531a3513cf64769daecc6510710f63f" resname="lightbox:feedback:sendreport:warnwindows:title">
+        <source>lightbox:feedback:sendreport:warnwindows:title</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:title</target>
+        <jms:reference-file line="110">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6235f92c752e206ff65068333adfd5686bebe0ac" resname="lightbox:feedback:sendreport:warnwindows:validate">
+        <source>lightbox:feedback:sendreport:warnwindows:validate</source>
+        <target state="new">lightbox:feedback:sendreport:warnwindows:validate</target>
+        <jms:reference-file line="131">mobile/lightbox/validate.html.twig</jms:reference-file>
+        <jms:reference-file line="148">web/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1487f97b5c5fadc7f37e1ac8923433753179d2" resname="login:: Changer mon adresse email" approved="yes">
         <source>login:: Changer mon adresse email</source>
