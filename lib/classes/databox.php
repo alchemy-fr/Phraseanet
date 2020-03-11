@@ -1257,7 +1257,7 @@ class databox extends base implements ThumbnailedElement
     public function reindex()
     {
         $this->clearCandidates();
-        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
+        $this->get_connection()->update('pref', ['updated_on' => null], ['prop' => 'indexes']);
 
         // Set TO_INDEX flag on all records
         $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";
@@ -1562,7 +1562,7 @@ class databox extends base implements ThumbnailedElement
         $TOU = array_intersect_key($TOU, $avLanguages);
 
         $date_obj = new DateTime();
-        $date = $date_obj->format('Y-m-d H:i:s');
+        $date = $this->app['date-formatter']->format_mysql($date_obj);
         $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
         $stmt = $this->get_connection()->prepare($sql);

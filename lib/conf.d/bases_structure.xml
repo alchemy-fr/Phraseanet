@@ -121,17 +121,17 @@
           <field>
             <name>created_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
         </fields>
@@ -253,17 +253,17 @@
           <field>
             <name>created_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -352,17 +352,17 @@
           <field>
             <name>created_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
         </fields>
@@ -572,11 +572,11 @@
           <field>
             <name>creationdate</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -654,20 +654,20 @@
             <name>limited_from</name>
             <type>datetime</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>limited_to</name>
 
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -726,10 +726,10 @@
             <name>lastconn</name>
             <type>datetime</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -992,11 +992,11 @@
           <field>
             <name>date_modif</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -1154,9 +1154,9 @@
           <field>
             <name>creation_date</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -1269,7 +1269,7 @@
             <name>created_on</name>
 
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
             <default></default>
@@ -1590,20 +1590,20 @@
             <name>maj</name>
 
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>memcached_update</name>
 
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -1620,9 +1620,9 @@
           <field>
             <name>schedqtime</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -1769,9 +1769,9 @@
           <field>
             <name>majLogo</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -2210,9 +2210,9 @@
           <field>
             <name>date</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -2457,9 +2457,9 @@
           <field>
             <name>date</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -2547,9 +2547,9 @@
           <field>
             <name>date</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -2687,9 +2687,9 @@
           <field>
             <name>date</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -2889,17 +2889,17 @@
           <field>
             <name>created_on</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>last_modified</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
         </fields>
@@ -2983,21 +2983,21 @@
           <field>
             <name>updated_on</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
 
             <comment></comment>
           </field>
           <field>
             <name>created_on</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
         </fields>
@@ -3154,21 +3154,21 @@
           <field>
             <name>moddate</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
             <name>credate</name>
             <type>datetime</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -3322,9 +3322,9 @@
           <field>
             <name>dateadd</name>
             <type>datetime</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
@@ -3497,16 +3497,16 @@
           <field>
             <name>created_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
           </field>
           <field>
             <name>updated_on</name>
             <type>DATETIME</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
-            <default>0000-00-00 00:00:00</default>
+            <default></default>
           </field>
         </fields>
         <indexes>

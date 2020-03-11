@@ -1046,8 +1046,8 @@ class ACL implements cache_cacheableInterface
             $this->_rights_bas[$bid]['mask_and']       = (int) $row['mask_and'];
             $this->_rights_bas[$bid]['mask_xor']       = (int) $row['mask_xor'];
 
-            $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
-            $row['limited_to']   = $row['limited_to']   == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
+            $row['limited_from'] = (trim($row['limited_from']) == '0000-00-00 00:00:00' || is_null($row['limited_from'])) ? '' : trim($row['limited_from']);
+            $row['limited_to']   = (trim($row['limited_to']) == '0000-00-00 00:00:00' || is_null($row['limited_to'])) ? '' : trim($row['limited_to']);
 
             if ($row['time_limited'] == '1' && ($row['limited_from'] !== '' || $row['limited_to'] !== '')) {
                 $this->_limited[$bid] = [
@@ -1691,8 +1691,8 @@ class ACL implements cache_cacheableInterface
             ':time_limited' => $limit ? 1 : 0,
             ':usr_id' => $this->user->getId(),
             ':base_id' => $base_id,
-            ':limited_from' => NullableDateTime::format($limit_from, 'Y-m-d H:i:s'),
-            ':limited_to' => NullableDateTime::format($limit_to, 'Y-m-d H:i:s'),
+            ':limited_from' => NullableDateTime::format($limit_from, DATE_ISO8601),
+            ':limited_to' => NullableDateTime::format($limit_to, DATE_ISO8601),
         ]);
         $stmt->closeCursor();
 
