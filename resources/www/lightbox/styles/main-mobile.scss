@@ -543,6 +543,23 @@ hr {
   padding: 0 20px;
 }
 
+.modal-footer .btn-primary {
+  color: #fff!important;
+  background-color: #007bff!important;
+  border-color: #007bff!important;
+}
+.modal-header .close {
+  display: inline-block;
+  float: right;
+  width: 25px;
+  opacity: 1;
+  background: #e1e1e1;
+}
+
+.hide {
+  display: none;
+}
+
 button.confirm_report {
   background: #38c !important;
   color: #fff !important;
