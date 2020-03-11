@@ -4,10 +4,12 @@
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
     <script type="text/javascript" src="/assets/production/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>
    {# <script type="text/javascript" src="/assets/lightbox/js/lightbox-mobile{% if not app.debug %}.min{% endif %}.js"></script>#}
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox-mobile{% if not app.debug %}.min{% endif %}.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 {% endblock %}
 
 {% block icon %}
@@ -62,7 +64,6 @@
 
   </div>
 </div>
-
 <div id="about" data-role="page">
     <div data-role="header">
         <a href="#home" data-rel="back" data-icon="arrow-l">{{ 'Back' | trans }}</a>
@@ -99,6 +100,7 @@
         {{ 'Validations' | trans }}
         <span>{{_self.valid_baskets_length(baskets_collection)}}</span>
       </p>
+
       <p class="lightbox-msg">
         {{ 'Voici vos validations en cours' | trans }}
       </p>
@@ -167,7 +169,6 @@
 
   </div>
 </div>
-
 
     <script>
         var lightboxApp = lightboxMobileApplication.bootstrap({

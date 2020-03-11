@@ -1334,7 +1334,7 @@
           <field>
             <name>host</name>
 
-            <type>char(64)</type>
+            <type>char(255)</type>
             <null></null>
             <extra></extra>
 
@@ -1409,7 +1409,7 @@
           </field>
           <field>
             <name>label_en</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1417,7 +1417,7 @@
           </field>
           <field>
             <name>label_fr</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1425,7 +1425,7 @@
           </field>
           <field>
             <name>label_de</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
@@ -1433,7 +1433,7 @@
           </field>
           <field>
             <name>label_nl</name>
-            <type>char(50)</type>
+            <type>char(128)</type>
             <null>YES</null>
             <extra></extra>
             <default></default>
