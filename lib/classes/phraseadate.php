@@ -124,6 +124,59 @@ class phraseadate
      * @param  DateTime $date
      * @return string
      */
+    public function getLocalDate(DateTime $date = null)
+    {
+        if (is_null($date)) {
+            return null;
+        }
+
+        $compareTo = new DateTime('now');
+        $diff = $compareTo->format('U') - $date->format('U');
+        $currentYear = $date->format('Y');
+        $dayDiff = floor($diff / 86400);
+
+        if (is_nan($dayDiff) || $dayDiff > 365000) {
+            return '';
+        }
+
+
+
+        $date_string_Y = new IntlDateFormatter($this->app['locale'], NULL, NULL, NULL, NULL, 'dd MMMM yyyy');
+      //  $date_string_M = new IntlDateFormatter($this->app['locale'], NULL, NULL, NULL, NULL, 'dd MMMM');
+
+        if ($dayDiff == 0) {
+            if ($diff < 60) {
+                return $this->app->trans('phraseanet::temps:: a l\'instant');
+            } elseif ($diff < 120) {
+                return $this->app->trans('phraseanet::temps:: il y a une minute');
+            } elseif ($diff < 3600) {
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% minutes', ['%quantity%' => floor($diff / 60)]);
+            } elseif ($diff < 7200) {
+                return $this->app->trans('phraseanet::temps:: il y a une heure');
+            } elseif ($diff < 86400) {
+                return $this->app->trans('phraseanet::temps:: il y a %quantity% heures', ['%quantity%' => floor($diff / 3600)]);
+            }
+        } elseif ($dayDiff == 1) {
+            return $this->app->trans('phraseanet::temps:: hier');
+
+        }else {
+            // current year
+           /* if (date('Y')== $currentYear) {
+                return $date_string_M->format($date);
+            }*/
+            //return $date_string_Y->format($date);
+        }
+
+
+
+        return $date_string_Y->format($date);
+    }
+
+    /**
+     *
+     * @param  DateTime $date
+     * @return string
+     */
     public function format_mysql(DateTime $date)
     {
         return $date->format(DATE_ISO8601);

@@ -8,21 +8,22 @@
 
 {% block content %}
     <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:auto !important;height:380px;max-height:380px;min-height:220px;position:relative;">
+            <span class="expiredDate">
+        {% if basket.getValidation() %}
+            {% set dateExpired = app['date-formatter'].getLocalDate(basket.getValidation().getExpires()) %}
+            {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}
+        {% endif %}
+              </span>
     <div style="margin:5px 0;max-height:160px;overflow:hidden;text-overflow:ellipsis;">
         {{ basket.getDescription()|nl2br }}
     </div>
     <div style="margin:5px 0;font-style:italic;position:relative;width: 100%">
         {% set nb_records = basket.getElements()|length %}
-        {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
-        <span class="expiredDate" style="width: 40%; display: inline-block">
-        {% if basket.getValidation() %}
-        {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
-                {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}
-        {% endif %}
-              </span>
-        <div style="text-align:right;width: 50%;display: inline-block">
+        {% set date = app['date-formatter'].getLocalDate(basket.getUpdated()) %}
+
+        <div style="text-align:right">
             {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
-            - {{ date }}
+            - {{ 'prod:workzone:basket:creation-date' | trans }} : {{ date }}
         </div>
         <hr/>
         <div style="position:relative;float:left;width:470px;">

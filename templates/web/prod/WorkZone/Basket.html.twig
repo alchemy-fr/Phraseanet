@@ -89,7 +89,7 @@
         {% endif %}
     </div>
     {% if basket.getValidation() %}
-    {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
+    {% set dateExpired = app['date-formatter'].getLocalDate(basket.getValidation().getExpires()) %}
     <span class="expiredDate" style="float: right; padding: 8px;margin-top: -39px;">
         {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}</span>
     {% endif %}
