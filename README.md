@@ -105,6 +105,20 @@ This can be made easily from the builder container:
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allow the final image to be slim.
 > If you need to use dev tools, ensure you are running the `builder` image!
 
+### Developer shell
+
+You can also obtain a shell access in builder container:
+
+```bash
+docker-compose run --rm builder /bin/bash
+# or
+docker-compose run --rm builder /bin/zsh
+```
+
+In this container you will have the same libraries (PHP, Node, composer, ...) that are used to build images.
+Also you have utils for development like telnet, ping, ssh, git, ...
+Your $HOME/.ssh directory is also mounted to builder's home with your ssh agent.
+
 ### Using Xdebug
 
 Xdebug is enabled by default with the `docker-compose.override.yml`

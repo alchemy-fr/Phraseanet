@@ -10,25 +10,29 @@ services:
 
   gateway:
     volumes:
+    - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
     - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
     - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
-    
-    
 
   builder:
     build:
       context: .
       target: builder
-    command: exit 0
+    stdin_open: true
+    tty: true
     volumes:
+      - ../:/var/alchemy
       - .:/var/alchemy/Phraseanet
       - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
       - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
       - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
       - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+      - ${SSH_AUTH_SOCK}:/ssh-auth-sock
+      - ${HOME}/.ssh:/home/app/.ssh
+      - dev_vol:/home/app
 
   phraseanet:
     environment:
@@ -36,6 +40,7 @@ services:
     - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
     - PHP_IDE_CONFIG
     volumes:
+    - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -45,6 +50,7 @@ services:
 
   worker:
     volumes:
+    - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -77,3 +83,7 @@ networks:
     ipam:
       config:
         - subnet: $PHRASEANET_SUBNET_IPS
+
+volumes:
+  dev_vol:
+    driver: local

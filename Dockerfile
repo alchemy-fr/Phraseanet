@@ -82,8 +82,17 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get install -y --no-install-recommends \
         nodejs \
         yarn \
+        nano \
+        vim \
+        iputils-ping \
+        zsh \
+        telnet \
+        autoconf \
+        libtool \
+        pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
+    && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
 
@@ -99,10 +108,13 @@ RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classma
 
 COPY --chown=app  . .
 
-RUN rm -rf docker/phraseanet/root \
-    && make install
+RUN make install
 
-ADD docker/phraseanet/ /
+ADD ./docker/builder/root /
+
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+
+CMD []
 
 #########################################################################
 # Phraseanet web application image
