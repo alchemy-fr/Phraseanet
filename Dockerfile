@@ -86,6 +86,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
         vim \
         iputils-ping \
         zsh \
+        ssh \
         telnet \
         autoconf \
         libtool \
@@ -111,6 +112,21 @@ COPY --chown=app  . .
 RUN make install
 
 ADD ./docker/builder/root /
+
+# SSH Private repo
+ARG SSH_PRIVATE_KEY
+ARG PHRASEANET_PLUGINS
+
+RUN ( \
+        test ! -z "${SSH_PRIVATE_KEY}" \
+        && mkdir -p ~/.ssh \
+        && echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa \
+        # make sure github domain.com is accepted
+        && ssh-keyscan -H github.com >> ~/.ssh/known_hosts \
+        && chmod 600 ~/.ssh/id_rsa \
+    ) || echo "Skip SSH key"
+
+RUN ./docker/phraseanet/install-plugins
 
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 

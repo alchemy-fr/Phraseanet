@@ -146,6 +146,28 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 
 > Don't forget to recreate your container (`docker-compose up -d phraseanet`)
 
+### Build images with plugins
+
+Plugins can be installed during build if you set the `PHRASEANET_PLUGINS` env var as follows:
+
+```bash
+PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git"
+
+# You can optionally precise the branch to install
+# If not precised, the main branch will be pulled
+PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git(custom-branch)"
+
+# Plugins are separated by spaces
+PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1) git@github.com:baz/42.git"
+```
+
+If you install private plugins, make sure you export your SSH private key content in order to allow docker build to access the GIT repository:
+```bash
+export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
+# or if your private key is protected by a passphrase:
+export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_rsa_raw && cat /tmp/id_rsa_raw && rm /tmp/id_rsa_raw)
+```
+
 # With Vagrant (deprecated)
 
 ## Development :

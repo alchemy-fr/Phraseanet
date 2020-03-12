@@ -21,6 +21,9 @@ services:
     build:
       context: .
       target: builder
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     stdin_open: true
     tty: true
     volumes:
@@ -33,6 +36,8 @@ services:
       - ${SSH_AUTH_SOCK}:/ssh-auth-sock
       - ${HOME}/.ssh:/home/app/.ssh
       - dev_vol:/home/app
+    environment:
+      - PHRASEANET_PROJECT_NAME
 
   phraseanet:
     environment:
