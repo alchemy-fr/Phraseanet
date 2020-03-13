@@ -10,7 +10,7 @@
     <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:auto !important;height:380px;max-height:380px;min-height:220px;position:relative;">
             <span class="expiredDate">
         {% if basket.getValidation() %}
-            {% set dateExpired = app['date-formatter'].getLocalDate(basket.getValidation().getExpires()) %}
+            {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
             {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}
         {% endif %}
               </span>
@@ -19,7 +19,7 @@
     </div>
     <div style="margin:5px 0;font-style:italic;position:relative;width: 100%">
         {% set nb_records = basket.getElements()|length %}
-        {% set date = app['date-formatter'].getLocalDate(basket.getUpdated()) %}
+        {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
 
         <div style="text-align:right">
             {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}

@@ -1,3 +1,4 @@
+
 <div>
     <button class="tools-accordion">Actions</button>
     <div class="tools-panel">
@@ -89,9 +90,17 @@
         {% endif %}
     </div>
     {% if basket.getValidation() %}
-    {% set dateExpired = app['date-formatter'].getLocalDate(basket.getValidation().getExpires()) %}
-    <span class="expiredDate" style="float: right; padding: 8px;margin-top: -39px;">
-        {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}</span>
+    {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
+    <div class="expiredDate" style="float: right; padding: 8px;margin-top: -39px;">
+        {{ 'workzone:feedback:expiration' | trans }} :
+        <form class="update-feed-validation">
+            <input type="hidden" name="feedback-id" value={{ basket.getValidation().getId}} />
+            <input type="hidden" name="feedback-deadline-format" class="alternate" />
+        <input type="text" class="btn datepicker" name="feedback-deadline" value="{{ dateExpired }}">
+            <button type="submit" class="submit">{{ 'workzone:feedback:update' | trans }}</button>
+        </form>
+    </div>
+
     {% endif %}
 </div>
     {% set basket_length = basket.getElements()|length %}
@@ -111,6 +120,33 @@
     {{ Macros.display_basket(app, basket) }}
 {% endif %}
 </div>
+
+
+<script type="text/javascript">
+    $( ".update-feed-validation" ).on( "submit", function( event ) {
+        event.preventDefault();
+        console.log( $( this ).serialize() );
+    });
+    $( function() {
+        $.datepicker.regional['default'] = {
+            closeText: "{{ 'workzone:datepicker:closeText' | trans }}",
+            prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
+            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
+            currentText: "{{ 'workzone:datepicker:currentText' | trans }}",
+            monthNames: [ "{{ 'workzone:datepicker:january' | trans }}", "{{ 'workzone:datepicker:february' | trans }}", "{{ 'workzone:datepicker:march' | trans }}", "{{ 'workzone:datepicker:april' | trans }}", "{{ 'workzone:datepicker:may' | trans }}", "{{ 'workzone:datepicker:june' | trans }}",
+                "{{ 'workzone:datepicker:july' | trans }}", "{{ 'workzone:datepicker:august' | trans }}", "{{ 'workzone:datepicker:september' | trans }}", "{{ 'workzone:datepicker:october' | trans }}", "{{ 'workzone:datepicker:november' | trans }}", "{{ 'workzone:datepicker:december' | trans }}" ],
+            dayNames: [ "{{ 'workzone:datepicker:sunday' | trans }}", "{{ 'workzone:datepicker:monday' | trans }}", "{{ 'workzone:datepicker:tuesday' | trans }}", "{{ 'workzone:datepicker:wednesday' | trans }}", "{{ 'workzone:datepicker:thursday' | trans }}", "{{ 'workzone:datepicker:friday' | trans }}", "{{ 'workzone:datepicker:saturday' | trans }}" ],
+            dayNamesMin: [ "D","L","M","M","J","V","S" ],
+            dateFormat: "d MM yy",
+            altField: ".alternate",
+            altFormat: "yy-mm-dd"
+
+        };
+
+        $( ".datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+    })
+
+</script>
 
 
 
