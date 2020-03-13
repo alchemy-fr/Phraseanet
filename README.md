@@ -56,10 +56,17 @@ export PHRASEANET_APP_PORT=8082
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `env.local` at the root of this project and define a command alias in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc`:
 
 ```bash
-alias dc="env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose"
+# ~/.bashrc or ~/.zshrc
+function dc() {
+    if [ -f env.local ]; then
+        env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose $@
+    else
+        docker-compose $@
+    fi
+}
 ```
 
 ### Running the application
