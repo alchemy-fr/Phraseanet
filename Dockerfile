@@ -90,6 +90,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
         telnet \
         autoconf \
         libtool \
+        python \
         pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
@@ -126,7 +127,7 @@ RUN ( \
         && chmod 600 ~/.ssh/id_rsa \
     ) || echo "Skip SSH key"
 
-RUN ./docker/phraseanet/install-plugins
+RUN ./docker/phraseanet/plugins/console install
 
 ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 
