@@ -11723,7 +11723,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="no">
         <source>prod:workzone:basket:creation-date</source>
-        <target state="needs-translation">Creation Date</target>
+        <target state="needs-translation">Creation</target>
         <jms:reference-file line="26">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
@@ -13420,9 +13420,9 @@ It is possible to place several search areas</target>
         <target state="new">workzone:datepicker:currentText</target>
         <jms:reference-file line="113">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="no">
+      <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="yes">
         <source>workzone:datepicker:december</source>
-        <target state="needs-translation">December</target>
+        <target state="translated">December</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february" approved="yes">
