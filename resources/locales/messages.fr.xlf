@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-03-13T14:06:47Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -10058,14 +10058,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Facettes masquées</target>
         <jms:reference-file line="878">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits">
+      <trans-unit id="4a35cc75d1072f7dad99c8e91596298f55f20a54" resname="index::advance_search: order-by-hits" approved="yes">
         <source>index::advance_search: order-by-hits</source>
-        <target state="needs-translation">Par occurrences</target>
+        <target state="translated">Par occurrences</target>
         <jms:reference-file line="224">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f4d2da6c513e72ef9e2daec0b695116a26e7912" resname="index::advance_search: order-by-hits-asc">
+      <trans-unit id="6f4d2da6c513e72ef9e2daec0b695116a26e7912" resname="index::advance_search: order-by-hits-asc" approved="yes">
         <source>index::advance_search: order-by-hits-asc</source>
-        <target state="needs-translation">Par occurrences asc</target>
+        <target state="translated">Par occurrences asc</target>
         <jms:reference-file line="226">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
@@ -11724,9 +11724,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Supprimer la selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date">
+      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="no">
         <source>prod:workzone:basket:creation-date</source>
-        <target state="new">prod:workzone:basket:creation-date</target>
+        <target state="needs-translation">Date de création</target>
         <jms:reference-file line="26">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
@@ -13403,119 +13403,119 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Outils vidéos</target>
         <jms:reference-file line="24">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ecbe1590a62c751a6bafe631fc5d05158d0962b4" resname="workzone:datepicker:april">
+      <trans-unit id="ecbe1590a62c751a6bafe631fc5d05158d0962b4" resname="workzone:datepicker:april" approved="yes">
         <source>workzone:datepicker:april</source>
-        <target state="new">workzone:datepicker:april</target>
+        <target state="translated">Avril</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="23ed9061fbf1a184658e05e57a121a72474b54eb" resname="workzone:datepicker:august">
+      <trans-unit id="23ed9061fbf1a184658e05e57a121a72474b54eb" resname="workzone:datepicker:august" approved="yes">
         <source>workzone:datepicker:august</source>
-        <target state="new">workzone:datepicker:august</target>
+        <target state="translated">Aout</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="63c83f397c51202a27320349456ec75b844a75e6" resname="workzone:datepicker:closeText">
+      <trans-unit id="63c83f397c51202a27320349456ec75b844a75e6" resname="workzone:datepicker:closeText" approved="no">
         <source>workzone:datepicker:closeText</source>
-        <target state="new">workzone:datepicker:closeText</target>
+        <target state="needs-translation">Clore</target>
         <jms:reference-file line="110">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="32037015798672f75f469624c847da64e5953a27" resname="workzone:datepicker:currentText">
+      <trans-unit id="32037015798672f75f469624c847da64e5953a27" resname="workzone:datepicker:currentText" approved="no">
         <source>workzone:datepicker:currentText</source>
-        <target state="new">workzone:datepicker:currentText</target>
+        <target state="needs-translation">courant</target>
         <jms:reference-file line="113">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december">
+      <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="yes">
         <source>workzone:datepicker:december</source>
-        <target state="new">workzone:datepicker:december</target>
+        <target state="translated">Décembre</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february">
+      <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february" approved="yes">
         <source>workzone:datepicker:february</source>
-        <target state="new">workzone:datepicker:february</target>
+        <target state="translated">Février</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a4e3f12ef1defef487381a8339ea49840666414a" resname="workzone:datepicker:friday">
+      <trans-unit id="a4e3f12ef1defef487381a8339ea49840666414a" resname="workzone:datepicker:friday" approved="yes">
         <source>workzone:datepicker:friday</source>
-        <target state="new">workzone:datepicker:friday</target>
+        <target state="translated">Vendredi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="93f6bd6902114b73c225005188bce87569a3ac9c" resname="workzone:datepicker:january">
+      <trans-unit id="93f6bd6902114b73c225005188bce87569a3ac9c" resname="workzone:datepicker:january" approved="yes">
         <source>workzone:datepicker:january</source>
-        <target state="new">workzone:datepicker:january</target>
+        <target state="translated">Janvier</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0f1d297c3d3d9bc7cd800a9bd1a938904f4440ab" resname="workzone:datepicker:july">
+      <trans-unit id="0f1d297c3d3d9bc7cd800a9bd1a938904f4440ab" resname="workzone:datepicker:july" approved="yes">
         <source>workzone:datepicker:july</source>
-        <target state="new">workzone:datepicker:july</target>
+        <target state="translated">Juillet</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8d860a667674628da86b76fb3be676370a61893c" resname="workzone:datepicker:june">
+      <trans-unit id="8d860a667674628da86b76fb3be676370a61893c" resname="workzone:datepicker:june" approved="yes">
         <source>workzone:datepicker:june</source>
-        <target state="new">workzone:datepicker:june</target>
+        <target state="translated">Juin</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2242d17f28dc262529688d688b5c2e128813ad8b" resname="workzone:datepicker:march">
+      <trans-unit id="2242d17f28dc262529688d688b5c2e128813ad8b" resname="workzone:datepicker:march" approved="yes">
         <source>workzone:datepicker:march</source>
-        <target state="new">workzone:datepicker:march</target>
+        <target state="translated">Mars</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2ce30e1185f0f46df340ca727d4d9d89f42b6f5b" resname="workzone:datepicker:may">
+      <trans-unit id="2ce30e1185f0f46df340ca727d4d9d89f42b6f5b" resname="workzone:datepicker:may" approved="yes">
         <source>workzone:datepicker:may</source>
-        <target state="new">workzone:datepicker:may</target>
+        <target state="translated">Mai</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a7199e82486037293a2cfb17003ed9a30e2cfb2" resname="workzone:datepicker:monday">
+      <trans-unit id="8a7199e82486037293a2cfb17003ed9a30e2cfb2" resname="workzone:datepicker:monday" approved="yes">
         <source>workzone:datepicker:monday</source>
-        <target state="new">workzone:datepicker:monday</target>
+        <target state="translated">Lundi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
+      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText" approved="no">
         <source>workzone:datepicker:nextText</source>
-        <target state="new">workzone:datepicker:nextText</target>
+        <target state="needs-translation">Suivant</target>
         <jms:reference-file line="112">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november">
+      <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
         <source>workzone:datepicker:november</source>
-        <target state="new">workzone:datepicker:november</target>
+        <target state="translated">Novembre</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="46727c5b9b3455e2cec4fc761568262af710f119" resname="workzone:datepicker:october">
+      <trans-unit id="46727c5b9b3455e2cec4fc761568262af710f119" resname="workzone:datepicker:october" approved="yes">
         <source>workzone:datepicker:october</source>
-        <target state="new">workzone:datepicker:october</target>
+        <target state="translated">Octobre</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText">
+      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="no">
         <source>workzone:datepicker:prevText</source>
-        <target state="new">workzone:datepicker:prevText</target>
+        <target state="needs-translation">Précédent</target>
         <jms:reference-file line="111">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday">
+      <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
         <source>workzone:datepicker:saturday</source>
-        <target state="new">workzone:datepicker:saturday</target>
+        <target state="translated">Samedi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a8aa1e4c6df39f7365a4fab8f3c70d3d8d4757ee" resname="workzone:datepicker:september">
+      <trans-unit id="a8aa1e4c6df39f7365a4fab8f3c70d3d8d4757ee" resname="workzone:datepicker:september" approved="yes">
         <source>workzone:datepicker:september</source>
-        <target state="new">workzone:datepicker:september</target>
+        <target state="translated">Septembre</target>
         <jms:reference-file line="115">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cd48f23064201336fafcab46a34c085d5a886cb6" resname="workzone:datepicker:sunday">
+      <trans-unit id="cd48f23064201336fafcab46a34c085d5a886cb6" resname="workzone:datepicker:sunday" approved="yes">
         <source>workzone:datepicker:sunday</source>
-        <target state="new">workzone:datepicker:sunday</target>
+        <target state="translated">Dimanche</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="de522dc0285d55c95bb9af4aa39020ac35548353" resname="workzone:datepicker:thursday">
+      <trans-unit id="de522dc0285d55c95bb9af4aa39020ac35548353" resname="workzone:datepicker:thursday" approved="yes">
         <source>workzone:datepicker:thursday</source>
-        <target state="new">workzone:datepicker:thursday</target>
+        <target state="translated">Jeudi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d274289f8c48bcb43c06efe9386967b7f8fb56df" resname="workzone:datepicker:tuesday">
+      <trans-unit id="d274289f8c48bcb43c06efe9386967b7f8fb56df" resname="workzone:datepicker:tuesday" approved="yes">
         <source>workzone:datepicker:tuesday</source>
-        <target state="new">workzone:datepicker:tuesday</target>
+        <target state="translated">Mardi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="423742b6f616f9847ea24afec03e24b15f3ff10f" resname="workzone:datepicker:wednesday">
+      <trans-unit id="423742b6f616f9847ea24afec03e24b15f3ff10f" resname="workzone:datepicker:wednesday" approved="yes">
         <source>workzone:datepicker:wednesday</source>
-        <target state="new">workzone:datepicker:wednesday</target>
+        <target state="translated">Mercredi</target>
         <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a272c87e7e6d13003b19b8b8169847c9c2fe8ef0" resname="workzone:feedback:expiration">
@@ -13524,9 +13524,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="95">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="14">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
+      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update" approved="no">
         <source>workzone:feedback:update</source>
-        <target state="new">workzone:feedback:update</target>
+        <target state="needs-translation">Valider</target>
         <jms:reference-file line="100">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
