@@ -12,7 +12,8 @@ RUN apt-get update \
         ca-certificates \
         gnupg2 \
     && apt-get update \
-    && apt-get install -y --no-install-recommends zlib1g-dev \
+    && apt-get install -y --no-install-recommends \
+        zlib1g-dev \
         git \
         ghostscript \
         gpac \
@@ -40,47 +41,23 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
-    && pecl install redis amqp-1.9.3 zmq-beta imagick-beta \
+    && pecl install \
+        redis \
+        amqp-1.9.3 \
+        zmq-beta \
+        imagick-beta \
+        xdebug-2.6.1 \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
-
-# Node Installation (node + yarn)
-# Reference :
-# https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
-# https://yarnpkg.com/lang/en/docs/install/#debian-stable
-RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
-    && apt install -y nodejs \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update && apt-get install -y --no-install-recommends yarn \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/
-
-RUN npm install -g bower recess
-
-RUN mkdir /entrypoint /var/alchemy \
+    && rm -rf /var/lib/apt/lists \
+    && mkdir /entrypoint /var/alchemy \
     && useradd -u 1000 app \
     && mkdir -p /home/app/.composer \
     && chown -R app: /home/app /var/alchemy
 
-# Create needed folders
-
-RUN mkdir -p /var/alchemy/Phraseanet/logs \
-    && chmod -R 777 /var/alchemy/Phraseanet/logs \
-    && mkdir -p /var/alchemy/Phraseanet/cache \
-    && chmod -R 777 /var/alchemy/Phraseanet/cache \
-    && mkdir -p /var/alchemy/Phraseanet/datas \
-    && chmod -R 777 /var/alchemy/Phraseanet/datas \
-    && mkdir -p /var/alchemy/Phraseanet/tmp \
-    && chmod -R 777 /var/alchemy/Phraseanet/tmp \
-    && mkdir -p /var/alchemy/Phraseanet/www/custom \
-    && chmod -R 777 /var/alchemy/Phraseanet/www/custom \
-    && mkdir -p /var/alchemy/Phraseanet/config \
-    && chmod -R 777 /var/alchemy/Phraseanet/config
+ENV XDEBUG_ENABLED=0
 
 #########################################################################
 # This image is used to build the apps
@@ -88,44 +65,42 @@ RUN mkdir -p /var/alchemy/Phraseanet/logs \
 
 FROM phraseanet-system as builder
 
-WORKDIR /var/alchemy/
-# Files that are needed at build stage
+COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
 
-COPY gulpfile.js /var/alchemy/
-COPY bower.json /var/alchemy/
-COPY .bowerrc /var/alchemy/
-COPY www/include /var/alchemy/www/include
-COPY www/scripts/apps /var/alchemy/www/scripts/apps
-COPY Makefile /var/alchemy/
-COPY package.json /var/alchemy/
-COPY phpunit.xml.dist /var/alchemy/
-COPY bin /var/alchemy/bin
-COPY composer.json /var/alchemy/
-COPY composer.lock /var/alchemy/
-RUN make install_composer
-COPY resources /var/alchemy/resources
+# Node Installation (node + yarn)
+# Reference :
+# https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
+# https://yarnpkg.com/lang/en/docs/install/#debian-stable
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        nodejs \
+        yarn \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists \
+    && mkdir -p /var/alchemy/Phraseanet \
+    && chown -R app:app /var/alchemy
 
-# Application build phase
+RUN npm install -g bower recess
 
-RUN chown -R app: /var/alchemy
+WORKDIR /var/alchemy/Phraseanet
+
 USER app
 
-RUN make clean_assets
-RUN make install_asset_dependencies
-RUN make install_assets
+# Warm up composer cache for faster builds
+COPY docker/caching/composer.* ./
+RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classmap-authoritative --no-interaction --no-scripts \
+    && rm -rf vendor composer.*
+# End warm up
 
-# Application code
+COPY --chown=app  . .
 
-COPY www /var/alchemy/www
-ADD ./docker/phraseanet/ /
-COPY lib /var/alchemy/lib
-COPY tmp /var/alchemy/tmp
-COPY config /var/alchemy/config
-COPY grammar /var/alchemy/grammar
-COPY templates-profiler /var/alchemy/templates-profiler
-COPY templates /var/alchemy/templates
-COPY tests /var/alchemy/tests
+RUN rm -rf docker/phraseanet/root \
+    && make install
 
+ADD docker/phraseanet/ /
 
 #########################################################################
 # Phraseanet web application image
@@ -133,25 +108,29 @@ COPY tests /var/alchemy/tests
 
 FROM phraseanet-system as phraseanet-fpm
 
-COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
-ADD ./docker/phraseanet/ /
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["/phraseanet-entrypoint.sh"]
-CMD ["/boot.sh"]
+ENTRYPOINT ["docker/phraseanet/entrypoint.sh"]
+CMD ["php-fpm", "-F"]
 
 #########################################################################
 # Phraseanet worker application image
 #########################################################################
 
 FROM phraseanet-fpm as phraseanet-worker
-CMD ["/worker-boot.sh"]
+ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
+CMD ["bin/console", "task-manager:scheduler:run"]
 
 #########################################################################
 # phraseanet-nginx
 #########################################################################
 
-FROM nginx:1.15 as phraseanet-nginx
-RUN useradd -u 1000 app
-ADD ./docker/nginx/ /
-COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
-CMD ["/boot.sh"]
+FROM nginx:1.17.8-alpine as phraseanet-nginx
+RUN adduser --uid 1000 --disabled-password app
+ADD ./docker/nginx/root /
+COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]
