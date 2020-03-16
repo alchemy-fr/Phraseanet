@@ -246,6 +246,7 @@ class UserApplicationsCommand extends Command
                     $account->getUser()->getId(),
                     $application->getName(),                    
                     $application->getClientId(),
+                    $application->getClientSecret(),
                     $application->getRedirectUri(),
                     ($token) ? $token->getOauthToken() : '-',
                     $application->isPasswordGranted() ? "true":  "false"
@@ -253,7 +254,7 @@ class UserApplicationsCommand extends Command
             }
 
             $applicationTable = $this->getHelperSet()->get('table');
-            $headers = ['app_id', 'user_id', 'name', 'client_id', 'callback_url', 'generated token', 'grant_password status'];
+            $headers = ['app_id', 'user_id', 'name', 'client_id', 'client_secret', 'callback_url', 'generated token', 'grant_password status'];
 
             if ($jsonformat ) {
                 foreach ($applicationList as $appList) {
@@ -312,7 +313,7 @@ class UserApplicationsCommand extends Command
             $application->isPasswordGranted() ? "true":  "false" 
         ];
 
-        $headers = ['client secret', 'client ID', 'Authorize endpoint url', 'Access endpoint', 'generated token', 'grant_password status'];
+        $headers = ['client_secret', 'client_id', 'Authorize endpoint url', 'Access endpoint', 'generated token', 'grant_password status'];
         if ($jsonformat ) {
             $createdAppInfo = array_combine($headers, $applicationCreated);
             echo json_encode($createdAppInfo);

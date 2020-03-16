@@ -37,10 +37,11 @@
     {% set content = WorkZone.getContent(srt) %}
       <div id="validations-block" class="validations-block">
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                    ui-corner-all header SSTT basket {% if not basket.getId() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
@@ -52,6 +53,7 @@
               {{basket.getName()|e}}
             </span>
           </a>
+
           <div class="menu">
               <table>
                   <tr>
@@ -113,6 +115,7 @@
       </div>
       <div id="all_baskets-block" class="all_baskets-block">
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
