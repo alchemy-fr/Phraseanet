@@ -23,7 +23,7 @@
 /datas
 /docker-compose.*
 /logs
-/nodes_modules
+/node_modules
 /plugins
 /tmp
 /vendor
