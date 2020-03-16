@@ -27,15 +27,15 @@
     {#<img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
     {% if basket.getValidation() %}
-      <img src='/assets/common/images/icons/basket_validation.png' title='' width="16" class="btn-image"/>
+      <img src='/assets/common/images/icons/basket_validation.png' title='' width="20" class="btn-image"/>
     {% elseif basket.getPusher() %}
       {% if not basket.isRead() %}
-        <img src='/assets/common/images/icons/basket_push_unread.png' title='' width="16" class="btn-image"/>
+        <img src='/assets/common/images/icons/basket_push_unread.png' title='' width="20" class="btn-image"/>
       {% else %}
-        <img src='/assets/common/images/icons/basket_push.png' title='' width="16" class="btn-image"/>
+        <img src='/assets/common/images/icons/basket_push.png' title='' width="20" class="btn-image"/>
       {% endif %}
     {% else %}
-      <img src='/assets/common/images/icons/basket.png' title='' width="16" class="btn-image"/>
+      <img src='/assets/common/images/icons/basket.png' title='' width="20" class="btn-image"/>
     {% endif %}
 
     <span class="title">{{basket.getName()}}</span>
