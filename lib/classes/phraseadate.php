@@ -90,13 +90,14 @@ class phraseadate
 
         $compareTo = new DateTime('now');
         $diff = $compareTo->format('U') - $date->format('U');
+        $yearDiff = $compareTo->format('Y') - $date->format('Y');
         $dayDiff = floor($diff / 86400);
 
         if (is_nan($dayDiff) || $dayDiff > 365000) {
             return '';
         }
 
-        $date_string = $this->formatDate($date, $this->app['locale'], 'DAY_MONTH');
+        $date_string = $this->formatDate($date, $this->app['locale'], ($yearDiff != 0) ? 'DAY_MONTH_YEAR' : 'DAY_MONTH');
 
         if ($dayDiff == 0) {
             if ($diff < 60) {
@@ -117,6 +118,16 @@ class phraseadate
         } else {
             return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH_YEAR');
         }
+    }
+
+    public function getTranslatedDate(DateTime $date = null)
+    {
+        $fmt = new IntlDateFormatter(
+            $this->app['locale'] ?: 'en',
+            NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
+        );
+
+        return $fmt->format($date);
     }
 
     /**
