@@ -52,10 +52,17 @@ export PHRASEANET_APP_PORT=8082
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `env.local` at the root of this project and define a command alias in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc`:
 
 ```bash
-alias dc="env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose"
+# ~/.bashrc or ~/.zshrc
+function dc() {
+    if [ -f env.local ]; then
+        env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose $@
+    else
+        docker-compose $@
+    fi
+}
 ```
 
 ### Running the application
@@ -117,6 +124,20 @@ This can be made easily from the builder container:
 > Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allow the final image to be slim.
 > If you need to use dev tools, ensure you are running the `builder` image!
 
+### Developer shell
+
+You can also obtain a shell access in builder container:
+
+```bash
+docker-compose run --rm builder /bin/bash
+# or
+docker-compose run --rm builder /bin/zsh
+```
+
+In this container you will have the same libraries (PHP, Node, composer, ...) that are used to build images.
+Also you have utils for development like telnet, ping, ssh, git, ...
+Your $HOME/.ssh directory is also mounted to builder's home with your ssh agent.
+
 ### Using Xdebug
 
 Xdebug is enabled by default with the `docker-compose.override.yml`
@@ -144,14 +165,35 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 
 > Don't forget to recreate your container (`docker-compose up -d phraseanet`)
 
+### Build images with plugins
+
+Plugins can be installed during build if you set the `PHRASEANET_PLUGINS` env var as follows:
+
+```bash
+PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git"
+
+# You can optionally precise the branch to install
+# If not precised, the main branch will be pulled
+PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git(custom-branch)"
+
+# Plugins are separated by spaces
+PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1) git@github.com:baz/42.git"
+```
+
+If you install private plugins, make sure you export your SSH private key content in order to allow docker build to access the GIT repository:
+```bash
+export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
+# or if your private key is protected by a passphrase:
+export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_rsa_raw && cat /tmp/id_rsa_raw && rm /tmp/id_rsa_raw)
+```
+
 # Try Phraseanet with Pre installed VM (deprecated)
 
 You can also download a testing pre installed Virtual Machine in OVA format here :
 
 https://www.phraseanet.com/download/
 
-
-# Phraseanet With Vagrant, for developement only (deprecated)
+# With Vagrant (deprecated)
 
 ## Development :
 
@@ -168,5 +210,7 @@ Ex:
 - vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
 - vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
 - vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
+
+
 
 
