@@ -26,4 +26,6 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
     docker-php-ext-enable xdebug
 fi
 
+./docker/phraseanet/plugins/console init
+
 bash -e docker-php-entrypoint $@

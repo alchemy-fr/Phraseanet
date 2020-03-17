@@ -11,7 +11,11 @@
             <span class="expiredDate">
         {% if basket.getValidation() %}
             {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
-            {{ 'workzone:feedback:expiration' | trans }} : {{ dateExpired }}
+            {% if date(dateExpired) < date() %}
+                <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
+                {% else %}
+                <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
+            {% endif %} {{ dateExpired }}
         {% endif %}
               </span>
     <div style="margin:5px 0;max-height:160px;overflow:hidden;text-overflow:ellipsis;">
