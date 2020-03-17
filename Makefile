@@ -5,8 +5,11 @@ install:
 	make install_assets
 
 install_composer:
-	composer install --ignore-platform-reqs
+	composer install --ignore-platform-reqs --no-dev --no-suggest --classmap-authoritative --no-interaction
 
+install_composer_dev:
+	composer install
+	
 install_asset_dependencies:
 	npm install
 	./node_modules/.bin/gulp build
