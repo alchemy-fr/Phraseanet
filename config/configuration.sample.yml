@@ -22,13 +22,54 @@ main:
         path: '/tmp/db.sqlite'
         charset: UTF8
     cache:
-        type: MemcacheCache
+        type: redis
         options:
             host: localhost
-            port: 11211
+            port: 6379
     search-engine:
-        type: phrasea
-        options: []
+        type: elasticsearch
+        options:
+            host: elasticsearch
+            port: 9200
+            index: ''
+            shards: 3
+            replicas: 0
+            minScore: 2
+            highlight: true
+            populate_order: RECORD_ID
+            populate_direction: DESC
+            activeTab: ''
+            facets:
+                _base:
+                    limit: 10
+                _collection:
+                    limit: 10
+                _doctype:
+                    limit: 10
+                _camera_model:
+                    limit: 0
+                _iso:
+                    limit: 0
+                _aperture:
+                    limit: 0
+                _shutterspeed:
+                    limit: 0
+                _flashfired:
+                    limit: 0
+                _framerate:
+                    limit: 0
+                _audiosamplerate:
+                    limit: 0
+                _videocodec:
+                    limit: 0
+                _audiocodec:
+                    limit: 0
+                _orientation:
+                    limit: 0
+                _colorspace:
+                    limit: 0
+                _mimetype:
+                    limit: 0
     task-manager:
         status: started
         enabled: true
@@ -62,12 +103,7 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
-    task-manager:
-        status: started
-        listener:
-            protocol: tcp
-            host: 127.0.0.1
-            port: 6700
+        exiftool_timeout: 60
     storage:
         subdefs: null
         cache: null
@@ -75,20 +111,7 @@ main:
         download: null
         lazaret: null
         caption: null
-    bridge:
-        youtube:
-            enabled: false
-            client_id: null
-            client_secret: null
-            developer_key: null
-        flickr:
-            enabled: false
-            client_id: null
-            client_secret: null
-        dailymotion:
-            enabled: false
-            client_id: null
-            client_secret: null
+        tmp_files: null
 border-manager:
     enabled: true
     extension-mapping:
@@ -98,12 +121,17 @@ border-manager:
         -
             type: Checker\Sha256
             enabled: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\UUID
             enabled: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\Colorspace
             enabled: false
+            collections: []
             options:
                 colorspaces: [cmyk, grayscale, rgb]
                 media_types: [Image]
@@ -123,6 +151,8 @@ border-manager:
             enabled: false
             options:
                 sensitive: true
+            collections: []
+            compare-ignore-collections: []
         -
             type: Checker\MediaType
             enabled: false
@@ -244,6 +274,14 @@ embed_bundle:
     document:
         player: flexpaper
         enable_pdfjs: true
+video-editor:
+    ChapterVttFieldName: VideoTextTrackChapters
+    seekBackwardStep: 500 # in ms
+    seekForwardStep: 500  # in ms
+    playbackRates:
+        - 1
+        - '1.5'
+        - 3       
 geocoding-providers:
     -
         map-provider: mapboxWebGL

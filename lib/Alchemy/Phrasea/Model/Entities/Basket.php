@@ -457,16 +457,26 @@ class Basket
 
     public function hasRecord(Application $app, \record_adapter $record)
     {
+        return !is_null($this->getElementByRecord($app, $record));
+    }
+
+    /**
+     * @param Application $app
+     * @param \record_adapter $record
+     * @return BasketElement
+     */
+    public function getElementByRecord(Application $app, \record_adapter $record)
+    {
         foreach ($this->getElements() as $basket_element) {
             $bask_record = $basket_element->getRecord($app);
 
             if ($bask_record->getRecordId() == $record->getRecordId()
                 && $bask_record->getDataboxId() == $record->getDataboxId()) {
-                return true;
+                return $basket_element;
             }
         }
 
-        return false;
+        return null;
     }
 
     public function getSize(Application $app)

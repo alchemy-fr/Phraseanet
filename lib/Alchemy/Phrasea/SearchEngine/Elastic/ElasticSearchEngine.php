@@ -396,10 +396,10 @@ class ElasticSearchEngine implements SearchEngineInterface
         if ($options->getDateFields() && ($options->getMaxDate() || $options->getMinDate())) {
             $range = [];
             if ($options->getMaxDate()) {
-                $range['lte'] = $options->getMaxDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['lte'] = $options->getMaxDate()->format('Y-m-d');
             }
             if ($options->getMinDate()) {
-                $range['gte'] = $options->getMinDate()->format(FieldMapping::DATE_FORMAT_CAPTION_PHP);
+                $range['gte'] = $options->getMinDate()->format('Y-m-d');
             }
 
             foreach ($options->getDateFields() as $dateField) {
@@ -668,17 +668,20 @@ class ElasticSearchEngine implements SearchEngineInterface
         }
         // fields aggregates
         $structure = $this->context_factory->getLimitedStructure($options);
-        foreach ($structure->getFacetFields() as $name => $field) {
-            // 2015-05-26 (mdarse) Removed databox filtering.
-            // It was already done by the ACL filter in the query scope, so no
-            // document that shouldn't be displayed can go this far.
-            $agg = [
-                'terms' => [
-                    'field' => $field->getIndexField(true),
-                    'size'  => $field->getFacetValuesLimit()
-                ]
-            ];
-            $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
+        foreach($structure->getAllFields() as $name => $field) {
+            $size = $this->options->getAggregableFieldLimit($name);
+            if ($size !== databox_field::FACET_DISABLED) {
+                if ($size === databox_field::FACET_NO_LIMIT) {
+                    $size = ESField::FACET_NO_LIMIT;
+                }
+                $agg = [
+                    'terms' => [
+                        'field' => $field->getIndexField(true),
+                        'size'  => $size
+                    ]
+                ];
+                $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
+            }
         }
 
         return $aggs;

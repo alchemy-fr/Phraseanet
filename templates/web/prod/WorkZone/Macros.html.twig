@@ -5,35 +5,68 @@
     </a>
   </div>
   <div class="bloc">
+      <div id="basket-filter" class="basket-filter">
+          <span class="filter-title">{{ 'See' | trans }} : </span>
+          <span class="filter-item">
+              <label id="basket-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="basket" checked>
+                  {{ 'Basket' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="feedback-list"  class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="feedback" checked>
+                  {{ 'Feedback' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="push-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="push" checked >
+                  {{ 'Push' | trans }}
+              </label>
+          </span>
+          <span class="filter-item">
+              <label id="story-list" class="checkbox inline" for="basketFilter">
+                  <input type="checkbox" class="checkbox " name="basketFilter" value="story" checked>
+                  {{ 'Stories' | trans }}
+              </label>
+          </span>
+      </div>
+
   <div class="insidebloc">
     {% set content = WorkZone.getContent(srt) %}
+      <div id="validations-block" class="validations-block">
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                    ui-corner-all header SSTT basket {% if not basket.getId() %}unread{% endif %}
                     {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
             <span>
               {% if not basket.isRead() %}
-                <img src='/assets/common/images/icons/basket_push_unread.png' title=''/>
+                <img src='/assets/common/images/icons/basket_feedback_unread.png' title=''/>
+              {%  else %}
+                <img src='/assets/common/images/icons/basket_feedback_read.png' title=''/>
               {% endif %}
-              <img src='/assets/common/images/icons/basket.png' title=''/>
               {{basket.getName()|e}}
             </span>
           </a>
+
           <div class="menu">
               <table>
                   <tr>
                       <td>
-                          <img
-                              title="{{ basket.getDescription() }}"
-                              class="basketTips basket_title"
-                              src="/assets/common/images/icons/valid.png"
-                            />
+                          <img title="{{ basket.getDescription()|e }}"
+                               class="basket_title"
+                               src="/assets/common/images/icons/valid.png" />
                       </td>
-                      <td>
-                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                      <td class="contextMenuWrapper">
+                          <a class="contextMenuTrigger" href="#">
+                              <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                              <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i>
+                          </a>
                       </td>
                   </tr>
               </table>
@@ -79,13 +112,15 @@
         </div>
         <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"></div>
     {% endfor %}
-
+      </div>
+      <div id="all_baskets-block" class="all_baskets-block">
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+
         <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}{% if basket.getValidation() %}feedbacks-block{% elseif basket.getPusher() %}pushes-block{% else %}baskets-block{% endif %} ">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               {% if basket.getValidation() %}
@@ -126,8 +161,10 @@
                             </td>
                         {% endif %}
                       -->
-                        <td>
-                            <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                      <td class="contextMenuWrapper">
+                            <a class="contextMenuTrigger" href="#">
+                                <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                                <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i></a>
                         </td>
                   </tr>
             </table>
@@ -210,9 +247,8 @@
         </div>
         <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;"> </div>
     {% endfor %}
-
-
-
+      </div>
+      <div id="stories-block" class="stories-block">
     {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
         <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
@@ -229,8 +265,11 @@
           <div class="menu">
               <table>
                   <tr>
-                      <td>
-                          <a class="contextMenuTrigger icon-display-grid" href="#"></a>
+                      <td class="contextMenuWrapper">
+                          <a class="contextMenuTrigger " href="#">
+                              <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg" aria-hidden="true"></i>
+                              <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse" aria-hidden="true"></i>
+                          </a>
                       </td>
                   </tr>
               </table>
@@ -292,6 +331,7 @@
     {% endfor %}
   </div>
 </div>
+</div>
 {% endmacro %}
 
 
@@ -305,49 +345,56 @@
   {% endif %}
 
   {% import 'common/thumbnail.html.twig' as thumbnail %}
+    <div class="chim-content">
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
+            <div class="title">
+                    {{ record.get_title()|truncate(20, "...") }}
+            </div>
+        {% endif %}
+        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
+            <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+                {% for flag in record_flags(record) %}
+                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
+           data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
+           data-position="{{ ord }}"
+           data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
+           style="height:{{box_height}}px;"
+           id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
+           <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
 
-  <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
-       data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
-       data-position="{{ ord }}"
-       data-id="{% if wz_scope == 'groupings' %}{{container.get_sbas_id()}}_{{container.get_record_id()}}{% else %}{{container.getId()}}{% endif %}"
-       style="height:{{box_height}}px;"
-       id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
-       <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
-      {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
-          <div class="title">
-              {{record.get_title()}}
-          </div>
-      {% endif %}
-      {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
-          <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
-              {% for flag in record_flags(record) %}
-                  <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
-              {% endfor %}
-          </div>
-      {% endif %}
-          <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
-              {{record.getNumber()}}
-          </div>
-    {{thumbnail.format(record.get_thumbnail,82,82, '', true, false)}}
-      <div class="bottom">
-          <a
-            {% if wz_scope == 'groupings' %}
-              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
-            {% elseif wz_scope == 'basket' %}
-              id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
-            {% elseif wz_scope == 'basket' %}
-              href="#"
-            {% endif %}
-            class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
-              <i class="fa fa-times" aria-hidden="true"></i>
-          </a>
-          {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-              <div class="captionRolloverTips" tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}"></div>
-          {% endif %}
-      </div>
-  </div>
+            <div class="record-number">
+                  {{record.getNumber()}}
+            </div>
+            {{thumbnail.format(record.get_thumbnail,140,140, '', true, false)}}
+            <div class="bottom">
+              {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
+                  <span class="icon-stack captionRolloverTips captionTips"
+                        tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
+                       <i class="icomoon icon-round-list-24px white" ></i>
+                  </span>
+              {% endif %}
+              <a
+                {% if wz_scope == 'groupings' %}
+                  id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                  href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
+                {% elseif wz_scope == 'basket' %}
+                  id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                  href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+                {% elseif wz_scope == 'basket' %}
+                  href="#"
+                {% endif %}
+                class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}" >
+                  <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+                  <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
+              </a>
+
+            </div>
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro display_basket(app, basket) %}

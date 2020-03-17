@@ -20,7 +20,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($structure->getAllFields());
         $this->assertEmpty($structure->getUnrestrictedFields());
         $this->assertEmpty($structure->getPrivateFields());
-        $this->assertEmpty($structure->getFacetFields());
         $this->assertEmpty($structure->getThesaurusEnabledFields());
         $this->assertEmpty($structure->getDateFields());
     }
@@ -36,6 +35,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
         $field->getDependantCollections()->willReturn(['1']);
+        $field->get_databox_id()->willReturn('1');
 
         $structure->add($field->reveal());
         $this->assertCount(1, $structure->getAllFields());
@@ -60,6 +60,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $field->isPrivate()->willReturn(false);
         $field->isFacet()->willReturn(false);
         $field->hasConceptInference()->willReturn(false);
+        $field->get_databox_id()->willReturn('1');
 
         $other = new Field('foo', FieldMapping::TYPE_STRING);
 
@@ -91,19 +92,6 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $private_fields = $structure->getPrivateFields();
         $this->assertContains($private_field, $private_fields);
         $this->assertNotContains($unrestricted_field, $private_fields);
-    }
-
-    public function testGetFacetFields()
-    {
-        $facet = new Field('foo', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_NO_LIMIT]);
-        $not_facet = new Field('bar', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_DISABLED]);
-        $structure = new Structure();
-        $structure->add($facet);
-        $this->assertContains($facet, $structure->getFacetFields());
-        $structure->add($not_facet);
-        $facet_fields = $structure->getFacetFields();
-        $this->assertContains($facet, $facet_fields);
-        $this->assertNotContains($not_facet, $facet_fields);
     }
 
     public function testGetDateFields()

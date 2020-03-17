@@ -15,7 +15,7 @@ class FacetsResponse
     private $escaper;
     private $facets = array();
 
-    public function __construct(Escaper $escaper, array $response, GlobalStructure $structure)
+    public function __construct(ElasticsearchOptions $options, Escaper $escaper, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
 
@@ -25,7 +25,13 @@ class FacetsResponse
 
         $atf = ElasticsearchOptions::getAggregableTechnicalFields();
 
-        foreach ($response['aggregations'] as $name => $aggregation) {
+        // sort facets respecting the order defined in options
+        foreach($options->getAggregableFields() as $name=>$foptions) {
+            if(!array_key_exists($name, $response['aggregations'])) {
+                continue;
+            }
+            $aggregation = $response['aggregations'][$name];
+
             $tf = null;
             $valueFormatter = function($v){ return $v; };    // default equality formatter
 
@@ -46,22 +52,23 @@ class FacetsResponse
                 if (!isset($bucket['key']) || !isset($bucket['doc_count'])) {
                     $this->throwAggregationResponseError();
                 }
+                $key = array_key_exists('key_as_string', $bucket) ? $bucket['key_as_string'] : $bucket['key'];
                 if($tf) {
                     // the field is one of the hardcoded tech fields
                     $value = [
-                        'value'     => $valueFormatter($bucket['key']),
-                        'raw_value' => $bucket['key'],
+                        'value'     => $valueFormatter($key),
+                        'raw_value' => $key,
                         'count'     => $bucket['doc_count'],
-                        'query'     => sprintf($tf['query'], $this->escaper->escapeWord($bucket['key']))
+                        'query'     => sprintf($tf['query'], $this->escaper->escapeWord($key))
                     ];
                 }
                 else {
                     // the field is a normal field
                     $value = [
-                        'value'     => $bucket['key'],
-                        'raw_value' => $bucket['key'],
+                        'value'     => $key,
+                        'raw_value' => $key,
                         'count'     => $bucket['doc_count'],
-                        'query'     => sprintf('field.%s:%s', $this->escaper->escapeWord($name), $this->escaper->escapeWord($bucket['key']))
+                        'query'     => sprintf('field.%s=%s', $this->escaper->escapeWord($name), $this->escaper->quoteWord($key))
                     ];
                 }
 
@@ -77,6 +84,7 @@ class FacetsResponse
                 ];
             }
         }
+
     }
 
 

@@ -15,7 +15,7 @@ jobs:
           CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
         docker:
         - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
-          command: /sbin/init
+        - image: circleci/rabbitmq:3.7.7
         steps:
         - checkout
         - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
@@ -24,10 +24,7 @@ jobs:
             command: nvm install v10.12.0 && nvm alias default v10.12.0
         - run:
             working_directory: ~/alchemy-fr/Phraseanet
-            command: 'sudo service memcached status || sudo service memcached start; sudo
-              redis-cli ping >/dev/null 2>&1 || sudo service redis-server start; sudo
-              service mysql status || sudo service mysql start; sudo service rabbitmq-server
-              status || sudo service rabbitmq-server start; '
+            command: 'sudo service mysql status || sudo service mysql start;'
         # Dependencies
         #   This would typically go in either a build or a build-and-test job when using workflows
         # Restore the dependency cache
@@ -110,6 +107,53 @@ jobs:
         - store_artifacts:
             path: /tmp/circleci-test-results
 
+
+    build_phraseanet-fpm:
+        machine:
+          image: ubuntu-1604:201903-01
+          docker_layer_caching: true
+        working_directory: ~/alchemy-fr/Phraseanet
+        steps:
+            - checkout
+            - aws-ecr/ecr-login:
+                region: AWS_DEFAULT_REGION
+            - run: docker build --target phraseanet-fpm -t ${AWS_ACCOUNT_URL}/phraseanet-fpm:${CIRCLE_BRANCH} .
+            - aws-ecr/push-image:
+                account-url: AWS_ACCOUNT_URL
+                repo: "phraseanet-fpm"
+                tag: "${CIRCLE_BRANCH}"
+
+    build_phraseanet-worker:
+        machine:
+          image: ubuntu-1604:201903-01
+          docker_layer_caching: true
+        working_directory: ~/alchemy-fr/Phraseanet
+        steps:
+            - checkout
+            - aws-ecr/ecr-login:
+                region: AWS_DEFAULT_REGION
+            - run: docker build --target phraseanet-worker -t ${AWS_ACCOUNT_URL}/phraseanet-worker:${CIRCLE_BRANCH} .
+            - aws-ecr/push-image:
+                account-url: AWS_ACCOUNT_URL
+                repo: "phraseanet-worker"
+                tag: "${CIRCLE_BRANCH}"
+
+    build_phraseanet-nginx:
+        machine:
+          image: ubuntu-1604:201903-01
+          docker_layer_caching: true
+        working_directory: ~/alchemy-fr/Phraseanet
+        steps:
+            - checkout
+            - aws-ecr/ecr-login:
+                region: AWS_DEFAULT_REGION
+            - run: docker build --target phraseanet-nginx -t ${AWS_ACCOUNT_URL}/phraseanet-nginx:${CIRCLE_BRANCH} .
+            - aws-ecr/push-image:
+                account-url: AWS_ACCOUNT_URL
+                repo: "phraseanet-nginx"
+                tag: "${CIRCLE_BRANCH}"
+
+
 workflows:
     version: 2
     oldfashion:
@@ -117,25 +161,9 @@ workflows:
             - build
     newfashion:
         jobs:
-            - aws-ecr/build_and_push_image:
-                account-url: AWS_ACCOUNT_URL
-                aws-access-key-id: AWS_ACCESS_KEY_ID
-                aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+            - build_phraseanet-fpm:
                 context: "AWS London"
-                create-repo: true
-                dockerfile: Dockerfile
-                extra-build-args: "--target phraseanet"
-                region: AWS_DEFAULT_REGION
-                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet"
-                tag: "alpha-0.1"
-            - aws-ecr/build_and_push_image:
-                account-url: AWS_ACCOUNT_URL
-                aws-access-key-id: AWS_ACCESS_KEY_ID
-                aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+            - build_phraseanet-worker:
                 context: "AWS London"
-                create-repo: true
-                dockerfile: Dockerfile
-                extra-build-args: "--target phraseanet-nginx"
-                region: AWS_DEFAULT_REGION
-                repo: "${AWS_RESOURCE_NAME_PREFIX}/phraseanet-nginx"
-                tag: "alpha-0.1"
+            - build_phraseanet-nginx:
+                context: "AWS London"

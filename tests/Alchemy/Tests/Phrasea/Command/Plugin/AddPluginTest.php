@@ -10,6 +10,26 @@ use Alchemy\Phrasea\Command\Plugin\AddPlugin;
  */
 class AddPluginTest extends PluginCommandTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('plugins');
+    }
+
+    public function tearDown()
+    {
+        if(is_null($this->bkp)) {
+            self::$DI['app']['conf']->remove('plugins');
+        }
+        else {
+            self::$DI['app']['conf']->set('plugins', $this->bkp);
+        }
+        parent::tearDown();
+    }
+
+
     public function testExecute()
     {
         $source = 'TestPlugin';
@@ -49,7 +69,7 @@ class AddPluginTest extends PluginCommandTestCase
         // the plugin is checked when updating config files
         self::$DI['cli']['plugins.plugins-validator']->expects($this->at(0))
             ->method('validatePlugin')
-            ->with('tempdir')
+            ->with('TestPlugin')
             ->will($this->returnValue($manifest));
 
         self::$DI['cli']['plugins.plugins-validator']->expects($this->at(1))

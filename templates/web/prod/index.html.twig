@@ -146,7 +146,7 @@
         $(document).ready(function(){
             prodApp.appEvents.emit('workzone.doRemoveWarning', "{% if app['settings'].getUserSetting(app.getAuthenticatedUser(), "warning_on_delete_story") %}true{% else %}false{% endif %}");
             prodApp.appEvents.emit('search.updateFacetData');
-
+            $('body').addClass('{{ cssfile }}');
 
         });
     </script>
@@ -183,6 +183,58 @@
                         </div>
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
+                                <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
+                                <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
+                                <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
+                                <div class="filter-facet-setting look_box_settings">
+                                    <div id="accordion">
+                                        <div class="card">
+                                            <div class="card-header" id="headingOne">
+                                                <h5 class="mb-0" style="margin-left: 10px">
+                                                    <button class="btn btn-facet-option collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        {{ 'prod:workzone:facetstab:search_and_facets_sort_options' | trans }} <span class="icomoon">&#xE96C;</span>
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                <div class="card-body">
+                                            <div class="left-facet-filter facet-filter">
+                                                <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
+                                                <form class="form-inline">
+                                                    {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                                                    <label class="select" for="orderFacet">
+                                                        <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
+                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                                                        </select>
+                                                    </label>
+                                                </form>
+                                            </div>
+                                            <div class="right-facet-filter facet-filter">
+                                                <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
+                                                <form class="form-inline">
+                                                    {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
+                                                    <label class="select" for="facetValuesOrder">
+                                                        <select class="preferences-facet-values-order" name="facetValuesOrder">
+                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
+                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
+                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                        </select>
+                                                    </label>
+                                                </form>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <button id="facets-back-btn" style="display:none;">back</button>
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
@@ -326,6 +378,9 @@
                             </div>
                             <div class="pull-right">
                                 <input class="btn btn_lightgrey reset_button search-reset-action" style="display: none;" type="button" value="{{ 'Re-initialiser' | trans }}" />
+
+                                <span class="btn btn-info btn-lg reload-search hidden " id="reload-search">{{ 'help::help-search: relaunch search without filter' | trans }}</span>
+
                             </div>
                         </div>
 
@@ -681,11 +736,15 @@
                     </div>
                 </div>
                 <div class="box">
-                    <h1>{{  'Language' | trans }} : {{ app['locale'] }}</h1>
+                    <h1>{{  'Language selection' | trans }}</h1>
                     <label class="inline" for="language">
                         <select onchange="window.location = $(this).val();" id="language">
-                            {% for code, language in app.getAvailableLanguages() if code != app['locale'] %}
+                            {% for code, language in app.getAvailableLanguages() %}
+                                {% if code == app['locale'] %}
+                                <option selected="selected" disabled="disabled">{{ language }}</option>
+                            {% else %}
                                 <option value="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}"><a href="{{ path('set_locale', {'locale' : code, 'redirect' : '/prod' }) }}" data-country-code="{{ code }}">{{ language }}</a></option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </label>
@@ -811,30 +870,6 @@
                 </div>
                 <div class="box">
                     <h1>{{ 'index::advance_search: facet' | trans }}</h1>
-                    <h1>{{ 'index::advance_search: facet-order' | trans }}</h1>
-                    <form class="form-inline">
-                        {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
-                        <label class="select" for="orderFacet">
-                            <select class="preferences-facet-order" name="orderFacet">
-                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
-                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
-                                <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                            </select>
-                        </label>
-                    </form>
-                    <h1>{{ 'index::advance_search: facet-values-order' | trans }}</h1>
-                    <form class="form-inline">
-                        {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
-                        <label class="select" for="facetValuesOrder">
-                            <select class="preferences-facet-values-order" name="facetValuesOrder">
-                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
-                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
-                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                            </select>
-                        </label>
-                    </form>
                     {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
                     <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
@@ -926,7 +961,7 @@
                 {% set basket_status_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') %}
                 <label for="basket_status_display" class="checkbox">
                     <input
-                    name="basket_status_display" type="checkbox preferences-options-basket-status" class="checkbox" value="1"
+                    name="basket_status_display" type="checkbox" class="checkbox preferences-options-basket-status" value="1"
                     id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %} />
                     {{ 'Afficher les status' | trans }}
                 </label>

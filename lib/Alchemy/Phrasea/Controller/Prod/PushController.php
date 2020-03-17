@@ -193,7 +193,7 @@ class PushController extends Controller
                 'Validation from %user%', [
                 '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
             ]));
-            $validation_description = $request->request->get('validation_description');
+            $validation_description = $request->request->get('message');
 
             $participants = $request->request->get('participants');
 
@@ -463,6 +463,8 @@ class PushController extends Controller
         }
 
         try {
+            $manager = $this->getEntityManager();
+
             $password = $this->getRandomGenerator()->generateString(128);
 
             $user = $this->getUserManipulator()->createUser($email, $password, $email);
@@ -476,11 +478,14 @@ class PushController extends Controller
                 $user->setCompany($request->request->get('company'));
             }
             if ($request->request->get('job')) {
-                $user->setCompany($request->request->get('job'));
+                $user->setJob($request->request->get('job'));
             }
-            if ($request->request->get('form_geonameid')) {
-                $this->getUserManipulator()->setGeonameId($user, $request->request->get('form_geonameid'));
+            if ($request->request->get('city')) {
+                $this->getUserManipulator()->setGeonameId($user, $request->request->get('city'));
             }
+
+            $manager->persist($user);
+            $manager->flush();
 
             $result['message'] = $this->app->trans('User successfully created');
             $result['success'] = true;

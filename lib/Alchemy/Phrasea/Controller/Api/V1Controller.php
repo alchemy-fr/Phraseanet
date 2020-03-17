@@ -594,6 +594,9 @@ class V1Controller extends Controller
                 ],
                 'separator'        => $databox_field->get_separator(),
                 'thesaurus_branch' => $databox_field->get_tbranch(),
+                'generate_cterms'  => $databox_field->get_generate_cterms(),
+                'gui_editable'     => $databox_field->get_gui_editable(),
+                'gui_visible'      => $databox_field->get_gui_visible(),
                 'type'             => $databox_field->get_type(),
                 'indexable'        => $databox_field->is_indexable(),
                 'multivalue'       => $databox_field->is_multi(),
@@ -944,7 +947,7 @@ class V1Controller extends Controller
                 }
 
                 $originalName = $pi['filename'] . '.' . $pi['extension'];
-                $newPathname = $tempfile;
+                $uploadedFilename = $newPathname = $tempfile;
             }
         }
         else {
@@ -956,8 +959,11 @@ class V1Controller extends Controller
             if (!$file->isValid()) {
                 return $this->getBadRequestAction($request, 'Data corrupted, please try again');
             }
+
+            $uploadedFilename = $file->getPathname();
             $originalName = $file->getClientOriginalName();
             $newPathname = $file->getPathname() . '.' . $file->getClientOriginalExtension();
+
             if (false === rename($file->getPathname(), $newPathname)) {
                 return Result::createError($request, 403, 'Error while renaming file')->createResponse();
             }
@@ -1009,6 +1015,11 @@ class V1Controller extends Controller
 
         $nosubdef = $request->get('nosubdefs') === '' || \p4field::isyes($request->get('nosubdefs'));
         $this->getBorderManager()->process($session, $Package, $callback, $behavior, $nosubdef);
+
+        // remove $newPathname on temporary directory
+        if ($newPathname !== $uploadedFilename) {
+            @rename($newPathname, $uploadedFilename);
+        }
 
         $ret = ['entity' => null];
 
@@ -1079,6 +1090,11 @@ class V1Controller extends Controller
                 null !== ($subdef = $this->listEmbeddableMedia($request, $record, $media))) {
                 $ret[] = $subdef;
             }
+        }
+
+        // remove $newPathname on temporary directory
+        if ($renamedFilename !== $uploadedFilename) {
+            @rename($renamedFilename, $uploadedFilename);
         }
 
         return Result::create($request, $ret)->createResponse();
@@ -1557,9 +1573,9 @@ class V1Controller extends Controller
         $options->setFirstResult((int)($request->get('offset_start') ?: 0));
         $options->setMaxResults((int)$request->get('per_page') ?: 10);
 
-        $this->getSearchEngine()->resetCache();
+        $searchEngine = $this->getSearchEngine();
 
-        $search_result = $this->getSearchEngine()->query((string)$request->get('query'), $options);
+        $search_result = $searchEngine->query((string)$request->get('query'), $options);
 
         $this->getUserManipulator()->logQuery($this->getAuthenticatedUser(), $search_result->getQueryText());
 
@@ -1567,11 +1583,11 @@ class V1Controller extends Controller
         $collectionsReferencesByDatabox = $options->getCollectionsReferencesByDatabox();
         foreach ($collectionsReferencesByDatabox as $sbid => $references) {
             $databox = $this->findDataboxById($sbid);
-            $collectionsIds = array_map(function(CollectionReference $ref){return $ref->getCollectionId();}, $references);
+            $collectionsIds = array_map(function (CollectionReference $ref) {
+                return $ref->getCollectionId();
+            }, $references);
             $this->getSearchEngineLogger()->log($databox, $search_result->getQueryText(), $search_result->getTotal(), $collectionsIds);
         }
-
-        $this->getSearchEngine()->clearCache();
 
         return $search_result;
     }
@@ -1984,7 +2000,7 @@ class V1Controller extends Controller
                 return $this->getBadRequestAction($request);
             }
 
-            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 2));
+            $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
         $record->setStatus(strrev($datas));

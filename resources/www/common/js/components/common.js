@@ -31,16 +31,12 @@ var commonModule = (function ($, p4) {
             $(this).removeClass('context-menu-item-hover');
         });
 
-        // $('#help-trigger').contextMenu('#mainMenu .helpcontextmenu', {openEvt: 'click', dropDown: true, theme: 'vista', dropDown: true,
-        //     showTransition: 'slideDown',
-        //     hideTransition: 'hide',
-        //     shadow: false
-        // });
 
         $('body').on('click', '.infoDialog', function (event) {
             infoDialog($(this));
         });
     });
+
 
     function showOverlay(n, appendto, callback, zIndex) {
 
@@ -98,7 +94,7 @@ var commonModule = (function ($, p4) {
             .empty()
             .append(el.attr('infos'))
             .dialog({
-
+                title: 'About',
                 autoOpen: false,
                 closeOnEscape: true,
                 resizable: false,
@@ -110,7 +106,7 @@ var commonModule = (function ($, p4) {
                     backgroundColor: '#000',
                     opacity: 0.7
                 }
-            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'auto'});
+            }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
 

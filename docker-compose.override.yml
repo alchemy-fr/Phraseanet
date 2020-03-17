@@ -1,0 +1,99 @@
+version: "3.4"
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: on-failure
+    ports:
+    - ${PHRASEANET_PHPMYADMIN_PORT}:80
+    depends_on:
+    - db
+
+  gateway:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+
+  builder:
+    build:
+      context: .
+      target: builder
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+      - ${SSH_AUTH_SOCK}:/ssh-auth-sock
+      - ${HOME}/.ssh:/home/app/.ssh
+      - dev_vol:/home/app
+    environment:
+      - PHRASEANET_PROJECT_NAME
+
+  phraseanet:
+    environment:
+    - XDEBUG_ENABLED
+    - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST} idekey=${IDE_KEY} remote_enable=1 profiler_enable=${XDEBUG_PROFILER_ENABLED} profiler_output_dir=/var/alchemy/Phraseanet/cache/profiler
+    - PHP_IDE_CONFIG
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw    
+
+  worker:
+    volumes:
+    - ../:/var/alchemy
+    - .:/var/alchemy/Phraseanet
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    
+  rabbitmq:
+    ports:
+    - ${RABBITMQ_MANAGEMENT_PORT}:15672
+
+  db:
+    volumes:
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+    - 1025:1025
+    - 8025:8025
+
+  elasticsearch:
+    ports:
+    - 9200:9200
+    volumes:
+    - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data:rw
+
+  kibana:
+    image: kibana:4.6.6
+    ports:
+    - 5601:5601
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: $PHRASEANET_SUBNET_IPS
+
+volumes:
+  dev_vol:
+    driver: local

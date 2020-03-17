@@ -39,7 +39,6 @@ class eventsmanager_broker
             ],
             'notify' => [
                 'eventsmanager_notify_autoregister',
-                'eventsmanager_notify_bridgeuploadfail',
                 'eventsmanager_notify_downloadmailfail',
                 'eventsmanager_notify_feed',
                 'eventsmanager_notify_order',

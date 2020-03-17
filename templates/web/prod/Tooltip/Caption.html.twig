@@ -1,6 +1,11 @@
 {% extends 'prod/Tooltip/Tooltip.html.twig' %}
 
-{% set title %}{{ 'Caption' | trans }}{% endset %}
+{% set title %}{{ 'Caption' | trans }} &nbsp;<span class="collection-block" style="float: right"> {% set collectionLogo = collection_logo(record.baseId) %}
+    {% if collectionLogo is empty %}
+        {{ record.collectionName }}
+    {% else %}
+        {{ collectionLogo|raw }}
+    {% endif %}</span> {% endset %}
 {% set width = 400 %}
 {% set maxwidth = 700 %}
 

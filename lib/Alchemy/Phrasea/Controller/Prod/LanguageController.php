@@ -136,6 +136,7 @@ class LanguageController
             'or'                    => $translator->trans('or'),
             'Suppr'                 => $translator->trans('Suppr'),
             'Add new range'         => $translator->trans('Add new range'),
+            'Save as VTT'           => $translator->trans('Save as VTT'),
             'Export ranges'         => $translator->trans('Export ranges'),
             'Start Range'           => $translator->trans('Start Range'),
             'End Range'             => $translator->trans('End Range'),

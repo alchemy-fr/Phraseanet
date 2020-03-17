@@ -1,6 +1,6 @@
 {# designed to be printed in a small box #}
 <div class="PNB10" callback="{{ callback }}">
-    <form  id="quickAddUser" method="POST" action="{{ path('prod_push_do_add_user') }}">
+    <form  id="quickAddUser" method="POST" action="{{ path('prod_push_do_add_user') }}" style="padding-top: 20px">
         <table>
             <tr>
                 <td>
@@ -21,16 +21,6 @@
                 </td>
                 <td>
                     <input name="job" placeholder="{{ 'Job' | trans }}" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input name="city" placeholder="{{ 'City' | trans }}" type="text" value="" class="geoname_field"
-                           autocomplete="false"/>
-                </td>
-                <td>
-                    <input name="pays" placeholder="{{ 'Pays' | trans }}" type="text" value="" class="geoname_field"
-                           autocomplete="false"/>
                 </td>
             </tr>
             <tr>
