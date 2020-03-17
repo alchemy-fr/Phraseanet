@@ -82,8 +82,19 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get install -y --no-install-recommends \
         nodejs \
         yarn \
+        nano \
+        vim \
+        iputils-ping \
+        zsh \
+        ssh \
+        telnet \
+        autoconf \
+        libtool \
+        python \
+        pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
+    && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
 
@@ -99,10 +110,28 @@ RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classma
 
 COPY --chown=app  . .
 
-RUN rm -rf docker/phraseanet/root \
-    && make install
+RUN make install
 
-ADD docker/phraseanet/ /
+ADD ./docker/builder/root /
+
+# SSH Private repo
+ARG SSH_PRIVATE_KEY
+ARG PHRASEANET_PLUGINS
+
+RUN ( \
+        test ! -z "${SSH_PRIVATE_KEY}" \
+        && mkdir -p ~/.ssh \
+        && echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa \
+        # make sure github domain.com is accepted
+        && ssh-keyscan -H github.com >> ~/.ssh/known_hosts \
+        && chmod 600 ~/.ssh/id_rsa \
+    ) || echo "Skip SSH key"
+
+RUN ./docker/phraseanet/plugins/console install
+
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+
+CMD []
 
 #########################################################################
 # Phraseanet web application image

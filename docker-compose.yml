@@ -5,6 +5,9 @@ services:
     build:
       context: .
       target: phraseanet-nginx
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     volumes:
@@ -21,6 +24,9 @@ services:
     build:
       context: .
       target: phraseanet-fpm
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
@@ -29,6 +35,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_PROJECT_NAME
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - OPCACHE_ENABLED
@@ -57,6 +64,9 @@ services:
     build:
       context: .
       target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
@@ -65,6 +75,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_PROJECT_NAME
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - OPCACHE_ENABLED
