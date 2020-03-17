@@ -615,7 +615,7 @@ class PushController extends Controller
         $manager->beginTransaction();
         try {
             $basket = $repository->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
-            $date = new \DateTime($request->request->get('date'));
+            $date = new \DateTime($request->request->get('date') . " 23:59:59");
             $validation = $basket->getValidation();
             if (is_null($validation)) {
                 return $this->app->json($ret);
