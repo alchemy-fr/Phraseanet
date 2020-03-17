@@ -32,6 +32,7 @@ use Alchemy\Phrasea\Command\Compile\Configuration;
 use Alchemy\Phrasea\Command\RecordAdd;
 use Alchemy\Phrasea\Command\RescanTechnicalDatas;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Command\ApplyRightsCommand;
 use Alchemy\Phrasea\CLI;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
@@ -83,6 +84,7 @@ $cli->command(new \module_console_aboutLicense('about:license'));
 $cli->command(new CheckConfig('check:config'));
 
 $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
+$cli->command(new ApplyRightsCommand('system:apply-rights'));
 
 $cli->command(new \module_console_systemMailCheck('system:mail-check'));
 $cli->command(new \module_console_systemBackupDB('system:backup-db'));
