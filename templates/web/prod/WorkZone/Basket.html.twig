@@ -111,7 +111,7 @@
                     <input type="hidden" name="feedbackId" value={{ basket.getId}} />
                     <input type="hidden" name="feedbackDate" class="alternate" />
                 <input type="text" class="btn feed-datepicker" name="feedback-deadline" value="{{ dateExpired }}">
-                    <button type="submit" class="submit" title="{{ 'workzone:feedback:update' | trans }}"><i class="fa fa-save"></i></button>
+                    <button type="submit" class="submit hidden submit-validation" title="{{ 'workzone:feedback:update' | trans }}"><i class="fa fa-save"></i></button>
                 </form>
                 <p class="message text-right" style="opacity: 0;transition: all 0.2s; color: green; display: block; ">{{ 'prod:workzone:basket:updated-message' | trans }}</p>
             </div>
@@ -156,6 +156,7 @@
             },
             success: function (data) {
                 $('.message').css('opacity',1);
+                $('.submit-validation').addClass('hidden');
                 setTimeout(function(){ $('.message').css('opacity',0); }, 2000);
             },
         });
@@ -177,7 +178,10 @@
 
         };
 
-        $( ".feed-datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+        $(".feed-datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+        $(".feed-datepicker" ).change(function() {
+            $('.submit-validation').removeClass('hidden');
+        })
     })
 
 </script>
