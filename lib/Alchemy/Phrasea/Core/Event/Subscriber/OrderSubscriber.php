@@ -41,13 +41,13 @@ class OrderSubscriber extends AbstractNotificationSubscriber
 
     public function onCreate(OrderEvent $event)
     {
-        $base_ids = array_unique(array_map(function (OrderElement $element) {
+        $baseIds = array_unique(array_map(function (OrderElement $element) {
             return $element->getBaseId();
         }, iterator_to_array($event->getOrder()->getElements())));
 
         $query = $this->app['phraseanet.user-query'];
         /** @var User[] $users */
-        $users = $query->on_base_ids($base_ids)
+        $users = $query->on_base_ids($baseIds)
             ->who_have_right([\ACL::ORDER_MASTER])
             ->execute()->get_results();
 
@@ -60,10 +60,12 @@ class OrderSubscriber extends AbstractNotificationSubscriber
             'order_id' => $event->getOrder()->getId(),
         ]);
 
-        $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
+        //  notify by webhook
+        $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_WEBHOOK);
 
-        $notifier->notifyCreation($event->getOrder(), $event->getOrder()->getUser());
+        $notifier->notifyCreation($event->getOrder(), $event->getOrder()->getUser(), $baseIds);
 
+        //  notify by mail
         $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_MAIL);
 
         foreach ($users as $user) {
@@ -85,7 +87,13 @@ class OrderSubscriber extends AbstractNotificationSubscriber
 
     public function onDeliver(OrderDeliveryEvent $event)
     {
+        //   notify by webhook
+        $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_WEBHOOK);
+        $notifier->notifyDelivery($event->getDelivery(), $event->getDelivery()->getPartialOrder()->getBaseIds());
+
         $notified = false;
+
+        //  actually NotificationMethod  is always by mail
         $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
         $notificationData = json_encode([
             'from'    => $event->getDelivery()->getAdmin()->getId(),
@@ -109,7 +117,13 @@ class OrderSubscriber extends AbstractNotificationSubscriber
 
     public function onDeny(OrderDeliveryEvent $event)
     {
+        //   notify by webhook
+        $notifier = $this->notifierRegistry->getNotifier(Order::NOTIFY_WEBHOOK);
+        $notifier->notifyDenial($event->getDelivery(), $event->getDelivery()->getPartialOrder()->getBaseIds());
+
         $notified = false;
+
+        //  actually NotificationMethod  is always by mail
         $notifier = $this->notifierRegistry->getNotifier($event->getOrder()->getNotificationMethod());
         $notificationData = json_encode([
             'from' => $event->getDelivery()->getAdmin()->getId(),
