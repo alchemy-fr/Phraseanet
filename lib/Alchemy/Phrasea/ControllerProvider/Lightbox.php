@@ -105,6 +105,11 @@ class Lightbox implements ControllerProviderInterface, ServiceProviderInterface
             ->assert('basket', '\d+')
         ;
 
+        $controllers->get('/ajax/GET_ELEMENTS/{basket}/', 'controller.lightbox:ajaxGetElementsAction')
+            ->bind('lightbox_ajax_get_elements')
+            ->assert('basket', '\d+')
+        ;
+
         return $controllers;
     }
 
