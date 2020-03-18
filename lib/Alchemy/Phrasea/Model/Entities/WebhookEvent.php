@@ -69,6 +69,14 @@ class WebhookEvent
     private $created;
 
     /**
+     * List of collection base_id concerned
+     * @var array
+     *
+     * @ORM\Column(name="collection_base_ids", type="json_array", nullable=true)
+     */
+    private $collectionBaseIds;
+
+    /**
      * @param \DateTime $created
      *
      * @return WebhookEvent
@@ -174,5 +182,25 @@ class WebhookEvent
         $this->type = $type;
 
         return $this;
+    }
+
+    /**
+     * @param array $collectionBaseIds
+     *
+     * @return $this
+     */
+    public function setCollectionBaseIds(array $collectionBaseIds)
+    {
+        $this->collectionBaseIds = $collectionBaseIds;
+
+        return $this;
+    }
+
+    /**
+     * @return  array
+     */
+    public function getCollectionBaseIds()
+    {
+        return $this->collectionBaseIds;
     }
 }
