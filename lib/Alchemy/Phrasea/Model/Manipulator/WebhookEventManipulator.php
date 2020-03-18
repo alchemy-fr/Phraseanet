@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
-use Alchemy\Phrasea\Webhook\WebhookPublisher;
+use Alchemy\Phrasea\Webhook\WebhookPublisherInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -29,11 +29,11 @@ class WebhookEventManipulator implements ManipulatorInterface
     private $repository;
 
     /**
-     * @var WebhookPublisher
+     * @var WebhookPublisherInterface
      */
     private $publisher;
 
-    public function __construct(ObjectManager $om, EntityRepository $repo, WebhookPublisher $publisher)
+    public function __construct(ObjectManager $om, EntityRepository $repo, WebhookPublisherInterface $publisher)
     {
         $this->om = $om;
         $this->repository = $repo;
