@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-03-17T12:45:08Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -13540,15 +13540,15 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Mercredi</target>
         <jms:reference-file line="171">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed">
+      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed" approved="no">
         <source>workzone:feedback:expiration-closed</source>
-        <target state="new">workzone:feedback:expiration-closed</target>
+        <target state="needs-translation">Validation close depuis</target>
         <jms:reference-file line="105">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="15">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open">
+      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open" approved="no">
         <source>workzone:feedback:expiration-open</source>
-        <target state="new">workzone:feedback:expiration-open</target>
+        <target state="needs-translation">validation ouverte jusqu'au</target>
         <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
