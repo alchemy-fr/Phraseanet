@@ -57,6 +57,7 @@ use Alchemy\Phrasea\Command\User\UserCreateCommand;
 use Alchemy\Phrasea\Command\User\UserPasswordCommand;
 use Alchemy\Phrasea\Command\User\UserListCommand;
 use Alchemy\Phrasea\Command\UpgradeDBDatas;
+use Alchemy\Phrasea\Command\ApplyRightsCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -93,6 +94,7 @@ $cli->command(new \module_console_aboutLicense('about:license'));
 $cli->command(new CheckConfig('check:config'));
 
 $cli->command(new UpgradeDBDatas('system:upgrade-datas'));
+$cli->command(new ApplyRightsCommand('system:apply-rights'));
 
 $cli->command(new \module_console_systemMailCheck('system:mail-check'));
 $cli->command(new \module_console_systemBackupDB('system:backup-db'));
