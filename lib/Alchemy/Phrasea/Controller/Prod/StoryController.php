@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
@@ -77,7 +77,7 @@ class StoryController extends Controller
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($story));
 
         // $story->rebuild_subdefs();
-        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
+        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($story));
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());

@@ -11,7 +11,7 @@
 namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
@@ -87,7 +87,7 @@ class SubdefSubstituer
 
         if ($shouldSubdefsBeRebuilt) {
             // $record->rebuild_subdefs();
-            $this->dispatcher->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($record));
+            $this->dispatcher->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($record));
         }
 
         $this->dispatcher->dispatch(RecordEvents::MEDIA_SUBSTITUTED, new MediaSubstitutedEvent($record));

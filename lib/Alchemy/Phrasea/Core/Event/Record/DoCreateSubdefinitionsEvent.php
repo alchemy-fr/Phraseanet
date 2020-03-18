@@ -11,6 +11,6 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-class DoCreateSubDefinitionsEvent extends RecordEvent
+class DoCreateSubdefinitionsEvent extends RecordEvent
 {
 }

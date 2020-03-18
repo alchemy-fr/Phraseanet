@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Border\Attribute\MetaField as MetafieldAttr;
 use Alchemy\Phrasea\Border\Attribute\Status as StatusAttr;
 use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
 use Alchemy\Phrasea\Border\Checker\CheckerInterface;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
@@ -378,7 +378,7 @@ class Manager
 
         if(!$nosubdef) {
             // $element->rebuild_subdefs();
-            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($element));
+            $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($element));
         }
 
         return $element;

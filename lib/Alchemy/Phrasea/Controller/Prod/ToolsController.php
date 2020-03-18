@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\DoWriteExifEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
@@ -175,7 +175,7 @@ class ToolsController extends Controller
 
             if (!$substituted || $force) {
                 // $record->rebuild_subdefs();
-                $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($record));
+                $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($record));
             }
         }
 

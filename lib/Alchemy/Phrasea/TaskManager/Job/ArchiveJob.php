@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Manager as borderManager;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
@@ -1041,7 +1041,7 @@ class ArchiveJob extends AbstractJob
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 
         //$story->rebuild_subdefs();
-        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($story));
+        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($story));
 
         unset($media);
 

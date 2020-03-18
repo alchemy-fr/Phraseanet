@@ -14,7 +14,7 @@ use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
-use Alchemy\Phrasea\Core\Event\Record\DoCreateSubDefinitionsEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
@@ -366,7 +366,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         if ($old_type !== $type) {
             // $this->rebuild_subdefs();
-            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
+            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($this));
         }
 
         $this->type = $type;
@@ -416,7 +416,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         )) {
 
             // $this->rebuild_subdefs();
-            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
+            // $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($this));
 
             $this->delete_data_from_cache();
         }
@@ -1208,23 +1208,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @deprecated
      *
+     * For bc with code (plugin ?) that may call this method, it now only dispatch the event "please do the job"
+     *
      * @return record_adapter
      */
     public function rebuild_subdefs()
     {
         file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s (%d) %s\n", __FILE__, __LINE__, "into deprecated recordadpater::rebuild_subdefs()"), FILE_APPEND);
 
-        /*
-        $sql = 'UPDATE record SET jeton=(jeton | :make_subdef_mask) WHERE record_id = :record_id';
-        $stmt = $this->getDataboxConnection()->prepare($sql);
-        $stmt->execute([
-            ':record_id' => $this->getRecordId(),
-            'make_subdef_mask' => PhraseaTokens::MAKE_SUBDEF,
-        ]);
-        $stmt->closeCursor();
-        */
-
-        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubDefinitionsEvent($this));
+        $this->dispatch(RecordEvents::DO_CREATE_SUBDEFINITIONS, new DoCreateSubdefinitionsEvent($this));
 
         return $this;
     }

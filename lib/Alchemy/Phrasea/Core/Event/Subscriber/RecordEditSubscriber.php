@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
+use Alchemy\Phrasea\Core\Event\Record\DoCreateSubdefinitionsEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
@@ -33,12 +34,17 @@ class RecordEditSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            PhraseaEvents::RECORD_EDIT         => 'onEdit',
-            PhraseaEvents::RECORD_UPLOAD       => 'onEdit',
-            RecordEvents::ROTATE               => 'onRecordChange',
-            RecordEvents::COLLECTION_CHANGED   => 'onCollectionChanged',
-            RecordEvents::SUBDEFINITION_CREATE => 'onSubdefinitionCreate',
-            RecordEvents::DELETE               => 'onDelete',
+            /** @uses onEdit */
+            PhraseaEvents::RECORD_EDIT             => 'onEdit',
+            PhraseaEvents::RECORD_UPLOAD           => 'onEdit',
+            /** @uses onRecordChange */
+            RecordEvents::ROTATE                   => 'onRecordChange',
+            /** @uses onCollectionChanged */
+            RecordEvents::COLLECTION_CHANGED       => 'onCollectionChanged',
+            /** @uses onDoCreateSubdefinitions */
+            RecordEvents::DO_CREATE_SUBDEFINITIONS => 'onDoCreateSubdefinitions',
+            /** @uses onDelete */
+            RecordEvents::DELETE                   => 'onDelete',
         );
     }
 
@@ -58,10 +64,17 @@ class RecordEditSubscriber implements EventSubscriberInterface
         $recordAdapter->clearStampCache();
     }
 
-    public function onSubdefinitionCreate(SubdefinitionCreateEvent $event)
+    public function onDoCreateSubdefinitions(DoCreateSubdefinitionsEvent $event)
     {
-        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
-        $recordAdapter->rebuild_subdefs();
+        /* the old way was to set jetons for the subdef task
+        $sql = 'UPDATE record SET jeton=(jeton | :make_subdef_mask) WHERE record_id = :record_id';
+        $stmt = $this->getDataboxConnection()->prepare($sql);
+        $stmt->execute([
+            ':record_id' => $this->getRecordId(),
+            'make_subdef_mask' => PhraseaTokens::MAKE_SUBDEF,
+        ]);
+        $stmt->closeCursor();
+        */
     }
 
     public function onDelete(DeleteEvent $event)
