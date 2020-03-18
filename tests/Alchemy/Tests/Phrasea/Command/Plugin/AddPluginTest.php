@@ -69,7 +69,7 @@ class AddPluginTest extends PluginCommandTestCase
         // the plugin is checked when updating config files
         self::$DI['cli']['plugins.plugins-validator']->expects($this->at(0))
             ->method('validatePlugin')
-            ->with('tempdir')
+            ->with('TestPlugin')
             ->will($this->returnValue($manifest));
 
         self::$DI['cli']['plugins.plugins-validator']->expects($this->at(1))

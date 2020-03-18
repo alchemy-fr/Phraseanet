@@ -59,6 +59,9 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/validate/', 'controller.prod.push:validateAction')
             ->bind('prod_push_validate');
 
+        $controllers->post('/update-expiration/', 'controller.prod.push:updateExpirationAction')
+            ->bind('prod_push_do_update_expiration');
+
         $controllers->get('/user/{usr_id}/', 'controller.prod.push:getUserAction')
             ->assert('usr_id', '\d+');
 
