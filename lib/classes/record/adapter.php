@@ -1737,7 +1737,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], null, $offset, $max_items);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], $user, $offset, $max_items);
 
         return reset($selections);
     }
@@ -1747,7 +1749,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()]);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()], $user);
 
         return reset($selections);
     }
@@ -1949,5 +1953,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private function getMediaSubdefRepository()
     {
         return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($this->getDataboxId());
+    }
+
+    /**
+     * @return User|null
+     */
+    protected function getAuthenticatedUser()
+    {
+        /** @var \Alchemy\Phrasea\Authentication\Authenticator $authenticator */
+        $authenticator = $this->app['authentication'];
+
+        return $authenticator->getUser();
     }
 }
