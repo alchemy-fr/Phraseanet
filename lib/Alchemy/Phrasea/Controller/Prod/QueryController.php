@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
@@ -515,7 +516,7 @@ class QueryController extends Controller
     }
 
     /**
-     * @return mixed
+     * @return  UserManipulator
      */
     private function getUserManipulator()
     {
