@@ -14,6 +14,8 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
@@ -234,7 +236,7 @@ class RecordController extends Controller
                 if($trashCollectionsBySbasId[$sbasId] !== null) {
                     if($record->getCollection()->get_coll_id() == $trashCollectionsBySbasId[$sbasId]->get_coll_id()) {
                         // record is already in trash so delete it
-                        $record->delete();
+                        $this->getEventDispatcher()->dispatch(RecordEvents::DELETE, new DeleteEvent($record));
                     } else {
                         // move to trash collection
                         $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
@@ -247,7 +249,7 @@ class RecordController extends Controller
                     }
                 } else {
                     // no trash collection, delete
-                    $record->delete();
+                    $this->getEventDispatcher()->dispatch(RecordEvents::DELETE, new DeleteEvent($record));
                 }
             } catch (\Exception $e) {
             }
