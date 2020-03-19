@@ -328,11 +328,9 @@ class RegistrationService
 
 
         $autoReg = $acl->get_granted_base();
-        $granted = [];
         foreach ($autoReg as $baseId => $collection) {
             $granted[$baseId] = $collection->get_label($this->app['locale']);
-        }
-        if(count($granted) > 0) {
+
             $this->app['manipulator.webhook-event']->create(
                 WebhookEvent::USER_REGISTRATION_GRANTED,
                 WebhookEvent::USER_REGISTRATION_TYPE,
@@ -340,8 +338,11 @@ class RegistrationService
                     'user_id'  => $user->getId(),
                     'granted'  => $granted,
                     'rejected' => []
-                ]
+                ],
+                [$baseId]
             );
+
+            unset($granted);
         }
 
 

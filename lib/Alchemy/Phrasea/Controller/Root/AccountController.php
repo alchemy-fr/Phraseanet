@@ -518,7 +518,9 @@ class AccountController extends Controller
         $this->getApiApplicationManipulator()->deleteApiApplications($applications);
 
 
-        //  revoke access and delete phraseanet user account
+        //  get list of old granted base_id then revoke access and delete phraseanet user account
+
+        $oldGrantedBaseIds = array_keys($this->app->getAclForUser($user)->get_granted_base());
 
         $list = array_keys($this->app['repo.collections-registry']->getBaseIdMap());
 
@@ -542,8 +544,9 @@ class AccountController extends Controller
                 $mail = null;
             }
 
-            $this->app['manipulator.user']->delete($user);
+            $mail = MailSuccessAccountDelete::create($this->app, $receiver);
 
+            $this->app['manipulator.user']->delete($user, [$user->getId() => $oldGrantedBaseIds]);
             if($mail) {
                 $this->deliver($mail);
             }

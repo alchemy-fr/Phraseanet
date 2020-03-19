@@ -46,8 +46,9 @@ class MailNotifier implements ValidationNotifier
     /**
      * @param Order $order
      * @param User $recipient
+     * @param array $baseIds
      */
-    public function notifyCreation(Order $order, User $recipient)
+    public function notifyCreation(Order $order, User $recipient, array $baseIds = array())
     {
         $mail = MailInfoNewOrder::create($this->application, Receiver::fromUser($recipient));
 
@@ -58,8 +59,9 @@ class MailNotifier implements ValidationNotifier
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDelivery(OrderDelivery $delivery)
+    public function notifyDelivery(OrderDelivery $delivery, array $baseIds = array())
     {
         $order = $delivery->getOrder();
 
@@ -85,8 +87,9 @@ class MailNotifier implements ValidationNotifier
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      */
-    public function notifyDenial(OrderDelivery $delivery)
+    public function notifyDenial(OrderDelivery $delivery, array $baseIds = array())
     {
         $sender = Emitter::fromUser($delivery->getAdmin());
         $recipient = Receiver::fromUser($delivery->getOrder()->getUser());

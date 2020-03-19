@@ -11,8 +11,10 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
@@ -26,10 +28,12 @@ class RecordEditSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            PhraseaEvents::RECORD_EDIT => 'onEdit',
-            PhraseaEvents::RECORD_UPLOAD => 'onEdit',
-            RecordEvents::ROTATE => 'onRecordChange',
-            RecordEvents::COLLECTION_CHANGED => 'onCollectionChanged',
+            PhraseaEvents::RECORD_EDIT         => 'onEdit',
+            PhraseaEvents::RECORD_UPLOAD       => 'onEdit',
+            RecordEvents::ROTATE               => 'onRecordChange',
+            RecordEvents::COLLECTION_CHANGED   => 'onCollectionChanged',
+            RecordEvents::SUBDEFINITION_CREATE => 'onSubdefinitionCreate',
+            RecordEvents::DELETE               => 'onDelete',
         );
     }
 
@@ -47,6 +51,18 @@ class RecordEditSubscriber implements EventSubscriberInterface
     {
         $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
         $recordAdapter->clearStampCache();
+    }
+
+    public function onSubdefinitionCreate(SubdefinitionCreateEvent $event)
+    {
+        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
+        $recordAdapter->rebuild_subdefs();
+    }
+
+    public function onDelete(DeleteEvent $event)
+    {
+        $recordAdapter = $this->convertToRecordAdapter($event->getRecord());
+        $recordAdapter->delete();
     }
 
     public function onEdit(RecordEdit $event)
