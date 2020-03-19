@@ -337,7 +337,7 @@ class UserManipulator implements ManipulatorInterface
             throw new InvalidArgumentException(sprintf('Email %s is not legal.', $email));
         }
 
-        if (null !== $this->repository->findByEmail($email)) {
+        if (($email !== null) && (null !== $this->repository->findByEmail($email))) {
             throw new RuntimeException(sprintf('User with email %s already exists.', $email));
         }
 

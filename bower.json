@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "mocha": "latest",
-    "sinonjs": "~1.7.0",
+    "sinonjs": "^1.17.1",
     "chai": "~1.6",
     "squire": "~0",
     "sinon-chai": "~2.5",

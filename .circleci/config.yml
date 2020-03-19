@@ -1,4 +1,10 @@
-version: 2
+version: 2.1
+orbs:
+    aws-ecr: circleci/aws-ecr@4.0.1
+executors:
+  docker_build:
+    machine:
+      docker_layer_caching: true
 jobs:
   build:
     working_directory: ~/alchemy-fr/Phraseanet
@@ -97,3 +103,63 @@ jobs:
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: /tmp/circleci-test-results
+
+  build_phraseanet-fpm:
+      machine:
+        image: ubuntu-1604:201903-01
+        docker_layer_caching: true
+      working_directory: ~/alchemy-fr/Phraseanet
+      steps:
+          - checkout
+          - aws-ecr/ecr-login:
+              region: AWS_DEFAULT_REGION
+          - run: docker build --target phraseanet-fpm -t ${AWS_ACCOUNT_URL}/phraseanet-fpm:${CIRCLE_BRANCH} .
+          - aws-ecr/push-image:
+              account-url: AWS_ACCOUNT_URL
+              repo: "phraseanet-fpm"
+              tag: "${CIRCLE_BRANCH}"
+
+  build_phraseanet-worker:
+      machine:
+        image: ubuntu-1604:201903-01
+        docker_layer_caching: true
+      working_directory: ~/alchemy-fr/Phraseanet
+      steps:
+          - checkout
+          - aws-ecr/ecr-login:
+              region: AWS_DEFAULT_REGION
+          - run: docker build --target phraseanet-worker -t ${AWS_ACCOUNT_URL}/phraseanet-worker:${CIRCLE_BRANCH} .
+          - aws-ecr/push-image:
+              account-url: AWS_ACCOUNT_URL
+              repo: "phraseanet-worker"
+              tag: "${CIRCLE_BRANCH}"
+
+  build_phraseanet-nginx:
+      machine:
+        image: ubuntu-1604:201903-01
+        docker_layer_caching: true
+      working_directory: ~/alchemy-fr/Phraseanet
+      steps:
+          - checkout
+          - aws-ecr/ecr-login:
+              region: AWS_DEFAULT_REGION
+          - run: docker build --target phraseanet-nginx -t ${AWS_ACCOUNT_URL}/phraseanet-nginx:${CIRCLE_BRANCH} .
+          - aws-ecr/push-image:
+              account-url: AWS_ACCOUNT_URL
+              repo: "phraseanet-nginx"
+              tag: "${CIRCLE_BRANCH}"
+
+
+workflows:
+    version: 2
+    oldfashion:
+        jobs:
+            - build
+    newfashion:
+        jobs:
+            - build_phraseanet-fpm:
+                context: "AWS London"
+            - build_phraseanet-worker:
+                context: "AWS London"
+            - build_phraseanet-nginx:
+                context: "AWS London"

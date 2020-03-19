@@ -1,4 +1,0 @@
-#!/bin/sh
-
-/sbin/ip route|awk '/default/ { print $3 }'
-# TODO support MacOS & Windows host IP

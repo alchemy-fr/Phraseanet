@@ -569,14 +569,16 @@
             var elements = [];
             var nbElement = 0;
 
-            if(nbProposals >= 1){
+            if (nbProposals > 1) {
                 elements = $(".selected", container);
                 nbElement = elements.length;
-            }else{
+            } else if (nbProposals == 1) {
+                elements = $(".records-subititution > div", container);
+            } else {
                 return false;
             }
 
-            if(nbElement === 0){
+            if (nbElement === 0 && nbProposals > 1) {
                 alert(language.selectOneRecord);
                 return false;
             }else if(nbElement > 1){

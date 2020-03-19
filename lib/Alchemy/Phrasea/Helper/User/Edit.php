@@ -583,8 +583,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app->getAclForUser($user)->revoke_access_from_bases($delete)
-                    ->give_access_to_base($create)
-                    ->give_access_to_sbas($create_sbas);
+                    ->give_access_to_sbas($create_sbas)         // give access to sbas before bas
+                    ->give_access_to_base($create);
 
                 foreach ($update as $base_id => $rights) {
                     $this->app->getAclForUser($user)
@@ -659,8 +659,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ->setEmail($parm['email'])
             ->setAddress($parm['address'])
             ->setZipCode($parm['zip'])
-            ->setActivity($parm['function'])
-            ->setJob($parm['activite'])
+            ->setActivity($parm['activite'])
+            ->setJob($parm['function'])
             ->setCompany($parm['company'])
             ->setPhone($parm['telephone'])
             ->setFax($parm['fax']);

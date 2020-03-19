@@ -1,0 +1,39 @@
+upstream backend {
+    server phraseanet:9000;
+}
+
+server {
+    listen       80;
+    root         /var/alchemy/Phraseanet/www;
+
+    index        index.php;
+    client_max_body_size $MAX_BODY_SIZE;
+
+    location /api {
+        rewrite ^(.*)$ /api.php/$1 last;
+    }
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to index.html
+        try_files $uri $uri/ @rewriteapp;
+    }
+
+    location @rewriteapp {
+        rewrite ^(.*)$ /index.php/$1 last;
+    }
+
+    # PHP scripts -> PHP-FPM server listening on 127.0.0.1:9000
+    location ~ ^/(index|index_dev|api)\.php(/|$) {
+        fastcgi_pass   backend;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+    location ~ ^/(status|ping)$ {
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_pass backend;
+    }
+}

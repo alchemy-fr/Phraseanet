@@ -107,8 +107,8 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
         $this->selection = new \set_selection($app);
 
-        if (trim($Request->get('ssel')) !== '') {
-            $Basket = $app['converter.basket']->convert($Request->get('ssel'));
+        if (trim($Request->get('SSTTID')) !== '') {
+            $Basket = $app['converter.basket']->convert($Request->get('SSTTID'));
             $app['acl.basket']->hasAccess($Basket, $app->getAuthenticatedUser());
 
             $this->selection->load_basket($Basket);
