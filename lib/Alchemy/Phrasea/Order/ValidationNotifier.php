@@ -19,20 +19,23 @@ interface ValidationNotifier
     /**
      * @param Order $order
      * @param User $recipient
+     * @param array $baseIds
      * @return void
      */
-    public function notifyCreation(Order $order, User $recipient);
+    public function notifyCreation(Order $order, User $recipient, array $baseIds = array());
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      * @return void
      */
-    public function notifyDelivery(OrderDelivery $delivery);
+    public function notifyDelivery(OrderDelivery $delivery, array $baseIds = array());
 
     /**
      * @param OrderDelivery $delivery
+     * @param array $baseIds
      * @return void
      */
-    public function notifyDenial(OrderDelivery $delivery);
+    public function notifyDenial(OrderDelivery $delivery, array $baseIds = array());
 
 }

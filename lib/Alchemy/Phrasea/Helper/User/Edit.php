@@ -73,10 +73,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
         $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
+        $oldGrantedBaseIds = array_keys($this->app->getAclForUser($user)->get_granted_base());
+
         $this->app->getAclForUser($user)->revoke_access_from_bases($list);
 
         if ($this->app->getAclForUser($user)->is_phantom()) {
-            $this->app['manipulator.user']->delete($user);
+            $this->app['manipulator.user']->delete($user, [$user->getId() => $oldGrantedBaseIds]);
         }
 
         return $this;
@@ -583,8 +585,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
                 $user = $this->app['repo.users']->find($usr_id);
 
                 $this->app->getAclForUser($user)->revoke_access_from_bases($delete)
-                    ->give_access_to_base($create)
-                    ->give_access_to_sbas($create_sbas);
+                    ->give_access_to_sbas($create_sbas)     // give access to sbas before bas
+                    ->give_access_to_base($create);
 
                 foreach ($update as $base_id => $rights) {
                     $this->app->getAclForUser($user)
