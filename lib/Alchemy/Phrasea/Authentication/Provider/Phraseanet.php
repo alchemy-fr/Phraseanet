@@ -26,8 +26,6 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class Phraseanet extends AbstractProvider
 {
-    private $id;
-    private $title;
     private $baseurl;
     private $key;
     private $secret;

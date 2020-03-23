@@ -44,14 +44,16 @@ class Factory
      */
     public function build($id, $display, $title, array $options = [])
     {
-        $id = implode('', array_map(function ($chunk) {
+        // the "class" of the provider must be options['type'], if not set we fallback on "id"
+        $type = array_key_exists('type', $options) ? $options['type'] : $id;
+        $type = implode('', array_map(function ($chunk) {
             return ucfirst(strtolower($chunk));
-        }, explode('-', $id)));
+        }, explode('-', $type)));
 
-        $class_name = sprintf('%s\\%s', __NAMESPACE__, $id);
+        $class_name = sprintf('%s\\%s', __NAMESPACE__, $type);
 
         if (!class_exists($class_name)) {
-            throw new InvalidArgumentException(sprintf('Invalid provider %s', $id));
+            throw new InvalidArgumentException(sprintf('Invalid provider %s', $type));
         }
 
         /** @var AbstractProvider $class_name */
