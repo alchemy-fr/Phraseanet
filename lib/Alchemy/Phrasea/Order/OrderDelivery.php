@@ -32,15 +32,22 @@ class OrderDelivery
     private $quantity;
 
     /**
+     * @var PartialOrder
+     */
+    private $partialOrder;
+
+    /**
      * @param Order $deliveredOrder
      * @param User $manager
      * @param int $quantity
+     * @param PartialOrder $partialOrder
      */
-    public function __construct(Order $deliveredOrder, User $manager, $quantity)
+    public function __construct(Order $deliveredOrder, User $manager, $quantity, PartialOrder $partialOrder)
     {
-        $this->order = $deliveredOrder;
-        $this->admin = $manager;
-        $this->quantity = $quantity;
+        $this->order        = $deliveredOrder;
+        $this->admin        = $manager;
+        $this->quantity     = $quantity;
+        $this->partialOrder = $partialOrder;
     }
 
     /**
@@ -65,5 +72,13 @@ class OrderDelivery
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * @return PartialOrder
+     */
+    public function getPartialOrder()
+    {
+        return $this->partialOrder;
     }
 }

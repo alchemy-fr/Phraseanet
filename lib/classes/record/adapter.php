@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
@@ -284,7 +285,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
-            $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
         }
 
         $this->type = $type;
@@ -341,7 +342,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+
             $this->delete_data_from_cache();
         }
 
@@ -1735,7 +1737,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             throw new Exception('This record is not a grouping');
         }
 
-        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], null, $offset, $max_items);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], $user, $offset, $max_items);
 
         return reset($selections);
     }
@@ -1745,7 +1749,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()]);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()], $user);
 
         return reset($selections);
     }
@@ -1947,5 +1953,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private function getMediaSubdefRepository()
     {
         return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($this->getDataboxId());
+    }
+
+    /**
+     * @return User|null
+     */
+    protected function getAuthenticatedUser()
+    {
+        /** @var \Alchemy\Phrasea\Authentication\Authenticator $authenticator */
+        $authenticator = $this->app['authentication'];
+
+        return $authenticator->getUser();
     }
 }

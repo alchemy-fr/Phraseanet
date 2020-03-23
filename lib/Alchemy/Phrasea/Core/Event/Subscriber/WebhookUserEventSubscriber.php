@@ -45,7 +45,7 @@ class WebhookUserEventSubscriber implements EventSubscriberInterface
             'user_id' => $event->getUserId(),
             'email' => $event->getEmailAddress(),
             'login' => $event->getLogin()
-        ]);
+        ], $event->getGrantedBaseIds());
     }
 
     public static function getSubscribedEvents()
