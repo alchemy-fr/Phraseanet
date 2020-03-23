@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -24,27 +25,15 @@ class Facebook extends AbstractProvider
     /** @var \Facebook\Facebook */
     private $facebook;
 
-    public function __construct(\Facebook\Facebook $facebook, UrlGenerator $generator, SessionInterface $session)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        $this->facebook = $facebook;
-        $this->generator = $generator;
-        $this->session = $session;
-    }
+        parent::__construct($generator, $session, $id, $display, $title, $options);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return 'facebook';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'Facebook';
+        $this->facebook = new \Facebook\Facebook([
+            'app_id' => $options['app-id'],
+            'app_secret' => $options['secret'],
+            'default_graph_version' => $options['default-graph-version']
+        ]);
     }
 
     /**
@@ -250,14 +239,14 @@ class Facebook extends AbstractProvider
      *
      * @return Facebook
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        $config['app_id'] = $options['app-id'];
-        $config['app_secret'] = $options['secret'];
-        $config['default_graph_version'] = $options['default-graph-version'];
+        foreach (['app-id', 'secret', 'default-graph-version'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing Facebook "%s" parameter in conf/authentication/providers', $parm));
+            }
+        }
 
-        $facebook = new \Facebook\Facebook($config);
-
-        return new static($facebook, $generator, $session);
+        return new static($generator, $session, $id, $display, $title, $options);
     }
 }

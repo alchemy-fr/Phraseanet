@@ -79,7 +79,9 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 if (isset($data['enabled']) && false === $data['enabled']) {
                     continue;
                 }
-                $providers->register($app['authentication.providers.factory']->build($providerId, $data['options']));
+                /** @var ProviderFactory $factory */
+                $factory = $app['authentication.providers.factory'];
+                $providers->register($factory->build($providerId, $data['display'], $data['title'], $data['options']));
             }
 
             return $providers;

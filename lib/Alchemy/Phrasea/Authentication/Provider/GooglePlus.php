@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
@@ -28,24 +29,27 @@ class GooglePlus extends AbstractProvider
     private $client;
     private $guzzle;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, \Google_Client $google, ClientInterface $guzzle)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        $this->generator = $generator;
-        $this->session = $session;
-        $this->client = $google;
-        $this->guzzle = $guzzle;
+        parent::__construct($generator, $session, $id, $display, $title, $options);
 
-        $this->client->setScopes([
+        $this->guzzle = new Guzzle();
+
+        $google = new \Google_Client();
+        $google->setApplicationName('Phraseanet');
+        $google->setClientId($options['client-id']);
+        $google->setClientSecret($options['client-secret']);
+        $google->setScopes([
             'https://www.googleapis.com/auth/plus.me',
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',
         ]);
-
-        $this->client->setApprovalPrompt("auto");
-
+        $google->setApprovalPrompt("auto");
         if ($this->session->has('google-plus.provider.token')) {
-            $this->client->setAccessToken($this->session->get('google-plus.provider.token'));
+            $google->setAccessToken($this->session->get('google-plus.provider.token'));
         }
+
+        $this->client = $google;
     }
 
     /**
@@ -86,22 +90,6 @@ class GooglePlus extends AbstractProvider
     public function getGoogleClient()
     {
         return $this->client;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return 'google-plus';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'Google +';
     }
 
     /**
@@ -316,15 +304,15 @@ class GooglePlus extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        $client = new \Google_Client();
+        foreach (['client-id', 'client-secret'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing GooglePlus "%s" parameter in conf/authentication/providers', $parm));
+            }
+        }
 
-        $client->setApplicationName('Phraseanet');
-        $client->setClientId($options['client-id']);
-        $client->setClientSecret($options['client-secret']);
-
-        return new GooglePlus($generator, $session, $client, new Guzzle());
+        return new GooglePlus($generator, $session, $id, $display, $title, $options);
     }
 }
 

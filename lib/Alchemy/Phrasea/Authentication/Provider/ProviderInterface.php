@@ -105,7 +105,10 @@ interface ProviderInterface
      *
      * @param UrlGenerator     $generator
      * @param SessionInterface $session
+     * @param string           $id              // the unique key in conf/authentication/providers/*
+     * @param bool             $display
+     * @param string           $title
      * @param array            $options
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options);
+    public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options);
 }

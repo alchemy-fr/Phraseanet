@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Authentication\Provider;
 use Alchemy\Phrasea\Authentication\Provider\Token\Token;
 use Alchemy\Phrasea\Authentication\Provider\Token\Identity;
 use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Guzzle\Http\Client as Guzzle;
 use Guzzle\Http\ClientInterface;
 use Guzzle\Common\Exception\GuzzleException;
@@ -29,14 +30,13 @@ class Linkedin extends AbstractProvider
     private $key;
     private $secret;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, ClientInterface $client, $key, $secret)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        $this->generator = $generator;
-        $this->session = $session;
-        $this->client = $client;
+        parent::__construct($generator, $session, $id, $display, $title, $options);
 
-        $this->key = $key;
-        $this->secret = $secret;
+        $this->client = new Guzzle();
+        $this->key = $options['client-id'];
+        $this->secret = $options['client-secret'];
     }
 
     /**
@@ -57,22 +57,6 @@ class Linkedin extends AbstractProvider
     public function getGuzzleClient()
     {
         return $this->client;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return 'linkedin';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'LinkedIN';
     }
 
     /**
@@ -278,16 +262,14 @@ class Linkedin extends AbstractProvider
     /**
      * {@inheritdoc}
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options)
+    public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        if (!isset($options['client-id'])) {
-            throw new InvalidArgumentException('Missing LinkedIn client-id parameter');
+        foreach (['client-id', 'client-secret'] as $parm) {
+            if (!isset($options[$parm])) {
+                throw new InvalidArgumentException(sprintf('Missing Linkedin "%s" parameter in conf/authentication/providers', $parm));
+            }
         }
 
-        if (!isset($options['client-secret'])) {
-            throw new InvalidArgumentException('Missing LinkedIn client-secret parameter');
-        }
-
-        return new Linkedin($generator, $session, new Guzzle(), $options['client-id'], $options['client-secret']);
+        return new Linkedin($generator, $session, $id, $display, $title, $options);
     }
 }

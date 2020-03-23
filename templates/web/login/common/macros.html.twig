@@ -55,11 +55,13 @@
 {% macro providerList() %}
     <ul class="unstyled inline provider-list">
         {% for provider in app['authentication.providers'] %}
+            {% if provider.display() %}
         <li>
             <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
                 <img src="{{ provider.getIconURI() }}" />
             </a>
         </li>
+            {% endif %}
         {% endfor %}
     </ul>
 {% endmacro %}
