@@ -24,15 +24,11 @@ class Twitter extends AbstractProvider
 {
     private $twitter;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options, \tmhOAuth $twitter)
     {
-        parent::__construct($generator, $session, $id, $display, $title, $options);
+        parent::__construct($generator, $session, $id, $display, $title);
 
-        $this->twitter =  new \tmhOAuth([
-            'consumer_key'    => $options['consumer-key'],
-            'consumer_secret' => $options['consumer-secret'],
-            'timezone'        => date_default_timezone_get(),
-        ]);
+        $this->twitter = $twitter;
     }
 
     /**
@@ -245,6 +241,18 @@ class Twitter extends AbstractProvider
             }
         }
 
-        return new Twitter($generator, $session, $id, $display, $title, $options);
+        return new Twitter(
+            $generator,
+            $session,
+            $id,
+            $display,
+            $title,
+            $options,
+            new \tmhOAuth([
+                'consumer_key'    => $options['consumer-key'],
+                'consumer_secret' => $options['consumer-secret'],
+                'timezone'        => date_default_timezone_get()
+            ])
+        );
     }
 }

@@ -34,15 +34,15 @@ class Phraseanet extends AbstractProvider
 
     private $client;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options, Guzzle $client)
     {
-        parent::__construct($generator, $session, $id, $display, $title, $options);
+        parent::__construct($generator, $session, $id, $display, $title);
 
         $this->baseurl = $options['base-url'];
-        $this->key = $options['client-id'];
-        $this->secret = $options['client-secret'];
+        $this->key     = $options['client-id'];
+        $this->secret  = $options['client-secret'];
 
-        $this->client = new Guzzle($this->baseurl);
+        $this->client  = $client;
     }
 
     /**
@@ -317,6 +317,6 @@ class Phraseanet extends AbstractProvider
             }
         }
 
-        return new Phraseanet($generator, $session, $id, $display, $title, $options);
+        return new Phraseanet($generator, $session, $id, $display, $title, $options, new Guzzle($options['base-url']));
     }
 }

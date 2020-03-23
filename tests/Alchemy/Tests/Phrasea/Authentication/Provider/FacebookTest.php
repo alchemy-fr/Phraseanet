@@ -60,7 +60,15 @@ class FacebookTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        return new Facebook($this->getFacebookMock(), $this->getUrlGeneratorMock(), $this->getMockSession());
+        return new Facebook(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            'facebook',
+            true,
+            'Facebook',
+            [],
+            $this->getFacebookMock()
+        );
     }
 
     protected function authenticateProvider(ProviderInterface $provider)

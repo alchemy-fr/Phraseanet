@@ -292,6 +292,17 @@ class LinkedinTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        return new Linkedin($this->getUrlGeneratorMock(), $this->getMockSession(), $this->getGuzzleMock(), 'key', 'secret');
+        return new Linkedin(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            'linkedin',
+            true,
+            'LinkedIN',
+            [
+                'client-id' => 'key',
+                'client-secret' => 'secret'
+            ],
+            $this->getGuzzleMock()
+        );
     }
 }

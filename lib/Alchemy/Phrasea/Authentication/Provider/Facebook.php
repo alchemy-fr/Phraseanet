@@ -25,15 +25,11 @@ class Facebook extends AbstractProvider
     /** @var \Facebook\Facebook */
     private $facebook;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options, \Facebook\Facebook $facebook)
     {
-        parent::__construct($generator, $session, $id, $display, $title, $options);
+        parent::__construct($generator, $session, $id, $display, $title);
 
-        $this->facebook = new \Facebook\Facebook([
-            'app_id' => $options['app-id'],
-            'app_secret' => $options['secret'],
-            'default_graph_version' => $options['default-graph-version']
-        ]);
+        $this->facebook = $facebook;
     }
 
     /**
@@ -247,6 +243,18 @@ class Facebook extends AbstractProvider
             }
         }
 
-        return new static($generator, $session, $id, $display, $title, $options);
+        return new static(
+            $generator,
+            $session,
+            $id,
+            $display,
+            $title,
+            $options,
+            new \Facebook\Facebook([
+                'app_id' => $options['app-id'],
+                'app_secret' => $options['secret'],
+                'default_graph_version' => $options['default-graph-version']
+            ])
+        );
     }
 }

@@ -277,7 +277,15 @@ class GooglePlusTest extends ProviderTestCase
             ->method('createAuthUrl')
             ->will($this->returnValue('https://www.google.com/auth'));
 
-        $google =  new GooglePlus($this->getUrlGeneratorMock(), $this->getMockSession(), $googleMock, $this->getGuzzleMock());
+        $google =  new GooglePlus(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            'google-plus',
+            true,
+            'Google +',
+            [],
+            $googleMock,
+            $this->getGuzzleMock());
 
         return $google;
     }

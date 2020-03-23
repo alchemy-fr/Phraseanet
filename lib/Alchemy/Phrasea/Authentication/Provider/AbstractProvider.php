@@ -22,16 +22,14 @@ abstract class AbstractProvider implements ProviderInterface
     protected $id;
     protected $display;
     protected $title;
-    protected $options;
 
-    protected function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    protected function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title)
     {
         $this->generator = $generator;
         $this->session = $session;
         $this->id = $id;
         $this->display = $display;
         $this->title = $title;
-        $this->options = $options;
     }
 
     public function getDisplay()

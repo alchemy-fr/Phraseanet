@@ -78,7 +78,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     {
         $provider = $this->getProvider();
 
-        $built = $this->getProviderFactory()->build($provider->getId(), $this->getTestOptions());
+        $built = $this->getProviderFactory()->build($provider->getId(), true, $provider->getName(), $this->getTestOptions());
 
         $this->assertInstanceOf(get_class($provider), $built);
     }
@@ -157,7 +157,14 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     public function testCreate()
     {
         $name = get_class($this->getProvider());
-        $provider = $name::create($this->getUrlGeneratorMock(), $this->getMockSession(), $this->getTestOptions());
+        $provider = $name::create(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            $this->getProvider()->getId(),
+            true,
+            $this->getProvider()->getName(),
+            $this->getTestOptions()
+        );
 
         $this->assertInstanceOf($name, $provider);
     }

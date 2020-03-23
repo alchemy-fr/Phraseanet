@@ -29,27 +29,24 @@ class GooglePlus extends AbstractProvider
     private $client;
     private $guzzle;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options, \Google_Client $google, ClientInterface $guzzle)
     {
-        parent::__construct($generator, $session, $id, $display, $title, $options);
+        parent::__construct($generator, $session, $id, $display, $title);
 
-        $this->guzzle = new Guzzle();
+        $this->client = $google;
+        $this->guzzle = $guzzle;
 
-        $google = new \Google_Client();
-        $google->setApplicationName('Phraseanet');
-        $google->setClientId($options['client-id']);
-        $google->setClientSecret($options['client-secret']);
-        $google->setScopes([
+        $this->client->setScopes([
             'https://www.googleapis.com/auth/plus.me',
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',
         ]);
-        $google->setApprovalPrompt("auto");
-        if ($this->session->has('google-plus.provider.token')) {
-            $google->setAccessToken($this->session->get('google-plus.provider.token'));
-        }
 
-        $this->client = $google;
+        $this->client->setApprovalPrompt("auto");
+
+        if ($this->session->has('google-plus.provider.token')) {
+            $this->client->setAccessToken($this->session->get('google-plus.provider.token'));
+        }
     }
 
     /**
@@ -312,7 +309,13 @@ class GooglePlus extends AbstractProvider
             }
         }
 
-        return new GooglePlus($generator, $session, $id, $display, $title, $options);
+        $client = new \Google_Client();
+
+        $client->setApplicationName('Phraseanet');
+        $client->setClientId($options['client-id']);
+        $client->setClientSecret($options['client-secret']);
+
+        return new GooglePlus($generator, $session, $id, $display, $title, $options, $client, new Guzzle());
     }
 }
 

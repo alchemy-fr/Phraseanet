@@ -30,11 +30,11 @@ class Github extends AbstractProvider
     private $key;
     private $secret;
 
-    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
+    public function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options, ClientInterface $client)
     {
-        parent::__construct($generator, $session, $id, $display, $title, $options);
+        parent::__construct($generator, $session, $id, $display, $title);
 
-        $this->client = new Guzzle('https://github.com/login/oauth');
+        $this->client = $client;
         $this->key = $options['client-id'];
         $this->secret = $options['client-secret'];
     }
@@ -281,6 +281,14 @@ class Github extends AbstractProvider
             }
         }
 
-        return new Github($generator, $session, $id, $display, $title, $options);
+        return new Github(
+            $generator,
+            $session,
+            $id,
+            $display,
+            $title,
+            $options,
+            new Guzzle('https://github.com/login/oauth')
+        );
     }
 }
