@@ -6,7 +6,7 @@
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
-            var u="//{{ app['conf'].get(['registry', 'general', 'matomo-analytics-url']) }}/";
+            var u="{{ app['conf'].get(['registry', 'general', 'matomo-analytics-url']) }}/";
             _paq.push(['setTrackerUrl', u+'matomo.php']);
             _paq.push(['setSiteId',  {{ app['conf'].get(['registry', 'general', 'matomo-analytics-id']) }}]);
             var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
