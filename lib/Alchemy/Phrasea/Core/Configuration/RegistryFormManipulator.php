@@ -102,6 +102,8 @@ class RegistryFormManipulator
                 'keywords' => null,
                 'description' => null,
                 'analytics' => null,
+                'mamoto-url' => null,
+                'mamoto-id' => null,
                 'allow-indexation' => true,
                 'home-presentation-mode' => 'GALLERIA',
                 'default-subdef-url-ttl' => 7200,
