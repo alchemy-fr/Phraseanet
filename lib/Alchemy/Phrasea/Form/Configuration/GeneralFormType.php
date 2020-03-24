@@ -38,10 +38,10 @@ class GeneralFormType extends AbstractType
         $builder->add('analytics', 'text', [
             'label'         => 'Google Analytics identifier',
         ]);
-        $builder->add('matomo-url', 'text', [
+        $builder->add('matomo-analytics-url', 'text', [
             'label'         => 'Matomo Analytics url',
         ]);
-        $builder->add('matomo-id', 'text', [
+        $builder->add('matomo-analytics-id', 'text', [
             'label'         => 'Matomo Analytics identifier',
         ]);
         $builder->add('allow-indexation', 'checkbox', [
