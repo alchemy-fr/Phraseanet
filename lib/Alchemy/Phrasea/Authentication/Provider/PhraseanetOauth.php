@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 
-class Phraseanet extends AbstractProvider
+class PhraseanetOauth extends AbstractProvider
 {
     private $baseurl;
     private $key;
@@ -43,10 +43,15 @@ class Phraseanet extends AbstractProvider
         $this->client  = $client;
     }
 
+    public function getType()
+    {
+        return "PhraseanetOauth";
+    }
+
     /**
      * @param ClientInterface $client
      *
-     * @return Phraseanet
+     * @return PhraseanetOauth
      */
     public function setGuzzleClient(ClientInterface $client)
     {
@@ -315,6 +320,6 @@ class Phraseanet extends AbstractProvider
             }
         }
 
-        return new Phraseanet($generator, $session, $id, $display, $title, $options, new Guzzle($options['base-url']));
+        return new PhraseanetOauth($generator, $session, $id, $display, $title, $options, new Guzzle($options['base-url']));
     }
 }

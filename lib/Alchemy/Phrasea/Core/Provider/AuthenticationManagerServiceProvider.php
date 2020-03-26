@@ -81,7 +81,7 @@ class AuthenticationManagerServiceProvider implements ServiceProviderInterface
                 }
                 /** @var ProviderFactory $factory */
                 $factory = $app['authentication.providers.factory'];
-                $providers->register($factory->build($providerId, $data['display'], $data['title'], $data['options']));
+                $providers->register($factory->build($providerId, $data['type'], $data['display'], $data['title'], $data['options']));
             }
 
             return $providers;

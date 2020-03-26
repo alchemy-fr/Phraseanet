@@ -39,6 +39,11 @@ class Github extends AbstractProvider
         $this->secret = $options['client-secret'];
     }
 
+    public function getType()
+    {
+        return "Github";
+    }
+
     /**
      * @param ClientInterface $client
      *

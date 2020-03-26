@@ -32,6 +32,11 @@ class Facebook extends AbstractProvider
         $this->facebook = $facebook;
     }
 
+    public function getType()
+    {
+        return "Facebook";
+    }
+
     /**
      * {@inheritdoc}
      */

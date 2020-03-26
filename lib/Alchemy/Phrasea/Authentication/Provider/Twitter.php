@@ -31,6 +31,11 @@ class Twitter extends AbstractProvider
         $this->twitter = $twitter;
     }
 
+    public function getType()
+    {
+        return "Twitter";
+    }
+
     /**
      * @param \tmhOAuth $twitter
      *

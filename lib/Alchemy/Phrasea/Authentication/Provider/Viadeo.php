@@ -40,6 +40,11 @@ class Viadeo extends AbstractProvider
         $this->secret = $options['client-secret'];
     }
 
+    public function getType()
+    {
+        return "Viadeo";
+    }
+
     /**
      * @param ClientInterface $client
      *

@@ -65,6 +65,9 @@ class patch_410alpha26a implements patchInterface
         $conf = $app['conf'];
         $newProviders = [];
         foreach ($app['conf']->get(['authentication', 'providers'], []) as $providerId => $data) {
+            if($providerId === 'google-plus') {     // rip
+                continue;
+            }
             $newProviders[$providerId] = [
                 'enabled' => $data['enabled'],
                 'display' => $data['enabled'],
@@ -73,6 +76,19 @@ class patch_410alpha26a implements patchInterface
                 'options' => $data['options']
             ];
         }
+        // add phraseanet
+        $newProviders['phraseanet-oauth'] = [
+            'enabled' => false,
+            'display' => false,
+            'title'   => "Phraseanet Oauth provider",
+            'type'    => 'PhraseanetOauth',
+            'options' => [
+                'client-id' => '',
+                'client-secret' => '',
+                'base-url' => ''
+            ]
+        ];
+
         $conf->set(['authentication', 'providers'], $newProviders);
 
         return true;

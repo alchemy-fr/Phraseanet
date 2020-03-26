@@ -29,27 +29,21 @@ class Factory
 
     /**
      * @param string $id
+     * @param string $type
      * @param bool $display
      * @param string $title
      * @param array $options
      * @return mixed
      *
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Facebook     Facebook provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Github       Github provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\GooglePlus   GooglePlus provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Linkedin     Linkedin provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Phraseanet   Phraseanet Oauth provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Twitter      Twitter provider
-     * @uses \Alchemy\Phrasea\Authentication\Provider\Viadeo       Viadeo provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\Facebook          Facebook provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\Github            Github provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\Linkedin          Linkedin provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\PhraseanetOauth   Phraseanet Oauth provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\Twitter           Twitter provider
+     * @uses \Alchemy\Phrasea\Authentication\Provider\Viadeo            Viadeo provider
      */
-    public function build($id, $display, $title, array $options = [])
+    public function build($id, $type, $display, $title, array $options = [])
     {
-        // the "class" of the provider must be options['type'], if not set we fallback on "id"
-        $type = array_key_exists('type', $options) ? $options['type'] : $id;
-        $type = implode('', array_map(function ($chunk) {
-            return ucfirst(strtolower($chunk));
-        }, explode('-', $type)));
-
         $class_name = sprintf('%s\\%s', __NAMESPACE__, $type);
 
         if (!class_exists($class_name)) {

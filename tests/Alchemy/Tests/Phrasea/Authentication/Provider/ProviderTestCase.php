@@ -78,7 +78,7 @@ abstract class ProviderTestCase extends \PhraseanetTestCase
     {
         $provider = $this->getProvider();
 
-        $built = $this->getProviderFactory()->build($provider->getId(), true, $provider->getName(), $this->getTestOptions());
+        $built = $this->getProviderFactory()->build($provider->getId(), $provider->getType(), true, $provider->getName(), $this->getTestOptions());
 
         $this->assertInstanceOf(get_class($provider), $built);
     }

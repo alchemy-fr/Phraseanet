@@ -39,6 +39,11 @@ class Linkedin extends AbstractProvider
         $this->secret = $options['client-secret'];
     }
 
+    public function getType()
+    {
+        return "Linkedin";
+    }
+
     /**
      * @param ClientInterface $client
      *
