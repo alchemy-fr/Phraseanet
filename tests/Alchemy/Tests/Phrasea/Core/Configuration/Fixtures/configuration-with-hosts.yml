@@ -152,11 +152,6 @@ authentication:
             options:
                 consumer-key: ''
                 consumer-secret: ''
-        google-plus:
-            enabled: false
-            options:
-                client-id: ''
-                client-secret: ''
         github:
             enabled: false
             options:
