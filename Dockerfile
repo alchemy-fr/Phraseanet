@@ -4,7 +4,11 @@
 #########################################################################
 
 FROM php:7.0-fpm-stretch as phraseanet-system
-RUN apt-get update \
+
+ENV FFMPEG_VERSION=4.2.2
+
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -40,6 +44,29 @@ RUN apt-get update \
         libreoffice-math \
         libreoffice-writer \                                                                 
         libreoffice-pdfimport \
+        # FFmpeg
+        yasm \
+        libvorbis-dev \
+        texi2html \
+        nasm \
+        zlib1g-dev \
+        libx264-dev \
+        libfdk-aac-dev \
+        libopus-dev \
+        libvpx-dev \
+        libmp3lame-dev \
+        libogg-dev \
+        libopencore-amrnb-dev \
+        libopencore-amrwb-dev \
+        libdc1394-22-dev \
+        libx11-dev \
+        libswscale-dev \
+        libpostproc-dev \
+        libxvidcore-dev \
+        libtheora-dev \
+        libgsm1-dev \
+        libfreetype6-dev \
+        # End FFmpeg
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -54,6 +81,37 @@ RUN apt-get update \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
+    && mkdir /tmp/ffmpeg \
+    && curl -s https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 | tar jxf - -C /tmp/ffmpeg \
+    && ( \
+        cd /tmp/ffmpeg/ffmpeg-${FFMPEG_VERSION} \
+        && ./configure \
+            --enable-gpl \
+            --enable-nonfree \
+            --enable-libfdk-aac \
+            --enable-libfdk_aac \
+            --enable-libgsm \
+            --enable-libmp3lame \
+            --enable-libtheora \
+            --enable-libvorbis \
+            --enable-libvpx \
+            --enable-libfreetype \
+            --enable-libopus \
+            --enable-libx264 \
+            --enable-libxvid \
+            --enable-zlib \
+            --enable-postproc \
+            --enable-swscale \
+            --enable-pthreads \
+            --enable-libdc1394 \
+            --enable-version3 \
+            --enable-libopencore-amrnb \
+            --enable-libopencore-amrwb \
+        && make \
+        && make install \
+        && make distclean \
+    ) \
+    && rm -rf /tmp/ffmpeg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \
