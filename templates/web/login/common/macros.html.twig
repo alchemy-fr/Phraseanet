@@ -57,8 +57,8 @@
         {% for provider in app['authentication.providers'] %}
             {% if provider.display() %}
         <li>
-            <a href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
-                <img title="{{ provider.getTitle() }}" alt="{{ provider.getTitle() }}" src="{{ provider.getIconURI() }}" />
+            <a title="{{ provider.getTitle() }}" href="{{ path('login_authentication_provider_authenticate', { 'providerId' : provider.getId() } ) }}">
+                <img alt="{{ provider.getTitle() }}" src="{{ provider.getIconURI() }}" />
             </a>
         </li>
             {% endif %}
