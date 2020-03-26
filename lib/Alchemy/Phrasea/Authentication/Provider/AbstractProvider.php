@@ -46,9 +46,19 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @obsolete replaced by getTitle()
      * {@inheritdoc}
      */
     public function getName()
+    {
+        return $this->title;
+    }
+
+    /**
+     * more clear that getName because the key in conf is "title"
+     * @return string
+     */
+    public function getTitle()
     {
         return $this->title;
     }

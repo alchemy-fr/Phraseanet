@@ -29,6 +29,9 @@ class PhraseanetOauth extends AbstractProvider
     private $baseurl;
     private $key;
     private $secret;
+    private $providerType;
+    private $providerName;
+    private $iconUri;
 
     private $client;
 
@@ -36,9 +39,12 @@ class PhraseanetOauth extends AbstractProvider
     {
         parent::__construct($generator, $session, $id, $display, $title);
 
-        $this->baseurl = $options['base-url'];
-        $this->key     = $options['client-id'];
-        $this->secret  = $options['client-secret'];
+        $this->baseurl      = $options['base-url'];
+        $this->key          = $options['client-id'];
+        $this->secret       = $options['client-secret'];
+        $this->providerType = $options['provider-type'];
+        $this->providerName = $options['provider-name'];
+        $this->iconUri      = array_key_exists('icon-uri', $options) ? $options['icon-uri'] : null; // if not set, will fallback on default icon
 
         $this->client  = $client;
     }
@@ -79,7 +85,24 @@ class PhraseanetOauth extends AbstractProvider
 
         $this->session->set($this->id . '.provider.state', $state);
 
-        return new RedirectResponse($this->baseurl . '/login/oauth/authorize?' . http_build_query([
+        $url = sprintf("%s/%s/%s/authorize?%s",
+            $this->baseurl,
+            urlencode($this->providerType),
+            urlencode($this->providerName),
+            http_build_query([
+                'client_id' => $this->key,
+                'scope' => 'user,user:email',
+                'state' => $state,
+                'redirect_uri' => $this->generator->generate(
+                    'login_authentication_provider_callback',
+                    $params,
+                    UrlGenerator::ABSOLUTE_URL
+                ),
+            ], '', '&')
+        );
+
+
+        return new RedirectResponse($this->baseurl . '/authorize?' . http_build_query([
             'client_id' => $this->key,
             'scope' => 'user,user:email',
             'state' => $state,
@@ -225,7 +248,7 @@ class PhraseanetOauth extends AbstractProvider
      */
     public function getIconURI()
     {
-        return 'data:image/png;base64,'
+        return $this->iconUri ?: 'data:image/png;base64,'
             . 'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAA'
             . 'AJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAAB'
             . 'AAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAAB'
@@ -314,8 +337,8 @@ class PhraseanetOauth extends AbstractProvider
      */
     public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options)
     {
-        foreach (['client-id', 'client-secret', 'base-url'] as $parm) {
-            if (!isset($options[$parm])) {
+        foreach (['client-id', 'client-secret', 'base-url', 'provider-type', 'provider-name'] as $parm) {
+            if (!isset($options[$parm]) || (trim($options[$parm]) == '')) {
                 throw new InvalidArgumentException(sprintf('Missing Phraseanet "%s" parameter in conf/authentification/providers', $parm));
             }
         }

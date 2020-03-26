@@ -44,6 +44,10 @@ class Factory
      */
     public function build($id, $type, $display, $title, array $options = [])
     {
+        $type = implode('', array_map(function ($chunk) {
+            return ucfirst(strtolower($chunk));
+        }, explode('-', $type)));
+
         $class_name = sprintf('%s\\%s', __NAMESPACE__, $type);
 
         if (!class_exists($class_name)) {

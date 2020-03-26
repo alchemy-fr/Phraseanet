@@ -81,11 +81,14 @@ class patch_410alpha26a implements patchInterface
             'enabled' => false,
             'display' => false,
             'title'   => "Phraseanet Oauth provider",
-            'type'    => 'PhraseanetOauth',
+            'type'    => 'phraseanet-oauth',
             'options' => [
-                'client-id' => '',
-                'client-secret' => '',
-                'base-url' => ''
+                'client-id' => 'client_id',
+                'client-secret' => 'client_secret',
+                'base-url' => 'https://baseurl',
+                'provider-type' => 'provider_type',
+                'provider-name' => 'provider_name',
+                'icon-uri' => null
             ]
         ];
 
