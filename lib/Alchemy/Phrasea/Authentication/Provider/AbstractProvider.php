@@ -46,7 +46,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @obsolete replaced by getTitle()
+     * @deprecated  replaced by getTitle()
      * {@inheritdoc}
      */
     public function getName()
