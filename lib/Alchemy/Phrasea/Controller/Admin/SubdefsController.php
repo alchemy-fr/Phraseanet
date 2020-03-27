@@ -383,7 +383,7 @@ class SubdefsController extends Controller
                         Video::OPTION_GOPSIZE         => "25",
                         Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
-                        Video::OPTION_VCODEC          => "libtheora",
+                        Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libmp3lame",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
@@ -449,7 +449,7 @@ class SubdefsController extends Controller
                         Video::OPTION_GOPSIZE         => "25",
                         Video::OPTION_SIZE            => "480",
                         Video::OPTION_FRAMERATE       => "25",
-                        Video::OPTION_VCODEC          => "libtheora",
+                        Video::OPTION_VCODEC          => "libx264",
                         Video::OPTION_ACODEC          => "libfdk_aac",
                         Subdef::OPTION_DEVICE         => ["all"]
                     ],
