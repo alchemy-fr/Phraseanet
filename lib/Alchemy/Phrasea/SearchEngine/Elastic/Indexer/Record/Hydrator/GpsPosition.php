@@ -29,6 +29,16 @@ class GpsPosition
     private $latitude;
     private $latitude_ref;
 
+    public function __construct()
+    {
+        $this->clear();
+    }
+
+    public function clear()
+    {
+        $this->longitude = $this->longitude_ref = $this->latitude = $this->latitude_ref = null;
+    }
+
     public function set($tag_name, $value)
     {
         switch ($tag_name) {
@@ -95,19 +105,11 @@ class GpsPosition
 
     public function getCompositeLongitude()
     {
-        if ($this->longitude === null) {
-            return null;
-        }
-
         return $this->longitude ;
     }
 
     public function getCompositeLatitude()
     {
-        if ($this->latitude === null) {
-            return null;
-        }
-
         return $this->latitude;
     }
 

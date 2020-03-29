@@ -43,6 +43,7 @@ use Silex\ServiceProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+
 class SearchEngineServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
@@ -145,6 +146,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.databox_fetcher_factory'] = $app->share(function ($app) {
             return new DataboxFetcherFactory(
+                $app['conf'],
                 $app['elasticsearch.record_helper'],
                 $app['elasticsearch.options'],
                 $app,

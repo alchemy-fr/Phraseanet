@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
@@ -24,28 +25,42 @@ use InvalidArgumentException;
 
 class MetadataHydrator implements HydratorInterface
 {
+    private $conf;
     private $connection;
     private $structure;
     private $helper;
 
-    private $gps_position_buffer = [];
+    private $lat_fieldname;     // get from conf
+    private $lon_fieldname;     // get from conf
+    private $caption_gps_position;
+    private $exif_gps_position;
 
-    public function __construct(DriverConnection $connection, Structure $structure, RecordHelper $helper)
+    public function __construct(PropertyAccess $conf, DriverConnection $connection, Structure $structure, RecordHelper $helper)
     {
+        $this->conf = $conf;
         $this->connection = $connection;
         $this->structure = $structure;
         $this->helper = $helper;
+
+        // get the fieldnames of source of lat / lon geo fields (defined in instance conf)
+        $this->lat_fieldname = $conf->get(['geocoding', 'lat_fieldname']);
+        $this->lon_fieldname = $conf->get(['geocoding', 'lon_fieldname']);
+
+        $this->caption_gps_position = new GpsPosition();
+        $this->exif_gps_position = new GpsPosition();
     }
 
     public function hydrateRecords(array &$records)
     {
-        $sql = "(SELECT record_id, ms.name AS `key`, m.value AS value, 'caption' AS type, ms.business AS private\n"
+        $sql = "SELECT * FROM ("
+            . "(SELECT record_id, ms.name AS `key`, m.value AS value, 'caption' AS type, ms.business AS private\n"
             . " FROM metadatas AS m INNER JOIN metadatas_structure AS ms ON (ms.id = m.meta_struct_id)\n"
             . " WHERE record_id IN (?))\n"
             . "UNION\n"
             . "(SELECT record_id, t.name AS `key`, t.value AS value, 'exif' AS type, 0 AS private\n"
             . " FROM technical_datas AS t\n"
-            . " WHERE record_id IN (?))\n";
+            . " WHERE record_id IN (?))\n"
+            . ") AS t ORDER BY record_id";
 
         $ids = array_keys($records);
         $statement = $this->connection->executeQuery(
@@ -54,7 +69,17 @@ class MetadataHydrator implements HydratorInterface
             array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY)
         );
 
+        $record_id = -1;
         while ($metadata = $statement->fetch()) {
+
+            if($metadata['record_id'] !== $record_id) {
+                // record has changed, don't mix with previous one
+                $this->caption_gps_position->clear();
+                $this->exif_gps_position->clear();
+
+                $record_id = $metadata['record_id'];
+            }
+
             // Store metadata value
             $key = $metadata['key'];
             $value = trim($metadata['value']);
@@ -64,10 +89,10 @@ class MetadataHydrator implements HydratorInterface
                 continue;
             }
 
-            $id = $metadata['record_id'];
-            if (isset($records[$id])) {
-                $record =& $records[$id];
-            } else {
+            if (isset($records[$record_id])) {
+                $record =& $records[$record_id];
+            }
+            else {
                 throw new Exception('Received metadata from unexpected record');
             }
 
@@ -89,13 +114,22 @@ class MetadataHydrator implements HydratorInterface
                         $record[$field] = array();
                     }
                     $record[$field][] = $value;
+
+                    if($key === $this->lat_fieldname) {
+                        $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LATITUDE_TAG_NAME, $value);
+                    }
+                    elseif($key === $this->lon_fieldname) {
+                        $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LONGITUDE_TAG_NAME, $value);
+                    }
                     break;
 
                 case 'exif':
+                    /* gps position only comes from caption field define in conf
                     if (GpsPosition::isSupportedTagName($key)) {
-                        $this->handleGpsPosition($records, $id, $key, $value);
+                        $this->handleGpsPosition($this->exif_gps_position, $record, $key, $value);
                         break;
                     }
+                    */
                     $tag = $this->structure->getMetadataTagByName($key);
                     if ($tag) {
                         $value = $this->helper->sanitizeValue($value, $tag->getType());
@@ -109,38 +143,25 @@ class MetadataHydrator implements HydratorInterface
                     break;
             }
         }
-
-        $this->clearGpsPositionBuffer();
     }
 
-    private function handleGpsPosition(&$records, $id, $tag_name, $value)
+    private function handleGpsPosition(GpsPosition &$position, &$record, $tag_name, $value)
     {
-        // Get position object
-        if (!isset($this->gps_position_buffer[$id])) {
-            $this->gps_position_buffer[$id] = new GpsPosition();
-        }
-        $position = $this->gps_position_buffer[$id];
         // Push this tag into object
         $position->set($tag_name, $value);
+
         // Try to output complete position
         if ($position->isCompleteComposite()) {
             $lon = $position->getCompositeLongitude();
             $lat = $position->getCompositeLatitude();
 
-            $records[$id]['metadata_tags']['Longitude'] = $lon;
-            $records[$id]['metadata_tags']['Latitude'] = $lat;
+            $record['metadata_tags']['Longitude'] = $lon;
+            $record['metadata_tags']['Latitude'] = $lat;
 
-            $records[$id]["location"] = [
+            $record["location"] = [
                 "lat" => $lat,
                 "lon" => $lon
             ];
-
-            unset($this->gps_position_buffer[$id]);
         }
-    }
-
-    private function clearGpsPositionBuffer()
-    {
-        $this->gps_position_buffer = [];
     }
 }
