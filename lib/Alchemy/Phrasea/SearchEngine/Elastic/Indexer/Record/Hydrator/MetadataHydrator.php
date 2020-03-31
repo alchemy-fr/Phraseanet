@@ -30,8 +30,8 @@ class MetadataHydrator implements HydratorInterface
     private $structure;
     private $helper;
 
-    private $lat_fieldname;     // get from conf
-    private $lon_fieldname;     // get from conf
+    private $position_fields_mapping;     // get from conf
+
     private $caption_gps_position;
     private $exif_gps_position;
 
@@ -43,8 +43,14 @@ class MetadataHydrator implements HydratorInterface
         $this->helper = $helper;
 
         // get the fieldnames of source of lat / lon geo fields (defined in instance conf)
-        $this->lat_fieldname = $conf->get(['geocoding', 'lat_fieldname']);
-        $this->lon_fieldname = $conf->get(['geocoding', 'lon_fieldname']);
+        $this->position_fields_mapping = [];
+        foreach($conf->get(['geocoding-providers'], []) as $provider) {
+            if($provider['enabled'] && array_key_exists('position-fields', $provider)) {
+                foreach ($provider['position-fields'] as $position_field) {
+                    $this->position_fields_mapping[$position_field['name']] = $position_field['type'];
+                }
+            }
+        }
 
         $this->caption_gps_position = new GpsPosition();
         $this->exif_gps_position = new GpsPosition();
@@ -115,12 +121,23 @@ class MetadataHydrator implements HydratorInterface
                     }
                     $record[$field][] = $value;
 
-                    if($key === $this->lat_fieldname) {
-                        $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LATITUDE_TAG_NAME, $value);
+                    if(array_key_exists($key, $this->position_fields_mapping)) {
+                        // this field is mapped as a position part (lat, lon, latlon), push it
+                        switch($this->position_fields_mapping[$key]) {
+                            case 'lat':
+                                $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LATITUDE_TAG_NAME, $value);
+                                break;
+                            case 'lng':
+                            case 'lon':
+                                $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LONGITUDE_TAG_NAME, $value);
+                                break;
+                            case 'latlng':
+                            case 'latlon':
+                                $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::FULL_GEO_NOTATION, $value);
+                                break;
+                        }
                     }
-                    elseif($key === $this->lon_fieldname) {
-                        $this->handleGpsPosition($this->caption_gps_position, $record, GpsPosition::LONGITUDE_TAG_NAME, $value);
-                    }
+
                     break;
 
                 case 'exif':
