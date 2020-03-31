@@ -116,7 +116,12 @@ class phraseadate
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
             return $date_string;
         } else {
-            return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH_YEAR');
+            $fmt = new IntlDateFormatter(
+                $this->app['locale'] ?: 'en',
+                NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
+            );
+            
+            return $fmt->format($date);
         }
     }
 
