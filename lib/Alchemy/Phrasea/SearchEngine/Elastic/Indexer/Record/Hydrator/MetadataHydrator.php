@@ -141,12 +141,12 @@ class MetadataHydrator implements HydratorInterface
                     break;
 
                 case 'exif':
-                    /* gps position only comes from caption field define in conf
-                    if (GpsPosition::isSupportedTagName($key)) {
+                    // exif gps is a first-chance if caption is not yet set
+                    // anyway if caption is set later, it will override the exif values
+                    if (GpsPosition::isSupportedTagName($key) && !$this->caption_gps_position->isCompleteComposite()) {
                         $this->handleGpsPosition($this->exif_gps_position, $record, $key, $value);
                         break;
                     }
-                    */
                     $tag = $this->structure->getMetadataTagByName($key);
                     if ($tag) {
                         $value = $this->helper->sanitizeValue($value, $tag->getType());
