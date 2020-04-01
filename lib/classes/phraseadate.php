@@ -98,7 +98,14 @@ class phraseadate
         }
 
         $date_string = $this->formatDate($date, $this->app['locale'], ($yearDiff != 0) ? 'DAY_MONTH_YEAR' : 'DAY_MONTH');
-
+        $fmtM = new IntlDateFormatter(
+            $this->app['locale'] ?: 'en',
+            NULL, NULL, NULL, NULL, 'dd MMMM'
+        );
+        $fmtY = new IntlDateFormatter(
+            $this->app['locale'] ?: 'en',
+            NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
+        );
         if ($dayDiff == 0) {
             if ($diff < 60) {
                 return $this->app->trans('phraseanet::temps:: a l\'instant');
@@ -114,14 +121,9 @@ class phraseadate
         } elseif ($dayDiff == 1) {
             return $this->app->trans('phraseanet::temps:: hier');
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
-            return $date_string;
+            return $fmtM->format($date);
         } else {
-            $fmt = new IntlDateFormatter(
-                $this->app['locale'] ?: 'en',
-                NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
-            );
-            
-            return $fmt->format($date);
+            return $fmtY->format($date);
         }
     }
 
