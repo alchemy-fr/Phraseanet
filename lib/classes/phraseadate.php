@@ -163,6 +163,7 @@ class phraseadate
                         $date_formated = $formatM->format($date);
                         break;
                     case 'DAY_MONTH_YEAR':
+                        //  $date_formated = strftime("%e %B %Y", $date->format('U'));
                         $formatY = new IntlDateFormatter(
                             $locale ?: 'en',
                             NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
@@ -173,6 +174,27 @@ class phraseadate
                 break;
             case 'en':
                 switch ($format) {
+                    default:
+                    case 'DAY_MONTH':
+                        $formatM = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'MMMM dd'
+                        );
+                        $date_formated = $formatM->format($date);
+                        break;
+                    case 'DAY_MONTH_YEAR':
+                        //  $date_formated = strftime("%e %B %Y", $date->format('U'));
+                        $formatY = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'MMMM dd yyyy'
+                        );
+                        $date_formated = $formatY->format($date);
+                        break;
+                }
+                break;
+            case 'de':
+                switch ($format) {
+                    default:
                     case 'DAY_MONTH':
                         $formatM = new IntlDateFormatter(
                             $locale ?: 'en',
@@ -188,22 +210,6 @@ class phraseadate
                         $date_formated = $formatY->format($date);
                         break;
                 }
-                break;
-            case 'de':
-            case 'DAY_MONTH':
-                $formatM = new IntlDateFormatter(
-                    $locale ?: 'en',
-                    NULL, NULL, NULL, NULL, 'MMMM dd'
-                );
-                $date_formated = $formatM->format($date);
-                break;
-            case 'DAY_MONTH_YEAR':
-                $formatY = new IntlDateFormatter(
-                    $locale ?: 'en',
-                    NULL, NULL, NULL, NULL, 'MMMM dd yyyy'
-                );
-                $date_formated = $formatY->format($date);
-                break;
         }
 
         return $date_formated;
