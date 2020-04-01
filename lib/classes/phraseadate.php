@@ -206,12 +206,11 @@ class phraseadate
                         );
                         $date_formated = $formatY->format($date);
                         break;
-                }
-        }
+                };
+                break;
+            }
         return $date_formated;
     }
-
-
 
     /**
      *
