@@ -36,7 +36,7 @@ class phraseadate
 
     /**
      *
-     * @param  DateTime $date
+     * @param DateTime $date
      * @return string
      */
     public function getTime(DateTime $date)
@@ -57,7 +57,7 @@ class phraseadate
 
     /**
      *
-     * @param  DateTime $date
+     * @param DateTime $date
      * @return string
      */
     public function getDate(DateTime $date)
@@ -79,7 +79,7 @@ class phraseadate
 
     /**
      *
-     * @param  DateTime $date
+     * @param DateTime $date
      * @return string
      */
     public function getPrettyString(DateTime $date = null)
@@ -98,14 +98,7 @@ class phraseadate
         }
 
         $date_string = $this->formatDate($date, $this->app['locale'], ($yearDiff != 0) ? 'DAY_MONTH_YEAR' : 'DAY_MONTH');
-        $fmtM = new IntlDateFormatter(
-            $this->app['locale'] ?: 'en',
-            NULL, NULL, NULL, NULL, 'dd MMMM'
-        );
-        $fmtY = new IntlDateFormatter(
-            $this->app['locale'] ?: 'en',
-            NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
-        );
+
         if ($dayDiff == 0) {
             if ($diff < 60) {
                 return $this->app->trans('phraseanet::temps:: a l\'instant');
@@ -121,9 +114,9 @@ class phraseadate
         } elseif ($dayDiff == 1) {
             return $this->app->trans('phraseanet::temps:: hier');
         } elseif ($dayDiff < 365 && $dayDiff > 0) {
-            return $fmtM->format($date);
+            return $date_string;
         } else {
-            return $fmtY->format($date);
+            return $this->formatDate($date, $this->app['locale'], 'DAY_MONTH_YEAR');
         }
     }
 
@@ -139,7 +132,7 @@ class phraseadate
 
     /**
      *
-     * @param  DateTime $date
+     * @param DateTime $date
      * @return string
      */
     public function format_mysql(DateTime $date)
@@ -149,9 +142,9 @@ class phraseadate
 
     /**
      *
-     * @param  DateTime $date
-     * @param  string   $locale
-     * @param  string   $format
+     * @param DateTime $date
+     * @param string $locale
+     * @param string $format
      * @return string
      */
     private function formatDate(DateTime $date, $locale, $format)
@@ -163,34 +156,53 @@ class phraseadate
                 switch ($format) {
                     default:
                     case 'DAY_MONTH':
-                        $date_formated = strftime("%e %B", $date->format('U'));
+                        $formatM = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'dd MMMM'
+                        );
+                        $date_formated = $formatM->format($date);
                         break;
                     case 'DAY_MONTH_YEAR':
-                        $date_formated = strftime("%e %B %Y", $date->format('U'));
+                        $formatY = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
+                        );
+                        $date_formated = $formatY->format($date);
                         break;
                 }
                 break;
             case 'en':
                 switch ($format) {
-                    default:
                     case 'DAY_MONTH':
-                        $date_formated = strftime("%B %e", $date->format('U'));
+                        $formatM = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'MMMM dd'
+                        );
+                        $date_formated = $formatM->format($date);
                         break;
                     case 'DAY_MONTH_YEAR':
-                        $date_formated = strftime("%B %e %Y", $date->format('U'));
+                        $formatY = new IntlDateFormatter(
+                            $locale ?: 'en',
+                            NULL, NULL, NULL, NULL, 'MMMM dd yyyy'
+                        );
+                        $date_formated = $formatY->format($date);
                         break;
                 }
                 break;
             case 'de':
-                switch ($format) {
-                    default:
-                    case 'DAY_MONTH':
-                        $date_formated = strftime("%e. %B", $date->format('U'));
-                        break;
-                    case 'DAY_MONTH_YEAR':
-                        $date_formated = strftime("%e. %B %Y", $date->format('U'));
-                        break;
-                }
+            case 'DAY_MONTH':
+                $formatM = new IntlDateFormatter(
+                    $locale ?: 'en',
+                    NULL, NULL, NULL, NULL, 'MMMM dd'
+                );
+                $date_formated = $formatM->format($date);
+                break;
+            case 'DAY_MONTH_YEAR':
+                $formatY = new IntlDateFormatter(
+                    $locale ?: 'en',
+                    NULL, NULL, NULL, NULL, 'MMMM dd yyyy'
+                );
+                $date_formated = $formatY->format($date);
                 break;
         }
 
@@ -199,8 +211,8 @@ class phraseadate
 
     /**
      *
-     * @param  string $isodelimdate
-     * @param  string $format
+     * @param string $isodelimdate
+     * @param string $format
      * @return string
      */
     public function isodateToDate($isodelimdate, $format)
@@ -223,20 +235,20 @@ class phraseadate
                     $isodelimdate = "";
                 }
             } else {
-                $tc[] = ["char"        => $c, "bals"        => $bal];
+                $tc[] = ["char" => $c, "bals" => $bal];
                 $isodelimdate = substr($isodelimdate, 1);
             }
         }
 
         $strdate = "";
-        $paterns = ["YYYY" => 0, "YY"   => 2, "MM"   => 5,
-            "DD"   => 8, "HH"   => 11, "NN"   => 14, "SS"   => 17];
+        $paterns = ["YYYY" => 0, "YY" => 2, "MM" => 5,
+            "DD" => 8, "HH" => 11, "NN" => 14, "SS" => 17];
 
         while ($format != "") {
             $patfound = false;
             foreach ($paterns as $pat => $idx) {
                 if (substr($format, 0, ($l = strlen($pat))) == $pat) {
-                    for ($i = 0; $i < $l; $i ++) {
+                    for ($i = 0; $i < $l; $i++) {
                         $bal_out = "";
                         if (isset($tc[$idx + $i])) {
                             foreach ($tc[$idx + $i]["bals"] as $b) {
@@ -251,19 +263,19 @@ class phraseadate
                     break;
                 }
             }
-            if (! $patfound) {
+            if (!$patfound) {
                 $strdate .= $format[0];
                 $format = substr($format, 1);
             }
         }
 
-        return($strdate);
+        return ($strdate);
     }
 
     /**
      *
-     * @param  string $strdate
-     * @param  string $format
+     * @param string $strdate
+     * @param string $format
      * @return string
      */
     public function dateToIsodate($strdate, $format)
@@ -301,8 +313,8 @@ class phraseadate
                 if ($v_y < 20)
                     $v_y += 2000;
                 else
-                if ($v_y < 100)
-                    $v += 1900;
+                    if ($v_y < 100)
+                        $v += 1900;
                 break;
             case "DDMMYY":
             case "DDMMYYHHNNSS":
@@ -326,8 +338,8 @@ class phraseadate
                 if ($v_y < 20)
                     $v_y += 2000;
                 else
-                if ($v_y < 100)
-                    $v += 1900;
+                    if ($v_y < 100)
+                        $v += 1900;
                 break;
             case "MMDDYY":
             case "MMDDYYHHNNSS":
@@ -351,8 +363,8 @@ class phraseadate
                 if ($v_y < 20)
                     $v_y += 2000;
                 else
-                if ($v_y < 100)
-                    $v += 1900;
+                    if ($v_y < 100)
+                        $v += 1900;
                 break;
             case "YYMMDD":
             case "YYMMDDHHNNSS":
@@ -376,8 +388,8 @@ class phraseadate
                 if ($v_y < 20)
                     $v_y += 2000;
                 else
-                if ($v_y < 100)
-                    $v += 1900;
+                    if ($v_y < 100)
+                        $v += 1900;
                 break;
             case "YYDDMM":
             case "YYDDMMHHNNSS":
@@ -403,6 +415,6 @@ class phraseadate
 
         }
 
-        return($isodelimdate);
+        return ($isodelimdate);
     }
 }
