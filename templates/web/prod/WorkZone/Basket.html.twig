@@ -101,7 +101,7 @@
 
             {% set dateExpired = app['date-formatter'].getTranslatedDate(basket.getValidation().getExpires()) %}
             <div class="expiredDate">
-                {% if date(dateExpired) < date() %}
+                {% if basket.getValidation().getExpires() < date() %}
                     <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
                 {% else %}
                     <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>

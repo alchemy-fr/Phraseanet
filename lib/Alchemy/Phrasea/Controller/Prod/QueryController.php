@@ -269,7 +269,7 @@ class QueryController extends Controller
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
-                . '<div class="detailed_info_holder"><img src="/assets/common/images/icons/dots.png" class="image-normal"><img src="/assets/common/images/icons/dots-darkgreen-hover.png" class="image-hover">'
+                . '<div class="detailed_info_holder"><img src="/assets/common/images/icons/dots.png" class="image-normal hidden"><img src="/assets/common/images/icons/dots-darkgreen-hover.png" class="image-hover">'
                 . '<div class="detailed_info">
                     <table>
                         <thead>
