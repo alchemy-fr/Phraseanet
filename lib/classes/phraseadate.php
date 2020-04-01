@@ -194,7 +194,7 @@ class phraseadate
                     default:
                     case 'DAY_MONTH':
                         $formatM = new IntlDateFormatter(
-                            $locale ?: 'en',
+                            $locale,
                             NULL, NULL, NULL, NULL, 'dd MMMM'
                         );
                         $date_formated = $formatM->format($date);
