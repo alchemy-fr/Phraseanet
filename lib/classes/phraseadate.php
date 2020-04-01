@@ -151,6 +151,7 @@ class phraseadate
     {
         switch ($locale) {
             default:
+            case 'de':
             case 'fr':
                 switch ($format) {
                     default:
@@ -189,26 +190,7 @@ class phraseadate
                         break;
                 }
                 break;
-            case 'de':
-                switch ($format) {
-                    default:
-                    case 'DAY_MONTH':
-                        $formatM = new IntlDateFormatter(
-                            $locale,
-                            NULL, NULL, NULL, NULL, 'dd MMMM'
-                        );
-                        $date_formated = $formatM->format($date);
-                        break;
-                    case 'DAY_MONTH_YEAR':
-                        $formatY = new IntlDateFormatter(
-                            $locale,
-                            NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
-                        );
-                        $date_formated = $formatY->format($date);
-                        break;
-                };
-                break;
-            }
+        }
         return $date_formated;
     }
 
