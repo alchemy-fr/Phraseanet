@@ -101,16 +101,7 @@ class PhraseanetOauth extends AbstractProvider
         );
 
 
-        return new RedirectResponse($this->baseurl . '/authorize?' . http_build_query([
-            'client_id' => $this->key,
-            'scope' => 'user,user:email',
-            'state' => $state,
-            'redirect_uri' => $this->generator->generate(
-                'login_authentication_provider_callback',
-                $params,
-                UrlGenerator::ABSOLUTE_URL
-            ),
-        ], '', '&'));
+        return new RedirectResponse($url);
     }
 
     /**
