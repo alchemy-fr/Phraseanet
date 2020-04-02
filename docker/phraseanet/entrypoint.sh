@@ -15,6 +15,7 @@ chown -R app:app \
 FILE=config/configuration.yml
 
 if [ -f "$FILE" ]; then
+    bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     echo "$FILE exists, skip setup."
 else
     echo "$FILE doesn't exist, entering setup..."

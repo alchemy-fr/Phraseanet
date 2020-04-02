@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a4a0be62b13071a6b06893b7ce08372",
+    "content-hash": "008ff0b5d3d13b4f0ce5d34348ded83a",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -4331,16 +4331,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.5",
+            "version": "0.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "3bd3204b69882f495adfb617383a077face92ed0"
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/3bd3204b69882f495adfb617383a077face92ed0",
-                "reference": "3bd3204b69882f495adfb617383a077face92ed0",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/2b9f7697997f7863bbc3d08344c559a1cba519c2",
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2",
                 "shasum": ""
             },
             "require": {
@@ -4350,7 +4350,7 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
+                "php-ffmpeg/php-ffmpeg": "^v0.15",
                 "php-mp4box/php-mp4box": "~0.3.0",
                 "php-unoconv/php-unoconv": "~0.3.1",
                 "pimple/pimple": "~1.0",
@@ -4401,7 +4401,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2019-12-11T07:20:45+00:00"
+            "time": "2020-04-01T08:51:55+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5147,29 +5147,29 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.5.1",
+            "version": "v0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a"
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/c8949fe3df89edd7692368cc110a51a27971f28a",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a",
+                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/984dbd046b6d8c285f9e7419fc7645f197513bfa",
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa",
                 "shasum": ""
             },
             "require": {
-                "alchemy/binary-driver": "~1.5",
-                "doctrine/cache": "~1.0",
-                "evenement/evenement": "~1.0",
-                "neutron/temporary-filesystem": "~2.1, >=2.1.1",
-                "php": ">=5.3.3"
+                "alchemy/binary-driver": "^1.5 || ~2.0.0 || ^5.0",
+                "doctrine/cache": "^1.0",
+                "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
+                "neutron/temporary-filesystem": "^2.1.1",
+                "php": "^5.3.9 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7",
                 "sami/sami": "~1.0",
-                "silex/silex": "~1.0"
+                "silex/silex": "~1.0",
+                "symfony/phpunit-bridge": "^5.0.4"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
@@ -5177,7 +5177,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5-dev"
+                    "dev-master": "0.7-dev"
                 }
             },
             "autoload": {
@@ -5199,6 +5199,21 @@
                     "name": "Phraseanet Team",
                     "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
+                },
+                {
+                    "name": "Patrik Karisch",
+                    "email": "patrik@karisch.guru",
+                    "homepage": "http://www.karisch.guru"
+                },
+                {
+                    "name": "Romain Biard",
+                    "email": "romain.biard@gmail.com",
+                    "homepage": "https://www.strime.io/"
+                },
+                {
+                    "name": "Jens Hausdorf",
+                    "email": "hello@jens-hausdorf.de",
+                    "homepage": "https://jens-hausdorf.de"
                 }
             ],
             "description": "FFMpeg PHP, an Object Oriented library to communicate with AVconv / ffmpeg",
@@ -5212,7 +5227,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2014-08-26T08:46:56+00:00"
+            "time": "2020-03-23T09:32:09+00:00"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -7772,7 +7787,7 @@
     ],
     "packages-dev": [
         {
-            "name": "mikey179/vfsStream",
+            "name": "mikey179/vfsstream",
             "version": "v1.6.4",
             "source": {
                 "type": "git",
