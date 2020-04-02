@@ -31,7 +31,8 @@ class BasketConverter implements ConverterInterface
      */
     public function convert($id)
     {
-        if (null === $basket = $this->repository->find((int) $id)) {
+        /** @var Basket $basket */
+        if ( ($basket = $this->repository->find((int) $id)) === null) {
             throw new NotFoundHttpException(sprintf('Basket %s not found.', $id));
         }
 
