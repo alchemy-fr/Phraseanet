@@ -92,10 +92,12 @@ The default parameters allow you to reach the app with : `http://localhost:8082`
 
 ### Use Phraseanet images from docker hub
 
-Retrieve on Docker hub prebuilde images for Phraseanet.
+Retrieve on Docker hub prebuilt images for Phraseanet.
 
 https://hub.docker.com/r/alchemyfr/phraseanet-fpm
+
 https://hub.docker.com/r/alchemyfr/phraseanet-worker
+
 https://hub.docker.com/r/alchemyfr/phraseanet-nginx
 
 To use them and not build the images locally, we advise to override the properties in file: env.local
