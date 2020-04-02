@@ -151,6 +151,7 @@ class RecordHelper
                 return (bool) $value;
 
             case FieldMapping::TYPE_STRING:
+                $value = substr($value, 0, 32766);      // for lucene limit, before a better solution
                 return str_replace("\0", '', $value);
 
             default:

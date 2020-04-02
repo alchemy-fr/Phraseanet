@@ -34,17 +34,16 @@ class FeedEntryProcessor implements ProcessorInterface
     {
         $data = $event->getData();
 
-        if (!isset($data->entry_id)) {
+        if (!isset($data['entry_id'])) {
             return null;
         }
 
-        $entry = $this->entryRepository->find($data->entry_id);
+        $entry = $this->entryRepository->find($data['entry_id']);
 
         if (null === $entry) {
             return null;
         }
 
-        $data = $event->getData();
         $feed = $entry->getFeed();
 
         $query = $this->userQuery;
@@ -54,8 +53,8 @@ class FeedEntryProcessor implements ProcessorInterface
             ->include_templates(false)
             ->email_not_null(true);
 
-        if ($feed->getCollection($this->app)) {
-            $query->on_base_ids([$feed->getCollection($this->app)->get_base_id()]);
+        if ($feed->getCollection($this->application)) {
+            $query->on_base_ids([$feed->getCollection($this->application)->get_base_id()]);
         }
 
         $start = 0;
@@ -76,7 +75,7 @@ class FeedEntryProcessor implements ProcessorInterface
 
         return [
             'event' => $event->getName(),
-            'users_were_notified' => isset($data->notify_email) ?: (bool) $data->notify_email,
+            'users_were_notified' => isset($data['notify_email']) ? (bool) $data['notify_email'] : false,
             'feed' => [
                 'id' => $feed->getId(),
                 'title' => $feed->getTitle(),

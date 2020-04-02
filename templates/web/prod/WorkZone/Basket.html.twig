@@ -1,4 +1,4 @@
-
+<script src="https://rawgithub.com/trentrichardson/jQuery-Timepicker-Addon/master/jquery-ui-timepicker-addon.js"></script>
 <div>
     <button class="tools-accordion">Actions</button>
     <div class="tools-panel">
@@ -99,15 +99,22 @@
             </p>
             <div class="record-number">  {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}</div>
 
-            {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
+            {% set dateExpired = app['date-formatter'].getTranslatedDate(basket.getValidation().getExpires()) %}
             <div class="expiredDate">
-                <span>{{ 'workzone:feedback:expiration' | trans }} :</span>
+                {% if basket.getValidation().getExpires() < date() %}
+                    <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
+                {% else %}
+                    <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
+                {% endif %}
+
                 <form class="update-feed-validation">
-                    <input type="hidden" name="feedback-id" value={{ basket.getValidation().getId}} />
-                    <input type="hidden" name="feedback-deadline-format" class="alternate" />
-                <input type="text" class="btn datepicker" name="feedback-deadline" value="{{ dateExpired }}">
-                    <button type="submit" class="submit" title="{{ 'workzone:feedback:update' | trans }}"><i class="fa fa-save"></i></button>
+                    <input type="hidden" name="feedbackId" value={{ basket.getId}} />
+                    <input type="hidden" name="feedbackDate" class="alternate" />
+                <input type="text" class="btn feed-datepicker" name="feedback-deadline" value="{{ dateExpired }}">
+                    <button type="submit" class="submit submit-validation btn-not-shown" title="{{ 'workzone:feedback:update' | trans }}"><svg width="22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="calendar-check" class="svg-inline--fa fa-calendar-check fa-w-14" role="img" viewBox="0 0 448 512"><path fill="currentColor" d="M436 160H12c-6.627 0-12-5.373-12-12v-36c0-26.51 21.49-48 48-48h48V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h128V12c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v52h48c26.51 0 48 21.49 48 48v36c0 6.627-5.373 12-12 12zM12 192h424c6.627 0 12 5.373 12 12v260c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V204c0-6.627 5.373-12 12-12zm333.296 95.947l-28.169-28.398c-4.667-4.705-12.265-4.736-16.97-.068L194.12 364.665l-45.98-46.352c-4.667-4.705-12.266-4.736-16.971-.068l-28.397 28.17c-4.705 4.667-4.736 12.265-.068 16.97l82.601 83.269c4.667 4.705 12.265 4.736 16.97.068l142.953-141.805c4.705-4.667 4.736-12.265.068-16.97z"/></svg></button>
+                    <span class="cancel-date btn-not-shown"><i class="fa fa-times"></i></span>
                 </form>
+                <p class="message text-right" style="opacity: 0;transition: all 0.2s; color: green; display: block; ">{{ 'prod:workzone:basket:updated-message' | trans }}</p>
             </div>
 
             {% endif %}
@@ -135,7 +142,22 @@
 <script type="text/javascript">
     $( ".update-feed-validation" ).on( "submit", function( event ) {
         event.preventDefault();
-        console.log( $( this ).serialize() );
+        var formData = $(this).serializeArray();
+
+        $.ajax({
+            type: 'POST',
+            url: '/prod/push/update-expiration/',
+            data: {
+                basket_id: formData[0].value,
+                date: formData[1].value
+            },
+            success: function (data) {
+                $('.message').css('opacity',1);
+                $('.submit-validation').addClass ('btn-not-shown');
+                $('.cancel-date').addClass ('btn-not-shown');
+                setTimeout(function(){ $('.message').css('opacity',0); }, 2000);
+            },
+        });
     });
     $( function() {
         $.datepicker.regional['default'] = {
@@ -149,11 +171,21 @@
             dayNamesMin: [ "D","L","M","M","J","V","S" ],
             dateFormat: "d MM yy",
             altField: ".alternate",
-            altFormat: "yy-mm-dd"
+            altFormat: "yy-mm-dd",
+            minDate: 0
 
         };
 
-        $( ".datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+        $(".feed-datepicker" ).datepicker( $.datepicker.regional[ 'default' ]);
+        $(".feed-datepicker" ).change(function() {
+            $('.submit-validation').removeClass('btn-not-shown');
+            $('.cancel-date').removeClass('btn-not-shown');
+        });
+        $(".cancel-date" ).click(function() {
+            $('.cancel-date').removeClass('btn-not-shown');
+            $('.feed-datepicker').val('{{ dateExpired }}');
+            setTimeout(function(){ $('.cancel-date').addClass('btn-not-shown');$('.submit-validation').addClass('btn-not-shown'); }, 1000);
+        })
     })
 
 </script>
