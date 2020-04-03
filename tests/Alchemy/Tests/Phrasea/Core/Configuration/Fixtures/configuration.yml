@@ -226,7 +226,7 @@ geocoding-providers:
         position-fields:
             -
                 name: GpsCompositePosition
-                type: latlng
+                type: latlon
             # -
             #    name: Longitude
             #    type: lng
