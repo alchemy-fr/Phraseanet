@@ -71,7 +71,7 @@ class AddPluginTest extends PluginCommandTestCase
 
         self::$DI['cli']['filesystem']->expects($this->at(2))
             ->method('remove')
-            ->with('tempdir');
+            ->with('TestPlugin');
 
         self::$DI['cli']['plugins.autoloader-generator']->expects($this->once())
             ->method('write')

@@ -15,6 +15,21 @@ use Alchemy\Phrasea\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+function normalizePath($path) {
+    return array_reduce(explode('/', $path), function ($a, $b) {
+        if($a === 0)
+            $a = '/';
+
+        if($b === '' || $b === '.')
+            return $a;
+
+        if($b === '..')
+            return dirname($a);
+
+        return preg_replace('/\/+/', '/', "$a/$b");
+    }, 0);
+}
+
 abstract class AbstractPluginCommand extends Command
 {
     protected function validatePlugins(InputInterface $input, OutputInterface $output)
