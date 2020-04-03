@@ -290,10 +290,10 @@ geocoding-providers:
         position-fields: []
             #-
             #   name: GpsCompositePosition
-            #   type: latlng
+            #   type: latlon
             # -
             #    name: Longitude
-            #    type: lng
+            #    type: lon
             # -
             #    name: Latitude
             #    type: lat
