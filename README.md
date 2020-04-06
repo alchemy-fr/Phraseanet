@@ -18,6 +18,8 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
+For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
+
 # Installation :
 
 You **must** not download the source from GitHub, but download a packaged version here :
@@ -26,13 +28,7 @@ https://www.phraseanet.com/download/
 
 And follow the install steps described at https://docs.phraseanet.com/4.0/en/Admin/Install.html
 
-# Try Phraseanet :
-
-You can also download a testing pre installed Virtual Machine in OVA format here :
-
-https://www.phraseanet.com/download/
-
-# With Docker
+# Phraseanet with Docker:
 
 ## Prerequisites
 
@@ -92,8 +88,26 @@ Where `<command>` can be:
 - `bin/console worker:execute -m 2`
 - ...
 
-
 The default parameters allow you to reach the app with : `http://localhost:8082`
+
+### Use Phraseanet images from docker hub
+
+Retrieve on Docker hub prebuilt images for Phraseanet.
+
+https://hub.docker.com/r/alchemyfr/phraseanet-fpm
+
+https://hub.docker.com/r/alchemyfr/phraseanet-worker
+
+https://hub.docker.com/r/alchemyfr/phraseanet-nginx
+
+To use them and not build the images locally, we advise to override the properties in file: env.local
+
+```bash
+# Registry from where you pull Docker images
+PHRASEANET_DOCKER_REGISTRY=alchemyfr
+# Tag of the Docker images
+PHRASEANET_DOCKER_TAG=
+```
 
 ## Development mode
 
@@ -175,6 +189,12 @@ export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
 export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_rsa_raw && cat /tmp/id_rsa_raw && rm /tmp/id_rsa_raw)
 ```
 
+# Try Phraseanet with Pre installed VM (deprecated)
+
+You can also download a testing pre installed Virtual Machine in OVA format here :
+
+https://www.phraseanet.com/download/
+
 # With Vagrant (deprecated)
 
 ## Development :
@@ -194,4 +214,5 @@ Ex:
 - vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
-For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
+
+
