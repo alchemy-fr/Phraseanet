@@ -79,7 +79,13 @@ class RecordIndex implements MappingProvider
         $mapping->add($this->buildMetadataTagMapping('metadata_tags'));
         $mapping->add($this->buildFlagMapping('flags'));
 
-        $mapping->addIntegerField('flags_bitfield')->disableIndexing();
+        // es int type is always int32 (32 bits signed), so on php-64 we may receive overflow values if the last sb (#31) is set.
+        // In mysql we use unsigned type, so the output value (as decimal string) may also overflow on php-32.
+        // Since we use a php lib for es, - with php-int as underlying type -
+        //      we have no way to use a binary-string notation from mysql to es.
+        // The easy way here is to use a long (int64) in es, even if there is 32 status-bits in phraseanet
+        // nb : not fixed on php-32 !
+        $mapping->addLongField('flags_bitfield')->disableIndexing();
         $mapping->addObjectField('subdefs')->disableMapping();
         $mapping->addObjectField('title')->disableMapping();
 
