@@ -12,7 +12,7 @@ chown -R app:app \
     tmp \
     logs \
     www/thumbnails \
-    www/custom \
+    www/custom
 
 FILE=config/configuration.yml
 
