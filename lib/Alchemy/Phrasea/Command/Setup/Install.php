@@ -55,7 +55,9 @@ class Install extends Command
             ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
             ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
             ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
-            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
+            ->setHelp("Phraseanet can only be installed on 64 bits PHP.");
+            ;
 
         return $this;
     }
@@ -75,6 +77,14 @@ class Install extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if(PHP_INT_SIZE !== 8) {
+            $output->writeln(sprintf(
+                "<error>Phraseanet can only be installed on 64 bits PHP, your version is %d bits (PHP_INT_SIZE=%d).</error>",
+                PHP_INT_SIZE<<3,PHP_INT_SIZE
+            ));
+            return -1;
+        }
+
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
