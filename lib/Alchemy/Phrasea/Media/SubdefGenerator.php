@@ -57,7 +57,7 @@ class SubdefGenerator
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->mediavorus = $mediavorus;
-        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'tmp_files']);;
+        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);;
     }
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)

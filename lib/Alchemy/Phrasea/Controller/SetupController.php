@@ -174,7 +174,9 @@ class SetupController extends Controller
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         $template = $request->request->get('db_template');
-        $dataPath = $request->request->get('datapath_noweb');
+        $storagePath = [
+            'subdefs' => $request->request->get('datapath_noweb')
+        ];
 
         try {
             $installer = $this->app['phraseanet.installer'];
@@ -193,7 +195,7 @@ class SetupController extends Controller
                 $binaryData[$key] = $path;
             }
 
-            $user = $installer->install($email, $password, $abConn, $servername, $dataPath, $dbConn, $template, $binaryData);
+            $user = $installer->install($email, $password, $abConn, $servername, $storagePath, $dbConn, $template, $binaryData);
 
             $this->app->getAuthenticator()->openAccount($user);
 

@@ -111,7 +111,7 @@ main:
         download: null
         lazaret: null
         caption: null
-        tmp_files: null
+        worker_tmp_files: null
 border-manager:
     enabled: true
     extension-mapping:

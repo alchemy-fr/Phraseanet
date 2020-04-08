@@ -181,8 +181,8 @@ class UploadController extends Controller
             $uploadedFilename = $file->getRealPath();
             $renamedFilename = null;
 
-            if(!empty($this->app['conf']->get(['main', 'storage', 'tmp_files']))) {
-                $tmpStorage = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'tmp_files'])).'upload/';
+            if(!empty($this->app['conf']->get(['main', 'storage', 'worker_tmp_files']))) {
+                $tmpStorage = \p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'worker_tmp_files'])).'upload/';
 
                 if(!is_dir($tmpStorage)){
                     $this->getFilesystem()->mkdir($tmpStorage);
