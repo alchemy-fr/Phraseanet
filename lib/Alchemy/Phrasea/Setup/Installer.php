@@ -211,9 +211,6 @@ class Installer
 
         $config['main']['storage']['cache'] = realpath(__DIR__ . '/../../../../cache');
         $config['main']['storage']['log'] = realpath(__DIR__ . '/../../../../logs');
-        $config['main']['storage']['download'] = realpath(__DIR__ . '/../../../../tmp/download');
-        $config['main']['storage']['lazaret'] = realpath(__DIR__ . '/../../../../tmp/lazaret');
-        $config['main']['storage']['caption'] = realpath(__DIR__ . '/../../../../tmp/caption');
 
         $config['registry'] = $this->app['registry.manipulator']->getRegistryData();
 

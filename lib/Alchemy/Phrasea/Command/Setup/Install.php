@@ -55,6 +55,11 @@ class Install extends Command
             ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
             ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
             ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
+            ->addOption('download-path', null, InputOption::VALUE_OPTIONAL, 'Path to download repository', '/var/alchemy/Phraseanet/tmp/download')
+            ->addOption('lazaret-path', null, InputOption::VALUE_OPTIONAL, 'Path to lazaret repository', '/var/alchemy/Phraseanet/tmp/lazaret')
+            ->addOption('caption-path', null, InputOption::VALUE_OPTIONAL, 'Path to caption repository', '/var/alchemy/Phraseanet/tmp/caption')
+            ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', '/var/alchemy/Phraseanet/tmp/locks')
+            ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', '/var/alchemy/Phraseanet/tmp')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
 
         return $this;
@@ -151,6 +156,7 @@ class Install extends Command
 
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
         $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
+        $this->defineStorageTmpPath($input);
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
@@ -385,6 +391,53 @@ class Install extends Command
         }
 
         return $index;
+    }
+
+    private function defineStorageTmpPath(InputInterface $input)
+    {
+        $downloadPath = $input->getOption('download-path');
+
+        if (!is_dir($downloadPath)) {
+            mkdir($downloadPath, 0755, true);
+        }
+
+        $lazaretPath = $input->getOption('lazaret-path');
+
+        if (!is_dir($lazaretPath)) {
+            mkdir($lazaretPath, 0755, true);
+        }
+
+        $captionPath = $input->getOption('caption-path');
+
+        if (!is_dir($captionPath)) {
+            mkdir($captionPath, 0755, true);
+        }
+
+        $workerTmpFiles = $input->getOption('worker-tmp-files');
+
+        if (!is_dir($workerTmpFiles)) {
+            mkdir($workerTmpFiles, 0755, true);
+        }
+
+
+        $schedulerLocksPath = $input->getOption('scheduler-locks-path');
+
+        if (!is_dir($schedulerLocksPath)) {
+            mkdir($schedulerLocksPath, 0755, true);
+        }
+
+        if (($schedulerLocksPath = realpath($schedulerLocksPath)) === FALSE) {
+            throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $schedulerLocksPath));
+        }
+
+        $config = $this->container['configuration.store']->initialize()->getConfig();
+
+        $config['main']['storage']['download'] = realpath($downloadPath);
+        $config['main']['storage']['lazaret']  = realpath($lazaretPath);
+        $config['main']['storage']['caption']  = realpath($captionPath);
+        $config['main']['storage']['worker_tmp_files'] = realpath($workerTmpFiles);
+
+        $this->container['configuration.store']->setConfig($config);
     }
 
     private function detectBinaries()
