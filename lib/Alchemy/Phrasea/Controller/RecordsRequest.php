@@ -47,7 +47,10 @@ class RecordsRequest extends ArrayCollection
         $this->received = $received;
         $this->rejected = $rejected;
         $this->basket = $basket;
-        $this->isSingleStory = ($flatten !== self::FLATTEN_YES && count($this) === 1 && $this->first()->isStory());
+
+        // since stories are already flattened by "fromRequest" (to apply rights on children),
+        //    flagging "isSingleStory" is a bit more difficult than checking the first item...
+       // $this->isSingleStory = ($flatten !== self::FLATTEN_YES && count($this) === 1 && $this->first()->isStory());
 
         if ($flatten !== self::FLATTEN_NO) {
             $to_remove = [];
@@ -74,11 +77,39 @@ class RecordsRequest extends ArrayCollection
             }
         }
 
+        // We check that the list contains only one story, and that every other items (records) are children of this story
+        // Too bad : there is no "isChildOf" method :(
+        $rec = [];
+        $children = [];
+        $this->isSingleStory = false;
+
         $i = 0;
-        $records = $this->toArray();
-        array_walk($records, function (\record_adapter $record) use (&$i) {
+        foreach ($this as $key => $record) {
+            if($record->isStory()) {
+                if($this->isSingleStory) {
+                    // we already found a story, we cannot have 2, game over
+                    $this->isSingleStory = false;
+                    break;
+                }
+                $this->isSingleStory = true;
+                foreach ($record->getChildren() as $child) {
+                    $children[$child->getId()] = 1; // to later find by key
+                }
+            }
+            else {
+                $rec[] = $record->getId();
+            }
             $record->setNumber($i++);
-        });
+        }
+        if($this->isSingleStory) {
+            foreach ($rec as $rid) {
+                if(!array_key_exists($rid, $children)) {
+                    // one record is not a child, game over
+                    $this->isSingleStory = false;
+                    break;
+                }
+            }
+        }
     }
 
     /**
