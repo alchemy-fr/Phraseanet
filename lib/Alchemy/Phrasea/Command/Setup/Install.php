@@ -55,11 +55,11 @@ class Install extends Command
             ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
             ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
             ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
-            ->addOption('download-path', null, InputOption::VALUE_OPTIONAL, 'Path to download repository', '/var/alchemy/Phraseanet/tmp/download')
-            ->addOption('lazaret-path', null, InputOption::VALUE_OPTIONAL, 'Path to lazaret repository', '/var/alchemy/Phraseanet/tmp/lazaret')
-            ->addOption('caption-path', null, InputOption::VALUE_OPTIONAL, 'Path to caption repository', '/var/alchemy/Phraseanet/tmp/caption')
-            ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', '/var/alchemy/Phraseanet/tmp/locks')
-            ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', '/var/alchemy/Phraseanet/tmp')
+            ->addOption('download-path', null, InputOption::VALUE_OPTIONAL, 'Path to download repository', __DIR__ . '/../../../../../tmp/download')
+            ->addOption('lazaret-path', null, InputOption::VALUE_OPTIONAL, 'Path to lazaret repository', __DIR__ . '/../../../../../tmp/lazaret')
+            ->addOption('caption-path', null, InputOption::VALUE_OPTIONAL, 'Path to caption repository', __DIR__ . '/../../../../../tmp/caption')
+            ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', __DIR__ . '/../../../../../tmp/locks')
+            ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', __DIR__ . '/../../../../../tmp')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
 
         return $this;
@@ -430,14 +430,10 @@ class Install extends Command
             throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $schedulerLocksPath));
         }
 
-        $config = $this->container['configuration.store']->initialize()->getConfig();
-
-        $config['main']['storage']['download'] = realpath($downloadPath);
-        $config['main']['storage']['lazaret']  = realpath($lazaretPath);
-        $config['main']['storage']['caption']  = realpath($captionPath);
-        $config['main']['storage']['worker_tmp_files'] = realpath($workerTmpFiles);
-
-        $this->container['configuration.store']->setConfig($config);
+        $this->container['conf']->set(['main', 'storage', 'download'], realpath($downloadPath));
+        $this->container['conf']->set(['main', 'storage', 'lazaret'], realpath($lazaretPath));
+        $this->container['conf']->set(['main', 'storage', 'caption'], realpath($captionPath));
+        $this->container['conf']->set(['main', 'storage', 'worker_tmp_files'], realpath($workerTmpFiles));
     }
 
     private function detectBinaries()
