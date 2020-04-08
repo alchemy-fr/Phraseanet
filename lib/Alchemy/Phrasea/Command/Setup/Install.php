@@ -168,7 +168,6 @@ class Install extends Command
 
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $storagePaths, $dbConn, $templateName, $this->detectBinaries());
         $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
-        $this->defineStorageTmpPath($input);
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
