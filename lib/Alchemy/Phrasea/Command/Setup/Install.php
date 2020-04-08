@@ -164,7 +164,9 @@ class Install extends Command
             }
         }
 
-        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
+        $storagePaths = $this->getStoragePaths($input, $dataPath);
+
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $storagePaths, $dbConn, $templateName, $this->detectBinaries());
         $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
         $this->defineStorageTmpPath($input);
 
@@ -403,33 +405,8 @@ class Install extends Command
         return $index;
     }
 
-    private function defineStorageTmpPath(InputInterface $input)
+    private function getStoragePaths(InputInterface $input, $dataPath)
     {
-        $downloadPath = $input->getOption('download-path');
-
-        if (!is_dir($downloadPath)) {
-            mkdir($downloadPath, 0755, true);
-        }
-
-        $lazaretPath = $input->getOption('lazaret-path');
-
-        if (!is_dir($lazaretPath)) {
-            mkdir($lazaretPath, 0755, true);
-        }
-
-        $captionPath = $input->getOption('caption-path');
-
-        if (!is_dir($captionPath)) {
-            mkdir($captionPath, 0755, true);
-        }
-
-        $workerTmpFiles = $input->getOption('worker-tmp-files');
-
-        if (!is_dir($workerTmpFiles)) {
-            mkdir($workerTmpFiles, 0755, true);
-        }
-
-
         $schedulerLocksPath = $input->getOption('scheduler-locks-path');
 
         if (!is_dir($schedulerLocksPath)) {
@@ -440,10 +417,13 @@ class Install extends Command
             throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $schedulerLocksPath));
         }
 
-        $this->container['conf']->set(['main', 'storage', 'download'], realpath($downloadPath));
-        $this->container['conf']->set(['main', 'storage', 'lazaret'], realpath($lazaretPath));
-        $this->container['conf']->set(['main', 'storage', 'caption'], realpath($captionPath));
-        $this->container['conf']->set(['main', 'storage', 'worker_tmp_files'], realpath($workerTmpFiles));
+        return [
+            'subdefs'           => $dataPath,
+            'download'          => $input->getOption('download-path'),
+            'lazaret'           => $input->getOption('lazaret-path'),
+            'caption'           => $input->getOption('caption-path'),
+            'worker_tmp_files'  => $input->getOption('worker-tmp-files')
+        ];
     }
 
     private function detectBinaries()

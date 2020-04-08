@@ -30,11 +30,11 @@ class Installer
         $this->app = $app;
     }
 
-    public function install($email, $password, Connection $abConn, $serverName, $dataPath, Connection $dbConn = null, $templateName = null, array $binaryData = [])
+    public function install($email, $password, Connection $abConn, $serverName, array $storagePaths, Connection $dbConn = null, $templateName = null, array $binaryData = [])
     {
         $this->rollbackInstall($abConn, $dbConn);
 
-        $this->createConfigFile($abConn, $serverName, $binaryData, $dataPath);
+        $this->createConfigFile($abConn, $serverName, $binaryData, $storagePaths);
         try {
             $this->createAB($abConn);
             $user = $this->createUser($email, $password);
@@ -185,7 +185,7 @@ class Installer
         $this->app->getApplicationBox()->insert_datas($this->app);
     }
 
-    private function createConfigFile(Connection $abConn, $serverName, $binaryData, $dataPath)
+    private function createConfigFile(Connection $abConn, $serverName, $binaryData, array $storagePaths)
     {
         $config = $this->app['configuration.store']->initialize()->getConfig();
 
@@ -203,14 +203,28 @@ class Installer
         $config['servername'] = $serverName;
         $config['main']['key'] = $this->app['random.medium']->generateString(16);
 
-        if (null === $dataPath = realpath($dataPath)) {
-            throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $dataPath));
+        // define storage config
+        $defaultStoragePaths = [
+            'subdefs'           => __DIR__ . '/../../../../datas',
+            'cache'             => __DIR__ . '/../../../../cache',
+            'log'               => __DIR__ . '/../../../../logs',
+            'download'          => __DIR__ . '/../../../../tmp/download',
+            'lazaret'           => __DIR__ . '/../../../../tmp/lazaret',
+            'caption'           => __DIR__ . '/../../../../tmp/caption',
+            'worker_tmp_files'  => __DIR__ . '/../../../../tmp/worker_tmp_files'
+        ];
+
+        $storagePaths = array_merge($defaultStoragePaths, $storagePaths);
+
+        foreach ($storagePaths as $key => $path) {
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            $storagePaths[$key] = realpath($path);
         }
 
-        $config['main']['storage']['subdefs'] = $dataPath;
-
-        $config['main']['storage']['cache'] = realpath(__DIR__ . '/../../../../cache');
-        $config['main']['storage']['log'] = realpath(__DIR__ . '/../../../../logs');
+        $config['main']['storage'] = $storagePaths;
 
         $config['registry'] = $this->app['registry.manipulator']->getRegistryData();
 
