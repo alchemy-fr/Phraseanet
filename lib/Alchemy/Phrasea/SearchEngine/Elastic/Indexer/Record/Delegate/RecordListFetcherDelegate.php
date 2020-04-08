@@ -24,7 +24,7 @@ class RecordListFetcherDelegate implements FetcherDelegateInterface
 
     public function buildWhereClause()
     {
-        return 'WHERE r.record_id IN (:record_identifiers)';
+        return 'r.record_id IN (:record_identifiers)';
     }
 
     public function getParameters()
