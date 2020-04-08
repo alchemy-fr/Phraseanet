@@ -211,7 +211,7 @@ class Installer
             'download'          => __DIR__ . '/../../../../tmp/download',
             'lazaret'           => __DIR__ . '/../../../../tmp/lazaret',
             'caption'           => __DIR__ . '/../../../../tmp/caption',
-            'worker_tmp_files'  => __DIR__ . '/../../../../tmp/worker_tmp_files'
+            'worker_tmp_files'  => __DIR__ . '/../../../../tmp'
         ];
 
         $storagePaths = array_merge($defaultStoragePaths, $storagePaths);
