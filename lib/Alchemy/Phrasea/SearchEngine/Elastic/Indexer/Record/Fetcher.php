@@ -30,7 +30,8 @@ class Fetcher
     private $statement;
     private $delegate;
 
-    private $offset = 0;
+    // since we fetch records dy DESC, this will be the HIGHEST record_id fetched during last batch
+    private $upper_rid = PHP_INT_MAX;
     private $batchSize = 1;
     private $buffer = array();
 
@@ -68,12 +69,16 @@ class Fetcher
     {
         // Fetch records rows
         $statement = $this->getExecutedStatement();
-        // printf("Query %d/%d -> %d rows\n", $this->offset, $this->batchSize, $statement->rowCount());
+        // printf("Query %d(%d) -> %d rows\n", $this->upper_rid, $this->batchSize, $statement->rowCount());
 
         $records = [];
+        $this->upper_rid = PHP_INT_MAX;
         while ($record = $statement->fetch()) {
             $records[$record['record_id']] = $record;
-            $this->offset++;
+            $rid = (int)($record['record_id']);
+            if($rid < $this->upper_rid) {
+                $this->upper_rid = (int)($record['record_id']);
+            }
         }
         if (empty($records)) {
             $this->onDrain->__invoke();
@@ -100,7 +105,7 @@ class Fetcher
     public function restart()
     {
         $this->buffer = array();
-        $this->offset = 0;
+        $this->upper_rid = PHP_INT_MAX;
     }
 
     public function setBatchSize($size)
@@ -133,9 +138,9 @@ class Fetcher
                  . "            r.originalname AS original_name, r.mime, r.type, r.parent_record_id,\n"
                  . "            r.credate AS created_on, r.moddate AS updated_on, r.coll_id\n"
                  . "     FROM record r\n"
-                 . "     -- WHERE\n"
+                 . "     WHERE -- WHERE\n"
                  . "     ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "\n"
-                 . "     LIMIT :offset, :limit\n"
+                 . "     LIMIT :limit\n"
                  . "   ) AS r\n"
                  . "   INNER JOIN coll c ON (c.coll_id = r.coll_id)\n"
                  . " )\n"
@@ -143,7 +148,10 @@ class Fetcher
                  . " subdef ON subdef.record_id=r.record_id AND subdef.name='document'\n"
                  . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "";
 
-            $where = $this->delegate->buildWhereClause();
+            $where = 'record_id < :upper_rid';
+            if( ($w = $this->delegate->buildWhereClause()) != '') {
+                $where = '(' . $where . ') AND (' . $w . ')';
+            }
             $sql = str_replace('-- WHERE', $where, $sql);
 
             // Build parameters list
@@ -167,12 +175,12 @@ class Fetcher
                     }
                 }
                 // Reference bound parameters
-                $statement->bindParam(':offset', $this->offset, PDO::PARAM_INT);
+                $statement->bindParam(':upper_rid', $this->upper_rid, PDO::PARAM_INT);
                 $statement->bindParam(':limit', $this->batchSize, PDO::PARAM_INT);
                 $this->statement = $statement;
             } else {
                 // Inject own query parameters
-                $params[':offset'] = $this->offset;
+                $params[':upper_rid'] = $this->upper_rid;
                 $params[':limit'] = $this->batchSize;
                 $types[':offset'] = $types[':limit'] = PDO::PARAM_INT;
 
