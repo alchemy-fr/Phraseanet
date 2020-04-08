@@ -138,14 +138,21 @@
     </div>
     <div id="EDIT_TOP" style="height:{{editing_top_box_height}}%; min-height: {{ editing_top_box_height }}">
         <div id="EDIT_MENU">
+            <i class="fa fa-search fa-stack-1x zoom-menu-icon" aria-hidden="true"></i>
             <div id="EDIT_ZOOMSLIDER" >
             </div>
         </div>
         {% if recordsRequest.isSingleStory() %}
             <div class="GRP_IMAGE_REP">
+
                 <div id="EDIT_GRPDIAPO">
                     {{_self.format_diapo(recordsRequest.singleStory(), false)}}
+                    <div class="story-select-all-block">
+                        <input class="styled-checkbox" id="select-all-diapo" type="checkbox" value="" checked="" >
+                        <label for="select-all-diapo">{{ 'prod::edit:story select all' | trans }}</label>
+                    </div>
                 </div>
+
             </div>
             <div id="EDIT_FILM2" style="left:170px;">
                 {{_self.HTML_Train(recordsRequest, '1')}}
