@@ -55,12 +55,9 @@ class Install extends Command
             ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
             ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
             ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
-            ->addOption('download-path', null, InputOption::VALUE_OPTIONAL, 'Path to download repository', __DIR__ . '/../../../../../tmp/download')
-            ->addOption('lazaret-path', null, InputOption::VALUE_OPTIONAL, 'Path to lazaret repository', __DIR__ . '/../../../../../tmp/lazaret')
-            ->addOption('caption-path', null, InputOption::VALUE_OPTIONAL, 'Path to caption repository', __DIR__ . '/../../../../../tmp/caption')
-            ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', __DIR__ . '/../../../../../tmp/locks')
-            ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', __DIR__ . '/../../../../../tmp')
-            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
+            ->setHelp("Phraseanet can only be installed on 64 bits PHP.");
+            ;
 
         return $this;
     }
@@ -80,6 +77,14 @@ class Install extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if(PHP_INT_SIZE !== 8) {
+            $output->writeln(sprintf(
+                "<error>Phraseanet can only be installed on 64 bits PHP, your version is %d bits (PHP_INT_SIZE=%d).</error>",
+                PHP_INT_SIZE<<3,PHP_INT_SIZE
+            ));
+            return -1;
+        }
+
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
@@ -156,7 +161,6 @@ class Install extends Command
 
         $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
         $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
-        $this->defineStorageTmpPath($input);
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
@@ -391,49 +395,6 @@ class Install extends Command
         }
 
         return $index;
-    }
-
-    private function defineStorageTmpPath(InputInterface $input)
-    {
-        $downloadPath = $input->getOption('download-path');
-
-        if (!is_dir($downloadPath)) {
-            mkdir($downloadPath, 0755, true);
-        }
-
-        $lazaretPath = $input->getOption('lazaret-path');
-
-        if (!is_dir($lazaretPath)) {
-            mkdir($lazaretPath, 0755, true);
-        }
-
-        $captionPath = $input->getOption('caption-path');
-
-        if (!is_dir($captionPath)) {
-            mkdir($captionPath, 0755, true);
-        }
-
-        $workerTmpFiles = $input->getOption('worker-tmp-files');
-
-        if (!is_dir($workerTmpFiles)) {
-            mkdir($workerTmpFiles, 0755, true);
-        }
-
-
-        $schedulerLocksPath = $input->getOption('scheduler-locks-path');
-
-        if (!is_dir($schedulerLocksPath)) {
-            mkdir($schedulerLocksPath, 0755, true);
-        }
-
-        if (($schedulerLocksPath = realpath($schedulerLocksPath)) === FALSE) {
-            throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $schedulerLocksPath));
-        }
-
-        $this->container['conf']->set(['main', 'storage', 'download'], realpath($downloadPath));
-        $this->container['conf']->set(['main', 'storage', 'lazaret'], realpath($lazaretPath));
-        $this->container['conf']->set(['main', 'storage', 'caption'], realpath($captionPath));
-        $this->container['conf']->set(['main', 'storage', 'worker_tmp_files'], realpath($workerTmpFiles));
     }
 
     private function detectBinaries()
