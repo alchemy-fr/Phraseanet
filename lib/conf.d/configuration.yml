@@ -111,7 +111,7 @@ main:
         download: null
         lazaret: null
         caption: null
-        tmp_files: null
+        worker_tmp_files: null
 
 trusted-proxies: []
 debugger:
@@ -293,7 +293,7 @@ geocoding-providers:
             #   type: latlng
             # -
             #    name: Longitude
-            #    type: lng
+            #    type: lon
             # -
             #    name: Latitude
             #    type: lat
