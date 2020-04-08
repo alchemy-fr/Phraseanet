@@ -72,6 +72,11 @@ class InstallTest extends \PhraseanetTestCase
                     case 'password':
                         return $password;
                         break;
+                    case 'download-path':
+                    case 'lazaret-path':
+                    case 'caption-path':
+                    case 'scheduler-locks-path':
+                    case 'worker-tmp-files':
                     case 'data-path':
                         return $dataPath;
                         break;
