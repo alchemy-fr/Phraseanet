@@ -1,0 +1,19 @@
+{
+  "name": "dev-tools-plugin",
+  "description": "Command(s) to help dev/debug",
+  "keywords": [],
+  "license": "GPLv3",
+  "version": "1.0.0",
+  "minimum-phraseanet-version": "4.0",
+  "maximum-phraseanet-version": "5.0",
+  "services": [
+    {
+      "class": "Alchemy\\DevToolsPlugin\\EventsLogger\\Service"
+    }
+  ],
+  "commands": [
+      {
+          "class": "Alchemy\\DevToolsPlugin\\EventsLogger\\Command"
+      }
+  ]
+}

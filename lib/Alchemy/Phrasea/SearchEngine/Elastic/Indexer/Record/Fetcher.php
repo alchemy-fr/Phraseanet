@@ -30,8 +30,16 @@ class Fetcher
     private $statement;
     private $delegate;
 
-    // since we fetch records dy DESC, this will be the HIGHEST record_id fetched during last batch
-    private $upper_rid = PHP_INT_MAX;
+    // since we fetch records dy different order/direction, we setup sql limit
+    /** @var int|string  */
+    private $boundLimit;           // may be highest or lowest int or date, as a startup condition for sql or loop
+    /** @var int|string */
+    private $lastLimit;            // the last falue fetched
+    /** @var Closure  */
+    private $updateLastLimitDelegate;   // must update the lastLimit by comparing the current record rid or moddate while fetching
+    /** @var string  */
+    private $sqlLimitColumn;            // the sql expresion(column) used to order/compare (record_id or moddate)
+
     private $batchSize = 1;
     private $buffer = array();
 
@@ -46,6 +54,32 @@ class Fetcher
         $this->connection = $databox->get_connection();;
         $this->hydrators  = $hydrators;
         $this->delegate   = $delegate ?: new FetcherDelegate();
+
+        // set the boundLimit and updateDelegate, depends on populate-order and populate-direction
+        // the bound limit value is used on first run, but also as initial value on fetch loop
+
+        $this->sqlLimitColumn = ($options->getPopulateOrder() === $options::POPULATE_ORDER_RID) ?
+            'record_id'
+            :
+            'DATE_FORMAT(moddate, \'%Y%m%d%H%i%s\')';     // handles "0000-00..." better than timestamp
+        //
+        // too bad we cannot assign to a variable a builtin function ("min" or "max") as a closure (= vector)
+        // we need to encapsulate the builtin function into a closure in php.
+        //
+        if($options->getPopulateDirection() === $options::POPULATE_DIRECTION_ASC) {
+            $this->boundLimit = 0;
+            $this->updateLastLimitDelegate = function($record) {
+                $this->lastLimit = max($this->lastLimit, (int)($record['limit_value']));
+            };
+        }
+        else {
+            $this->boundLimit = PHP_INT_MAX;
+            $this->updateLastLimitDelegate = function($record) {
+                $this->lastLimit = min($this->lastLimit, (int)($record['limit_value']));
+            };
+        }
+        // limit for first run
+        $this->lastLimit = $this->boundLimit;
     }
 
     public function getDatabox()
@@ -69,16 +103,15 @@ class Fetcher
     {
         // Fetch records rows
         $statement = $this->getExecutedStatement();
-        // printf("Query %d(%d) -> %d rows\n", $this->upper_rid, $this->batchSize, $statement->rowCount());
+        // printf("Query %d(%d) -> %d rows\n", $this->lastLimit, $this->batchSize, $statement->rowCount());
 
         $records = [];
-        $this->upper_rid = PHP_INT_MAX;
+        $this->lastLimit = $this->boundLimit;   // initial low or high value
         while ($record = $statement->fetch()) {
             $records[$record['record_id']] = $record;
-            $rid = (int)($record['record_id']);
-            if($rid < $this->upper_rid) {
-                $this->upper_rid = (int)($record['record_id']);
-            }
+            // compare/update limit
+            // call_user_func($this->updateLastLimitDelegate, $records);
+            ($this->updateLastLimitDelegate)($record);
         }
         if (empty($records)) {
             $this->onDrain->__invoke();
@@ -105,7 +138,7 @@ class Fetcher
     public function restart()
     {
         $this->buffer = array();
-        $this->upper_rid = PHP_INT_MAX;
+        $this->last_lowest_rid = PHP_INT_MAX;
     }
 
     public function setBatchSize($size)
@@ -134,21 +167,26 @@ class Fetcher
         if (!$this->statement) {
             $sql =  "SELECT r.*, c.asciiname AS collection_name, subdef.width, subdef.height, subdef.size\n"
                  . " FROM ((\n"
-                 . "     SELECT r.record_id, r.coll_id AS collection_id, r.uuid, r.status AS flags_bitfield, r.sha256,\n"
-                 . "            r.originalname AS original_name, r.mime, r.type, r.parent_record_id,\n"
-                 . "            r.credate AS created_on, r.moddate AS updated_on, r.coll_id\n"
-                 . "     FROM record r\n"
+                 . "     SELECT record_id, coll_id AS collection_id, uuid, status AS flags_bitfield, sha256,\n"
+                 . "            originalname AS original_name, mime, type, parent_record_id,\n"
+                 . "            credate AS created_on, moddate AS updated_on, coll_id,\n"
+                 . "            " . $this->sqlLimitColumn . " AS limit_value\n"
+                 . "     FROM record\n"
                  . "     WHERE -- WHERE\n"
-                 . "     ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "\n"
+                 . "     ORDER BY " . ($this->options->getPopulateOrder() === $this->options::POPULATE_ORDER_RID ? 'record_id':'moddate')
+                 . " " . $this->options->getPopulateDirectionAsSQL() . "\n"
                  . "     LIMIT :limit\n"
                  . "   ) AS r\n"
                  . "   INNER JOIN coll c ON (c.coll_id = r.coll_id)\n"
                  . " )\n"
                  . " LEFT JOIN\n"
                  . " subdef ON subdef.record_id=r.record_id AND subdef.name='document'\n"
-                 . " ORDER BY " . $this->options->getPopulateOrderAsSQL() . " " . $this->options->getPopulateDirectionAsSQL() . "";
+                 . " ORDER BY " . ($this->options->getPopulateOrder() === $this->options::POPULATE_ORDER_RID ? 'record_id':'updated_on')
+                 . " " . $this->options->getPopulateDirectionAsSQL() . "";
 
-            $where = 'record_id < :upper_rid';
+            $where = $this->sqlLimitColumn .
+                ($this->options->getPopulateDirection() === $this->options::POPULATE_DIRECTION_DESC ? ' < ' : ' > ') .
+                ':bound';
             if( ($w = $this->delegate->buildWhereClause()) != '') {
                 $where = '(' . $where . ') AND (' . $w . ')';
             }
@@ -175,12 +213,12 @@ class Fetcher
                     }
                 }
                 // Reference bound parameters
-                $statement->bindParam(':upper_rid', $this->upper_rid, PDO::PARAM_INT);
+                $statement->bindParam(':bound', $this->lastLimit, PDO::PARAM_INT);
                 $statement->bindParam(':limit', $this->batchSize, PDO::PARAM_INT);
                 $this->statement = $statement;
             } else {
                 // Inject own query parameters
-                $params[':upper_rid'] = $this->upper_rid;
+                $params[':bound'] = $this->lastLimit;
                 $params[':limit'] = $this->batchSize;
                 $types[':offset'] = $types[':limit'] = PDO::PARAM_INT;
 
