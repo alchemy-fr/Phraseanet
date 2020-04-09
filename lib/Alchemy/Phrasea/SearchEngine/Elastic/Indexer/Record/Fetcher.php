@@ -38,8 +38,6 @@ class Fetcher
     private $lastLimit;            // the last falue fetched
     /** @var Closure  */
     private $updateLastLimitDelegate;   // must update the lastLimit by comparing the current record rid or moddate while fetching
-    /** @var string  */
-    private $sqlLimitColumn;            // the sql expresion(column) used to order/compare (record_id or moddate)
 
     private $batchSize = 1;
     private $buffer = array();
@@ -59,26 +57,40 @@ class Fetcher
         // set the boundLimit and updateDelegate, depends on populate-order and populate-direction
         // the bound limit value is used on first run, but also as initial value on fetch loop
 
-        $this->sqlLimitColumn = ($options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID) ?
-            'record_id'
-            :
-            'DATE_FORMAT(moddate, \'%Y%m%d%H%i%s\')';     // handles "0000-00..." better than timestamp
-        //
         // too bad we cannot assign to a variable a builtin function ("min" or "max") as a closure (= vector)
         // we need to encapsulate the builtin function into a closure in php.
         //
-        if($options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_ASC) {
-            $this->boundLimit = 0;
-            $this->updateLastLimitDelegate = function($record) {
-                $this->lastLimit = max($this->lastLimit, (int)($record['limit_value']));
-            };
+        if($options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID) {
+            // record_id
+            if ($options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_ASC) {
+                $this->boundLimit = 0;
+                $this->updateLastLimitDelegate = function ($record) {
+                    $this->lastLimit = max($this->lastLimit, (int)($record['record_id']));
+                };
+            }
+            else {
+                $this->boundLimit = PHP_INT_MAX;
+                $this->updateLastLimitDelegate = function ($record) {
+                    $this->lastLimit = min($this->lastLimit, (int)($record['record_id']));
+                };
+            }
         }
         else {
-            $this->boundLimit = PHP_INT_MAX;
-            $this->updateLastLimitDelegate = function($record) {
-                $this->lastLimit = min($this->lastLimit, (int)($record['limit_value']));
-            };
+            // moddate ; max() min() is ok on strings !
+            if ($options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_ASC) {
+                $this->boundLimit = '0000-00-00 00:00:00';
+                $this->updateLastLimitDelegate = function ($record) {
+                    $this->lastLimit = max($this->lastLimit, $record['updated_on']);
+                };
+            }
+            else {
+                $this->boundLimit = '9999-12-31 23:59:59';
+                $this->updateLastLimitDelegate = function ($record) {
+                    $this->lastLimit = min($this->lastLimit, $record['updated_on']);
+                };
+            }
         }
+
         // limit for first run
         $this->lastLimit = $this->boundLimit;
     }
@@ -114,7 +126,7 @@ class Fetcher
     {
         // Fetch records rows
         $statement = $this->getExecutedStatement();
-        // printf("Query %d(%d) -> %d rows\n", $this->lastLimit, $this->batchSize, $statement->rowCount());
+        // printf("Query %s (%d) -> %d rows\n", $this->lastLimit, $this->batchSize, $statement->rowCount());
 
         $records = [];
         $this->lastLimit = $this->boundLimit;   // initial low or high value
@@ -122,7 +134,7 @@ class Fetcher
             $records[$record['record_id']] = $record;
             // compare/update limit
             // ($this->updateLastLimitDelegate)($record);       // php 7.2 only
-            call_user_func($this->updateLastLimitDelegate, $records);
+            call_user_func($this->updateLastLimitDelegate, $record);
         }
         if (empty($records)) {
             /** @noinspection PhpUndefinedMethodInspection */
@@ -183,8 +195,7 @@ class Fetcher
                 . " FROM ((\n"
                 . "     SELECT record_id, coll_id AS collection_id, uuid, status AS flags_bitfield, sha256,\n"
                 . "            originalname AS original_name, mime, type, parent_record_id,\n"
-                . "            credate AS created_on, moddate AS updated_on, coll_id,\n"
-                . "            " . $this->sqlLimitColumn . " AS limit_value\n"
+                . "            credate AS created_on, moddate AS updated_on, coll_id\n"
                 . "     FROM record\n"
                 . "     WHERE -- WHERE\n"
                 . "     ORDER BY " . ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id':'moddate')
@@ -198,7 +209,7 @@ class Fetcher
                 . " ORDER BY " . ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id':'updated_on')
                 . " " . $this->options->getPopulateDirectionAsSQL() . "";
 
-            $where = $this->sqlLimitColumn .
+            $where = ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id' : 'moddate') .
                 ($this->options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_DESC ? ' < ' : ' > ') .
                 ':bound';
             if( ($w = $this->delegate->buildWhereClause()) != '') {
