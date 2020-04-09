@@ -3284,6 +3284,13 @@
               <field>parent_record_id</field>
             </fields>
           </index>
+          <index>
+              <name>moddate</name>
+              <type>INDEX</type>
+              <fields>
+                  <field>moddate</field>
+              </fields>
+          </index>
         </indexes>
         <engine>InnoDB</engine>
       </table>

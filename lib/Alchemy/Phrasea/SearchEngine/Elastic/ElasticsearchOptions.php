@@ -38,7 +38,7 @@ class ElasticsearchOptions
     /** @var string */
     private $populateDirection;
 
-    /** @var  int[] */
+    /** @var  int[][] */
     private $_customValues = [];
     private $activeTab;
 
@@ -437,15 +437,9 @@ class ElasticsearchOptions
     /**
      * @return string
      */
-    public function getPopulateOrderAsSQL()
+    public function getPopulateOrder()
     {
-        static $orderAsColumn = [
-            self::POPULATE_ORDER_RID     => "`record_id`",
-            self::POPULATE_ORDER_MODDATE => "`moddate`",
-        ];
-
-        // populateOrder IS one of the keys (ensured by setPopulateOrder)
-        return $orderAsColumn[$this->populateOrder];
+        return $this->populateOrder;
     }
 
     /**
@@ -464,6 +458,14 @@ class ElasticsearchOptions
         return false;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getPopulateDirection()
+    {
+        return $this->populateDirection;
+    }
 
     /**
      * @return string
