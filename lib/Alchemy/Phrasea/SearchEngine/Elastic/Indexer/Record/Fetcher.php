@@ -121,8 +121,8 @@ class Fetcher
         while ($record = $statement->fetch()) {
             $records[$record['record_id']] = $record;
             // compare/update limit
-            // call_user_func($this->updateLastLimitDelegate, $records);
-            ($this->updateLastLimitDelegate)($record);
+            // ($this->updateLastLimitDelegate)($record);       // php 7.2 only
+            call_user_func($this->updateLastLimitDelegate, $records);
         }
         if (empty($records)) {
             /** @noinspection PhpUndefinedMethodInspection */
