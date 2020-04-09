@@ -48,7 +48,7 @@ class Fetcher
     private $postFetch;
     private $onDrain;
 
-    public function __construct(databox $databox,ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
+    public function __construct(databox $databox, ElasticsearchOptions $options, array $hydrators, FetcherDelegateInterface $delegate = null)
     {
         $this->databox = $databox;
         $this->options = $options;
@@ -59,7 +59,7 @@ class Fetcher
         // set the boundLimit and updateDelegate, depends on populate-order and populate-direction
         // the bound limit value is used on first run, but also as initial value on fetch loop
 
-        $this->sqlLimitColumn = ($options->getPopulateOrder() === $options::POPULATE_ORDER_RID) ?
+        $this->sqlLimitColumn = ($options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID) ?
             'record_id'
             :
             'DATE_FORMAT(moddate, \'%Y%m%d%H%i%s\')';     // handles "0000-00..." better than timestamp
@@ -67,7 +67,7 @@ class Fetcher
         // too bad we cannot assign to a variable a builtin function ("min" or "max") as a closure (= vector)
         // we need to encapsulate the builtin function into a closure in php.
         //
-        if($options->getPopulateDirection() === $options::POPULATE_DIRECTION_ASC) {
+        if($options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_ASC) {
             $this->boundLimit = 0;
             $this->updateLastLimitDelegate = function($record) {
                 $this->lastLimit = max($this->lastLimit, (int)($record['limit_value']));
@@ -187,7 +187,7 @@ class Fetcher
                 . "            " . $this->sqlLimitColumn . " AS limit_value\n"
                 . "     FROM record\n"
                 . "     WHERE -- WHERE\n"
-                . "     ORDER BY " . ($this->options->getPopulateOrder() === $this->options::POPULATE_ORDER_RID ? 'record_id':'moddate')
+                . "     ORDER BY " . ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id':'moddate')
                 . " " . $this->options->getPopulateDirectionAsSQL() . "\n"
                 . "     LIMIT :limit\n"
                 . "   ) AS r\n"
@@ -195,11 +195,11 @@ class Fetcher
                 . " )\n"
                 . " LEFT JOIN\n"
                 . " subdef ON subdef.record_id=r.record_id AND subdef.name='document'\n"
-                . " ORDER BY " . ($this->options->getPopulateOrder() === $this->options::POPULATE_ORDER_RID ? 'record_id':'updated_on')
+                . " ORDER BY " . ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id':'updated_on')
                 . " " . $this->options->getPopulateDirectionAsSQL() . "";
 
             $where = $this->sqlLimitColumn .
-                ($this->options->getPopulateDirection() === $this->options::POPULATE_DIRECTION_DESC ? ' < ' : ' > ') .
+                ($this->options->getPopulateDirection() === ElasticsearchOptions::POPULATE_DIRECTION_DESC ? ' < ' : ' > ') .
                 ':bound';
             if( ($w = $this->delegate->buildWhereClause()) != '') {
                 $where = '(' . $where . ') AND (' . $w . ')';
