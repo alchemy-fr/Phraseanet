@@ -111,7 +111,7 @@ main:
         download: null
         lazaret: null
         caption: null
-        tmp_files: null
+        worker_tmp_files: null
 
 trusted-proxies: []
 debugger:
@@ -309,13 +309,14 @@ video-editor:
         - 1
         - '1.5'
         - 3
-rabbitmq:
-    server:
-        host: localhost
-        port: 5672
-        user: ''
-        password: ''
-        vhost: /
-
+workers:
+    queue:
+        worker-queue:
+            registry: alchemy_worker.queue_registry
+            host: localhost
+            port: 5672
+            user: ''
+            password: ''
+            vhost: /
 Console_logger_enabled_environments: [test]
 
