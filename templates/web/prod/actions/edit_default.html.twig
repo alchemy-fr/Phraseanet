@@ -410,6 +410,13 @@
     </p>
 </div>
 
+<div id="dialog-edit_lat_lon" title=" {{ 'prod::edit:confirm: Edition latitude longitude' | trans }}">
+    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{{ 'prod::edit: Confirmation Edition latitude longitude' | trans }}</p>
+</div>
+<input type="hidden" id="dialog-edit-yes" value="{{ 'prod::edit:confirm: Yes' | trans }}" />
+<input type="hidden" id="dialog-edit-no" value="{{ 'prod::edit:confirm: No' | trans }}" />
+<input type="hidden" id="dialog-edit-cancel" value="{{ 'prod::edit:confirm: Cancel' | trans }}" />
+
 <script type="text/javascript">
     {% if multipleDataboxes == 1 %}
     $(function() {
