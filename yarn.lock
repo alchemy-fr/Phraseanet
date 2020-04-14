@@ -7645,7 +7645,6 @@ phraseanet-common@^0.4.5-d:
     js-cookie "^2.1.0"
     pym.js "^1.3.1"
 
-phraseanet-production-client@0.34.172-d:
   version "0.34.172-d"
   resolved "https://registry.yarnpkg.com/phraseanet-production-client/-/phraseanet-production-client-0.34.172-d.tgz#b83b1fdd1f94bf867cc2fba7712666ed36412026"
   integrity sha512-B16poOa4nE0Bwb8HwZNlV4O6QvK9mFb6FBStLGmH+26oCEys2eKKGZzBKLwJP5Rnp+o9ajeCNng/Gen/+vX01A==
