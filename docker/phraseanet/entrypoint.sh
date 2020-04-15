@@ -4,6 +4,7 @@ set -e
 
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "docker/phraseanet/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
+envsubst < "docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 chown -R app:app \
     cache \
