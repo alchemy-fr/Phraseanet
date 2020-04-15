@@ -64,10 +64,10 @@ class WebhookEvent extends \Alchemy\Phrasea\Model\Entities\WebhookEvent implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'processed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'collectionBaseIds'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'processed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'created'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'processed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'collectionBaseIds'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'data', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'processed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WebhookEvent' . "\0" . 'created'];
     }
 
     /**
@@ -296,28 +296,6 @@ class WebhookEvent extends \Alchemy\Phrasea\Model\Entities\WebhookEvent implemen
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
 
         return parent::setType($type);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setCollectionBaseIds(array $collectionBaseIds)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCollectionBaseIds', [$collectionBaseIds]);
-
-        return parent::setCollectionBaseIds($collectionBaseIds);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCollectionBaseIds()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCollectionBaseIds', []);
-
-        return parent::getCollectionBaseIds();
     }
 
 }
