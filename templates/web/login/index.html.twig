@@ -96,7 +96,15 @@
             </div>
         </div>
     </div><!-- /sidebar block -->
-    {% if authentication_providers | count > 0 %}
+
+    {% set display_providers = false %}
+    {% for provider in app['authentication.providers'] %}
+        {% if provider.display() %}
+            {% set display_providers = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if display_providers %}
     <div class="well-large sidebar-block">
         <div class="row-fluid">
             <div class="span12 text-center">

@@ -13,7 +13,7 @@ class FactoryTest extends \PhraseanetTestCase
     /**
      * @dataProvider provideNameAndOptions
      */
-    public function testBuild($name, $options, $expected)
+    public function testBuild($id, $type, $display, $title, $options, $expected)
     {
         $generator = $this->getMockBuilder('Symfony\Component\Routing\Generator\UrlGenerator')
             ->disableOriginalConstructor()
@@ -23,17 +23,16 @@ class FactoryTest extends \PhraseanetTestCase
 
         $factory = new Factory($generator, $session);
 
-        $this->assertInstanceOf($expected, $factory->build($name, $options));
+        $this->assertInstanceOf($expected, $factory->build($id, $type, $display, $title, $options));
     }
 
     public function provideNameAndOptions()
     {
         return [
-            ['github', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Github'],
-            ['google-plus', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\GooglePlus'],
-            ['linkedin', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Linkedin'],
-            ['twitter', ['consumer-key' => 'id', 'consumer-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Twitter'],
-            ['viadeo', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Viadeo'],
+            ['github-test'     , 'Github'    , true, 'Gihtub'  , ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Github'],
+            ['linkedin-test'   , 'Linkedin'  , true, 'Linkedin', ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Linkedin'],
+            ['twitter-test'    , 'Twitter'   , true, 'Twitter' , ['consumer-key' => 'id', 'consumer-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Twitter'],
+            ['viadeo-test'     , 'Viadeo'    , true, 'Viadeo'  , ['client-id' => 'id', 'client-secret' => 'secret'], 'Alchemy\Phrasea\Authentication\Provider\Viadeo'],
         ];
     }
 }

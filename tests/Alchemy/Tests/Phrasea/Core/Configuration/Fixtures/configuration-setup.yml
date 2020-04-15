@@ -1,12 +1,15 @@
 servername: 'http://local.phrasea/'
 languages:
-    available: []
+    available:
+        - fr
+        - en
+        - de
+        - nl
     default: 'fr'
 main:
     maintenance: false
     key: ''
     api_require_ssl: true
-    delete-account-require-email-confirmation: true
     database:
         host: 'sql-host'
         port: 3306
@@ -24,10 +27,49 @@ main:
         options: {}
     search-engine:
         type: elasticsearch
-        # type: phrasea
         options:
-            host: localhost
+            host: 'localhost'
             port: 9200
+            index: ''
+            shards: 3
+            replicas: 0
+            minScore: 2
+            highlight: true
+            maxResultWindow: 500000
+            populate_order: RECORD_ID
+            populate_direction: DESC
+            activeTab: '#elastic-search'
+            facets:
+                _base:
+                    limit: 10
+                _collection:
+                    limit: 10
+                _doctype:
+                    limit: 10
+                _camera_model:
+                    limit: 0
+                _iso:
+                    limit: 0
+                _aperture:
+                    limit: 0
+                _shutterspeed:
+                    limit: 0
+                _flashfired:
+                    limit: 0
+                _framerate:
+                    limit: 0
+                _audiosamplerate:
+                    limit: 0
+                _videocodec:
+                    limit: 0
+                _audiocodec:
+                    limit: 0
+                _orientation:
+                    limit: 0
+                _colorspace:
+                    limit: 0
+                _mimetype:
+                    limit: 0
     task-manager:
         status: started
         enabled: true
@@ -61,6 +103,7 @@ main:
         mp4box_timeout: 60
         swftools_timeout: 60
         unoconv_timeout: 60
+        exiftool_timeout: 60
     storage:
         subdefs: null
         cache: null
@@ -68,26 +111,21 @@ main:
         download: null
         lazaret: null
         caption: null
-    bridge:
-        youtube:
-            enabled: false
-            client_id: null
-            client_secret: null
-            developer_key: null
-        flickr:
-            enabled: false
-            client_id: null
-            client_secret: null
-        dailymotion:
-            enabled: false
-            client_id: null
-            client_secret: null
+        tmp_files: null
+
 trusted-proxies: []
 debugger:
     allowed-ips: []
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
+        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        docx: application/msword
+        pptx: application/vnd.ms-powerpoint
+        mxf: application/mxf
+        mp4: video/mp4
     checkers:
         -
             type: Checker\Sha256
@@ -121,6 +159,9 @@ border-manager:
             enabled: false
             options:
                 mediatypes: [Audio, Document, Flash, Image, Video]
+user_account:
+    deleting_policies:
+        email_confirmation: true
 authentication:
     auto-create:
         templates: {  }
@@ -138,11 +179,6 @@ authentication:
             options:
                 consumer-key: ''
                 consumer-secret: ''
-        google-plus:
-            enabled: false
-            options:
-                client-id: ''
-                client-secret: ''
         github:
             enabled: false
             options:
@@ -202,46 +238,79 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        coverSubdef: thumbnail
-        available-speeds:
+        cover_subdef: thumbnail
+        message_start: StartOfMessage
+        available_speeds:
             - 1
             - 1.5
             - 3
     audio:
         player: videojs
         autoplay: false
+        cover_subdef: thumbnail
     document:
-        player: flexpaper
-        enable-pdfjs: true
+        #player: flexpaper
+        enable_pdfjs: true
 geocoding-providers:
     -
-        name: 'mapBox'
-        enabled: true
+        map-provider: 'mapboxWebGL'
+        enabled: false
         public-key: ''
+        map-layers:
+            -
+                name: Light
+                value: 'mapbox://styles/mapbox/light-v9'
+            -
+                name: Streets
+                value: 'mapbox://styles/mapbox/streets-v9'
+            -
+                name: Basic
+                value: 'mapbox://styles/mapbox/basic-v9'
+            -
+                name: Satellite
+                value: 'mapbox://styles/mapbox/satellite-v9'
+            -
+                name: Dark
+                value: 'mapbox://styles/mapbox/dark-v9'
+        transition-mapboxgl:
+            -
+                animate: true
+                speed: '2.2'
+                curve: '1.42'
         default-position:
             - 2.335062
             - 48.879162
         default-zoom: 2
         marker-default-zoom: 11
-        position-fields:
-            -
-                name: GpsCompositePosition
-                type: latlng
+        position-fields: []
+            #-
+            #   name: GpsCompositePosition
+            #   type: latlng
             # -
             #    name: Longitude
             #    type: lng
             # -
             #    name: Latitude
             #    type: lat
+        geonames-field-mapping: true
+        cityfields: 'City, Ville'
+        provincefields: Province
+        countryfields: 'Country, Pays'
 video-editor:
-    vttFieldName: VideoTextTrackChapters
-    seekBackwardStep: 1000 # in ms
-    seekForwardStep: 1000  # in ms
+    ChapterVttFieldName: VideoTextTrackChapters
+    seekBackwardStep: 500 # in ms
+    seekForwardStep: 500  # in ms
     playbackRates:
         - 1
         - '1.5'
         - 3
+rabbitmq:
+    server:
+        host: localhost
+        port: 5672
+        user: ''
+        password: ''
+        vhost: /
 
-user_account:
-    deleting_policies:
-        email_confirmation: true
+Console_logger_enabled_environments: [test]
+

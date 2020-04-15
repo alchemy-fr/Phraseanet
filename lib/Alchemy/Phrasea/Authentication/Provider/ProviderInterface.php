@@ -23,7 +23,17 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 interface ProviderInterface
 {
     /**
-     * Returns a unique identifier for the provider.
+     * Returns the unique identifier for the provider (first-level key in conf)
+     *
+     * Allowed characters are a-z and - (minus).
+     *
+     * @return string
+     */
+    public function getId();
+
+    /**
+     * Returns the type for the provider (key "type" in the provider conf))
+     * many providers can have the same "type" (= same class, implementation)
      *
      * Allowed characters are a-z and - (minus).
      * Examples : twitter => Twitter
@@ -31,7 +41,7 @@ interface ProviderInterface
      *
      * @return string
      */
-    public function getId();
+    public function getType();
 
     /**
      * Returns an UTF-8 name for the provider.
@@ -105,7 +115,10 @@ interface ProviderInterface
      *
      * @param UrlGenerator     $generator
      * @param SessionInterface $session
+     * @param string           $id              // the unique key in conf/authentication/providers/*
+     * @param bool             $display
+     * @param string           $title
      * @param array            $options
      */
-    public static function create(UrlGenerator $generator, SessionInterface $session, array $options);
+    public static function create(UrlGenerator $generator, SessionInterface $session, $id, $display, $title, array $options);
 }

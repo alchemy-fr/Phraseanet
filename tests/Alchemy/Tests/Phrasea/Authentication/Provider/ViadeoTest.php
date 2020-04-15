@@ -273,6 +273,17 @@ class ViadeoTest extends ProviderTestCase
 
     protected function getProvider()
     {
-        return new Viadeo($this->getUrlGeneratorMock(), $this->getMockSession(), $this->getGuzzleMock(), 'key', 'secret');
+        return new Viadeo(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            'viadeo',
+            true,
+            'Viadeo',
+            [
+                'client-id' => 'key',
+                'client-secret' => 'secret'
+            ],
+            $this->getGuzzleMock()
+        );
     }
 }

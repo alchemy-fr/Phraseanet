@@ -219,6 +219,14 @@ class TwitterTest extends ProviderTestCase
 
         $twitter->config = $this->getTestOptions();
 
-        return new Twitter($this->getUrlGeneratorMock(), $this->getMockSession(), $twitter);
+        return new Twitter(
+            $this->getUrlGeneratorMock(),
+            $this->getMockSession(),
+            'twitter',
+            true,
+            'Twitter',
+            [],
+            $twitter
+        );
     }
 }

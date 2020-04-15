@@ -19,8 +19,53 @@ abstract class AbstractProvider implements ProviderInterface
 {
     protected $generator;
     protected $session;
+    protected $id;
+    protected $display;
+    protected $title;
+
+    protected function __construct(UrlGenerator $generator, SessionInterface $session, $id, $display, $title)
+    {
+        $this->generator = $generator;
+        $this->session = $session;
+        $this->id = $id;
+        $this->display = $display;
+        $this->title = $title;
+    }
+
+    public function getDisplay()
+    {
+        return $this->display;
+    }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @deprecated  replaced by getTitle()
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return $this->title;
+    }
+
+    /**
+     * more clear that getName because the key in conf is "title"
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Used only for unit-testing
+     *
      * @param UrlGenerator $generator
      *
      * @return ProviderInterface
@@ -33,6 +78,8 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Used only for unit-testing
+     *
      * @return UrlGenerator
      */
     public function getUrlGenerator()
@@ -41,6 +88,8 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Used only for unit-testing
+     *
      * @param SessionInterface $session
      *
      * @return ProviderInterface
@@ -61,6 +110,8 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Used only for unit-testing
+     *
      * @return SessionInterface
      */
     public function getSession()
