@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-14T16:33:52Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -11433,9 +11433,9 @@
         <target state="new">prod::edit:confirm: Yes</target>
         <jms:reference-file line="422">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all">
+      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all" approved="no">
         <source>prod::edit:story select all</source>
-        <target state="new">prod::edit:story select all</target>
+        <target state="needs-translation">Select all records</target>
         <jms:reference-file line="152">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1978319cea9a232bb3076453e217df0781ef7a6" resname="prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'" approved="yes">
