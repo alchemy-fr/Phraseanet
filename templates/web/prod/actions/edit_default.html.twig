@@ -138,13 +138,19 @@
     </div>
     <div id="EDIT_TOP" style="height:{{editing_top_box_height}}%; min-height: {{ editing_top_box_height }}">
         <div id="EDIT_MENU">
+            <i class="fa fa-image fa-stack-1x zoom-menu-icon zoom-menu-left" aria-hidden="true"></i>
             <div id="EDIT_ZOOMSLIDER" >
             </div>
+            <i class="fa fa-image fa-stack-1x zoom-menu-icon zoom-menu-right" aria-hidden="true"></i>
         </div>
         {% if recordsRequest.isSingleStory() %}
             <div class="GRP_IMAGE_REP">
                 <div id="EDIT_GRPDIAPO">
                     {{_self.format_diapo(recordsRequest.singleStory(), false)}}
+                    <div class="story-select-all-block">
+                        <input class="styled-checkbox" id="select-all-diapo" type="checkbox" value="" checked="" >
+                        <label for="select-all-diapo">{{ 'prod::edit:story select all' | trans }}</label>
+                    </div>
                 </div>
             </div>
             <div id="EDIT_FILM2" style="left:170px;">
@@ -410,12 +416,11 @@
     </p>
 </div>
 
-<div id="dialog-edit_lat_lon" title=" {{ 'prod::edit:confirm: Edition latitude longitude' | trans }}">
+<div id="dialog-edit_lat_lon" title=" {{ 'prod::edit:confirm: Edition latitude longitude' | trans }}" style="display: none">
     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>{{ 'prod::edit: Confirmation Edition latitude longitude' | trans }}</p>
 </div>
 <input type="hidden" id="dialog-edit-yes" value="{{ 'prod::edit:confirm: Yes' | trans }}" />
 <input type="hidden" id="dialog-edit-no" value="{{ 'prod::edit:confirm: No' | trans }}" />
-<input type="hidden" id="dialog-edit-cancel" value="{{ 'prod::edit:confirm: Cancel' | trans }}" />
 
 <script type="text/javascript">
     {% if multipleDataboxes == 1 %}
