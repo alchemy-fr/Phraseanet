@@ -4294,9 +4294,9 @@
         <target state="translated">Masks</target>
         <jms:reference-file line="1">web/admin/editusers_masks.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier" approved="no">
+      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier" approved="yes">
         <source>Matomo Analytics identifier</source>
-        <target state="needs-translation">Matomo Analytics properties (identifier)</target>
+        <target state="translated">Matomo Analytics property (site id)</target>
         <jms:reference-file line="45">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url" approved="yes">
