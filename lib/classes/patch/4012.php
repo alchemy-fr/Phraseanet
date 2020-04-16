@@ -81,7 +81,7 @@ class patch_4012 implements patchInterface
                             ':mask_xor' => $acl->get_mask_xor($collection->get_base_id()),
                             ':ord'      => $iord++
                         ]);
-                    } catch (DBALException $e) {
+                    } catch (\Doctrine\DBAL\DBALException $e) {
 
                     }
                 }
@@ -90,6 +90,17 @@ class patch_4012 implements patchInterface
             }
 
             unset($acl);
+        }
+
+        // script used for the slow query indexing fix
+        $sql = "ALTER TABLE `record` ADD INDEX `moddate` (`moddate`);";
+        try {
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+        }
+        catch (\Exception $e) {
+            // the index already exists ?
         }
 
         return true;
