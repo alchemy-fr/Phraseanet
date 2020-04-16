@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-14T16:34:20Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -3166,9 +3166,9 @@
         <target state="translated">Paramètres d'exécutables</target>
         <jms:reference-file line="58">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!">
+      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!" approved="no">
         <source>Expiration date successfully updated!</source>
-        <target state="new">Expiration date successfully updated!</target>
+        <target state="needs-translation">La date d'expiration a été mise à jour avec succès!</target>
         <jms:reference-file line="627">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
@@ -4291,14 +4291,14 @@
         <target state="translated">Masque</target>
         <jms:reference-file line="1">web/admin/editusers_masks.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier">
+      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier" approved="no">
         <source>Matomo Analytics identifier</source>
-        <target state="new">Matomo Analytics identifier</target>
+        <target state="needs-translation">Propriétés Matomo Analytics (identifier)</target>
         <jms:reference-file line="45">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url">
+      <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url" approved="yes">
         <source>Matomo Analytics url</source>
-        <target state="new">Matomo Analytics url</target>
+        <target state="translated">URL Matomo Analytics</target>
         <jms:reference-file line="42">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28736b7711fa32497f69497b45453226c3bea0aa" resname="Maximum megabytes allowed for download" approved="yes">
@@ -7069,9 +7069,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="224">Controller/Api/OAuth2Controller.php</jms:reference-file>
         <jms:reference-file line="678">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date">
+      <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date" approved="yes">
         <source>Unable to save the expiration date</source>
-        <target state="new">Unable to save the expiration date</target>
+        <target state="translated">Impossible de sauvegarder la date d'expiration</target>
         <jms:reference-file line="607">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
@@ -9063,7 +9063,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="yes">
         <source>admin::userlist: filterguestuser</source>
-        <target state="translated">Filtrer les utilisateurs invité</target>
+        <target state="translated">Filtrer les utilisateurs invités</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
@@ -9659,7 +9659,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="cbfca5bce768bcbbc805fe6c760e2a2f8822cd3d" resname="create_subdef_modal_access_class" approved="yes">
         <source>create_subdef_modal_access_class</source>
-        <target state="translated">Réglage de la sous definition</target>
+        <target state="translated">Réglage de la sous définition</target>
         <jms:reference-file line="356">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c0ab98408d8927057da50bd859b54be94790671" resname="create_subdef_modal_access_class_document" approved="yes">
@@ -10161,45 +10161,45 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Voir plus de paniers</target>
         <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0fdc878c6f632ac8db541cac4f540d28a4dcca71" resname="lightbox:feedback:sendreport:warnwindows:cancel">
+      <trans-unit id="0fdc878c6f632ac8db541cac4f540d28a4dcca71" resname="lightbox:feedback:sendreport:warnwindows:cancel" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:cancel</source>
-        <target state="needs-translation">Annuler l'envois et continuer la validation</target>
+        <target state="translated">Annuler l'envoi et continuer la validation</target>
         <jms:reference-file line="145">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="75">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d24d2b672572d0334c91150e835660546afcc869" resname="lightbox:feedback:sendreport:warnwindows:message ">
+      <trans-unit id="d24d2b672572d0334c91150e835660546afcc869" resname="lightbox:feedback:sendreport:warnwindows:message " approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:message </source>
-        <target state="needs-translation">Récapitulatif des choix de la validation</target>
+        <target state="translated">Récapitulatif des choix de la validation</target>
         <jms:reference-file line="130">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="60">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d6cbf32344e626a7904809cd27de9cede6d4a391" resname="lightbox:feedback:sendreport:warnwindows:record_approved">
+      <trans-unit id="d6cbf32344e626a7904809cd27de9cede6d4a391" resname="lightbox:feedback:sendreport:warnwindows:record_approved" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:record_approved</source>
-        <target state="needs-translation">Approuvés</target>
+        <target state="translated">Approuvés</target>
         <jms:reference-file line="132">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="62">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b530e356d0f777808863b90cb6afa25187df0fae" resname="lightbox:feedback:sendreport:warnwindows:record_rejected">
+      <trans-unit id="b530e356d0f777808863b90cb6afa25187df0fae" resname="lightbox:feedback:sendreport:warnwindows:record_rejected" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:record_rejected</source>
-        <target state="needs-translation">Refusés</target>
+        <target state="translated">Refusés</target>
         <jms:reference-file line="137">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="67">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="537d5a3523467083d817fc524ac9caba92b423fa" resname="lightbox:feedback:sendreport:warnwindows:record_unexpressed">
+      <trans-unit id="537d5a3523467083d817fc524ac9caba92b423fa" resname="lightbox:feedback:sendreport:warnwindows:record_unexpressed" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:record_unexpressed</source>
-        <target state="needs-translation">Non exprimé</target>
+        <target state="translated">Non exprimés</target>
         <jms:reference-file line="141">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="71">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="376ab5b0c531a3513cf64769daecc6510710f63f" resname="lightbox:feedback:sendreport:warnwindows:title">
+      <trans-unit id="376ab5b0c531a3513cf64769daecc6510710f63f" resname="lightbox:feedback:sendreport:warnwindows:title" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:title</source>
-        <target state="needs-translation">Résumé de la validation</target>
+        <target state="translated">Résumé de la validation</target>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="57">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6235f92c752e206ff65068333adfd5686bebe0ac" resname="lightbox:feedback:sendreport:warnwindows:validate">
+      <trans-unit id="6235f92c752e206ff65068333adfd5686bebe0ac" resname="lightbox:feedback:sendreport:warnwindows:validate" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:validate</source>
-        <target state="needs-translation">Confirmer l'envois du rapport</target>
+        <target state="translated">Confirmer l'envoi du rapport</target>
         <jms:reference-file line="146">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="76">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
@@ -10400,9 +10400,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Votre commande du :</target>
         <jms:reference-file line="247">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item">
+      <trans-unit id="c78b61592cdbf96f8f38e811c598e1d56525491a" resname="order-manager::order-item: accepted-item" approved="yes">
         <source>order-manager::order-item: accepted-item</source>
-        <target state="needs-translation">Media délivré</target>
+        <target state="translated">Média délivré</target>
         <jms:reference-file line="254">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="392dde4a063b61047e0b009fd481efdc2d74033f" resname="order-manager::order-item: address" approved="yes">
@@ -10492,9 +10492,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="181">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="266">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item">
+      <trans-unit id="e2884a4cadbded336932e33bd2c8e44e7ec23179" resname="order-manager::order-item: rejected-item" approved="yes">
         <source>order-manager::order-item: rejected-item</source>
-        <target state="needs-translation">Media Non délivré</target>
+        <target state="translated">Média non délivré</target>
         <jms:reference-file line="253">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="541da4fd2e5a6ad443d59182966282794a50aced" resname="order-manager::order-item: reset" approved="yes">
@@ -10509,9 +10509,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Tout sélectionner</target>
         <jms:reference-file line="113">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item">
+      <trans-unit id="82970eea321dc16113d998ccae2b5113daa340f5" resname="order-manager::order-item: selected-item" approved="yes">
         <source>order-manager::order-item: selected-item</source>
-        <target state="needs-translation">Media sélectionnés</target>
+        <target state="translated">Média sélectionné</target>
         <jms:reference-file line="255">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff2e025c07a3ed1e20ce0880e15c385d527beb0" resname="order-manager::order-item: selected-records" approved="yes">
@@ -11408,9 +11408,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Déplacer également les documents de ces reportages ?</target>
         <jms:reference-file line="34">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude">
+      <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude" approved="yes">
         <source>prod::edit: Confirmation Edition latitude longitude</source>
-        <target state="new">prod::edit: Confirmation Edition latitude longitude</target>
+        <target state="translated">Confirmation de longitude et de latitude</target>
         <jms:reference-file line="420">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="063431f63e0c593c52fffb55f390d1d9c216ee4a" resname="prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes" approved="yes">
@@ -11418,24 +11418,25 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Impossible d'éditer simultanément des documents provenant de bases différentes</target>
         <jms:reference-file line="412">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude">
+      <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude" approved="yes">
         <source>prod::edit:confirm: Edition latitude longitude</source>
-        <target state="new">prod::edit:confirm: Edition latitude longitude</target>
+        <target state="translated">Souhaitez-vous régler les champs longitude et latitude avec les données retournées par Geoname Service?
+Attention: les valeurs actuellement en place seront écrasées par ces nouvelles valeurs</target>
         <jms:reference-file line="419">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e625a89e837b1b0b9450fb89ddc4f29b570df7ab" resname="prod::edit:confirm: No">
+      <trans-unit id="e625a89e837b1b0b9450fb89ddc4f29b570df7ab" resname="prod::edit:confirm: No" approved="yes">
         <source>prod::edit:confirm: No</source>
-        <target state="new">prod::edit:confirm: No</target>
+        <target state="translated">Non, conserver les valeurs actuelles</target>
         <jms:reference-file line="423">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="683af4416e59f0bfc4663f1627063c50c9205df1" resname="prod::edit:confirm: Yes">
+      <trans-unit id="683af4416e59f0bfc4663f1627063c50c9205df1" resname="prod::edit:confirm: Yes" approved="yes">
         <source>prod::edit:confirm: Yes</source>
-        <target state="new">prod::edit:confirm: Yes</target>
+        <target state="translated">Oui, mettre à jour la géolocalisation</target>
         <jms:reference-file line="422">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all">
+      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all" approved="yes">
         <source>prod::edit:story select all</source>
-        <target state="new">prod::edit:story select all</target>
+        <target state="translated">Sélectionner tous les enregistrements du reportage</target>
         <jms:reference-file line="152">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1978319cea9a232bb3076453e217df0781ef7a6" resname="prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'" approved="yes">
@@ -11776,9 +11777,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message">
+      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message" approved="yes">
         <source>prod:workzone:basket:updated-message</source>
-        <target state="new">prod:workzone:basket:updated-message</target>
+        <target state="translated">Date de clôture de la validation mise à jour</target>
         <jms:reference-file line="117">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
@@ -11786,9 +11787,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Options</target>
         <jms:reference-file line="195">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter">
+      <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter" approved="yes">
         <source>prod:workzone:facetstab:tooltips:facet_and_filter</source>
-        <target state="needs-translation">Inclure les résultats</target>
+        <target state="translated">Inclure dans les résultats</target>
         <jms:reference-file line="187">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter" approved="yes">
@@ -11796,9 +11797,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Exclure les résultats</target>
         <jms:reference-file line="186">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="82a316282d0386a741bfccaa9bacee4530fda321" resname="prod:workzone:facetstab:tooltips:remove_facet_filter">
+      <trans-unit id="82a316282d0386a741bfccaa9bacee4530fda321" resname="prod:workzone:facetstab:tooltips:remove_facet_filter" approved="yes">
         <source>prod:workzone:facetstab:tooltips:remove_facet_filter</source>
-        <target state="needs-translation">Supprimer le filtre</target>
+        <target state="translated">Supprimer le filtre</target>
         <jms:reference-file line="188">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
@@ -13570,15 +13571,15 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Mercredi</target>
         <jms:reference-file line="170">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed">
+      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed" approved="yes">
         <source>workzone:feedback:expiration-closed</source>
-        <target state="needs-translation">Validation close depuis</target>
+        <target state="translated">Validation clôturée le</target>
         <jms:reference-file line="105">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="15">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open">
+      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open" approved="yes">
         <source>workzone:feedback:expiration-open</source>
-        <target state="needs-translation">validation ouverte jusqu'au</target>
+        <target state="translated">Validation ouverte jusqu'au</target>
         <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
