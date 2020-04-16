@@ -4294,14 +4294,14 @@
         <target state="translated">Masks</target>
         <jms:reference-file line="1">web/admin/editusers_masks.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier">
+      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier" approved="no">
         <source>Matomo Analytics identifier</source>
-        <target state="new">Matomo Analytics identifier</target>
+        <target state="needs-translation">Matomo Analytics properties (identifier)</target>
         <jms:reference-file line="45">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url">
+      <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url" approved="yes">
         <source>Matomo Analytics url</source>
-        <target state="new">Matomo Analytics url</target>
+        <target state="translated">Matomo Analytics URL</target>
         <jms:reference-file line="42">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28736b7711fa32497f69497b45453226c3bea0aa" resname="Maximum megabytes allowed for download" approved="yes">
@@ -6704,9 +6704,9 @@
         <target state="translated">The following errors have been detected</target>
         <jms:reference-file line="5">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!">
+      <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!" approved="yes">
         <source>The provided date is null!</source>
-        <target state="new">The provided date is null!</target>
+        <target state="translated">The provided date is null!</target>
         <jms:reference-file line="610">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d22c09c164965d42fcdb8d8fe2b40d7d57799a8f" resname="The publication has been stopped" approved="yes">
@@ -7070,9 +7070,9 @@
         <jms:reference-file line="224">Controller/Api/OAuth2Controller.php</jms:reference-file>
         <jms:reference-file line="678">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date">
+      <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date" approved="yes">
         <source>Unable to save the expiration date</source>
-        <target state="new">Unable to save the expiration date</target>
+        <target state="translated">Unable to save the expiration date</target>
         <jms:reference-file line="607">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
@@ -10161,21 +10161,21 @@
         <target state="translated">See more baskets</target>
         <jms:reference-file line="153">web/lightbox/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0fdc878c6f632ac8db541cac4f540d28a4dcca71" resname="lightbox:feedback:sendreport:warnwindows:cancel">
+      <trans-unit id="0fdc878c6f632ac8db541cac4f540d28a4dcca71" resname="lightbox:feedback:sendreport:warnwindows:cancel" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:cancel</source>
-        <target state="needs-translation">Cancel report sending and continue</target>
+        <target state="translated">Cancel report sending and continue</target>
         <jms:reference-file line="145">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="75">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d24d2b672572d0334c91150e835660546afcc869" resname="lightbox:feedback:sendreport:warnwindows:message ">
+      <trans-unit id="d24d2b672572d0334c91150e835660546afcc869" resname="lightbox:feedback:sendreport:warnwindows:message " approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:message </source>
-        <target state="needs-translation">Your feedback contains</target>
+        <target state="translated">Your feedback contains</target>
         <jms:reference-file line="130">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="60">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d6cbf32344e626a7904809cd27de9cede6d4a391" resname="lightbox:feedback:sendreport:warnwindows:record_approved">
+      <trans-unit id="d6cbf32344e626a7904809cd27de9cede6d4a391" resname="lightbox:feedback:sendreport:warnwindows:record_approved" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:record_approved</source>
-        <target state="needs-translation">Approved</target>
+        <target state="translated">Approved</target>
         <jms:reference-file line="132">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="62">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
@@ -10185,21 +10185,21 @@
         <jms:reference-file line="137">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="67">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="537d5a3523467083d817fc524ac9caba92b423fa" resname="lightbox:feedback:sendreport:warnwindows:record_unexpressed">
+      <trans-unit id="537d5a3523467083d817fc524ac9caba92b423fa" resname="lightbox:feedback:sendreport:warnwindows:record_unexpressed" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:record_unexpressed</source>
-        <target state="needs-translation">Unexpressed</target>
+        <target state="translated">Unexpressed</target>
         <jms:reference-file line="141">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="71">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="376ab5b0c531a3513cf64769daecc6510710f63f" resname="lightbox:feedback:sendreport:warnwindows:title">
+      <trans-unit id="376ab5b0c531a3513cf64769daecc6510710f63f" resname="lightbox:feedback:sendreport:warnwindows:title" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:title</source>
-        <target state="needs-translation">Feedback summary</target>
+        <target state="translated">Feedback summary</target>
         <jms:reference-file line="127">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="57">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6235f92c752e206ff65068333adfd5686bebe0ac" resname="lightbox:feedback:sendreport:warnwindows:validate">
+      <trans-unit id="6235f92c752e206ff65068333adfd5686bebe0ac" resname="lightbox:feedback:sendreport:warnwindows:validate" approved="yes">
         <source>lightbox:feedback:sendreport:warnwindows:validate</source>
-        <target state="needs-translation">Send my report</target>
+        <target state="translated">Send my report</target>
         <jms:reference-file line="146">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="76">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
@@ -11398,9 +11398,9 @@
         <target state="translated">Narrow the search results to dates</target>
         <jms:reference-file line="518">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation">
+      <trans-unit id="fa55093d5fb1dfe235a46f8b4fecad5d36d3f250" resname="prod::advancesearch:tooltips:field_restriction_explanation" approved="yes">
         <source>prod::advancesearch:tooltips:field_restriction_explanation</source>
-        <target state="new">prod::advancesearch:tooltips:field_restriction_explanation</target>
+        <target state="translated">Search a value on specific fields</target>
         <jms:reference-file line="463">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b8698f202f815bbde691f54c7d51b691bef0263" resname="prod::collection deplacer egalement les documents rattaches a ce(s) regroupement(s)" approved="yes">
@@ -11408,9 +11408,9 @@
         <target state="translated">Move also Stories linked documents ?</target>
         <jms:reference-file line="34">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude">
+      <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude" approved="yes">
         <source>prod::edit: Confirmation Edition latitude longitude</source>
-        <target state="new">prod::edit: Confirmation Edition latitude longitude</target>
+        <target state="translated">Longitude and latitude confirmation</target>
         <jms:reference-file line="420">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="063431f63e0c593c52fffb55f390d1d9c216ee4a" resname="prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes" approved="yes">
@@ -11418,24 +11418,25 @@
         <target state="translated">Selected documents come from differents databases, unable to edit</target>
         <jms:reference-file line="412">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude">
+      <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude" approved="yes">
         <source>prod::edit:confirm: Edition latitude longitude</source>
-        <target state="new">prod::edit:confirm: Edition latitude longitude</target>
+        <target state="translated">Do you wish to setup the longitude and latitude fields with the data returned by Geoname service? 
+Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="419">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e625a89e837b1b0b9450fb89ddc4f29b570df7ab" resname="prod::edit:confirm: No">
+      <trans-unit id="e625a89e837b1b0b9450fb89ddc4f29b570df7ab" resname="prod::edit:confirm: No" approved="yes">
         <source>prod::edit:confirm: No</source>
-        <target state="new">prod::edit:confirm: No</target>
+        <target state="translated">No, keep the current value</target>
         <jms:reference-file line="423">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="683af4416e59f0bfc4663f1627063c50c9205df1" resname="prod::edit:confirm: Yes">
+      <trans-unit id="683af4416e59f0bfc4663f1627063c50c9205df1" resname="prod::edit:confirm: Yes" approved="yes">
         <source>prod::edit:confirm: Yes</source>
-        <target state="new">prod::edit:confirm: Yes</target>
+        <target state="translated">Yes, update geolocation</target>
         <jms:reference-file line="422">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all" approved="no">
+      <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all" approved="yes">
         <source>prod::edit:story select all</source>
-        <target state="needs-translation">Select all records</target>
+        <target state="translated">Select all stories' records</target>
         <jms:reference-file line="152">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c1978319cea9a232bb3076453e217df0781ef7a6" resname="prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'" approved="yes">
@@ -11767,35 +11768,35 @@ It is possible to place several search areas</target>
         <target state="translated">Delete Selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date">
+      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="no">
         <source>prod:workzone:basket:creation-date</source>
         <target state="needs-translation">Creation</target>
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message">
+      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message" approved="yes">
         <source>prod:workzone:basket:updated-message</source>
-        <target state="new">prod:workzone:basket:updated-message</target>
+        <target state="translated">Feedback closure date updated</target>
         <jms:reference-file line="117">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
+      <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
-        <target state="needs-translation">Option</target>
+        <target state="translated">Facets sorting</target>
         <jms:reference-file line="195">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter">
+      <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter" approved="yes">
         <source>prod:workzone:facetstab:tooltips:facet_and_filter</source>
-        <target state="needs-translation">Include into results</target>
+        <target state="translated">Include in results</target>
         <jms:reference-file line="187">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter">
+      <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter" approved="yes">
         <source>prod:workzone:facetstab:tooltips:facet_except_filter</source>
-        <target state="needs-translation">Exclude form results</target>
+        <target state="translated">Exclude from results</target>
         <jms:reference-file line="186">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="82a316282d0386a741bfccaa9bacee4530fda321" resname="prod:workzone:facetstab:tooltips:remove_facet_filter">
+      <trans-unit id="82a316282d0386a741bfccaa9bacee4530fda321" resname="prod:workzone:facetstab:tooltips:remove_facet_filter" approved="yes">
         <source>prod:workzone:facetstab:tooltips:remove_facet_filter</source>
-        <target state="needs-translation">Remove filter</target>
+        <target state="translated">Remove filter</target>
         <jms:reference-file line="188">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
@@ -13567,15 +13568,15 @@ It is possible to place several search areas</target>
         <target state="translated">Wednesday</target>
         <jms:reference-file line="170">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed">
+      <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed" approved="yes">
         <source>workzone:feedback:expiration-closed</source>
-        <target state="new">workzone:feedback:expiration-closed</target>
+        <target state="translated">Feedback closed on</target>
         <jms:reference-file line="105">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="15">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open">
+      <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open" approved="yes">
         <source>workzone:feedback:expiration-open</source>
-        <target state="needs-translation">Feedback open until</target>
+        <target state="translated">Feedback open until</target>
         <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
