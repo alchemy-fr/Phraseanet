@@ -13,6 +13,7 @@ services:
     volumes:
     - data_vol:/var/alchemy/Phraseanet/datas:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
     depends_on:
     - phraseanet
     environment:
@@ -59,6 +60,8 @@ services:
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - cache_vol:/var/alchemy/Phraseanet/cache:rw
 
   worker:
     build:
@@ -87,6 +90,8 @@ services:
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - cache_vol:/var/alchemy/Phraseanet/cache:rw
 
   db:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
@@ -128,6 +133,10 @@ volumes:
   elasticsearch_vol:
     driver: local
   thumbnails_vol:
+    driver: local
+  custom_vol:
+      driver: local
+  cache_vol:
     driver: local
   # to be replacer by stdout/stderr
   logs_vol:

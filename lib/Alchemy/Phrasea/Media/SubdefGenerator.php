@@ -189,7 +189,7 @@ class SubdefGenerator
                 return;
             }
 
-            $tmpDir = $this->app['conf']->get(['main', 'storage', 'tmp_files']);
+            $tmpDir = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);
 
             if($subdef_class->getSpecs() instanceof Video && !empty($tmpDir)){
                 $destFile = $pathdest;

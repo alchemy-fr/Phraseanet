@@ -21,6 +21,14 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
+        $storagePaths = [
+            'subdefs'           => $dataPath,
+            'download'          => $dataPath,
+            'lazaret'           => $dataPath,
+            'caption'           => $dataPath,
+            'worker_tmp_files'  => $dataPath
+        ];
+
         $template = 'fr-simple';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
@@ -51,6 +59,11 @@ class InstallTest extends \PhraseanetTestCase
                         return $email;
                     case 'password':
                         return $password;
+                    case 'download-path':
+                    case 'lazaret-path':
+                    case 'caption-path':
+                    case 'scheduler-locks-path':
+                    case 'worker-tmp-files':
                     case 'data-path':
                         return $dataPath;
                     case 'server-name':
@@ -82,7 +95,7 @@ class InstallTest extends \PhraseanetTestCase
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
-            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
+            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
 
         $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
 
