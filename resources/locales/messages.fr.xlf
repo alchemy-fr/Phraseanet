@@ -3823,7 +3823,7 @@
       </trans-unit>
       <trans-unit id="4715fce1fdbafc47a29ff9d0c1be459d8eafd034" resname="Language selection" approved="yes">
         <source>Language selection</source>
-        <target state="translated">Language selection</target>
+        <target state="translated">Langue</target>
         <jms:reference-file line="664">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="863cb39fbe7d70597076af1960b7ae4618d9e1bc" resname="Last Name" approved="yes">
