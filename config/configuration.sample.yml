@@ -100,12 +100,17 @@ main:
         download: null
         lazaret: null
         caption: null
+        worker_tmp_files: null
 border-manager:
     enabled: true
     extension-mapping:
-        mxf: application/mxf
         otc: application/vnd.oasis.opendocument.chart-template
         ttc: application/x-font-ttf
+        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        docx: application/msword
+        pptx: application/vnd.ms-powerpoint
+        mxf: application/mxf
+        mp4: video/mp4
     checkers:
         -
             type: Checker\Sha256

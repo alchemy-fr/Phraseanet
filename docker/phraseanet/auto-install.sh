@@ -37,18 +37,14 @@ fi
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $INSTALL_SERVER_NAME
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
 
-# RabbitMQ
-
-bin/setup system:config set rabbitmq.server.host rabbitmq
-bin/setup system:config set rabbitmq.server.port 5672
-bin/setup system:config set rabbitmq.server.user $INSTALL_RABBITMQ_USER
-bin/setup system:config set rabbitmq.server.password $INSTALL_RABBITMQ_PASSWORD
-bin/setup system:config set rabbitmq.server.vhost /
-
 
 /var/alchemy/Phraseanet/bin/console searchengine:index -c
 
 ## enable API and disable ssl on it
 /var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-enabled true
 /var/alchemy/Phraseanet/bin/setup system:config set main.api_require_ssl false
+
+# set instance title
+bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+
 /var/alchemy/Phraseanet/bin/console compile:configuration

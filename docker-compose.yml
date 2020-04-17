@@ -5,11 +5,15 @@ services:
     build:
       context: .
       target: phraseanet-nginx
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     volumes:
     - data_vol:/var/alchemy/Phraseanet/datas:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
     depends_on:
     - phraseanet
     environment:
@@ -21,6 +25,9 @@ services:
     build:
       context: .
       target: phraseanet-fpm
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
@@ -29,6 +36,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_PROJECT_NAME
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - OPCACHE_ENABLED
@@ -52,11 +60,16 @@ services:
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - cache_vol:/var/alchemy/Phraseanet/cache:rw
 
   worker:
     build:
       context: .
       target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
@@ -65,6 +78,7 @@ services:
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_PROJECT_NAME
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - OPCACHE_ENABLED
@@ -76,6 +90,8 @@ services:
     - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
     - logs_vol:/var/alchemy/Phraseanet/logs:rw
     - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - cache_vol:/var/alchemy/Phraseanet/cache:rw
 
   db:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
@@ -117,6 +133,10 @@ volumes:
   elasticsearch_vol:
     driver: local
   thumbnails_vol:
+    driver: local
+  custom_vol:
+      driver: local
+  cache_vol:
     driver: local
   # to be replacer by stdout/stderr
   logs_vol:
