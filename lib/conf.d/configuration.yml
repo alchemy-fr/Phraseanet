@@ -86,7 +86,14 @@ debugger:
     allowed-ips: []
 border-manager:
     enabled: true
-    extension-mapping: { }
+    extension-mapping:
+        otc: application/vnd.oasis.opendocument.chart-template
+        ttc: application/x-font-ttf
+        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        docx: application/msword
+        pptx: application/vnd.ms-powerpoint
+        mxf: application/mxf
+        mp4: video/mp4
     checkers:
         -
             type: Checker\Sha256
