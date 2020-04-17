@@ -417,8 +417,8 @@
   </div>
 
   {% for basket_element in basket.getElementsByOrder(ordre) %}
-      <span class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
-          <table style="width: 100%; min-width: 330px; display: inline-block;">
+      <span class="chim-wrapper chim-feedback-item wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
+          <table style="width: 100%; min-width: 330px; display: inline-block;" >
               <tr>
                   <td style="width:80px;">
                     {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
@@ -459,5 +459,4 @@
           </table>
       </span>
   {% endfor %}
-
 {% endmacro %}
