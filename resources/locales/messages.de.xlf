@@ -4291,9 +4291,9 @@
         <target state="translated">Masken</target>
         <jms:reference-file line="1">web/admin/editusers_masks.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier">
+      <trans-unit id="bfceb124609fe75ad259082ced98a09429f02d2c" resname="Matomo Analytics identifier" approved="yes">
         <source>Matomo Analytics identifier</source>
-        <target state="new">Matomo Analytics identifier</target>
+        <target state="translated">Matomo Analytics site ID</target>
         <jms:reference-file line="45">Form/Configuration/GeneralFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d17f219ba947499e5a2f9b63a78d54deb821e1f8" resname="Matomo Analytics url" approved="yes">
@@ -6701,9 +6701,9 @@
         <target state="translated">Die folgende Fehler wurden festgestellt</target>
         <jms:reference-file line="5">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!">
+      <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!" approved="yes">
         <source>The provided date is null!</source>
-        <target state="new">The provided date is null!</target>
+        <target state="translated">Angegebenes Datum ist NULL!</target>
         <jms:reference-file line="610">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d22c09c164965d42fcdb8d8fe2b40d7d57799a8f" resname="The publication has been stopped" approved="yes">
@@ -11762,20 +11762,20 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Auswahl entfernen</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date">
+      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
         <source>prod:workzone:basket:creation-date</source>
-        <target state="new">prod:workzone:basket:creation-date</target>
+        <target state="translated">Erstellungsdatum</target>
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message">
+      <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message" approved="yes">
         <source>prod:workzone:basket:updated-message</source>
-        <target state="new">prod:workzone:basket:updated-message</target>
+        <target state="translated">Feedback Schlusstermin aktualisiert</target>
         <jms:reference-file line="117">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
-        <target state="translated">Optionen</target>
+        <target state="translated">Facettensortierung</target>
         <jms:reference-file line="195">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5d97f8a4582136cf26798da9099a0c23c28c4584" resname="prod:workzone:facetstab:tooltips:facet_and_filter" approved="yes">
