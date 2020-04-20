@@ -73,6 +73,11 @@
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
             background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}};
         }
+        #idFrameC .diapo.selected {
+            border: 3px solid {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}} !important;
+            background-color: transparent;
+        }
+
     </style>
 {% endblock %}
 
@@ -1001,17 +1006,4 @@
             });
         });
     </script>
-    <style type="text/css">
-        .chim-feedback-item {
-            padding: 10px;
-        }
-
-        .ui-accordion .content {
-            padding: 0 5px;
-            text-align: center;
-        }
-        .ui-accordion .content  .basket-content {
-            padding-left: 0;
-        }
-    </style>
 {% endblock %}
