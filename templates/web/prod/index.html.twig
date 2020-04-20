@@ -174,7 +174,7 @@
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
-        {% set w1 = (100 * ratio)|round %}
+        {% set w1 = (100 * ratio) %}
         {% set w2 = (100 - w1) %}
         <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">
