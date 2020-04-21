@@ -71,8 +71,13 @@
     <style title="color_selection" type="text/css">
         .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo {
             color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'fontcolor-selection', 'FFFFFF')}};
-            background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', '404040')}};
+            background-color: {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}};
         }
+        #idFrameC .diapo.selected {
+            border: 3px solid {{"#" ~ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'background-selection', 'ab47bc')}} !important;
+            background-color: transparent;
+        }
+
     </style>
 {% endblock %}
 
@@ -169,7 +174,7 @@
         {% if ratio == 0 %}
             {% set ratio = '0.333' %}
         {% endif %}
-        {% set w1 = (100 * ratio)|round %}
+        {% set w1 = (100 * ratio) %}
         {% set w2 = (100 - w1) %}
         <div id="idFrameC" class="PNB" style="right:auto;width:{{ w1 ~ '%' }}">
             <div class="PNB wrapper">

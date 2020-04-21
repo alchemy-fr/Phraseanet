@@ -346,18 +346,6 @@
 
   {% import 'common/thumbnail.html.twig' as thumbnail %}
     <div class="chim-content">
-        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
-            <div class="title">
-                    {{ record.get_title()|truncate(20, "...") }}
-            </div>
-        {% endif %}
-        {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
-            <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
-                {% for flag in record_flags(record) %}
-                    <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
-                {% endfor %}
-            </div>
-        {% endif %}
         <div class="CHIM diapo CHIM_{{record.get_serialize_key()}} open-preview-action"
            data-kind="{% if wz_scope == 'groupings' %}REG{% else %}BASK{% endif %}"
            data-position="{{ ord }}"
@@ -365,7 +353,20 @@
            style="height:{{box_height}}px;"
            id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
            <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
-
+            <div class="diapo_top">
+                {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_title_display') == '1' %}
+                    <div class="title">
+                        {{ record.get_title()|truncate(20, "...") }}
+                    </div>
+                {% endif %}
+                {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_status_display') == '1' %}
+                    <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+                        {% for flag in record_flags(record) %}
+                            <img src="{{ flag.path }}" title="{{ attribute(flag.labels, app.locale) }}" />
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
             <div class="record-number">
                   {{record.getNumber()}}
             </div>
@@ -417,8 +418,8 @@
   </div>
 
   {% for basket_element in basket.getElementsByOrder(ordre) %}
-      <span class="chim-wrapper wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
-          <table style="width: 100%; min-width: 330px; display: inline-block;">
+      <span class="chim-wrapper chim-feedback-item wrapCHIM_{{ basket_element.getRecord(app).get_serialize_key() }} valid">
+          <table style="width: 100%; min-width: 330px; display: inline-block;" >
               <tr>
                   <td style="width:80px;">
                     {{ _self.element('basket', basket, basket_element, basket_element.getRecord(app), basket_element.getOrd()) }}
@@ -459,5 +460,4 @@
           </table>
       </span>
   {% endfor %}
-
 {% endmacro %}
