@@ -4,9 +4,13 @@
   <table>
     <tr>
       <td>
-          {% transchoice Total %}
-            {0} No results|{1} Result|]1,Inf[ Results
-          {% endtranschoice %}
+        {% if Total == 0 %}
+          {{ 'No results' | trans }}
+        {% elseif Total == 1 %}
+          {{ '1 result' | trans }}
+        {% else %}
+          {% trans with {'%Total%' : Total} %}%Total% results{% endtrans %}
+        {% endif %}
       </td>
     </tr>
   </table>
