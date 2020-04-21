@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Command\Setup;
 
 use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -51,8 +52,17 @@ class Install extends Command
             ->addOption('db-template', null, InputOption::VALUE_OPTIONAL, 'Databox template (' . $this->structureTemplate->toString() . ')', null)
             ->addOption('data-path', null, InputOption::VALUE_OPTIONAL, 'Path to data repository', realpath(__DIR__ . '/../../../../../datas'))
             ->addOption('server-name', null, InputOption::VALUE_OPTIONAL, 'Server name')
-            ->addOption('indexer', null, InputOption::VALUE_OPTIONAL, 'Path to Phraseanet Indexer', 'auto')
-            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions');
+            ->addOption('es-host', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP host', 'localhost')
+            ->addOption('es-port', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch server HTTP port', 9200)
+            ->addOption('es-index', null, InputOption::VALUE_OPTIONAL, 'ElasticSearch index name', null)
+            ->addOption('download-path', null, InputOption::VALUE_OPTIONAL, 'Path to download repository', __DIR__ . '/../../../../../tmp/download')
+            ->addOption('lazaret-path', null, InputOption::VALUE_OPTIONAL, 'Path to lazaret repository', __DIR__ . '/../../../../../tmp/lazaret')
+            ->addOption('caption-path', null, InputOption::VALUE_OPTIONAL, 'Path to caption repository', __DIR__ . '/../../../../../tmp/caption')
+            ->addOption('scheduler-locks-path', null, InputOption::VALUE_OPTIONAL, 'Path to scheduler-locks repository', __DIR__ . '/../../../../../tmp/locks')
+            ->addOption('worker-tmp-files', null, InputOption::VALUE_OPTIONAL, 'Path to worker-tmp-files repository', __DIR__ . '/../../../../../tmp')
+            ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Answer yes to all questions')
+            ->setHelp("Phraseanet can only be installed on 64 bits PHP.");
+            ;
 
         return $this;
     }
@@ -72,6 +82,14 @@ class Install extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        if(PHP_INT_SIZE !== 8) {
+            $output->writeln(sprintf(
+                "<error>Phraseanet can only be installed on 64 bits PHP, your version is %d bits (PHP_INT_SIZE=%d).</error>",
+                PHP_INT_SIZE<<3,PHP_INT_SIZE
+            ));
+            return -1;
+        }
+
         /** @var DialogHelper $dialog */
         $dialog = $this->getHelperSet()->get('dialog');
 
@@ -121,6 +139,21 @@ class Install extends Command
         list($email, $password) = $this->getCredentials($input, $output, $dialog);
         $dataPath = $this->getDataPath($input, $output, $dialog);
 
+        if (! $input->getOption('yes')) {
+            $output->writeln("<info>--- ElasticSearch connection settings ---</info>");
+        }
+
+        list($esHost, $esPort) = $this->getESHost($input, $output, $dialog);
+        $esIndexName = $this->getESIndexName($input, $output, $dialog);
+
+        $esOptions = ElasticsearchOptions::fromArray([
+            'host'  => $esHost,
+            'port'  => $esPort,
+            'index' => $esIndexName
+        ]);
+
+        $output->writeln('');
+
         if (!$input->getOption('yes')) {
             $continue = $dialog->askConfirmation($output, "<question>Phraseanet is going to be installed, continue ? (N/y)</question>", false);
 
@@ -131,7 +164,10 @@ class Install extends Command
             }
         }
 
-        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $dataPath, $dbConn, $templateName, $this->detectBinaries());
+        $storagePaths = $this->getStoragePaths($input, $dataPath);
+
+        $this->container['phraseanet.installer']->install($email, $password, $abConn, $serverName, $storagePaths, $dbConn, $templateName, $this->detectBinaries());
+        $this->container['conf']->set(['main', 'search-engine', 'options'], $esOptions->toArray());
 
         if (null !== $this->getApplication()) {
             $command = $this->getApplication()->find('crossdomain:generate');
@@ -337,6 +373,56 @@ class Install extends Command
         }
 
         return $serverName;
+    }
+
+    private function getESHost(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    {
+        $host = $input->getOption('es-host');
+        $port = (int) $input->getOption('es-port');
+
+        if (! $input->getOption('yes')) {
+            while (! $host) {
+                $host = $dialog->ask($output, 'ElasticSearch server host : ', null);
+            };
+
+            while ($port <= 0 || $port >= 65535) {
+                $port = (int) $dialog->ask($output, 'ElasticSearch server port : ', null);
+            };
+        }
+
+        return [ $host, $port ];
+    }
+
+    private function getESIndexName(InputInterface $input, OutputInterface $output, DialogHelper $dialog)
+    {
+        $index = $input->getOption('es-index');
+
+        if (! $input->getOption('yes')) {
+            $index = $dialog->ask($output, 'ElasticSearch server index name (blank to autogenerate) : ', null);
+        }
+
+        return $index;
+    }
+
+    private function getStoragePaths(InputInterface $input, $dataPath)
+    {
+        $schedulerLocksPath = $input->getOption('scheduler-locks-path');
+
+        if (!is_dir($schedulerLocksPath)) {
+            mkdir($schedulerLocksPath, 0755, true);
+        }
+
+        if (($schedulerLocksPath = realpath($schedulerLocksPath)) === FALSE) {
+            throw new \InvalidArgumentException(sprintf('Path %s does not exist.', $schedulerLocksPath));
+        }
+
+        return [
+            'subdefs'           => $dataPath,
+            'download'          => $input->getOption('download-path'),
+            'lazaret'           => $input->getOption('lazaret-path'),
+            'caption'           => $input->getOption('caption-path'),
+            'worker_tmp_files'  => $input->getOption('worker-tmp-files')
+        ];
     }
 
     private function detectBinaries()

@@ -8,7 +8,7 @@
       <div style="margin:3px 0">
 
        {% set appbox = '' %}
-       <div class="history-{{action}}">
+       <div class="history-block history-{{action}}">
         {% if action == 'push' %}
           {% set n_user = done['final']|length %}
           {% set appbox = '<span class="provenance">' ~ site %}
@@ -63,10 +63,8 @@
           {% endif %}
 
           </span>
+           <p style="font-size:10px;text-decoration:italic;">{{hour}}</p>
        </div>
-
-       <div style="font-size:10px;text-decoration:italic;">{{hour}}</div>
-
 
       {% endfor %}
     {% endfor %}

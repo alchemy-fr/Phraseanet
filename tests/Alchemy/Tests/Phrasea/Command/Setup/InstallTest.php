@@ -12,6 +12,21 @@ use Alchemy\Phrasea\Core\Configuration\StructureTemplate;
  */
 class InstallTest extends \PhraseanetTestCase
 {
+    private $bkp = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->bkp = self::$DI['app']['conf']->get('main');
+    }
+
+    public function tearDown()
+    {
+        self::$DI['app']['conf']->set('main', $this->bkp);
+        parent::tearDown();
+    }
+
+
     public function testRunWithoutProblems()
     {
         $input = $this->getMock('Symfony\Component\Console\Input\InputInterface');
@@ -21,6 +36,13 @@ class InstallTest extends \PhraseanetTestCase
         $password = 'sup4ssw0rd';
         $serverName = 'http://phrasea.io';
         $dataPath = '/tmp';
+        $storagePaths = [
+            'subdefs'           => $dataPath,
+            'download'          => $dataPath,
+            'lazaret'           => $dataPath,
+            'caption'           => $dataPath,
+            'worker_tmp_files'  => $dataPath
+        ];
         $template = 'fr-simple';
 
         $infoDb = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../../resources/hudson/InstallDBs.yml'));
@@ -57,6 +79,11 @@ class InstallTest extends \PhraseanetTestCase
                     case 'password':
                         return $password;
                         break;
+                    case 'download-path':
+                    case 'lazaret-path':
+                    case 'caption-path':
+                    case 'scheduler-locks-path':
+                    case 'worker-tmp-files':
                     case 'data-path':
                         return $dataPath;
                         break;
@@ -78,9 +105,12 @@ class InstallTest extends \PhraseanetTestCase
                     case 'db-password':
                         return $infoDb['database']['password'];
                         break;
-                    case 'yes':
-                        return true;
-                        break;
+                    case 'es-host':
+                        return 'localhost';
+                    case 'es-port':
+                        return 9200;
+                    case 'es-index':
+                        return 'phrasea_test';
                     default:
                         return '';
                 }
@@ -92,7 +122,7 @@ class InstallTest extends \PhraseanetTestCase
 
         self::$DI['cli']['phraseanet.installer']->expects($this->once())
             ->method('install')
-            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $dataPath, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
+            ->with($email, $password, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $serverName, $storagePaths, $this->isInstanceOf('Doctrine\DBAL\Driver\Connection'), $template, $this->anything());
 
         $structureTemplate = self::$DI['cli']['phraseanet.structure-template'];
 

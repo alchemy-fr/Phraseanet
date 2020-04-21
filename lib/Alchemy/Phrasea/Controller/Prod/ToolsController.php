@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
@@ -156,7 +157,7 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $record->rebuild_subdefs();
+                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
             }
         }
 

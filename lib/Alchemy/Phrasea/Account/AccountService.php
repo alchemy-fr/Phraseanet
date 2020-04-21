@@ -167,11 +167,11 @@ class AccountService
      * @param string $login
      * @throws AccountException
      */
-    public function deleteAccount($login = null)
+    public function deleteAccount($login = null, array $grantedBaseIdList = array())
     {
         $user = $this->getUserOrCurrentUser($login);
 
-        $this->userManipulator->delete($user);
+        $this->userManipulator->delete($user, $grantedBaseIdList);
     }
 
     /**

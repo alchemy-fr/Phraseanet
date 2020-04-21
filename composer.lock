@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3b1fc0a30bf14b05e57ce673550d9c0",
+    "content-hash": "008ff0b5d3d13b4f0ce5d34348ded83a",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.7",
+            "version": "2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "c585ccf18e53a9a6f2b696ddbbc39521732dfdde"
+                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/c585ccf18e53a9a6f2b696ddbbc39521732dfdde",
-                "reference": "c585ccf18e53a9a6f2b696ddbbc39521732dfdde",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8cdb9612a9e3edd998b68f0803eacca8e0f50775",
+                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.7",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.9",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2019-09-02T12:28:19+00:00"
+            "time": "2020-02-04T14:53:00+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -275,16 +275,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.9",
+            "version": "0.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255"
+                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/1a96dc4142ff8474c11285cab9eab11df9683255",
-                "reference": "1a96dc4142ff8474c11285cab9eab11df9683255",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/3e235eb1efb528aea2973c946f4bf47630b98985",
+                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985",
                 "shasum": ""
             },
             "require": {
@@ -300,6 +300,7 @@
             },
             "require-dev": {
                 "jms/serializer": "~0.12.0",
+                "phpunit/phpunit": "^4.0|^5.0",
                 "silex/silex": "~1.0",
                 "symfony/yaml": "~2.0"
             },
@@ -333,7 +334,7 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2019-01-22T11:23:34+00:00"
+            "time": "2020-02-18T13:37:45+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -383,29 +384,26 @@
         },
         {
             "name": "alchemy/phpexiftool",
-            "version": "0.7.2",
+            "version": "0.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHPExiftool.git",
-                "reference": "ba1cb51eceb6562d7996023478977a8739de188b"
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/ba1cb51eceb6562d7996023478977a8739de188b",
-                "reference": "ba1cb51eceb6562d7996023478977a8739de188b",
+                "url": "https://api.github.com/repos/alchemy-fr/PHPExiftool/zipball/0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
+                "reference": "0b22e7d7cc40f2a6b9c85c0cfbd968a39a31dab2",
                 "shasum": ""
             },
             "require": {
                 "doctrine/cache": "^1.0",
                 "doctrine/collections": "^1.0",
+                "exiftool/exiftool": "^11",
                 "monolog/monolog": "^1.3",
                 "php": ">=5.5.9",
-                "phpexiftool/exiftool": "10.10",
                 "symfony/console": "^2.1|^3.0",
                 "symfony/process": "^2.1|^3.0"
-            },
-            "replace": {
-                "phpexiftool/phpexiftool": "<0.5.0"
             },
             "require-dev": {
                 "jms/serializer": "~0.10|^1.0",
@@ -452,7 +450,7 @@
                 "exiftool",
                 "metadata"
             ],
-            "time": "2019-02-13T13:06:43+00:00"
+            "time": "2020-01-17T14:28:33+00:00"
         },
         {
             "name": "alchemy/queue-bundle",
@@ -2106,6 +2104,16 @@
             "time": "2012-05-30T15:01:08+00:00"
         },
         {
+            "name": "exiftool/exiftool",
+            "version": "11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/exiftool/exiftool.git",
+                "reference": "11.84"
+            },
+            "type": "library"
+        },
+        {
             "name": "facebook/graph-sdk",
             "version": "5.6.1",
             "source": {
@@ -2853,6 +2861,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "abandoned": true,
             "time": "2015-05-20T03:37:09+00:00"
         },
         {
@@ -2903,6 +2912,7 @@
                 "Guzzle",
                 "stream"
             ],
+            "abandoned": true,
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
@@ -4321,16 +4331,16 @@
         },
         {
             "name": "media-alchemyst/media-alchemyst",
-            "version": "0.5.2",
+            "version": "0.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/Media-Alchemyst.git",
-                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140"
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
-                "reference": "5d2fe6dd95215804202ecf0466fd9cfaeedd0140",
+                "url": "https://api.github.com/repos/alchemy-fr/Media-Alchemyst/zipball/2b9f7697997f7863bbc3d08344c559a1cba519c2",
+                "reference": "2b9f7697997f7863bbc3d08344c559a1cba519c2",
                 "shasum": ""
             },
             "require": {
@@ -4340,9 +4350,9 @@
                 "monolog/monolog": "~1.0",
                 "neutron/temporary-filesystem": "^2.1.1",
                 "php": ">=5.3.3",
-                "php-ffmpeg/php-ffmpeg": ">=0.4.2,<0.6",
+                "php-ffmpeg/php-ffmpeg": "^v0.15",
                 "php-mp4box/php-mp4box": "~0.3.0",
-                "php-unoconv/php-unoconv": "~0.3.0",
+                "php-unoconv/php-unoconv": "~0.3.1",
                 "pimple/pimple": "~1.0",
                 "swftools/swftools": "~0.3.0",
                 "symfony/console": "^2.1|^3.0",
@@ -4391,7 +4401,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2019-01-25T12:09:11+00:00"
+            "time": "2020-04-01T08:51:55+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5137,29 +5147,29 @@
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
-            "version": "0.5.1",
+            "version": "v0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-FFMpeg/PHP-FFMpeg.git",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a"
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/c8949fe3df89edd7692368cc110a51a27971f28a",
-                "reference": "c8949fe3df89edd7692368cc110a51a27971f28a",
+                "url": "https://api.github.com/repos/PHP-FFMpeg/PHP-FFMpeg/zipball/984dbd046b6d8c285f9e7419fc7645f197513bfa",
+                "reference": "984dbd046b6d8c285f9e7419fc7645f197513bfa",
                 "shasum": ""
             },
             "require": {
-                "alchemy/binary-driver": "~1.5",
-                "doctrine/cache": "~1.0",
-                "evenement/evenement": "~1.0",
-                "neutron/temporary-filesystem": "~2.1, >=2.1.1",
-                "php": ">=5.3.3"
+                "alchemy/binary-driver": "^1.5 || ~2.0.0 || ^5.0",
+                "doctrine/cache": "^1.0",
+                "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
+                "neutron/temporary-filesystem": "^2.1.1",
+                "php": "^5.3.9 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~3.7",
                 "sami/sami": "~1.0",
-                "silex/silex": "~1.0"
+                "silex/silex": "~1.0",
+                "symfony/phpunit-bridge": "^5.0.4"
             },
             "suggest": {
                 "php-ffmpeg/extras": "A compilation of common audio & video drivers for PHP-FFMpeg"
@@ -5167,7 +5177,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5-dev"
+                    "dev-master": "0.7-dev"
                 }
             },
             "autoload": {
@@ -5189,6 +5199,21 @@
                     "name": "Phraseanet Team",
                     "email": "info@alchemy.fr",
                     "homepage": "http://www.phraseanet.com/"
+                },
+                {
+                    "name": "Patrik Karisch",
+                    "email": "patrik@karisch.guru",
+                    "homepage": "http://www.karisch.guru"
+                },
+                {
+                    "name": "Romain Biard",
+                    "email": "romain.biard@gmail.com",
+                    "homepage": "https://www.strime.io/"
+                },
+                {
+                    "name": "Jens Hausdorf",
+                    "email": "hello@jens-hausdorf.de",
+                    "homepage": "https://jens-hausdorf.de"
                 }
             ],
             "description": "FFMpeg PHP, an Object Oriented library to communicate with AVconv / ffmpeg",
@@ -5202,7 +5227,7 @@
                 "video",
                 "video processing"
             ],
-            "time": "2014-08-26T08:46:56+00:00"
+            "time": "2020-03-23T09:32:09+00:00"
         },
         {
             "name": "php-mp4box/php-mp4box",
@@ -5257,16 +5282,16 @@
         },
         {
             "name": "php-unoconv/php-unoconv",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/PHP-Unoconv.git",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355"
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/6d1e14a7467b5d637741396549529dc4d5f9f355",
-                "reference": "6d1e14a7467b5d637741396549529dc4d5f9f355",
+                "url": "https://api.github.com/repos/alchemy-fr/PHP-Unoconv/zipball/8fa666972f6c13fe9703dfe894cd311a61f89f33",
+                "reference": "8fa666972f6c13fe9703dfe894cd311a61f89f33",
                 "shasum": ""
             },
             "require": {
@@ -5303,7 +5328,7 @@
             "keywords": [
                 "unoconv"
             ],
-            "time": "2013-06-25T10:09:59+00:00"
+            "time": "2019-09-16T09:54:30+00:00"
         },
         {
             "name": "php-xpdf/php-xpdf",
@@ -5404,39 +5429,6 @@
                 "set"
             ],
             "time": "2015-05-17T12:39:23+00:00"
-        },
-        {
-            "name": "phpexiftool/exiftool",
-            "version": "10.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "0833cab894c890353192a83011428525a318bedf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
-                "reference": "0833cab894c890353192a83011428525a318bedf",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Perl Licensing"
-            ],
-            "authors": [
-                {
-                    "name": "Phil Harvey",
-                    "email": "phil@owl.phy.queensu.ca",
-                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
-                }
-            ],
-            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
-            "keywords": [
-                "exiftool",
-                "metadatas"
-            ],
-            "time": "2016-01-25T11:10:14+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -5902,6 +5894,12 @@
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
                 "reference": "0698207bf8a9bed212fdde2d8c7cdc77085660c4"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0698207bf8a9bed212fdde2d8c7cdc77085660c4",
+                "reference": "0698207bf8a9bed212fdde2d8c7cdc77085660c4",
+                "shasum": ""
+            },
             "conflict": {
                 "adodb/adodb-php": "<5.20.6",
                 "amphp/artax": ">=2,<2.0.4|>0.7.1,<1.0.4",
@@ -6186,7 +6184,7 @@
             ],
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
-            "abandoned": true,
+            "abandoned": "symfony/web-profiler-bundle",
             "time": "2016-01-10T11:39:13+00:00"
         },
         {
@@ -6436,6 +6434,7 @@
                 "profiler",
                 "silex"
             ],
+            "abandoned": true,
             "time": "2016-10-26T11:08:02+00:00"
         },
         {
@@ -6478,6 +6477,7 @@
                 "plugin",
                 "silex"
             ],
+            "abandoned": true,
             "time": "2015-11-11T07:16:28+00:00"
         },
         {
@@ -7726,6 +7726,7 @@
                 "code",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-code",
             "time": "2016-04-20T17:26:42+00:00"
         },
         {
@@ -7780,12 +7781,13 @@
                 "events",
                 "zf2"
             ],
+            "abandoned": "laminas/laminas-eventmanager",
             "time": "2016-02-18T20:53:00+00:00"
         }
     ],
     "packages-dev": [
         {
-            "name": "mikey179/vfsStream",
+            "name": "mikey179/vfsstream",
             "version": "v1.6.4",
             "source": {
                 "type": "git",
@@ -7829,76 +7831,6 @@
             "description": "Virtual file system to mock the real file system in unit tests.",
             "homepage": "http://vfs.bovigo.org/",
             "time": "2016-07-18T14:02:57+00:00"
-        },
-        {
-            "name": "php-amqplib/php-amqplib",
-            "version": "v2.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.3.0"
-            },
-            "replace": {
-                "videlalvaro/php-amqplib": "self.version"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8",
-                "scrutinizer/ocular": "^1.1",
-                "squizlabs/php_codesniffer": "^2.5"
-            },
-            "suggest": {
-                "ext-sockets": "Use AMQPSocketConnection"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PhpAmqpLib\\": "PhpAmqpLib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1"
-            ],
-            "authors": [
-                {
-                    "name": "Alvaro Videla",
-                    "role": "Original Maintainer"
-                },
-                {
-                    "name": "John Kelly",
-                    "email": "johnmkelly86@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Raúl Araya",
-                    "email": "nubeiro@gmail.com",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
-            "homepage": "https://github.com/php-amqplib/php-amqplib/",
-            "keywords": [
-                "message",
-                "queue",
-                "rabbitmq"
-            ],
-            "time": "2016-04-11T14:30:01+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -8045,6 +7977,39 @@
                 }
             ],
             "time": "2016-11-25T06:54:22+00:00"
+        },
+        {
+            "name": "phpexiftool/exiftool",
+            "version": "10.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alchemy-fr/exiftool.git",
+                "reference": "0833cab894c890353192a83011428525a318bedf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
+                "reference": "0833cab894c890353192a83011428525a318bedf",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Perl Licensing"
+            ],
+            "authors": [
+                {
+                    "name": "Phil Harvey",
+                    "email": "phil@owl.phy.queensu.ca",
+                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
+                }
+            ],
+            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
+            "keywords": [
+                "exiftool",
+                "metadatas"
+            ],
+            "time": "2016-01-25T11:10:14+00:00"
         },
         {
             "name": "phpspec/prophecy",

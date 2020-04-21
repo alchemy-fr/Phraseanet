@@ -98,7 +98,7 @@ class PushController extends Controller
                 $Basket->setUser($user_receiver);
                 $Basket->setPusher($this->getAuthenticatedUser());
                 $Basket->markUnread();
-                
+
                 $manager->persist($Basket);
 
                 foreach ($pusher->get_elements() as $element) {
@@ -193,7 +193,7 @@ class PushController extends Controller
                 'Validation from %user%', [
                 '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
             ]));
-            $validation_description = $request->request->get('validation_description');
+            $validation_description = $request->request->get('message');
 
             $participants = $request->request->get('participants');
 
@@ -604,6 +604,38 @@ class PushController extends Controller
         );
     }
 
+    public function updateExpirationAction(Request $request)
+    {
+        $ret = [
+            'success' => false,
+            'message' => $this->app->trans('Unable to save the expiration date')
+        ];
+        if (is_null($request->request->get('date'))) {
+            $ret['message'] = $this->app->trans('The provided date is null!');
+            return $this->app->json($ret);
+        }
+        $repository = $this->app['repo.baskets'];
+        $manager = $this->getEntityManager();
+        $manager->beginTransaction();
+        try {
+            $basket = $repository->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
+            $date = new \DateTime($request->request->get('date') . " 23:59:59");
+            $validation = $basket->getValidation();
+            if (is_null($validation)) {
+                return $this->app->json($ret);
+            }
+            $validation->setExpires($date);
+            $manager->persist($validation);
+            $manager->flush();
+            $manager->commit();
+            $ret['message'] = $this->app->trans('Expiration date successfully updated!');
+        } catch (\Exception $e) {
+            $ret['message'] = $e->getMessage();
+            $manager->rollback();
+        }
+        return $this->app->json($ret);
+    }
+
     private function formatUser(User $user)
     {
         $subtitle = array_filter([$user->getJob(), $user->getCompany()]);
@@ -738,4 +770,5 @@ class PushController extends Controller
     {
         return $this->app['random.medium'];
     }
+
 }

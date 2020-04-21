@@ -1,12 +1,21 @@
-FROM php:7.0-fpm-stretch as builder
+#########################################################################
+# This image contains every build tools that will be used by the builder and
+# the app images (usefull in dev mode)
+#########################################################################
 
-RUN apt-get update \
+FROM php:7.0-fpm-stretch as phraseanet-system
+
+ENV FFMPEG_VERSION=4.2.2
+
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
     && apt-get install -y \
         apt-transport-https \
         ca-certificates \
         gnupg2 \
     && apt-get update \
-    && apt-get install -y --no-install-recommends zlib1g-dev \
+    && apt-get install -y --no-install-recommends \
+        zlib1g-dev \
         git \
         ghostscript \
         gpac \
@@ -23,142 +32,194 @@ RUN apt-get update \
         libxslt-dev \
         libzmq3-dev \
         locales \
+        gettext \
         mcrypt \
         swftools \
         unoconv \
         unzip \
         xpdf \
+        libreoffice-base-core \
+        libreoffice-impress \
+        libreoffice-calc \
+        libreoffice-math \
+        libreoffice-writer \                                                                 
+        libreoffice-pdfimport \
+        # FFmpeg
+        yasm \
+        libvorbis-dev \
+        texi2html \
+        nasm \
+        zlib1g-dev \
+        libx264-dev \
+        libfdk-aac-dev \
+        libopus-dev \
+        libvpx-dev \
+        libmp3lame-dev \
+        libogg-dev \
+        libopencore-amrnb-dev \
+        libopencore-amrwb-dev \
+        libdc1394-22-dev \
+        libx11-dev \
+        libswscale-dev \
+        libpostproc-dev \
+        libxvidcore-dev \
+        libtheora-dev \
+        libgsm1-dev \
+        libfreetype6-dev \
+        # End FFmpeg
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
-    && pecl install redis amqp-1.9.3 zmq-beta imagick-beta \
+    && pecl install \
+        redis \
+        amqp-1.9.3 \
+        zmq-beta \
+        imagick-beta \
+        xdebug-2.6.1 \
     && docker-php-ext-enable redis amqp zmq imagick \
     && pecl clear-cache \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/*
+    && mkdir /tmp/ffmpeg \
+    && curl -s https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 | tar jxf - -C /tmp/ffmpeg \
+    && ( \
+        cd /tmp/ffmpeg/ffmpeg-${FFMPEG_VERSION} \
+        && ./configure \
+            --enable-gpl \
+            --enable-nonfree \
+            --enable-libfdk-aac \
+            --enable-libfdk_aac \
+            --enable-libgsm \
+            --enable-libmp3lame \
+            --enable-libtheora \
+            --enable-libvorbis \
+            --enable-libvpx \
+            --enable-libfreetype \
+            --enable-libopus \
+            --enable-libx264 \
+            --enable-libxvid \
+            --enable-zlib \
+            --enable-postproc \
+            --enable-swscale \
+            --enable-pthreads \
+            --enable-libdc1394 \
+            --enable-version3 \
+            --enable-libopencore-amrnb \
+            --enable-libopencore-amrwb \
+        && make \
+        && make install \
+        && make distclean \
+    ) \
+    && rm -rf /tmp/ffmpeg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists \
+    && mkdir /entrypoint /var/alchemy \
+    && useradd -u 1000 app \
+    && mkdir -p /home/app/.composer \
+    && chown -R app: /home/app /var/alchemy
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && php -r "unlink('composer-setup.php');"
+ENV XDEBUG_ENABLED=0
+
+#########################################################################
+# This image is used to build the apps
+#########################################################################
+
+FROM phraseanet-system as builder
+
+COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
 
 # Node Installation (node + yarn)
 # Reference :
 # https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/
 # https://yarnpkg.com/lang/en/docs/install/#debian-stable
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update && apt-get install -y --no-install-recommends yarn \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/
-
-RUN mkdir /entrypoint /var/alchemy \
-    && useradd -u 1000 app \
-    && mkdir -p /home/app/.composer \
-    && chown -R app: /home/app /var/alchemy
-
-WORKDIR /var/alchemy/
-
-COPY gulpfile.js /var/alchemy/
-COPY Makefile /var/alchemy/
-COPY package.json /var/alchemy/
-COPY phpunit.xml.dist /var/alchemy/
-COPY yarn.lock /var/alchemy/
-COPY bin /var/alchemy/bin
-COPY composer.json /var/alchemy/
-COPY composer.lock /var/alchemy/
-RUN make install_composer
-COPY resources /var/alchemy/resources
-COPY www /var/alchemy/www
-RUN make clean_assets
-RUN make install_asset_dependencies
-RUN make install_assets
-
-ADD ./docker/phraseanet/ /
-COPY lib /var/alchemy/lib
-COPY tmp /var/alchemy/tmp
-COPY config /var/alchemy/config
-COPY grammar /var/alchemy/grammar
-COPY templates-profiler /var/alchemy/templates-profiler
-COPY templates /var/alchemy/templates
-COPY tests /var/alchemy/tests
-
-# Phraseanet
-FROM php:7.0-fpm-stretch as phraseanet-fpm
-RUN apt-get update \
-    && apt-get install -y \
-        apt-transport-https \
-        ca-certificates \
-        gnupg2 \
     && apt-get update \
-    && apt-get install -y --no-install-recommends zlib1g-dev \
-        gettext \
-        git \
-        ghostscript \
-        gpac \
-        imagemagick \
-        libav-tools \
-        libfreetype6-dev \
-        libicu-dev \
-        libjpeg62-turbo-dev \
-        libmagickwand-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        librabbitmq-dev \
-        libssl-dev \
-        libxslt-dev \
-        libzmq3-dev \
-        locales \
-        mcrypt \
-        swftools \
-        unoconv \
-        unzip \
-        xpdf \
-    && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
-    && dpkg-reconfigure --frontend noninteractive locales \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
-    && pecl install redis amqp-1.9.3 zmq-beta imagick-beta \
-    && docker-php-ext-enable redis amqp zmq imagick \
-    && pecl clear-cache \
-    && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends \
+        nodejs \
+        yarn \
+        nano \
+        vim \
+        iputils-ping \
+        zsh \
+        ssh \
+        telnet \
+        autoconf \
+        libtool \
+        python \
+        pkg-config \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists \
+    && git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh \
+    && mkdir -p /var/alchemy/Phraseanet \
+    && chown -R app:app /var/alchemy
 
-RUN mkdir /entrypoint /var/alchemy \
-    && useradd -u 1000 app \
-    && mkdir -p /home/app/.composer \
-    && chown -R app: /home/app /var/alchemy
-
-COPY --from=builder --chown=app /var/alchemy /var/alchemy/Phraseanet
-ADD ./docker/phraseanet/ /
-RUN mkdir -p /var/alchemy/Phraseanet/logs \
-    && chmod -R 777 /var/alchemy/Phraseanet/logs \
-    && mkdir -p /var/alchemy/Phraseanet/cache \
-    && chmod -R 777 /var/alchemy/Phraseanet/cache \
-    && mkdir -p /var/alchemy/Phraseanet/datas \
-    && chmod -R 777 /var/alchemy/Phraseanet/datas \
-    && mkdir -p /var/alchemy/Phraseanet/tmp \
-    && chmod -R 777 /var/alchemy/Phraseanet/tmp \
-    && mkdir -p /var/alchemy/Phraseanet/www/custom \
-    && chmod -R 777 /var/alchemy/Phraseanet/www/custom \
-    && mkdir -p /var/alchemy/Phraseanet/config \
-    && chmod -R 777 /var/alchemy/Phraseanet/config
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["/phraseanet-entrypoint.sh"]
-CMD ["/boot.sh"]
 
-# phraseanet-worker
+USER app
+
+# Warm up composer cache for faster builds
+COPY docker/caching/composer.* ./
+RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classmap-authoritative --no-interaction --no-scripts \
+    && rm -rf vendor composer.*
+# End warm up
+
+COPY --chown=app  . .
+
+RUN make install
+
+ADD ./docker/builder/root /
+
+# SSH Private repo
+ARG SSH_PRIVATE_KEY
+ARG PHRASEANET_PLUGINS
+
+RUN ( \
+        test ! -z "${SSH_PRIVATE_KEY}" \
+        && mkdir -p ~/.ssh \
+        && echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa \
+        # make sure github domain.com is accepted
+        && ssh-keyscan -H github.com >> ~/.ssh/known_hosts \
+        && chmod 600 ~/.ssh/id_rsa \
+    ) || echo "Skip SSH key"
+
+RUN ./docker/phraseanet/plugins/console install
+
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+
+CMD []
+
+#########################################################################
+# Phraseanet web application image
+#########################################################################
+
+FROM phraseanet-system as phraseanet-fpm
+
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/root /
+WORKDIR /var/alchemy/Phraseanet
+ENTRYPOINT ["docker/phraseanet/entrypoint.sh"]
+CMD ["php-fpm", "-F"]
+
+#########################################################################
+# Phraseanet worker application image
+#########################################################################
+
 FROM phraseanet-fpm as phraseanet-worker
-CMD ["/worker-boot.sh"]
+ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
+CMD ["bin/console", "task-manager:scheduler:run"]
 
+#########################################################################
 # phraseanet-nginx
-FROM nginx:1.15 as phraseanet-nginx
-RUN useradd -u 1000 app
-ADD ./docker/nginx/ /
-COPY --from=builder /var/alchemy/www /var/alchemy/Phraseanet/www
-CMD ["/boot.sh"]
+#########################################################################
+
+FROM nginx:1.17.8-alpine as phraseanet-nginx
+RUN adduser --uid 1000 --disabled-password app
+ADD ./docker/nginx/root /
+COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["nginx", "-g", "daemon off;"]

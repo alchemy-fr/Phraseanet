@@ -269,7 +269,7 @@ class QueryController extends Controller
 
             $infoResult = '<div id="docInfo">'
                 . $this->app->trans('%number% documents<br/>selectionnes', ['%number%' => '<span id="nbrecsel"></span>'])
-                . '<div class="detailed_info_holder"><img src="/assets/common/images/icons/dots.png" class="image-normal"><img src="/assets/common/images/icons/dots-darkgreen-hover.png" class="image-hover">'
+                . '<div class="detailed_info_holder"><img src="/assets/common/images/icons/dots.png" class="image-normal hidden"><img src="/assets/common/images/icons/dots-darkgreen-hover.png" class="image-hover">'
                 . '<div class="detailed_info">
                     <table>
                         <thead>
@@ -341,10 +341,20 @@ class QueryController extends Controller
 
             if ($result->getTotal() === 0) {
                 $template = 'prod/results/help.html.twig';
-            } else {
+            }
+            else {
                 $template = 'prod/results/records.html.twig';
             }
-            $json['results'] = $this->render($template, ['results'=> $result]);
+
+            /** @var \Closure $filter */
+            $filter = $this->app['plugin.filter_by_authorization'];
+
+            $plugins = [
+                'workzone' => $filter('workzone'),
+                'actionbar' => $filter('actionbar'),
+            ];
+
+            $json['results'] = $this->render($template, ['results'=> $result, 'plugins'=>$plugins]);
 
 
             // add technical fields
@@ -382,7 +392,6 @@ class QueryController extends Controller
                             'labels'      => $field->get_labels(),
                             'type'        => $field->get_type(),
                             'field'       => $field->get_name(),
-                            'query'       => "field." . $field->get_name() . ":%s",
                             'trans_label' => $field->get_label($this->app['locale']),
                         ];
                         $field->get_label($this->app['locale']);
@@ -424,24 +433,15 @@ class QueryController extends Controller
 
             // populates facets (aggregates)
             $facets = [];
-            // $facetClauses = [];
             foreach ($result->getFacets() as $facet) {
                 $facetName = $facet['name'];
 
                 if(array_key_exists($facetName, $fieldsInfosByName)) {
-
                     $f = $fieldsInfosByName[$facetName];
-
                     $facet['label'] = $f['trans_label'];
                     $facet['labels'] = $f['labels'];
                     $facet['type'] = strtoupper($f['type']) . "-AGGREGATE";
                     $facets[] = $facet;
-
-                    // $facetClauses[] = [
-                    //    'type'  => strtoupper($f['type']) . "-AGGREGATE",
-                    //    'field' => $f['field'],
-                    //    'facet' => $facet
-                    // ];
                 }
             }
 

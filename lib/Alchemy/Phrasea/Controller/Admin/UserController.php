@@ -515,9 +515,9 @@ class UserController extends Controller
                         $denyColl[] = $label;
                         $hookData['rejected'][$bas] = $label;
                     }
-                }
 
-                $this->app['manipulator.webhook-event']->create($hookName, $hookType, $hookData);
+                    $this->app['manipulator.webhook-event']->create($hookName, $hookType, $hookData, [$bas]);
+                }
 
                 if ($user->hasMailNotificationsActivated() && (0 !== count($acceptColl) || 0 !== count($denyColl))) {
                     $message = '';

@@ -193,6 +193,8 @@ registry:
         keywords: ''
         description: ''
         analytics: ''
+        matomo-analytics-url: ''
+        matomo-analytics-id: ''
         allow-indexation: true
         home-presentation-mode: COOLIRIS
     modules:

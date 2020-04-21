@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
@@ -56,7 +57,7 @@ class SubdefGenerator
         $this->filesystem = $filesystem;
         $this->logger = $logger;
         $this->mediavorus = $mediavorus;
-        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'tmp_files']);;
+        $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);;
     }
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
@@ -170,13 +171,53 @@ class SubdefGenerator
             unset($this->tmpFilePath);
         }
 
-        $this->dispatch(
-            RecordEvents::SUB_DEFINITIONS_CREATED,
-            new SubDefinitionsCreatedEvent(
-                $record,
-                $mediaCreated
-            )
-        );
+        // if we created subdef one by one
+        if (count($wanted_subdefs) == 1) {
+            $mediaSubdefRepository = $this->getMediaSubdefRepository($record->getDataboxId());
+            $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$record->getRecordId()]);
+            $medias = [];
+            foreach ($mediaSubdefs as $subdef) {
+                try {
+                    $medias[$subdef->get_name()] = $this->mediavorus->guess($subdef->getRealPath());
+                } catch (MediaVorusFileNotFoundException $e) {
+
+                }
+            }
+
+            $this->dispatch(
+                RecordEvents::SUB_DEFINITIONS_CREATED,
+                new SubDefinitionsCreatedEvent(
+                    $record,
+                    $medias
+                )
+            );
+        } else {
+            $this->dispatch(
+                RecordEvents::SUB_DEFINITIONS_CREATED,
+                new SubDefinitionsCreatedEvent(
+                    $record,
+                    $mediaCreated
+                )
+            );
+        }
+    }
+
+    /**
+     * set a logger to use
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * to get the logger
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
@@ -275,5 +316,15 @@ class SubdefGenerator
     private function sizeHumanReadable($bytes) {
         $i = floor(log($bytes, 1024));
         return round($bytes / pow(1024, $i), [0,0,2,2,3][$i]).['B','kB','MB','GB'][$i];
+    }
+
+    /**
+     * @param $databoxId
+     *
+     * @return MediaSubdefRepository|Object
+     */
+    private function getMediaSubdefRepository($databoxId)
+    {
+        return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
     }
 }

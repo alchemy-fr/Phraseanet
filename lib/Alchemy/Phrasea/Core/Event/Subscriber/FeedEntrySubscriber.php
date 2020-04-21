@@ -13,7 +13,9 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\FeedEntryEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailInfoNewPublication;
 
@@ -31,7 +33,8 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::NEW_FEED_ENTRY,
             WebhookEvent::FEED_ENTRY_TYPE,
-            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params)
+            array_merge(array('feed_id' => $entry->getFeed()->getId()), $params),
+            $entry->getFeed()->getBaseId() ? [$entry->getFeed()->getBaseId()] : []
         );
 
         $datas = json_encode($params);
@@ -53,36 +56,43 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
         do {
             $results = $Query->limit($start, $perLoop)->execute()->get_results();
 
-            foreach ($results as $user_to_notif) {
-                $mailed = false;
+            $users_emailed = [];     // for all users
+            $users_to_email = [];    // list only users who must be emailed (=create tokens)
 
-                if ($params['notify_email'] && $this->shouldSendNotificationFor($user_to_notif, 'eventsmanager_notify_feed')) {
-                    $readyToSend = false;
-                    try {
-                        $token = $this->app['manipulator.token']->createFeedEntryToken($user_to_notif, $entry);
-                        $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
-
-                        $receiver = Receiver::fromUser($user_to_notif);
-                        $readyToSend = true;
-                    } catch (\Exception $e) {
-
-                    }
-
-                    if ($readyToSend) {
-                        $mail = MailInfoNewPublication::create($this->app, $receiver);
-                        $mail->setButtonUrl($url);
-                        $mail->setAuthor($entry->getAuthorName());
-                        $mail->setTitle($entry->getTitle());
-
-                        $this->deliver($mail);
-                        $mailed = true;
-                    }
+            /** @var User $user */
+            foreach ($results as $user) {
+                $users_emailed[$user->getId()] = false;
+                if ($params['notify_email'] && $this->shouldSendNotificationFor($user, 'eventsmanager_notify_feed')) {
+                    $users_to_email[$user->getId()] = $user;
                 }
-
-                $this->app['events-manager']->notify($user_to_notif->getId(), 'eventsmanager_notify_feed', $datas, $mailed);
             }
+
+            // get many tokens in one shot
+            $tokens = $this->getTokenManipulator()->createFeedEntryTokens($users_to_email, $entry);
+            foreach($tokens as $token) {
+                try {
+                    $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
+                    $receiver = Receiver::fromUser($token->getUser());
+
+                    $mail = MailInfoNewPublication::create($this->app, $receiver);
+                    $mail->setButtonUrl($url);
+                    $mail->setAuthor($entry->getAuthorName());
+                    $mail->setTitle($entry->getTitle());
+
+                    $this->deliver($mail);
+                    $users_emailed[$token->getUser()->getId()] = true;
+                }
+                catch (\Exception $e) {
+                    // no-op
+                }
+            }
+            foreach($users_emailed as $id => $emailed) {
+                $this->app['events-manager']->notify($id, 'eventsmanager_notify_feed', $datas, $emailed);
+            }
+
             $start += $perLoop;
-        } while (count($results) > 0);
+        }
+        while (count($results) > 0);
     }
 
     public static function getSubscribedEvents()
@@ -90,5 +100,13 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
         return [
             PhraseaEvents::FEED_ENTRY_CREATE => 'onCreate',
         ];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
     }
 }

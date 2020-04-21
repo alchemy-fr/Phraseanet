@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
@@ -284,7 +285,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
         if ($old_type !== $type) {
-            $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
         }
 
         $this->type = $type;
@@ -341,7 +342,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->rebuild_subdefs();
+            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+
             $this->delete_data_from_cache();
         }
 
@@ -1673,6 +1675,43 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $records;
     }
 
+    public static function getRecordsByOriginalnameWithExcludedCollIds(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10, $excludedCollIds = [])
+    {
+        $offset_start = max(0, (int)$offset_start);
+        $how_many = max(1, (int)$how_many);
+        $collate = $caseSensitive ? 'utf8_bin' : 'utf8_unicode_ci';
+
+        $qb = $databox->get_connection()->createQueryBuilder()
+            ->select('record_id')
+            ->from('record')
+            ->where('originalname = :original_name COLLATE :collate')
+            ;
+
+        $params = ['original_name' => $original_name, 'collate' => $collate];
+        $types  = [];
+
+        if (!empty($excludedCollIds)) {
+            $qb->andWhere($qb->expr()->notIn('coll_id', ':coll_id'));
+
+            $params['coll_id'] = $excludedCollIds;
+            $types[':coll_id'] = Connection::PARAM_INT_ARRAY;
+        }
+
+        $sql = $qb->setFirstResult($offset_start)
+            ->setMaxResults($how_many)
+            ->getSQL()
+            ;
+
+        $rs = $databox->get_connection()->fetchAll($sql, $params, $types);
+
+        $records = [];
+        foreach ($rs as $row) {
+            $records[] = $databox->get_record($row['record_id']);
+        }
+
+        return $records;
+    }
+
     /**
      * @return set_selection|record_adapter[]
      * @throws Exception
@@ -1685,17 +1724,22 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @param int $offset
+     * @param null|int $max_items
+     *
      * @return set_selection|record_adapter[]
      * @throws Exception
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function getChildren()
+    public function getChildren($offset = 1, $max_items = null)
     {
         if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
         }
 
-        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()]);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], $user, $offset, $max_items);
 
         return reset($selections);
     }
@@ -1705,7 +1749,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function get_grouping_parents()
     {
-        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()]);
+        $user = $this->getAuthenticatedUser();
+
+        $selections = $this->getDatabox()->getRecordRepository()->findParents([$this->getRecordId()], $user);
 
         return reset($selections);
     }
@@ -1907,5 +1953,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private function getMediaSubdefRepository()
     {
         return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($this->getDataboxId());
+    }
+
+    /**
+     * @return User|null
+     */
+    protected function getAuthenticatedUser()
+    {
+        /** @var \Alchemy\Phrasea\Authentication\Authenticator $authenticator */
+        $authenticator = $this->app['authentication'];
+
+        return $authenticator->getUser();
     }
 }
