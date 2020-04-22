@@ -628,7 +628,7 @@ class PushController extends Controller
             $manager->persist($validation);
             $manager->flush();
             $manager->commit();
-            $ret['message'] = $this->app->trans('Expiration date successfully updated!');
+            $ret['message'] = 'Expiration date successfully updated!';
         } catch (\Exception $e) {
             $ret['message'] = $e->getMessage();
             $manager->rollback();
