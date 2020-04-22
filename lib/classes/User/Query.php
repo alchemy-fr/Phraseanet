@@ -711,15 +711,15 @@ class User_Query
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $emailDomain = [];
+        $emailDomains = [];
         foreach ($rs as $row) {
             if (trim($row['emailDomain']) === '') {
                 continue;
             }
-            $emailDomain[] = $row['emailDomain'];
+            $emailDomains[] = $row['emailDomain'];
         }
 
-        return $emailDomain;
+        return $emailDomains;
     }
 
     /**
@@ -1040,7 +1040,7 @@ class User_Query
             $constraints[':' . $fieldName . $n ++] = $field;
         }
 
-        $sql = ' AND (' . $fieldName . ' ' . $operator . ' ' . implode(' OR ' . $fieldName . ' ' . $operator . ' ' , array_keys($constraints)) . ') ';
+        $sql = ' AND (TRIM(' . $fieldName . ') ' . $operator . ' ' . implode(' OR TRIM(' . $fieldName . ') ' . $operator . ' ' , array_keys($constraints)) . ') ';
 
         $this->sql_params = array_merge($this->sql_params, $constraints);
 
