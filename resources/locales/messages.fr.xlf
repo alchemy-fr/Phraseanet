@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-21T11:42:59Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -11696,9 +11696,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Enregistrement(s) déplacé(s) dans la corbeille.</target>
         <jms:reference-file line="17">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f0192610e10d77d84a762f35a36a13e1382746da" resname="prod:app trash: record-to-delete">
+      <trans-unit id="f0192610e10d77d84a762f35a36a13e1382746da" resname="prod:app trash: record-to-delete" approved="no">
         <source>prod:app trash: record-to-delete</source>
-        <target state="new">prod:app trash: record-to-delete</target>
+        <target state="needs-translation">Enregistrement(s) définitivement supprimé(s)</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
@@ -11762,9 +11762,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Supprimer la selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date">
+      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
         <source>prod:workzone:basket:creation-date</source>
-        <target state="needs-translation">Date de création</target>
+        <target state="translated">Date de création</target>
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
@@ -13502,9 +13502,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Lundi</target>
         <jms:reference-file line="170">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
+      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText" approved="yes">
         <source>workzone:datepicker:nextText</source>
-        <target state="needs-translation">Suivant</target>
+        <target state="translated">Suivant</target>
         <jms:reference-file line="166">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
@@ -13517,9 +13517,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Octobre</target>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText">
+      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
-        <target state="needs-translation">Précédent</target>
+        <target state="translated">Précédent</target>
         <jms:reference-file line="165">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
@@ -13564,9 +13564,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
+      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update" approved="no">
         <source>workzone:feedback:update</source>
-        <target state="needs-translation">Valider</target>
+        <target state="needs-translation">Valider la nouvelle date de cloture</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
