@@ -62,6 +62,7 @@ class User_Query
     protected $include_phantoms = true;
     protected $include_special_users = false;
     protected $include_invite = false;
+    protected $emailDomains = null;
     protected $activities = null;
     protected $templates = null;
     protected $companies = null;
@@ -504,6 +505,38 @@ class User_Query
     }
 
     /**
+     * Restrict users with provided email domain
+     *
+     * @param array $req_emailDomains
+     * @return $this
+     */
+    public function haveEmailDomains(array $req_emailDomains)
+    {
+        $emailDomains = new ArrayCollection();
+
+        foreach ($req_emailDomains as $emailDomain) {
+            if (($emailDomain = trim($emailDomain)) === '') {
+                continue;
+            }
+
+            // use % for LIKE in SQL
+            $emailDomain = '%'.$emailDomain;
+
+            if ($emailDomains->contains($emailDomain)) {
+                continue;
+            }
+
+            $emailDomains->add($emailDomain);
+        }
+
+        if (!$emailDomains->isEmpty()) {
+            $this->emailDomains = $emailDomains;
+        }
+
+        return $this;
+    }
+
+    /**
      * Restrict users with provided activities
      *
      * @param array $req_activities
@@ -515,7 +548,7 @@ class User_Query
         $activities = new ArrayCollection();
 
         foreach ($req_activities as $activity) {
-            if ($activity = trim($activity) === '') {
+            if (($activity = trim($activity)) === '') {
                 continue;
             }
 
@@ -545,7 +578,7 @@ class User_Query
         $positions = new ArrayCollection();
 
         foreach ($req_positions as $position) {
-            if ($position = trim($position) === '') {
+            if (($position = trim($position)) === '') {
                 continue;
             }
             if ($positions->contains($position)) {
@@ -574,7 +607,7 @@ class User_Query
         $countries = new ArrayCollection();
 
         foreach ($req_countries as $country) {
-            if ($country = trim($country) === '') {
+            if (($country = trim($country)) === '') {
                 continue;
             }
             if ($countries->contains($country)) {
@@ -603,7 +636,7 @@ class User_Query
         $companies = new ArrayCollection();
 
         foreach ($req_companies as $company) {
-            if ($company = trim($company) === '') {
+            if (($company = trim($company)) === '') {
                 continue;
             }
             if ($companies->contains($company)) {
@@ -631,7 +664,7 @@ class User_Query
         $templates = new ArrayCollection();
 
         foreach ($req_templates as $template) {
-            if ($template = trim($template) === '') {
+            if (($template = trim($template)) === '') {
                 continue;
             }
             if ($templates->contains($template)) {
@@ -660,6 +693,33 @@ class User_Query
         $this->get_inactives = !!$boolean;
 
         return $this;
+    }
+
+    /**
+     * Get users email domain
+     *
+     * @return array
+     */
+    public function getRelatedEmailDomain()
+    {
+        $conn = $this->app->getApplicationBox()->get_connection();
+
+        $sql = 'SELECT DISTINCT SUBSTRING_INDEX(Users.email, "@", -1) as emailDomain' . $this->generate_sql_constraints(). 'ORDER BY emailDomain';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($this->sql_params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $emailDomains = [];
+        foreach ($rs as $row) {
+            if (trim($row['emailDomain']) === '') {
+                continue;
+            }
+            $emailDomains[] = $row['emailDomain'];
+        }
+
+        return $emailDomains;
     }
 
     /**
@@ -838,6 +898,10 @@ class User_Query
             $sql .= ' AND model_of IS NULL';
         }
 
+        if ($this->emailDomains) {
+            $sql .= $this->generate_field_constraints('email', $this->emailDomains, 'LIKE');
+        }
+
         if ($this->activities) {
             $sql .= $this->generate_field_constraints('activity', $this->activities);
         }
@@ -967,7 +1031,7 @@ class User_Query
         return $sql;
     }
 
-    protected function generate_field_constraints($fieldName, ArrayCollection $fields)
+    protected function generate_field_constraints($fieldName, ArrayCollection $fields, $operator = '=')
     {
         $n = 0;
         $constraints = [];
@@ -975,7 +1039,8 @@ class User_Query
         foreach ($fields as $field) {
             $constraints[':' . $fieldName . $n ++] = $field;
         }
-        $sql = ' AND (' . $fieldName . ' = ' . implode(' OR ' . $fieldName . ' = ', array_keys($constraints)) . ') ';
+
+        $sql = ' AND (' . $fieldName . ' ' . $operator . ' ' . implode(' OR ' . $fieldName . ' ' . $operator . ' ' , array_keys($constraints)) . ') ';
 
         $this->sql_params = array_merge($this->sql_params, $constraints);
 

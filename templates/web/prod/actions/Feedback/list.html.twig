@@ -185,9 +185,9 @@
                             <tr>
                                 <td>
                                     <div class="list_editor_selector_filter_holder">
-                                        <select size="5" multiple="multiple" name="Email[]" style="width:100%;">
+                                        <select size="5" multiple="multiple" name="EmailDomain[]" style="width:100%;">
                                             <option value="">{{ 'All' | trans }}</option>
-                                            {% for Email in query.getRelatedActivities() %}
+                                            {% for Email in query.getRelatedEmailDomain() %}
                                                 <option value="{{ Email }}">{{ Email }}</option>
                                             {% endfor %}
                                         </select>
