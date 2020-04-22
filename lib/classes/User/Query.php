@@ -1040,7 +1040,7 @@ class User_Query
             $constraints[':' . $fieldName . $n ++] = $field;
         }
 
-        $sql = ' AND (TRIM(' . $fieldName . ') ' . $operator . ' ' . implode(' OR TRIM(' . $fieldName . ') ' . $operator . ' ' , array_keys($constraints)) . ') ';
+        $sql = ' AND (' . $fieldName . ' ' . $operator . ' ' . implode(' OR ' . $fieldName . ' ' . $operator . ' ' , array_keys($constraints)) . ') ';
 
         $this->sql_params = array_merge($this->sql_params, $constraints);
 
