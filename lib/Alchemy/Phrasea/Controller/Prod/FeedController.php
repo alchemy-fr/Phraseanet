@@ -243,8 +243,8 @@ class FeedController extends Controller
             'texte' => '<p>' . $this->app->trans(
                     'publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.'
                 ) . '</p><p>' . $this->app->trans('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $link->getURI()
-                . '"/></div>',
+                <div class="feed_input_block"><input type="text" readonly="readonly" id="input-select-copy" class="input_select_copy" value="' . $link->getURI()
+                . '"/><button type="button" class="btn-info copy-feed" id="copy-feed">' . $this->app->trans('publications::copy') . '</button></div>',
             'titre' => $this->app->trans('publications::votre rss personnel'),
         ]);
     }
