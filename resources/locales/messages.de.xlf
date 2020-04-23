@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-21T11:42:09Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -627,7 +627,7 @@
       </trans-unit>
       <trans-unit id="c3cd636a585b20c40ac2df5ffb403e83cb2eef51" resname="Actions" approved="yes">
         <source>Actions</source>
-        <target state="translated">Handlungen</target>
+        <target state="translated">Aktionen</target>
         <jms:reference-file line="12">Bridge/Dailymotion/actioncontainers.html.twig</jms:reference-file>
         <jms:reference-file line="26">Bridge/Dailymotion/actionelements.html.twig</jms:reference-file>
         <jms:reference-file line="12">Bridge/Youtube/actioncontainers.html.twig</jms:reference-file>
@@ -776,7 +776,7 @@
       </trans-unit>
       <trans-unit id="1f9a8a4181e8f3f461180be54e1a63f70d9bce77" resname="Affichage au demarrage" approved="yes">
         <source>Affichage au demarrage</source>
-        <target state="translated">beim Start anzeigen</target>
+        <target state="translated">Beim Start anzeigen</target>
         <jms:reference-file line="838">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a810fdb68ba89818cce5c607021256e40cf14170" resname="Afficher la fiche descriptive" approved="yes">
@@ -1251,7 +1251,7 @@
       </trans-unit>
       <trans-unit id="59efd82c65f8f13a2b4445808ff71bf69cc99669" resname="Aucune notification" approved="yes">
         <source>Aucune notification</source>
-        <target state="translated">keine Benachrichtigungen</target>
+        <target state="translated">Keine Benachrichtigungen</target>
         <jms:reference-file line="5">web/prod/notifications.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d942f0f54264545f06664749182db5f08b9aa5c" resname="Aucune publication effectuee, verifiez vos parametres" approved="yes">
@@ -1911,7 +1911,7 @@
       </trans-unit>
       <trans-unit id="37c3584d7b7d64dcff10d75caf719d4908e1f433" resname="Confirm new email address" approved="yes">
         <source>Confirm new email address</source>
-        <target state="translated">neue E-Mail Adresse bestätigen</target>
+        <target state="translated">Neue E-Mail Adresse bestätigen</target>
         <jms:reference-file line="37">Notification/Mail/MailRequestEmailUpdate.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="15f217a259ee031d3ee19967da004804bb726307" resname="Confirm reset users rights before applying template" approved="yes">
@@ -3303,7 +3303,7 @@
       </trans-unit>
       <trans-unit id="246a65679a39e030c98cad396903b0a3d8874dbc" resname="Fils disponibles" approved="yes">
         <source>Fils disponibles</source>
-        <target state="translated">verfügbare Threads</target>
+        <target state="translated">Verfügbare Threads</target>
         <jms:reference-file line="41">actions/publish/publish_edit.html.twig</jms:reference-file>
         <jms:reference-file line="56">actions/publish/publish.html.twig</jms:reference-file>
       </trans-unit>
@@ -6411,13 +6411,13 @@
       </trans-unit>
       <trans-unit id="8017bd7de9961cf42f59abc587d0495a9d25c2a9" resname="Substitute" approved="yes">
         <source>Substitute</source>
-        <target state="translated">Ersatz</target>
+        <target state="translated">Ersetzung</target>
         <jms:reference-file line="521">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="522">prod/upload/lazaret.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d48a1d66362cef46e567ddf521b0dc3233f57a2" resname="Substitution is not possible for this kind of record" approved="yes">
         <source>Substitution is not possible for this kind of record</source>
-        <target state="translated">Für diesen Typ von Aufnahme ist der Ersatz nicht verfügbar</target>
+        <target state="translated">Für diesen Typ von Aufnahme ist die Ersetzung nicht verfügbar</target>
         <jms:reference-file line="129">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="42a8f651d79fd005eeac0612df6442b983a01184" resname="Success" approved="yes">
@@ -8090,7 +8090,7 @@
       </trans-unit>
       <trans-unit id="b88ca5fbb2e89cb79b08c981283383361be312bf" resname="action:: nouveau panier" approved="yes">
         <source>action:: nouveau panier</source>
-        <target state="translated">Neuer</target>
+        <target state="translated">Neuer Sammelkorb</target>
         <jms:reference-file line="261">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="263">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="264">web/prod/index.html.twig</jms:reference-file>
@@ -8154,7 +8154,7 @@
       </trans-unit>
       <trans-unit id="26486e6d7e272de63a46c52bb7deea3dcd3b55b5" resname="admin:: demandes en cours" approved="yes">
         <source>admin:: demandes en cours</source>
-        <target state="translated">schwebende Anfragen</target>
+        <target state="translated">Schwebende Anfragen</target>
         <jms:reference-file line="165">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="699cae8f12dde41f524413447e65e9885629364e" resname="admin:: donner les droits de telechargement et consultation de previews" approved="yes">
@@ -8207,7 +8207,7 @@
       </trans-unit>
       <trans-unit id="b39ede86f95981b705988b6ef317d6b839c6f028" resname="admin::base: Confirmer la suppression de tous les logs" approved="yes">
         <source>admin::base: Confirmer la suppression de tous les logs</source>
-        <target state="translated">das Löschen aller Logdateien bestätigen?</target>
+        <target state="translated">Das Löschen aller Logdateien bestätigen?</target>
         <jms:reference-file line="112">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc8f5f0036ab8f82e353e0bd34009e568c5f5063" resname="admin::base: Confirmer le vidage complet de la base" approved="yes">
@@ -9152,7 +9152,7 @@
       </trans-unit>
       <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket" approved="yes">
         <source>basket:action:delete record form basket</source>
-        <target state="translated">Vom Sammelkorb entfernen</target>
+        <target state="translated">Datensatz vom Sammelkorb entfernen</target>
         <jms:reference-file line="17">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="16">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
@@ -10079,7 +10079,7 @@
       </trans-unit>
       <trans-unit id="6f4d2da6c513e72ef9e2daec0b695116a26e7912" resname="index::advance_search: order-by-hits-asc" approved="yes">
         <source>index::advance_search: order-by-hits-asc</source>
-        <target state="translated">Nach Vorkommen asc</target>
+        <target state="translated">nach Vorkommen asc</target>
         <jms:reference-file line="231">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
@@ -10519,7 +10519,7 @@
       </trans-unit>
       <trans-unit id="601c137b1b6a6ba7f4c22d3ececbf9ff0c7d5cb4" resname="order-manager::order-item: validate" approved="yes">
         <source>order-manager::order-item: validate</source>
-        <target state="translated">bestätigen</target>
+        <target state="translated">Bestätigen</target>
         <jms:reference-file line="107">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e77f2b48e4de1e7776765dacd6b6c49434f57fdd" resname="order-manager::order-item: warning-message-close" approved="yes">
@@ -11139,7 +11139,7 @@
       </trans-unit>
       <trans-unit id="ff0e060fc8c926aac165a1183aa9678a8a5b5231" resname="phraseanet::utilisateur inconnu" approved="yes">
         <source>phraseanet::utilisateur inconnu</source>
-        <target state="translated">unbekannter Benutzer</target>
+        <target state="translated">Unbekannter Benutzer</target>
         <jms:reference-file line="469">module/report/nav.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c91a7e5b6589bd66863ef47c08c3abedff310f12" resname="phraseanet::utilisateurs" approved="yes">
@@ -11403,7 +11403,7 @@
       </trans-unit>
       <trans-unit id="063431f63e0c593c52fffb55f390d1d9c216ee4a" resname="prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes" approved="yes">
         <source>prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes</source>
-        <target state="translated">Es ist nicht möglich, Dokumente die aus verschiedenen Bilddatenbanken stammen gleichzeitig zu bearbeiten</target>
+        <target state="translated">Unmöglich, Dokumente die aus verschiedenen Bilddatenbanken stammen gleichzeitig zu bearbeiten</target>
         <jms:reference-file line="412">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude" approved="yes">
@@ -11444,7 +11444,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="d06429358cfa7814d995cffec515505b4babbdf3" resname="prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants" approved="yes">
         <source>prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants</source>
-        <target state="translated">Es können keine Dokumente bearbeitet werden, da Sie keine Berechtigung für das Bearbeiten haben</target>
+        <target state="translated">Keine Dokumente können bearbeitet werden, da Sie keine Berechtigung für das Bearbeiten haben</target>
         <jms:reference-file line="414">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93a5e45cf78591b66011a369a41a9faae6439da0" resname="prod::editing: modeles de fiches" approved="yes">
@@ -11454,7 +11454,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="43cef7ae638274317ae80eeb9d2207fbd8c60889" resname="prod::editing: rechercher-remplacer" approved="yes">
         <source>prod::editing: rechercher-remplacer</source>
-        <target state="translated">suchen / ersetzen</target>
+        <target state="translated">Suchen / Ersetzen</target>
         <jms:reference-file line="266">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a368232d8ba90d4b168be2a328b32b2889a909c" resname="prod::editing: valider ou annuler les modifications" approved="yes">
@@ -11519,7 +11519,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="27a3b22c9b8b1abb910147d1d3a556d038f0ab50" resname="prod::editing:remplace::option: remplacer toutes les occurences" approved="yes">
         <source>prod::editing:remplace::option: remplacer toutes les occurences</source>
-        <target state="translated">alles ersetzen</target>
+        <target state="translated">Alles ersetzen</target>
         <jms:reference-file line="329">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a77e26d6710709aca37c36887252c53bc238ec43" resname="prod::editing:remplace::option: rester insensible a la casse" approved="yes">
@@ -11564,7 +11564,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
         <source>prod::thesaurusTab:candidats</source>
-        <target state="translated">mögliche Begriffe</target>
+        <target state="translated">Mögliche Begriffe</target>
         <jms:reference-file line="7">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af6ac0ffd98331207767dd35226bb76465d88be4" resname="prod::thesaurusTab:cmenu:Accepter en %lng_code%" approved="yes">
@@ -11609,7 +11609,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e830416a4a3e31b8a9f7eeac671ac325acb40e51" resname="prod::thesaurusTab:dlg:accepter les %d termes candidats ?" approved="yes">
         <source>prod::thesaurusTab:dlg:accepter les %d termes candidats ?</source>
-        <target state="translated">die %d möglichen Begriffe annehmen?</target>
+        <target state="translated">Die %d mögliche Begriffe annehmen?</target>
         <jms:reference-file line="118">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fa2b96e09fe8242666ac7e18100258a05026f64" resname="prod::thesaurusTab:dlg:remplacer le terme &quot;%s&quot; des fiches par :" approved="yes">
@@ -11659,7 +11659,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="4bb65f5a0911b26f79b6a82857c349f2ea637363" resname="prod::thesaurusTab:wizard:accepter le terme candidat" approved="yes">
         <source>prod::thesaurusTab:wizard:accepter le terme candidat</source>
-        <target state="translated">mögliche Begriffe annehmen</target>
+        <target state="translated">Mögliche Begriffe annehmen</target>
         <jms:reference-file line="16">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3806a60cb1ce106090ffcafcf629703164dd7a70" resname="prod::thesaurusTab:wizard:clic-droit / accepter le terme candidat &quot;%s&quot;" approved="yes">
@@ -11824,7 +11824,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="bc8cb61c550777cb4f094762ef7744693875ce09" resname="publications:: s'abonner aux publications" approved="yes">
         <source>publications:: s'abonner aux publications</source>
-        <target state="translated">anmelden</target>
+        <target state="translated">Anmelden</target>
         <jms:reference-file line="14">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="25">prod/results/feeds.html.twig</jms:reference-file>
       </trans-unit>
@@ -11886,12 +11886,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="c8c491587b0dfb9bab18afb7694a0bb14665e7de" resname="registration:collection.accepted" approved="yes">
         <source>registration:collection.accepted</source>
-        <target state="translated">genehmigt</target>
+        <target state="translated">Genehmigt</target>
         <jms:reference-file line="64">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8feaff2c61f3573c1aaaaa16de3df1ef8758f28f" resname="registration:collection.active" approved="yes">
         <source>registration:collection.active</source>
-        <target state="translated">aktiv</target>
+        <target state="translated">Aktiv</target>
         <jms:reference-file line="52">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9a5d8160431e85e0ecbe21dfcb2017543a8f7268" resname="registration:collection.in-time" approved="yes">
@@ -11916,7 +11916,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="7abb365333a7902838022d4bfc560f41323abb7c" resname="registration:collection.rejected" approved="yes">
         <source>registration:collection.rejected</source>
-        <target state="translated">abgelehnt</target>
+        <target state="translated">Abgelehnt</target>
         <jms:reference-file line="62">web/account/access.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="796a49ee2759063c6ffcb69cb54bc55b92020af5" resname="reponses:: %total% Resultats" approved="yes">
@@ -11953,12 +11953,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="4e25e3a99801b881f73fe940cac50b0fc636d6cf" resname="reponses:: selectionner rien" approved="yes">
         <source>reponses:: selectionner rien</source>
-        <target state="translated">nichts</target>
+        <target state="translated">Nichts</target>
         <jms:reference-file line="16">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e06a87c6d0f847e45da546c4ad76a897be11470a" resname="reponses:: selectionner tout" approved="yes">
         <source>reponses:: selectionner tout</source>
-        <target state="translated">alles</target>
+        <target state="translated">Alles</target>
         <jms:reference-file line="10">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d3b5a64da3a08e4a63a641fb4164844ecdb67a2f" resname="reponses:: taille des images :" approved="yes">
@@ -12219,7 +12219,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="8fb18670b89f5cefede425401428a70189f654ea" resname="report:: record id" approved="yes">
         <source>report:: record id</source>
-        <target state="translated">record id</target>
+        <target state="translated">Record id</target>
         <jms:reference-file line="678">classes/module/report.php</jms:reference-file>
         <jms:reference-file line="90">module/report/filter.php</jms:reference-file>
       </trans-unit>
@@ -12348,7 +12348,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="006fe40054b1e40e52a475778d2cca84f3af7fa9" resname="report::Substitution de %dest%" approved="yes">
         <source>report::Substitution de %dest%</source>
-        <target state="translated">Ersatz von %dest%</target>
+        <target state="translated">Ersetzung von %dest%</target>
         <jms:reference-file line="35">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e3c2cc9fb78410122698502aa869b0ba63db2e73" resname="report::Telechargement de %dest%" approved="yes">
@@ -12475,7 +12475,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="ee4685c501c77bb71f2b651b39fef5d4494c5d74" resname="setup:: ajouter un administrateur des commandes" approved="yes">
         <source>setup:: ajouter un administrateur des commandes</source>
-        <target state="translated">einen Manager für die Bestellungen hinzufügen</target>
+        <target state="translated">Einen Manager für die Bestellungen hinzufügen</target>
         <jms:reference-file line="56">admin/collection/collection.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9b5fafc42f6e089ae9b42825287781dffcafcdd" resname="setup::Configuration de la base de compte ApplicationBox" approved="yes">
@@ -12571,7 +12571,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="98693e37d002821e032bfc91ffc5091c3b6d76da" resname="status:: Affichable pour tous" approved="yes">
         <source>status:: Affichable pour tous</source>
-        <target state="translated">angezeigte Bildzeichen</target>
+        <target state="translated">Angezeigte Bildzeichen</target>
         <jms:reference-file line="14">web/admin/statusbit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e2210c801d53da4ec7097bdc6830b097eac42a1" resname="status:: Afficher le status dans les feuilles de reponses pour tous les utilisateurs" approved="yes">
@@ -12607,7 +12607,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="a6288710b74b759d2d67d9e644b586815610f65b" resname="substitution" approved="yes">
         <source>substitution</source>
-        <target state="translated">Ersatz</target>
+        <target state="translated">Ersetzung</target>
         <jms:reference-file line="40">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8ed24aec401c37911187702f5b0ec840b51a203f" resname="substitution HD" approved="yes">
@@ -12637,7 +12637,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="b94199880758a342c5de52be020699d9b789a7a2" resname="task::archive:Archiving files found into a 'hotfolder'" approved="yes">
         <source>task::archive:Archiving files found into a 'hotfolder'</source>
-        <target state="translated">gefundenen Dateien nach einem Hotfolder archivieren</target>
+        <target state="translated">Gefundenen Dateien nach einem Hotfolder archivieren</target>
         <jms:reference-file line="58">TaskManager/Job/ArchiveJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="af67e20e5e01d46ece2e0eb262b1b0bb9df679d4" resname="task::archive:archivage sur base/collection/" approved="yes">
@@ -12645,7 +12645,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Archivierung zur Datenbank/Kollektion</target>
         <jms:reference-file line="5">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived">
+      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived" approved="no">
         <source>task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived</source>
         <target state="needs-translation">Copy '.phrasea.xml' and 'groupin.xml' files to _archive</target>
         <jms:reference-file line="50">task-manager/task-editor/archive.html.twig</jms:reference-file>
@@ -12657,12 +12657,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="b780c114be3ad9e4f9dc3f9c78e18bb3ec4f0ecc" resname="task::archive:deplacer les fichiers archives dans _archived" approved="yes">
         <source>task::archive:deplacer les fichiers archives dans _archived</source>
-        <target state="translated">die archivierten Dateien nach _archived verschieben</target>
+        <target state="translated">Die archivierten Dateien nach _archived verschieben</target>
         <jms:reference-file line="34">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="213fb10d0c64107d76021b9a89f733839bd6d1e8" resname="task::archive:deplacer les fichiers non-archives dans _error" approved="yes">
         <source>task::archive:deplacer les fichiers non-archives dans _error</source>
-        <target state="translated">die unarchivierte Dateien nach_error verschieben</target>
+        <target state="translated">Die unarchivierte Dateien nach_error verschieben</target>
         <jms:reference-file line="42">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6aac8f351d2835d6a21e4fd8774a93812c32c5ca" resname="task::archive:supprimer les repertoires apres archivage" approved="yes">
@@ -12856,13 +12856,13 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="9d5da9a8f62b8053385235889e7d7994ebfc1559" resname="thesaurus:: Lier la branche de thesaurus" approved="yes">
         <source>thesaurus:: Lier la branche de thesaurus</source>
-        <target state="translated">die Verzweigung verbinden?</target>
+        <target state="translated">Die Verzweigung verbinden?</target>
         <jms:reference-file line="5">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
         <jms:reference-file line="5">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="416134a1966f12f8d23f9f54f3cc32ea43ef3e46" resname="thesaurus:: Lier la branche de thesaurus au champ" approved="yes">
         <source>thesaurus:: Lier la branche de thesaurus au champ</source>
-        <target state="translated">die Verzweigung mit dem Feld %s verbinden</target>
+        <target state="translated">Die Verzweigung mit dem Feld %s verbinden</target>
         <jms:reference-file line="5">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="213a599ea75e45b7e28a260a71b032b3e3601e2b" resname="thesaurus:: Lier la branche de thesaurus au champ %branch%" approved="yes">
@@ -12893,7 +12893,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
         <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
-        <target state="translated"><![CDATA[diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
+        <target state="translated">Diese Verzweigung löschen?&amp;#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)</target>
         <jms:reference-file line="482">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="660310a4372167fced06ac64d118d8019c456c02" resname="thesaurus:: Vous n'avez acces a aucune base" approved="yes">
@@ -12903,12 +12903,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="f56e32a67c0a47d74d3441e499bfe64858ffee36" resname="thesaurus:: accepter..." approved="yes">
         <source>thesaurus:: accepter...</source>
-        <target state="translated">annehmen</target>
+        <target state="translated">Annehmen</target>
         <jms:reference-file line="10">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c56e1002fd59b3fed0108426b7926f3252d9fc8d" resname="thesaurus:: afficher les termes refuses" approved="yes">
         <source>thesaurus:: afficher les termes refuses</source>
-        <target state="translated">abgelehnte Begriffe anzeigen</target>
+        <target state="translated">Abgelehnte Begriffe anzeigen</target>
         <jms:reference-file line="227">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39efb34364d199cf2dac5051e15c13e771fda1dc" resname="thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire" approved="yes">
@@ -12996,7 +12996,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="8f5f4fc934457322bd3cbffd1c82d571de9576d3" resname="thesaurus:: export : inclure la langue" approved="yes">
         <source>thesaurus:: export : inclure la langue</source>
-        <target state="translated">die Sprache beinhalten</target>
+        <target state="translated">Die Sprache beinhalten</target>
         <jms:reference-file line="98">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="259db39cb35d75bdd74fbd689c874b0b0892ac75" resname="thesaurus:: export : inclure les hits" approved="yes">
@@ -13069,7 +13069,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="c0f2a335de197ca806136680f016f57191f504e9" resname="thesaurus:: langue par default" approved="yes">
         <source>thesaurus:: langue par default</source>
-        <target state="translated">standardmässige Sprache</target>
+        <target state="translated">Standardmässige Sprache</target>
         <jms:reference-file line="53">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61b9fc26988ba3def78071418405745142e73db3" resname="thesaurus:: langue pivot" approved="yes">
@@ -13109,7 +13109,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="d53416d3345671c4f16e2812f8190f3ae6fa0d84" resname="thesaurus:: onglet stock" approved="yes">
         <source>thesaurus:: onglet stock</source>
-        <target state="translated">mögliche Begriffe</target>
+        <target state="translated">Mögliche Begriffe</target>
         <jms:reference-file line="224">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7b971e23c9ea5fc4863eea9a4f21f0f1f2daf3f8" resname="thesaurus:: onglet thesaurus" approved="yes">
@@ -13134,17 +13134,17 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="7a0e6f1364cdb055e9ea839d879acfd42680d57c" resname="thesaurus:: presentation : branche ouvertes" approved="yes">
         <source>thesaurus:: presentation : branche ouvertes</source>
-        <target state="translated">aktuelle Ansicht wiedergeben (geöffnete Verzweigungen)</target>
+        <target state="translated">Aktuelle Ansicht wiedergeben (geöffnete Verzweigungen)</target>
         <jms:reference-file line="121">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd08d37b9aefbf359f511f9f434c5f845635dc2c" resname="thesaurus:: presentation : branches refermables" approved="yes">
         <source>thesaurus:: presentation : branches refermables</source>
-        <target state="translated">aktuelle Ansicht wiedergeben (verschliessene Verzweigungen)</target>
+        <target state="translated">Aktuelle Ansicht wiedergeben (verschliessene Verzweigungen)</target>
         <jms:reference-file line="117">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ed1fff4d3bb9bb01bbcf6ac307f68d8ca485fe9a" resname="thesaurus:: question complete (avec operateurs)" approved="yes">
         <source>thesaurus:: question complete (avec operateurs)</source>
-        <target state="translated">vollständige Anfrage (mit Operators)</target>
+        <target state="translated">Vollständige Anfrage (mit Operators)</target>
         <jms:reference-file line="107">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="404c720977408cd5e650436f06bf33db8cd87639" resname="thesaurus:: recherche" approved="yes">
@@ -13154,7 +13154,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="35293d9ea116b255182832cb96026b58819e48fb" resname="thesaurus:: recherche fulltext" approved="yes">
         <source>thesaurus:: recherche fulltext</source>
-        <target state="translated">volltext Suche</target>
+        <target state="translated">Volltext Suche</target>
         <jms:reference-file line="103">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2e18dc86801eb9d226012069865ed2f230ab868" resname="thesaurus:: recherche thesaurus *:&quot;query&quot;" approved="yes">
@@ -13164,18 +13164,18 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="d337dbb54de979f01957eae496c562e68b93ffec" resname="thesaurus:: refresh" approved="yes">
         <source>thesaurus:: refresh</source>
-        <target state="translated">aktualiseren</target>
+        <target state="translated">Aktualiseren</target>
         <jms:reference-file line="110">web/thesaurus/accept.html.twig</jms:reference-file>
         <jms:reference-file line="126">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19d28a781effbaec13d1cea0845487040a60ca68" resname="thesaurus:: reindexation necessaire" approved="yes">
         <source>thesaurus:: reindexation necessaire</source>
-        <target state="translated">wieder Indexierung erforderlich</target>
+        <target state="translated">Wieder Indexierung erforderlich</target>
         <jms:reference-file line="67">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="218a38b10b72d4941b78d9e203291b527be694a8" resname="thesaurus:: reindexer la base apres l'import" approved="yes">
         <source>thesaurus:: reindexer la base apres l'import</source>
-        <target state="translated">nach dem Import wieder indexieren</target>
+        <target state="translated">Nach dem Import wieder indexieren</target>
         <jms:reference-file line="66">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="448e11d3ba58d99d687819dbd6ea186a7a9417d0" resname="thesaurus:: reindexer tous les enregistrements" approved="yes">
@@ -13183,14 +13183,14 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Alle Datensätze wieder indexieren</target>
         <jms:reference-file line="40">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt" approved="yes">
+      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt" approved="no">
         <source>thesaurus:: removed tgt</source>
-        <target state="translated">removed tgt</target>
+        <target state="needs-translation">removed tgt</target>
         <jms:reference-file line="123">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src" approved="yes">
+      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src" approved="no">
         <source>thesaurus:: removed_src</source>
-        <target state="translated">removed_src</target>
+        <target state="needs-translation">removed_src</target>
         <jms:reference-file line="107">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19a2b92ea9f5680b4d5ab69a91984da8301b66e2" resname="thesaurus:: selectionner la provenance a accepter" approved="yes">
@@ -13261,12 +13261,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="f229bdc38061f3fb7bd440bfd56e7a44be503cbf" resname="thesaurus::menu: accepter" approved="yes">
         <source>thesaurus::menu: accepter</source>
-        <target state="translated">annehmen</target>
+        <target state="translated">Annehmen</target>
         <jms:reference-file line="169">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6fb183be173d3c7f6e3008cb8280874290495fb" resname="thesaurus::menu: chercher" approved="yes">
         <source>thesaurus::menu: chercher</source>
-        <target state="translated">suchen</target>
+        <target state="translated">Suchen</target>
         <jms:reference-file line="173">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="187">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -13288,7 +13288,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="19e0827510c523dde831ead0be8821879f852393" resname="thesaurus::menu: lier au champ" approved="yes">
         <source>thesaurus::menu: lier au champ</source>
-        <target state="translated">mit dem Feld verbinden</target>
+        <target state="translated">Mit dem Feld verbinden</target>
         <jms:reference-file line="191">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b51f9cf78b6c0c37e6bfd32098b0b8f746c671e8" resname="thesaurus::menu: proprietes" approved="yes">
@@ -13299,7 +13299,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="a5e4267f7bcec79dc51abe46abe2b8b8acfa6595" resname="thesaurus::menu: refuser" approved="yes">
         <source>thesaurus::menu: refuser</source>
-        <target state="translated">ablehnen</target>
+        <target state="translated">Ablehnen</target>
         <jms:reference-file line="168">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d27cf73e79f4934ea12d54690ce62d72d142db48" resname="thesaurus::menu: supprimer" approved="yes">
@@ -13370,7 +13370,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="yes">
         <source>validate</source>
-        <target state="translated">bestätigen</target>
+        <target state="translated">Bestätigen</target>
         <jms:reference-file line="145">actions/Tools/videoEditor.html.twig</jms:reference-file>
         <jms:reference-file line="88">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="116">actions/Tools/index.html.twig</jms:reference-file>
@@ -13391,7 +13391,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="724c4836afe058eefd1dbc9c19d0f813f9ad0d31" resname="validation:: editer ma note" approved="yes">
         <source>validation:: editer ma note</source>
-        <target state="translated">mein Kommentar verändern</target>
+        <target state="translated">Mein Kommentar verändern</target>
         <jms:reference-file line="82">mobile/lightbox/basket_element.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8deb6b7dccd9c71fb22c18e3c53dcf609494cfb4" resname="validation:: note" approved="yes">
