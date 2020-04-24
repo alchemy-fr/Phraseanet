@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-23T16:18:47Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -11843,9 +11843,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy" approved="yes">
         <source>publications::copy</source>
-        <target state="new">publications::copy</target>
+        <target state="translated">Copier l'url</target>
         <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">

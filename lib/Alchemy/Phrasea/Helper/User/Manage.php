@@ -144,7 +144,7 @@ class Manage extends Helper
 
     public function createNewUser()
     {
-        $email = $this->request->get('value');
+        $email = trim($this->request->get('value'));
 
         if ( ! \Swift_Validate::email($email)) {
             throw new \Exception_InvalidArgument('Invalid mail address');

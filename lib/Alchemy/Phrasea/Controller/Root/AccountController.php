@@ -88,8 +88,8 @@ class AccountController extends Controller
     public function resetEmail(Request $request)
     {
         if (null === ($password = $request->request->get('form_password'))
-            || null === ($email = $request->request->get('form_email'))
-            || null === ($emailConfirm = $request->request->get('form_email_confirm'))
+            || null === ($email = trim($request->request->get('form_email')))
+            || null === ($emailConfirm = trim($request->request->get('form_email_confirm')))
         ) {
             throw new BadRequestHttpException($this->app->trans('Could not perform request, please contact an administrator.'));
         }

@@ -232,6 +232,7 @@ class LoginController extends Controller
                     $registrationService = $this->getRegistrationService();
                     $providerId = isset($data['provider-id']) ? $data['provider-id'] : null;
                     $selectedCollections = isset($data['collections']) ? $data['collections'] : null;
+                    $data['email'] = trim($data['email']);
 
                     $user = $registrationService->registerUser($data, $selectedCollections, $providerId);
 
