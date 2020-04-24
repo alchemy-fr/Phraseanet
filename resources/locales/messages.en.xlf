@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-04-21T11:42:33Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-04-23T16:18:15Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -6698,7 +6698,7 @@
       <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!" approved="yes">
         <source>The provided date is null!</source>
         <target state="translated">The provided date is null!</target>
-        <jms:reference-file line="610">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="614">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d22c09c164965d42fcdb8d8fe2b40d7d57799a8f" resname="The publication has been stopped" approved="yes">
         <source>The publication has been stopped</source>
@@ -7064,7 +7064,7 @@
       <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date" approved="yes">
         <source>Unable to save the expiration date</source>
         <target state="translated">Unable to save the expiration date</target>
-        <jms:reference-file line="607">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="611">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
         <source>Unable to send the documents</source>
@@ -11839,6 +11839,11 @@ It is possible to place several search areas</target>
         <target state="translated">Don't share it, it's yours only</target>
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+        <source>publications::copy</source>
+        <target state="new">publications::copy</target>
+        <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
         <source>publications::votre rss personnel</source>
