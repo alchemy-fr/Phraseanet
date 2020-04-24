@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-04-21T11:42:09Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-04-23T16:17:48Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -6695,7 +6695,7 @@
       <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!" approved="yes">
         <source>The provided date is null!</source>
         <target state="translated">Angegebenes Datum ist NULL!</target>
-        <jms:reference-file line="610">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="614">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d22c09c164965d42fcdb8d8fe2b40d7d57799a8f" resname="The publication has been stopped" approved="yes">
         <source>The publication has been stopped</source>
@@ -7061,7 +7061,7 @@
       <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date" approved="yes">
         <source>Unable to save the expiration date</source>
         <target state="translated">Unmöglich, Ablaufsdatum zu speichern</target>
-        <jms:reference-file line="607">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="611">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
         <source>Unable to send the documents</source>
@@ -11834,6 +11834,11 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+        <source>publications::copy</source>
+        <target state="new">publications::copy</target>
+        <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
         <source>publications::votre rss personnel</source>
         <target state="translated">Ihr eigenes RSS</target>
@@ -12645,7 +12650,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Archivierung zur Datenbank/Kollektion</target>
         <jms:reference-file line="5">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived" approved="no">
+      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived">
         <source>task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived</source>
         <target state="needs-translation">Copy '.phrasea.xml' and 'groupin.xml' files to _archive</target>
         <jms:reference-file line="50">task-manager/task-editor/archive.html.twig</jms:reference-file>
@@ -12893,7 +12898,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
         <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
-        <target state="translated">Diese Verzweigung löschen?&amp;#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)</target>
+        <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="482">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="660310a4372167fced06ac64d118d8019c456c02" resname="thesaurus:: Vous n'avez acces a aucune base" approved="yes">
@@ -13183,12 +13188,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Alle Datensätze wieder indexieren</target>
         <jms:reference-file line="40">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt" approved="no">
+      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt">
         <source>thesaurus:: removed tgt</source>
         <target state="needs-translation">removed tgt</target>
         <jms:reference-file line="123">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src" approved="no">
+      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src">
         <source>thesaurus:: removed_src</source>
         <target state="needs-translation">removed_src</target>
         <jms:reference-file line="107">web/thesaurus/accept.html.twig</jms:reference-file>
