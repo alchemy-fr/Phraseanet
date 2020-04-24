@@ -1,0 +1,9 @@
+filebeat:
+  inputs:
+    - type: log
+      enabled: true
+      paths:
+      - /var/alchemy/Phraseanet/logs/task_*.log
+      - /var/alchemy/Phraseanet/logs/worker_service*.log
+output.logstash:
+  hosts: ["logstash:5044"]
