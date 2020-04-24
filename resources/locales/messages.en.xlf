@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-04-23T16:18:15Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -11696,9 +11696,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">move record to trash</target>
         <jms:reference-file line="17">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f0192610e10d77d84a762f35a36a13e1382746da" resname="prod:app trash: record-to-delete">
+      <trans-unit id="f0192610e10d77d84a762f35a36a13e1382746da" resname="prod:app trash: record-to-delete" approved="yes">
         <source>prod:app trash: record-to-delete</source>
-        <target state="new">prod:app trash: record-to-delete</target>
+        <target state="translated">record(s) permanently deleted</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash">
