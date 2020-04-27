@@ -657,5 +657,15 @@ hr {
     border-radius: 0;
   }
 }
+.btn-info {
+  background: #8bc34a;
+  &:hover, &:focus {
+    background: darken(#8bc34a, 10%);
+  }
+
+}
+a.btn-info {
+  color: #ffffff;
+}
 
 /** End Lightbox summary modal**/
