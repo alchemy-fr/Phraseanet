@@ -206,15 +206,15 @@ class BasketRepository extends EntityRepository
 
     public function findContainingRecordForUser(\record_adapter $record, User $user)
     {
-        // todo : check "e.sbas_id = e.sbas_id" ???
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             JOIN b.elements e
-            WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
+            WHERE e.record_id = :record_id AND e.sbas_id = :databox_id
               AND b.user = :usr_id';
 
         $params = [
             'record_id' => $record->getRecordId(),
+            'databox_id'=> $record->getDataboxId(),
             'usr_id'    => $user->getId()
         ];
 
