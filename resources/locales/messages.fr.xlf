@@ -1450,7 +1450,7 @@
       </trans-unit>
       <trans-unit id="020b418324a35a577ecc08e5f7dff1f58dcf7585" resname="Basket" approved="yes">
         <source>Basket</source>
-        <target state="translated">Basket</target>
+        <target state="translated">Panier</target>
         <jms:reference-file line="13">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d2d90e7ff1dfbf3b3fc83a0f5b30add947f86c96" resname="Basket created" approved="yes">
