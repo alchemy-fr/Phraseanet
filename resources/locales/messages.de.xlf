@@ -9050,7 +9050,7 @@
       </trans-unit>
       <trans-unit id="136a12280c8d3c058d4e4a49375393bf64772a08" resname="boutton::creer" approved="yes">
         <source>boutton::creer</source>
-        <target state="translated">suchen</target>
+        <target state="translated">Erstellen</target>
         <jms:reference-file line="50">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="92">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
@@ -11148,7 +11148,7 @@
       </trans-unit>
       <trans-unit id="f2dbeebb5642463cc9d946ac5fef8b54e3ef9c8d" resname="prod::editing:remplace: chaine remplacante" approved="yes">
         <source>prod::editing:remplace: chaine remplacante</source>
-        <target state="translated">ersetzen durch</target>
+        <target state="translated">Ersetzen durch</target>
         <jms:reference-file line="301">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2d8fd9918eb060abef1aff6634ede1135c2f898a" resname="prod::editing:remplace: options de remplacement" approved="yes">
