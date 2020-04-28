@@ -684,7 +684,7 @@
       </trans-unit>
       <trans-unit id="c4e29ed18c13ce03d9ae30560dfc80bf47c0c86c" resname="Add a list" approved="yes">
         <source>Add a list</source>
-        <target state="translated">Fügen Sie eine Liste hinzu</target>
+        <target state="translated">Neue Liste</target>
         <jms:reference-file line="8">actions/Feedback/lists-all.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5bc397abf190599d339e7a0543f2ba2a6dbc8e38" resname="Add a new field" approved="yes">
@@ -9245,7 +9245,7 @@
       </trans-unit>
       <trans-unit id="136a12280c8d3c058d4e4a49375393bf64772a08" resname="boutton::creer" approved="yes">
         <source>boutton::creer</source>
-        <target state="translated">suchen</target>
+        <target state="translated">Erstellen</target>
         <jms:reference-file line="50">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="92">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
@@ -11489,7 +11489,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="f2dbeebb5642463cc9d946ac5fef8b54e3ef9c8d" resname="prod::editing:remplace: chaine remplacante" approved="yes">
         <source>prod::editing:remplace: chaine remplacante</source>
-        <target state="translated">ersetzen durch</target>
+        <target state="translated">Ersetzen durch</target>
         <jms:reference-file line="304">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2d8fd9918eb060abef1aff6634ede1135c2f898a" resname="prod::editing:remplace: options de remplacement" approved="yes">
@@ -11715,7 +11715,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e3f9c15df842b1cafaa7a08b3b2d3b1ff1173559" resname="prod:edit: only a media of type video can be edited" approved="yes">
         <source>prod:edit: only a media of type video can be edited</source>
-        <target state="translated">Nur eine Video kann bearbeitet sein</target>
+        <target state="translated">Nur eine Video kann bearbeitet werden</target>
         <jms:reference-file line="150">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d2e761bd6f1cd95c2ea787f5eb206f6457c20d4b" resname="prod:edit: suggested_values" approved="yes">
@@ -11745,7 +11745,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="6ce4044e1fce74fb5f716f7d67f3a538f4d12d26" resname="prod:push: create new user" approved="yes">
         <source>prod:push: create new user</source>
-        <target state="translated">Einen neuen Benutzer erstellen</target>
+        <target state="translated">Neuer Benutzer</target>
         <jms:reference-file line="157">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a938566e7b60b6fc2e197259cf2f2b2f42656d17" resname="prod:push: delete selection" approved="yes">
@@ -11834,9 +11834,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy" approved="yes">
         <source>publications::copy</source>
-        <target state="new">publications::copy</target>
+        <target state="translated">URL kopieren</target>
         <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
