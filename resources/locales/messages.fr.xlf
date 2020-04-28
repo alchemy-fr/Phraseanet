@@ -4099,7 +4099,7 @@
       </trans-unit>
       <trans-unit id="3edfadcb908b635854afe7332087309fcd436f22" resname="Limite temporelle" approved="yes">
         <source>Limite temporelle</source>
-        <target state="translated">Liste temporelle</target>
+        <target state="translated">Limite temporelle</target>
         <jms:reference-file line="1">web/admin/editusers_timelimit_sbas.html.twig</jms:reference-file>
         <jms:reference-file line="1">web/admin/editusers_timelimit.html.twig</jms:reference-file>
       </trans-unit>
