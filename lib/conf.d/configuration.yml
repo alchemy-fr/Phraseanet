@@ -47,7 +47,7 @@ main:
                 _doctype:
                     limit: 10
                 _camera_model:
-                    limit: 0
+                    limit: 10
                 _iso:
                     limit: 0
                 _aperture:
@@ -243,7 +243,7 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        cover_subdef: thumbnail
+        cover_subdef: videoposter
         message_start: StartOfMessage
         available_speeds:
             - 1

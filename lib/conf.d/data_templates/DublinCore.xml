@@ -8,7 +8,7 @@
                 <size>1024</size>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <strip>no</strip>
+                <strip>yes</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
                 <devices>screen</devices>
@@ -90,7 +90,7 @@
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
-            <subdef class="preview" name="postervideo" downloadable="true">
+            <subdef class="preview" name="poster" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <meta>1</meta>
                 <size>1280</size>
@@ -193,6 +193,10 @@
         <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
         <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
         <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1"/>
+        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0"/>
+        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
+        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
+        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
         <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
         <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>
