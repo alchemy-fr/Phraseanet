@@ -90,6 +90,21 @@
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
+            <subdef class="preview" name="postervideo" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
+            </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <size>748</size>
@@ -155,30 +170,6 @@
                 <label lang="en">Preview</label>
             </subdef>
         </subdefgroup>
-        <subdefgroup name="flash">
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>240</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Vignette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>800</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-        </subdefgroup>
     </subdefs>
 
     <description>
@@ -199,9 +190,9 @@
         <Rights src="XMP-dc:Rights" type="string" report="0" />
         <Comments src="" business="1" type="string" report="0" />
         <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
-        <CameraDevice src="IFD0:Model" type="string" readonly="1" report="0" />
-        <Latitude src="GPS:GPSLatitude" type="number" readonly="1" report="0" />
-        <Longitude src="GPS:GPSLongitude"  type="number" readonly="1" report="0"/>
+        <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
+        <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
+        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1"/>
         <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
         <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>
