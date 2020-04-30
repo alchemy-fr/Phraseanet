@@ -243,7 +243,7 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        cover_subdef: videoposter
+        cover_subdef: poster
         message_start: StartOfMessage
         available_speeds:
             - 1
