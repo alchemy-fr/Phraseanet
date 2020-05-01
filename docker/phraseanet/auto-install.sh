@@ -25,6 +25,9 @@ fi
     --server-name=$INSTALL_SERVER_NAME \
     --download-path=/var/alchemy/Phraseanet/datas/download \
     --lazaret-path=/var/alchemy/Phraseanet/datas/lazaret \
+    --caption-path=/var/alchemy/Phraseanet/tmp/caption
+    --scheduler-locks-path=/var/alchemy/Phraseanet/tmp/locks
+    --worker-tmp-files=/var/alchemy/Phraseanet/tmp/
     --data-path=/var/alchemy/Phraseanet/datas -y
 
  # Bus configuration for scheduler & worker
