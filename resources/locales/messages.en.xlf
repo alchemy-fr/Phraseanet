@@ -2508,7 +2508,7 @@
       </trans-unit>
       <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="no">
         <source>Disable document type sharing</source>
-        <target state="needs-translation">Disable document type sharing</target>
+        <target state="needs-translation">Disable Permalink</target>
         <jms:reference-file line="214">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4f4473df8cb59f0a369aebee3d1509adc0151c6" resname="Disabled" approved="yes">
@@ -2920,9 +2920,9 @@
         <target state="translated">Enable auto registration</target>
         <jms:reference-file line="26">Form/Configuration/RegistrationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="yes">
+      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="no">
         <source>Enable document type sharing</source>
-        <target state="translated">Enable document type sharing</target>
+        <target state="needs-translation">Enable permalink</target>
         <jms:reference-file line="216">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af559a0c4023968d8723bcdfe3337ce72eca48eb" resname="Enable maintenance message broadcast" approved="yes">
@@ -11840,9 +11840,9 @@ It is possible to place several search areas</target>
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy" approved="yes">
         <source>publications::copy</source>
-        <target state="new">publications::copy</target>
+        <target state="translated">Copy to clipboard</target>
         <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
@@ -13504,9 +13504,9 @@ It is possible to place several search areas</target>
         <target state="translated">Monday</target>
         <jms:reference-file line="170">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
+      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText" approved="yes">
         <source>workzone:datepicker:nextText</source>
-        <target state="needs-translation">Next</target>
+        <target state="translated">Next</target>
         <jms:reference-file line="166">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
@@ -13519,9 +13519,9 @@ It is possible to place several search areas</target>
         <target state="translated">October</target>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText">
+      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
-        <target state="needs-translation">Previous</target>
+        <target state="translated">Previous</target>
         <jms:reference-file line="165">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
@@ -13566,9 +13566,9 @@ It is possible to place several search areas</target>
         <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
+      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update" approved="yes">
         <source>workzone:feedback:update</source>
-        <target state="needs-translation">Update Date</target>
+        <target state="translated">Update Date</target>
         <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
