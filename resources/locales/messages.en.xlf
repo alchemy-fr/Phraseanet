@@ -2506,9 +2506,9 @@
         <jms:reference-file line="32">Media/Subdef/Video.php</jms:reference-file>
         <jms:reference-file line="32">Media/Subdef/Unknown.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="yes">
+      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="no">
         <source>Disable document type sharing</source>
-        <target state="translated">Disable document type sharing</target>
+        <target state="needs-translation">Disable document type sharing</target>
         <jms:reference-file line="214">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4f4473df8cb59f0a369aebee3d1509adc0151c6" resname="Disabled" approved="yes">
