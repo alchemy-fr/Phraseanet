@@ -2569,9 +2569,9 @@
         <target state="translated">Document</target>
         <jms:reference-file line="379">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c5bd0e534d218eb5680d7e83804e69cef318ea3f" resname="Document Type Sharing" approved="yes">
+      <trans-unit id="c5bd0e534d218eb5680d7e83804e69cef318ea3f" resname="Document Type Sharing" approved="no">
         <source>Document Type Sharing</source>
-        <target state="translated">Partage de permaliens</target>
+        <target state="needs-translation">Permaliens</target>
         <jms:reference-file line="55">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c6fda3c9ed3e64a0f20ceff3ba3d71a2c29bb590" resname="Document envoye par %name%" approved="yes">
@@ -2917,9 +2917,9 @@
         <target state="translated">Activer l'inscription automatique</target>
         <jms:reference-file line="26">Form/Configuration/RegistrationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="yes">
+      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="no">
         <source>Enable document type sharing</source>
-        <target state="translated">Activer le lien de partage</target>
+        <target state="needs-translation">Activer le lien de partage</target>
         <jms:reference-file line="216">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af559a0c4023968d8723bcdfe3337ce72eca48eb" resname="Enable maintenance message broadcast" approved="yes">
