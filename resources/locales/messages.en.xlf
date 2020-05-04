@@ -2433,9 +2433,9 @@
         <jms:reference-file line="25">Media/Subdef/Gif.php</jms:reference-file>
         <jms:reference-file line="32">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="yes">
+      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="no">
         <source>Disable document type sharing</source>
-        <target state="translated">Disable document type sharing</target>
+        <target state="needs-translation">Disable Permalink</target>
         <jms:reference-file line="325">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4f4473df8cb59f0a369aebee3d1509adc0151c6" resname="Disabled" approved="yes">
@@ -2839,9 +2839,9 @@
         <target state="translated">Enable auto registration</target>
         <jms:reference-file line="26">Form/Configuration/RegistrationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="yes">
+      <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="no">
         <source>Enable document type sharing</source>
-        <target state="translated">Enable document type sharing</target>
+        <target state="needs-translation">Enable permalink</target>
         <jms:reference-file line="327">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af559a0c4023968d8723bcdfe3337ce72eca48eb" resname="Enable maintenance message broadcast" approved="yes">
