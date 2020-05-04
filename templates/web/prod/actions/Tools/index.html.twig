@@ -195,12 +195,14 @@
     {% if metadatas %}
         <div id="exiftool"  class="tabBox">
             <div class="metadatas-top-block">
+                <h3><span>{{"prod::tool:metadata:metadatas" | trans}} : </span>
                 <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters" >
                     <option value="" disabled >{{"prod::tool:select subdef" | trans}}</option>
                     {% for subdef in listsubdef %}
                     <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
                     {% endfor %}
                 </select>
+                </h3>
             </div>
             <div id="metadata-load" style="height: 100%"></div>
             <div id="metadata-content"></div>
