@@ -1,9 +1,11 @@
 {% set thumbnail = record.get_thumbnail() %}
 
-<img style='float:left; margin-right:15px'
+<img class="metadatas-image" style='float:left; margin-right:15px'
      src="{{thumbnail.get_url()}}"
      width="{{thumbnail.get_width()}}"
      height="{{thumbnail.get_height()}}" />
+
+<h3 class="metadatas-title" ><span>{{"prod::tool:metadata:metadatas" | trans}} : </span></h3>
 
 <div>
     <table>
