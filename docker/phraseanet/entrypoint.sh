@@ -18,8 +18,19 @@ chown -R app:app \
 FILE=config/configuration.yml
 
 if [ -f "$FILE" ]; then
-    bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     echo "$FILE exists, skip setup."
+    bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+    if [[ $PHRASEANET_SMTP_ENABLED=true ]]; then
+        bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
+        bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
+        bin/setup system:config set registry.email.smtp-auth-secure-mode $PHRASEANET_SMTP_SECURE_MODE
+        bin/setup system:config set registry.email.smtp-auth-host $PHRASEANET_SMTP_HOST
+        bin/setup system:config set registry.email.smtp-auth-port $PHRASEANET_SMTP_PORT
+        bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
+        bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
+        bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
+        bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+    fi
 else
     echo "$FILE doesn't exist, entering setup..."
     runuser app -c docker/phraseanet/auto-install.sh
