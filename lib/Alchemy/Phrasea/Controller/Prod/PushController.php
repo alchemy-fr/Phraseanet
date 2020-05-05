@@ -512,6 +512,8 @@ class PushController extends Controller
             ->like(\User_Query::LIKE_FIRSTNAME, $request->query->get('query'))
             ->like(\User_Query::LIKE_LASTNAME, $request->query->get('query'))
             ->like(\User_Query::LIKE_LOGIN, $request->query->get('query'))
+            ->like(\User_Query::LIKE_EMAIL, $request->query->get('query'))
+            ->like(\User_Query::LIKE_COMPANY, $request->query->get('query'))
             ->like_match(\User_Query::LIKE_MATCH_OR);
 
         $result = $query
