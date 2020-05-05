@@ -1,13 +1,13 @@
 {% set thumbnail = record.get_thumbnail() %}
 
-<img style='float:left; margin-right:15px'
+<p><img class="metadatas-image" style='margin-right:15px'
      src="{{thumbnail.get_url()}}"
      width="{{thumbnail.get_width()}}"
      height="{{thumbnail.get_height()}}" />
+</p>
+<h3 class="metadatas-title" ><span>{{"prod::tool:metadata:metadatas" | trans}} : {{ subdef_name }}</span></h3>
 
 <div>
-    <h1><b>Metadatas</b></h1>
-    <hr>
     <table>
         <tbody>
         {% if metadatas|length %}
