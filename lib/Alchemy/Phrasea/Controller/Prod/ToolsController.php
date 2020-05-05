@@ -47,6 +47,8 @@ class ToolsController extends Controller
             $record = $records->first();
             $databox = $record->getDatabox();
 
+            /**Array list of subdefs**/
+            $listsubdef = array_keys($record-> get_subdefs());
             // fetch subdef list:
             $subdefs = $record->get_subdefs();
 
@@ -57,7 +59,6 @@ class ToolsController extends Controller
                 && $acl->has_right_on_base($record->getBaseId(), \ACL::IMGTOOLS)
             ) {
                 $databoxSubdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
-
                 foreach ($subdefs as $subdef) {
                     $label = $subdefName = $subdef->get_name();
                     if (null === $permalink = $subdef->get_permalink()) {
@@ -94,6 +95,7 @@ class ToolsController extends Controller
             'record'            => $record,
             'recordSubdefs'     => $recordAccessibleSubdefs,
             'metadatas'         => $metadatas,
+            'listsubdef'              => $listsubdef
         ]);
     }
 
