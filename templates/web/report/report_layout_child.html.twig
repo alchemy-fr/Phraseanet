@@ -10,10 +10,14 @@
             <div class="form3 form_content">
                 <div class="form_titre">{{ "report:: 3 - Type de report" | trans }} </div>
                 <select class="select_one" name="group">
-                    {% for x in ['','user','nav','nav,version','os','os,nav','os,nav,version','res'] %}
-                        {% set l="report:: (connexions) #{x}" %}
-                        <option value="{{ x }}" id="connections_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}
+                        <option value="" id="connections_">{{ 'report:: (connexions)' | trans }}</option>
+                        <option value="user" id="connections_user">{{ 'report:: (connexions) user' | trans }}</option>
+                        <option value="nav" id="connections_nav">{{ 'report:: (connexions) nav' | trans }}</option>
+                        <option value="nav,version" id="connections_nav,version">{{ 'report:: (connexions) nav,version' | trans }}</option>
+                        <option value="os" id="connections_os">{{ 'report:: (connexions) os' | trans }}</option>
+                        <option value="os,nav" id="connections_os,nav">{{ 'report:: (connexions) os,nav' | trans }}</option>
+                        <option value="version}" id="connections_os,nav,version">{{ 'report:: (connexions) os,nav,version' | trans }}</option>
+                        <option value="res" id="connections_res">{{ 'report:: (connexions) res' | trans }}</option>
                 </select>
             </div>
             {% endblock form_connexion %}
@@ -36,10 +40,9 @@
                 <div class="form_titre">{% trans %}report:: 3 - Type de report{% endtrans %}</div>
 
                 <select class="select_one" name="group">
-                    {% for x in ['','user','record'] %}
-                        {% set l="report:: (downloads) #{x}" %}
-                        <option value="{{ x }}" id="downloads_{{ x }}">{{ l | trans }}</option>
-                    {% endfor %}
+                        <option value="" id="downloads_">{{ 'report:: (downloads)' | trans }}</option>
+                        <option value="user" id="downloads_user">{{ 'report:: (downloads) user' | trans }}</option>
+                        <option value="record" id="downloads_record">{{ 'report:: (downloads) record' | trans }}</option>
                 </select>
             </div>
         </form>

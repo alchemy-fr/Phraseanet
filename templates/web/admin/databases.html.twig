@@ -27,7 +27,7 @@
 {% endif %}
 
 <div class="db_infos">
-    <h2>Bases actuelles :</h2>
+    <h2> {{ 'admin::base: Current database' | trans }} : </h2>
     <ul>
         {% if sbas | length > 0 %}
             {% for key, value in sbas %}
