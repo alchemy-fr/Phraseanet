@@ -1666,6 +1666,59 @@
         <engine>InnoDB</engine>
       </table>
 
+      <table name="worker">
+        <fields>
+          <field>
+            <name>databox_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>record_id</name>
+            <type>int(11) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>subdef_name</name>
+            <type>char(64)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>work</name>
+            <type>int(1)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+        </fields>
+        <indexes>
+          <index>
+            <name>record_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>record_id</field>
+            </fields>
+          </index>
+          <index>
+            <name>databox_id</name>
+            <type>INDEX</type>
+            <fields>
+              <field>record_id</field>
+            </fields>
+          </index>
+        </indexes>
+        <engine>InnoDB</engine>
+      </table>
     </tables>
   </appbox>
   <databox>
