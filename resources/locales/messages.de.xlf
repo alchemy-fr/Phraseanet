@@ -11320,7 +11320,7 @@
       </trans-unit>
       <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
         <source>prod:app trash: title-trash</source>
-        <target state="translated">Datensatz (¨e) In den Papierkorb verschieben</target>
+        <target state="translated">Datensatz (¨e) in den Papierkorb verschieben</target>
         <jms:reference-file line="44">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
@@ -11505,57 +11505,57 @@
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
-        <target state="translated">Verbindungen Bericht</target>
+        <target state="translated">Alle Verbindungen</target>
         <jms:reference-file line="22">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav" approved="yes">
         <source>report:: (connexions) nav</source>
-        <target state="translated">Verbindungen Bericht : durch Browser</target>
+        <target state="translated">Verbindungen nach Browser</target>
         <jms:reference-file line="24">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version" approved="yes">
         <source>report:: (connexions) nav,version</source>
-        <target state="translated">Verbindungen Bericht: durch Browser, Version</target>
+        <target state="translated">Verbindungen nach Browser, Version</target>
         <jms:reference-file line="25">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os" approved="yes">
         <source>report:: (connexions) os</source>
-        <target state="translated">Verbindungen Bericht: durch OS</target>
+        <target state="translated">Verbindungen nach OS</target>
         <jms:reference-file line="26">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav" approved="yes">
         <source>report:: (connexions) os,nav</source>
-        <target state="translated">Verbindungen Bericht: durch OS, Browser</target>
+        <target state="translated">Verbindungen nach OS, Browser</target>
         <jms:reference-file line="27">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version" approved="yes">
         <source>report:: (connexions) os,nav,version</source>
-        <target state="translated">Verbindungen Bericht: durch OS, Browser, Version</target>
+        <target state="translated">Verbindungen nach OS, Browser, Version</target>
         <jms:reference-file line="28">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res" approved="yes">
         <source>report:: (connexions) res</source>
-        <target state="translated">Verbindungen Bericht: durch Auflösung</target>
+        <target state="translated">Verbindungen nach Auflösung</target>
         <jms:reference-file line="29">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user" approved="yes">
         <source>report:: (connexions) user</source>
-        <target state="translated">Verbindungen Bericht: durch Benutzer</target>
+        <target state="translated">Verbindungen nach Benutzer</target>
         <jms:reference-file line="23">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)" approved="yes">
         <source>report:: (downloads)</source>
-        <target state="translated">Downloads Bericht</target>
+        <target state="translated">Alle Downloads</target>
         <jms:reference-file line="74">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record" approved="yes">
         <source>report:: (downloads) record</source>
-        <target state="translated">Downloads Bericht: durch Datensätze</target>
+        <target state="translated">Downloads nach Datensatz</target>
         <jms:reference-file line="76">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user" approved="yes">
         <source>report:: (downloads) user</source>
-        <target state="translated">Downloads Bericht: durch Benutzer</target>
+        <target state="translated">Downloads nach Benutzer</target>
         <jms:reference-file line="75">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
@@ -12247,9 +12247,9 @@
         <target state="translated">Archivierung zur Datenbank/Kollektion</target>
         <jms:reference-file line="5">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived" approved="no">
+      <trans-unit id="f7b5981a11c4282b6a14ff099bb5c8d3b4a4f01e" resname="task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived" approved="yes">
         <source>task::archive:copier les fichiers '.phrasea.xml' et '.grouping.xml' dans _archived</source>
-        <target state="needs-translation">Copy '.phrasea.xml' and 'groupin.xml' files to _archive</target>
+        <target state="translated">'.phrasea.xml' und 'groupin.xml' Dateien in _archive kopieren</target>
         <jms:reference-file line="50">task-manager/task-editor/archive.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="314435dc4eedd8f9a3d358906eb9fcb5d7ae04db" resname="task::archive:delai de 'repos' avant traitement" approved="yes">
