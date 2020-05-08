@@ -14,7 +14,6 @@
         {% set databox = records.databoxes|first %}
         {# This value is fetched when click on 2nd tab #}
         <input type="hidden" name='original_selection' value="{{ app.request.query.get('lst') }}">
-
         <ul>
             <li><a href="#property-status">{{ 'Records Statut' | trans }}</a></li>
             {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}

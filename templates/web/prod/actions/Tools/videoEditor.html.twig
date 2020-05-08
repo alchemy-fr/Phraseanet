@@ -68,7 +68,13 @@
                                     {% endif %}
 
                                 {% endfor %}
-                                <video id="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                <video id="thumb_video_A" class="thumb_video fake-video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                    {% for subdef in previewHtml5 %}
+                                        <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                    {% endfor %}
+                                    {{ 'No preview available' | trans }}
+                                </video>
+                                <video id="thumb_video" class="thumb_video real-video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
                                     {% for subdef in previewHtml5 %}
                                         <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
                                     {% endfor %}

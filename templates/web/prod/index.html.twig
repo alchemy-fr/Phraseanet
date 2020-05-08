@@ -995,6 +995,15 @@
     <div id="dialog_publicator" title="{{ 'action : bridge' | trans }}" style="display:none;"></div>
     <div id="modal_feed" title="{{ 'action : publier' | trans }}" style="display:none;"></div>
     <div id="dialog_dwnl" title="{{ 'action : exporter' | trans }}" style="display:none;"></div>
+
+    <input type="hidden" id="default-video-chapter-label" value="{{ 'prod::videoTools:chapterTitle' | trans }}"/>
+    {# Set the property dialog title #}
+    <input type="hidden" id="property-title" value="{{ 'prod::action:property title' | trans }} ">
+    {# Set the notification dialog title #}
+    <input type="hidden" id="notification-title" value="{{ 'prod::notification: notification title' | trans }} ">
+    <input type="hidden" id="push-new-list-title" value="{{ 'prod::push: New list title' | trans }} ">
+    <input type="hidden" id="push-list-name-empty" value="{{ 'prod::push: List name can not be empty' | trans }} ">
+    <input type="hidden" id="btn-add" value="{{ 'prod::push: add' | trans }} ">
     <script type="text/javascript" id="bitly_loader"></script>
     <script type="text/javascript">
         $(document).ready(function(){

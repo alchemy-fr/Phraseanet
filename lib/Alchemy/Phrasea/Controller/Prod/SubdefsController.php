@@ -48,6 +48,7 @@ class SubdefsController extends Controller
         return $this->render('prod/actions/Tools/metadata.html.twig', [
             'record'   => $record,
             'metadatas' => $metadataBag,
+            'subdef_name' => $subdef_name
         ]);
     }
 

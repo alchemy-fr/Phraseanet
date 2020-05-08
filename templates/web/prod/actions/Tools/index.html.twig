@@ -20,7 +20,7 @@
 <div id='prod-tool-box' class="PNB10">
 
     {# jquery Tabs #}
-    <div id="tool-tabs"  class="tabs">
+    <div id="tool-tabs"  class="tabs tool-modal-wrapper">
         {# jquery menu #}
         <div>
             <ul>
@@ -194,6 +194,14 @@
     {# exiftool section #}
     {% if metadatas %}
         <div id="exiftool"  class="tabBox">
+            <div class="metadatas-top-block">
+                <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters">
+                    <option value="" disabled >{{"prod::tool:select subdef" | trans}}</option>
+                    {% for subdef in listsubdef %}
+                    <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div id="metadata-load" style="height: 100%"></div>
             <div id="metadata-content"></div>
         </div>
@@ -202,13 +210,12 @@
             <div id="tools-sharing" class="tabBox">
                 <div class="well-large">
                     {% for subdef in recordSubdefs %}
-                        <div class="row-fluid">
-                            <div class="span6">
+                        <div class="row-fluid tools-sharing-row">
+                            <div class="span6 tools-sharing-title">
                                 <span class="status-marker {{ subdef.state ? 'status-active' : 'status-inactive' }}"></span>{{ subdef.label }}
                             </div>
-                            <div class="span6">
-                                <p class="text-right">
-                                    <button type="button" class="stateChange_button btn btn-inverse text-right"
+                            <div class="span6 text-right">
+                                    <button type="button" class="tools-sharing-btn stateChange_button btn btn-inverse text-right"
                                             data-name="{{ subdef.name }}" data-state="{{ subdef.state }}">
                                         {% if subdef.state %}
                                             {{- "Disable document type sharing"|trans -}}
@@ -216,7 +223,6 @@
                                             {{- "Enable document type sharing"|trans -}}
                                         {% endif %}
                                     </button>
-                                </p>
                             </div>
                         </div>
                     {% endfor %}
@@ -288,20 +294,34 @@
     };
 
     {% if record is not null %}
+    function loadMetadataTab (url) {
+        console.log(url);
+        $.ajax({
+            "url": url,
+            "type": "GET",
+            beforeSend: function () {
+                $('#metadata-content').empty();
+                $('#metadata-load').removeClass('hidden').addClass('loading');
+            },
+            success: function (data) {
+                $('#metadata-load').removeClass('loading').addClass('hidden');
+                $('#metadata-content').append(data);
+            }
+        });
+    }
         $(document).ready(function(){
-            $('.tool-metadata').click(function(e){
-                $.ajax({
-                    "url": "{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'}) }}",
-                    "type": "GET",
-                    beforeSend: function(){
-                        $('#metadata-content').empty();
-                        $('#metadata-load').removeClass('hidden').addClass('loading');
-                    },
-                    success: function (data) {
-                        $('#metadata-load').removeClass('loading').addClass('hidden');
-                        $('#metadata-content').append(data);
-                    }
-                });
+            /**load default Subdef info **/
+            loadMetadataTab( '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'document'  }) }}');
+            $('.tool-modal-wrapper .tabBox').height($('#prod-tool-box').height() - 61 );
+            $('#exiftool').height($('#prod-tool-box').height() - 55 );
+            /**load selected Subdef info **/
+            $('#select-meta-subdef').on('change', function (e) {
+                var selectedSubdef = $(this).children('option:selected');
+                if (selectedSubdef.val() !== "") {
+                   var url = '{{ path('prod_subdefs_metadata', {'databox_id': record.get_sbas_id(), 'record_id': record.get_record_id, 'subdef_name': 'subdefName'  }) }}';
+                   url = url.replace("subdefName", selectedSubdef.val() );
+                   loadMetadataTab(url);
+                }
             });
         });
     {% endif %}
