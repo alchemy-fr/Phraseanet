@@ -19,6 +19,8 @@
 # Exclude configuration folder exception the configuration sample file
 /config
 !/config/configuration.sample.yml
+!/config/filebeat.yml
+!/config/logstash.conf
 
 # Exclude generated proxies from doctrine2
 #/resources/proxies
