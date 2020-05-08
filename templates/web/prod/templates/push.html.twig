@@ -271,20 +271,22 @@
 
 <script>
     function htmlEncode(str) {
-        return str.replace(/[&"'<>]/g, function(c){
-            switch (c)
-            {
-                case "&":
-                    return "&amp;";
-                case "'":
-                    return "&#39;";
-                case '"':
-                    return "&quot;";
-                case "<":
-                    return "&lt;";
-                case ">":
-                    return "&gt;";
-            }
-        });
+        if (str != null) {
+            return str.replace(/[&"'<>]/g, function (c) {
+                switch (c) {
+                    case "&":
+                        return "&amp;";
+                    case "'":
+                        return "&#39;";
+                    case '"':
+                        return "&quot;";
+                    case "<":
+                        return "&lt;";
+                    case ">":
+                        return "&gt;";
+                }
+            });
+        }
+        return ;
     }
 </script>
