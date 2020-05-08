@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-05-05T14:35:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -8223,9 +8223,9 @@
         <target state="translated">Stop database publication ?</target>
         <jms:reference-file line="119">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a085d65afcbd47acc844d202df42296a909ab889" resname="admin::base: Current database">
+      <trans-unit id="a085d65afcbd47acc844d202df42296a909ab889" resname="admin::base: Current database" approved="yes">
         <source>admin::base: Current database</source>
-        <target state="new">admin::base: Current database</target>
+        <target state="translated">Current database</target>
         <jms:reference-file line="30">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8fde138547de4f5c65b2d9162eaf350bc8683e5d" resname="admin::base: Monter une base" approved="yes">
@@ -11389,9 +11389,9 @@
         <target state="translated">You do not have the required permissions on selected documents</target>
         <jms:reference-file line="35">Controller/Prod/MoveCollectionController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8877a3e5fa41e324ef59243c175353144990647" resname="prod::action:property title">
+      <trans-unit id="f8877a3e5fa41e324ef59243c175353144990647" resname="prod::action:property title" approved="yes">
         <source>prod::action:property title</source>
-        <target state="new">prod::action:property title</target>
+        <target state="translated">Properties</target>
         <jms:reference-file line="1001">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef27ad74061e0e15683e84dec7f5559f7797637f" resname="prod::advancesearch:tooltips:datefield_restriction_explanation" approved="yes">
@@ -11565,24 +11565,24 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Feedback Title :</target>
         <jms:reference-file line="153">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title">
+      <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title" approved="yes">
         <source>prod::notification: notification title</source>
-        <target state="new">prod::notification: notification title</target>
+        <target state="translated">Notifications</target>
         <jms:reference-file line="1003">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5fa97d7a05eb572c80ae0ccf85be3a27dcddb943" resname="prod::push: List name can not be empty">
+      <trans-unit id="5fa97d7a05eb572c80ae0ccf85be3a27dcddb943" resname="prod::push: List name can not be empty" approved="yes">
         <source>prod::push: List name can not be empty</source>
-        <target state="new">prod::push: List name can not be empty</target>
+        <target state="translated">List name is mandatory</target>
         <jms:reference-file line="1005">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2682250f21be2e6ce7e89ab678c50a394191206a" resname="prod::push: New list title">
+      <trans-unit id="2682250f21be2e6ce7e89ab678c50a394191206a" resname="prod::push: New list title" approved="yes">
         <source>prod::push: New list title</source>
-        <target state="new">prod::push: New list title</target>
+        <target state="translated">New list</target>
         <jms:reference-file line="1004">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="19aeacc47cb48d5ae39c216aa0d456ac0f2ea55d" resname="prod::push: add">
+      <trans-unit id="19aeacc47cb48d5ae39c216aa0d456ac0f2ea55d" resname="prod::push: add" approved="yes">
         <source>prod::push: add</source>
-        <target state="new">prod::push: add</target>
+        <target state="translated">Add</target>
         <jms:reference-file line="1006">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dee7c522bf9e0eea45e003fb4d0f736bc251a954" resname="prod::push:push_set_title" approved="yes">
@@ -11710,14 +11710,14 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Replace with term ?</target>
         <jms:reference-file line="19">web/prod/tab_thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="65f48c5330c6a424f2e5f9bb5b8d7fcf0c1429cd" resname="prod::tool:metadata:metadatas">
+      <trans-unit id="65f48c5330c6a424f2e5f9bb5b8d7fcf0c1429cd" resname="prod::tool:metadata:metadatas" approved="yes">
         <source>prod::tool:metadata:metadatas</source>
-        <target state="new">prod::tool:metadata:metadatas</target>
+        <target state="translated">Metadata</target>
         <jms:reference-file line="8">actions/Tools/metadata.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c467e7605e648402bb5cda33089ad88c5ba3899b" resname="prod::tool:select subdef">
+      <trans-unit id="c467e7605e648402bb5cda33089ad88c5ba3899b" resname="prod::tool:select subdef" approved="yes">
         <source>prod::tool:select subdef</source>
-        <target state="new">prod::tool:select subdef</target>
+        <target state="translated">Select a file</target>
         <jms:reference-file line="199">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="556186e33fc15d5397f8b5f7a6855e822b354f9b" resname="prod::toolbar : video editor" approved="yes">
@@ -11731,14 +11731,14 @@ Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="41">Controller/Prod/ShareController.php</jms:reference-file>
         <jms:reference-file line="72">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e36d93428a247d085ffbb974db21290395643463" resname="prod::videoTools:chapterTitle">
+      <trans-unit id="e36d93428a247d085ffbb974db21290395643463" resname="prod::videoTools:chapterTitle" approved="yes">
         <source>prod::videoTools:chapterTitle</source>
-        <target state="new">prod::videoTools:chapterTitle</target>
+        <target state="translated">Chapter title</target>
         <jms:reference-file line="999">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a4dc1d766c992fbd57317a321602272b20469a64" resname="prod::workzone:Actions">
+      <trans-unit id="a4dc1d766c992fbd57317a321602272b20469a64" resname="prod::workzone:Actions" approved="yes">
         <source>prod::workzone:Actions</source>
-        <target state="new">prod::workzone:Actions</target>
+        <target state="translated">Actions</target>
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -11751,9 +11751,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">record(s) permanently deleted</target>
         <jms:reference-file line="28">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash">
+      <trans-unit id="054aec17d6db5d5ab74b6bf4440acfd5a9fdc09d" resname="prod:app trash: title-trash" approved="yes">
         <source>prod:app trash: title-trash</source>
-        <target state="new">prod:app trash: title-trash</target>
+        <target state="translated">Send record(s) to trash</target>
         <jms:reference-file line="44">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d75ccc6722ace63fbdb430baa7a12dc93d13ff74" resname="prod:edit: chapters" approved="yes">
@@ -11809,9 +11809,9 @@ It is possible to place several search areas</target>
         <target state="translated">Delete Selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date">
+      <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
         <source>prod:workzone:basket:creation-date</source>
-        <target state="needs-translation">Creation</target>
+        <target state="translated">Creation date</target>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="97">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
@@ -11890,9 +11890,9 @@ It is possible to place several search areas</target>
         <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
         <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
+      <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy" approved="yes">
         <source>publications::copy</source>
-        <target state="new">publications::copy</target>
+        <target state="translated">Copy URL</target>
         <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
@@ -12032,59 +12032,59 @@ It is possible to place several search areas</target>
         <target state="translated">Untitled</target>
         <jms:reference-file line="940">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
+      <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
-        <target state="new">report:: (connexions)</target>
+        <target state="translated">All Connections</target>
         <jms:reference-file line="13">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav">
+      <trans-unit id="79c1a247bd2c339a5ee1c955d27a1bcac73d5644" resname="report:: (connexions) nav" approved="yes">
         <source>report:: (connexions) nav</source>
-        <target state="new">report:: (connexions) nav</target>
+        <target state="translated">Connections by browser</target>
         <jms:reference-file line="15">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version">
+      <trans-unit id="019c1982bda8be6a8c4cc80a13e54697c980fdb0" resname="report:: (connexions) nav,version" approved="yes">
         <source>report:: (connexions) nav,version</source>
-        <target state="new">report:: (connexions) nav,version</target>
+        <target state="translated">Connections by browser, version</target>
         <jms:reference-file line="16">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os">
+      <trans-unit id="c59500e4df13b56f0c077e1e55ca266e14c6fa0a" resname="report:: (connexions) os" approved="yes">
         <source>report:: (connexions) os</source>
-        <target state="new">report:: (connexions) os</target>
+        <target state="translated">Connections by OS</target>
         <jms:reference-file line="17">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav">
+      <trans-unit id="6bf0e407d8fadf0d0144cfaa94a9a0abda085d9a" resname="report:: (connexions) os,nav" approved="yes">
         <source>report:: (connexions) os,nav</source>
-        <target state="new">report:: (connexions) os,nav</target>
+        <target state="translated">Connections by OS, browser</target>
         <jms:reference-file line="18">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version">
+      <trans-unit id="19fbca6a24ff844e4c635378fe118bbe1cff5c25" resname="report:: (connexions) os,nav,version" approved="yes">
         <source>report:: (connexions) os,nav,version</source>
-        <target state="new">report:: (connexions) os,nav,version</target>
+        <target state="translated">Connections by OS, Browser, Version</target>
         <jms:reference-file line="19">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res">
+      <trans-unit id="12f9aa05c6fe8a54bdef7b10f1c884dbc68d88cc" resname="report:: (connexions) res" approved="yes">
         <source>report:: (connexions) res</source>
-        <target state="new">report:: (connexions) res</target>
+        <target state="translated">Connections by Screen Res</target>
         <jms:reference-file line="20">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user">
+      <trans-unit id="3fe5fc6cf6bbd704586e8645bcac3d8311e43e6f" resname="report:: (connexions) user" approved="yes">
         <source>report:: (connexions) user</source>
-        <target state="new">report:: (connexions) user</target>
+        <target state="translated">Connections by User</target>
         <jms:reference-file line="14">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)">
+      <trans-unit id="22d3d65cf40302179f9b512500381971f38f2189" resname="report:: (downloads)" approved="yes">
         <source>report:: (downloads)</source>
-        <target state="new">report:: (downloads)</target>
+        <target state="translated">Downloads</target>
         <jms:reference-file line="43">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record">
+      <trans-unit id="76640b7388c8ea6642ba4b19f4d639dce2024cb6" resname="report:: (downloads) record" approved="yes">
         <source>report:: (downloads) record</source>
-        <target state="new">report:: (downloads) record</target>
+        <target state="translated">Downloads grouped by record</target>
         <jms:reference-file line="45">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user">
+      <trans-unit id="7fbcde120349c204e9d0d965b5a8c73bb38d9f01" resname="report:: (downloads) user" approved="yes">
         <source>report:: (downloads) user</source>
-        <target state="new">report:: (downloads) user</target>
+        <target state="translated">Downloads grouped by user</target>
         <jms:reference-file line="44">web/report/report_layout_child.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e0b1a1001cc76b95ef11cd1c208c87a03743b4b" resname="report:: 1 - Periode" approved="yes">
@@ -13609,9 +13609,9 @@ It is possible to place several search areas</target>
         <target state="translated">Monday</target>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
+      <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText" approved="yes">
         <source>workzone:datepicker:nextText</source>
-        <target state="needs-translation">Next</target>
+        <target state="translated">Next</target>
         <jms:reference-file line="165">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
@@ -13624,9 +13624,9 @@ It is possible to place several search areas</target>
         <target state="translated">October</target>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText">
+      <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
-        <target state="needs-translation">Previous</target>
+        <target state="translated">Previous</target>
         <jms:reference-file line="164">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
@@ -13671,9 +13671,9 @@ It is possible to place several search areas</target>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="106">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
+      <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update" approved="yes">
         <source>workzone:feedback:update</source>
-        <target state="needs-translation">Update Date</target>
+        <target state="translated">Update</target>
         <jms:reference-file line="113">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
