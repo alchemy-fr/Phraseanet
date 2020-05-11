@@ -79,10 +79,8 @@
                             </div>
                         </div>
                     {% endif %}
-
-                    {{ form_rest(form) }}
-
-                    {% if recaptcha_display %}
+                    {% set require_captcha = app["conf"].get(['registry', 'webservices', 'captchas-enabled']) %}
+                    {% if require_captcha %}
                         <div class="row-fluid">
                             <div class="span12">
                                 {{ macro.captcha() }}

@@ -52,9 +52,9 @@
         </div>
     </div>
     {% set public_key = app["conf"].get(['registry', 'webservices', 'recaptcha-public-key']) %}
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api/challenge?k={{ app['recaptcha'].getPublicKey() }}"></script>
+    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render={{ public_key }}"></script>
     <noscript>
-        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ app['recaptcha'].getPublicKey() }}" height="300" width="500" frameborder="0"></iframe><br>
+        <iframe src="https://www.google.com/recaptcha/api/noscript?k={{ public_key }}" height="300" width="500" frameborder="0"></iframe><br>
         <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
         <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
     </noscript>
