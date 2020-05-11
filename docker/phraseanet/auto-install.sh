@@ -27,6 +27,10 @@ fi
     --lazaret-path=$PHRASEANET_LAZARET_DIR \
     --caption-path=$PHRASEANET_CAPTION_DIR \
     --worker-tmp-files=$PHRASEANET_WORKER_TMP \
+    --download-path=/var/alchemy/Phraseanet/datas/download \
+    --lazaret-path=/var/alchemy/Phraseanet/datas/lazaret \
+    --caption-path=/var/alchemy/Phraseanet/tmp/caption \
+    --worker-tmp-files=/var/alchemy/Phraseanet/tmp \
     --data-path=/var/alchemy/Phraseanet/datas -y
 
  # Bus configuration for scheduler & worker
