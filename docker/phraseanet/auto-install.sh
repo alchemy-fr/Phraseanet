@@ -13,24 +13,20 @@ if [ -z "$INSTALL_ACCOUNT_PASSWORD" ]; then
 fi
 
 /var/alchemy/Phraseanet/bin/setup system:install \
-    --email=$INSTALL_ACCOUNT_EMAIL \
-    --password=$INSTALL_ACCOUNT_PASSWORD \
-    --db-host=$INSTALL_DB_HOST \
-    --db-port=$INSTALL_DB_PORT \
-    --db-user=$INSTALL_DB_USER \
-    --db-password=$INSTALL_DB_PASSWORD \
+    --email=$PHRASEANET_ADMIN_ACCOUNT_EMAIL \
+    --password=$PHRASEANET_ADMIN_ACCOUNT_PASSWORD \
+    --db-host=$PHRASEANET_DB_HOST \
+    --db-port=$PHRASEANET_DB_PORT \
+    --db-user=$PHRASEANET_DB_USER \
+    --db-password=$PHRASEANET_DB_PASSWORD \
     --db-template=$INSTALL_DB_TEMPLATE \
     --appbox=$INSTALL_APPBOX \
     --databox=$INSTALL_DATABOX \
-    --server-name=$INSTALL_SERVER_NAME \
+    --server-name=$PHRASEANET_SERVER_NAME \
     --download-path=$PHRASEANET_DOWNLOAD_DIR \
     --lazaret-path=$PHRASEANET_LAZARET_DIR \
     --caption-path=$PHRASEANET_CAPTION_DIR \
     --worker-tmp-files=$PHRASEANET_WORKER_TMP \
-    --download-path=/var/alchemy/Phraseanet/datas/download \
-    --lazaret-path=/var/alchemy/Phraseanet/datas/lazaret \
-    --caption-path=/var/alchemy/Phraseanet/tmp/caption \
-    --worker-tmp-files=/var/alchemy/Phraseanet/tmp \
     --data-path=/var/alchemy/Phraseanet/datas -y
 
  # Bus configuration for scheduler & worker
