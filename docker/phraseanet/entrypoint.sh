@@ -31,7 +31,7 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
     fi
-    bin/console user:password --user_id=1 --password=$PHRASEANET_ADMIN_ACCOUNT_PASSWORD
+    bin/console user:password --user_id=1 --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
 else
     echo "$FILE doesn't exist, entering setup..."
     runuser app -c docker/phraseanet/auto-install.sh

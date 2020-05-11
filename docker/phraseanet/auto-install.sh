@@ -33,8 +33,8 @@ fi
 bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry 
 bin/setup system:config set workers.queue.worker-queue.host rabbitmq
 bin/setup system:config set workers.queue.worker-queue.port 5672 
-bin/setup system:config set workers.queue.worker-queue.user $INSTALL_RABBITMQ_USER
-bin/setup system:config set workers.queue.worker-queue.password $INSTALL_RABBITMQ_PASSWORD
+bin/setup system:config set workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
+bin/setup system:config set workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
 bin/setup system:config set workers.queue.worker-queue.vhost /
 
 /var/alchemy/Phraseanet/bin/console compile:configuration
