@@ -23,10 +23,10 @@ fi
     --appbox=$INSTALL_APPBOX \
     --databox=$INSTALL_DATABOX \
     --server-name=$INSTALL_SERVER_NAME \
-    --download-path=/var/alchemy/Phraseanet/datas/download \
-    --lazaret-path=/var/alchemy/Phraseanet/datas/lazaret \
-    --caption-path=/var/alchemy/Phraseanet/tmp/caption \
-    --worker-tmp-files=/var/alchemy/Phraseanet/tmp \
+    --download-path=$PHRASEANET_DOWNLOAD_DIR \
+    --lazaret-path=$PHRASEANET_LAZARET_DIR \
+    --caption-path=$PHRASEANET_CAPTION_DIR \
+    --worker-tmp-files=$PHRASEANET_WORKER_TMP \
     --data-path=/var/alchemy/Phraseanet/datas -y
 
  # Bus configuration for scheduler & worker
