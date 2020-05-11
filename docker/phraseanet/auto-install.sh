@@ -2,13 +2,13 @@
 
 set -xe
 
-if [ -z "$INSTALL_ACCOUNT_EMAIL" ]; then
-    echo "INSTALL_ACCOUNT_EMAIL var is not set."
+if [ -z "$PHRASEANET_ADMIN_ACCOUNT_EMAIL" ]; then
+    echo "PHRASEANET_ADMIN_ACCOUNT_EMAIL, Phraseanet admin account  var is not set."
     exit 1
 fi
 
-if [ -z "$INSTALL_ACCOUNT_PASSWORD" ]; then
-    echo "INSTALL_ACCOUNT_PASSWORD var is not set."
+if [ -z "$PHRASEANET_ADMIN_ACCOUNT_PASSWORD " ]; then
+    echo "$PHRASEANET_ADMIN_ACCOUNT_PASSWORD,  Phaseanet admin password var is not set."
     exit 1
 fi
 
