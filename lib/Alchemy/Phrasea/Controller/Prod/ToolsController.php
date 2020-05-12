@@ -41,7 +41,7 @@ class ToolsController extends Controller
         $metadatas = false;
         $record = null;
         $recordAccessibleSubdefs = array();
-
+        $listsubdef= null;
         if (count($records) == 1) {
             /** @var \record_adapter $record */
             $record = $records->first();
