@@ -75,9 +75,6 @@ class AMQPConnection
 
         $this->hostConfig = $conf->get(['workers', 'queue', 'worker-queue'], $defaultConfiguration);
         $this->conf       = $conf;
-
-        $this->getChannel();
-        $this->declareExchange();
     }
 
     public function getConnection()
