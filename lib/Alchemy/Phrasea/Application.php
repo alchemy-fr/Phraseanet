@@ -270,8 +270,10 @@ class Application extends SilexApplication
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
 
-        $this->register(new QueueWorkerServiceProvider());
-        $this->register(new AlchemyWorkerServiceProvider());
+        if ($this['configuration.store']->isSetup()) {
+            $this->register(new QueueWorkerServiceProvider());
+            $this->register(new AlchemyWorkerServiceProvider());
+        }
 
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
