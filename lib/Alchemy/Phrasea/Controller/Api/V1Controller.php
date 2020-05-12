@@ -87,6 +87,8 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
+use Alchemy\Phrasea\WorkerManager\Event\AssetsCreateEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Client as Guzzle;
 use League\Fractal\Resource\Item;
@@ -215,6 +217,30 @@ class V1Controller extends Controller
         }
 
         return $this->showTaskAction($request, $task);
+    }
+
+    /**
+     *  Use with the uploader service
+     * @param Request $request
+     * @return Response
+     */
+    public function sendAssetsInQueue(Request $request)
+    {
+        $jsonBodyHelper = $this->getJsonBodyHelper();
+        $schema = $this->app['json-schema.ref_resolver']->resolve($this->app['json-schema.base_uri']. 'assets_enqueue.json');
+        $data = $request->getContent();
+
+        $errors = $jsonBodyHelper->validateJson(json_decode($data), $schema);
+
+        if (count($errors) > 0) {
+            return Result::createError($request, 422, $errors[0])->createResponse();
+        }
+
+        $this->dispatch(WorkerEvents::ASSETS_CREATE, new AssetsCreateEvent(json_decode($data)));
+
+        return Result::create($request, [
+            "data" => json_decode($data),
+        ])->createResponse();
     }
 
     private function getCacheInformation()
