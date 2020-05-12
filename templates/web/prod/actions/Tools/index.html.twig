@@ -197,9 +197,11 @@
             <div class="metadatas-top-block">
                 <select id="select-meta-subdef" name="metaSubdef" class="input-medium check-filters">
                     <option value="" disabled >{{"prod::tool:select subdef" | trans}}</option>
-                    {% for subdef in listsubdef %}
-                    <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
-                    {% endfor %}
+                    {% if listsubdef is defined and listsubdef is not null %}
+                        {% for subdef in listsubdef %}
+                        <option value= "{{ subdef }}" {{ subdef== 'document'? 'selected' : 'false' }}>{{ subdef }}</option>
+                        {% endfor %}
+                    {% endif %}
                 </select>
             </div>
             <div id="metadata-load" style="height: 100%"></div>
