@@ -8,7 +8,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\Factory\WorkerFactoryInterface;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInterface;
 
-class TypeBasedWorkerResolverTest extends \PhraseanetTestCase
+class TypeBasedWorkerResolverTest extends \PHPUnit_Framework_TestCase
 {
     public function testClassImplements()
     {
@@ -69,7 +69,7 @@ class TypeBasedWorkerResolverTest extends \PhraseanetTestCase
 
         $sut->addFactory(MessagePublisher::SUBDEF_CREATION_TYPE, $workerFactory);
 
-        $this->expectException(\RuntimeException::class);
+        $this->setExpectedException(\RuntimeException::class);
 
         $sut->getWorker(MessagePublisher::WRITE_METADATAS_TYPE, ['mock-message']);
 
