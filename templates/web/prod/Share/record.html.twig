@@ -65,15 +65,19 @@
                 <div class="form-group clearfix">
                     {#{% if type == 'image' %}#}
                     <label>{% trans %}Embed code{% endtrans %}</label>
+                    {%  set embedUrl = subdefList[defKey].embedUrl %}
+                    {% if subdefList[defKey].height == 0 %}
+                        {%  set defKey = 'thumbnail'  %}
+                    {% endif %}
                     {% spaceless %}
                         <textarea class="input-block-level" rows="4" readonly="true" id="embedRecordUrl">
-                                <iframe width="{{ subdefList[defKey].width }}" height="{{ subdefList[defKey].height }}"
-                                        src="{{ subdefList[defKey].embedUrl }}" frameborder="0"
+                                <iframe width="{{ subdefList[defKey].width != 0 ?subdefList[defKey].width : 240 }}" height="{{subdefList[defKey].height != 0 ? subdefList[defKey].height : 240 }}"
+                                        src="{{ embedUrl }}" frameborder="0"
                                         allowfullscreen></iframe>
                             </textarea>
                     {% endspaceless %}
                     <p class="pull-right">
-                        <a id="embedRecordUrl-link" href="{{ subdefList[defKey].embedUrl }}"
+                        <a id="embedRecordUrl-link" href="{{ embedUrl }}"
                            target="_blank">{{ 'previewLinkLabel' | trans }}</a> &nbsp;&nbsp;
                         <a href="#" class="" id="embedCopy">{{ 'copyClipboardLabel' | trans }}</a>
                     </p>
