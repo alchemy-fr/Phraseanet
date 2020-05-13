@@ -19,9 +19,6 @@ class SubscriberTest extends \PhraseanetTestCase
 
         $sexportSubscriber = new ExportSubscriber($app['alchemy_worker.message.publisher']->reveal());
         $this->assertInstanceOf('Symfony\\Component\\EventDispatcher\\EventSubscriberInterface', $sexportSubscriber);
-
-        $recordSubscriber = new RecordSubscriber($app);
-        $this->assertInstanceOf('Symfony\\Component\\EventDispatcher\\EventSubscriberInterface', $recordSubscriber);
     }
 
     public function testIfPublisheMessageOnSubscribeEvent()

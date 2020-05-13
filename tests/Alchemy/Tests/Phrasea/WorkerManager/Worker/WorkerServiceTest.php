@@ -44,8 +44,8 @@ class WorkerServiceTest extends \PHPUnit_Framework_TestCase
 
         $writemetadatasWorker = new WriteMetadatasWorker(
             $writer,
-            $app['alchemy_service.logger'],
-            $app['alchemy_service.message.publisher'],
+            $app['alchemy_worker.logger'],
+            $app['alchemy_worker.message.publisher'],
             $app['repo.worker-running-job']
         );
         $this->assertInstanceOf('Alchemy\\Phrasea\\WorkerManager\\Worker\\WorkerInterface', $writemetadatasWorker);

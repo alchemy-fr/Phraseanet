@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Provider;
 
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Manipulator\WebhookEventManipulator;
 use Alchemy\Phrasea\Plugin\PluginProviderInterface;
 use Alchemy\Phrasea\Application as PhraseaApplication;
@@ -61,9 +62,7 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
             $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
 
                 $dispatcher->addSubscriber(
-                    (new RecordSubscriber($app)
-                    )->setApplicationBox($app['phraseanet.appbox'])
-
+                    new RecordSubscriber($app, new LazyLocator($app, 'phraseanet.appbox'))
                 );
                 $dispatcher->addSubscriber(new ExportSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher']));

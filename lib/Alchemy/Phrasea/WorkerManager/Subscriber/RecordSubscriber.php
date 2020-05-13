@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
@@ -23,8 +22,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
 {
-    use ApplicationBoxAware;
-
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
@@ -34,33 +31,40 @@ class RecordSubscriber implements EventSubscriberInterface
     /** @var  Application */
     private $app;
 
-    public function __construct(Application $app)
+    /**
+     * @var callable
+     */
+    private $appboxLocator;
+
+    public function __construct(Application $app, callable $appboxLocator)
     {
         $this->messagePublisher    = $app['alchemy_worker.message.publisher'];
         $this->workerResolver      = $app['alchemy_worker.type_based_worker_resolver'];
         $this->app                 = $app;
+        $this->appboxLocator       = $appboxLocator;
     }
 
     public function onSubdefinitionCreate(SubdefinitionCreateEvent $event)
     {
-        $record = $this->findDataboxById($event->getRecord()->getDataboxId())->get_record($event->getRecord()->getRecordId());
+        $record = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId())->get_record($event->getRecord()->getRecordId());
 
-        $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+        if (!$record->isStory()) {
+            $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-        foreach ($subdefs as $subdef) {
-            $payload = [
-                'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
-                'payload' => [
-                    'recordId'      => $event->getRecord()->getRecordId(),
-                    'databoxId'     => $event->getRecord()->getDataboxId(),
-                    'subdefName'    => $subdef->get_name(),
-                    'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
-                ]
-            ];
+            foreach ($subdefs as $subdef) {
+                $payload = [
+                    'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                    'payload' => [
+                        'recordId'      => $event->getRecord()->getRecordId(),
+                        'databoxId'     => $event->getRecord()->getDataboxId(),
+                        'subdefName'    => $subdef->get_name(),
+                        'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
+                    ]
+                ];
 
-            $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+            }
         }
-
     }
 
     public function onDelete(DeleteEvent $event)
@@ -116,7 +120,7 @@ class RecordSubscriber implements EventSubscriberInterface
         $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
         $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$recordId]);
 
-        $databox = $this->findDataboxById($databoxId);
+        $databox = $this->getApplicationBox()->get_databox($databoxId);
         $record  = $databox->get_record($recordId);
         $type    = $record->getType();
 
@@ -205,7 +209,7 @@ class RecordSubscriber implements EventSubscriberInterface
             $databoxId = $event->getRecord()->getDataboxId();
             $recordId = $event->getRecord()->getRecordId();
 
-            $databox = $this->findDataboxById($databoxId);
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
             $record  = $databox->get_record($recordId);
             $type    = $record->getType();
 
@@ -231,11 +235,11 @@ class RecordSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            RecordEvents::CREATED                                   => 'onRecordCreated',
-            RecordEvents::SUBDEFINITION_CREATE                      => 'onSubdefinitionCreate',
-            RecordEvents::DELETE                                    => 'onDelete',
+            RecordEvents::CREATED                             => 'onRecordCreated',
+            RecordEvents::SUBDEFINITION_CREATE                => 'onSubdefinitionCreate',
+            RecordEvents::DELETE                              => 'onDelete',
             WorkerEvents::SUBDEFINITION_CREATION_FAILURE      => 'onSubdefinitionCreationFailure',
-            RecordEvents::METADATA_CHANGED                          => 'onMetadataChanged',
+            RecordEvents::METADATA_CHANGED                    => 'onMetadataChanged',
             WorkerEvents::STORY_CREATE_COVER                  => 'onStoryCreateCover',
             WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta'
         ];
@@ -264,5 +268,15 @@ class RecordSubscriber implements EventSubscriberInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return \appbox
+     */
+    private function getApplicationBox()
+    {
+        $callable = $this->appboxLocator;
+
+        return $callable();
     }
 }
