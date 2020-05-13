@@ -45,6 +45,12 @@ class WorkerExecuteCommand extends Command
         /** @var AMQPChannel $channel */
         $channel = $serverConnection->getChannel();
 
+        if ($channel == null) {
+            $output->writeln("Can't connect to rabbit, check configuration!");
+
+            return;
+        }
+
         /** @var WorkerInvoker $workerInvoker */
         $workerInvoker = $this->container['alchemy_worker.worker_invoker'];
 

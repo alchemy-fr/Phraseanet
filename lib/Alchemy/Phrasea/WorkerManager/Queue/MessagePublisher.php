@@ -96,6 +96,12 @@ class MessagePublisher
 
         $channel = $this->serverConnection->setQueue($queueName);
 
+        if ($channel == null) {
+            $this->pushLog("Can't connect to rabbit, check configuration!", "error");
+
+            return true;
+        }
+
         $exchange = in_array($queueName, AMQPConnection::$defaultQueues) ? AMQPConnection::ALCHEMY_EXCHANGE : AMQPConnection::RETRY_ALCHEMY_EXCHANGE;
         $channel->basic_publish($msg, $exchange, $queueName);
 
@@ -137,6 +143,12 @@ class MessagePublisher
         $msg->set('application_headers', $headers);
 
         $channel = $this->serverConnection->setQueue($queueName);
+        if ($channel == null) {
+            $this->pushLog("Can't connect to rabbit, check configuration!", "error");
+
+            return ;
+        }
+
         $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $queueName);
     }
 }

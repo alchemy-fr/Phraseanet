@@ -80,12 +80,18 @@ class AMQPConnection
     public function getConnection()
     {
         if (!isset($this->connection)) {
-            $this->connection =  new AMQPStreamConnection(
-                $this->hostConfig['host'],
-                $this->hostConfig['port'],
-                $this->hostConfig['user'],
-                $this->hostConfig['password'],
-                $this->hostConfig['vhost']);
+            try{
+                $this->connection =  new AMQPStreamConnection(
+                    $this->hostConfig['host'],
+                    $this->hostConfig['port'],
+                    $this->hostConfig['user'],
+                    $this->hostConfig['password'],
+                    $this->hostConfig['vhost']
+                );
+
+            } catch (\Exception $e) {
+
+            }
         }
 
         return $this->connection;
@@ -94,26 +100,40 @@ class AMQPConnection
     public function getChannel()
     {
         if (!isset($this->channel)) {
-            $this->channel = $this->getConnection()->channel();
-        }
+            $this->getConnection();
+            if (isset($this->connection)) {
+                $this->channel = $this->connection->channel();
 
-        return $this->channel;
+                return $this->channel;
+            }
+
+            return null;
+        } else {
+            return $this->channel;
+        }
     }
 
     public function declareExchange()
     {
-        $this->channel->exchange_declare(self::ALCHEMY_EXCHANGE, 'direct', false, true, false);
-        $this->channel->exchange_declare(self::RETRY_ALCHEMY_EXCHANGE, 'direct', false, true, false);
+        if (!isset($this->channel)) {
+            $this->channel->exchange_declare(self::ALCHEMY_EXCHANGE, 'direct', false, true, false);
+            $this->channel->exchange_declare(self::RETRY_ALCHEMY_EXCHANGE, 'direct', false, true, false);
+        }
     }
 
     /**
      * @param $queueName
-     * @return AMQPChannel
+     * @return AMQPChannel|null
      */
     public function setQueue($queueName)
     {
         if (!isset($this->channel)) {
             $this->getChannel();
+            if (!isset($this->channel)) {
+                // can't connect to rabbit
+                return null;
+            }
+
             $this->declareExchange();
         }
 

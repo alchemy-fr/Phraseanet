@@ -25,6 +25,12 @@ class MessageHandler
 
         $channel = $serverConnection->getChannel();
 
+        if ($channel == null) {
+            $this->messagePublisher->pushLog("Can't connect to rabbit, check configuration!", "error");
+
+            return ;
+        }
+
         // define consume callbacks
         $callback = function (AMQPMessage $message) use ($channel, $workerInvoker, $publisher) {
 
