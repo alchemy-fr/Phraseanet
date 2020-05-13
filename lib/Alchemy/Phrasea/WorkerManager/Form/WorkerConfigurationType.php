@@ -34,6 +34,12 @@ class WorkerConfigurationType extends AbstractType
             ->add(MessagePublisher::POPULATE_INDEX_TYPE, 'text', [
                 'label' => 'Populate Index retry delay in ms'
             ])
+            ->add('delayedSubdef', 'text', [
+                'label' => 'Subdef delay in ms'
+            ])
+            ->add('delayedWriteMeta', 'text', [
+                'label' => 'Write meta delay in ms'
+            ])
         ;
     }
 

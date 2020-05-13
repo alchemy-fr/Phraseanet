@@ -77,8 +77,8 @@ class WriteMetadatasWorker implements WorkerInterface
                 ];
                 $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_METADATAS_QUEUE);
 
-                $message = MessagePublisher::WRITE_METADATAS_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-                $this->messagePublisher->pushLog($message);
+//                $message = MessagePublisher::WRITE_METADATAS_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
+//                $this->messagePublisher->pushLog($message);
 
                 return ;
             }

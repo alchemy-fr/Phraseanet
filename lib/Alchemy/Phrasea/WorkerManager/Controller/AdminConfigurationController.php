@@ -21,7 +21,12 @@ class AdminConfigurationController extends Controller
 {
     public function indexAction(PhraseaApplication $app, Request $request)
     {
-        return $this->render('admin/worker-manager/index.html.twig');
+        /** @var AMQPConnection $serverConnection */
+        $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+
+        return $this->render('admin/worker-manager/index.html.twig', [
+            'isConnected' => ($serverConnection->getChannel() != null) ? true : false
+        ]);
     }
 
     /**
@@ -48,6 +53,7 @@ class AdminConfigurationController extends Controller
             $serverConnection = $this->app['alchemy_worker.amqp.connection'];
             // change the queue TTL
             $serverConnection->reinitializeQueue($retryQueuesToReset);
+            $serverConnection->reinitializeQueue(AMQPConnection::$defaultDelayedQueues);
 
             return $app->redirectPath('worker_admin');
         }

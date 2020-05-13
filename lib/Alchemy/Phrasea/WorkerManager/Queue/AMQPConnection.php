@@ -63,6 +63,9 @@ class AMQPConnection
     // default message TTL in retry queue in millisecond
     const RETRY_DELAY =  10000;
 
+    // default message TTL in delayed queue in millisecond
+    const DELAY = 5000;
+
     public function __construct(PropertyAccess $conf)
     {
         $defaultConfiguration = [
@@ -150,7 +153,7 @@ class AMQPConnection
             $this->channel->queue_declare(self::$defaultRetryQueues[$queueName], false, true, false, false, false, new AMQPTable([
                 'x-dead-letter-exchange'    => AMQPConnection::ALCHEMY_EXCHANGE,
                 'x-dead-letter-routing-key' => $queueName,
-                'x-message-ttl'             => $this->getTtlPerRouting($queueName)
+                'x-message-ttl'             => $this->getTtlRetryPerRouting($queueName)
             ]));
 
             $this->channel->queue_bind(self::$defaultRetryQueues[$queueName], AMQPConnection::RETRY_ALCHEMY_EXCHANGE, self::$defaultRetryQueues[$queueName]);
@@ -161,7 +164,7 @@ class AMQPConnection
             $this->channel->queue_declare($queueName, false, true, false, false, false, new AMQPTable([
                 'x-dead-letter-exchange'    => AMQPConnection::ALCHEMY_EXCHANGE,
                 'x-dead-letter-routing-key' => $routing,
-                'x-message-ttl'             => $this->getTtlPerRouting($routing)
+                'x-message-ttl'             => $this->getTtlRetryPerRouting($routing)
             ]));
 
             $this->channel->queue_bind($queueName, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $queueName);
@@ -176,7 +179,7 @@ class AMQPConnection
             $this->channel->queue_declare($queueName, false, true, false, false, false, new AMQPTable([
                 'x-dead-letter-exchange'    => AMQPConnection::ALCHEMY_EXCHANGE,
                 'x-dead-letter-routing-key' => $routing,
-                'x-message-ttl'             => 5000
+                'x-message-ttl'             => $this->getTtlDelayedPerRouting($routing)
             ]));
 
             $this->channel->queue_bind($queueName, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $queueName);
@@ -191,6 +194,10 @@ class AMQPConnection
 
     public function reinitializeQueue(array $queuNames)
     {
+        if (!isset($this->channel)) {
+            $this->getChannel();
+            $this->declareExchange();
+        }
         foreach ($queuNames as $queuName) {
             if (in_array($queuName, self::$defaultQueues)) {
                 $this->channel->queue_purge($queuName);
@@ -216,7 +223,7 @@ class AMQPConnection
      * @param $routing
      * @return int
      */
-    private function getTtlPerRouting($routing)
+    private function getTtlRetryPerRouting($routing)
     {
         $config = $this->conf->get(['workers']);
 
@@ -232,5 +239,21 @@ class AMQPConnection
         }
 
         return self::RETRY_DELAY;
+    }
+
+    private function getTtlDelayedPerRouting($routing)
+    {
+        $delayed = [
+            MessagePublisher::METADATAS_QUEUE => 'delayedWriteMeta',
+            MessagePublisher::SUBDEF_QUEUE    => 'delayedSubdef'
+        ];
+
+        $config = $this->conf->get(['workers']);
+
+        if (isset($config['retry_queue']) && isset($config['retry_queue'][$delayed[$routing]])) {
+            return (int)$config['retry_queue'][$delayed[$routing]];
+        }
+
+        return self::DELAY;
     }
 }

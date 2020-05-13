@@ -72,9 +72,9 @@ class SubdefCreationWorker implements WorkerInterface
                         'payload'       => $payload
                     ];
                     $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_SUBDEF_QUEUE);
-
-                    $message = MessagePublisher::SUBDEF_CREATION_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-                    $this->messagePublisher->pushLog($message);
+//
+//                    $message = MessagePublisher::SUBDEF_CREATION_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
+//                    $this->messagePublisher->pushLog($message);
 
                     return ;
                 }
