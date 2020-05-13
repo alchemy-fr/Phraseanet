@@ -18,28 +18,6 @@ services:
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
 
-  builder:
-    build:
-      context: .
-      target: builder
-      args:
-        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
-        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
-    stdin_open: true
-    tty: true
-    volumes:
-      - ../:/var/alchemy
-      - .:/var/alchemy/Phraseanet
-      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
-      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
-      - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-      - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-      - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
-      - ${SSH_AUTH_SOCK}:/ssh-auth-sock
-      - ${HOME}/.ssh:/home/app/.ssh
-      - dev_vol:/home/app
-    environment:
-      - PHRASEANET_PROJECT_NAME
 
   phraseanet:
     environment:
@@ -75,11 +53,6 @@ services:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
 
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-    - 1025:1025
-    - 8025:8025
 
   elasticsearch:
     ports:
@@ -122,6 +95,3 @@ networks:
       config:
         - subnet: $PHRASEANET_SUBNET_IPS
 
-volumes:
-  dev_vol:
-    driver: local
