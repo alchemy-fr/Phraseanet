@@ -44,7 +44,7 @@
                 {% set extraclass = rollover_gif ? 'rollover-gif-out' : '' %}
                 {{ thumbnail.format(record.get_thumbnail(), images_size, images_size, extraclass, true, false) }}
                 {% if rollover_gif %}
-                    {{ thumbnail.format(rollover_gif, images_size, images_size, 'rollover-gif-hover', true, false) }}
+                    {{ thumbnail.format(rollover_gif, images_size, images_size, 'rollover-gif-hover hide', true, false) }}
                 {% endif %}
             </div>
         </div>
