@@ -79,6 +79,7 @@
                             </div>
                         </div>
                     {% endif %}
+
                     {% set require_captcha = app["conf"].get(['registry', 'webservices', 'captchas-enabled']) %}
                     {% if require_captcha %}
                         <div class="row-fluid">

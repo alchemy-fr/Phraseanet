@@ -18,6 +18,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PhraseaRegisterForm extends AbstractType
 {
@@ -96,6 +97,12 @@ class PhraseaRegisterForm extends AbstractType
                         'min'      => 1,
                     ]),
                 ],
+            ]);
+        }
+
+        if ($this->app['conf']->get(['registry', 'webservices', 'captchas-enabled'])) {
+            $builder->add('g-recaptcha-response', 'hidden', [
+                'required'    => true
             ]);
         }
 
