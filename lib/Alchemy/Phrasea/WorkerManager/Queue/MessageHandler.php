@@ -31,6 +31,8 @@ class MessageHandler
             return ;
         }
 
+        $serverConnection->declareExchange();
+        
         // define consume callbacks
         $callback = function (AMQPMessage $message) use ($channel, $workerInvoker, $publisher) {
 
