@@ -69,7 +69,8 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
                 $app['alchemy_worker.logger'],
                 $app['dispatcher'],
                 $app['phraseanet.filesystem'],
-                $app['repo.worker-running-job']
+                $app['repo.worker-running-job'],
+                $app['elasticsearch.indexer']
             ))
                 ->setApplicationBox($app['phraseanet.appbox'])
                 ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))

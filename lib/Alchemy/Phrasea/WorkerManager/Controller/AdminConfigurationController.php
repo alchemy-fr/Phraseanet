@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -61,6 +62,34 @@ class AdminConfigurationController extends Controller
         return $this->render('admin/worker-manager/worker_configuration.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    public function infoAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $app['repo.worker-running-job'];
+
+        return $this->render('admin/worker-manager/worker_info.html.twig', [
+            'workerRunningJob' => $repoWorker->findAll()
+        ]);
+    }
+
+    public function truncateTableAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $app['repo.worker-running-job'];
+        $repoWorker->truncateWorkerTable();
+
+        return $app->redirectPath('worker_admin');
+    }
+
+    public function deleteFinishedAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $app['repo.worker-running-job'];
+        $repoWorker->deleteFinishedWorks();
+
+        return $app->redirectPath('worker_admin');
     }
 
     public function searchengineAction(PhraseaApplication $app, Request $request)

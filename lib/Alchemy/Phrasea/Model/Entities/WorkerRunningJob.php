@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="WorkerRunningJob",
@@ -15,6 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class WorkerRunningJob
 {
+    const FINISHED = 'finished';
+    const RUNNING  = 'running';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -42,6 +46,22 @@ class WorkerRunningJob
      * @ORM\Column(type="string", name="work_on")
      */
     private $workOn;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $published;
+
+    /**
+     * @ORM\Column(type="string", name="status")
+     */
+    private $status;
 
     /**
      * @return integer
@@ -129,5 +149,51 @@ class WorkerRunningJob
     public function getWorkOn()
     {
         return $this->workOn;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $published
+     * @return $this
+     */
+    public function setPublished(\DateTime $published)
+    {
+        $this->published = $published;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPublished()
+    {
+        return $this->published;
+    }
+
+    /**
+     * @param $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

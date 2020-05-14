@@ -10,6 +10,11 @@
                     {{ "Configuration" | trans }}
                 </a>
             </li>
+            <li class="worker-info" role="presentation">
+                <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info">
+                    {{ "Working info" | trans }}
+                </a>
+            </li>
             <li class="worker-searchengine" role="presentation">
                 <a href="#worker-searchengine" aria-controls="worker-searchengine" role="tab" data-toggle="tab" data-url="/admin/worker-manager/searchengine">
                     {{ "Searchengine" | trans }}
@@ -36,6 +41,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade" id="worker-configuration"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-info"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-searchengine"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-pull-assets"></div>
             <div role="tabpanel" class="tab-pane fade in active" id="worker-subview"></div>

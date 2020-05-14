@@ -72,6 +72,8 @@ class MessagePublisher
 
     public function publishMessage(array $payload, $queueName, $retryCount = null, $workerMessage = '')
     {
+        // add published timestamp to all message payload
+        $payload['payload']['published'] = time();
         $msg = new AMQPMessage(json_encode($payload));
         $routing = array_search($queueName, AMQPConnection::$defaultRetryQueues);
 

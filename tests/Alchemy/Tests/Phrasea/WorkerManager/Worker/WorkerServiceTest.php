@@ -29,6 +29,7 @@ class WorkerServiceTest extends \PHPUnit_Framework_TestCase
         $app['dispatcher'] = $this->prophesize('Symfony\Component\EventDispatcher\EventDispatcherInterface')->reveal();
         $app['phraseanet.filesystem'] = $this->prophesize('Alchemy\Phrasea\Filesystem\FilesystemService')->reveal();
         $app['repo.worker-running-job'] = $this->prophesize('Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository')->reveal();
+        $app['elasticsearch.indexer'] = $this->prophesize('Alchemy\Phrasea\SearchEngine\Elastic\Indexer')->reveal();
 
         $writer = $this->prophesize('PHPExiftool\Writer')->reveal();
 
@@ -38,7 +39,8 @@ class WorkerServiceTest extends \PHPUnit_Framework_TestCase
             $app['alchemy_worker.logger'],
             $app['dispatcher'],
             $app['phraseanet.filesystem'],
-            $app['repo.worker-running-job']
+            $app['repo.worker-running-job'],
+            $app['elasticsearch.indexer']
             );
         $this->assertInstanceOf('Alchemy\\Phrasea\\WorkerManager\\Worker\\WorkerInterface', $subdefCreationWorker);
 

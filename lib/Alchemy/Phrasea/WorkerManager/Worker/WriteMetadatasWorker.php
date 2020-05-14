@@ -88,12 +88,15 @@ class WriteMetadatasWorker implements WorkerInterface
             $em->beginTransaction();
 
             try {
+                $date = new \DateTime();
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setDataboxId($databoxId)
                     ->setRecordId($recordId)
                     ->setWork($param)
                     ->setWorkOn($payload['subdefName'])
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
                 ;
 
                 $em->persist($workerRunningJob);
@@ -246,7 +249,8 @@ class WriteMetadatasWorker implements WorkerInterface
             // tell that we have finished to work on this file
             $em->beginTransaction();
             try {
-                $em->remove($workerRunningJob);
+                $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
             } catch (\Exception $e) {

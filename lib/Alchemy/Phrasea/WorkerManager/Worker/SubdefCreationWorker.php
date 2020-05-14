@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
@@ -31,6 +32,7 @@ class SubdefCreationWorker implements WorkerInterface
     private $dispatcher;
     private $filesystem;
     private $repoWorker;
+    private $indexer;
 
     public function __construct(
         SubdefGenerator $subdefGenerator,
@@ -38,7 +40,8 @@ class SubdefCreationWorker implements WorkerInterface
         LoggerInterface $logger,
         EventDispatcherInterface $dispatcher,
         FilesystemService $filesystem,
-        WorkerRunningJobRepository $repoWorker
+        WorkerRunningJobRepository $repoWorker,
+        Indexer $indexer
     )
     {
         $this->subdefGenerator  = $subdefGenerator;
@@ -47,6 +50,7 @@ class SubdefCreationWorker implements WorkerInterface
         $this->dispatcher       = $dispatcher;
         $this->filesystem       = $filesystem;
         $this->repoWorker       = $repoWorker;
+        $this->indexer          = $indexer;
     }
 
     public function process(array $payload)
@@ -84,12 +88,15 @@ class SubdefCreationWorker implements WorkerInterface
                 $em->beginTransaction();
 
                 try {
+                    $date = new \DateTime();
                     $workerRunningJob = new WorkerRunningJob();
                     $workerRunningJob
                         ->setDataboxId($databoxId)
                         ->setRecordId($recordId)
                         ->setWork(PhraseaTokens::MAKE_SUBDEF)
                         ->setWorkOn($payload['subdefName'])
+                        ->setPublished($date->setTimestamp($payload['published']))
+                        ->setStatus(WorkerRunningJob::RUNNING)
                     ;
 
                     $em->persist($workerRunningJob);
@@ -152,10 +159,14 @@ class SubdefCreationWorker implements WorkerInterface
                     }
                 }
 
+                // update elastic
+                $this->indexer->flushQueue();
+
                 // tell that we have finished to work on this file
                 $em->beginTransaction();
                 try {
-                    $em->remove($workerRunningJob);
+                    $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                    $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
                 } catch (\Exception $e) {

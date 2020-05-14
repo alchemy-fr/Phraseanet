@@ -53,6 +53,18 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_configuration');
 
+        $controllers->match('/info',  'controller.worker.admin.configuration:infoAction')
+            ->method('GET')
+            ->bind('worker_admin_info');
+
+        $controllers->match('/truncate',  'controller.worker.admin.configuration:truncateTableAction')
+            ->method('POST')
+            ->bind('worker_admin_truncate');
+
+        $controllers->match('/delete-finished',  'controller.worker.admin.configuration:deleteFinishedAction')
+            ->method('POST')
+            ->bind('worker_admin_delete_finished');
+
         $controllers->match('/searchengine',  'controller.worker.admin.configuration:searchengineAction')
             ->method('GET|POST')
             ->bind('worker_admin_searchengine');

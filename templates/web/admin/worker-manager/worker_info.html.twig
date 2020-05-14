@@ -1,0 +1,49 @@
+<h1> worker information</h1>
+
+<form action="{{ path("worker_admin_truncate") }}" method="POST">
+    <p class="alert alert-danger">
+        <strong>Warning!</strong>
+        It's truncate all work table content !
+    </p>
+    <button class="btn btn-primary">
+        {{ 'Truncate table' }}
+    </button>
+</form>
+
+<form action="{{ path("worker_admin_delete_finished") }}" method="POST">
+    <p class="alert alert-danger">
+        <strong>Warning!</strong>
+        It's delete all finished works !
+    </p>
+    <button class="btn btn-primary">
+        {{ 'Delete finished' }}
+    </button>
+</form>
+
+<table class="admintable">
+    <thead>
+    <tr>
+        <th class="sortable">databox_id</th>
+        <th class="sortable">record_id</th>
+        <th class="sortable">work</th>
+        <th class="sortable">work_on</th>
+        <th class="sortable">created</th>
+        <th class="sortable">published</th>
+        <th class="sortable">status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for workerRow in workerRunningJob %}
+    <tr>
+        <td>{{ workerRow.databoxId }}</td>
+        <td>{{ workerRow.recordId }}</td>
+        <td>{{ workerRow.work }}</td>
+        <td>{{ workerRow.workOn }}</td>
+        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.status }}</td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
