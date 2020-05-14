@@ -118,7 +118,7 @@ class AMQPConnection
 
     public function declareExchange()
     {
-        if (!isset($this->channel)) {
+        if (isset($this->channel)) {
             $this->channel->exchange_declare(self::ALCHEMY_EXCHANGE, 'direct', false, true, false);
             $this->channel->exchange_declare(self::RETRY_ALCHEMY_EXCHANGE, 'direct', false, true, false);
         }

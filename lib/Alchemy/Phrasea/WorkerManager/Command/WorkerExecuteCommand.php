@@ -51,6 +51,8 @@ class WorkerExecuteCommand extends Command
             return;
         }
 
+        $serverConnection->declareExchange();
+
         /** @var WorkerInvoker $workerInvoker */
         $workerInvoker = $this->container['alchemy_worker.worker_invoker'];
 
