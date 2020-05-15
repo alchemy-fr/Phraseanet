@@ -73,7 +73,6 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
                 $app['elasticsearch.indexer']
             ))
                 ->setApplicationBox($app['phraseanet.appbox'])
-                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
                 ;
         }));
 

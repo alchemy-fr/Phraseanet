@@ -9,7 +9,10 @@ use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
@@ -35,6 +38,10 @@ class RecordSubscriber implements EventSubscriberInterface
      * @var callable
      */
     private $appboxLocator;
+    /**
+     * @var WorkerRunningJobRepository
+     */
+    private $repoWorker;
 
     public function __construct(Application $app, callable $appboxLocator)
     {
@@ -42,6 +49,7 @@ class RecordSubscriber implements EventSubscriberInterface
         $this->workerResolver      = $app['alchemy_worker.type_based_worker_resolver'];
         $this->app                 = $app;
         $this->appboxLocator       = $appboxLocator;
+        $this->repoWorker          = $app['repo.worker-running-job'];
     }
 
     public function onSubdefinitionCreate(SubdefinitionCreateEvent $event)
@@ -95,6 +103,23 @@ class RecordSubscriber implements EventSubscriberInterface
                 'status'        => ''
             ]
         ];
+
+        $em = $this->repoWorker->getEntityManager();
+        $workerRunningJob = $this->repoWorker->findOneBy([
+            'databoxId' => $event->getRecord()->getDataboxId(),
+            'recordId'  => $event->getRecord()->getRecordId(),
+            'work'       => PhraseaTokens::MAKE_SUBDEF,
+            'workOn'    => $event->getSubdefName()
+        ]);
+
+        $em->beginTransaction();
+        try {
+            $em->remove($workerRunningJob);
+            $em->flush();
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+        }
 
         $this->messagePublisher->publishMessage(
             $payload,
@@ -197,6 +222,25 @@ class RecordSubscriber implements EventSubscriberInterface
                 json_encode($payload)
             );
             $this->messagePublisher->pushLog($logMessage);
+
+            $jeton = ($event->getSubdefName() == "document") ? PhraseaTokens::WRITE_META_DOC : PhraseaTokens::WRITE_META_SUBDEF;
+
+            $em = $this->repoWorker->getEntityManager();
+            $workerRunningJob = $this->repoWorker->findOneBy([
+                'databoxId' => $event->getRecord()->getDataboxId(),
+                'recordId'  => $event->getRecord()->getRecordId(),
+                'work'       => $jeton,
+                'workOn'    => $event->getSubdefName()
+            ]);
+
+            $em->beginTransaction();
+            try {
+                $em->remove($workerRunningJob);
+                $em->flush();
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
 
             $this->messagePublisher->publishMessage(
                 $payload,

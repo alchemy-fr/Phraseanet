@@ -21,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class SubdefCreationWorker implements WorkerInterface
 {
     use ApplicationBoxAware;
-    use EntityManagerAware;
 
     private $subdefGenerator;
 
@@ -84,7 +83,7 @@ class SubdefCreationWorker implements WorkerInterface
                 }
 
                 // tell that a file is in used to create subdef
-                $em = $this->getEntityManager();
+                $em = $this->repoWorker->getEntityManager();
                 $em->beginTransaction();
 
                 try {
@@ -107,76 +106,57 @@ class SubdefCreationWorker implements WorkerInterface
                     $em->rollback();
                 }
 
-                try {
-                    $this->subdefGenerator->setLogger($this->logger);
+                $this->subdefGenerator->setLogger($this->logger);
 
-                    $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
+                $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
 
-                    // begin to check if the subdef is successfully generated
-                    $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($payload['subdefName']);
-                    $filePathToCheck = null;
+                // begin to check if the subdef is successfully generated
+                $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($payload['subdefName']);
+                $filePathToCheck = null;
 
-                    if ($record->has_subdef($payload['subdefName']) ) {
-                        $filePathToCheck = $record->get_subdef($payload['subdefName'])->getRealPath();
-                    }
-
-                    $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
-
-                    if (!$this->filesystem->exists($filePathToCheck)) {
-
-                        $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
-
-                        $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
-                            $record,
-                            $payload['subdefName'],
-                            'Subdef generation failed !',
-                            $count
-                        ));
-
-                        $this->subdefGenerator->setLogger($oldLogger);
-                        return ;
-                    }
-                    // checking ended
-
-                    // order to write meta for the subdef if needed
-                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent($record, $payload['subdefName']));
-
-                    $this->subdefGenerator->setLogger($oldLogger);
-
-                    //  update jeton when subdef is created
-                    $this->updateJeton($record);
-
-                    $parents = $record->get_grouping_parents();
-
-                    //  create a cover for a story
-                    //  used when uploaded via uploader-service and grouped as a story
-                    if (!$parents->is_empty() && isset($payload['status']) && $payload['status'] == MessagePublisher::NEW_RECORD_MESSAGE  && in_array($payload['subdefName'], array('thumbnail', 'preview'))) {
-                        foreach ($parents->get_elements() as $story) {
-                            if (self::checkIfFirstChild($story, $record)) {
-                                $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
-
-                                $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
-                            }
-                        }
-                    }
-                } catch (\Exception $e) {
-                    $payload = [
-                        'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
-                        'payload'       => $payload
-                    ];
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_SUBDEF_QUEUE);
-
-                    $em->beginTransaction();
-                    try {
-                        $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                        $em->persist($workerRunningJob);
-                        $em->flush();
-                        $em->commit();
-                    } catch (\Exception $e) {
-                        $em->rollback();
-                    }
+                if ($record->has_subdef($payload['subdefName']) ) {
+                    $filePathToCheck = $record->get_subdef($payload['subdefName'])->getRealPath();
                 }
 
+                $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
+
+                if (!$this->filesystem->exists($filePathToCheck)) {
+
+                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                        $record,
+                        $payload['subdefName'],
+                        'Subdef generation failed !',
+                        $count
+                    ));
+
+                    $this->subdefGenerator->setLogger($oldLogger);
+                    return ;
+                }
+                // checking ended
+
+                // order to write meta for the subdef if needed
+                $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent($record, $payload['subdefName']));
+
+                $this->subdefGenerator->setLogger($oldLogger);
+
+                //  update jeton when subdef is created
+                $this->updateJeton($record);
+
+                $parents = $record->get_grouping_parents();
+
+                //  create a cover for a story
+                //  used when uploaded via uploader-service and grouped as a story
+                if (!$parents->is_empty() && isset($payload['status']) && $payload['status'] == MessagePublisher::NEW_RECORD_MESSAGE  && in_array($payload['subdefName'], array('thumbnail', 'preview'))) {
+                    foreach ($parents->get_elements() as $story) {
+                        if (self::checkIfFirstChild($story, $record)) {
+                            $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
+
+                            $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
+                        }
+                    }
+                }
 
                 // update elastic
                 $this->indexer->flushQueue();
