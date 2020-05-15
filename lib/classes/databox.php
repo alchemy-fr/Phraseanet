@@ -1257,7 +1257,7 @@ class databox extends base implements ThumbnailedElement
     public function reindex()
     {
         $this->clearCandidates();
-        $this->get_connection()->update('pref', ['updated_on' => '0000-00-00 00:00:00'], ['prop' => 'indexes']);
+        $this->get_connection()->update('pref', ['updated_on' => null], ['prop' => 'indexes']);
 
         // Set TO_INDEX flag on all records
         $sql = "UPDATE record SET jeton = ((jeton & ~ :token_and) | :token_or)";

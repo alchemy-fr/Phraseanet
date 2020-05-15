@@ -623,7 +623,7 @@ abstract class PhraseanetTestCase extends WebTestCase
                 $app->getAclForUser($user)->update_rights_to_base(
                     $collection->get_base_id(),
                     [
-                        'creationdate' => '1',              // todo : wtf
+                        //'creationdate' => '1',              // todo : wtf
                         \ACL::CANPUTINALBUM      => true,
                         \ACL::CANDWNLDHD         => true,
                         \ACL::NOWATERMARK        => true,

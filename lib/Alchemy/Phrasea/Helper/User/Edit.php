@@ -358,19 +358,27 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             ]
         );
 
+        /*
+        *  $time_limited 1       : active
+        *  $time_limited 0       : unactive
+        *  $time_limited -1 or 2 : undefined
+        */
         $time_limited = -1;
         $limited_from = $limited_to = false;
 
         foreach ($rs as $row) {
+            // if right in basusr don't exist
             if ($time_limited < 0)
                 $time_limited = $row['time_limited'];
-            if ($time_limited < 2 && $row['time_limited'] != $row['time_limited'])
+
+            // if right in basusr exist but not the same for all selected users
+            if ($time_limited < 2 && $time_limited != $row['time_limited'])  
                 $time_limited = 2;
 
-            if ($limited_from !== '' && trim($row['limited_from']) != '0000-00-00 00:00:00') {
+            if ($limited_from !== '' && $row['limited_from'] !== null && trim($row['limited_from']) != '0000-00-00 00:00:00') {
                 $limited_from = $limited_from === false ? $row['limited_from'] : (($limited_from == $row['limited_from']) ? $limited_from : '');
             }
-            if ($limited_to !== '' && trim($row['limited_to']) != '0000-00-00 00:00:00') {
+            if ($limited_to !== '' && $row['limited_to'] !== null && trim($row['limited_to']) != '0000-00-00 00:00:00') {
                 $limited_to = $limited_to === false ? $row['limited_to'] : (($limited_to == $row['limited_to']) ? $limited_to : '');
             }
         }
@@ -384,9 +392,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $limited_to = $date_obj_to->format('Y-m-d');
         }
 
-        $datas = ['time_limited' => $time_limited, 'limited_from' => $limited_from, 'limited_to'   => $limited_to];
-
-        $this->users_datas = $datas;
+        $this->users_datas = ['time_limited' => $time_limited, 'limited_from' => $limited_from, 'limited_to'   => $limited_to];
 
         return [
             'datas'        => $this->users_datas,
@@ -438,14 +444,14 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             $limited_from = array_pop($limited_from);
             $limited_to = array_pop($limited_to);
 
-            if ($limited_from !== '' && trim($limited_from) != '0000-00-00 00:00:00') {
+            if ($limited_from !== '' && $limited_from !== null && trim($limited_from) != '0000-00-00 00:00:00') {
                 $date_obj_from = new \DateTime($limited_from);
                 $limited_from = $date_obj_from->format('Y-m-d');
             } else {
                 $limited_from = false;
             }
 
-            if ($limited_to !== '' && trim($limited_to) != '0000-00-00 00:00:00') {
+            if ($limited_to !== '' && $limited_to !== null && trim($limited_to) != '0000-00-00 00:00:00') {
                 $date_obj_to = new \DateTime($limited_to);
                 $limited_to = $date_obj_to->format('Y-m-d');
             } else {
