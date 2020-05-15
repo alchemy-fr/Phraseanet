@@ -27,10 +27,12 @@
                     <div class="span6">
                         <h1>{{ 'Editer' | trans }}</h1>
                         <br />
-                        <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b></label>
+                        <label for="feed_add_title"><b>{{ 'publication : titre' | trans }}</b> &nbsp;<span>( {{ 'publication : title warning' | trans }} )</span></label>
                         <input class="required_text input-block-level" style="max-width:500px" type="text" name="title" id="feed_add_title" value="{{ entry.getTitle() }}" />
-                        <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b></label>
+                        <label><span class="feed_title_warning feed_warning">{{ 'publication : title alert' | trans }}</span></label>
+                        <label for="feed_add_subtitle"><b>{{ 'publication : sous titre' | trans }}</b> &nbsp;<span>( {{ 'publication : subtitle warning' | trans }} )</span></label>
                         <textarea id="feed_add_subtitle" style="max-width:500px" class="input-block-level" name="subtitle" rows="5">{{ entry.getSubTitle() }}</textarea>
+                        <label><span class="feed_subtitle_warning feed_warning">{{ 'publication : subtitle alert' | trans }}</span></label>
                         <label for="feed_add_author_name"><b>{{ 'publication : autheur' | trans }}</b></label>
                         <input class="required_text input-block-level" style="max-width:500px" type="text" name="author_name" id="feed_add_author_name" value="{{ entry.getAuthorName() }}" />
                         <label for="feed_add_author_mail"><b>{{ 'publication : email autheur' | trans }}</b></label>
