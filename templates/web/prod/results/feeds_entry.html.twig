@@ -46,7 +46,7 @@
             <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.feed.id }) }}">
                 {% set feed_name = entry.feed.title %}
                 {% trans with {'%feed_name%' : feed_name} %}dans %feed_name%{% endtrans %}
-                <i class="fa fa-rss-square"></i>
+                <img style="height:18px;" src="{% if entry.feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ entry.feed.id }}.jpg{% endif %}"/>
             </a>
         {% endif %}
     </div>

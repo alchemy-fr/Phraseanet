@@ -96,13 +96,13 @@
         </span>
         <span class="paginator">
           {% if Page - 1  > 0 %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="prev_res icon-round-chevron_left-24px">&nbsp;</a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page - 1) }) }}" class="result_page prev_res icon-round-chevron_left-24px">&nbsp;</a>
           {% endif %}
           <span>
             Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
-          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="next_res icon-round-chevron_right-24px">&nbsp;</a>
+          <a href="{{ path('prod_workzone_search', { 'Query' : Query, 'Year' : Year, 'Type' : Type, 'Page' : (Page + 1) }) }}" class="result_page next_res icon-round-chevron_right-24px">&nbsp;</a>
           {% endif %}
         </span>
     </div>
