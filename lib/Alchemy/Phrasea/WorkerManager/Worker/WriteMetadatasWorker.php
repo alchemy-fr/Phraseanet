@@ -107,143 +107,163 @@ class WriteMetadatasWorker implements WorkerInterface
                 $em->rollback();
             }
 
-            $record  = $databox->get_record($recordId);
+            try {
+                $record  = $databox->get_record($recordId);
 
-            $subdef = $record->get_subdef($payload['subdefName']);
+                $subdef = $record->get_subdef($payload['subdefName']);
 
-            if ($subdef->is_physically_present()) {
-                $metadata = new MetadataBag();
+                if ($subdef->is_physically_present()) {
+                    $metadata = new MetadataBag();
 
-                // add Uuid in metadatabag
-                if ($record->getUuid()) {
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\XMPExif\ImageUniqueID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\ExifIFD\ImageUniqueID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\IPTC\UniqueDocumentID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                }
-
-                // read document fields and add to metadatabag
-                $caption = $record->get_caption();
-                foreach ($databox->get_meta_structure() as $fieldStructure) {
-
-                    $tagName = $fieldStructure->get_tag()->getTagname();
-                    $fieldName = $fieldStructure->get_name();
-
-                    // skip fields with no src
-                    if ($tagName == '' || $tagName == 'Phraseanet:no-source') {
-                        continue;
-                    }
-
-                    // check exiftool known tags to skip Phraseanet:tf-*
-                    try {
-                        $tag = TagFactory::getFromRDFTagname($tagName);
-                        if(!$tag->isWritable()) {
-                            continue;
-                        }
-                    } catch (TagUnknown $e) {
-                        continue;
-                    }
-
-                    try {
-                        $field = $caption->get_field($fieldName);
-                        $fieldValues = $field->get_values();
-
-                        if ($fieldStructure->is_multi()) {
-                            $values = array();
-                            foreach ($fieldValues as $value) {
-                                $values[] = $this->removeNulChar($value->getValue());
-                            }
-
-                            $value = new Multi($values);
-                        } else {
-                            $fieldValue = array_pop($fieldValues);
-                            $value = $this->removeNulChar($fieldValue->getValue());
-
-                            // fix the dates edited into phraseanet
-                            if($fieldStructure->get_type() === $fieldStructure::TYPE_DATE) {
-                                try {
-                                    $value = self::fixDate($value); // will return NULL if the date is not valid
-                                }
-                                catch (\Exception $e) {
-                                    $value = null;    // do NOT write back to iptc
-                                }
-                            }
-
-                            if($value !== null) {   // do not write invalid dates
-                                $value = new Mono($value);
-                            }
-                        }
-                    } catch(\Exception $e) {
-                        // the field is not set in the record, erase it
-                        if ($fieldStructure->is_multi()) {
-                            $value = new Multi(array(''));
-                        }
-                        else {
-                            $value = new Mono('');
-                        }
-                    }
-
-                    if($value !== null) {   // do not write invalid data
+                    // add Uuid in metadatabag
+                    if ($record->getUuid()) {
                         $metadata->add(
-                            new Metadata($fieldStructure->get_tag(), $value)
+                            new Metadata(
+                                new Tag\XMPExif\ImageUniqueID(),
+                                new Mono($record->getUuid())
+                            )
+                        );
+                        $metadata->add(
+                            new Metadata(
+                                new Tag\ExifIFD\ImageUniqueID(),
+                                new Mono($record->getUuid())
+                            )
+                        );
+                        $metadata->add(
+                            new Metadata(
+                                new Tag\IPTC\UniqueDocumentID(),
+                                new Mono($record->getUuid())
+                            )
                         );
                     }
-                }
 
-                $this->writer->reset();
+                    // read document fields and add to metadatabag
+                    $caption = $record->get_caption();
+                    foreach ($databox->get_meta_structure() as $fieldStructure) {
 
-                if ($MWG) {
-                    $this->writer->setModule(Writer::MODULE_MWG, true);
-                }
+                        $tagName = $fieldStructure->get_tag()->getTagname();
+                        $fieldName = $fieldStructure->get_name();
 
-                $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
+                        // skip fields with no src
+                        if ($tagName == '' || $tagName == 'Phraseanet:no-source') {
+                            continue;
+                        }
 
-                // write meta in file
-                try {
-                    $this->writer->write($subdef->getRealPath(), $metadata);
+                        // check exiftool known tags to skip Phraseanet:tf-*
+                        try {
+                            $tag = TagFactory::getFromRDFTagname($tagName);
+                            if(!$tag->isWritable()) {
+                                continue;
+                            }
+                        } catch (TagUnknown $e) {
+                            continue;
+                        }
 
-                    $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
-                } catch (PHPExiftoolException $e) {
-                    $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
-                    $this->logger->error($workerMessage);
+                        try {
+                            $field = $caption->get_field($fieldName);
+                            $fieldValues = $field->get_values();
 
+                            if ($fieldStructure->is_multi()) {
+                                $values = array();
+                                foreach ($fieldValues as $value) {
+                                    $values[] = $this->removeNulChar($value->getValue());
+                                }
+
+                                $value = new Multi($values);
+                            } else {
+                                $fieldValue = array_pop($fieldValues);
+                                $value = $this->removeNulChar($fieldValue->getValue());
+
+                                // fix the dates edited into phraseanet
+                                if($fieldStructure->get_type() === $fieldStructure::TYPE_DATE) {
+                                    try {
+                                        $value = self::fixDate($value); // will return NULL if the date is not valid
+                                    }
+                                    catch (\Exception $e) {
+                                        $value = null;    // do NOT write back to iptc
+                                    }
+                                }
+
+                                if($value !== null) {   // do not write invalid dates
+                                    $value = new Mono($value);
+                                }
+                            }
+                        } catch(\Exception $e) {
+                            // the field is not set in the record, erase it
+                            if ($fieldStructure->is_multi()) {
+                                $value = new Multi(array(''));
+                            }
+                            else {
+                                $value = new Mono('');
+                            }
+                        }
+
+                        if($value !== null) {   // do not write invalid data
+                            $metadata->add(
+                                new Metadata($fieldStructure->get_tag(), $value)
+                            );
+                        }
+                    }
+
+                    $this->writer->reset();
+
+                    if ($MWG) {
+                        $this->writer->setModule(Writer::MODULE_MWG, true);
+                    }
+
+                    $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
+
+                    // write meta in file
+                    try {
+                        $this->writer->write($subdef->getRealPath(), $metadata);
+
+                        $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
+                    } catch (PHPExiftoolException $e) {
+                        $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
+                        $this->logger->error($workerMessage);
+
+                        $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+                        $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                            $record,
+                            $payload['subdefName'],
+                            SubdefinitionWritemetaEvent::FAILED,
+                            $workerMessage,
+                            $count
+                        ));
+                    }
+
+                    // mark write metas finished
+                    $this->updateJeton($record);
+                } else {
                     $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
                     $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
                         $record,
                         $payload['subdefName'],
                         SubdefinitionWritemetaEvent::FAILED,
-                        $workerMessage,
+                        'Subdef is not physically present!',
                         $count
                     ));
                 }
 
-                // mark write metas finished
-                $this->updateJeton($record);
-            } else {
-                $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            } catch(\Exception $e) {
+                $payload = [
+                    'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                    'payload' => $payload
+                ];
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_METADATAS_QUEUE);
 
-                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
-                    $record,
-                    $payload['subdefName'],
-                    SubdefinitionWritemetaEvent::FAILED,
-                    'Subdef is not physically present!',
-                    $count
-                ));
+
+                $em->beginTransaction();
+                try {
+                    $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                    $em->persist($workerRunningJob);
+                    $em->flush();
+                    $em->commit();
+                } catch (\Exception $e) {
+                    $em->rollback();
+                }
             }
 
             // tell that we have finished to work on this file

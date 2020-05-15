@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1fda2bd48bdb1ad3a2cf0bfca723d775",
+    "content-hash": "d986d21a2ad9125f83251d4c3943ffd7",
     "packages": [
         {
             "name": "alchemy-fr/tcpdf-clone",
@@ -5147,22 +5147,26 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v2.9.0",
+            "version": "v2.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "08d105d6b69ff4d8fa4fe090c49afdc568a5665b"
+                "reference": "6353c5d2d3021a301914bc6566e695c99cfeb742"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/08d105d6b69ff4d8fa4fe090c49afdc568a5665b",
-                "reference": "08d105d6b69ff4d8fa4fe090c49afdc568a5665b",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/6353c5d2d3021a301914bc6566e695c99cfeb742",
+                "reference": "6353c5d2d3021a301914bc6566e695c99cfeb742",
                 "shasum": ""
             },
             "require": {
-                "ext-bcmath": "*",
+                "ext-mbstring": "*",
                 "ext-sockets": "*",
-                "php": ">=5.4.0"
+                "php": ">=5.6.3",
+                "phpseclib/phpseclib": "^2.0.0"
+            },
+            "conflict": {
+                "php": "7.4.0 - 7.4.1"
             },
             "replace": {
                 "videlalvaro/php-amqplib": "self.version"
@@ -5170,14 +5174,13 @@
             "require-dev": {
                 "ext-curl": "*",
                 "nategood/httpful": "^0.2.20",
-                "phpdocumentor/phpdocumentor": "^2.9",
-                "phpunit/phpunit": "^4.8",
+                "phpunit/phpunit": "^5.7|^6.5|^7.0",
                 "squizlabs/php_codesniffer": "^2.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "2.11-dev"
                 }
             },
             "autoload": {
@@ -5195,11 +5198,6 @@
                     "role": "Original Maintainer"
                 },
                 {
-                    "name": "John Kelly",
-                    "email": "johnmkelly86@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
                     "name": "Raúl Araya",
                     "email": "nubeiro@gmail.com",
                     "role": "Maintainer"
@@ -5207,6 +5205,11 @@
                 {
                     "name": "Luke Bakken",
                     "email": "luke@bakken.io",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Ramūnas Dronga",
+                    "email": "github@ramuno.lt",
                     "role": "Maintainer"
                 }
             ],
@@ -5217,7 +5220,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2019-03-22T16:02:15+00:00"
+            "time": "2020-05-13T13:56:11+00:00"
         },
         {
             "name": "php-ffmpeg/php-ffmpeg",
