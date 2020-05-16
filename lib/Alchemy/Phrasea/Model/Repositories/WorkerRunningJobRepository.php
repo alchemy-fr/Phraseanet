@@ -97,4 +97,9 @@ class WorkerRunningJobRepository extends EntityRepository
             $this->_em->rollback();
         }
     }
+
+    public function getEntityManager()
+    {
+        return parent::getEntityManager();
+    }
 }

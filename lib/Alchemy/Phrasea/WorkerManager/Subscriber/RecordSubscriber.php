@@ -38,10 +38,6 @@ class RecordSubscriber implements EventSubscriberInterface
      * @var callable
      */
     private $appboxLocator;
-    /**
-     * @var WorkerRunningJobRepository
-     */
-    private $repoWorker;
 
     public function __construct(Application $app, callable $appboxLocator)
     {
@@ -49,7 +45,6 @@ class RecordSubscriber implements EventSubscriberInterface
         $this->workerResolver      = $app['alchemy_worker.type_based_worker_resolver'];
         $this->app                 = $app;
         $this->appboxLocator       = $appboxLocator;
-        $this->repoWorker          = $app['repo.worker-running-job'];
     }
 
     public function onSubdefinitionCreate(SubdefinitionCreateEvent $event)
@@ -104,8 +99,9 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $em = $this->repoWorker->getEntityManager();
-        $workerRunningJob = $this->repoWorker->findOneBy([
+        $repoWorker = $this->getRepoWorker();
+        $em = $repoWorker->getEntityManager();
+        $workerRunningJob = $repoWorker->findOneBy([
             'databoxId' => $event->getRecord()->getDataboxId(),
             'recordId'  => $event->getRecord()->getRecordId(),
             'work'       => PhraseaTokens::MAKE_SUBDEF,
@@ -225,8 +221,9 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $jeton = ($event->getSubdefName() == "document") ? PhraseaTokens::WRITE_META_DOC : PhraseaTokens::WRITE_META_SUBDEF;
 
-            $em = $this->repoWorker->getEntityManager();
-            $workerRunningJob = $this->repoWorker->findOneBy([
+            $repoWorker = $this->getRepoWorker();
+            $em = $repoWorker->getEntityManager();
+            $workerRunningJob = $repoWorker->findOneBy([
                 'databoxId' => $event->getRecord()->getDataboxId(),
                 'recordId'  => $event->getRecord()->getRecordId(),
                 'work'       => $jeton,
@@ -322,5 +319,13 @@ class RecordSubscriber implements EventSubscriberInterface
         $callable = $this->appboxLocator;
 
         return $callable();
+    }
+
+    /**
+     * @return WorkerRunningJobRepository
+     */
+    private function getRepoWorker()
+    {
+        return $this->app['repo.worker-running-job'];
     }
 }
