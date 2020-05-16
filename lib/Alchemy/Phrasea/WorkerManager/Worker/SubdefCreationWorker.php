@@ -108,7 +108,18 @@ class SubdefCreationWorker implements WorkerInterface
 
                 $this->subdefGenerator->setLogger($this->logger);
 
-                $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
+                try {
+                    $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
+                } catch (\Exception $e) {
+                    $em->beginTransaction();
+                    try {
+                        $em->remove($workerRunningJob);
+                        $em->flush();
+                        $em->commit();
+                    } catch (\Exception $e) {
+                        $em->rollback();
+                    }
+                }
 
                 // begin to check if the subdef is successfully generated
                 $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($payload['subdefName']);
