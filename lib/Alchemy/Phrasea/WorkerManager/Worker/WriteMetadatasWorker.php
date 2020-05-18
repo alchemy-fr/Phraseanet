@@ -217,7 +217,7 @@ class WriteMetadatasWorker implements WorkerInterface
                     $this->writer->write($subdef->getRealPath(), $metadata);
 
                     $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
-                } catch (PHPExiftoolException $e) {
+                } catch (\Exception $e) {
                     $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
                     $this->logger->error($workerMessage);
 

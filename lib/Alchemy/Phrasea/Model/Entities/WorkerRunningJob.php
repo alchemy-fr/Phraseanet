@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Alchemy\Phrasea\Core\PhraseaTokens;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -195,5 +196,20 @@ class WorkerRunningJob
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function getWorkName()
+    {
+        switch ($this->work) {
+            case PhraseaTokens::MAKE_SUBDEF:
+                return 'MAKE_SUBDEF';
+            case PhraseaTokens::WRITE_META_DOC:
+                return 'WRITE_META_DOC';
+            case PhraseaTokens::WRITE_META_SUBDEF:
+                return 'WRITE_META_SUBDEF';
+            default:
+                return $this->work;
+
+        }
     }
 }
